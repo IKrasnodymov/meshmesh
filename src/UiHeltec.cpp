@@ -67,7 +67,7 @@ unsigned actions(Act* out){
  case Nodes:if(Peer* p=shownNode()){out[n++]=ActNextNode;if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
  case Signals:if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
   else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
-  else{if(radar.count&&radar.csi==Radar::CsiOff){out[n++]=ActHoming;out[n++]=ActNextSignal;}out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff)out[n++]=ActCsiSensor;}break;
+  else{out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff){out[n++]=ActCsiSensor;if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}}}break; // CSI first: the beacon is the usual Heltec role
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;break;
@@ -85,8 +85,8 @@ String actName(Act a){
  case ActLanguage:return t("Language: English","Язык: русский");case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
  case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
- case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t("CSI beacon: off","Маяк CSI: выключить"):t("CSI beacon: on","Маяк CSI: включить");
- case ActCsiSensor:return radar.csi==Radar::CsiSensor?t("CSI motion: off","Движение CSI: выкл."):t("CSI motion sensor","Движение CSI (приёмник)");
+ case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t("Stop beacon","Выключить маяк"):t("CSI beacon: on","Маяк CSI: включить");
+ case ActCsiSensor:return radar.csi==Radar::CsiSensor?t("CSI motion: off","Движение CSI: выкл."):t("CSI sensor","Приёмник CSI");
  case ActCalibrate:return t("Calibrate (10 s still)","Калибровка (10 с тихо)");
  case ActStopHoming:return t("Stop homing","Остановить пеленг");case ActResetPeak:return t("Reset peak","Сбросить пик");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
@@ -182,11 +182,15 @@ void draw(){
    sayRight(128,41,t("peak ","пик ")+(radar.samples?String(int(lroundf(radar.peak))):String("-")),small);
    c.drawRect(0,45,128,6,1);if(radar.samples)c.fillRect(1,46,max(1,int(126*signalLevel(shown))),4,1);if(radar.samples){int px=1+int(125*signalLevel(lroundf(radar.peak)));c.drawFastVLine(px,43,10,1);}
    String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(" pkts"," пак."):String(radar.rate)+t("/s","/с");say(30,62,st,small);}
-  else{title=t("Radar","Радар")+" W"+String(radar.counted(RadarTarget::Wifi))+" B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));int sel=shownSignal();
-   if(sel<0){say(0,30,t("No signals yet","Сигналов пока нет"));String st=radar.csi==Radar::CsiBeacon?t("CSI beacon ","маяк CSI ")+String(radar.csiRate)+"/с":wifiState();say(0,44,st.length()?st:t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
-   else{int first=max(0,min(sel-1,int(radar.count)-4));for(int i=first;i<int(radar.count)&&i<first+4;i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
+  else{bool beacon=radar.csi==Radar::CsiBeacon;int sel=shownSignal();
+   // Beacon: sweeps and BLE pause, so the title shows the beacon instead of the counts.
+   title=beacon?t("CSI beacon ","Маяк CSI ")+String(radar.csiRate)+t("/s","/с"):t("Radar","Радар")+" W"+String(radar.counted(RadarTarget::Wifi))+" B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));
+   String st=beacon?String():wifiState();if(!st.length()&&!beacon)st=bleState();
+   if(sel<0){say(0,30,beacon?t("Beacon on","Маяк включён"):t("No signals yet","Сигналов пока нет"));say(0,44,st.length()?st:beacon?t("hold: switch off","держите: выключить"):t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
+   else{unsigned rows=st.length()?3:4; // a status line takes the 4th row, clear of the bottom hint
+    int first=max(0,min(sel-1,int(radar.count)-int(rows)));for(int i=first;i<int(radar.count)&&i<first+int(rows);i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
      if(i==sel)c.fillRect(0,y-8,128,10,1);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i!=sel);sayRight(127,y,String(int(r.rssi)),small,i!=sel);}
-    String st=radar.csi==Radar::CsiBeacon?t("CSI beacon ","маяк CSI ")+String(radar.csiRate)+"/с":wifiState();if(!st.length())st=bleState();if(st.length())say(30,62,clipped(st,14),small);}}
+    if(st.length())say(0,49,clipped(st,25),small);}}
   break;}
  case Gps:{title="GPS";bool fix=hardware.gpsFix();
   say(0,23,!config.gps?t("GPS off","GPS выключен"):fix?t("Position fix","Позиция есть"):hardware.clockConflict?t("Old GPS date","Старая дата GPS"):hardware.gps.passedChecksum()?t("Searching sky","Поиск спутников"):t("No data from GPS","Нет данных GPS"),bold);

@@ -73,6 +73,6 @@ String Radar::json() const{
  d["tracking"]=tracking;
  if(tracking){JsonObject f=d.createNestedObject("focus");describe(f,focus);f["samples"]=samples;f["rate"]=rate;f["smoothed"]=serialized(String(fast,1));f["peak"]=serialized(String(peak,1));f["trend"]=trend();f["fresh"]=fresh();}
  const char* roles[]={"off","beacon","sensor"};JsonObject c=d.createNestedObject("csi");c["role"]=roles[csi];c["running"]=csiRunning;c["rate"]=csiRate;c["channel"]=csiChannel;c["now_frames"]=csiNowFrames;c["action_frames"]=csiActionFrames;c["mgmt_frames"]=csiMgmtFrames;c["sent_ok"]=csiSentOk;c["sent_fail"]=csiSentFail;c["csi_frames"]=csiAnyFrames;
- if(csi==CsiSensor){c["heard"]=beaconHeard();c["rssi"]=csiRssi;c["activity"]=serialized(String(activity,6));c["stale"]=csiStale;c["restarts"]=csiRestarts;c["baseline"]=serialized(String(baseline,4));c["threshold"]=serialized(String(motionThreshold(),4));c["moving"]=moving;c["calibrating"]=calibrateUntil!=0;c["windows"]=motionSamples;}
+ if(csi==CsiSensor){c["heard"]=beaconHeard();c["rssi"]=csiRssi;c["activity"]=serialized(String(activity,6));c["stale"]=csiStale;c["restarts"]=csiRestarts;c["beacon_hz"]=beaconHz;c["stream"]=csiStream;c["stream_dropped"]=csiStreamDropped;c["baseline"]=serialized(String(baseline,4));c["threshold"]=serialized(String(motionThreshold(),4));c["moving"]=moving;c["calibrating"]=calibrateUntil!=0;c["windows"]=motionSamples;}
  String s;serializeJson(d,s);return s;
 }

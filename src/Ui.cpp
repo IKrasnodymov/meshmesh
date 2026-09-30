@@ -191,7 +191,7 @@ unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3
 String title(){
  if(locked)return config.name;
  switch(page){case Home:return "MeshMesh";case Threads:return t("Chats","Чаты");case Chat:return nameOf(recipient);case Map:return t("Map","Карта");case Nodes:return t("Nodes","Узлы");case Node:{Peer* p=focusedPeer();return p?String(p->name):t("Node","Узел");}
- case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Signal radar","Радар сигналов");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Motion (Wi-Fi CSI)","Движение (Wi-Fi CSI)");}return "";
+ case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Radar: signals","Радар: сигналы");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Radar: motion (CSI)","Радар: движение (CSI)");}return "";
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;
@@ -439,7 +439,7 @@ void drawScope(){
  unsigned people=radar.personal(30000);if(!state.length()&&people)state=count(people,"phone/watch nearby","phones/watches nearby","телефон/часы рядом","телефона/часов рядом","телефонов/часов рядом");
  if(!radar.count)textCenter(252,110,state.length()?state:t("No signals yet","Сигналов пока нет"),radar.wifi==Radar::WifiReady?dim:warn,small);
  else if(state.length())text(194,212,fit(state,120,small),radar.wifi==Radar::WifiReady&&radar.ble!=Radar::BleFailed&&radar.ble!=Radar::BleBusy?dim:warn,small);
- footer({{"OK",t("Home in","Пеленг")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
+ footer({{"OK",t("Home in","Пеленг")},{"<>",t("Motion","Движение")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
 }
 void drawHoming(){
  auto& d=g();const RadarTarget& f=radar.focus;uint16_t hue=rgb(targetHue(f));bool fresh=radarFresh(),lora=f.kind==RadarTarget::Lora,bt=f.kind==RadarTarget::Ble;

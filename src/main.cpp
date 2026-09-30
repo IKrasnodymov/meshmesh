@@ -69,6 +69,9 @@ void loop() {
 #endif
       }
       else if(command=="screenshot")usbScreenshot();
+      // Research: raw CSI lines ("CSI us rssi iqhex") while on; beacon frames per second.
+      else if(command=="csistream on"||command=="csistream off"){radar.csiStream=command.endsWith("on");usbLine(radar.csiStream?"OK CSI stream on":"OK CSI stream off");}
+      else if(command.startsWith("csirate ")){radar.setBeaconHz(command.substring(8).toInt());usbLine("OK beacon "+String(radar.beaconHz)+" Hz");}
       else if(command=="connections")usbLine(connectionCredentials());
       else if(command=="bleprobe")usbLine(bleProbeResult());
       else if(command=="wifiprobe")usbLine(wifiProbeResult());
@@ -85,6 +88,7 @@ void loop() {
     else if(command.length()>=1024) {command="";usbLine("ERR command too long");}
   }
   portalTick();uiTick();usbTick();
+  if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
 #if !defined(MM_HELTEC_V4)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif

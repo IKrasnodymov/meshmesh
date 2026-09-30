@@ -50,6 +50,9 @@ class Radar {
   float activity=0,baseline=0;uint32_t csiNowFrames=0,csiAnyFrames=0,csiActionFrames=0,csiMgmtFrames=0,csiSentOk=0,csiSentFail=0;uint8_t csiChannel=0;uint32_t csiRestarts=0;bool csiStale=false; // CSI arriving but not changing (driver state seen twice); restarted after 3 s // diagnostics: ESP-NOW frames, CSI callbacks from any sender
   uint32_t csiLast=0,calibrateUntil=0,movingAt=0,motionSamples=0;
   void setCsi(CsiRole role);void calibrate();
+  // USB research stream (sensor): raw IQ of the 52 LLTF data subcarriers per beacon frame.
+  bool csiStream=false;uint32_t csiStreamDropped=0;uint16_t beaconHz=50;
+  bool streamLine(String& out);void setBeaconHz(uint16_t hz);
   float motionThreshold() const; // from the calibration, or a default before it
   bool beaconHeard() const; // a sensor received the beacon within 2 s
   float motion(unsigned i) const; // activity history, oldest first

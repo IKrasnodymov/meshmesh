@@ -80,12 +80,16 @@ def main():
   mine=lambda t:t['kind']=='lora' and t.get('node')==m9_node
   heard=wait('Heltec radar did not list the M9 over LoRa',30,lambda:(r:=read(heltec,'radar'))['active'] and any(mine(t) for t in r['strongest']) and r)
   result['heltec_sweep']={k:heard[k] for k in ('wifi','sweeps','wifi_targets','lora_targets')}
-  # One button: hold opens the menu; "Next signal" keeps it open, "Home in" runs homing.
+  # One button: hold opens the menu (CSI beacon, CSI sensor, Home in, Next signal, Close);
+  # clicks select, hold runs; "Next signal" keeps the menu open at its first item.
+  def heltec_menu(index):
+   if not read(heltec,'ui')['menu']:key(heltec,0xa3)
+   for _ in range(index):key(heltec,13)
+   key(heltec,0xa3)
   for _ in range(12):
    ui=read(heltec,'ui');strongest=read(heltec,'radar')['strongest'];selected=ui.get('radar_selected',-1)
-   if not ui['menu']:key(heltec,0xa3)
-   if 0<=selected<len(strongest) and mine(strongest[selected]):key(heltec,0xa3);break
-   key(heltec,13);key(heltec,0xa3)
+   if 0<=selected<len(strongest) and mine(strongest[selected]):heltec_menu(2);break
+   heltec_menu(3)
   state=read(heltec,'radar');assert state['tracking'] and mine(state['focus']),state
   first=state['focus']['samples'];time.sleep(2) # adverts carry a timestamp in seconds
   assert command(m9,'hello').startswith('OK')

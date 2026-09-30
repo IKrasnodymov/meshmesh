@@ -49,12 +49,12 @@ def main():
   before=[read(d,'status') for d in (m9,heltec)];result={}
   wifi=[s['wifi'] for s in before]
   if wifi[0]:assert command(m9,'wifi').startswith('OK') # the sensor needs the station, not the access point
-  # Heltec: radar page, CSI beacon (menu item after homing items when signals are listed).
+  # Heltec: radar page, CSI beacon (first menu item).
   heltec_radar(heltec)
   role=csi(heltec)['role'] # a previous run may have left a role: sensor menu [calibrate, off], beacon one action
   if role!='off':heltec_action(heltec,1 if role=='sensor' else 0);assert csi(heltec)['role']=='off'
   time.sleep(3);r=read(heltec,'radar');listed=r['wifi_targets']+r['ble_targets']+r['lora_targets']>0
-  heltec_action(heltec,2 if listed else 0);assert csi(heltec)['role']=='beacon'
+  heltec_action(heltec,0);assert csi(heltec)['role']=='beacon' # menu: CSI beacon, CSI sensor, ...
   # M9: Home -> Radar -> Right: Motion page, sensor role.
   if read(m9,'ui')['locked']:key(m9,0xa3)
   for k in (0x82,0x82,0xb6,0xb7,0xb7,13,0xb7):key(m9,k)
@@ -67,7 +67,7 @@ def main():
   key(m9,ord('b'));assert csi(m9)['role']=='beacon'
   heltec_action(heltec,0);assert csi(heltec)['role']=='off' # a beacon has one action: switch it off
   time.sleep(2);r=read(heltec,'radar');listed=r['wifi_targets']+r['ble_targets']+r['lora_targets']>0
-  heltec_action(heltec,3 if listed else 1);assert csi(heltec)['role']=='sensor'
+  heltec_action(heltec,1);assert csi(heltec)['role']=='sensor'
   result['m9_to_heltec']=listened(heltec,'Heltec sensor')
   result['m9_beacon_rate']=csi(m9)['rate']
   # Leave: M9 home, Heltec sensor off and back to home.

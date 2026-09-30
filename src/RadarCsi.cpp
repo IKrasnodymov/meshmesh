@@ -13,6 +13,7 @@ const char signature[]="MMCSI";
 portMUX_TYPE guard=portMUX_INITIALIZER_UNLOCKED;
 esp_timer_handle_t sender=nullptr;uint32_t sequence=0;wifi_interface_t senderIf=WIFI_IF_STA;
 uint8_t beaconMac[6];bool beaconKnown=false;
+struct Snapshot{uint32_t us;int8_t rssi;int8_t iq[104];};Snapshot snapshots[64];unsigned snapHead=0,snapTail=0;
 float previous[52],accumulated[52];unsigned frames=0;bool havePrevious=false;
 float jitterSum=0;uint32_t jitterCount=0,packets=0,changes=0;int32_t rssiSum=0;int8_t lastRaw[128];
 void send(void*){uint8_t payload[12];memcpy(payload,signature,5);memcpy(payload+5,&sequence,4);sequence++;
@@ -29,6 +30,8 @@ void onCsi(void*,wifi_csi_info_t* info){
  radar.csiAnyFrames++;if(!info||!info->buf||info->len<128)return;
  bool known;taskENTER_CRITICAL(&guard);known=beaconKnown&&!memcmp(info->mac,beaconMac,6);taskEXIT_CRITICAL(&guard);if(!known)return;
  bool changed=memcmp(lastRaw,info->buf,sizeof lastRaw)!=0;memcpy(lastRaw,info->buf,sizeof lastRaw);
+ if(radar.csiStream){Snapshot s;s.us=info->rx_ctrl.timestamp;s.rssi=info->rx_ctrl.rssi;unsigned j=0;for(int k=1;k<64;k++){if(k>26&&k<38)continue;s.iq[j++]=info->buf[2*k];s.iq[j++]=info->buf[2*k+1];}
+  taskENTER_CRITICAL(&guard);unsigned next=(snapHead+1)%64;if(next==snapTail)radar.csiStreamDropped++;else{snapshots[snapHead]=s;snapHead=next;}taskEXIT_CRITICAL(&guard);}
  float a[52];unsigned n=0;
  for(int k=1;k<64;k++){if(k>26&&k<38)continue;if(k==1&&info->first_word_invalid){a[n++]=0;continue;}float im=info->buf[2*k],re=info->buf[2*k+1];a[n++]=sqrtf(im*im+re*re);}
  // Five frames (100 ms) are averaged: single frames carry 8..18-unit amplitudes whose rounding noise
@@ -42,6 +45,12 @@ void onCsi(void*,wifi_csi_info_t* info){
  taskENTER_CRITICAL(&guard);packets++;changes+=changed;rssiSum+=info->rx_ctrl.rssi;if(jitter>=0){jitterSum+=jitter;jitterCount++;}taskEXIT_CRITICAL(&guard);
 }
 }
+bool Radar::streamLine(String& out){
+ Snapshot s;taskENTER_CRITICAL(&guard);bool any=snapTail!=snapHead;if(any){s=snapshots[snapTail];snapTail=(snapTail+1)%64;}taskEXIT_CRITICAL(&guard);if(!any)return false;
+ static const char hex[]="0123456789abcdef";char line[232];int n=snprintf(line,sizeof line,"CSI %lu %d ",(unsigned long)s.us,int(s.rssi));
+ for(int i=0;i<104;i++){uint8_t v=s.iq[i];line[n++]=hex[v>>4];line[n++]=hex[v&15];}line[n]=0;out=line;return true;
+}
+void Radar::setBeaconHz(uint16_t hz){beaconHz=constrain(hz,10,200);if(sender){esp_timer_stop(sender);esp_timer_start_periodic(sender,1000000/beaconHz);}}
 void Radar::setCsi(CsiRole role){if(role==csi)return;csiStop();if(role!=CsiOff)untrack();csi=role;activity=0;moving=false;csiRate=0;csiLast=0;dirty=true;}
 void Radar::csiStart(){
  if(csiRunning)return;bool ap=wifi==WifiPortal;
@@ -57,7 +66,7 @@ void Radar::csiStart(){
   senderIf=ap?WIFI_IF_AP:WIFI_IF_STA;esp_now_peer_info_t peer{};memcpy(peer.peer_addr,broadcast,6);peer.channel=0;peer.ifidx=senderIf;
   esp_now_register_send_cb(sent);esp_now_add_peer(&peer);esp_wifi_config_espnow_rate(senderIf,WIFI_PHY_RATE_6M); // OFDM (802.11b frames carry no CSI); MCS0 frames never reached the air
   esp_timer_create_args_t args{};args.callback=send;args.name="csi-beacon";
-  if(esp_timer_create(&args,&sender)!=ESP_OK||esp_timer_start_periodic(sender,20000)!=ESP_OK){csiStop();return;}
+  if(esp_timer_create(&args,&sender)!=ESP_OK||esp_timer_start_periodic(sender,1000000/beaconHz)!=ESP_OK){csiStop();return;}
  }else{
   esp_now_register_recv_cb(received);
   wifi_csi_config_t config{};config.lltf_en=true;config.htltf_en=false;config.stbc_htltf2_en=false;config.ltf_merge_en=false;config.channel_filter_en=false;config.manu_scale=false;
