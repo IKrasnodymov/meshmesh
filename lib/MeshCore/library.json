@@ -1,0 +1,9 @@
+{
+  "name": "MeshCore",
+  "version": "1.17.4",
+  "build": {
+    "flags": [
+      "-I src/ed25519"
+    ]
+  }
+}
