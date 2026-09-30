@@ -48,7 +48,10 @@ def main():
   m9=stack.enter_context(connect(M9_PORT));heltec=stack.enter_context(connect(HELTEC_PORT))
   before=[read(d,'status') for d in (m9,heltec)];result={}
   wifi=[s['wifi'] for s in before]
-  if wifi[0]:assert command(m9,'wifi').startswith('OK') # the sensor needs the station, not the access point
+  # Each board is the sensor once, and a sensor needs the station, not the access point
+  # (the Heltec UI check leaves the Heltec access point on).
+  for d,on in zip((m9,heltec),wifi):
+   if on:assert command(d,'wifi').startswith('OK')
   # Heltec: radar page, CSI beacon (first menu item).
   heltec_radar(heltec)
   role=csi(heltec)['role'] # a previous run may have left a role: sensor menu [calibrate, off], beacon one action
@@ -77,7 +80,8 @@ def main():
   for _ in range(12):
    if read(heltec,'ui')['page']=='home':break
    heltec_key(heltec,13)
-  if wifi[0]:assert command(m9,'wifi').startswith('OK')
+  for d,on in zip((m9,heltec),wifi):
+   if on:assert command(d,'wifi').startswith('OK')
   after=[read(d,'status') for d in (m9,heltec)]
   for a,b in zip(before,after):assert a['boot']==b['boot'] and a['diagnostic_rx']==b['diagnostic_rx'],'reboot or USB-injected frame during CSI check'
   p=Path('artifacts/csi-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600)
