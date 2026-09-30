@@ -15,6 +15,7 @@ eval c++ -std=gnu++17 -O1 -w $DEF $INC -c "$LIB/U8g2_for_Adafruit_GFX/src/U8g2_f
 eval c++ -std=gnu++17 -O1 -Wall -Wno-unused-function $DEF $INC -c "$SRC" -o "$B/ui.o"
 eval c++ -std=gnu++17 -O1 -w $DEF $INC -c "$ROOT/tools/ui_preview/preview.cpp" -o "$B/preview.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/RadarModel.cpp" -o "$B/radar.o"
+eval c++ -std=gnu++17 -O1 -Wall -Wextra $DEF $INC -c "$ROOT/src/Solitaire.cpp" -o "$B/solitaire.o"
 c++ "$B"/*.o -o "$B/preview"
 "$B/preview" "$OUT" ${3:-ru}
 rm -rf "$B"

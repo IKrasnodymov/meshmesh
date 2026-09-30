@@ -11,6 +11,9 @@ static void scenario(){
  key(0x82);key(0xb6);key(13);shot("sensors");key(0x90);shot("settings");key(13);key(0xb7);shot("radio");key(0x86);key(0xb6);key(13);for(int i=0;i<8;i++)key(0xb6);key(0xb7);shot("display-battery");for(int i=0;i<8;i++)key(0xb5);shot("display");key(13);shot("display-name");key(0x86);key(0x86);
  key(0x82);key(0xb6);key(0xb7);key(13);key(13);key(0xb6);key(13);shot("network");key(13);key(0xb6);key(13);key(0x83);shot("diagnostics");key(0x90);for(int i=0;i<5;i++)key(0xb6);key(13);shot("help");key(13);shot("help-layout");key(0x86);key(13);shot("help-layout");key(0x86);
  key(0x88);shot("locked");key(0xa3);key(0x82);
- key(0xb6);key(0xb7);key(0xb7);shot("home-radar");key(0xb6);shot("home-scrolled");key(0xb5);key(0xb7);key(13);shot("radar");key(0xb6);key(0xb6);shot("radar-select");key(0xb5);key(0xb5);key(13);shot("homing");key(0x86);shot("radar-back");key(0xb7);shot("motion");key('b');for(int i=0;i<4;i++)tick();shot("motion-beacon");key('b');key(0xb7);key(0x86);
+ key(0xb6);key(0xb7);key(0xb7);shot("home-radar");key(0xb6);shot("home-scrolled");key(0xb5);key(13);shot("radar");key(0xb6);key(0xb6);shot("radar-select");key(0xb5);key(0xb5);key(13);shot("homing");key(0x86);shot("radar-back");key(0xb7);shot("motion");key('b');for(int i=0;i<4;i++)tick();shot("motion-beacon");key('b');key(0xb7);key(0x86);
+ // Solitaire: the ninth home tile; hints, a held run and the key sheet.
+ key(0x82);key(0xb6);key(0xb6);key(0xb7);key(0xb7);shot("home-solitaire");key(13);shot("solitaire");for(int i=0;i<12;i++){key('p');key(' ');}shot("solitaire-played");
+ key(0xb5);key(0xb5);key(0xb6);key(0xb5);key(13);key(0xb7);shot("solitaire-held");key(0x86);key('h');shot("solitaire-help");key(0x86);key(0x86);
 #endif
 }
