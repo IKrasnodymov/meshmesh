@@ -55,7 +55,7 @@ float signalLevel(int rssi){return constrain((rssi+100)/65.f,0.f,1.f);} // -100 
 bool homingFresh(){return radar.fresh();}
 String wifiState(){switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
-void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else radar.close();if(page==Messages){messageOffset=0;unreadCount=0;}}
+void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==Messages){messageOffset=0;unreadCount=0;}}
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
@@ -222,6 +222,7 @@ void uiKey(int key){
  if(key==13||key==0x82){showPage((page+1)%PageCount);return;}
  if(key==0xa3){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
+bool uiRadarPage(){return page==Signals;}
 void uiBegin(){pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
 String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
 void uiTick(){

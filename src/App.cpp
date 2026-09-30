@@ -11,7 +11,7 @@
 #include <LittleFS.h>
 #include <time.h>
 String statusJson() {
-  StaticJsonDocument<2048> d;
+  StaticJsonDocument<3072> d;
 #if defined(MM_HELTEC_V4)
   d["board"]="heltec_v4";
 #else
@@ -26,6 +26,7 @@ String statusJson() {
   d["gps_bytes"]=hardware.gpsBytes;d["gps_sentences"]=hardware.gps.passedChecksum();d["gps_fix"]=hardware.gpsFix();d["satellites"]=hardware.gps.satellites.value();
   if(d["gps_fix"].as<bool>()) {d["latitude"]=hardware.gps.location.lat();d["longitude"]=hardware.gps.location.lng();}
   JsonArray a=d.createNestedArray("mag");for(float n:hardware.mag)a.add(n);a=d.createNestedArray("accel");for(float n:hardware.accel)a.add(n);
+  d["clock_trusted"]=hardware.clockTrusted;d["busy"]=meshRadio.busy();if(meshRadio.lastRxAt)d["rx_age"]=(millis()-meshRadio.lastRxAt)/1000;
   d["event"]=meshRadio.event;d["wifi"]=portalActive();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
 String messagesJson() {
@@ -108,6 +109,12 @@ String executeCommand(const String& input) {
     hardware.fsOk=LittleFS.format() && LittleFS.begin(false,"/littlefs",10,"littlefs");
     return hardware.fsOk?"OK MeshMesh filesystem initialized":"ERR filesystem";
   }
+  if(line.startsWith("resetpath ")||line.startsWith("forget ")) { // node card actions, as on the M9 screen
+    bool reset=line.startsWith("resetpath ");String hex=line.substring(reset?10:7);char* end=nullptr;uint64_t id=strtoull(hex.c_str(),&end,16);
+    if(!id||!end||*end||hex.length()>16)return "ERR node ID";if(meshRadio.busy())return "ERR radio busy; retry";
+    if(reset)return meshRadio.resetPath(id)?"OK path reset; next message floods":"ERR path reset failed";
+    return meshRadio.removeContact(id)?"OK contact removed; its next advert adds it again":"ERR contact not removed";
+  }
   if(line.startsWith("send ")) {
     int at=line.indexOf(' ',5);if(at<0)return "ERR send ALL|NODE_ID text";
     String to=line.substring(5,at);uint64_t id=meshmesh::Broadcast;
@@ -118,5 +125,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, selftest, wifi, ble, fsformat";
+  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, ble, fsformat";
 }

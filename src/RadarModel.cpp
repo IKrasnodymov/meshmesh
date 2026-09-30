@@ -76,3 +76,19 @@ String Radar::json() const{
  if(csi==CsiSensor){c["heard"]=beaconHeard();c["rssi"]=csiRssi;c["activity"]=serialized(String(activity,6));c["stale"]=csiStale;c["restarts"]=csiRestarts;c["beacon_hz"]=beaconHz;c["stream"]=csiStream;c["stream_dropped"]=csiStreamDropped;c["baseline"]=serialized(String(baseline,4));c["threshold"]=serialized(String(motionThreshold(),4));c["moving"]=moving;c["calibrating"]=calibrateUntil!=0;c["windows"]=motionSamples;}
  String s;serializeJson(d,s);return s;
 }
+String Radar::webJson() const{
+ DynamicJsonDocument d(16384);const char* states[]={"off","ready","portal","busy","failed"},*bleStates[]={"off","ready","busy","failed"},*kinds[]={"wifi","ble","lora"},*devices[]={"unknown","phone","watch","audio","personal"},*roles[]={"off","beacon","sensor"};uint32_t now=millis();
+ d["active"]=active;d["wifi"]=states[wifi];d["ble"]=bleStates[ble];d["sweeps"]=sweeps;d["personal"]=personal(30000);d["tracking"]=tracking;
+ auto describe=[&](JsonObject o,const RadarTarget& t){o["kind"]=kinds[t.kind];o["ref"]=placement(t);o["name"]=t.name;o["rssi"]=t.rssi;o["age_ms"]=now-t.seen;
+  if(t.kind==RadarTarget::Wifi){o["channel"]=t.channel;o["open"]=t.open;}
+  if(t.kind==RadarTarget::Ble){o["device"]=devices[t.device];if(t.vendor!=0xffff)o["vendor"]=t.vendor;}
+  if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%012llX",(unsigned long long)t.id);o["node"]=node;}};
+ JsonArray a=d.createNestedArray("targets");for(unsigned i=0;i<count&&i<40;i++)describe(a.createNestedObject(),targets[i]);
+ if(tracking){JsonObject f=d.createNestedObject("focus");describe(f,focus);f["samples"]=samples;f["rate"]=rate;f["fast"]=serialized(String(fast,1));f["peak"]=serialized(String(peak,1));f["trend"]=trend();f["fresh"]=fresh();f["sample_age_ms"]=samples?now-lastSample:0;
+  JsonArray h=f.createNestedArray("history");for(unsigned i=0;i<historyCount();i++)h.add(sample(i));}
+ JsonObject c=d.createNestedObject("csi");c["role"]=roles[csi];c["running"]=csiRunning;c["rate"]=csiRate;
+ if(csi==CsiSensor){c["heard"]=beaconHeard();c["rssi"]=csiRssi;c["stale"]=csiStale;c["moving"]=moving;c["activity"]=serialized(String(activity*1000,2));c["threshold"]=serialized(String(motionThreshold()*1000,2));c["calibrated"]=baseline>0;
+  if(calibrateUntil)c["calibrating_ms"]=int32_t(calibrateUntil-now)>0?calibrateUntil-now:0;
+  JsonArray m=c.createNestedArray("history");for(unsigned i=0;i<motionCount();i++)m.add(serialized(String(motion(i)*1000,2)));}
+ String s;serializeJson(d,s);return s;
+}

@@ -13,5 +13,7 @@ String uiStatus();
 void portalBegin();void portalTick();void portalToggle();bool portalActive();String portalPassword();
 String connectionCredentials();
 void bleToggle();bool bleActive();
+// Radar holders: the web page (Portal.cpp) and the screen pages (Ui.cpp / UiHeltec.cpp).
+bool webRadarActive();bool uiRadarPage();
 
 uint32_t blePin();

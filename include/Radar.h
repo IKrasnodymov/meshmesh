@@ -36,6 +36,10 @@ class Radar {
   unsigned counted(RadarTarget::Kind kind) const;
   unsigned personal(uint32_t within) const; // phones, watches and headphones seen recently
   String json() const;
+  // Web page (authenticated Wi-Fi portal): the screen's view - names as on the display, placement hashes
+  // instead of addresses, homing and motion histories. USB json() stays without names.
+  String webJson() const;
+  static uint32_t placement(const RadarTarget& t){return uint32_t(t.id^(t.id>>29))*2654435761u;}
   // Target table and statistics (src/RadarModel.cpp, also linked by the host preview).
   RadarTarget* upsert(RadarTarget::Kind kind,uint64_t id);
   void prune(uint32_t now);void sort();void addSample(int rssi,uint32_t at);void reset();

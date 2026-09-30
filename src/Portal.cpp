@@ -25,6 +25,22 @@ String bleResponse;
 unsigned bleOffset=0;
 uint32_t nextNotification=0;
 struct BleCommand {char text[256];};
+// The web radar page holds the radar while it polls; the screen may hold it too (uiRadarPage).
+bool webRadar=false;uint32_t webRadarAt=0;
+bool wifiOffPending=false; // the web page turns the access point off after its reply is sent
+void webRadarRelease(){if(!webRadar)return;webRadar=false;if(!uiRadarPage())radar.close();}
+int radarIndex(uint32_t ref,const String& kind){const char* kinds[]={"wifi","ble","lora"};for(unsigned i=0;i<radar.count;i++)if(Radar::placement(radar.targets[i])==ref&&kind==kinds[radar.targets[i].kind])return i;return -1;}
+String radarAction(JsonObjectConst v){
+  String action=v["action"]|"";
+  if(action=="close"){webRadarRelease();return "OK radar released";}
+  if(!radar.active)return "ERR radar is not open";
+  if(action=="track"){int i=radarIndex(v["ref"]|0u,v["kind"]|"");if(i<0||!radar.track(i))return "ERR signal is gone";return "OK homing";}
+  if(action=="untrack"){radar.untrack();return "OK homing stopped";}
+  if(action=="peak"){radar.resetPeak();return "OK peak reset";}
+  if(action=="csi"){String role=v["role"]|"";if(role!="off"&&role!="beacon"&&role!="sensor")return "ERR CSI role off|beacon|sensor";radar.setCsi(role=="beacon"?Radar::CsiBeacon:role=="sensor"?Radar::CsiSensor:Radar::CsiOff);return "OK CSI "+role;}
+  if(action=="calibrate"){if(!radar.beaconHeard())return "ERR needs a heard beacon";radar.calibrate();return "OK calibrating 10 s";}
+  return "ERR radar action";
+}
 bool authorized() {
   if(server.authenticate("meshmesh",password.c_str()))return true;
   server.send(401,"text/plain","Authentication required");return false;
@@ -38,6 +54,7 @@ class BleCallbacks:public NimBLECharacteristicCallbacks {
 };
 BleCallbacks bleCallbacks;
 }
+bool webRadarActive() {return webRadar;}
 bool portalActive() {return wifiOn;}String portalPassword() {return password;}
 bool bleActive() {return bluetoothOn;}
 uint32_t blePin() {return pinCode;}
@@ -61,18 +78,21 @@ void portalBegin() {
   server.on("/api/maps",HTTP_GET,[]{if(authorized())answer(maps.info());});
   server.on("/api/maps/chunk",HTTP_POST,[]{if(!authorized())return;DynamicJsonDocument d(4096);if(deserializeJson(d,server.arg("plain"))||!d["data"].is<const char*>()){answer("ERR map chunk JSON",false);return;}String encoded=d["data"];uint8_t bytes[2048];size_t n=0;if(mbedtls_base64_decode(bytes,sizeof(bytes),&n,(const uint8_t*)encoded.c_str(),encoded.length())){answer("ERR map base64",false);return;}bool ok=maps.uploadChunk(bytes,n);answer(ok?"OK map chunk":"ERR "+maps.error,ok);});
   server.on("/api/maps/tile",HTTP_GET,[]{if(!authorized())return;if(!server.hasArg("z")||!server.hasArg("x")||!server.hasArg("y")){answer("ERR tile coordinates",false);return;}File f=maps.openTile(server.arg("z").toInt(),server.arg("x").toInt(),server.arg("y").toInt());if(!f){server.send(404,"text/plain","Map tile not saved");return;}server.streamFile(f,"application/octet-stream");f.close();});
+  server.on("/api/connections",HTTP_GET,[]{if(authorized())answer(connectionCredentials());});
+  server.on("/api/radar",HTTP_GET,[]{if(!authorized())return;if(server.arg("open")=="1"){if(!radar.active)radar.open();webRadar=true;webRadarAt=millis();}answer(radar.webJson());});
+  server.on("/api/radar",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<256>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}if(webRadar)webRadarAt=millis();String reply=radarAction(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
   server.on("/api/messages",HTTP_GET,[]{if(authorized())answer(messagesJson());});
   server.on("/api/config",HTTP_GET,[]{if(authorized())answer(configJson());});
   server.on("/api/key",HTTP_GET,[]{if(authorized())answer(configJson(true));});
   server.on("/api/config",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=applySettings(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
-  server.on("/api/command",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<2048>d;if(deserializeJson(d,server.arg("plain"))||!d["command"].is<const char*>()){answer("Invalid command",false);return;}String reply=executeCommand(d["command"].as<String>());answer(reply,!reply.startsWith("ERR"));});
+  server.on("/api/command",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<2048>d;if(deserializeJson(d,server.arg("plain"))||!d["command"].is<const char*>()){answer("Invalid command",false);return;}if(d["command"]=="wifi"){wifiOffPending=true;answer("OK Wi-Fi off after this reply");return;}String reply=executeCommand(d["command"].as<String>());answer(reply,!reply.startsWith("ERR"));});
   server.on("/api/send",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d["text"].is<const char*>()||!d["to"].is<const char*>()){answer("Invalid message",false);return;}String reply=executeCommand("send "+d["to"].as<String>()+" "+d["text"].as<String>());answer(reply,reply.startsWith("OK"));});
   server.onNotFound([]{server.send(404,"text/plain","Not found");});
 }
 void portalToggle() {
   if(wifiProbeActive()){meshRadio.event="Wi-Fi probe busy";meshRadio.dirty=true;return;}
   radar.release(); // the radar stops its Wi-Fi use (sweeps, homing, CSI beacon on the access point)
-  if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;meshRadio.event="Wi-Fi off";}
+  if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;webRadarRelease();meshRadio.event="Wi-Fi off";}
   else {
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
     wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);if(wifiOn)server.begin();meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
@@ -107,6 +127,8 @@ void bleToggle() {
 }
 void portalTick() {
   if(wifiOn)server.handleClient();
+  if(wifiOffPending){wifiOffPending=false;if(wifiOn)portalToggle();}
+  if(webRadar&&millis()-webRadarAt>10000)webRadarRelease(); // the page was closed or the phone left
   if(commands && !bleResponse.length()) {
     BleCommand cmd;
     if(xQueueReceive(commands,&cmd,0)==pdTRUE) {

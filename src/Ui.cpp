@@ -168,7 +168,8 @@ void sortNodes(){
 }
 Peer* focusedPeer(){return peerOf(focusNode);}
 void gameOpen();void gameLeave();String gameTitle();String gameTileDetail();
-void change(Page next){if(page==Game&&next!=Game)gameLeave();if(next==Game&&page!=Game)gameOpen();if(page==Chat&&next!=Chat)rememberComposer();bool radarPage=next==Scope||next==Homing||next==Motion;if(radarPage&&page!=Scope&&page!=Homing&&page!=Motion)scopeManual=false;if(radarPage)radar.open();else radar.close();radar.setCsi(next!=Motion?Radar::CsiOff:csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
+// Leaving the radar pages keeps the radar running while the web page holds it (webRadarActive).
+void change(Page next){if(page==Game&&next!=Game)gameLeave();if(next==Game&&page!=Game)gameOpen();if(page==Chat&&next!=Chat)rememberComposer();bool radarPage=next==Scope||next==Homing||next==Motion;if(radarPage&&page!=Scope&&page!=Homing&&page!=Motion)scopeManual=false;if(radarPage)radar.open();else if(!webRadarActive())radar.close();if(radarPage||!webRadarActive())radar.setCsi(next!=Motion?Radar::CsiOff:csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
 
 // Time, distances and short labels.
 bool localTime(time_t at,tm& out){if(at<1700000000)return false;at+=config.utcOffset*60;out=*gmtime(&at);return true;}
@@ -653,6 +654,7 @@ void runNodeAction(){
  }
 }
 }
+bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
 void uiBegin(){Preferences p;keyboardRussian=config.russian;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",config.russian);p.end();}lastInput=millis();draw();}
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
