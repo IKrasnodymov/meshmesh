@@ -24,7 +24,7 @@ def main():
         raise SystemExit('Build files missing; run PlatformIO for this environment first')
     sources = [ROOT/'platformio.ini',ROOT/'partitions.csv']
     for directory in ['src','include','lib','boards']:
-        sources.extend(p for p in (ROOT/directory).rglob('*') if p.is_file() and p.suffix in ('.cpp','.c','.h','.json'))
+        sources.extend(p for p in (ROOT/directory).rglob('*') if p.is_file() and p.suffix in ('.cpp','.c','.h','.inc','.json'))
     if any(p.stat().st_mtime > files['firmware.bin'].stat().st_mtime for p in sources):
         raise SystemExit('Firmware is older than project sources; run a successful build before packaging')
     package.mkdir(parents=True, exist_ok=True)

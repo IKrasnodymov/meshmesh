@@ -151,6 +151,7 @@ def main():
         interfaces(M9, wifi=True, ble=True)
         interfaces(HELTEC, wifi=False, ble=True)
         run('radio', 'tools/radio_check.py', '--heltec', HELTEC)
+        run('chess', 'tools/chess_check.py', '--heltec', HELTEC)
         run('m9-ui', 'tools/ui_check.py')
         m9_page(133)  # MAP: include map rendering in concurrent radio/USB load.
         run('concurrency', 'tools/concurrency_check.py')

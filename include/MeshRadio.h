@@ -16,6 +16,7 @@ struct ChatMessage {
   char name[25]={},text[161]={};
   bool outgoing=false;
   uint8_t protocol=2; // 1: archived MM/1; 2: MeshCore
+  bool game=false;    // a chess command: sent like a message, kept out of the chat history
   enum Status:uint8_t { Received,Queued,Sent,Delivered,Failed } status=Received;
 };
 struct Peer {
@@ -36,6 +37,7 @@ class MeshRadio {
   MeshRadio():radio(new Module(pins::radioCs,pins::radioIrq,pins::radioReset,pins::radioBusy,SPI)) {}
   void begin();void tick();bool applyConfig();
   bool sendMessage(const String& text,uint64_t destination=meshmesh::Broadcast);
+  uint32_t sendGame(const String& text,uint64_t destination); // message ID for delivery, 0 when refused
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();
@@ -49,6 +51,7 @@ class MeshRadio {
   uint32_t sequence=0,lastHello=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
+  uint32_t queue(const String& text,uint64_t destination,bool game);
   int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
   void status(uint32_t id,ChatMessage::Status value);void persist(const ChatMessage& m);
   Peer* contact(uint64_t id);

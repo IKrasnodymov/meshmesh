@@ -10,6 +10,7 @@
 #include "Radar.h"
 #include "WifiDiagnostics.h"
 #include "Internet.h"
+#include "ChessNet.h"
 #include <esp_system.h>
 #if defined(MM_HELTEC_V4)
 #include <hal/usb_serial_jtag_ll.h>
@@ -50,7 +51,7 @@ void setup() {
 #else
   Serial.printf("\n" MESHMM_FIRMWARE " / ThinkNode M9 / reset=%d\n",esp_reset_reason());
 #endif
-  config.load();hardware.beginClock();hardware.begin();meshRadio.begin();maps.begin();
+  config.load();hardware.beginClock();hardware.begin();chessNet.begin();meshRadio.begin();maps.begin();
 #if !defined(MM_HELTEC_V4)
   internet.begin();
 #endif
@@ -59,7 +60,7 @@ void setup() {
   Serial.println("READY: USB commands are available; type help");
 }
 void loop() {
-  hardware.tick();meshRadio.tick();
+  hardware.tick();meshRadio.tick();chessNet.tick();
 #if !defined(MM_HELTEC_V4)
   internet.tick();
 #endif

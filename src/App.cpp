@@ -9,6 +9,7 @@
 #include "Navigation.h"
 #include "Radar.h"
 #include "Internet.h"
+#include "ChessNet.h"
 #include <LittleFS.h>
 #include <time.h>
 String statusJson() {
@@ -83,6 +84,7 @@ String executeCommand(const String& input) {
 #if !defined(MM_HELTEC_V4)
   if(line=="internet"||line.startsWith("internet "))return internet.command(line);
 #endif
+  if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
   if(line=="radar")return radar.json();
@@ -129,5 +131,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
+  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
 }

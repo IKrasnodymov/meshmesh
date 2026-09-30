@@ -36,7 +36,7 @@ def main():
   areas=read(devices[0],'map areas');nav=read(devices[0],'navigation')
   assert sorted(a['tiles'] for a in areas)==[218,1022] and nav['calibrated'] and not nav['calibrating']
   current={s['node']:s['boot'] for s in status};reports={}
-  names=['radio-check','ble-radio-check','heltec-ble-radio-check','ui-radio-check','concurrency-check','wifi-map-check','heltec-wifi-check','heltec-ui-check','radar-check','csi-check']
+  names=['radio-check','ble-radio-check','heltec-ble-radio-check','ui-radio-check','concurrency-check','wifi-map-check','heltec-wifi-check','heltec-ui-check','radar-check','csi-check','chess-check']
   for name in names:
    data=load(name)
    for entry in data['before']+data['after']:assert current[entry['node']]==entry['boot'],name+' belongs to an earlier firmware boot'

@@ -25,3 +25,20 @@ bool Radar::track(unsigned index){if(index>=count)return false;focus=targets[ind
  for(int i=0;i<90;i++){int r=-78+i/3+int((i*37)%7)-3-(i>80?(i-80)*2:0);addSample(r,millis()-(90-i)*100);}
  lastSample=millis()-300;rate=21;return true;}
 void Radar::untrack(){tracking=false;reset();}
+// Chess: the real ChessNet with its saved games kept in memory; sent commands only get an ID.
+#include "ChessNet.h"
+#include <vector>
+static std::vector<uint8_t> chessSaved;
+bool chessStoreWrite(const uint8_t* d,size_t n){chessSaved.assign(d,d+n);return true;}
+size_t chessStoreRead(uint8_t* d,size_t cap){if(chessSaved.size()>cap)return 0;memcpy(d,chessSaved.data(),chessSaved.size());return chessSaved.size();}
+uint32_t MeshRadio::sendGame(const String&,uint64_t){return ++nextId;}
+// Internet over Wi-Fi and the web radar holder: switched off in the preview.
+#include "Internet.h"
+Internet internet;
+#if !defined(MM_HELTEC_V4)
+void Internet::setEnabled(bool on){enabled=on;}void Internet::rescan(){}void Internet::connectTo(const String&){}
+bool Internet::save(const String&,const String&){return true;}bool Internet::forget(const String&){return true;}
+String Internet::savedName(unsigned){return "";}String Internet::stateText(bool russian){return russian?"Выключено":"Off";}
+#endif
+bool Maps::inArea() const{return true;}
+bool webRadarActive(){return false;}
