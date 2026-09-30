@@ -75,7 +75,7 @@ static void save(const std::string& path){
  fclose(f);
 }
 static std::string outDir;
-static void tick(){fakeMillis+=1000;uiTick();}
+static void tick(){fakeMillis+=1000;radar.tick();uiTick();}
 static void key(int k){uiKey(k);tick();}
 static void shot(const char* name){tick();save(outDir+"/"+name+".ppm");printf("%s\n",name);}
 static uint64_t peerId(int i){return 0xA1B2C3D40000ULL+i*0x1111;}

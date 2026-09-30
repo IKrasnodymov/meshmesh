@@ -12,7 +12,7 @@ def read(d,name):return json.loads(command(d,name))
 def load(name):return json.loads(Path('artifacts',name+'.json').read_text())
 def main():
  receipt=load('hardware-finish')
- required=['flash-m9','clock','persistence','map-ui','flash-heltec','radio','m9-ui','concurrency','heltec-ui','radar','m9-wifi','m9-ble','heltec-wifi','heltec-ble']
+ required=['flash-m9','clock','persistence','map-ui','flash-heltec','radio','m9-ui','concurrency','heltec-ui','radar','csi','m9-wifi','m9-ble','heltec-wifi','heltec-ble']
  assert all(step in receipt['completed'] for step in required),'Run finish_on_hardware.py to install and verify the final packages'
  for board,folder in [('m9',f'meshmesh-m9-{VERSION}'),('heltec_v4',f'meshmesh-heltec-v4-{VERSION}')]:
   manifest=Path('artifacts',folder,'manifest.json')
@@ -36,7 +36,7 @@ def main():
   areas=read(devices[0],'map areas');nav=read(devices[0],'navigation')
   assert sorted(a['tiles'] for a in areas)==[218,1022] and nav['calibrated'] and not nav['calibrating']
   current={s['node']:s['boot'] for s in status};reports={}
-  names=['radio-check','ble-radio-check','heltec-ble-radio-check','ui-radio-check','concurrency-check','wifi-map-check','heltec-wifi-check','heltec-ui-check','radar-check']
+  names=['radio-check','ble-radio-check','heltec-ble-radio-check','ui-radio-check','concurrency-check','wifi-map-check','heltec-wifi-check','heltec-ui-check','radar-check','csi-check']
   for name in names:
    data=load(name)
    for entry in data['before']+data['after']:assert current[entry['node']]==entry['boot'],name+' belongs to an earlier firmware boot'

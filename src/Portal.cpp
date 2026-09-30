@@ -71,9 +71,9 @@ void portalBegin() {
 }
 void portalToggle() {
   if(wifiProbeActive()){meshRadio.event="Wi-Fi probe busy";meshRadio.dirty=true;return;}
+  radar.release(); // the radar stops its Wi-Fi use (sweeps, homing, CSI beacon on the access point)
   if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;meshRadio.event="Wi-Fi off";}
   else {
-    radar.release(); // the access point takes Wi-Fi over from the signal radar
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
     wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);if(wifiOn)server.begin();meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
   }
@@ -81,17 +81,27 @@ void portalToggle() {
 }
 void bleToggle() {
   if(bleProbeActive()) {meshRadio.event="BLE probe busy";meshRadio.dirty=true;return;}
-  radar.releaseBle(); // the service owns the BLE stack; the radar scans on it again next tick
-  if(bluetoothOn) {NimBLEDevice::deinit(true);bluetoothOn=false;bleTx=nullptr;bleResponse="";bleOffset=0;if(commands){vQueueDelete(commands);commands=nullptr;}meshRadio.event="BLE off";}
+  radar.releaseBle(); // stops the radar scan; it scans on the stack again next tick
+  // The Bluetooth controller starts once per boot and is never deinitialised: a deinit and a later
+  // init left Wi-Fi CSI data frozen until reboot (ESP32-S3, IDF 4.4). "Off" means no advertising,
+  // no connections and no service commands.
+  NimBLEServer* b=NimBLEDevice::getInitialized()?NimBLEDevice::getServer():nullptr;
+  if(bluetoothOn) {
+    if(b){b->advertiseOnDisconnect(false);NimBLEDevice::getAdvertising()->stop();for(uint16_t id:b->getPeerDevices())b->disconnect(id);}
+    bluetoothOn=false;bleResponse="";bleOffset=0;if(commands){vQueueDelete(commands);commands=nullptr;}meshRadio.event="BLE off";
+  }
   else {
     commands=xQueueCreate(4,sizeof(BleCommand));
     if(!commands){meshRadio.event="BLE: insufficient RAM";return;}
-    String name="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);NimBLEDevice::init(name.c_str());
+    String name="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);NimBLEDevice::init(name.c_str());NimBLEDevice::setDeviceName(name.c_str()); // the radar may have started the stack unnamed
     NimBLEDevice::setSecurityAuth(true,true,true);NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);NimBLEDevice::setSecurityPasskey(pinCode);
-    NimBLEServer* b=NimBLEDevice::createServer();NimBLEService* s=b->createService("7a9e0001-98bd-4d56-89a8-c4eab4179010");
-    bleTx=s->createCharacteristic("7a9e0003-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::READ|NIMBLE_PROPERTY::READ_AUTHEN|NIMBLE_PROPERTY::NOTIFY);
-    auto rx=s->createCharacteristic("7a9e0002-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::WRITE|NIMBLE_PROPERTY::WRITE_AUTHEN);
-    rx->setCallbacks(&bleCallbacks);s->start();NimBLEDevice::getAdvertising()->addServiceUUID(s->getUUID());NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
+    if(!b){
+      b=NimBLEDevice::createServer();NimBLEService* s=b->createService("7a9e0001-98bd-4d56-89a8-c4eab4179010");
+      bleTx=s->createCharacteristic("7a9e0003-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::READ|NIMBLE_PROPERTY::READ_AUTHEN|NIMBLE_PROPERTY::NOTIFY);
+      auto rx=s->createCharacteristic("7a9e0002-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::WRITE|NIMBLE_PROPERTY::WRITE_AUTHEN);
+      rx->setCallbacks(&bleCallbacks);s->start();NimBLEDevice::getAdvertising()->addServiceUUID(s->getUUID());
+    }
+    b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
   meshRadio.dirty=true;
 }

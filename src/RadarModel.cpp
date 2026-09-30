@@ -45,6 +45,20 @@ RadarTarget::Device Radar::classify(uint16_t appearance,const uint8_t* maker,siz
  if(company==0x0075||company==0x00e0||company==0x027d||company==0x038f)return RadarTarget::Personal;
  return RadarTarget::Unknown;
 }
+// CSI motion: activity is the mean jitter (1 - correlation of consecutive channel responses) per
+// 0.5 s. Ten seconds of an empty, still area give the baseline; motion is 2.2 times it (at least
+// +0.004), and it stays reported for 2 s after the last window above the threshold. Measured on
+// M9 <- Heltec at -40 dBm: still 0.005-0.011 (a person standing elsewhere raises it), walking
+// between the boards 0.013-0.039.
+float Radar::motionThreshold() const{return baseline>0?max(baseline*2.2f,baseline+.004f):.015f;}
+bool Radar::beaconHeard() const{return csi==CsiSensor&&csiLast&&millis()-csiLast<2000;}
+float Radar::motion(unsigned i) const{return motionLog[(motionSamples-motionCount()+i)%MotionHistory];}
+void Radar::calibrate(){calibrateUntil=millis()+10000;if(!calibrateUntil)calibrateUntil=1;calibrationSum=0;calibrationCount=0;moving=false;dirty=true;}
+void Radar::addActivity(float value,uint32_t at){
+ motionLog[motionSamples%MotionHistory]=value;motionSamples++;activity=value;dirty=true;
+ if(calibrateUntil){calibrationSum+=value;calibrationCount++;if(int32_t(at-calibrateUntil)>=0){baseline=calibrationSum/calibrationCount;calibrateUntil=0;}moving=false;return;}
+ if(value>motionThreshold()){moving=true;movingAt=at;}else if(moving&&at-movingAt>=2000)moving=false;
+}
 // USB diagnostics: counts, strengths, channels and mesh node IDs; nearby networks and
 // Bluetooth addresses stay on the screen and are never exported.
 String Radar::json() const{
@@ -58,5 +72,7 @@ String Radar::json() const{
  JsonArray a=d.createNestedArray("strongest");for(unsigned i=0;i<count&&i<10;i++)describe(a.createNestedObject(),targets[i]);
  d["tracking"]=tracking;
  if(tracking){JsonObject f=d.createNestedObject("focus");describe(f,focus);f["samples"]=samples;f["rate"]=rate;f["smoothed"]=serialized(String(fast,1));f["peak"]=serialized(String(peak,1));f["trend"]=trend();f["fresh"]=fresh();}
+ const char* roles[]={"off","beacon","sensor"};JsonObject c=d.createNestedObject("csi");c["role"]=roles[csi];c["running"]=csiRunning;c["rate"]=csiRate;c["channel"]=csiChannel;c["now_frames"]=csiNowFrames;c["action_frames"]=csiActionFrames;c["mgmt_frames"]=csiMgmtFrames;c["sent_ok"]=csiSentOk;c["sent_fail"]=csiSentFail;c["csi_frames"]=csiAnyFrames;
+ if(csi==CsiSensor){c["heard"]=beaconHeard();c["rssi"]=csiRssi;c["activity"]=serialized(String(activity,6));c["stale"]=csiStale;c["restarts"]=csiRestarts;c["baseline"]=serialized(String(baseline,4));c["threshold"]=serialized(String(motionThreshold(),4));c["moving"]=moving;c["calibrating"]=calibrateUntil!=0;c["windows"]=motionSamples;}
  String s;serializeJson(d,s);return s;
 }

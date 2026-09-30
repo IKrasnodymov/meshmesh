@@ -13,10 +13,13 @@ void Radar::open(){if(active)return;active=true;wifi=WifiReady;sweeps=3;count=0;
  ble=BleReady;
  for(unsigned i=0;i<meshRadio.peerCount;i++){const Peer& p=meshRadio.peers[i];if(!p.heard||p.hops)continue;RadarTarget* t=upsert(RadarTarget::Lora,p.id);strcpy(t->name,p.name);t->rssi=p.rssi;t->seen=p.seen;}
  sort();}
-void Radar::close(){untrack();active=false;count=0;wifi=WifiOff;ble=BleOff;}
+void Radar::close(){setCsi(CsiOff);untrack();active=false;count=0;wifi=WifiOff;ble=BleOff;}
 void Radar::release(){}
 void Radar::releaseBle(){}
-void Radar::tick(){}
+void Radar::tick(){if(csi==CsiSensor)csiLast=millis();}
+// CSI: a still room, then someone walking between the boards.
+void Radar::setCsi(CsiRole role){if(role==csi)return;csi=role;csiRunning=role!=CsiOff;csiRate=role==CsiOff?0:role==CsiBeacon?50:48;motionSamples=0;moving=false;
+ if(role==CsiSensor){csiRssi=-41;csiLast=millis();baseline=.004f;for(int i=0;i<100;i++){float v=i<70?.0035f+.0015f*((i*37)%7)/6:.018f+.03f*((i*53)%9)/8;addActivity(v,millis()-(100-i)*500);}}}
 bool Radar::track(unsigned index){if(index>=count)return false;focus=targets[index];reset();tracking=true;
  // A walk towards the access point: noisy approach, then a short step back.
  for(int i=0;i<90;i++){int r=-78+i/3+int((i*37)%7)-3-(i>80?(i-80)*2:0);addSample(r,millis()-(90-i)*100);}

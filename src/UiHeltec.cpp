@@ -59,13 +59,15 @@ void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.ope
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActClose};
+enum Act {ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
 unsigned actions(Act* out){
  unsigned n=0;switch(page){
  case Home:out[n++]=ActAdvert;break;
  case Messages:if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
  case Nodes:if(Peer* p=shownNode()){out[n++]=ActNextNode;if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
- case Signals:if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}else if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}break;
+ case Signals:if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
+  else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
+  else{if(radar.count&&radar.csi==Radar::CsiOff){out[n++]=ActHoming;out[n++]=ActNextSignal;}out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff)out[n++]=ActCsiSensor;}break;
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;break;
@@ -83,6 +85,9 @@ String actName(Act a){
  case ActLanguage:return t("Language: English","Язык: русский");case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
  case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
+ case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t("CSI beacon: off","Маяк CSI: выключить"):t("CSI beacon: on","Маяк CSI: включить");
+ case ActCsiSensor:return radar.csi==Radar::CsiSensor?t("CSI motion: off","Движение CSI: выкл."):t("CSI motion sensor","Движение CSI (приёмник)");
+ case ActCalibrate:return t("Calibrate (10 s still)","Калибровка (10 с тихо)");
  case ActStopHoming:return t("Stop homing","Остановить пеленг");case ActResetPeak:return t("Reset peak","Сбросить пик");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  }return "";
@@ -104,6 +109,9 @@ void run(Act a){
  case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t("Homing started","Пеленг начат"));}break;}
  case ActNextSignal:{int i=shownSignal();signalManual=true;if(i>=0){i=(i+1)%radar.count;signalId=radar.targets[i].id;signalKind=radar.targets[i].kind;}menuIndex=0;break;}
  case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t("Peak reset","Пик сброшен"));break;
+ case ActCsiBeacon:radar.setCsi(radar.csi==Radar::CsiBeacon?Radar::CsiOff:Radar::CsiBeacon);break;
+ case ActCsiSensor:radar.setCsi(radar.csi==Radar::CsiSensor?Radar::CsiOff:Radar::CsiSensor);break;
+ case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t("Calibrating 10 s","Калибровка 10 с"));}else notice(t("No beacon heard","Маяк не слышен"));break;
  case ActClose:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
@@ -158,7 +166,14 @@ void draw(){
    else if(p->position)say(0,51,t("has GPS position","есть GPS-позиция"),small);}
   else{say(0,30,t("No nodes heard","Узлы пока не найдены"));say(0,44,t("hold: announce","держите: объявить"),small);}break;}
  case Signals:{
-  if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t("Homing","Пеленг");
+  if(radar.csi==Radar::CsiSensor){title=t("Motion CSI","Движение CSI");bool heard=radar.beaconHeard();
+   String state=radar.wifi!=Radar::WifiReady?t("no Wi-Fi: AP on?","нет Wi-Fi: точка?"):!heard?t("no beacon","нет маяка"):radar.csiStale?t("CSI frozen","CSI стоит"):radar.calibrateUntil?t("calibrating","калибровка"):radar.moving?t("MOTION","ДВИЖЕНИЕ"):t("still","тихо");
+   say(0,31,state,u8g2_font_10x20_t_cyrillic);
+   float threshold=radar.motionThreshold(),scale=max(threshold*2.5f,radar.activity*1.1f);
+   c.drawRect(0,36,128,6,1);if(heard)c.fillRect(1,37,max(1,int(126*min(1.f,radar.activity/scale))),4,1);c.drawFastVLine(1+int(125*threshold/scale),34,10,1);
+   say(0,52,String(radar.activity*1000,1)+t(" / thr "," / порог ")+String(threshold*1000,1)+(radar.baseline>0?"":"*"),small);
+   say(30,62,String(radar.csiRate)+t("/s","/с"),small);}
+  else if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t("Homing","Пеленг");
    say(0,21,clipped(String(kindLetter(f))+signalName(f),21),bold);
    int shown=lroundf(radar.fast);say(0,41,radar.samples?String(shown):String("--"),u8g2_font_10x20_t_cyrillic);say(radar.samples&&shown<=-100?42:34,41,"dBm",small);
    bool wifiLost=(f.kind==RadarTarget::Wifi&&radar.wifi!=Radar::WifiReady)||(f.kind==RadarTarget::Ble&&radar.ble!=Radar::BleReady);
@@ -168,10 +183,10 @@ void draw(){
    c.drawRect(0,45,128,6,1);if(radar.samples)c.fillRect(1,46,max(1,int(126*signalLevel(shown))),4,1);if(radar.samples){int px=1+int(125*signalLevel(lroundf(radar.peak)));c.drawFastVLine(px,43,10,1);}
    String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(" pkts"," пак."):String(radar.rate)+t("/s","/с");say(30,62,st,small);}
   else{title=t("Radar","Радар")+" W"+String(radar.counted(RadarTarget::Wifi))+" B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));int sel=shownSignal();
-   if(sel<0){say(0,30,t("No signals yet","Сигналов пока нет"));String st=wifiState();say(0,44,st.length()?st:t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
+   if(sel<0){say(0,30,t("No signals yet","Сигналов пока нет"));String st=radar.csi==Radar::CsiBeacon?t("CSI beacon ","маяк CSI ")+String(radar.csiRate)+"/с":wifiState();say(0,44,st.length()?st:t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
    else{int first=max(0,min(sel-1,int(radar.count)-4));for(int i=first;i<int(radar.count)&&i<first+4;i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
      if(i==sel)c.fillRect(0,y-8,128,10,1);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i!=sel);sayRight(127,y,String(int(r.rssi)),small,i!=sel);}
-    String st=wifiState();if(!st.length())st=bleState();if(st.length())say(30,62,clipped(st,14),small);}}
+    String st=radar.csi==Radar::CsiBeacon?t("CSI beacon ","маяк CSI ")+String(radar.csiRate)+"/с":wifiState();if(!st.length())st=bleState();if(st.length())say(30,62,clipped(st,14),small);}}
   break;}
  case Gps:{title="GPS";bool fix=hardware.gpsFix();
   say(0,23,!config.gps?t("GPS off","GPS выключен"):fix?t("Position fix","Позиция есть"):hardware.clockConflict?t("Old GPS date","Старая дата GPS"):hardware.gps.passedChecksum()?t("Searching sky","Поиск спутников"):t("No data from GPS","Нет данных GPS"),bold);
@@ -204,7 +219,7 @@ void uiKey(int key){
  if(key==0xa3){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 void uiBegin(){pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;if(page==Signals)d["radar_selected"]=shownSignal();String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
@@ -215,6 +230,7 @@ void uiTick(){
   if(fresh&&radar.focus.kind==RadarTarget::Lora){if(radar.samples!=pingedSamples){pingedSamples=radar.samples;pingAt=now;}}
   else if(fresh&&now-pingAt>=uint32_t(1200-1140*level*level))pingAt=now;
   digitalWrite(pins::led,pingAt&&now-pingAt<40);}
+ else if(!ledAt&&page==Signals&&radar.csi==Radar::CsiSensor){lastInput=now;pingAt=1;digitalWrite(pins::led,radar.moving);} // LED on while motion is sensed
  else if(!ledAt&&pingAt){pingAt=0;digitalWrite(pins::led,LOW);}
  if(menuOpen&&now-menuAt>10000){menuOpen=false;dirty=true;}
  if(config.dimAfter&&!screenOff&&now-lastInput>=config.dimAfter*1000UL){screenOff=true;hardware.brightness(0);}

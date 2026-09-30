@@ -40,18 +40,22 @@ class Scanner:public NimBLEAdvertisedDeviceCallbacks{
 }
 void Radar::open(){if(active)return;active=true;count=0;sweeps=0;tracking=false;reset();wifi=WifiOff;ble=BleOff;lastSweep=0;loraAt=0;dirty=true;tick();}
 void Radar::close(){
- if(!active)return;untrack();bool ours=wifi==WifiReady;release();releaseBle();
+ if(!active)return;untrack();setCsi(CsiOff);bool ours=wifi==WifiReady;release();
+ // The Bluetooth stack is never deinitialised: a deinit right after a scan stop ran a stale host
+ // event (M9 panic, PC 0 in nimble_port_run), and any deinit + init froze Wi-Fi CSI until reboot.
+ releaseBle();
  if(ours&&!portalActive()&&!wifiProbeActive())WiFi.mode(WIFI_OFF);
  wifi=WifiOff;ble=BleOff;active=false;count=0;
 }
 void Radar::release(){
- sniff(false);if(scanning){esp_wifi_scan_stop();scanning=false;}WiFi.scanDelete();
+ csiStop();sniff(false);if(scanning){esp_wifi_scan_stop();scanning=false;}WiFi.scanDelete();
  if(wifi==WifiReady)wifi=WifiOff;
 }
-// Stops our scan and restores the scan defaults the BLE probe relies on; frees the stack if the radar started it.
+// Stops our scan and restores the scan defaults the BLE probe relies on.
 void Radar::releaseBle(){
+ // The stack stays up (see bleToggle in Portal.cpp): a deinit and a later init froze Wi-Fi CSI data.
  if(NimBLEDevice::getInitialized()){NimBLEScan* s=NimBLEDevice::getScan();if(bleScanning)s->stop();s->setAdvertisedDeviceCallbacks(nullptr);s->setMaxResults(0xff);s->setDuplicateFilter(true);s->clearResults();}
- bleScanning=false;if(bleOwned){NimBLEDevice::deinit(true);bleOwned=false;}
+ bleScanning=false;
  taskENTER_CRITICAL(&guard);heardHead=heardTail=0;taskEXIT_CRITICAL(&guard);
  if(ble==BleReady)ble=BleOff;
 }
@@ -105,9 +109,9 @@ void Radar::drainBle(uint32_t now){
 void Radar::bleTick(uint32_t now){
  if(bleProbeActive()){if(ble==BleReady)releaseBle();if(ble!=BleBusy)dirty=true;ble=BleBusy;return;}
  if(ble==BleFailed)return;
- bool wanted=!tracking||focus.kind!=RadarTarget::Wifi; // homing on Wi-Fi gets all the 2.4 GHz airtime
+ bool wanted=csi==CsiOff&&(!tracking||focus.kind!=RadarTarget::Wifi); // CSI and homing on Wi-Fi get all the 2.4 GHz airtime
  if(!wanted){if(bleScanning&&NimBLEDevice::getInitialized())NimBLEDevice::getScan()->stop();bleScanning=false;return;}
- if(!NimBLEDevice::getInitialized()){NimBLEDevice::init("");bleOwned=true;bleScanning=false;}
+ if(!NimBLEDevice::getInitialized()){NimBLEDevice::init("");bleScanning=false;} // stays up for the rest of the boot
  ble=BleReady;NimBLEScan* s=NimBLEDevice::getScan();
  if(!bleScanning||!s->isScanning()){
   s->setAdvertisedDeviceCallbacks(&scanner,true);s->setMaxResults(0);s->setDuplicateFilter(false);s->setActiveScan(true);s->setInterval(100);s->setWindow(90);
@@ -129,7 +133,9 @@ void Radar::tick(){
  if(want!=WifiReady){if(wifi==WifiReady)release();if(wifi!=want)dirty=true;wifi=want;}
  else if(wifi!=WifiReady&&wifi!=WifiFailed)wifiStart();
  bool homingWifi=tracking&&focus.kind==RadarTarget::Wifi,sweep=!tracking||focus.kind==RadarTarget::Lora;
- if(wifi==WifiReady){
+ // CSI keeps the radio on one channel: finish no sweep, just stop it.
+ if(csi!=CsiOff){if(scanning){esp_wifi_scan_stop();WiFi.scanDelete();scanning=false;}csiTick(now);}
+ else if(wifi==WifiReady){
   if(scanning){
    if(WiFiGenericClass::getStatusBits()&WIFI_SCAN_DONE_BIT){int n=WiFi.scanComplete();scanResult=n;scanMs=now-scanAt;if(n>0)mergeScan(n);WiFi.scanDelete();scanning=false;lastSweep=now;sweeps++;dirty=true;}
    else if(now-scanAt>4000){esp_wifi_scan_stop();WiFi.scanDelete();scanning=false;scanResult=WIFI_SCAN_FAILED;lastSweep=now;}

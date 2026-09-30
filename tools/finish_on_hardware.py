@@ -156,6 +156,7 @@ def main():
         run('concurrency', 'tools/concurrency_check.py')
         run('heltec-ui', 'tools/heltec_ui_check.py')
         run('radar', 'tools/radar_check.py')
+        run('csi', 'tools/csi_check.py')
         interfaces(HELTEC, wifi=False)
         run('m9-wifi', 'tools/wifi_probe.py')
         run('m9-ble', 'tools/ble_probe.py')

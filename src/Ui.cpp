@@ -13,11 +13,12 @@
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
 int8_t u8g2_GetGlyphWidth(u8g2_font_t* u8g2,uint16_t encoding);
 namespace {
-enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing};
-const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing"};
+enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing,Motion};
+const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing","motion"};
 enum Key {Enter=13,Erase=8,KeyMsg=0x81,KeyHome=0x82,KeyAt=0x83,KeyAdv=0x84,KeyMap=0x85,KeyBack=0x86,KeyGps=0x87,KeyMic=0x88,KeySet=0x90,KeyHold=0xa3,KeyLeft=0xb4,KeyUp=0xb5,KeyDown=0xb6,KeyRight=0xb7};
 Page page=Home,chatReturn=Threads;
-bool scopeManual=false; // radar list: the user moved the selection off the strongest signal
+bool scopeManual=false,csiBeaconRole=false; // radar: selection moved by the user; CSI page role
+ // radar list: the user moved the selection off the strongest signal
 uint32_t lastDraw=0,lastInput=0,toastAt=0;String toast,eventSeen;uint16_t toastColor=0;
 int selected=0,chatOffset=0,action=0;
 uint64_t recipient=meshmesh::Broadcast,focusNode=0;
@@ -164,7 +165,7 @@ void sortNodes(){
  selected=constrain(selected,0,int(nodeTotal)-1);focusNode=meshRadio.peers[nodeOrder[selected]].id;
 }
 Peer* focusedPeer(){return peerOf(focusNode);}
-void change(Page next){if(page==Chat&&next!=Chat)rememberComposer();if((next==Scope||next==Homing)&&page!=Scope&&page!=Homing)scopeManual=false;if(next==Scope||next==Homing)radar.open();else radar.close();if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
+void change(Page next){if(page==Chat&&next!=Chat)rememberComposer();bool radarPage=next==Scope||next==Homing||next==Motion;if(radarPage&&page!=Scope&&page!=Homing&&page!=Motion)scopeManual=false;if(radarPage)radar.open();else radar.close();radar.setCsi(next!=Motion?Radar::CsiOff:csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
 
 // Time, distances and short labels.
 bool localTime(time_t at,tm& out){if(at<1700000000)return false;at+=config.utcOffset*60;out=*gmtime(&at);return true;}
@@ -187,7 +188,7 @@ unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3
 String title(){
  if(locked)return config.name;
  switch(page){case Home:return "MeshMesh";case Threads:return t("Chats","Чаты");case Chat:return nameOf(recipient);case Map:return t("Map","Карта");case Nodes:return t("Nodes","Узлы");case Node:{Peer* p=focusedPeer();return p?String(p->name):t("Node","Узел");}
- case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Signal radar","Радар сигналов");case Homing:return t("Homing","Пеленг");}return "";
+ case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Signal radar","Радар сигналов");case Homing:return t("Homing","Пеленг");case Motion:return t("Motion (Wi-Fi CSI)","Движение (Wi-Fi CSI)");}return "";
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;
@@ -466,6 +467,39 @@ void drawHoming(){
  if(radar.samples)text(sx,216," · "+(age<60000?String(age/1000.f,1)+t(" s ago"," с назад"):ago(age)),lora?dim:age<500?ok:age<1500?warn:bad,small);
  footer({{"OK",radarSound?t("Mute","Без звука"):t("Sound","Звук")},{"<>",t("Reset peak","Сброс пика")},{"BACK",t("List","Список")}});
 }
+// CSI motion: one board is the beacon, this one the sensor (or the other way round).
+uint32_t motionBeepAt=0;bool wasMoving=false;
+void drawMotion(){
+ auto& d=g();bool beacon=radar.csi==Radar::CsiBeacon,heard=radar.beaconHeard();uint32_t now=millis();
+ panel(8,26,304,34,card,8);d.fillRoundRect(14,31,24,24,6,bg);icon(beacon?IcRadio:IcPulse,26,43,7,beacon?accent:heard?ok:warn,bg);
+ String blocked=radar.wifi==Radar::WifiBusy?t("Wi-Fi busy: probe","Wi-Fi занят проверкой"):radar.wifi==Radar::WifiFailed?t("Wi-Fi error","Ошибка Wi-Fi"):(!beacon&&radar.wifi==Radar::WifiPortal)?t("Turn the access point off","Выключите точку доступа"):"";
+ text(46,40,beacon?t("Beacon for another board","Маяк для другой платы"):t("Sensor","Приёмник"),ink,bold);
+ text(46,54,fit(blocked.length()?blocked:beacon?String(radar.csiRate)+t(" frames/s on channel 1"," кадров/с на канале 1"):heard?t("beacon ","маяк ")+String(radar.csiRate)+t(" frames/s · "," кадров/с · ")+String(int(radar.csiRssi))+" dBm":t("waiting: set the other board to CSI beacon","ждём маяк: включите «Маяк CSI» на другой плате"),258,small),blocked.length()?warn:dim,small);
+ String state;uint16_t color;
+ if(blocked.length()){state=t("NO WI-FI","НЕТ WI-FI");color=warn;}
+ else if(beacon){state=t("BEACON ON","МАЯК РАБОТАЕТ");color=accent;}
+ else if(!heard){state=t("NO BEACON","НЕТ МАЯКА");color=warn;}
+ else if(radar.csiStale){state=t("CSI FROZEN","CSI НЕ МЕНЯЕТСЯ");color=warn;}
+ else if(radar.calibrateUntil){state=t("CALIBRATING ","КАЛИБРОВКА ")+String((radar.calibrateUntil-now+999)/1000)+t(" s"," с");color=info;}
+ else if(radar.moving){state=t("MOTION","ДВИЖЕНИЕ");color=bad;}
+ else{state=t("STILL","ТИХО");color=ok;}
+ textCenter(160,92,state,color,big);
+ if(!beacon){
+  float threshold=radar.motionThreshold(),scale=max(threshold*2.5f,radar.activity*1.1f);
+  d.fillRoundRect(14,104,292,8,3,line);if(heard)d.fillRoundRect(14,104,max(3,int(292*min(1.f,radar.activity/scale))),8,3,radar.moving?bad:ok);
+  int tx=14+int(291*threshold/scale);d.fillRect(tx-1,100,3,16,ink);
+  text(14,128,t("activity ","активность ")+String(radar.activity*1000,1),dim,small);
+  textRight(306,128,t("threshold ","порог ")+String(threshold*1000,1)+(radar.baseline>0?String():t(" (default)"," (по умолч.)")),radar.baseline>0?dim:warn,small);
+  // History: one point per 0.5 s, threshold dotted.
+  panel(8,136,304,70,card,6);unsigned n=radar.motionCount();float top=threshold*2.5f;for(unsigned i=0;i<n;i++)top=max(top,radar.motion(i));
+  int ty=202-int(62*threshold/top);for(int x=12;x<308;x+=6)d.drawFastHLine(x,ty,3,faint);
+  int px=0,py=0;for(unsigned i=0;i<n;i++){int x=12+int(i*296/(Radar::MotionHistory-1)),y=202-int(62*radar.motion(i)/top);if(i)d.drawLine(px,py,x,y,radar.motion(i)>threshold?bad:accent);px=x;py=y;}
+  if(!n)textCenter(160,175,t("Walk between the boards to see the trace","Пройдите между платами — появится след"),faint,small);
+  text(12,216,fit(t("Calibrate with the area empty and still (10 s)","Калибровка: 10 с, в зоне никого и ничего не движется"),296,small),faint,small);
+ }else text(12,130,fit(t("Place the boards 2-5 m apart; motion between them is sensed","Расставьте платы в 2-5 м; движение между ними будет видно"),296,small),dim,small);
+ if(beacon)footer({{"<>",t("Signals","Сигналы")},{"B",t("Sensor","Приёмник")},{"BACK",t("Menu","Меню")}});
+ else footer({{"OK",t("Calibrate","Калибровка")},{"<>",t("Signals","Сигналы")},{"B",t("Beacon","Маяк")},{"BACK",t("Menu","Меню")}});
+}
 const int settingsCount=7;
 void drawSettings(){
  Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin};uint16_t hues[]={accent,info,warn,info,ok,dim,ok};
@@ -563,7 +597,7 @@ void draw(){
  case Home:drawHome();break;case Threads:drawThreads();break;case Chat:drawChat();break;case Map:drawMap();break;case Library:drawLibrary();break;
  case Nodes:drawNodes();break;case Node:drawNode();break;case Sensors:drawSensors();break;case Settings:drawSettings();break;
  case Radio:case Display:drawEditor();break;case Network:drawNetwork();break;case Diagnostics:drawDiagnostics();break;case Help:drawHelp();break;
- case Scope:drawScope();break;case Homing:drawHoming();break;
+ case Scope:drawScope();break;case Homing:drawHoming();break;case Motion:drawMotion();break;
  }
  statusBar();if(editing&&!locked)drawEditing();if(layoutHelp&&!locked)drawLayoutHelp();drawToast();hardware.flush();
 }
@@ -615,7 +649,7 @@ void runNodeAction(){
 }
 }
 void uiBegin(){Preferences p;keyboardRussian=config.russian;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",config.russian);p.end();}lastInput=millis();draw();}
-String uiStatus(){StaticJsonDocument<768>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing){d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<768>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
  if(key==KeyMic){locked=true;return;}
  if(layoutHelp){layoutHelp=false;return;}
@@ -633,6 +667,9 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  if(page==Node&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){Peer* p=focusedPeer();if(!p)return;NodeAction acts[4];int n=nodeActions(*p,acts);action=(action+(key==KeyLeft||key==KeyUp?-1:1)+n)%n;return;}
  if(page==Sensors&&(key==KeyLeft||key==KeyRight)){selected^=1;return;}
  if(page==Scope&&(key==KeyUp||key==KeyDown)){int i=scopeSelected();scopeManual=true;if(radar.count)scopeSelect((i+(key==KeyUp?-1:1)+radar.count)%radar.count);return;}
+ if(page==Scope&&(key==KeyLeft||key==KeyRight)){change(Motion);return;}
+ if(page==Motion&&(key==KeyLeft||key==KeyRight)){change(Scope);return;}
+ if(page==Motion&&(key=='b'||key=='B')){csiBeaconRole=!csiBeaconRole;radar.setCsi(csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);notice(csiBeaconRole?t("This board is now the beacon","Эта плата — маяк"):t("This board is now the sensor","Эта плата — приёмник"));return;}
  if(page==Homing&&(key==KeyLeft||key==KeyRight)){radar.resetPeak();notice(t("Peak reset","Пик сброшен"),dim);return;}
  if(key==KeyUp||key==KeyDown){if(page==Threads)threads();if(page==Nodes)sortNodes();int total=page==Threads?conversationCount:page==Nodes?nodeTotal:page==Settings?settingsCount:page==Radio||page==Display?settingRows():page==Network?3:page==Sensors?2:page==Library?int(library.size()):1;selected=total?(selected+(key==KeyUp?-1:1)+total)%total:0;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;return;}
  if((page==Radio||page==Display)&&(key==KeyLeft||key==KeyRight)){alter(key==KeyLeft?-1:1);return;}
@@ -648,12 +685,16 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==Sensors){if(selected==0){bool sent=meshRadio.sendPosition();notice(sent?t("Position shared","Позиция передана"):t("Waiting for GPS fix","Ожидание GPS-позиции"),sent?ok:warn);}else if(navigation.calibrating){bool saved=navigation.finish();notice(saved?t("Calibration saved","Калибровка сохранена"):t("Rotate wider, at least 20 seconds","Вращайте шире, не менее 20 секунд"),saved?ok:warn);}else{navigation.start();notice(t("Rotate in all directions","Вращайте устройство во все стороны"));}}
  else if(page==Help)layoutHelp=true;
  else if(page==Scope){int i=scopeSelected();if(i>=0&&radar.track(i)){scopeManual=true;pingedSamples=radar.samples;change(Homing);}else notice(t("No signal selected","Сигнал не выбран"),warn);}
+ else if(page==Motion){if(radar.csi==Radar::CsiSensor&&radar.beaconHeard()){radar.calibrate();notice(t("Calibrating: keep the area still for 10 s","Калибровка: 10 с без движения в зоне"),info);}else notice(t("Needs a heard beacon","Нужен услышанный маяк"),warn);}
  else if(page==Homing){radarSound=!radarSound;notice(radarSound?(config.sound?t("Ping on","Звук пеленга включён"):t("Device sound is off in settings","Звук устройства выключен в настройках")):t("Ping off","Звук пеленга выключен"),radarSound&&!config.sound?warn:dim);}
  else if(page==Diagnostics){hardware.beep();bool passed=meshRadio.selfTest();notice(passed?t("Encryption test passed","Проверка шифрования пройдена"):t("Encryption test failed","Ошибка шифрования"),passed?ok:bad);}}
 String eventLabel(const String& value){if(!config.russian)return value;if(value.startsWith("New message from "))return "Сообщение от "+value.substring(17);if(value.startsWith("Delivered to "))return "Доставлено: "+value.substring(13);if(value=="Queued: waiting for delivery")return "Ожидание подтверждения";if(value=="Queued: broadcast")return "Сообщение в общем чате отправляется";if(value=="No delivery ACK")return "Получатель не подтвердил доставку";if(value.startsWith("Radio TX error")||value.startsWith("TX failed"))return "Ошибка передачи по радио";return value;}
 void uiTick(){uint32_t now=millis();
  // Homing is used while walking without pressing keys: the screen stays on and unlocked.
- if(page==Homing&&!locked)lastInput=now;
+ if((page==Homing||page==Motion)&&!locked)lastInput=now;
+ // Motion start beeps once (at most every 5 s).
+ if(page==Motion&&radar.moving&&!wasMoving&&now-motionBeepAt>5000){motionBeepAt=now;hardware.ping(1800,120);}
+ wasMoving=page==Motion&&radar.moving;
  if(config.autoLock&&now-lastInput>=config.autoLock*1000UL&&!locked){locked=true;dirty=true;}if(config.dimAfter&&now-lastInput>=config.dimAfter*1000UL){hardware.brightness(0);wakeOnly=true;}
  // Ping: faster and higher as the signal strengthens (-85..-30 dBm, steeper when close); LoRa pings
  // once per new packet. A lost target gets a quiet low tick every 2 s instead of a stale ping.
@@ -664,5 +705,5 @@ void uiTick(){uint32_t now=millis();
  if(meshRadio.event!=eventSeen){eventSeen=meshRadio.event;bool incoming=eventSeen.startsWith("New message from ");if(page==Chat){markRead();notice(eventLabel(eventSeen),eventSeen.startsWith("Delivered")?ok:eventSeen.startsWith("No delivery")||eventSeen.startsWith("Radio TX")?bad:accent);}else if(incoming&&!locked&&page!=Threads)notice(eventLabel(eventSeen),accent);}
  if(toast.length()&&now-toastAt>=3500){toast="";dirty=true;}
  // The HUD clock, signal and battery change on every page.
- bool animate=!locked&&(page==Scope||page==Homing); // the sweep beam moves every frame
+ bool animate=!locked&&(page==Scope||page==Homing||page==Motion); // the sweep beam moves every frame
  bool update=dirty||meshRadio.dirty||maps.dirty||animate||now-lastDraw>=1000;if(update&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;}}
