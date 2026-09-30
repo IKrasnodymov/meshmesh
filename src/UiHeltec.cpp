@@ -1,14 +1,15 @@
 #include "App.h"
 #include "Hardware.h"
 #include "MeshRadio.h"
+#include "Radar.h"
 #include <math.h>
 #include <time.h>
 // One PRG button: click = next screen or next menu item; hold = the screen's action, or its menu.
 namespace {
-enum Page {Home,Messages,Nodes,Gps,Wifi,Ble,Settings,Modules,PageCount};
-const char* pageNames[]={"home","messages","nodes","gps","wifi","ble","settings","modules"};
+enum Page {Home,Messages,Nodes,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
+const char* pageNames[]={"home","messages","nodes","radar","gps","wifi","ble","settings","modules"};
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
-uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0;String action;
+uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
@@ -42,22 +43,36 @@ unsigned sortedNodes(unsigned* order){unsigned n=meshRadio.peerCount;uint32_t no
  for(unsigned i=1;i<n;i++)for(unsigned j=i;j>0&&before(meshRadio.peers[order[j]],meshRadio.peers[order[j-1]]);j--)std::swap(order[j],order[j-1]);return n;}
 Peer* shownNode(){unsigned order[24];unsigned n=sortedNodes(order);if(!n)return nullptr;nodeIndex%=n;return &meshRadio.peers[order[nodeIndex]];}
 const ChatMessage* shownMessage(){if(!meshRadio.historyCount)return nullptr;messageOffset=constrain(messageOffset,0,int(meshRadio.historyCount)-1);return &meshRadio.history[meshRadio.historyCount-1-messageOffset];}
+// Signal radar (see Radar.h): the selection follows the target, not its row.
+uint64_t signalId=0;RadarTarget::Kind signalKind=RadarTarget::Wifi;bool signalManual=false; // until "Next signal", the strongest
+int shownSignal(){if(!signalManual&&radar.count){signalId=radar.targets[0].id;signalKind=radar.targets[0].kind;return 0;}for(unsigned i=0;i<radar.count;i++)if(radar.targets[i].id==signalId&&radar.targets[i].kind==signalKind)return i;if(!radar.count)return -1;signalId=radar.targets[0].id;signalKind=radar.targets[0].kind;return 0;}
+String signalName(const RadarTarget& r){
+ if(r.name[0])return r.name;
+ if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t("phone","телефон");case RadarTarget::Watch:return t("watch","часы");case RadarTarget::Audio:return t("headphones","наушники");case RadarTarget::Personal:return t("phone/watch","телефон/часы");default:return t("BLE device","BLE-устройство");}
+ return r.kind==RadarTarget::Wifi?t("hidden network","скрытая сеть"):meshRadio.idText(r.id);}
+const char* kindLetter(const RadarTarget& r){return r.kind==RadarTarget::Lora?"L ":r.kind==RadarTarget::Ble?"B ":"W ";}
+float signalLevel(int rssi){return constrain((rssi+100)/65.f,0.f,1.f);} // -100 .. -35 dBm
+bool homingFresh(){return radar.fresh();}
+String wifiState(){switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
+String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
+void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else radar.close();if(page==Messages){messageOffset=0;unreadCount=0;}}
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActClose};
+enum Act {ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActClose};
 unsigned actions(Act* out){
  unsigned n=0;switch(page){
  case Home:out[n++]=ActAdvert;break;
  case Messages:if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
  case Nodes:if(Peer* p=shownNode()){out[n++]=ActNextNode;if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
+ case Signals:if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}else if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}break;
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;break;
  case Modules:out[n++]=ActSelfTest;break;
  }if(n>1)out[n++]=ActClose;return n;
 }
-bool keepsMenu(Act a){return a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
+bool keepsMenu(Act a){return a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
 String actName(Act a){
  const ChatMessage* m=shownMessage();bool publicChat=m&&m->destination==meshmesh::Broadcast;
  switch(a){
@@ -67,6 +82,8 @@ String actName(Act a){
  case ActWifi:return portalActive()?t("Turn Wi-Fi off","Выключить Wi-Fi"):t("Turn Wi-Fi on","Включить Wi-Fi");case ActBle:return bleActive()?t("Turn BLE off","Выключить BLE"):t("Turn BLE on","Включить BLE");
  case ActLanguage:return t("Language: English","Язык: русский");case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
+ case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
+ case ActStopHoming:return t("Stop homing","Остановить пеленг");case ActResetPeak:return t("Reset peak","Сбросить пик");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  }return "";
 }
@@ -84,6 +101,9 @@ void run(Act a){
  case ActLanguage:applyOne("russian",!config.russian);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
  case ActContrast:{const uint8_t steps[]={40,120,200,255};int i=0;while(i<3&&steps[i]<config.brightness)i++;applyOne("brightness",steps[(i+1)%4]);break;}
+ case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t("Homing started","Пеленг начат"));}break;}
+ case ActNextSignal:{int i=shownSignal();signalManual=true;if(i>=0){i=(i+1)%radar.count;signalId=radar.targets[i].id;signalKind=radar.targets[i].kind;}menuIndex=0;break;}
+ case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t("Peak reset","Пик сброшен"));break;
  case ActClose:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
@@ -137,6 +157,22 @@ void draw(){
    float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* ru[]={"С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"},*en[]={"N","NE","E","SE","S","SW","W","NW"};int k=int((bearing+22.5f)/45)%8;say(0,51,(metres<1000?String(int(metres))+t(" m "," м "):String(metres/1000,1)+t(" km "," км "))+(config.russian?ru[k]:en[k]),small);}
    else if(p->position)say(0,51,t("has GPS position","есть GPS-позиция"),small);}
   else{say(0,30,t("No nodes heard","Узлы пока не найдены"));say(0,44,t("hold: announce","держите: объявить"),small);}break;}
+ case Signals:{
+  if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t("Homing","Пеленг");
+   say(0,21,clipped(String(kindLetter(f))+signalName(f),21),bold);
+   int shown=lroundf(radar.fast);say(0,41,radar.samples?String(shown):String("--"),u8g2_font_10x20_t_cyrillic);say(radar.samples&&shown<=-100?42:34,41,"dBm",small);
+   bool wifiLost=(f.kind==RadarTarget::Wifi&&radar.wifi!=Radar::WifiReady)||(f.kind==RadarTarget::Ble&&radar.ble!=Radar::BleReady);
+   sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t("lost","потерян"):t("no signal","нет сигнала")):trend>0?t("stronger","теплее"):trend<0?t("weaker","холоднее"):t("steady","ровно"),bold);
+   if(fresh&&!wifiLost){int x=70,y=25;if(trend>0)c.fillTriangle(x,y+4,x+8,y+4,x+4,y-2,1);else if(trend<0)c.fillTriangle(x,y-2,x+8,y-2,x+4,y+4,1);}
+   sayRight(128,41,t("peak ","пик ")+(radar.samples?String(int(lroundf(radar.peak))):String("-")),small);
+   c.drawRect(0,45,128,6,1);if(radar.samples)c.fillRect(1,46,max(1,int(126*signalLevel(shown))),4,1);if(radar.samples){int px=1+int(125*signalLevel(lroundf(radar.peak)));c.drawFastVLine(px,43,10,1);}
+   String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(" pkts"," пак."):String(radar.rate)+t("/s","/с");say(30,62,st,small);}
+  else{title=t("Radar","Радар")+" W"+String(radar.counted(RadarTarget::Wifi))+" B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));int sel=shownSignal();
+   if(sel<0){say(0,30,t("No signals yet","Сигналов пока нет"));String st=wifiState();say(0,44,st.length()?st:t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
+   else{int first=max(0,min(sel-1,int(radar.count)-4));for(int i=first;i<int(radar.count)&&i<first+4;i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
+     if(i==sel)c.fillRect(0,y-8,128,10,1);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i!=sel);sayRight(127,y,String(int(r.rssi)),small,i!=sel);}
+    String st=wifiState();if(!st.length())st=bleState();if(st.length())say(30,62,clipped(st,14),small);}}
+  break;}
  case Gps:{title="GPS";bool fix=hardware.gpsFix();
   say(0,23,!config.gps?t("GPS off","GPS выключен"):fix?t("Position fix","Позиция есть"):hardware.clockConflict?t("Old GPS date","Старая дата GPS"):hardware.gps.passedChecksum()?t("Searching sky","Поиск спутников"):t("No data from GPS","Нет данных GPS"),bold);
   say(0,33,t("Satellites ","Спутники ")+String(hardware.gps.satellites.value())+"  NMEA "+String(hardware.gps.passedChecksum()),small);
@@ -164,18 +200,24 @@ void uiKey(int key){
  if(menuOpen){menuAt=millis();Act acts[8];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(key==13||key==0x82){menuIndex=(menuIndex+1)%n;return;}
   if(key==0xa3){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;}return;}
- if(key==13||key==0x82){page=(page+1)%PageCount;if(page==Messages){messageOffset=0;unreadCount=0;}return;}
+ if(key==13||key==0x82){showPage((page+1)%PageCount);return;}
  if(key==0xa3){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 void uiBegin(){pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;if(page==Signals)d["radar_selected"]=shownSignal();String s;serializeJson(d,s);return s;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
  if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
  if(ledAt){uint32_t e=now-ledAt;digitalWrite(pins::led,e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;digitalWrite(pins::led,LOW);}}
+ // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
+ if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;
+  if(fresh&&radar.focus.kind==RadarTarget::Lora){if(radar.samples!=pingedSamples){pingedSamples=radar.samples;pingAt=now;}}
+  else if(fresh&&now-pingAt>=uint32_t(1200-1140*level*level))pingAt=now;
+  digitalWrite(pins::led,pingAt&&now-pingAt<40);}
+ else if(!ledAt&&pingAt){pingAt=0;digitalWrite(pins::led,LOW);}
  if(menuOpen&&now-menuAt>10000){menuOpen=false;dirty=true;}
  if(config.dimAfter&&!screenOff&&now-lastInput>=config.dimAfter*1000UL){screenOff=true;hardware.brightness(0);}
  if(screenOff)return;
- if((dirty||meshRadio.dirty||now-drawAt>1000)&&now-drawAt>150){draw();drawAt=now;dirty=false;meshRadio.dirty=false;}
+ if((dirty||meshRadio.dirty||radar.dirty||now-drawAt>1000)&&now-drawAt>150){draw();drawAt=now;dirty=false;meshRadio.dirty=false;radar.dirty=false;}
 }

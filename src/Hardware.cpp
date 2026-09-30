@@ -94,6 +94,7 @@ int Hardware::readKey() {
   if(key==0 || key==255) return 0;lastKey=key;keyCount++;brightness(config.brightness);return key;
 }
 void Hardware::beep() {if(config.sound) {tone(pins::buzzer,2200,60);}}
+void Hardware::ping(uint16_t hz,uint16_t ms) {if(config.sound) {tone(pins::buzzer,hz,ms);}}
 void Hardware::flush() {display.drawRGBBitmap(0,0,canvas->getBuffer(),320,240);}
 void Hardware::text(int x,int y,const String& value,uint16_t color) {font.setForegroundColor(color);font.setCursor(x,y);font.print(value);}
 void Hardware::line(int y,const String& value,uint16_t color) {text(12,y,value,color);}

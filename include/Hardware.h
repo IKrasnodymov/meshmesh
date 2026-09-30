@@ -44,6 +44,7 @@ class Hardware {
   void brightness(uint8_t level);
   void setGps(bool enabled);
   void beep();
+  void ping(uint16_t hz,uint16_t ms);
   void flush();
   void text(int x,int y,const String& value,uint16_t color=0xffff);
   void line(int y,const String& value,uint16_t color=0xffff);

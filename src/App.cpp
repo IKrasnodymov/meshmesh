@@ -7,6 +7,7 @@
 #include "Hardware.h"
 #include "Maps.h"
 #include "Navigation.h"
+#include "Radar.h"
 #include <LittleFS.h>
 #include <time.h>
 String statusJson() {
@@ -79,6 +80,7 @@ String executeCommand(const String& input) {
   if(line.startsWith("map "))return maps.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
+  if(line=="radar")return radar.json();
   if(line=="calibrate start"){if(!hardware.compassOk)return "ERR compass unavailable";navigation.start();return "OK rotate device in all directions for at least 20 seconds";}
   if(line=="calibrate finish")return navigation.finish()?"OK compass calibration saved":"ERR calibration needs 20 samples and wider rotation";
   if(line=="clock")return hardware.clockInfo();
@@ -116,5 +118,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, messages, set {JSON}, send ALL|NODE_ID text, hello, position, selftest, wifi, ble, fsformat";
+  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, selftest, wifi, ble, fsformat";
 }

@@ -2,6 +2,7 @@
 #include "BleDiagnostics.h"
 #include "App.h"
 #include "MeshRadio.h"
+#include "Radar.h"
 #include <NimBLEDevice.h>
 #include <freertos/semphr.h>
 
@@ -107,7 +108,7 @@ void probe(void*) {
 }
 bool bleProbeActive() {portENTER_CRITICAL(&guard);bool value=state.running;portEXIT_CRITICAL(&guard);return value;}
 String startBleProbe(JsonObjectConst options) {
-  if(bleProbeActive())return "ERR BLE probe busy";
+  if(bleProbeActive()||radar.active)return "ERR BLE probe busy or radar open";
   if(!options["name"].is<const char*>() || !options["pin"].is<uint32_t>())return "ERR bleprobe needs name and PIN";
   String name=options["name"].as<String>(),message=options["message"]|"";
   uint32_t pin=options["pin"].as<uint32_t>();

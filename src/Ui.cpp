@@ -3,6 +3,7 @@
 #include "MeshRadio.h"
 #include "Maps.h"
 #include "Navigation.h"
+#include "Radar.h"
 #include <Preferences.h>
 #include <Mm1Packet.h>
 #include <time.h>
@@ -12,10 +13,11 @@
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
 int8_t u8g2_GetGlyphWidth(u8g2_font_t* u8g2,uint16_t encoding);
 namespace {
-enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node};
-const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node"};
+enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing};
+const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing"};
 enum Key {Enter=13,Erase=8,KeyMsg=0x81,KeyHome=0x82,KeyAt=0x83,KeyAdv=0x84,KeyMap=0x85,KeyBack=0x86,KeyGps=0x87,KeyMic=0x88,KeySet=0x90,KeyHold=0xa3,KeyLeft=0xb4,KeyUp=0xb5,KeyDown=0xb6,KeyRight=0xb7};
 Page page=Home,chatReturn=Threads;
+bool scopeManual=false; // radar list: the user moved the selection off the strongest signal
 uint32_t lastDraw=0,lastInput=0,toastAt=0;String toast,eventSeen;uint16_t toastColor=0;
 int selected=0,chatOffset=0,action=0;
 uint64_t recipient=meshmesh::Broadcast,focusNode=0;
@@ -84,7 +86,7 @@ void ring(int x,int y,int w,int h,int r=6,uint16_t color=accent){g().drawRoundRe
 void tri(int x,int y,int dir,int s,uint16_t c){if(dir==0)g().fillTriangle(x-s,y+s/2,x+s,y+s/2,x,y-s/2-1,c);else if(dir==2)g().fillTriangle(x-s,y-s/2,x+s,y-s/2,x,y+s/2+1,c);else if(dir==1)g().fillTriangle(x-s/2,y-s,x-s/2,y+s,x+s/2+1,y,c);else g().fillTriangle(x+s/2,y-s,x+s/2,y+s,x-s/2-1,y,c);}
 void arc(int cx,int cy,int r,int a0,int a1,uint16_t c){for(int a=a0;a<=a1;a+=3){float rad=a*M_PI/180;g().drawPixel(cx+roundf(r*sinf(rad)),cy-roundf(r*cosf(rad)),c);}}
 void thickLine(int x0,int y0,int x1,int y1,uint16_t c){g().drawLine(x0,y0,x1,y1,c);g().drawLine(x0+1,y0,x1+1,y1,c);}
-enum Icon {IcChat,IcPin,IcMesh,IcCompass,IcWifi,IcBle,IcGear,IcTower,IcRoom,IcSensor,IcPerson,IcLock,IcMail,IcHash,IcPulse,IcHelp,IcRadio,IcScreen,IcKey};
+enum Icon {IcChat,IcPin,IcMesh,IcCompass,IcWifi,IcBle,IcGear,IcTower,IcRoom,IcSensor,IcPerson,IcLock,IcMail,IcHash,IcPulse,IcHelp,IcRadio,IcScreen,IcKey,IcRadar};
 void icon(Icon id,int cx,int cy,int s,uint16_t c,uint16_t hole=bg){
  auto& d=g();int h=s/2,q=max(1,s/4),w=max(1,s/8);
  switch(id){
@@ -105,6 +107,7 @@ void icon(Icon id,int cx,int cy,int s,uint16_t c,uint16_t hole=bg){
  case IcPulse:{int p[][2]={{-s,0},{-h,0},{-q,-s*3/4},{q,s*3/4},{h,0},{s,0}};for(int k=0;k<5;k++)thickLine(cx+p[k][0],cy+p[k][1],cx+p[k+1][0],cy+p[k+1][1],c);break;}
  case IcHelp:d.drawCircle(cx,cy,s,c);textCenter(cx,cy+5,"?",c,bold);break;
  case IcRadio:d.drawFastVLine(cx,cy-h,s+h,c);d.fillCircle(cx,cy-h,max(1,s/5),c);arc(cx,cy-h,h+1,-120,-60,c);arc(cx,cy-h,h+1,60,120,c);arc(cx,cy-h,s,-125,-55,c);arc(cx,cy-h,s,55,125,c);break;
+ case IcRadar:d.drawCircle(cx,cy,s,c);d.drawCircle(cx,cy,max(2,s/2),c);thickLine(cx,cy,cx+roundf(s*.7f)-1,cy-roundf(s*.7f)+1,c);d.fillCircle(cx,cy,max(1,s/6),c);d.fillCircle(cx-h,cy+q+1,max(1,s/6),c);break;
  case IcScreen:d.drawRoundRect(cx-s,cy-s*5/8,2*s,s*5/4,2,c);d.fillRect(cx-s+3,cy-s*5/8+3,2*s-6,s*5/4-6,c);break;
  case IcKey:d.drawCircle(cx-h,cy,max(2,s*3/8),c);d.drawFastHLine(cx-h+s*3/8,cy,s+1,c);d.drawFastVLine(cx+h,cy,max(2,s/3),c);d.drawFastVLine(cx+s-1,cy,max(2,s/3),c);break;
  }
@@ -161,7 +164,7 @@ void sortNodes(){
  selected=constrain(selected,0,int(nodeTotal)-1);focusNode=meshRadio.peers[nodeOrder[selected]].id;
 }
 Peer* focusedPeer(){return peerOf(focusNode);}
-void change(Page next){if(page==Chat&&next!=Chat)rememberComposer();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
+void change(Page next){if(page==Chat&&next!=Chat)rememberComposer();if((next==Scope||next==Homing)&&page!=Scope&&page!=Homing)scopeManual=false;if(next==Scope||next==Homing)radar.open();else radar.close();if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();}
 
 // Time, distances and short labels.
 bool localTime(time_t at,tm& out){if(at<1700000000)return false;at+=config.utcOffset*60;out=*gmtime(&at);return true;}
@@ -184,7 +187,7 @@ unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3
 String title(){
  if(locked)return config.name;
  switch(page){case Home:return "MeshMesh";case Threads:return t("Chats","Чаты");case Chat:return nameOf(recipient);case Map:return t("Map","Карта");case Nodes:return t("Nodes","Узлы");case Node:{Peer* p=focusedPeer();return p?String(p->name):t("Node","Узел");}
- case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");}return "";
+ case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Signal radar","Радар сигналов");case Homing:return t("Homing","Пеленг");}return "";
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;
@@ -210,8 +213,10 @@ void drawToast(){
 void scrollbar(int first,int visible,int total,int y,int h){if(total<=visible)return;int th=max(12,h*visible/total),ty=y+(h-th)*first/max(1,total-visible);g().fillRoundRect(315,y,3,h,1,card);g().fillRoundRect(315,ty,3,th,1,faint);}
 void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);if(focus)g().fillRoundRect(8,y+6,3,h-12,1,accent);}
 
-// Home: identity strip and a 3x2 grid of destinations.
-const int tileCount=6;
+// Module health: the same eight modules as the diagnostics page.
+unsigned moduleStates(bool* state){bool s[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};unsigned faults=0;for(int i=0;i<8;i++){if(state)state[i]=s[i];faults+=!s[i];}return faults;}
+// Home: identity strip and a 3-column grid of destinations; two rows are visible, the rest scroll.
+const int tileCount=8,tileColumns=3,tileRows=(tileCount+tileColumns-1)/tileColumns;
 void drawHome(){
  auto& d=g();panel(8,26,304,38,card,8);icon(IcRadio,26,44,9,meshRadio.ready?accent:bad,card);
  text(44,41,fit(String(config.name),150,bold),ink,bold);
@@ -219,20 +224,24 @@ void drawHome(){
  textRight(302,41,String(meshRadio.txCount),ink,small);tri(302-measure(String(meshRadio.txCount),small)-7,38,0,3,accent);
  textRight(302,56,String(meshRadio.rxCount),ink,small);tri(302-measure(String(meshRadio.rxCount),small)-7,53,2,3,ok);
  unsigned unreadCount=unreadTotal(),near=0,total=meshRadio.peerCount;for(unsigned i=0;i<total;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
- String links=portalActive()&&bleActive()?"Wi-Fi + BLE":portalActive()?"Wi-Fi":bleActive()?"Bluetooth":t("All off","Всё выключено");
+ String links=portalActive()&&bleActive()?"Wi-Fi + BLE":portalActive()?"Wi-Fi":bleActive()?"Bluetooth":t("All off","Всё выключено");unsigned faults=moduleStates(nullptr);
  struct {Icon ic;uint16_t hue;String name,detail;unsigned badge;} tiles[tileCount]={
   {IcChat,accent,t("Chats","Чаты"),unreadCount?count(unreadCount,"new","new","новое","новых","новых"):count(meshRadio.historyCount,"message","messages","сообщение","сообщения","сообщений"),unreadCount},
   {IcPin,ok,t("Map","Карта"),!maps.available?t("No SD card","Нет SD-карты"):maps.title.length()?maps.title:t("No maps yet","Карт пока нет"),0},
   {IcMesh,violet,t("Nodes","Узлы"),String(near)+t(" of "," из ")+String(total)+t(" nearby"," рядом"),0},
   {IcCompass,warn,t("Navigation","Навигация"),hardware.gpsFix()?"GPS: "+count(hardware.gps.satellites.value(),"sat","sats","спутник","спутника","спутников"):config.gps?t("GPS: searching","GPS: поиск"):t("GPS off","GPS выключен"),0},
   {IcWifi,info,t("Connect","Связь"),links,0},
+  {IcRadar,accent,t("Radar","Радар"),"Wi-Fi, BLE, LoRa",0},
+  {IcPulse,faults?bad:ok,t("Module health","Модули"),faults?count(faults,"fault","faults","ошибка","ошибки","ошибок"):t("All OK","Всё в норме"),0},
   {IcGear,dim,t("Settings","Настройки"),t("Radio, screen","Радио, экран"),0}};
- for(int i=0;i<tileCount;i++){
-  int x=8+(i%3)*104,y=71+(i/3)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);
+ int firstRow=max(0,selected/tileColumns-1);
+ for(int i=firstRow*tileColumns;i<tileCount&&i<(firstRow+2)*tileColumns;i++){
+  int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);
   d.fillRoundRect(x+9,y+8,26,26,6,bg);icon(tiles[i].ic,x+22,y+21,8,tiles[i].hue,bg);
   if(tiles[i].badge){String b=tiles[i].badge>99?"99+":String(tiles[i].badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(x+88-w,y+8,w,13,6,bad);textCenter(x+88-w/2,y+18,b,ink,small);}
   text(x+9,y+49,fit(tiles[i].name,80,bold),ink,bold);text(x+9,y+61,fit(tiles[i].detail,80,small),dim,small);
  }
+ scrollbar(firstRow,2,tileRows,71,142);
  footer({{"OK",t("Open","Открыть")},{"MSG",t("Chats","Чаты")},{"MAP",t("Map","Карта")},{"MIC",t("Lock","Блок")}});
 }
 void drawThreads(){
@@ -385,6 +394,78 @@ void drawSensors(){
  for(int i=0;i<2;i++){int x=8+i*154;bool focus=selected==i;panel(x,168,150,46,focus?cardHi:card,7);if(focus)ring(x,168,150,46,7);text(x+10,186,fit(actions[i],132,bold),ink,bold);text(x+10,203,fit(hints[i],132,small),dim,small);}
  footer({{"<>",t("Select","Выбор")},{"OK",t("Run","Выполнить")},{"BACK",t("Back","Назад")}});
 }
+// Signal radar: Wi-Fi access points, Bluetooth devices and directly heard LoRa nodes. Nearer the centre means a
+// stronger signal; the angle only keeps targets apart, because RSSI carries no bearing.
+uint64_t scopeId=0;RadarTarget::Kind scopeKind=RadarTarget::Wifi;bool radarSound=true;uint32_t pingAt=0,pingedSamples=0;
+void scopeSelect(int i){if(i<0||i>=int(radar.count))return;scopeId=radar.targets[i].id;scopeKind=radar.targets[i].kind;}
+// Until the user moves it, the selection stays on the strongest signal; then it follows its target
+// through re-sorting, and a vanished target passes it back to the strongest.
+int scopeSelected(){if(!scopeManual&&radar.count){scopeSelect(0);return 0;}for(unsigned i=0;i<radar.count;i++)if(radar.targets[i].id==scopeId&&radar.targets[i].kind==scopeKind)return i;if(!radar.count)return -1;scopeSelect(0);return 0;}
+float signalLevel(int rssi){return constrain((rssi+100)/65.f,0.f,1.f);} // -100 .. -35 dBm
+uint16_t mix(uint32_t a,uint32_t b,float f){auto ch=[&](int s){return int(((a>>s)&255)*(1-f)+((b>>s)&255)*f);};return rgb(ch(16)<<16|ch(8)<<8|ch(0));}
+uint32_t targetHue(const RadarTarget& r){return r.kind==RadarTarget::Lora?0xa78bfa:r.kind==RadarTarget::Ble?(r.device?0xf472b6:0x8d99a6):r.open?0xe9b13b:0x4f9df7;}
+String deviceText(const RadarTarget& r){switch(r.device){case RadarTarget::Phone:return t("Phone","Телефон");case RadarTarget::Watch:return t("Watch","Часы");case RadarTarget::Audio:return t("Headphones","Наушники");case RadarTarget::Personal:return t("Phone/watch","Телефон/часы");default:return t("BLE device","BLE-устройство");}}
+String vendorText(uint16_t v){switch(v){case 0x004c:return "Apple";case 0x0075:return "Samsung";case 0x00e0:return "Google";case 0x027d:return "Huawei";case 0x038f:return "Xiaomi";case 0x0087:return "Garmin";case 0x0006:return "Microsoft";}return "";}
+String targetName(const RadarTarget& r){if(r.name[0])return r.name;if(r.kind==RadarTarget::Ble){String v=vendorText(r.vendor);return deviceText(r)+(v.length()?" "+v:String());}return r.kind==RadarTarget::Wifi?t("Hidden network","Скрытая сеть"):meshRadio.idText(r.id);}
+String macText(uint64_t id){char b[18];snprintf(b,sizeof b,"%02X:%02X:%02X:%02X:%02X:%02X",unsigned(id>>40&255),unsigned(id>>32&255),unsigned(id>>24&255),unsigned(id>>16&255),unsigned(id>>8&255),unsigned(id&255));return b;}
+bool radarFresh(){return radar.fresh();}
+String bleState(){switch(radar.ble){case Radar::BleBusy:return t("Bluetooth busy: probe","Bluetooth занят проверкой");case Radar::BleFailed:return t("Bluetooth error","Ошибка Bluetooth");default:return "";}}
+String wifiState(){switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi busy: access point","Wi-Fi занят точкой доступа");case Radar::WifiBusy:return t("Wi-Fi busy: probe","Wi-Fi занят проверкой");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("Scanning Wi-Fi...","Сканирую Wi-Fi...");}}
+void drawScope(){
+ auto& d=g();const int cx=96,cy=116,R=86;const uint32_t cardRgb=0x131a22,gridRgb=0x223040;uint32_t now=millis();
+ d.fillCircle(cx,cy,R,card);for(int k=1;k<=4;k++)d.drawCircle(cx,cy,R*k/4,k==4?line:rgb(gridRgb));
+ d.drawFastHLine(cx-R,cy,2*R+1,rgb(gridRgb));d.drawFastVLine(cx,cy-R,2*R+1,rgb(gridRgb));
+ float sweep=(now%3000)*2*M_PI/3000; // one turn per 3 s, fading trail behind the beam
+ for(int k=24;k>=0;k--){float a=sweep-k*.03f;d.drawLine(cx,cy,cx+roundf(R*sinf(a)),cy-roundf(R*cosf(a)),mix(0x1fc2ae,cardRgb,.25f+k*.03f));}
+ int sel=scopeSelected();
+ for(int i=radar.count-1;i>=0;i--){const RadarTarget& r=radar.targets[i];
+  uint32_t h=uint32_t(r.id^(r.id>>29))*2654435761u;float a=(h>>8)%360*M_PI/180;float dist=R*(.1f+.84f*(1-signalLevel(r.rssi)));
+  int x=cx+roundf(dist*sinf(a)),y=cy-roundf(dist*cosf(a));float since=fmodf(sweep-a+4*M_PI,2*M_PI)/(2*M_PI); // blips glow as the beam passes
+  float faded=r.kind==RadarTarget::Wifi?0:constrain((now-r.seen)/30000.f,0.f,.5f); // quiet targets fade
+  d.fillCircle(x,y,i==sel?4:3,mix(targetHue(r),cardRgb,min(.85f,.15f+.6f*since+faded)));if(i==sel){d.drawCircle(x,y,7,ink);d.drawCircle(x,y,8,accent);}}
+ d.fillCircle(cx,cy,3,ink);
+ textCenter(cx,216,t("closer to centre = stronger","ближе к центру - сильнее"),faint,small);
+ text(194,34,fit("Wi-Fi "+String(radar.counted(RadarTarget::Wifi))+"·BLE "+String(radar.counted(RadarTarget::Ble))+"·LoRa "+String(radar.counted(RadarTarget::Lora)),120,small),dim,small);
+ int first=max(0,sel-6);
+ for(int i=first;i<int(radar.count)&&i<first+7;i++){const RadarTarget& r=radar.targets[i];int y=40+(i-first)*22;bool focus=i==sel;
+  panel(190,y,124,20,focus?cardHi:bg,5);if(focus)d.fillRoundRect(190,y+4,3,12,1,accent);d.fillCircle(199,y+10,3,rgb(targetHue(r)));
+  text(206,y+14,fit(targetName(r),76),focus?ink:dim);textRight(310,y+14,String(int(r.rssi)),focus?ink:dim,bold);}
+ String state=wifiState();if(!state.length())state=bleState();
+ unsigned people=radar.personal(30000);if(!state.length()&&people)state=count(people,"phone/watch nearby","phones/watches nearby","телефон/часы рядом","телефона/часов рядом","телефонов/часов рядом");
+ if(!radar.count)textCenter(252,110,state.length()?state:t("No signals yet","Сигналов пока нет"),radar.wifi==Radar::WifiReady?dim:warn,small);
+ else if(state.length())text(194,212,fit(state,120,small),radar.wifi==Radar::WifiReady&&radar.ble!=Radar::BleFailed&&radar.ble!=Radar::BleBusy?dim:warn,small);
+ footer({{"OK",t("Home in","Пеленг")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
+}
+void drawHoming(){
+ auto& d=g();const RadarTarget& f=radar.focus;uint16_t hue=rgb(targetHue(f));bool fresh=radarFresh(),lora=f.kind==RadarTarget::Lora,bt=f.kind==RadarTarget::Ble;
+ panel(8,26,304,34,card,8);d.fillRoundRect(14,31,24,24,6,bg);icon(lora?IcTower:bt?(f.device?IcPerson:IcBle):IcWifi,26,43,7,hue,bg);
+ text(46,40,fit(targetName(f),258,bold),ink,bold);
+ String vendor=vendorText(f.vendor);
+ text(46,54,fit(lora?"LoRa · "+meshRadio.idText(f.id)+t(" · direct packets only"," · только прямые пакеты"):bt?"Bluetooth · "+deviceText(f)+(vendor.length()?" · "+vendor:String())+t(" · address changes over time"," · адрес со временем меняется"):"Wi-Fi · "+t("channel ","канал ")+String(f.channel)+" · "+macText(f.id),258,small),dim,small);
+ int x=text(14,112,radar.samples?String(int(lroundf(radar.fast))):String("--"),fresh?ink:faint,digits);text(x+4,112,"dBm",dim,small);
+ // Homing indicator: the fast average against the slow one, as in the RSSI tracker.
+ int trend=radar.trend();panel(186,66,126,46,card,8);
+ if(f.kind==RadarTarget::Wifi&&radar.wifi!=Radar::WifiReady)text(196,93,fit(wifiState(),108,small),warn,small);
+ else if(bt&&radar.ble!=Radar::BleReady)text(196,93,fit(bleState(),108,small),warn,small);
+ else if(!fresh)text(196,93,radar.samples>1?t("Lost","Потерян"):t("No signal","Нет сигнала"),warn,bold);
+ else{uint16_t c=trend>0?ok:trend<0?bad:dim;if(trend)tri(206,89,trend>0?0:2,10,c);else{d.fillRect(197,83,18,3,c);d.fillRect(197,91,18,3,c);}
+  text(224,86,trend>0?t("Stronger","Теплее"):trend<0?t("Weaker","Холоднее"):t("Steady","Ровно"),c,bold);text(224,101,t("keep moving","двигайтесь"),faint,small);}
+ // Strength meter with the peak marker.
+ float level=signalLevel(lroundf(radar.fast));d.fillRoundRect(14,120,292,8,3,line);if(radar.samples)d.fillRoundRect(14,120,max(3,int(292*level)),8,3,!fresh?faint:level<.3f?bad:level<.6f?warn:ok);
+ if(radar.samples){int px=14+int(291*signalLevel(radar.peak));d.fillRect(px-1,116,3,16,ink);}
+ text(14,142,"-100",faint,small);textRight(306,142,"-35 dBm",faint,small);textCenter(160,142,t("peak ","пик ")+(radar.samples?String(int(lroundf(radar.peak)))+" dBm ("+String(radar.fast-radar.peak,0)+")":String("-")),dim,small);
+ // History: the last 120 samples, oldest on the left.
+ panel(8,148,304,58,card,6);for(int dbm:{-90,-70,-50}){int y=202-int(50*signalLevel(dbm));d.drawFastHLine(12,y,296,rgb(0x223040));}
+ unsigned n=radar.historyCount();int px=0,py=0;
+ for(unsigned i=0;i<n;i++){int x=12+int(i*296/(Radar::HistorySize-1)),y=202-int(50*signalLevel(radar.sample(i)));if(i)d.drawLine(px,py,x,y,accent);else d.drawPixel(x,y,accent);px=x;py=y;}
+ if(!n)textCenter(160,181,t("Waiting for samples","Ожидание отсчётов"),faint,small);
+ uint32_t age=radar.samples?millis()-radar.lastSample:0;
+ String stats=lora?count(radar.samples,"packet","packets","пакет","пакета","пакетов"):String(radar.rate)+(bt?t(" adverts/s"," объявл./с"):t(" beacons/s"," маяков/с"));
+ int sx=text(12,216,stats,dim,small);
+ // Sample age: green up to 0.5 s, yellow up to 1.5 s, then red (LoRa counts in minutes).
+ if(radar.samples)text(sx,216," · "+(age<60000?String(age/1000.f,1)+t(" s ago"," с назад"):ago(age)),lora?dim:age<500?ok:age<1500?warn:bad,small);
+ footer({{"OK",radarSound?t("Mute","Без звука"):t("Sound","Звук")},{"<>",t("Reset peak","Сброс пика")},{"BACK",t("List","Список")}});
+}
 const int settingsCount=7;
 void drawSettings(){
  Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin};uint16_t hues[]={accent,info,warn,info,ok,dim,ok};
@@ -443,7 +524,7 @@ String keyName(uint32_t k){
 }
 void drawDiagnostics(){
  const char* names[]={"LoRa",nullptr,"SD","LittleFS","RTC","GPS / NMEA",nullptr,"IMU"};String label[8];for(int i=0;i<8;i++)label[i]=names[i]?String(names[i]):i==1?t("Keyboard","Клавиатура"):t("Compass","Компас");
- bool state[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};
+ bool state[8];moduleStates(state);
  for(int i=0;i<8;i++){int x=8+(i%2)*154,y=25+(i/2)*22;panel(x,y,150,19,card,5);g().fillCircle(x+11,y+9,4,state[i]?ok:bad);text(x+21,y+14,label[i],ink);textRight(x+144,y+14,state[i]?"OK":t("n/a","нет"),state[i]?ok:bad,small);}
  panel(8,116,304,74,card,8);uint32_t up=millis()/1000;char uptime[16];snprintf(uptime,sizeof uptime,"%lu:%02lu:%02lu",(unsigned long)(up/3600),(unsigned long)(up/60%60),(unsigned long)(up%60));
  String cells[][2]={{"RX",String(meshRadio.rxCount)},{"TX",String(meshRadio.txCount)},{t("Relayed","Переслано"),String(meshRadio.relayed)},{t("Rejected","Отклонено"),String(meshRadio.rejected)},
@@ -482,6 +563,7 @@ void draw(){
  case Home:drawHome();break;case Threads:drawThreads();break;case Chat:drawChat();break;case Map:drawMap();break;case Library:drawLibrary();break;
  case Nodes:drawNodes();break;case Node:drawNode();break;case Sensors:drawSensors();break;case Settings:drawSettings();break;
  case Radio:case Display:drawEditor();break;case Network:drawNetwork();break;case Diagnostics:drawDiagnostics();break;case Help:drawHelp();break;
+ case Scope:drawScope();break;case Homing:drawHoming();break;
  }
  statusBar();if(editing&&!locked)drawEditing();if(layoutHelp&&!locked)drawLayoutHelp();drawToast();hardware.flush();
 }
@@ -533,7 +615,7 @@ void runNodeAction(){
 }
 }
 void uiBegin(){Preferences p;keyboardRussian=config.russian;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",config.russian);p.end();}lastInput=millis();draw();}
-String uiStatus(){StaticJsonDocument<768>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<768>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing){d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
  if(key==KeyMic){locked=true;return;}
  if(layoutHelp){layoutHelp=false;return;}
@@ -542,18 +624,20 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  if(page==Node&&key!=Enter&&key!=KeyHold)deleteArmed=false;
  if(key==KeyHome){change(Home);return;}if(key==KeyMsg){change(Threads);return;}if(key==KeyMap){change(Map);return;}if(key==KeySet){change(Settings);return;}if(key==KeyAdv){bool sent=meshRadio.sendHello();notice(sent?t("Node announced","Узел объявлен"):t("Announcement failed","Не удалось объявить узел"),sent?ok:bad);return;}
  if(key==KeyGps){config.gps=!config.gps;config.save();hardware.setGps(config.gps);notice("GPS: "+flag(config.gps),config.gps?ok:dim);return;}
- if(key==KeyBack){change(page==Library?Map:page==Chat?chatReturn:page==Node?Nodes:(page==Radio||page==Display||page==Sensors||page==Diagnostics||page==Help)?Settings:Home);return;}
+ if(key==KeyBack){change(page==Library?Map:page==Homing?Scope:page==Chat?chatReturn:page==Node?Nodes:(page==Radio||page==Display||page==Sensors||page==Diagnostics||page==Help)?Settings:Home);return;}
  if(key==KeyAt){change(Diagnostics);return;}
  if(page==Chat){if(key==Enter){if(meshRadio.sendMessage(composer,recipient)){composer="";chatOffset=0;notice(t("Message queued","Сообщение в очереди"));}else notice(t("Cannot send: empty, full queue or radio","Не отправлено: текст, очередь или радио"),bad);return;}if(key==Erase){composer.remove(meshmesh::previousCharacter(composer.c_str(),composer.length()));return;}if(key==KeyUp){unsigned total=0;for(unsigned i=0;i<meshRadio.historyCount;i++)if(belongs(meshRadio.history[i],recipient))total++;chatOffset=min(chatOffset+1,max(0,int(total)-1));return;}if(key==KeyDown){chatOffset=max(0,chatOffset-1);return;}if(key==KeyHold){layoutHelp=true;return;}if(key==KeyRight){toggleLastCase(composer);return;}if(key>=32&&key<127){if(spaceSwitch(composer,key))return;String ch=keyboard(key);if(composer.length()+ch.length()<=meshRadio.messageLimit(recipient))composer+=ch;else notice(t("UTF-8 byte limit: ","Лимит байт UTF-8: ")+String(meshRadio.messageLimit(recipient)),warn);}return;}
  if(page==Map){if(key=='l'||key=='L'){change(Library);return;}if(key==KeyLeft)maps.pan(-70,0);if(key==KeyRight)maps.pan(70,0);if(key==KeyUp)maps.pan(0,-70);if(key==KeyDown)maps.pan(0,70);if(key=='+'||key=='=')maps.changeZoom(1);if(key=='-'||key=='_')maps.changeZoom(-1);if(key==Enter){maps.follow=true;if(hardware.gpsFix())maps.center(hardware.gps.location.lat(),hardware.gps.location.lng());else notice(t("Waiting for GPS fix","Ожидание GPS-позиции"),warn);}return;}
  if((page==Nodes||page==Node)&&(key=='p'||key=='P')){if(Peer* p=focusedPeer()){if(p->position){maps.follow=false;maps.center(p->latitude,p->longitude);change(Map);}else notice(t("This node has not shared GPS","Узел пока не передал GPS"),warn);}return;}
- if(page==Home&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){int col=selected%3,row=selected/3;if(key==KeyLeft)col=(col+2)%3;if(key==KeyRight)col=(col+1)%3;if(key==KeyUp||key==KeyDown)row^=1;selected=row*3+col;return;}
+ if(page==Home&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){int col=selected%tileColumns,row=selected/tileColumns,n=min(tileColumns,tileCount-row*tileColumns);if(key==KeyLeft)col=(col+n-1)%n;if(key==KeyRight)col=(col+1)%n;if(key==KeyUp)row=(row+tileRows-1)%tileRows;if(key==KeyDown)row=(row+1)%tileRows;selected=min(row*tileColumns+col,tileCount-1);return;}
  if(page==Node&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){Peer* p=focusedPeer();if(!p)return;NodeAction acts[4];int n=nodeActions(*p,acts);action=(action+(key==KeyLeft||key==KeyUp?-1:1)+n)%n;return;}
  if(page==Sensors&&(key==KeyLeft||key==KeyRight)){selected^=1;return;}
+ if(page==Scope&&(key==KeyUp||key==KeyDown)){int i=scopeSelected();scopeManual=true;if(radar.count)scopeSelect((i+(key==KeyUp?-1:1)+radar.count)%radar.count);return;}
+ if(page==Homing&&(key==KeyLeft||key==KeyRight)){radar.resetPeak();notice(t("Peak reset","Пик сброшен"),dim);return;}
  if(key==KeyUp||key==KeyDown){if(page==Threads)threads();if(page==Nodes)sortNodes();int total=page==Threads?conversationCount:page==Nodes?nodeTotal:page==Settings?settingsCount:page==Radio||page==Display?settingRows():page==Network?3:page==Sensors?2:page==Library?int(library.size()):1;selected=total?(selected+(key==KeyUp?-1:1)+total)%total:0;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;return;}
  if((page==Radio||page==Display)&&(key==KeyLeft||key==KeyRight)){alter(key==KeyLeft?-1:1);return;}
  if(key!=Enter&&key!=KeyHold)return;
- if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Settings};change(pages[selected]);}
+ if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Scope,Diagnostics,Settings};change(pages[selected]);}
  else if(page==Library&&library.size()){if(maps.selectArea(library[selected]["id"].as<String>()))change(Map);else notice(t("Map unavailable","Карта недоступна"),bad);}
  else if(page==Threads){threads();recipient=conversations[selected];chatReturn=Threads;composer="";change(Chat);}
  else if(page==Nodes&&nodeTotal){focusNode=meshRadio.peers[nodeOrder[selected]].id;change(Node);}
@@ -563,10 +647,22 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==Network){if(selected==0)portalToggle();if(selected==1)bleToggle();if(selected==2)notice(t("Public key: ","Открытый ключ: ")+meshRadio.publicKeyText().substring(0,16));}
  else if(page==Sensors){if(selected==0){bool sent=meshRadio.sendPosition();notice(sent?t("Position shared","Позиция передана"):t("Waiting for GPS fix","Ожидание GPS-позиции"),sent?ok:warn);}else if(navigation.calibrating){bool saved=navigation.finish();notice(saved?t("Calibration saved","Калибровка сохранена"):t("Rotate wider, at least 20 seconds","Вращайте шире, не менее 20 секунд"),saved?ok:warn);}else{navigation.start();notice(t("Rotate in all directions","Вращайте устройство во все стороны"));}}
  else if(page==Help)layoutHelp=true;
+ else if(page==Scope){int i=scopeSelected();if(i>=0&&radar.track(i)){scopeManual=true;pingedSamples=radar.samples;change(Homing);}else notice(t("No signal selected","Сигнал не выбран"),warn);}
+ else if(page==Homing){radarSound=!radarSound;notice(radarSound?(config.sound?t("Ping on","Звук пеленга включён"):t("Device sound is off in settings","Звук устройства выключен в настройках")):t("Ping off","Звук пеленга выключен"),radarSound&&!config.sound?warn:dim);}
  else if(page==Diagnostics){hardware.beep();bool passed=meshRadio.selfTest();notice(passed?t("Encryption test passed","Проверка шифрования пройдена"):t("Encryption test failed","Ошибка шифрования"),passed?ok:bad);}}
 String eventLabel(const String& value){if(!config.russian)return value;if(value.startsWith("New message from "))return "Сообщение от "+value.substring(17);if(value.startsWith("Delivered to "))return "Доставлено: "+value.substring(13);if(value=="Queued: waiting for delivery")return "Ожидание подтверждения";if(value=="Queued: broadcast")return "Сообщение в общем чате отправляется";if(value=="No delivery ACK")return "Получатель не подтвердил доставку";if(value.startsWith("Radio TX error")||value.startsWith("TX failed"))return "Ошибка передачи по радио";return value;}
-void uiTick(){uint32_t now=millis();if(config.autoLock&&now-lastInput>=config.autoLock*1000UL&&!locked){locked=true;dirty=true;}if(config.dimAfter&&now-lastInput>=config.dimAfter*1000UL){hardware.brightness(0);wakeOnly=true;}
+void uiTick(){uint32_t now=millis();
+ // Homing is used while walking without pressing keys: the screen stays on and unlocked.
+ if(page==Homing&&!locked)lastInput=now;
+ if(config.autoLock&&now-lastInput>=config.autoLock*1000UL&&!locked){locked=true;dirty=true;}if(config.dimAfter&&now-lastInput>=config.dimAfter*1000UL){hardware.brightness(0);wakeOnly=true;}
+ // Ping: faster and higher as the signal strengthens (-85..-30 dBm, steeper when close); LoRa pings
+ // once per new packet. A lost target gets a quiet low tick every 2 s instead of a stale ping.
+ if(page==Homing&&!locked&&radarSound&&radar.tracking){float x=constrain((radar.fast+85)/55.f,0.f,1.f);
+  if(!radarFresh()){if(radar.samples&&now-pingAt>=2000){pingAt=now;hardware.ping(300,30);}}
+  else if(radar.focus.kind==RadarTarget::Lora){if(radar.samples!=pingedSamples){pingedSamples=radar.samples;hardware.ping(600+1000*x,60);}}
+  else if(now-pingAt>=uint32_t(1200-1140*x*x)){pingAt=now;hardware.ping(600+1000*x,40);}}
  if(meshRadio.event!=eventSeen){eventSeen=meshRadio.event;bool incoming=eventSeen.startsWith("New message from ");if(page==Chat){markRead();notice(eventLabel(eventSeen),eventSeen.startsWith("Delivered")?ok:eventSeen.startsWith("No delivery")||eventSeen.startsWith("Radio TX")?bad:accent);}else if(incoming&&!locked&&page!=Threads)notice(eventLabel(eventSeen),accent);}
  if(toast.length()&&now-toastAt>=3500){toast="";dirty=true;}
  // The HUD clock, signal and battery change on every page.
- bool update=dirty||meshRadio.dirty||maps.dirty||now-lastDraw>=1000;if(update&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;}}
+ bool animate=!locked&&(page==Scope||page==Homing); // the sweep beam moves every frame
+ bool update=dirty||meshRadio.dirty||maps.dirty||animate||now-lastDraw>=1000;if(update&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;}}

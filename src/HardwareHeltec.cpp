@@ -54,6 +54,7 @@ int Hardware::readKey() {
   return 0;
 }
 void Hardware::beep() {} // Standard V4 board has no buzzer.
+void Hardware::ping(uint16_t,uint16_t) {}
 void Hardware::flush() {
   display.clearDisplay();for(int y=0;y<64;y++)for(int x=0;x<128;x++)if(canvas->getPixel(x,y))display.drawPixel(x,y,SSD1306_WHITE);display.display();
 }

@@ -1,5 +1,6 @@
 #include "WifiDiagnostics.h"
 #include "App.h"
+#include "Radar.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <freertos/task.h>
@@ -22,5 +23,5 @@ void worker(void* raw){Options* o=(Options*)raw;String auth="meshmesh:"+String(o
 }
 }
 bool wifiProbeActive(){taskENTER_CRITICAL(&guard);bool active=running;taskEXIT_CRITICAL(&guard);return active;}
-String startWifiProbe(JsonObjectConst values){if(wifiProbeActive()||portalActive())return "ERR Wi-Fi probe busy or portal enabled";if(!values["ssid"].is<const char*>()||!values["password"].is<const char*>())return "ERR Wi-Fi probe credentials";Options* o=new Options{};strlcpy(o->ssid,values["ssid"],sizeof(o->ssid));strlcpy(o->password,values["password"],sizeof(o->password));failure="";stage="starting";homepage=authRejected=apis=chunk=tile=mapSupported=false;pageBytes=0;done=false;running=true;if(xTaskCreate(worker,"wifi-probe",8192,o,1,nullptr)!=pdPASS){delete o;running=false;return "ERR Wi-Fi probe task";}return "OK physical Wi-Fi probe started";}
+String startWifiProbe(JsonObjectConst values){if(wifiProbeActive()||portalActive()||radar.active)return "ERR Wi-Fi probe busy, portal or radar enabled";if(!values["ssid"].is<const char*>()||!values["password"].is<const char*>())return "ERR Wi-Fi probe credentials";Options* o=new Options{};strlcpy(o->ssid,values["ssid"],sizeof(o->ssid));strlcpy(o->password,values["password"],sizeof(o->password));failure="";stage="starting";homepage=authRejected=apis=chunk=tile=mapSupported=false;pageBytes=0;done=false;running=true;if(xTaskCreate(worker,"wifi-probe",8192,o,1,nullptr)!=pdPASS){delete o;running=false;return "ERR Wi-Fi probe task";}return "OK physical Wi-Fi probe started";}
 String wifiProbeResult(){StaticJsonDocument<1024>d;bool active,complete;taskENTER_CRITICAL(&guard);active=running;complete=done;taskEXIT_CRITICAL(&guard);d["running"]=active;d["done"]=complete;d["stage"]=complete?stage:String(active?"running":"idle");if(complete){d["error"]=failure;d["homepage"]=homepage;d["page_bytes"]=pageBytes;d["auth_rejected"]=authRejected;d["apis"]=apis;d["maps_supported"]=mapSupported;d["binary_chunk"]=chunk;d["tile_readback"]=tile;}String s;serializeJson(d,s);return s;}

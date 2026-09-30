@@ -17,11 +17,19 @@ def key(d,n):ok(d,f'uikey {n}')
 def wake(d):
  if read(d,'ui')['locked']:key(d,0xa3)
  key(d,0x82);key(d,0x82)
+capture_retries=[]
 def capture(d,name):
- time.sleep(.2)
- ok(d,'baud 921600');d.baudrate=921600
- try:screenshot(d,f'artifacts/{name}.ppm')
- finally:ok(d,'baud 115200');d.baudrate=115200
+ for attempt in (1,2):
+  time.sleep(.2)
+  ok(d,'baud 921600');d.baudrate=921600
+  try:screenshot(d,f'artifacts/{name}.ppm')
+  except TimeoutError as error:
+   # CH340 at 921600 has no flow control: a dropped byte leaves the frame short. The device
+   # returns to 115200 by itself after 10 s without input; retry once and report it.
+   d.baudrate=115200;time.sleep(11);d.reset_input_buffer()
+   if attempt==2:raise
+   capture_retries.append({'screen':name,'error':str(error)});continue
+  ok(d,'baud 115200');d.baudrate=115200;return
 
 def main():
  with ExitStack() as stack:
@@ -139,7 +147,7 @@ def main():
   assert [s['boot'] for s in before]==[s['boot'] for s in after]
   assert [s['diagnostic_rx'] for s in before]==[s['diagnostic_rx'] for s in after]
   assert read(m9,'config')==config and read(m9,'navigation')['calibrated']
-  report={'input':'production UI using simulated USB key events; not physical-button automation','checks':checks,'areas':areas,'locked_radio':radio,'before':before,'after':after}
+  report={'input':'production UI using simulated USB key events; not physical-button automation','checks':checks,'areas':areas,'locked_radio':radio,'capture_retries':capture_retries,'before':before,'after':after}
   p=Path('artifacts/map-ui-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
   print('PASS SD maps, damaged transfers, drafts, screen lock, inactivity timers, settings and physical LoRa while locked')
 if __name__=='__main__':main()

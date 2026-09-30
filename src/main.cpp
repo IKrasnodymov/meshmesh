@@ -7,6 +7,7 @@
 #include "BleDiagnostics.h"
 #include "Maps.h"
 #include "Navigation.h"
+#include "Radar.h"
 #include "WifiDiagnostics.h"
 #include <esp_system.h>
 #if defined(MM_HELTEC_V4)
@@ -53,7 +54,7 @@ void setup() {
   Serial.println("READY: USB commands are available; type help");
 }
 void loop() {
-  hardware.tick();meshRadio.tick();maps.tick();navigation.tick();
+  hardware.tick();meshRadio.tick();maps.tick();navigation.tick();radar.tick();
   int key=hardware.readKey();if(key)uiKey(key);
   static String command;
   unsigned budget=256;

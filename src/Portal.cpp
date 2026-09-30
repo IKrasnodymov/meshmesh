@@ -6,6 +6,7 @@
 #include "Navigation.h"
 #include "PortalPage.h"
 #include "WifiDiagnostics.h"
+#include "Radar.h"
 #include <WiFi.h>
 #include <WebServer.h>
 #include <NimBLEDevice.h>
@@ -72,6 +73,7 @@ void portalToggle() {
   if(wifiProbeActive()){meshRadio.event="Wi-Fi probe busy";meshRadio.dirty=true;return;}
   if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;meshRadio.event="Wi-Fi off";}
   else {
+    radar.release(); // the access point takes Wi-Fi over from the signal radar
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
     wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);if(wifiOn)server.begin();meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
   }
@@ -79,6 +81,7 @@ void portalToggle() {
 }
 void bleToggle() {
   if(bleProbeActive()) {meshRadio.event="BLE probe busy";meshRadio.dirty=true;return;}
+  radar.releaseBle(); // the service owns the BLE stack; the radar scans on it again next tick
   if(bluetoothOn) {NimBLEDevice::deinit(true);bluetoothOn=false;bleTx=nullptr;bleResponse="";bleOffset=0;if(commands){vQueueDelete(commands);commands=nullptr;}meshRadio.event="BLE off";}
   else {
     commands=xQueueCreate(4,sizeof(BleCommand));
