@@ -33,7 +33,7 @@ The tile GET API returns the exact binary `.mmt` file.
 Rendering caches six expanded tiles in PSRAM. Storage reads and RLE decoding
 run in bounded batches between radio ticks. The UI only copies visible rows
 from complete, validated tiles. Gray regions indicate unavailable tiles;
-this is not a promise of automatic internet connectivity from M9's access point.
+M9's own access point provides no internet.
 
 Optional USB transfer compression: `map zbegin {z,x,y,size,crc,packed_size}`
 announces a zlib stream containing the same RLE payload. `map chunk` receives
@@ -43,3 +43,16 @@ is bounded by the declared size (max 262144), and the miniz state is heap
 allocated because it does not fit the Arduino loop stack. Stored files and
 web packages remain unchanged. Upload data are buffered per tile in PSRAM;
 only a complete validated tile is written to SD.
+
+Web tiles (M9, Wi-Fi client with internet): a missing tile is requested from the
+tile server (default `https://tile.openstreetmap.org/{z}/{x}/{y}.png`, USB
+`internet tiles URL|default`), shown as soon as it arrives and written to SD as the
+same MMT1 file an upload produces, in 4 KB steps with the `.part`/`.old` order.
+Download and PNG decoding run on a core-0 worker task; the loop keeps SD, display
+and LoRa (one SPI bus). PNG: non-interlaced, 256 or 512 px square (512 decimated
+2:1), all colour types; transparency blends onto the missing-tile grey. Failed tiles
+are not retried for 60 s; HTTP 403/418/429 pauses downloads for 2 minutes. The
+User-Agent identifies MeshMesh as the OSM tile policy requires; only viewed tiles are
+fetched, no bulk prefetch. Zoom 3-18 for viewing; uploads keep 10-17.
+Without GPS or a saved view (NVS `mm-map`), the map centres on an approximate IP
+location (get.geojs.io, then ipapi.co; this sends the public IP to that service).

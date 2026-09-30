@@ -8,6 +8,7 @@
 #include "Maps.h"
 #include "Navigation.h"
 #include "Radar.h"
+#include "Internet.h"
 #include <LittleFS.h>
 #include <time.h>
 String statusJson() {
@@ -27,7 +28,7 @@ String statusJson() {
   if(d["gps_fix"].as<bool>()) {d["latitude"]=hardware.gps.location.lat();d["longitude"]=hardware.gps.location.lng();}
   JsonArray a=d.createNestedArray("mag");for(float n:hardware.mag)a.add(n);a=d.createNestedArray("accel");for(float n:hardware.accel)a.add(n);
   d["clock_trusted"]=hardware.clockTrusted;d["busy"]=meshRadio.busy();if(meshRadio.lastRxAt)d["rx_age"]=(millis()-meshRadio.lastRxAt)/1000;
-  d["event"]=meshRadio.event;d["wifi"]=portalActive();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
+  d["event"]=meshRadio.event;d["wifi"]=portalActive();d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
 String messagesJson() {
   DynamicJsonDocument d(24576);JsonArray a=d.to<JsonArray>();
@@ -79,6 +80,9 @@ String applySettings(JsonObjectConst v) {
 String executeCommand(const String& input) {
   String line=input;line.trim();
   if(line.startsWith("map "))return maps.command(line);
+#if !defined(MM_HELTEC_V4)
+  if(line=="internet"||line.startsWith("internet "))return internet.command(line);
+#endif
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
   if(line=="radar")return radar.json();
@@ -125,5 +129,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, ble, fsformat";
+  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
 }

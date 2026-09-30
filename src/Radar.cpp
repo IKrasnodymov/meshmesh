@@ -3,6 +3,7 @@
 #include "MeshRadio.h"
 #include "WifiDiagnostics.h"
 #include "BleDiagnostics.h"
+#include "Internet.h"
 #include <Mm1Packet.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
@@ -61,6 +62,7 @@ void Radar::releaseBle(){
 }
 // The radar never shares Wi-Fi with the access point or the USB Wi-Fi probe.
 void Radar::wifiStart(){
+ internet.yieldRadio(); // scans, homing and CSI need the radio off any access point
  if(!WiFi.mode(WIFI_STA)){wifi=WifiFailed;return;}
  WiFi.setSleep(true); // required for Wi-Fi/BLE coexistence on ESP32-S3; see AGENTS.md
  if(!scanHandler)scanHandler=esp_event_handler_register(WIFI_EVENT,WIFI_EVENT_SCAN_DONE,onScanDone,nullptr)==ESP_OK;

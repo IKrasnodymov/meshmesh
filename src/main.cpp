@@ -9,6 +9,7 @@
 #include "Navigation.h"
 #include "Radar.h"
 #include "WifiDiagnostics.h"
+#include "Internet.h"
 #include <esp_system.h>
 #if defined(MM_HELTEC_V4)
 #include <hal/usb_serial_jtag_ll.h>
@@ -49,12 +50,20 @@ void setup() {
 #else
   Serial.printf("\n" MESHMM_FIRMWARE " / ThinkNode M9 / reset=%d\n",esp_reset_reason());
 #endif
-  config.load();hardware.beginClock();hardware.begin();meshRadio.begin();maps.begin();navigation.begin();portalBegin();uiBegin();
+  config.load();hardware.beginClock();hardware.begin();meshRadio.begin();maps.begin();
+#if !defined(MM_HELTEC_V4)
+  internet.begin();
+#endif
+  navigation.begin();portalBegin();uiBegin();
   Serial.println(meshRadio.selfTest()?"SELFTEST crypto/UTF-8/tamper PASS":"SELFTEST FAIL");
   Serial.println("READY: USB commands are available; type help");
 }
 void loop() {
-  hardware.tick();meshRadio.tick();maps.tick();navigation.tick();radar.tick();
+  hardware.tick();meshRadio.tick();
+#if !defined(MM_HELTEC_V4)
+  internet.tick();
+#endif
+  maps.tick();navigation.tick();radar.tick();
   int key=hardware.readKey();if(key)uiKey(key);
   static String command;
   unsigned budget=256;

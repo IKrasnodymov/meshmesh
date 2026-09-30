@@ -7,6 +7,7 @@
 #include "PortalPage.h"
 #include "WifiDiagnostics.h"
 #include "Radar.h"
+#include "Internet.h"
 #include <WiFi.h>
 #include <WebServer.h>
 #include <NimBLEDevice.h>
@@ -94,6 +95,7 @@ void portalToggle() {
   radar.release(); // the radar stops its Wi-Fi use (sweeps, homing, CSI beacon on the access point)
   if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;webRadarRelease();meshRadio.event="Wi-Fi off";}
   else {
+    internet.yieldRadio(); // the Wi-Fi client resumes when the access point is off
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
     wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);if(wifiOn)server.begin();meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
   }
