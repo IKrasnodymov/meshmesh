@@ -4,14 +4,16 @@ import json
 from pathlib import Path
 from device import connect,command
 from radio_check import RADIO_FIELDS
+from version import FIRMWARE
+from ports import M9_PORT, HELTEC_PORT
 
 def read(d,n):return json.loads(command(d,n))
 def main():
  original=json.loads(Path('backups/before-meshcore-0.3/m9-messages.json').read_text())
  original_config=json.loads(Path('backups/before-meshcore-0.3/m9-key.json').read_text())
- with connect('/dev/cu.wchusbserial10') as d:
+ with connect(M9_PORT) as d:
   state=read(d,'status');config=read(d,'key');history=read(d,'messages');nav=read(d,'navigation')
-  assert state['firmware']=='MeshMesh 0.3.0' and state['board']=='m9'
+  assert state['firmware']==FIRMWARE and state['board']=='m9'
   index={(m['source'],m['session'],m['id']):m for m in history};interrupted=0
   visible=[i for i,m in enumerate(original) if (m['source'],m['session'],m['id']) in index]
   assert visible==list(range(len(original)-len(visible),len(original))), 'History gap inside retained window'

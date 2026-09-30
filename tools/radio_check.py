@@ -6,6 +6,7 @@ import time
 from contextlib import ExitStack
 from pathlib import Path
 from device import connect, command
+from ports import M9_PORT, HELTEC_PORT
 
 RADIO_FIELDS = ('frequency', 'bandwidth', 'sf', 'cr', 'power', 'hops')
 
@@ -42,7 +43,7 @@ def delivery(sender, receiver, sender_id, receiver_id, text):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--m9', default='/dev/cu.wchusbserial10')
+    parser.add_argument('--m9', default=M9_PORT)
     parser.add_argument('--heltec', required=True)
     parser.add_argument('--configure', action='store_true', help='Copy M9 radio settings and network key to Heltec')
     parser.add_argument('--output', type=Path, default=Path('artifacts/radio-check.json'))

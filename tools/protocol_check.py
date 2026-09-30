@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from device import connect,command
+from ports import M9_PORT, HELTEC_PORT
 
 HEADER=struct.Struct('<2sBBIQQIIBBBB')
 ALL=2**64-1
@@ -28,7 +29,7 @@ def unseal(key,raw):
     return h,AESGCM(key).decrypt(iv,raw[36:],raw[:33]+raw[34:36])
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',default='/dev/cu.wchusbserial10');p.add_argument('--output',type=Path,default=Path('artifacts/protocol-check.json'));a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',default=M9_PORT);p.add_argument('--output',type=Path,default=Path('artifacts/protocol-check.json'));a=p.parse_args()
     checks=[]
     def check(name,truth):
         checks.append({'name':name,'pass':bool(truth)});print(('PASS ' if truth else 'FAIL ')+name)

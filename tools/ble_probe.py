@@ -6,14 +6,15 @@ import time
 from contextlib import ExitStack
 from pathlib import Path
 from device import connect, command
+from ports import M9_PORT, HELTEC_PORT
 
 def read(device, name):
     return json.loads(command(device, name))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--client', default='/dev/cu.usbmodem1101')
-    parser.add_argument('--server', default='/dev/cu.wchusbserial10')
+    parser.add_argument('--client', default=HELTEC_PORT)
+    parser.add_argument('--server', default=M9_PORT)
     parser.add_argument('--pin', type=int)
     parser.add_argument('--output', type=Path, default=Path('artifacts/ble-radio-check.json'))
     args = parser.parse_args()

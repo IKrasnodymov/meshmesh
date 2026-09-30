@@ -28,7 +28,7 @@ false
 true
 #endif
 );
-  sound=p.getBool("sound",true); russian=p.getBool("russian",false); brightness=p.getUChar("light",180);
+  sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); russian=p.getBool("russian",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);
   utcOffset=p.getShort("utc_offset",180);
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
@@ -42,7 +42,7 @@ void Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return;
   p.putString("name",name); p.putFloat("freq",frequency); p.putFloat("bw",bandwidth);
   p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops);
-  p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("russian",russian);
+  p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putBool("russian",russian);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }
 String Config::keyHex() const {String s; s.reserve(64);char b[3];for(auto v:key) {snprintf(b,3,"%02x",v);s+=b;}return s;}

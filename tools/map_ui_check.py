@@ -5,6 +5,7 @@ from contextlib import ExitStack
 from pathlib import Path
 from device import connect,command,screenshot
 from radio_check import apply,delivery
+from ports import M9_PORT, HELTEC_PORT
 
 def read(d,name):return json.loads(command(d,name))
 def ok(d,text):
@@ -24,8 +25,8 @@ def capture(d,name):
 
 def main():
  with ExitStack() as stack:
-  m9=stack.enter_context(connect('/dev/cu.wchusbserial10'))
-  heltec=stack.enter_context(connect('/dev/cu.usbmodem1101'))
+  m9=stack.enter_context(connect(M9_PORT))
+  heltec=stack.enter_context(connect(HELTEC_PORT))
   config=read(m9,'config');before=[read(d,'status') for d in (m9,heltec)]
   nav=read(m9,'navigation');areas=read(m9,'map areas');checks=[]
   assert nav['calibrated'] and not nav['calibrating'],'Saved physical compass calibration missing'
@@ -94,13 +95,23 @@ def main():
    for _ in draft:key(m9,8)
    if kb=='RU':key(m9,0x83)
    assert read(m9,'ui')['composer']==initial and read(m9,'config')['russian']==config['russian']
-   if len(initial.encode())+14<=151:
+   if len(initial.encode())+40<=151:
     if kb=='EN':key(m9,0x83)
-    for c in '{}:"<>~':key(m9,ord(c))
-    assert read(m9,'ui')['composer']==initial+'ХЪЖЭБЮЁ'
-    for _ in range(7):key(m9,8)
-    if kb=='EN':key(m9,0x83)
-    checks+=['RU shifted punctuation keys produce uppercase Cyrillic; UTF-8 backspace']
+    # Phonetic RU: 1-7 carry the letters without a Latin sound-alike; Sym symbols stay symbols;
+    # Right after a letter toggles its case.
+    for c in 'privet1234567':key(m9,ord(c))
+    key(m9,0xb7)
+    for c in '@#!':key(m9,ord(c))
+    assert read(m9,'ui')['composer']==initial+'приветчщъьэюЁ@#!'
+    for _ in range(16):key(m9,8)
+    assert read(m9,'ui')['composer']==initial
+    # Two quick spaces switch the input language and leave no space behind.
+    language=read(m9,'ui')['keyboard_language'];key(m9,32);key(m9,32);ui=read(m9,'ui')
+    assert ui['keyboard_language']!=language and ui['composer']==initial,'double space did not switch language'
+    if ui['keyboard_language']!=kb:key(m9,0x83)
+    assert read(m9,'ui')['keyboard_language']==kb
+    key(m9,0xa3);assert read(m9,'ui')['layout_help'];key(m9,0x86);assert not read(m9,'ui')['layout_help'] and read(m9,'ui')['page']=='chat'
+    checks+=['RU phonetic letters, digit letters, Right-arrow capital, Sym symbols kept; UTF-8 backspace','double space switches RU/EN','hold OK shows the RU layout']
    checks+=['draft retained across BACK and lock','independent keyboard language','locked keyboard ignored','physical LoRa ACK while locked']
    # Real inactivity timers: first wake key restores the screen, next navigates.
    apply(m9,{'auto_lock':30,'dim_after':10});key(m9,0x81);key(m9,13)

@@ -30,7 +30,7 @@ class MeshCoreRadioAdapter:public mesh::Radio {
   if(owner.transmitting||!radioIrq)return 0;radioIrq=false;
   int result=0;size_t n=owner.radio.getPacketLength();
   if((owner.radio.getIrqFlags()&irqRxDone)&&n>=2&&n<=size_t(cap)){
-   int rc=owner.radio.readData(bytes,n);if(!rc){owner.lastRssi=owner.radio.getRSSI();owner.lastSnr=owner.radio.getSNR();owner.rxCount++;result=n;}else owner.rejected++;
+   int rc=owner.radio.readData(bytes,n);if(!rc){owner.lastRssi=owner.radio.getRSSI();owner.lastSnr=owner.radio.getSNR();owner.lastRxAt=millis();owner.rxCount++;result=n;}else owner.rejected++;
   }else owner.rejected++;
   owner.radioError=owner.startReceiving();owner.dirty=true;return result;
  }
@@ -134,12 +134,20 @@ class MeshCoreBackend:public BaseChatMesh {
   if(wait.message.destination==meshmesh::Broadcast){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);sendFlood(packet);wait.due=millis()+45000;}
   wait.started=true;wait.attempts++;return true;
  }
+ // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.
+ bool resetPath(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c)return false;resetPathTo(*c);saveContacts();return true;}
+ bool forget(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c||!removeContact(*c))return false;saveContacts();return true;}
  void tick(){loop();if(contactsDue&&int32_t(millis()-contactsDue)>=0)saveContacts();}
 };
 int16_t MeshRadio::startReceiving(){constexpr uint32_t mask=(1UL<<RADIOLIB_IRQ_RX_DONE)|(1UL<<RADIOLIB_IRQ_CRC_ERR)|(1UL<<RADIOLIB_IRQ_HEADER_ERR)|(1UL<<RADIOLIB_IRQ_TIMEOUT);return radio.startReceive(UINT32_MAX,RADIOLIB_IRQ_RX_DEFAULT_FLAGS,mask);}
 String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%012llX",(unsigned long long)id);return b;}
 String MeshRadio::publicKeyText() const{if(!core)return "";char out[65];mesh::Utils::toHex(out,core->self_id.pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return destination==meshmesh::Broadcast?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
+bool MeshRadio::resetPath(uint64_t id){Peer* p=contact(id);if(!p||!core||!core->resetPath(p->publicKey))return false;p->pathLength=255;dirty=true;return true;}
+bool MeshRadio::removeContact(uint64_t id){
+ Peer* p=contact(id);if(!p||!core)return false;for(auto& wait:pending)if(wait.active&&wait.message.destination==id)return false;
+ if(!core->forget(p->publicKey))return false;unsigned i=p-peers;memmove(peers+i,peers+i+1,sizeof(Peer)*(peerCount-i-1));peerCount--;peers[peerCount]={};dirty=true;return true;
+}
 Peer* MeshRadio::contact(uint64_t id){for(unsigned i=0;i<peerCount;i++)if(peers[i].id==id)return &peers[i];return nullptr;}
 void MeshRadio::begin(){nodeId=ESP.getEfuseMac();if(applyConfig()){core=new MeshCoreBackend(*this);if(!core->initialize()){ready=false;event="MeshCore identity storage error";}}restoreHistory();if(ready)autoHelloDue=millis()+3000+esp_random()%2000;}
 bool MeshRadio::busy() const{return transmitting||corePool.getOutboundTotal()>0;}

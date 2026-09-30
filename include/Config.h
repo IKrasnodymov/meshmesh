@@ -11,7 +11,7 @@ struct Config {
   float frequency=868.731f, bandwidth=62.5f;
   uint8_t sf=8, cr=6, hops=3, brightness=180;
   int8_t power=10;
-  bool relay=true, gps=true, sound=true, russian=false;
+  bool relay=true, gps=true, sound=true, russian=false, batteryVolts=false;
   uint16_t autoLock=90,dimAfter=30;
   int16_t utcOffset=180;
   uint8_t key[32]={};

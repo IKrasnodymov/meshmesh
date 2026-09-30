@@ -29,7 +29,7 @@ class MeshRadio {
   DeviceRadio radio;
   bool ready=false;int16_t radioError=0;
   uint64_t nodeId=0;uint32_t networkId=0,rxCount=0,txCount=0,rejected=0,relayed=0;
-  float lastRssi=0,lastSnr=0;
+  float lastRssi=0,lastSnr=0;uint32_t lastRxAt=0;
   ChatMessage history[64];unsigned historyCount=0;
   Peer peers[24];unsigned peerCount=0;
   String event="Ready";bool dirty=true;
@@ -39,6 +39,7 @@ class MeshRadio {
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();
+  bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
  private:

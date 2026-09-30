@@ -8,11 +8,12 @@ constexpr float radioTcxo=1.8f;
 constexpr int sda=17, scl=18, oledReset=21, battery=1, button=0;
 constexpr int femPower=7,femEnable=2;
 #if defined(MM_HELTEC_R8)
-constexpr int peripheralPower=40,gpsEnable=42,adcEnable=-1;
+constexpr int peripheralPower=40,gpsEnable=42,adcEnable=-1,led=46;
 #else
-constexpr int peripheralPower=36,gpsEnable=34,adcEnable=37;
+constexpr int peripheralPower=36,gpsEnable=34,adcEnable=37,led=35;
 #endif
-constexpr int gpsRx=38,gpsTx=39;
+// ESP-side names: the GNSS connector module transmits on GPIO39 and listens on GPIO38.
+constexpr int gpsRx=39,gpsTx=38;
 #else
 constexpr float radioTcxo=3.3f;
 constexpr int spiClock=40, spiMiso=38, spiMosi=47;

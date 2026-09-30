@@ -14,13 +14,15 @@ import sys
 import time
 
 from device import command, connect
+from version import VERSION
+from ports import M9_PORT, HELTEC_PORT
 
 ROOT = Path(__file__).resolve().parents[1]
-M9 = '/dev/cu.wchusbserial10'
-HELTEC = '/dev/cu.usbmodem1101'
+M9 = M9_PORT
+HELTEC = HELTEC_PORT
 PACKAGES = {
-    'm9': ROOT / 'artifacts/meshmesh-m9-0.3.0',
-    'heltec_v4': ROOT / 'artifacts/meshmesh-heltec-v4-0.3.0',
+    'm9': ROOT / f'artifacts/meshmesh-m9-{VERSION}',
+    'heltec_v4': ROOT / f'artifacts/meshmesh-heltec-v4-{VERSION}',
 }
 RECEIPT = ROOT / 'artifacts/hardware-finish.json'
 
@@ -166,7 +168,7 @@ def main():
             '--output', 'artifacts/heltec-ble-radio-check.json')
         m9_page(130)
         with connect(M9) as device:
-            for key in [182, 182, 182, 182, 13]:
+            for key in [182, 183, 13]:  # Home grid: Connect; leaves credentials visible.
                 expect_ok(device, f'uikey {key}')
                 time.sleep(.2)
         run('release', 'tools/release_check.py')

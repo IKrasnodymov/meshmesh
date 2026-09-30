@@ -4,8 +4,9 @@ import argparse,json,time
 from pathlib import Path
 from contextlib import ExitStack
 from device import connect,command
+from ports import M9_PORT, HELTEC_PORT
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--server',default='/dev/cu.wchusbserial10');parser.add_argument('--client',default='/dev/cu.usbmodem1101');parser.add_argument('--output',type=Path,default=Path('artifacts/wifi-map-check.json'));args=parser.parse_args()
+parser.add_argument('--server',default=M9_PORT);parser.add_argument('--client',default=HELTEC_PORT);parser.add_argument('--output',type=Path,default=Path('artifacts/wifi-map-check.json'));args=parser.parse_args()
 with ExitStack() as stack:
  server=stack.enter_context(connect(args.server));client=stack.enter_context(connect(args.client))
  before=[json.loads(command(d,'status')) for d in [server,client]]

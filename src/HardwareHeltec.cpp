@@ -5,7 +5,8 @@
 #include <sys/time.h>
 Hardware hardware;
 int heltecFemTx=46;
-void Hardware::brightness(uint8_t level) {display.ssd1306_command(SSD1306_SETCONTRAST);display.ssd1306_command(level);}
+// Level 0 switches the OLED panel off (no static image left to burn in); any other level is contrast.
+void Hardware::brightness(uint8_t level) {if(!level){display.ssd1306_command(SSD1306_DISPLAYOFF);return;}display.ssd1306_command(SSD1306_DISPLAYON);display.ssd1306_command(SSD1306_SETCONTRAST);display.ssd1306_command(level);}
 void Hardware::setGps(bool enabled) {
   gpsEnabled=enabled;pinMode(pins::gpsEnable,OUTPUT);digitalWrite(pins::gpsEnable,enabled?LOW:HIGH);
   if(enabled)Serial1.begin(9600,SERIAL_8N1,pins::gpsRx,pins::gpsTx);else Serial1.end();

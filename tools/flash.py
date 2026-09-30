@@ -7,14 +7,16 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from version import VERSION
+from ports import M9_PORT, HELTEC_PORT
 
 ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--port',default='/dev/cu.wchusbserial10')
+    p.add_argument('--port',default=M9_PORT)
     p.add_argument('--backup',type=Path,default=ROOT/'backups/m9-original-20260929.bin')
-    p.add_argument('--package',type=Path,default=ROOT/'artifacts/meshmesh-m9-0.3.0')
+    p.add_argument('--package',type=Path,default=ROOT/f'artifacts/meshmesh-m9-{VERSION}')
     p.add_argument('--restore',action='store_true')
     p.add_argument('--check',action='store_true',help='Validate backup and package files without accessing USB');a=p.parse_args()
     info=json.loads(a.backup.with_suffix('.json').read_text());data=a.backup.read_bytes()

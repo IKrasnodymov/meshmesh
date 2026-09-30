@@ -8,11 +8,12 @@ import asyncio,json,time,hashlib
 from pathlib import Path
 from meshcore import MeshCore,EventType
 from device import connect,command
+from ports import M9_PORT, HELTEC_PORT
 
 async def main():
- stock=await MeshCore.create_serial('/dev/cu.usbmodem1101',default_timeout=8)
+ stock=await MeshCore.create_serial(HELTEC_PORT,default_timeout=8)
  if stock is None:raise RuntimeError('Independent MeshCore companion not responding')
- m9=connect('/dev/cu.wchusbserial10')
+ m9=connect(M9_PORT)
  def read(name):return json.loads(command(m9,name))
  events=[]
  stock.subscribe(EventType.ACK,lambda event:events.append(event.payload))

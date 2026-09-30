@@ -44,9 +44,9 @@ void usbTick() {
 void setup() {
   Serial.setRxBufferSize(2048);Serial.setTxBufferSize(2048);Serial.begin(115200);delay(300);
 #if defined(MM_HELTEC_V4)
-  Serial.printf("\nMeshMesh 0.3.0 / Heltec V4 / reset=%d\n",esp_reset_reason());
+  Serial.printf("\n" MESHMM_FIRMWARE " / Heltec V4 / reset=%d\n",esp_reset_reason());
 #else
-  Serial.printf("\nMeshMesh 0.3.0 / ThinkNode M9 / reset=%d\n",esp_reset_reason());
+  Serial.printf("\n" MESHMM_FIRMWARE " / ThinkNode M9 / reset=%d\n",esp_reset_reason());
 #endif
   config.load();hardware.beginClock();hardware.begin();meshRadio.begin();maps.begin();navigation.begin();portalBegin();uiBegin();
   Serial.println(meshRadio.selfTest()?"SELFTEST crypto/UTF-8/tamper PASS":"SELFTEST FAIL");

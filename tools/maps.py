@@ -4,6 +4,7 @@ import argparse,base64,json,math,struct,time,urllib.request,urllib.parse,zlib
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFont
 from device import connect,command
+from ports import M9_PORT, HELTEC_PORT
 MAGIC=b'MMAP1\n'
 ATTRIBUTION='© OpenStreetMap contributors · ODbL 1.0 · openstreetmap.org/copyright'
 
@@ -145,7 +146,7 @@ def upload(path,port):
 def main():
  p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='action',required=True)
  build=sub.add_parser('build');build.add_argument('--latitude',type=float,required=True);build.add_argument('--longitude',type=float,required=True);build.add_argument('--radius',type=float,default=2);build.add_argument('--bbox',type=float,nargs=4);build.add_argument('--zooms',default='13,14,15');build.add_argument('--name',default='Offline area');build.add_argument('--osm',type=Path,default=Path('artifacts/maps/osm.json'));build.add_argument('--reuse',action='store_true');build.add_argument('--endpoint',default='https://overpass-api.de/api/interpreter');build.add_argument('--output',type=Path,default=Path('artifacts/maps/area.mmmap'))
- up=sub.add_parser('upload');up.add_argument('package',type=Path);up.add_argument('--port',default='/dev/cu.wchusbserial10')
+ up=sub.add_parser('upload');up.add_argument('package',type=Path);up.add_argument('--port',default=M9_PORT)
  check=sub.add_parser('check');check.add_argument('package',type=Path)
  a=p.parse_args()
  if a.action=='upload':upload(a.package,a.port);return

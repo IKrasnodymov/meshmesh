@@ -6,14 +6,15 @@ import time
 from contextlib import ExitStack
 from pathlib import Path
 from device import connect, command, screenshot
+from ports import M9_PORT, HELTEC_PORT
 
 def read(device, name):
     return json.loads(command(device, name))
 
 def main():
     with ExitStack() as stack:
-        m9 = stack.enter_context(connect('/dev/cu.wchusbserial10'))
-        heltec = stack.enter_context(connect('/dev/cu.usbmodem1101'))
+        m9 = stack.enter_context(connect(M9_PORT))
+        heltec = stack.enter_context(connect(HELTEC_PORT))
         before = [read(device, 'status') for device in (m9, heltec)]
         captured = {}
         started = threading.Event()

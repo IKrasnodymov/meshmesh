@@ -5,6 +5,8 @@ from pathlib import Path
 from contextlib import ExitStack
 from device import connect,command
 from radio_check import RADIO_FIELDS
+from version import VERSION,FIRMWARE
+from ports import M9_PORT, HELTEC_PORT
 
 def read(d,name):return json.loads(command(d,name))
 def load(name):return json.loads(Path('artifacts',name+'.json').read_text())
@@ -12,17 +14,17 @@ def main():
  receipt=load('hardware-finish')
  required=['flash-m9','clock','persistence','map-ui','flash-heltec','radio','m9-ui','concurrency','heltec-ui','m9-wifi','m9-ble','heltec-wifi','heltec-ble']
  assert all(step in receipt['completed'] for step in required),'Run finish_on_hardware.py to install and verify the final packages'
- for board,folder in [('m9','meshmesh-m9-0.3.0'),('heltec_v4','meshmesh-heltec-v4-0.3.0')]:
+ for board,folder in [('m9',f'meshmesh-m9-{VERSION}'),('heltec_v4',f'meshmesh-heltec-v4-{VERSION}')]:
   manifest=Path('artifacts',folder,'manifest.json')
   assert hashlib.sha256(manifest.read_bytes()).hexdigest()==receipt['package_manifest_sha256'][board],'Package changed after hardware suite'
  with ExitStack() as stack:
-  devices=[stack.enter_context(connect(p)) for p in ['/dev/cu.wchusbserial10','/dev/cu.usbmodem1101']]
+  devices=[stack.enter_context(connect(p)) for p in [M9_PORT,HELTEC_PORT]]
   status=[read(d,'status') for d in devices];config=[read(d,'key') for d in devices]
   expected=dict(frequency=868.731,bandwidth=62.5,sf=8,cr=6,power=10,hops=3)
   for s,c in zip(status,config):
-   assert s['firmware']=='MeshMesh 0.3.0' and s['radio'] and s['radio_error']==0 and s['storage'] and s['psram']>0
+   assert s['firmware']==FIRMWARE and s['radio'] and s['radio_error']==0 and s['storage'] and s['psram']>0
    for k,v in expected.items():assert abs(c[k]-v)<.0001,(k,c[k])
-  for board,s in zip(['m9','heltec_v4'],status):assert s['build_sha256']==json.loads(Path('artifacts','meshmesh-'+('m9' if board=='m9' else 'heltec-v4')+'-0.3.0','manifest.json').read_text())['app_elf_sha256']
+  for board,s in zip(['m9','heltec_v4'],status):assert s['build_sha256']==json.loads(Path('artifacts','meshmesh-'+('m9' if board=='m9' else 'heltec-v4')+'-'+VERSION,'manifest.json').read_text())['app_elf_sha256']
   assert [s['board'] for s in status]==['m9','heltec_v4']
   for board,c in zip(['m9','heltec_v4'],config):assert c['key']==json.loads(Path('backups/before-meshcore-0.3',board+'-key.json').read_text())['key']
   assert all(s['protocol']=='MeshCore' and len(s['public_key'])==64 for s in status)
@@ -56,7 +58,7 @@ def main():
    assert abs(c['unix']-time.time())<5,'Clock is not synchronized'
    if s['clock_conflict']:assert not s['gps_fix'],'Conflicting GNSS date must not be used as a current fix'
   for d in devices:assert command(d,'selftest').startswith('OK crypto/UTF-8/tamper selftest')
-  report={'firmware':'MeshMesh 0.3.0','result':'passed_hardware_suite','package_manifest_sha256':receipt['package_manifest_sha256'],'devices':['ThinkNode M9','Heltec V4'],'boot':[s['boot'] for s in status],
+  report={'firmware':FIRMWARE,'result':'passed_hardware_suite','package_manifest_sha256':receipt['package_manifest_sha256'],'devices':['ThinkNode M9','Heltec V4'],'boot':[s['boot'] for s in status],
    'radio':{k:config[0][k] for k in RADIO_FIELDS},'checks':reports,'legacy_keys_preserved':True,'radio_protocol':'MeshCore',
    'maps':areas,'compass_calibration_preserved':True,'status':status,'clock':clocks,'test_notes':receipt.get('notes',[]),
    'web_codec':'Python/browser exact roundtrip, malformed packages rejected; 70379-feature city index checked',

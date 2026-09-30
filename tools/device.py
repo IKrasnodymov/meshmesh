@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 import serial
 from serial.tools.list_ports import comports
+from ports import M9_PORT, HELTEC_PORT
 
 def connect(port):
     s=serial.Serial(port=None,baudrate=115200,timeout=.5,exclusive=True)
@@ -65,7 +66,7 @@ def screenshot(s,target):
     return str(target)
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',default='/dev/cu.wchusbserial10')
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',default=M9_PORT)
     p.add_argument('--screenshot',metavar='FILE.ppm');p.add_argument('--output',type=Path);p.add_argument('command',nargs='?',default='status');a=p.parse_args()
     with connect(a.port) as s:
         if a.screenshot:print(screenshot(s,a.screenshot));return

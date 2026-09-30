@@ -1,6 +1,7 @@
 #include "Version.h"
 #include <Utils.h>
 #include <esp_ota_ops.h>
+#include <esp_system.h>
 #include "App.h"
 #include "MeshRadio.h"
 #include "Hardware.h"
@@ -16,7 +17,7 @@ String statusJson() {
   d["board"]="m9";
 #endif
   d["firmware"]=MESHMM_FIRMWARE;d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
-  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
+  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
   d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
   d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
@@ -34,7 +35,7 @@ String messagesJson() {
 String nodesJson(){DynamicJsonDocument d(16384);JsonArray a=d.to<JsonArray>();for(unsigned i=0;i<meshRadio.peerCount;i++){auto& p=meshRadio.peers[i];JsonObject j=a.createNestedObject();char key[65];mesh::Utils::toHex(key,p.publicKey,32);j["public_key"]=key;j["type"]=p.type;j["heard"]=p.heard;j["path_length"]=p.pathLength;j["id"]=meshRadio.idText(p.id);j["name"]=p.name;j["rssi"]=p.rssi;j["snr"]=p.snr;if(p.heard)j["age_seconds"]=(millis()-p.seen)/1000;else j["age_seconds"]=nullptr;j["hops"]=p.hops;j["position"]=p.position;if(p.position){j["latitude"]=p.latitude;j["longitude"]=p.longitude;}}String s;serializeJson(d,s);return s;}
 String configJson(bool includeKey) {
   StaticJsonDocument<768> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
-  d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["russian"]=config.russian;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
+  d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["russian"]=config.russian;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;
   d["utc_offset"]=config.utcOffset;
   String s;serializeJson(d,s);return s;
@@ -62,9 +63,9 @@ String applySettings(JsonObjectConst v) {
       if(!value.is<int>())return "ERR integer value required";int n=value.as<int>();
       if(n!=0 && (n<(name=="auto_lock"?30:10)||n>600))return "ERR timeout 0 or 30..600 (dim: 10..600)";
       if(name=="auto_lock")next.autoLock=n;else next.dimAfter=n;
-    } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian") {
+    } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian"||name=="battery_volts") {
       if(!value.is<bool>())return "ERR boolean required";bool n=value.as<bool>();
-      if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="russian")next.russian=n;
+      if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="russian")next.russian=n;if(name=="battery_volts")next.batteryVolts=n;
     } else return "ERR unknown setting: "+name;
   }
   if(!next.valid())return "ERR invalid settings; M9 868 MHz range is 863..870";
