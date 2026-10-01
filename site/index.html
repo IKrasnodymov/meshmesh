@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MeshMesh</title>
+<meta name="description" content="MeshMesh — прошивка для LoRa-устройств на ESP32: чаты без интернета и сотовой связи, офлайн-карты, радар сигналов. Совместима с MeshCore. Установка прямо из браузера.">
+<meta property="og:title" content="MeshMesh — связь без интернета">
+<meta property="og:description" content="Прошивка для LoRa-устройств: чаты, карты, радар. Совместима с MeshCore. Установка из браузера.">
+<meta property="og:image" content="https://ikrasnodymov.github.io/meshmesh/img/og.png">
+<meta name="theme-color" content="#080c11">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js?module"></script>
+<style>
+:root{color-scheme:dark;--bg:#080c11;--bg2:#0c1218;--card:#131a22;--hi:#1c2835;--line:#2a3542;--ink:#e4e9ee;--dim:#8d99a6;--faint:#56626e;--accent:#1fc2ae;--deep:#14524b;--ok:#4cc26b;--warn:#e9b13b;--info:#4f9df7;--violet:#a78bfa;--pink:#f472b6;--r:16px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html[lang=ru] :not(html)[lang=en],html[lang=en] :not(html)[lang=ru]{display:none!important}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{display:block;max-width:100%}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+section{padding:96px 0}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em}
+h2{font-size:clamp(28px,4vw,40px);font-weight:800}
+.lead{color:var(--dim);font-size:18px;margin:12px 0 0;max-width:620px}
+.kicker{font:500 13px/1 "JetBrains Mono",monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:12px;font-weight:600;font-size:16px;border:1px solid var(--line);color:var(--ink);background:var(--card);cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{text-decoration:none;background:var(--hi);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#04201c}
+.btn.primary:hover{background:#2fd6c1}
+.btn svg{width:20px;height:20px}
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(8,12,17,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(42,53,66,.6)}
+header .wrap{display:flex;align-items:center;gap:28px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--ink)}
+.logo:hover{text-decoration:none}
+.logo img{width:28px;height:28px}
+nav{display:flex;gap:22px;margin-left:auto}
+nav a{color:var(--dim);font-size:15px;font-weight:500}
+nav a:hover{color:var(--ink);text-decoration:none}
+.lang{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--dim);font:600 13px Inter,sans-serif;padding:7px 10px;cursor:pointer}
+html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(--hi);color:var(--ink)}
+.gh{display:flex;color:var(--dim)}
+.gh svg{width:22px;height:22px}
+.gh:hover{color:var(--ink)}
+/* hero */
+.hero{padding:72px 0 88px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-200px -100px auto auto;width:900px;height:900px;background:radial-gradient(circle,rgba(31,194,174,.16),transparent 60%);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;position:relative}
+.hero h1{font-size:clamp(40px,6vw,64px);font-weight:800;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{font-size:19px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;color:var(--dim);font-size:14px}
+.facts b{display:block;color:var(--ink);font-size:22px;font-weight:700}
+/* devices */
+.stage{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:440px}
+.m9{width:min(400px,100%);background:linear-gradient(160deg,#2b333d,#171c22);border-radius:30px;padding:20px 20px 18px;box-shadow:0 40px 80px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);border:1px solid #333d48}
+.m9 .screen{aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:#000;border:3px solid #050709;position:relative}
+.m9 .screen img{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s}
+.m9 .screen img.on{opacity:1}
+.keys{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:16px}
+.keys i{height:15px;border-radius:5px;background:#0e1216;box-shadow:inset 0 -2px 0 rgba(255,255,255,.04)}
+.keys i.w{grid-column:span 4}
+.heltec{position:absolute;left:-30px;bottom:-56px;width:200px;background:linear-gradient(160deg,#1d2a3a,#0f1822);border-radius:12px;padding:12px;border:1px solid #2a3a4c;box-shadow:0 24px 50px -10px rgba(0,0,0,.8);transform:rotate(-6deg)}
+.heltec .oled{aspect-ratio:2/1;background:#000;border-radius:3px;overflow:hidden;border:2px solid #05080b}
+.heltec .oled img{width:100%;height:100%}
+.heltec .lbl{display:flex;justify-content:space-between;margin-top:8px;font:500 9px "JetBrains Mono",monospace;color:#6c7f94}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:18px}
+.dots button{width:8px;height:8px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}
+.dots button.on{background:var(--accent);width:22px;border-radius:4px}
+/* how */
+.how{background:var(--bg2);border-block:1px solid #141c25}
+.diagram{margin:48px 0 40px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram .vert{display:none;max-width:340px;margin:0 auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.step .n{width:34px;height:34px;border-radius:10px;background:var(--deep);color:var(--accent);font-weight:800;display:grid;place-items:center;margin-bottom:16px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{margin:0;color:var(--dim);font-size:15px}
+/* features */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:zoom-in;transition:transform .2s,border-color .2s;display:flex;flex-direction:column;text-align:left;padding:0;color:inherit;font:inherit}
+.feat:hover{transform:translateY(-3px);border-color:#3a4a5c}
+.feat .shot{background:#000;aspect-ratio:4/3;position:relative;overflow:hidden}
+.feat .shot img{width:100%;height:100%;object-fit:cover}
+.feat .shot.oled{display:grid;place-items:center;background:#05080b}
+.feat .shot.oled img{width:86%;height:auto;object-fit:contain;border:1px solid #1d252e}
+.feat .shot.phone{background:linear-gradient(160deg,#0f2a28,#0b1117);display:flex;justify-content:center;align-items:flex-start;padding-top:22px}
+.feat .shot.phone img{width:56%;height:auto;object-fit:contain;border-radius:18px 18px 0 0;border:5px solid #222a33;border-bottom:0}
+.feat .count{position:absolute;right:10px;bottom:10px;background:rgba(8,12,17,.85);color:var(--ink);font:500 12px "JetBrains Mono",monospace;padding:4px 8px;border-radius:7px;border:1px solid var(--line)}
+.feat .txt{padding:18px 20px 22px}
+.feat h3{font-size:18px;display:flex;align-items:center;gap:10px}
+.feat h3 .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none}
+.feat h3 .ic svg{width:16px;height:16px}
+.feat p{margin:6px 0 0;color:var(--dim);font-size:15px}
+/* boards */
+.boards{margin-top:36px}
+.boards h4{margin:24px 0 10px;font:600 13px Inter,sans-serif;color:var(--dim);display:flex;align-items:center;gap:8px}
+.boards h4:first-child{margin-top:0}
+.boards h4 .tag{margin-left:0}
+.boards .bg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.board{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;color:var(--ink);font:inherit;text-align:left;transition:border-color .15s,background .15s}
+.board:hover{border-color:#3a4a5c}
+.board.on{border-color:var(--accent);background:#0f2522}
+.board .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--faint);flex:none;position:relative}
+.board.on .radio{border-color:var(--accent)}
+.board.on .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent)}
+.board b{font-weight:600;font-size:15px;display:block}
+.board small{color:var(--faint);font-size:12.5px}
+.tag{margin-left:auto;font:600 11px Inter,sans-serif;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.tag.ok{background:rgba(76,194,107,.14);color:var(--ok)}
+.tag.cm{background:rgba(233,177,59,.12);color:var(--warn)}
+/* install */
+.install{background:var(--bg2);border-block:1px solid #141c25}
+.flash{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px}
+.panel h3{font-size:20px;margin-bottom:18px}
+.panel ol{margin:0;padding:0;list-style:none;counter-reset:s}
+.panel ol li{counter-increment:s;display:flex;gap:14px;margin-bottom:16px;color:var(--dim)}
+.panel ol li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:8px;background:var(--hi);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
+.panel ol li b{color:var(--ink);font-weight:600}
+.chosen{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:18px}
+.chosen b{display:block}
+.chosen small{color:var(--dim)}
+.note{font-size:14px;color:var(--dim);padding:12px 14px;border-radius:10px;background:rgba(79,157,247,.08);border:1px solid rgba(79,157,247,.2);margin-top:16px}
+.note.warn{background:rgba(233,177,59,.08);border-color:rgba(233,177,59,.25)}
+.note b{color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+esp-web-install-button{display:inline-block}
+.unsup{color:var(--warn);font-size:15px}
+/* docs */
+.docs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.doc{display:block;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px;color:var(--ink);transition:border-color .15s,transform .15s}
+.doc:hover{text-decoration:none;border-color:#3a4a5c;transform:translateY(-2px)}
+.doc b{display:block;margin-bottom:4px}
+.doc span{color:var(--dim);font-size:14px}
+footer{padding:40px 0 56px;color:var(--faint);font-size:14px;border-top:1px solid #141c25}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:var(--dim)}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:rgba(3,5,8,.97);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.lb.open{display:flex}
+.lb figure{margin:0;max-width:min(1000px,100%);display:flex;flex-direction:column;align-items:center}
+.lb img{max-height:72vh;width:auto;max-width:100%;border-radius:10px;border:1px solid var(--line);image-rendering:auto}
+.lb img.px{image-rendering:pixelated}
+.lb figcaption{margin-top:18px;text-align:center;max-width:640px}
+.lb figcaption b{font-size:18px;display:block}
+.lb figcaption span{color:var(--dim)}
+.lb .thumbs{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:100%}
+.lb .thumbs button{width:72px;height:54px;border-radius:7px;border:2px solid transparent;padding:0;background:#000;cursor:pointer;overflow:hidden;opacity:.55}
+.lb .thumbs button.on{border-color:var(--accent);opacity:1}
+.lb .thumbs img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0;max-height:none}
+.lb .x,.lb .nav{position:absolute;background:var(--card);border:1px solid var(--line);color:var(--ink);width:46px;height:46px;border-radius:50%;cursor:pointer;display:grid;place-items:center}
+.lb .x{top:20px;right:20px}
+.lb .nav{top:50%;transform:translateY(-50%)}
+.lb .prev{left:20px}.lb .next{right:20px}
+.lb svg{width:20px;height:20px}
+@media (max-width:960px){
+ .hero .wrap{grid-template-columns:1fr}
+ .stage{min-height:0;margin-top:20px;padding-bottom:30px}
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .flash{grid-template-columns:1fr}
+ .docs{grid-template-columns:repeat(2,1fr)}
+ nav{display:none}
+ .lang{margin-left:auto}
+}
+@media (max-width:620px){
+ .wrap{padding:0 16px}
+ section{padding:64px 0}
+ .hero{padding:40px 0 56px}
+ .grid,.steps,.docs{grid-template-columns:1fr}
+ .heltec{width:140px;left:-6px;bottom:-10px}
+ .lb .nav{display:none}
+ .diagram .horiz{display:none}
+ .diagram .vert{display:block}
+ .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+ .panel{padding:20px}
+ .boards .bg{grid-template-columns:1fr 1fr;gap:8px}
+ .board{padding:12px;gap:10px}
+ .board b{font-size:14px}
+ .board .radio{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap">
+  <a class="logo" href="#"><img src="img/icon.svg" alt="">MeshMesh</a>
+  <nav>
+   <a href="#how"><span lang="ru">Как работает</span><span lang="en">How it works</span></a>
+   <a href="#features"><span lang="ru">Возможности</span><span lang="en">Features</span></a>
+   <a href="#install"><span lang="ru">Установка</span><span lang="en">Install</span></a>
+   <a href="#docs"><span lang="ru">Документация</span><span lang="en">Docs</span></a>
+  </nav>
+  <div class="lang"><button data-l="ru">RU</button><button data-l="en">EN</button></div>
+  <a class="gh" href="https://github.com/IKrasnodymov/meshmesh" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg></a>
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="wrap">
+  <div>
+   <div class="kicker">LoRa · MeshCore · ESP32</div>
+   <h1 lang="ru">Связь там, где <em>нет связи</em></h1>
+   <h1 lang="en">Talk where there's <em>no signal</em></h1>
+   <p class="lead" lang="ru">Прошивка для карманных LoRa-устройств. Сообщения идут по радио от устройства к устройству — без интернета, сотовой сети и серверов.</p>
+   <p class="lead" lang="en">Firmware for pocket LoRa devices. Messages hop by radio from device to device — no internet, no cell network, no servers.</p>
+   <div class="cta">
+    <a class="btn primary" href="#install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Установить из браузера</span><span lang="en">Install from browser</span></a>
+    <a class="btn" href="#features"><span lang="ru">Что умеет</span><span lang="en">What it does</span></a>
+   </div>
+   <div class="facts">
+    <div><b>13</b><span lang="ru">плат ESP32</span><span lang="en">ESP32 boards</span></div>
+    <div><b>MeshCore</b><span lang="ru">совместимое радио</span><span lang="en">compatible radio</span></div>
+    <div><b>RU / EN</b><span lang="ru">интерфейс</span><span lang="en">interface</span></div>
+    <div><b>MIT</b><span lang="ru">открытый код</span><span lang="en">open source</span></div>
+   </div>
+  </div>
+  <div>
+   <div class="stage">
+    <div class="m9" aria-label="ThinkNode M9">
+     <div class="screen" id="heroScreen"></div>
+     <div class="keys" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="w"></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="heltec" aria-label="Heltec V4"><div class="oled"><img id="heroOled" data-shot="heltec-home" alt="Heltec V4"></div><div class="lbl"><span>HELTEC V4</span><span>PRG ●</span></div></div>
+   </div>
+   <div class="dots" id="heroDots"></div>
+  </div>
+ </div>
+</section>
+
+<section class="how" id="how">
+ <div class="wrap">
+  <div class="kicker"><span lang="ru">Как это работает</span><span lang="en">How it works</span></div>
+  <h2 lang="ru">Каждое устройство — узел сети</h2>
+  <h2 lang="en">Every device is a node of the network</h2>
+  <p class="lead" lang="ru">Узлы слышат друг друга по LoRa и передают чужие сообщения дальше. Телефон подключается к своему устройству по Wi-Fi, Bluetooth или USB.</p>
+  <p class="lead" lang="en">Nodes hear each other over LoRa and pass other people's messages along. A phone connects to its own device over Wi-Fi, Bluetooth or USB.</p>
+  <div class="diagram">
+   <svg class="horiz" viewBox="0 0 1080 300" role="img" aria-label="LoRa mesh">
+    <defs>
+     <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1fc2ae"/></marker>
+    </defs>
+    <g fill="none" stroke="#1fc2ae" stroke-width="2.5" stroke-dasharray="7 7">
+     <path d="M230 150 H440" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M640 150 H850" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+    </g>
+    <g fill="none" stroke="#4f9df7" stroke-width="2" stroke-dasharray="4 6">
+     <path d="M140 210 V250"/><path d="M940 210 V250"/>
+    </g>
+    <g font-family="Inter,sans-serif" text-anchor="middle">
+     <rect x="50" y="90" width="180" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <rect x="80" y="108" width="120" height="56" rx="5" fill="#080c11" stroke="#1fc2ae"/>
+     <text x="140" y="142" fill="#1fc2ae" font-size="15" font-weight="700">M9</text>
+     <text x="140" y="192" fill="#8d99a6" font-size="13"><tspan class="t-ru">твоё устройство</tspan></text>
+     <rect x="440" y="90" width="200" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <circle cx="540" cy="132" r="22" fill="#14524b"/>
+     <path d="M528 140 l12 -18 l12 18" stroke="#1fc2ae" stroke-width="3" fill="none"/>
+     <text x="540" y="186" fill="#e4e9ee" font-size="15" font-weight="600" class="t-relay">ретранслятор</text>
+     <rect x="850" y="90" width="180" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <rect x="880" y="112" width="120" height="44" rx="4" fill="#000" stroke="#56626e"/>
+     <text x="940" y="140" fill="#e4e9ee" font-size="13" font-family="JetBrains Mono,monospace">Heltec</text>
+     <text x="940" y="192" fill="#8d99a6" font-size="13" class="t-friend">друг</text>
+     <text x="335" y="132" fill="#1fc2ae" font-size="14" font-weight="600">LoRa · 868 MHz</text>
+     <text x="745" y="132" fill="#1fc2ae" font-size="14" font-weight="600" class="t-km">через ретрансляторы</text>
+     <text x="140" y="276" fill="#4f9df7" font-size="13" font-weight="600">Wi-Fi · BLE · USB</text>
+     <text x="940" y="276" fill="#4f9df7" font-size="13" font-weight="600">Wi-Fi · BLE · USB</text>
+     <text x="335" y="178" fill="#56626e" font-size="12" class="t-enc">шифрование MeshCore</text>
+     <text x="745" y="178" fill="#56626e" font-size="12" class="t-ack">ответ ✓✓ о доставке</text>
+     <text x="540" y="40" fill="#8d99a6" font-size="13" class="t-top">без интернета, сотовой сети и серверов</text>
+    </g>
+   </svg>
+   <svg class="vert" viewBox="0 0 340 600" role="img" aria-label="LoRa mesh">
+    <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1fc2ae"/></marker></defs>
+    <g fill="none" stroke="#1fc2ae" stroke-width="2.5" stroke-dasharray="7 7">
+     <path d="M120 150 V250" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M120 350 V450" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+    </g>
+    <g fill="none" stroke="#4f9df7" stroke-width="2" stroke-dasharray="4 6"><path d="M210 95 H250"/><path d="M210 505 H250"/></g>
+    <g font-family="Inter,sans-serif" text-anchor="middle">
+     <text x="170" y="22" fill="#8d99a6" font-size="13" class="t-top">без интернета, сотовой сети и серверов</text>
+     <rect x="30" y="40" width="180" height="110" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <rect x="60" y="56" width="120" height="50" rx="5" fill="#080c11" stroke="#1fc2ae"/>
+     <text x="120" y="87" fill="#1fc2ae" font-size="15" font-weight="700">M9</text>
+     <text x="120" y="134" fill="#8d99a6" font-size="13" class="t-ru">твоё устройство</text>
+     <rect x="30" y="250" width="180" height="100" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <circle cx="120" cy="286" r="20" fill="#14524b"/>
+     <path d="M109 293 l11 -16 l11 16" stroke="#1fc2ae" stroke-width="3" fill="none"/>
+     <text x="120" y="334" fill="#e4e9ee" font-size="15" font-weight="600" class="t-relay">ретранслятор</text>
+     <rect x="30" y="450" width="180" height="110" rx="16" fill="#1c2835" stroke="#2a3542"/>
+     <rect x="60" y="468" width="120" height="40" rx="4" fill="#000" stroke="#56626e"/>
+     <text x="120" y="493" fill="#e4e9ee" font-size="13" font-family="JetBrains Mono,monospace">Heltec</text>
+     <text x="120" y="542" fill="#8d99a6" font-size="13" class="t-friend">друг</text>
+     <g text-anchor="start" font-size="13" font-weight="600">
+      <text x="134" y="196" fill="#1fc2ae">LoRa · 868 MHz</text><text x="134" y="214" fill="#56626e" font-weight="400" font-size="12" class="t-enc">шифрование MeshCore</text>
+      <text x="134" y="396" fill="#1fc2ae" class="t-km">через ретрансляторы</text><text x="134" y="414" fill="#56626e" font-weight="400" font-size="12" class="t-ack">ответ ✓✓ о доставке</text>
+      <text x="256" y="92" fill="#4f9df7">Wi-Fi</text><text x="256" y="108" fill="#4f9df7">BLE · USB</text>
+      <text x="256" y="502" fill="#4f9df7">Wi-Fi</text><text x="256" y="518" fill="#4f9df7">BLE · USB</text>
+     </g>
+    </g>
+   </svg>
+  </div>
+  <div class="steps">
+   <div class="step"><div class="n">1</div>
+    <h3 lang="ru">Прошейте</h3><h3 lang="en">Flash</h3>
+    <p lang="ru">Подключите плату по USB и установите прошивку прямо с этой страницы.</p>
+    <p lang="en">Plug the board in over USB and install the firmware right from this page.</p></div>
+   <div class="step"><div class="n">2</div>
+    <h3 lang="ru">Включите</h3><h3 lang="en">Power on</h3>
+    <p lang="ru">Устройство объявит себя, найдёт соседей и само построит маршруты.</p>
+    <p lang="en">The device announces itself, finds its neighbours and learns routes on its own.</p></div>
+   <div class="step"><div class="n">3</div>
+    <h3 lang="ru">Пишите</h3><h3 lang="en">Chat</h3>
+    <p lang="ru">С клавиатуры M9, кнопкой Heltec, из браузера или приложения для Android.</p>
+    <p lang="en">From the M9 keyboard, the Heltec button, a browser or the Android app.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="features">
+ <div class="wrap">
+  <div class="kicker"><span lang="ru">Возможности</span><span lang="en">Features</span></div>
+  <h2 lang="ru">Всё, что нужно вне сети</h2>
+  <h2 lang="en">Everything you need off the grid</h2>
+  <p class="lead" lang="ru">Нажмите на карточку, чтобы посмотреть все экраны. Это настоящий интерфейс прошивки.</p>
+  <p class="lead" lang="en">Tap a card to see every screen. This is the real firmware interface.</p>
+  <div class="grid" id="features-grid"></div>
+ </div>
+</section>
+
+<section class="install" id="install">
+ <div class="wrap">
+  <div class="kicker"><span lang="ru">Установка</span><span lang="en">Install</span></div>
+  <h2 lang="ru">Прошивка из браузера за минуту</h2>
+  <h2 lang="en">Flash from your browser in a minute</h2>
+  <p class="lead" lang="ru">Нужен Chrome или Edge на компьютере и USB-кабель. Ничего устанавливать не нужно.</p>
+  <p class="lead" lang="en">You need Chrome or Edge on a computer and a USB cable. Nothing to install.</p>
+  <div class="boards" id="boards"></div>
+  <div class="flash">
+   <div class="panel">
+    <h3 lang="ru">Установка</h3><h3 lang="en">Install</h3>
+    <div class="chosen"><div><b id="chosenName">—</b><small id="chosenInfo"></small></div><span class="tag" id="chosenTag"></span></div>
+    <ol>
+     <li lang="ru"><span>Подключите плату по USB. <b>Нет порта?</b> Удерживайте BOOT и нажмите RESET.</span></li>
+     <li lang="en"><span>Plug the board in over USB. <b>No port?</b> Hold BOOT and press RESET.</span></li>
+     <li lang="ru"><span>Нажмите <b>«Установить»</b> и выберите порт.</span></li>
+     <li lang="en"><span>Press <b>Install</b> and choose the port.</span></li>
+     <li lang="ru"><span>Дождитесь окончания (около минуты) — плата перезапустится.</span></li>
+     <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts.</span></li>
+    </ol>
+    <div class="row">
+     <esp-web-install-button id="installer" manifest="firmware/m9/manifest.json">
+      <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span lang="ru">Установить</span><span lang="en">Install</span></button>
+      <span slot="unsupported" class="unsup"><span lang="ru">Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере.</span><span lang="en">This browser has no Web Serial — open the page in Chrome or Edge on a computer.</span></span>
+      <span slot="not-allowed" class="unsup"><span lang="ru">Нужно открыть страницу по HTTPS.</span><span lang="en">The page must be opened over HTTPS.</span></span>
+     </esp-web-install-button>
+     <a class="btn" id="zip" href="#" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Файлы</span><span lang="en">Files</span></a>
+    </div>
+    <div class="note warn" id="communityNote" hidden><span lang="ru"><b>Плата сообщества.</b> Сборка проверена на компьютере, но на этой плате прошивку ещё никто не запускал. Расскажите в Issues, что работает.</span><span lang="en"><b>Community board.</b> The build is checked on a computer, but nobody has run it on this board yet. Tell us in Issues what works.</span></div>
+   </div>
+   <div class="panel">
+    <h3 lang="ru">Важно знать</h3><h3 lang="en">Good to know</h3>
+    <ol>
+     <li lang="ru"><span><b>Обновление MeshMesh</b> сохраняет ключ, контакты, настройки и историю — не ставьте галочку «Стереть».</span></li>
+     <li lang="en"><span><b>Updating MeshMesh</b> keeps your key, contacts, settings and history — leave “Erase” unticked.</span></li>
+     <li lang="ru"><span><b>Первая установка</b> поверх Meshtastic, MeshCore или другой прошивки — отметьте «Стереть устройство».</span></li>
+     <li lang="en"><span><b>First install</b> over Meshtastic, MeshCore or other firmware — tick “Erase device”.</span></li>
+     <li lang="ru"><span><b>Радио по умолчанию:</b> 868.731 МГц, 62.5 кГц, SF8, CR4/6 — меняется в «Настройки → Радио». У всех узлов сети параметры должны совпадать.</span></li>
+     <li lang="en"><span><b>Default radio:</b> 868.731 MHz, 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio. All nodes of a network must match.</span></li>
+     <li lang="ru"><span><b>Соблюдайте</b> правила использования радиочастот в своей стране.</span></li>
+     <li lang="en"><span><b>Follow</b> your country's radio regulations.</span></li>
+    </ol>
+    <div class="note"><span lang="ru"><b>Приложение для Android</b> — тот же интерфейс по Wi-Fi, Bluetooth или USB, уведомления о сообщениях.</span><span lang="en"><b>Android app</b> — the same interface over Wi-Fi, Bluetooth or USB, with message notifications.</span>
+     <div class="row" style="margin-top:12px"><a class="btn" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span lang="ru">Скачать APK</span><span lang="en">Download APK</span></a><small style="color:var(--faint)">Android 10+</small></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="docs">
+ <div class="wrap">
+  <div class="kicker"><span lang="ru">Документация</span><span lang="en">Documentation</span></div>
+  <h2 lang="ru">Подробности</h2>
+  <h2 lang="en">Details</h2>
+  <p class="lead" lang="ru">Документация написана по-русски.</p>
+  <p class="lead" lang="en">The documentation is written in Russian.</p>
+  <div class="docs" id="docs-list"></div>
+ </div>
+</section>
+</main>
+
+<footer>
+ <div class="wrap">
+  <span>MeshMesh <span id="ver"></span> · <a href="https://github.com/IKrasnodymov/meshmesh/blob/main/LICENSE">MIT</a></span>
+  <span><span lang="ru">Радио —</span><span lang="en">Radio by</span> <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> · <span lang="ru">карты</span><span lang="en">maps</span> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></span>
+ </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+ <button class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+ <button class="nav prev" data-step="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+ <button class="nav next" data-step="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+ <figure><img id="lbImg" alt=""><figcaption><b id="lbTitle"></b><span id="lbText"></span></figcaption></figure>
+ <div class="thumbs" id="lbThumbs"></div>
+</div>
+
+<script>
+const REPO='https://github.com/IKrasnodymov/meshmesh';
+const ICONS={
+ chat:'<path d="M4 5h16v11H8l-4 4z"/>',map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
+ nodes:'<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M11 7.3 6.2 15.8M13 7.3l4.8 8.5M7.5 18h9"/>',
+ radar:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 19 6"/>',
+ motion:'<path d="M3 12h4l3-7 4 14 3-7h4"/>',chess:'<path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/>',
+ cards:'<rect x="3" y="5" width="11" height="15" rx="2"/><path d="M14 7.5 19 9l-3.5 12-5-1.4"/>',
+ compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+ keyboard:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M7 14h10"/>',
+ phone:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',oled:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h10"/>',
+ pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>'
+};
+// Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless web: true) and short captions.
+const FEATURES=[
+ {ic:'chat',c:'#1fc2ae',t:['Чаты','Chats'],d:['Личные и общий чат, отметки доставки ✓✓, повтор при сбое.','Direct and public chats, ✓✓ delivery marks, automatic retries.'],
+  shots:[['m9-threads','Список разговоров','Conversations'],['m9-chat','Личный чат: путь и доставка','Direct chat: route and delivery'],['m9-chat-public','Общий канал Public','Public channel'],['heltec-messages','Heltec: сообщения на OLED','Heltec: messages on the OLED'],['heltec-popup','Heltec: новое сообщение','Heltec: new message']]},
+ {ic:'map',c:'#4f9df7',t:['Офлайн-карты','Offline maps'],d:['OpenStreetMap на SD-карте, ваша позиция по GPS и узлы на карте.','OpenStreetMap on the SD card, your GPS position and nodes on the map.'],
+  shots:[['m9-map','Карта с компасом и масштабом','Map with compass and scale'],['m9-library','Сохранённые области','Saved areas']]},
+ {ic:'nodes',c:'#a78bfa',t:['Узлы рядом','Nearby nodes'],d:['Кто в сети: сигнал, число ретрансляторов, расстояние и направление.','Who is on the air: signal, hops, distance and bearing.'],
+  shots:[['m9-nodes','Контакты, ретрансляторы и комнаты','Contacts, repeaters and rooms'],['m9-node','Карточка узла','Node card'],['heltec-nodes','Heltec: узлы','Heltec: nodes']]},
+ {ic:'radar',c:'#f472b6',t:['Радар сигналов','Signal radar'],d:['Wi-Fi, Bluetooth и LoRa вокруг. Пеленг «теплее — холоднее» со звуком.','Wi-Fi, Bluetooth and LoRa around you. “Warmer / colder” homing with sound.'],
+  shots:[['m9-radar','Развёртка: ближе к центру — сильнее','Sweep: closer to centre — stronger'],['m9-homing','Пеленг выбранной цели','Homing on a target'],['heltec-radar','Heltec: радар','Heltec: radar'],['heltec-homing','Heltec: пеленг','Heltec: homing']]},
+ {ic:'motion',c:'#e9b13b',t:['Датчик движения','Motion sensor'],d:['Две платы замечают человека, проходящего между ними (Wi-Fi CSI).','Two boards notice a person walking between them (Wi-Fi CSI).'],
+  shots:[['m9-motion','Приёмник: движение обнаружено','Receiver: motion detected']]},
+ {ic:'chess',c:'#4cc26b',t:['Шахматы','Chess'],d:['Партии с контактами по радио: каждый ход — сообщение с подтверждением.','Play your contacts over radio: every move is an acknowledged message.'],
+  shots:[['m9-chess-italian','Партия с Heltec V4','A game with Heltec V4'],['m9-chess-promotion','Превращение пешки','Pawn promotion']]},
+ {ic:'cards',c:'#e5564d',t:['Косынка','Solitaire'],d:['Классический пасьянс на M9 — пока ждёте ответа.','Classic Klondike on the M9 — while you wait for a reply.'],
+  shots:[['m9-solitaire-played','Партия с подсказкой','A game with a hint']]},
+ {ic:'compass',c:'#4f9df7',t:['GPS и компас','GPS and compass'],d:['Координаты, спутники, азимут; отправка своей позиции контактам.','Coordinates, satellites, heading; share your position with contacts.'],
+  shots:[['m9-sensors','Навигация','Navigation'],['heltec-gps','Heltec: GPS','Heltec: GPS']]},
+ {ic:'keyboard',c:'#1fc2ae',t:['Экран и клавиатура','Screen and keyboard'],d:['Меню из плиток, фонетический русский ввод, экран блокировки.','Tile menu, phonetic Cyrillic input, lock screen.'],
+  shots:[['m9-home','Главное меню','Home'],['m9-layout','Русская раскладка','Cyrillic layout'],['m9-locked','Блокировка','Lock screen']]},
+ {ic:'sliders',c:'#8d99a6',t:['Настройки и диагностика','Settings and diagnostics'],d:['Радио, экран, связь и состояние всех модулей — на самом устройстве.','Radio, display, connections and module health — on the device itself.'],
+  shots:[['m9-settings','Настройки','Settings'],['m9-radio','Радио','Radio'],['m9-diagnostics','Состояние модулей','Module health'],['heltec-settings','Heltec: настройки','Heltec: settings']]},
+ {ic:'oled',c:'#e4e9ee',t:['Одна кнопка','One button'],d:['Heltec и похожие платы: клик — следующий экран, удержание — действие.','Heltec and similar boards: click for the next screen, hold for an action.'],
+  oled:true,shots:[['heltec-home','Главный экран','Home'],['heltec-messages-menu','Меню по удержанию','Hold menu'],['heltec-wifi-on','Точка доступа для телефона','Access point for a phone']]},
+ {ic:'phone',c:'#4f9df7',t:['Телефон и браузер','Phone and browser'],d:['Веб-интерфейс по Wi-Fi устройства и приложение для Android: Wi-Fi, Bluetooth, USB.','Web interface over the device Wi-Fi, and an Android app: Wi-Fi, Bluetooth, USB.'],
+  phone:true,shots:[['web-home','Главное меню в браузере телефона','Home in a phone browser'],['web-chat','Чат: маршрут и ✓✓ доставки','Chat: route and ✓✓ delivery'],['web-public','Общий канал','Public channel'],['web-nodes','Узлы','Nodes'],['web-map','Карта с SD-карты устройства','Map from the device SD card'],['web-radar','Радар','Radar'],['web-homing','Пеленг','Homing'],['web-motion','Датчик движения','Motion sensor'],['web-board','Шахматы','Chess'],['web-radio','Настройки радио','Radio settings'],['web-desktop','На компьютере','On a computer']]}
+];
+const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motion'];
+const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
+const DOCS=[
+ ['README.md','Обзор и управление','Overview and controls'],
+ ['docs/meshcore-migration.md','MeshCore: ключи и совместимость','MeshCore: keys and compatibility'],
+ ['docs/boards.md','Платы и выводы','Boards and pins'],
+ ['docs/android.md','Приложение для Android','Android app'],
+ ['docs/chess.md','Шахматы: протокол','Chess protocol'],
+ ['docs/maps-format.md','Формат карт','Map format'],
+ ['docs/feature-parity.md','Сравнение с MeshCore','Comparison with MeshCore'],
+ ['docs/verification.md','Что проверено на железе','Hardware verification']
+];
+let lang='ru';
+const L=a=>a[lang==='ru'?0:1];
+const shotSrc=(n,web)=>web?`img/${n}.webp`:`img/${n}-${lang}.png`;
+const svg=(k,col)=>`<svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+
+function render(){
+ document.documentElement.lang=lang;
+ document.querySelectorAll('[data-shot]').forEach(i=>i.src=shotSrc(i.dataset.shot));
+ document.getElementById('features-grid').innerHTML=FEATURES.map((f,i)=>{
+  const s=f.shots[0];
+  const cls=f.oled?'shot oled':f.phone?'shot phone':'shot';
+  return `<button class="feat" data-f="${i}"><div class="${cls}">${s?`<img loading="lazy" src="${shotSrc(s[0],f.phone)}" alt="${L(f.t)}">`:''}${f.shots.length>1?`<span class="count">${f.shots.length}</span>`:''}</div><div class="txt"><h3><span class="ic" style="background:${f.c}22">${svg(f.ic,f.c)}</span>${L(f.t)}</h3><p>${L(f.d)}</p></div></button>`}).join('');
+ document.getElementById('docs-list').innerHTML=DOCS.map(d=>`<a class="doc" href="${REPO}/blob/main/${d[0]}"><b>${L([d[1],d[2]])}</b><span>${d[0].replace('docs/','')}</span></a>`).join('');
+ const svgText={'t-relay':['ретранслятор','repeater'],'t-friend':['друг','a friend'],'t-km':['через ретрансляторы','via repeaters'],'t-enc':['шифрование MeshCore','MeshCore encryption'],'t-ack':['ответ ✓✓ о доставке','✓✓ delivery receipt'],'t-top':['без интернета, сотовой сети и серверов','no internet, no cell network, no servers'],'t-ru':['твоё устройство','your device']};
+ for(const [c,v] of Object.entries(svgText))document.querySelectorAll('.'+c).forEach(e=>e.textContent=L(v));
+ buildHero();renderBoards();
+ try{localStorage.setItem('mm-lang',lang)}catch(e){}
+}
+// Hero slideshow
+let heroI=0,heroTimer;
+function buildHero(){
+ const box=document.getElementById('heroScreen');
+ box.innerHTML=HERO.map((n,i)=>`<img src="${shotSrc(n)}" alt="" class="${i===heroI?'on':''}">`).join('');
+ document.getElementById('heroDots').innerHTML=HERO.map((_,i)=>`<button aria-label="${i+1}" class="${i===heroI?'on':''}" data-h="${i}"></button>`).join('');
+}
+function heroGo(i){
+ heroI=(i+HERO.length)%HERO.length;
+ document.querySelectorAll('#heroScreen img').forEach((im,k)=>im.classList.toggle('on',k===heroI));
+ document.querySelectorAll('#heroDots button').forEach((b,k)=>b.classList.toggle('on',k===heroI));
+ document.getElementById('heroOled').src=shotSrc(OLED[heroI%OLED.length]);
+}
+function heroStart(){clearInterval(heroTimer);heroTimer=setInterval(()=>heroGo(heroI+1),3200)}
+document.getElementById('heroDots').addEventListener('click',e=>{const b=e.target.closest('[data-h]');if(b){heroGo(+b.dataset.h);heroStart()}});
+// Lightbox
+let lbF=null,lbI=0;
+function lbShow(){
+ const f=FEATURES[lbF],s=f.shots[lbI],img=document.getElementById('lbImg');
+ img.src=shotSrc(s[0],f.phone);img.alt=L([s[1],s[2]]);
+ img.classList.toggle('px',!f.phone);
+ img.style.maxWidth=f.phone&&s[0]!=='web-desktop'?'380px':'';
+ document.getElementById('lbTitle').textContent=L([s[1],s[2]]);
+ document.getElementById('lbText').textContent=f.shots.length>1?`${L(f.t)} · ${lbI+1} / ${f.shots.length}`:L(f.t);
+ document.getElementById('lbThumbs').innerHTML=f.shots.length>1?f.shots.map((t,i)=>`<button class="${i===lbI?'on':''}" data-t="${i}"><img src="${shotSrc(t[0],f.phone)}" alt=""></button>`).join(''):'';
+ document.querySelectorAll('#lb .nav').forEach(n=>n.style.visibility=f.shots.length>1?'':'hidden');
+}
+function lbOpen(i){if(!FEATURES[i].shots.length)return;lbF=i;lbI=0;lbShow();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function lbClose(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function lbStep(d){const n=FEATURES[lbF].shots.length;lbI=(lbI+d+n)%n;lbShow()}
+document.getElementById('features-grid').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(b)lbOpen(+b.dataset.f)});
+document.getElementById('lb').addEventListener('click',e=>{
+ if(e.target.closest('[data-close]')||e.target.id==='lb')return lbClose();
+ const s=e.target.closest('[data-step]');if(s)return lbStep(+s.dataset.step);
+ const t=e.target.closest('[data-t]');if(t){lbI=+t.dataset.t;lbShow()}
+});
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')lbClose();if(e.key==='ArrowRight')lbStep(1);if(e.key==='ArrowLeft')lbStep(-1)});
+let touchX=null;
+document.getElementById('lb').addEventListener('touchstart',e=>touchX=e.touches[0].clientX,{passive:true});
+document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>50)lbStep(dx<0?1:-1);touchX=null});
+// Boards and installer
+let BOARDS=[],board='m9';
+const SUB={m9:['клавиатура, экран 320×240, GPS','keyboard, 320×240 screen, GPS'],heltec_v4:['OLED 128×64, кнопка PRG','128×64 OLED, PRG button'],heltec_v4_r8:['ревизия с 8 МБ PSRAM','8 MB PSRAM revision'],tdeck:['клавиатура, интерфейс как у M9','keyboard, M9 interface']};
+function renderBoards(){
+ const box=document.getElementById('boards');
+ if(!BOARDS.length){box.innerHTML='';return}
+ const card=b=>`<button class="board${b.env===board?' on':''}" data-b="${b.env}"><span class="radio"></span><span><b>${b.name}</b><small>${SUB[b.env]?L(SUB[b.env]):`${b.chip} · ${b.flash}`}</small></span></button>`;
+ box.innerHTML=`<h4><span class="tag ok">✓</span>${L(['Проверено на устройстве','Tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>b.verified).map(card).join('')}</div>`
+  +`<h4><span class="tag cm">β</span>${L(['Сборки для других плат — на железе ещё не проверены','Builds for other boards — not yet tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>!b.verified).map(card).join('')}</div>`;
+ const b=BOARDS.find(x=>x.env===board)||BOARDS[0];
+ document.getElementById('installer').setAttribute('manifest',`firmware/${b.env}/manifest.json`);
+ document.getElementById('zip').href=b.zip;
+ document.getElementById('chosenName').textContent=b.name;
+ document.getElementById('chosenInfo').textContent=`MeshMesh ${VERSION} · ${b.chip} · ${b.flash}`;
+ const tag=document.getElementById('chosenTag');
+ tag.className='tag '+(b.verified?'ok':'cm');tag.textContent=b.verified?L(['проверено на устройстве','tested on hardware']):L(['не проверено на плате','not tested on hardware']);
+ document.getElementById('communityNote').hidden=b.verified;
+}
+document.getElementById('boards').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(b){board=b.dataset.b;renderBoards()}});
+let VERSION='';
+fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARDS=j.boards;document.getElementById('ver').textContent=j.version;renderBoards()}).catch(()=>{document.getElementById('boards').innerHTML=`<p class="unsup">${L(['Сборки ещё публикуются — загляните через пару минут.','Builds are still being published — check back in a few minutes.'])}</p>`});
+document.querySelector('.lang').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b){lang=b.dataset.l;render()}});
+try{lang=localStorage.getItem('mm-lang')||(navigator.language||'').toLowerCase().startsWith('ru')&&'ru'||'en'}catch(e){lang=(navigator.language||'').toLowerCase().startsWith('ru')?'ru':'en'}
+render();heroStart();
+</script>
+</body>
+</html>

@@ -28,11 +28,21 @@ android {
     }
     buildFeatures { buildConfig = true }
     sourceSets["main"].assets.srcDir(webAssets)
+    // The published APK is signed with the project key (MM_KEYSTORE, MM_KEYSTORE_PASSWORD) so that
+    // it updates in place; local builds fall back to the debug key and install as is.
+    val keystore = System.getenv("MM_KEYSTORE")?.let(::file)
+    signingConfigs {
+        if (keystore != null) create("release") {
+            storeFile = keystore
+            storePassword = System.getenv("MM_KEYSTORE_PASSWORD")
+            keyAlias = "meshmesh"
+            keyPassword = System.getenv("MM_KEYSTORE_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
-            // Signed with the debug key unless a release key is configured: installable as is.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (keystore != null) "release" else "debug")
         }
     }
     compileOptions {

@@ -1,0 +1,98 @@
+# Builds every board, the Android app and the site, then publishes them to GitHub Pages.
+name: Site and firmware
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        env: [m9, heltec_v4, heltec_v4_r8, heltec_v3, heltec_tracker, tdeck, tbeam, tbeam_supreme, t3s3, tlora_v2_1_6, xiao_s3_wio, station_g2, thinknode_m2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ hashFiles('platformio.ini') }}
+      - run: pip install platformio esptool
+      - run: pio run -e ${{ matrix.env }}
+      - run: python tools/package.py ${{ matrix.env }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.env }}
+          path: artifacts/
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build
+        working-directory: android
+        env:
+          MM_KEYSTORE_BASE64: ${{ secrets.MM_KEYSTORE_BASE64 }}
+          MM_KEYSTORE_PASSWORD: ${{ secrets.MM_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$MM_KEYSTORE_BASE64" ]; then
+            echo "$MM_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            export MM_KEYSTORE="$RUNNER_TEMP/release.jks"
+          fi
+          ./gradlew --no-daemon testDebugUnitTest assembleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+  site:
+    needs: [firmware, android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: package-*
+          path: artifacts
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: apk
+          path: apk
+      - run: |
+          python tools/pages.py _site m9 heltec_v4 heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
+          mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: site
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

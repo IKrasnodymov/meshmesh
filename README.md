@@ -1,4 +1,23 @@
-# MeshMesh 0.3.2 — MeshCore
+# MeshMesh
+
+**Сайт и установка из браузера: https://ikrasnodymov.github.io/meshmesh/**
+
+Прошивка для LoRa-устройств на ESP32 (Elecrow ThinkNode M9, Heltec V4 и ещё 11 плат):
+чаты без интернета и сотовой сети, офлайн-карты, радар сигналов, датчик движения по Wi-Fi CSI,
+шахматы по радио, веб-интерфейс и приложение для Android. Радио совместимо с MeshCore.
+
+*Off-grid LoRa messaging firmware for ESP32 devices, MeshCore-compatible radio, offline maps,
+signal radar and a web/Android interface. Install it from the browser on the site above.*
+
+<p>
+<img src="site/img/m9-home-ru.png" width="32%" alt="Главное меню M9">
+<img src="site/img/m9-chat-ru.png" width="32%" alt="Чат">
+<img src="site/img/m9-radar-ru.png" width="32%" alt="Радар">
+</p>
+
+Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
+
+## 0.3.2 — MeshCore
 
 Радио переведено на MeshCore; наш интерфейс, карты и настройки сохранены.
 Порядок обнаружения, параметры, ключи и ограничения — в [руководстве перехода](docs/meshcore-migration.md).
@@ -326,7 +345,7 @@ RX/TX, не использует подстановку радиопакетов
 .venv/bin/python tools/device.py config
 .venv/bin/python tools/device.py 'set {"frequency":868.731,"bandwidth":62.5,"sf":8,"cr":6,"power":10,"hops":3,"russian":true}'
 .venv/bin/python tools/device.py 'send ALL Привет'
-.venv/bin/python tools/device.py 'send 14EA5C8FEE68 Личное сообщение'
+.venv/bin/python tools/device.py 'send 112233445566 Личное сообщение'
 .venv/bin/python tools/device.py selftest
 .venv/bin/python tools/device.py key --output backups/meshmesh-private-config.json
 .venv/bin/python tools/device.py --screenshot artifacts/home.ppm

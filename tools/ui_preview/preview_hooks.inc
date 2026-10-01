@@ -42,3 +42,14 @@ String Internet::savedName(unsigned){return "";}String Internet::stateText(bool 
 #endif
 bool Maps::inArea() const{return true;}
 bool webRadarActive(){return false;}
+// Same as src/MeshRadio.cpp (the preview does not link the radio).
+String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
+ bool ru=config.russian;
+ if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";
+ String hops=m.hops==255?String():!m.hops?String(ru?(brief?"напр.":"напрямую"):"direct"):(brief?String(m.hops)+(ru?" ретр.":" rpt"):String(ru?"через ":"via ")+m.hops+(ru?" ретр.":" rpt"));
+ String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(ru?"по маршруту":"routed"))
+  :!m.outgoing?(hops.length()?hops:String("flood")) // incoming: how far it came
+  :m.status==ChatMessage::Delivered&&hops.length()&&!brief?"flood, "+hops:String("flood");
+ if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(ru?" · попытка ":" · try ")+m.tries):" "+String(m.tries)+"/3";
+ return s;
+}
