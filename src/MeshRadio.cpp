@@ -132,7 +132,9 @@ class MeshCoreBackend:public BaseChatMesh {
   else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||c->type!=ADV_TYPE_CHAT){owner.event="Contact is not a chat node";return false;}
    // Stock MeshCore layout. Keep timestamp/text stable for retries; attempt changes the ACK/hash.
    uint8_t bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);bytes[4]=attempt&3;size_t n=strlen(wait.message.text);memcpy(bytes+5,wait.message.text,n);mesh::Utils::sha256((uint8_t*)&wait.ack[attempt],4,bytes,5+n,self_id.pub_key,32);packet=createDatagram(PAYLOAD_TYPE_TXT_MSG,c->id,c->getSharedSecret(self_id),bytes,5+n);
-   if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);if(c->out_path_len==OUT_PATH_UNKNOWN)sendFlood(packet);else sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcFloodTimeoutMillisFor(coreRadio.getEstAirtimeFor(packet->getRawLength()));}
+   if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);// The last attempt floods even with a known path: a broken route must not lose the message,
+   // and the receiver's flood reply carries the new path back (as stock MeshCore companions do).
+   if(c->out_path_len==OUT_PATH_UNKNOWN||attempt>=2)sendFlood(packet);else sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcFloodTimeoutMillisFor(coreRadio.getEstAirtimeFor(packet->getRawLength()));}
   }
   if(!packet)return false;
   if(wait.message.destination==meshmesh::Broadcast){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);sendFlood(packet);wait.due=millis()+45000;}
@@ -217,9 +219,10 @@ void MeshRadio::restoreHistory() {
     }
   }
 }
+// After the last failed attempt a known path is reset: the next message floods and learns a new one.
 void MeshRadio::tick(){
  if(!ready||!core)return;core->tick();uint32_t now=millis();
- for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.attempts>=3||p.message.destination==meshmesh::Broadcast){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
+ for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.attempts>=3||p.message.destination==meshmesh::Broadcast){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(p.message.destination!=meshmesh::Broadcast){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
  if(lastHello&&now-lastHello>300000&&!busy())sendHello();
 }
