@@ -652,7 +652,8 @@ function chessState(g,board){
  const won=g.result===g.color,lost=!!g.result&&g.result!=='draw'&&!won;
  return (won?'Победа':lost?'Поражение':'Ничья')+({mate:': мат',resigned:won?': соперник сдался':': вы сдались',stalemate:': пат',repetition:': троекратное повторение',fifty:': 50 ходов без взятий',material:': мало фигур для мата',too_long:': предел ходов',agreed:' по соглашению'}[g.reason]||'')}
 function chessTone(g){if(g.state==='over'){const won=g.result===g.color;return won?'ok':g.result&&g.result!=='draw'&&g.reason!=='declined'&&g.reason!=='cancelled'?'bad':'muted'}return needsMe(g)?'acc':'muted'}
-const deliveryText=g=>({1:'отправляется…',2:'отправлено, ждём подтверждения',3:'доставлено',4:'не доставлено — повторите отправку'}[g.out_status]||'');
+function deliveryText(g){if(g.out_status!==4)return {1:'отправляется…',2:'отправлено, ждём подтверждения',3:'доставлено'}[g.out_status]||'';
+ if(g.auto_stopped)return'не доставлено за сутки — нажмите «Повторить отправку»';const s=g.retry_in;return s<0?'не доставлено, повторяю':s<60?'не доставлено, повтор сейчас':`не доставлено, повтор через ${Math.ceil(s/60)} мин`}
 function chessTileText(){const w=chess.waiting,n=chess.games.length;return w?plural(w,'ждёт хода','ждут хода','ждут хода'):n?plural(n,'партия','партии','партий'):'С контактами'}
 
 // News: compared with the previous list, so it does not depend on the device's menu language.
@@ -664,7 +665,7 @@ function chessNews(before,after){
   else if(o.state!=='over'&&g.state==='over')out.push(`${n}: ${chessState(g).toLowerCase()}`);
   if(o.state==='inviting'&&g.state==='playing'&&!(g.plies>o.plies)){out.push(`${n} принял вызов`+(g.my_turn?' — ваш ход':''));act=act||g.my_turn}
   if(o.draw_offer!=='theirs'&&g.draw_offer==='theirs'&&g.state==='playing'){out.push(`${n} предлагает ничью`);act=true}
-  if(o.out_status!==4&&g.out_status===4)out.push(`${n}: не доставлено, нажмите «Повторить отправку»`)}
+  if(o.out_status!==4&&g.out_status===4&&!g.retries)out.push(`${n}: не подтвердил, повторю автоматически`)}
  return {text:out.join(' · '),act}}
 function chessBeep(test){
  try{if(!chessAudio)chessAudio=new (window.AudioContext||window.webkitAudioContext)();if(chessAudio.state==='suspended')chessAudio.resume();
@@ -681,7 +682,7 @@ async function refreshChess(quiet,draw=true){
 function renderChessList(){
  const rank=g=>needsMe(g)?0:g.state==='over'?2:1,games=[...chess.games].sort((a,b)=>rank(a)-rank(b)||(b.updated||0)-(a.updated||0));
  $('chessList').innerHTML=games.length?games.map(g=>{const p=peer(g.peer),move=g.last_san&&g.state!=='invited'?' · '+ruSan(g.last_san):'',bad=g.out_status===4&&g.state!=='over';
-  return `<button class="row" data-go="board/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b><span class="disc ${g.color[0]}"></span>${esc(g.name)}</b><small class="${bad?'bad':chessTone(g)}">${esc(bad?'Не доставлено — откройте и повторите':chessState(g)+move)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${needsMe(g)?'<span class="pill">!</span>':''}</span></button>`}).join('')
+  return `<button class="row" data-go="board/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b><span class="disc ${g.color[0]}"></span>${esc(g.name)}</b><small class="${bad?'bad':chessTone(g)}">${esc(bad?deliveryText(g):chessState(g)+move)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${needsMe(g)?'<span class="pill">!</span>':''}</span></button>`}).join('')
   :`<div class="empty" style="padding:28px 16px">${ic('chess')}Партий пока нет<small>Выберите цвет и вызовите чат-контакт ниже.</small></div>`;
  $('chessColors').innerHTML=['Белыми','Чёрными','Случайно'].map((n,i)=>`<button data-chesscolor="${i}" class="${i===chessColor?'on':''}">${i<2?`<span class="disc ${'wb'[i]}"></span>`:''}${n}</button>`).join('');
  const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
@@ -706,7 +707,7 @@ function renderBoard(){
  const mine=g.color==='white',diff=material(g.fen,mine)-material(g.fen,!mine),p=peer(g.peer);
  $('cTop').innerHTML=`<span class="disc ${mine?'b':'w'}"></span><b>${esc(g.name)}</b><small class="muted">${p&&p.heard?ago(age(p))+(age(p)<60?'':' назад'):''}</small>`;
  $('cBottom').innerHTML=`<span class="disc ${mine?'w':'b'}"></span><b>Вы</b>${diff?`<span class="adv ${diff>0?'ok':'bad'}">${diff>0?'+':''}${diff}</span>`:''}`;
- const sub=g.out_status===4?`<small class="bad">${deliveryText(g)}</small>`:!g.my_turn&&g.state!=='over'&&g.out_status?`<small>${deliveryText(g)}</small>`:g.draw_offer==='mine'&&g.state==='playing'?'<small>Вы предложили ничью</small>':'';
+ const heard=p&&p.heard?(age(p)<60?'соперник слышен сейчас':'соперник слышен '+ago(age(p))+' назад'):'соперник не слышен с запуска',sub=g.out_status===4?`<small class="bad">${deliveryText(g)}</small><small>${heard}</small>`:!g.my_turn&&g.state!=='over'&&g.out_status?`<small>${deliveryText(g)}</small>`:g.draw_offer==='mine'&&g.state==='playing'?'<small>Вы предложили ничью</small>':'';
  $('cState').innerHTML=`<b class="${chessTone(g)}">${esc(chessState(g,true))}</b>${sub}`;
  $('cOffer').hidden=!(g.state==='playing'&&g.draw_offer==='theirs');$('cOffer').innerHTML=`<span>${esc(g.name)} предлагает ничью</span><button class="btn primary" data-chess="draw">Согласиться</button>`;
  const acts=[],armed=a=>chessArmed===a?' armed':'';

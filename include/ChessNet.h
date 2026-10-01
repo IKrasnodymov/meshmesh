@@ -17,13 +17,20 @@ struct ChessMatch {
   uint32_t started=0,updated=0;           // Unix time; 0 when the clock was not set
   uint32_t changedAt=0;                   // millis() of the last change, for ordering
   chess::Game game;
-  // The last command this device sent and its delivery (ChatMessage::Status); R resends it.
+  // The last command this device sent and its delivery (ChatMessage::Status).
   char out[80]={};uint8_t outStatus=0;uint32_t outId=0;
+  // My last move until the other side confirms it (ACK or their reply). It is resent from the game
+  // itself, so a draw offer or resignation sent later does not replace it.
+  bool moveOpen=false;uint8_t moveStatus=0;uint32_t moveId=0;
+  // Automatic resending (not saved): next attempt, last attempt, start of the unconfirmed period.
+  uint32_t retryAt=0,triedAt=0,openSince=0;uint8_t retries=0;bool autoStopped=false;
   bool active() const{return state==Inviting||state==Invited||state==Playing;}
   bool myTurn() const{return state==Playing&&game.pos.side==mine;}
   bool won() const{return (result==WhiteWon&&mine==chess::White)||(result==BlackWon&&mine==chess::Black);}
   bool lost() const{return (result==WhiteWon&&mine==chess::Black)||(result==BlackWon&&mine==chess::White);}
-  bool undelivered() const;               // the last command failed or is still on its way
+  bool pending() const;                   // something sent from here is not confirmed yet
+  bool sending() const;                   // a command of this game is on the radio now
+  uint8_t link() const;                   // delivery shown to the player: failed wins, then in flight
 };
 class ChessNet {
  public:
@@ -45,6 +52,7 @@ class ChessNet {
   void viewed(ChessMatch& m);            // the player opened the game
   unsigned waiting() const;               // games where the player has to act
   unsigned count() const;
+  int32_t retryIn(const ChessMatch& m) const; // seconds to the next automatic resend, or -1
   String command(const String& line);     // USB: chess ...
   String json() const;
   String detail(const ChessMatch& m) const;  // one game for the web page: notation and legal moves
@@ -54,6 +62,10 @@ class ChessNet {
   ChessMatch* slot();
   ChessMatch* find(uint64_t peer,uint16_t id);
   bool send(ChessMatch& m,const String& text);
+  bool sendMove(ChessMatch& m);
+  String moveText(const ChessMatch& m) const;
+  void retry(ChessMatch& m);
+  void confirmed(ChessMatch& m);
   void received(ChessMatch& m,bool move);
   void finish(ChessMatch& m,ChessMatch::Result result,ChessMatch::Reason reason);
   void judge(ChessMatch& m);
