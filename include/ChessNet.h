@@ -47,6 +47,8 @@ class ChessNet {
   unsigned count() const;
   String command(const String& line);     // USB: chess ...
   String json() const;
+  String detail(const ChessMatch& m) const;  // one game for the web page: notation and legal moves
+  String web() const;                       // the list for the web page, with the latest news
  private:
   bool saveDue=false;uint32_t saveAt=0;
   ChessMatch* slot();
@@ -61,5 +63,7 @@ class ChessNet {
 };
 extern ChessNet chessNet;
 // Storage for the saved games; LittleFS on the boards, memory in the host preview.
+// Notation in the interface language: K Q R B N, or Кр Ф Л С К in Russian.
+String chessLocalSan(const char* san);
 bool chessStoreWrite(const uint8_t* data,size_t size);
 size_t chessStoreRead(uint8_t* data,size_t cap);

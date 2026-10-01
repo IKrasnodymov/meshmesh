@@ -8,6 +8,7 @@
 #include "WifiDiagnostics.h"
 #include "Radar.h"
 #include "Internet.h"
+#include "ChessNet.h"
 #include <WiFi.h>
 #include <WebServer.h>
 #include <NimBLEDevice.h>
@@ -82,6 +83,8 @@ void portalBegin() {
   server.on("/api/connections",HTTP_GET,[]{if(authorized())answer(connectionCredentials());});
   server.on("/api/radar",HTTP_GET,[]{if(!authorized())return;if(server.arg("open")=="1"){if(!radar.active)radar.open();webRadar=true;webRadarAt=millis();}answer(radar.webJson());});
   server.on("/api/radar",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<256>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}if(webRadar)webRadarAt=millis();String reply=radarAction(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
+  // Chess: the list with the latest news, or one game (?id=3F2A); moves go through /api/command.
+  server.on("/api/chess",HTTP_GET,[]{if(!authorized())return;if(!server.hasArg("id")){answer(chessNet.web());return;}char* e=nullptr;unsigned long id=strtoul(server.arg("id").c_str(),&e,16);ChessMatch* m=id&&e&&!*e?chessNet.find(uint16_t(id)):nullptr;if(!m){answer("Unknown game",false);return;}answer(chessNet.detail(*m));});
   server.on("/api/messages",HTTP_GET,[]{if(authorized())answer(messagesJson());});
   server.on("/api/config",HTTP_GET,[]{if(authorized())answer(configJson());});
   server.on("/api/key",HTTP_GET,[]{if(authorized())answer(configJson(true));});

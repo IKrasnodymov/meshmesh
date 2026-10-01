@@ -92,6 +92,21 @@ progress{width:100%;height:10px;accent-color:var(--accent)}.two{display:grid;gri
 .login{max-width:420px;margin:9vh auto 0;padding:0 16px}.login .brand{text-align:center;margin-bottom:22px}.login .brand .ic{font-size:44px;color:var(--accent)}.login .brand b{display:block;font-size:26px;letter-spacing:.12em;margin-top:8px}.login .brand small{color:var(--dim)}
 .foot{text-align:center;color:var(--faint);font-size:12px;margin-top:24px}
 body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction:column;min-height:calc(100vh - 56px)}#p-chat .messages{flex:1}.mapctl .btn{white-space:nowrap;padding:10px 8px}
+.chessgrid{display:grid;grid-template-columns:minmax(0,560px) minmax(220px,1fr);gap:12px;align-items:start}
+.bwrap{position:relative}.board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:3px solid #3a2a1c;border-radius:4px;user-select:none;touch-action:manipulation;overflow:hidden}
+.sq{position:relative;border:0;padding:0;margin:0;display:grid;place-items:center;aspect-ratio:1;min-width:0;cursor:pointer}.sq.l{background:#f0d9b5}.sq.d{background:#b58863}
+.sq.l.last{background:#cdd26a}.sq.d.last{background:#aaa23a}.sq.l.sel{background:#9fbf6e}.sq.d.sel{background:#7d9a4c}
+.sq svg{position:relative;width:88%;height:88%;pointer-events:none;z-index:1}.sq.check::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(#e06c5a 55%,#e06c5a00 72%)}
+.sq.to::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:#5c6b3aa8;z-index:2;pointer-events:none}.sq.to.cap::after{width:92%;height:92%;background:none;box-shadow:inset 0 0 0 4px #5c6b3aa8}
+.sq i{position:absolute;font-style:normal;font-size:clamp(8px,2.2vw,11px);font-weight:700;line-height:1;pointer-events:none}.sq .rk{left:2px;top:2px}.sq .fl{right:2px;bottom:2px}.sq.l i{color:#b58863}.sq.d i{color:#f0d9b5}
+.promo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--hi);border:1px solid var(--line);border-radius:10px;padding:10px;z-index:5;text-align:center;box-shadow:0 8px 30px #000a}
+.promo div{display:flex;gap:6px;margin-top:8px}.promo div button{width:58px;height:58px;border:0;border-radius:6px;background:#f0d9b5;padding:4px}.promo div button:hover,.promo div button:focus-visible{background:#9fbf6e;outline:0}.promo svg{width:100%;height:100%}
+.pside{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:0 0 8px}.pside b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pside .adv{font-size:12px;font-weight:700}
+.disc{display:inline-block;width:13px;height:13px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px var(--dim);vertical-align:-1px;margin-right:6px}.disc.w{background:#f8f4ea}.disc.b{background:#2b3038;box-shadow:inset 0 0 0 2px #c5ccd4}
+.cstate{padding:10px 12px;margin-bottom:8px}.cstate b{display:block;font-size:17px}.cstate small{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+.offer{background:var(--deep);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}.offer span{flex:1}
+.mvlist{display:grid;grid-template-columns:auto 1fr 1fr;gap:3px 12px;font-variant-numeric:tabular-nums;max-height:260px;overflow:auto;padding:10px 12px;margin-top:8px}.mvlist i{font-style:normal;color:var(--faint)}.mvlist .now{color:var(--accent);font-weight:700}
+@media(max-width:700px){.chessgrid{grid-template-columns:1fr}.board{border-width:2px}}
 .page[hidden],[hidden]{display:none!important}
 @media(max-width:560px){.tiles{gap:6px}.tile{min-height:96px;padding:8px}.tile .box{left:8px;top:8px}.tile b{font-size:14px}.icons{gap:7px}.cells{grid-template-columns:repeat(4,1fr);padding:12px 8px}.scope{grid-template-columns:1fr}.scope canvas{max-width:300px;margin:0 auto}.navgrid{grid-template-columns:1fr}.navgrid svg{max-width:220px;margin:0 auto;display:block}.homing{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
 @media(max-width:370px){.icons .pct{display:none}}
@@ -118,6 +133,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="7" cy="12" r="4"/><path d="M11 12h11M18.5 12v4M21.5 12v3"/></symbol>
 <symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6.6-6.6"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="7.3" cy="15.3" r="1.7" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-cards" viewBox="0 0 24 24" fill="currentColor"><rect x="2.5" y="2.5" width="11" height="15" rx="2" opacity=".55"/><path fill-rule="evenodd" d="M11 6h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zM15 9.5l3 4.5-3 4.5-3-4.5z"/></symbol>
+<symbol id="i-chess" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.8" r="3.6"/><path d="M9.2 10h5.6l1.8 8H7.4z"/><rect x="5" y="18.5" width="14" height="3.5" rx="1.2"/></symbol>
 <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5L7.5 12l7.5 7.5"/></symbol>
 <symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5l7.5 7.5L9 19.5"/></symbol>
 <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 10.8L21.5 3l-7.8 19-3.2-7.9z"/></symbol>
@@ -182,6 +198,15 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <section class="page" id="p-help" hidden><div id="helpKeys"></div><h3>Русский ввод: фонетический</h3><div class="layout" id="layout"></div><p class="small muted" style="margin:0 4px">2×пробел — RU/EN; Shift или → после буквы — заглавная.</p></section>
 
 <section class="page" id="p-game" hidden><div class="game" id="game"></div><div class="gstat" id="gameStat"></div><div class="btns"><button class="btn" id="gameUndo">Отмена</button><button class="btn" id="gameHint">Подсказка</button><button class="btn" id="gameCollect">Собрать в дома</button></div><div class="btns" style="margin-top:8px"><button class="btn" id="gameNew">Новая партия</button><button class="btn" id="gameDraw">Сдача по 1</button></div><p class="small faint" style="margin:10px 4px">Нажмите карту, затем стопку, куда её положить; повторное нажатие кладёт карту само. Партия идёт в этом браузере, отдельно от «Косынки» на экране M9.</p></section>
+
+<section class="page" id="p-chess" hidden><div class="list" id="chessList"></div>
+<h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="list" id="chessPeers"></div>
+<div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button></div>
+<p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 (экран) или Heltec (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></section>
+
+<section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
+<div><div class="card cstate" id="cState"></div><div class="offer" id="cOffer" hidden></div><div class="btns" id="cActs"></div><div class="card mvlist" id="cMoves"></div></div></div></section>
+
 </main>
 <div id="notice" role="status" aria-live="polite"></div>
 <script>
@@ -247,7 +272,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(heltec()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],game:['Косынка','home']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -275,12 +300,13 @@ function enter(page,prev){
  if(page==='radio'||page==='device')buildEditor(page);
  if(page==='help')renderHelp();
  if(page==='game')enterGame();
+ if(page==='board')enterBoard();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,game:renderGame}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,game:renderGame,chess:renderChessList,board:renderBoard}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
- const t=standaloneMode?'Подготовка карты':PAGES[route][0]??(route==='chat'?nodeName(recipient):peer(param)?.name||'Узел');
+ const t=standaloneMode?'Подготовка карты':PAGES[route][0]??(route==='chat'?nodeName(recipient):route==='board'?'Шахматы · '+(chessGame(param)?.name||''):peer(param)?.name||'Узел');
  $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode;
  if(!auth){$('icons').innerHTML='';return}
  let h='';const n=route==='chats'||route==='chat'?0:unreadTotal();
@@ -305,7 +331,7 @@ function renderHome(){
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
   ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар','Wi-Fi, BLE, LoRa'],
   ['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],
-  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()]];
+  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],['chess','chess','','Шахматы',chessTileText(),chess.waiting]];
  $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
 
 // Chats.
@@ -579,6 +605,7 @@ function newGame(){const g=game;if(g&&g.counted&&!won(g)){if(Date.now()-newArmed
 async function refresh(){if(refreshing||uploading||!auth)return;refreshing=true;try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
+ await refreshChess(false,false);
  if(!readInit){readInit=true;if(store('read')===null)for(const id of conversationIds())markRead(id)}
  const e=status.event;if(eventSeen!==null&&e!==eventSeen){if(route==='chat')notify(eventLabel(e),e.startsWith('Delivered')?'ok':/^No delivery|^Radio TX|^TX failed/.test(e)?'bad':'accent');else if(e.startsWith('New message from ')&&route!=='chats')notify(eventLabel(e))}eventSeen=e;
  if(mapState.follow&&status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};
@@ -595,11 +622,135 @@ function writePackage(manifest,records){const header=new TextEncoder().encode(JS
 async function indexFeatures(elements,z,jobs){const index=new Map(jobs.map(j=>[`${j.x}/${j.y}`,[]]));if(!jobs.length)return index;const minX=Math.min(...jobs.map(j=>j.x)),maxX=Math.max(...jobs.map(j=>j.x)),minY=Math.min(...jobs.map(j=>j.y)),maxY=Math.max(...jobs.map(j=>j.y));let checked=0;for(const e of elements){const tags=e.tags||{},g=e.geometry||(e.lat!==undefined&&tags.place?[{lat:e.lat,lon:e.lon}]:[]);if(!g.length)continue;const pts=g.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)).map(p=>pixel(p.lat,p.lon,z));if(!pts.length)continue;let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;for(const p of pts){left=Math.min(left,p[0]);right=Math.max(right,p[0]);top=Math.min(top,p[1]);bottom=Math.max(bottom,p[1])}const f={tags,pts};for(let y=Math.max(minY,Math.floor(top/256));y<=Math.min(maxY,Math.floor(bottom/256));y++)for(let x=Math.max(minX,Math.floor(left/256));x<=Math.min(maxX,Math.floor(right/256));x++){const bucket=index.get(`${x}/${y}`);if(bucket)bucket.push(f)}if(++checked%1000===0)await new Promise(resolve=>setTimeout(resolve,0))}return index}
 async function buildMap(e){e.preventDefault();const b=$('buildButton');b.disabled=true;try{const lat=Number($('areaLat').value),lon=Number($('areaLon').value),radius=Number($('areaRadius').value),city=$('areaDetail').value==='city',zooms=city?[12,13,14]:[13,14,15];if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>84||Math.abs(lon)>179)throw Error('Неверные координаты');const dy=radius/111.32,dx=dy/Math.cos(lat*Math.PI/180),bounds=[lat-dy,lon-dx,lat+dy,lon+dx],jobs=[];for(const z of zooms){const [lx,by]=pixel(bounds[0],bounds[1],z),[rx,ty]=pixel(bounds[2],bounds[3],z);for(let y=Math.floor(ty/256);y<=Math.floor(by/256);y++)for(let x=Math.floor(lx/256);x<=Math.floor(rx/256);x++)jobs.push({z,x,y})}if(jobs.length>1500)throw Error('Слишком подробная карта для этого радиуса. Выберите «Город» или меньший радиус.');$('buildTask').textContent='Получение улиц и водоёмов из OpenStreetMap…';const bbox=bounds.join(','),query=`[out:json][timeout:90];(way[highway](${bbox});way[waterway](${bbox});way[natural=water](${bbox});way[landuse~"forest|grass|meadow|recreation_ground"](${bbox});way[leisure=park](${bbox});way[railway=rail](${bbox});${city?'':`way[building](${bbox});`}node[place](${bbox}););out geom;`;const response=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:new URLSearchParams({data:query})});if(!response.ok)throw Error('Сервис карт недоступен. Повторите позже.');const osm=await response.json();if(osm.remark)throw Error('Сервис не завершил запрос: '+osm.remark);const records=[];let indexedZoom=-1,index=null;for(let j=0;j<jobs.length;j++){const {z,x,y}=jobs[j];if(z!==indexedZoom){$('buildTask').textContent=`Подготовка улиц для масштаба ${z}…`;index=await indexFeatures(osm.elements,z,jobs.filter(job=>job.z===z));indexedZoom=z}const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d');ctx.fillStyle='#f3efdf';ctx.fillRect(0,0,256,256);const features=(index.get(`${x}/${y}`)||[]).map(f=>({tags:f.tags,pts:f.pts.map(p=>[p[0]-x*256,p[1]-y*256])}));function path(pts){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p))}for(const{tags,pts}of features)if(pts.length>2&&pts[0][0]===pts.at(-1)[0]&&pts[0][1]===pts.at(-1)[1]&&(tags.natural||tags.landuse||tags.leisure||(z>=15&&tags.building))){path(pts);ctx.fillStyle=tags.natural==='water'?'#a4cbd6':tags.building?'#d8d0bf':'#c4d7ad';ctx.fill()}for(const{tags,pts}of features){if(pts.length<2)continue;path(pts);if(tags.highway){const major=['motorway','trunk','primary','secondary'].includes(tags.highway),width=z>=14?(major?4:2):(major?3:1);ctx.strokeStyle='#c3baaa';ctx.lineWidth=width+2;ctx.stroke();ctx.strokeStyle=major?'#ffd591':'#fff';ctx.lineWidth=width;ctx.stroke()}else if(tags.waterway||tags.railway){ctx.strokeStyle=tags.waterway?'#86bbd0':'#a79b8b';ctx.lineWidth=tags.waterway?2:1;ctx.stroke()}}ctx.font='11px system-ui';const boxes=[];for(const{tags,pts}of features){const name=tags['name:ru']||tags.name;if(!name||(!tags.place&&(z<14||!['primary','secondary','tertiary','residential'].includes(tags.highway))))continue;const p=pts[Math.floor(pts.length/2)],text=name.slice(0,32),box=[p[0]-2,p[1]-11,ctx.measureText(text).width+4,14];if(p[0]<8||p[0]>248||p[1]<8||p[1]>248||boxes.some(q=>!(box[0]+box[2]<q[0]||box[0]>q[0]+q[2]||box[1]+box[3]<q[1]||box[1]>q[1]+q[3])))continue;boxes.push(box);ctx.fillStyle='#f3efdf';ctx.fillRect(...box);ctx.fillStyle='#405047';ctx.fillText(text,...p)}records.push({z,x,y,data:encodeCanvas(canvas)});if(j%5===0){$('buildTask').textContent=`Подготовка: ${j+1} / ${jobs.length} тайлов`;await new Promise(resolve=>setTimeout(resolve,0))}}const manifest={version:1,name:$('areaName').value,latitude:lat,longitude:lon,bounds,zooms,default_zoom:Math.max(...zooms),tiles:records.length,attribution:'© OpenStreetMap contributors · ODbL 1.0 · openstreetmap.org/copyright',created:Math.floor(Date.now()/1000)};download(writePackage(manifest,records),'meshmesh-area.mmmap');$('buildTask').textContent='Файл карты скачан. Подключитесь к Wi-Fi M9, выберите этот файл выше и нажмите «Загрузить».'}catch(e){$('buildTask').textContent=e.message+' Для получения карты нужен интернет; уже сохранённые карты продолжают работать.'}finally{b.disabled=false}}
 
+// Chess with contacts. The device keeps the rules, the games and the radio commands (src/ChessNet.cpp);
+// this page shows them, sends moves through /api/command and announces the other player's moves.
+let chess={games:[],events:0,event:'',waiting:0},chessLoaded=false,chessDetail=null,chessSel=null,chessPromo=null,chessArmed='',chessQuiet=false;
+let chessColor=store('chess-color')??2,chessSound=store('chess-sound')||false,chessAudio=null;
+const CHESS_ART=['..................|..................|..................|........##........|.......####.......|......######......|......######......|.......####.......|......######......|.......####.......|.......####.......|......######......|.....########.....|....##########....|...############...|...############...','........#.#.......|.......#####......|......########....|.....##+#######...|....############..|...#############..|..###############.|.#######..#######.|.#####....#######.|..###....#######..|........#######...|.......#######....|......########....|....#++++++++#....|...############...|..##############..','........##........|........##........|.......####.......|......###+##......|.....###+####.....|.....##+#####.....|.....########.....|......######......|.......####.......|......#++++#......|.....########.....|......######......|.....########.....|....##########....|..##############..|..##############..','..................|..##...####...##..|..##...####...##..|..##############..|..##############..|...#++++++++++#...|....##########....|....##########....|....##########....|....##########....|....##########....|...#++++++++++#...|..##############..|..##############..|.################.|.################.','.#......##......#.|.##....####....##.|.###..######..###.|.####.######.####.|.################.|..##############..|...############...|....##########....|.....########.....|.....########.....|....#++++++++#....|....##########....|.....########.....|...############...|..##############..|..##############..','........##........|......######......|........##........|....###.##.###....|..######++######..|.#######++#######.|.################.|.################.|..##############..|...############...|....#++++++++#....|....##########....|.....########.....|...############...|..##############..|..##############..'].map(a=>a.split('|')); // P N B R Q K, as src/UiChess.inc
+const pieceCache={};
+function pieceSvg(letter){ // a FEN letter: upper case is White
+ if(pieceCache[letter])return pieceCache[letter];
+ const white=letter===letter.toUpperCase(),art=CHESS_ART['PNBRQK'.indexOf(letter.toUpperCase())],at=(r,c)=>r>=0&&r<16&&c>=0&&c<18&&art[r][c]!=='.';
+ let body='',line='',edge='';
+ for(let r=-1;r<=16;r++)for(let c=-1;c<=18;c++){const px=`M${c} ${r}h1v1h-1z`;
+  if(at(r,c)){if(art[r][c]==='#')body+=px;else line+=px}else{let near=false;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)near=near||at(r+dr,c+dc);if(near)edge+=px}}
+ const [fill,ink,rim]=white?['#f8f4ea','#1c2026','#1c2026']:['#2b3038','#c5ccd4','#0b0d10'];
+ return pieceCache[letter]=`<svg viewBox="-1 -1 20 18" shape-rendering="crispEdges" aria-hidden="true"><path fill="${rim}" d="${edge}"/><path fill="${fill}" d="${body}"/><path fill="${ink}" d="${line}"/></svg>`}
+function fenBoard(fen){const b=Array(64).fill('');String(fen||'').split(' ')[0].split('/').forEach((row,i)=>{let f=0;for(const c of row){if(c>='1'&&c<='8')f+=+c;else if(f<8)b[(7-i)*8+f++]=c}});return b}
+const sqIndex=n=>(n.charCodeAt(0)-97)+(n.charCodeAt(1)-49)*8,sqName=s=>'abcdefgh'[s&7]+((s>>3)+1);
+const ruSan=s=>String(s||'').replace(/[KQRBN]/g,(c,i,all)=>i===0||all[i-1]==='='?{K:'Кр',Q:'Ф',R:'Л',B:'С',N:'К'}[c]:c);
+const chessGame=id=>chess.games.find(g=>g.id===id);
+const lastByThem=g=>g.plies>0&&((g.plies%2===1)?'white':'black')!==g.color;
+const needsMe=g=>g.state==='invited'||g.my_turn||g.unseen||g.draw_offer==='theirs';
+function material(fen,white){const v={p:1,n:3,b:3,r:5,q:9};return fenBoard(fen).reduce((n,c)=>n+(c&&(c===c.toUpperCase())===white?v[c.toLowerCase()]||0:0),0)}
+function chessState(g,board){
+ if(g.state==='inviting')return'Вызов отправлен, ждём ответа';
+ if(g.state==='invited')return'Вызывает вас: вы играете '+(g.color==='white'?'белыми':'чёрными');
+ if(g.state==='playing'){if(g.draw_offer==='theirs'&&!board)return'Предлагает ничью';return g.my_turn?(g.check?'Ваш ход: шах!':'Ваш ход'):'Ход соперника'}
+ if(g.reason==='declined')return'Вызов отклонён';if(g.reason==='cancelled')return'Партия отменена';
+ const won=g.result===g.color,lost=!!g.result&&g.result!=='draw'&&!won;
+ return (won?'Победа':lost?'Поражение':'Ничья')+({mate:': мат',resigned:won?': соперник сдался':': вы сдались',stalemate:': пат',repetition:': троекратное повторение',fifty:': 50 ходов без взятий',material:': мало фигур для мата',too_long:': предел ходов',agreed:' по соглашению'}[g.reason]||'')}
+function chessTone(g){if(g.state==='over'){const won=g.result===g.color;return won?'ok':g.result&&g.result!=='draw'&&g.reason!=='declined'&&g.reason!=='cancelled'?'bad':'muted'}return needsMe(g)?'acc':'muted'}
+const deliveryText=g=>({1:'отправляется…',2:'отправлено, ждём подтверждения',3:'доставлено',4:'не доставлено — повторите отправку'}[g.out_status]||'');
+function chessTileText(){const w=chess.waiting,n=chess.games.length;return w?plural(w,'ждёт хода','ждут хода','ждут хода'):n?plural(n,'партия','партии','партий'):'С контактами'}
+
+// News: compared with the previous list, so it does not depend on the device's menu language.
+function chessNews(before,after){
+ const out=[];let act=false;
+ for(const g of after){const o=before.find(x=>x.id===g.id),n=g.name;
+  if(!o){if(g.state==='invited'){out.push(`${n} вызывает вас на партию`);act=true}continue}
+  if(g.plies>o.plies&&lastByThem(g)){out.push(`${n}: ${ruSan(g.last_san)}`+(g.state==='over'?' — '+chessState(g).toLowerCase():g.check?' — шах, ваш ход':' — ваш ход'));act=true}
+  else if(o.state!=='over'&&g.state==='over')out.push(`${n}: ${chessState(g).toLowerCase()}`);
+  if(o.state==='inviting'&&g.state==='playing'&&!(g.plies>o.plies)){out.push(`${n} принял вызов`+(g.my_turn?' — ваш ход':''));act=act||g.my_turn}
+  if(o.draw_offer!=='theirs'&&g.draw_offer==='theirs'&&g.state==='playing'){out.push(`${n} предлагает ничью`);act=true}
+  if(o.out_status!==4&&g.out_status===4)out.push(`${n}: не доставлено, нажмите «Повторить отправку»`)}
+ return {text:out.join(' · '),act}}
+function chessBeep(test){
+ try{if(!chessAudio)chessAudio=new (window.AudioContext||window.webkitAudioContext)();if(chessAudio.state==='suspended')chessAudio.resume();
+  [[880,0],[1175,.16]].forEach(([f,t])=>{const o=chessAudio.createOscillator(),g=chessAudio.createGain();o.frequency.value=f;g.gain.setValueAtTime(.18,chessAudio.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,chessAudio.currentTime+t+.14);o.connect(g).connect(chessAudio.destination);o.start(chessAudio.currentTime+t);o.stop(chessAudio.currentTime+t+.15)})}
+ catch{if(test)notify('Звук в этом браузере недоступен','warn')}}
+async function refreshChess(quiet,draw=true){
+ let next;try{next=await request('/api/chess')}catch{return}
+ if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}}}
+ chess=next;chessLoaded=true;if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
+ if(route==='board'&&chessGame(param)){try{const d=await request('/api/chess?id='+param);chessDetail={...d,at:Date.now()}}catch{chessDetail=null}
+  if(chessGame(param).unseen)command('chess seen '+param).catch(()=>{})}
+ if(draw){if(route==='chess')renderChessList();else if(route==='board')renderBoard();else if(route==='home')renderHome();hud()}}
+
+function renderChessList(){
+ const rank=g=>needsMe(g)?0:g.state==='over'?2:1,games=[...chess.games].sort((a,b)=>rank(a)-rank(b)||(b.updated||0)-(a.updated||0));
+ $('chessList').innerHTML=games.length?games.map(g=>{const p=peer(g.peer),move=g.last_san&&g.state!=='invited'?' · '+ruSan(g.last_san):'',bad=g.out_status===4&&g.state!=='over';
+  return `<button class="row" data-go="board/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b><span class="disc ${g.color[0]}"></span>${esc(g.name)}</b><small class="${bad?'bad':chessTone(g)}">${esc(bad?'Не доставлено — откройте и повторите':chessState(g)+move)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${needsMe(g)?'<span class="pill">!</span>':''}</span></button>`}).join('')
+  :`<div class="empty" style="padding:28px 16px">${ic('chess')}Партий пока нет<small>Выберите цвет и вызовите чат-контакт ниже.</small></div>`;
+ $('chessColors').innerHTML=['Белыми','Чёрными','Случайно'].map((n,i)=>`<button data-chesscolor="${i}" class="${i===chessColor?'on':''}">${i<2?`<span class="disc ${'wb'[i]}"></span>`:''}${n}</button>`).join('');
+ const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
+ $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
+  :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите узел в разделе «Узлы» и дождитесь объявления соперника.</p>`;
+ $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`}
+
+function enterBoard(){chessSel=null;chessPromo=null;chessArmed='';chessDetail=null;refreshChess(true)}
+function renderBoard(){
+ const g=chessGame(param);
+ if(!g){$('board').innerHTML='';$('cTop').innerHTML='';$('cBottom').innerHTML='';$('cActs').innerHTML='';$('cMoves').innerHTML='';$('cOffer').hidden=true;$('cPromo').hidden=true;$('cState').innerHTML=`<b class="muted">Партия удалена</b>`;return}
+ const d=chessDetail&&chessDetail.id===g.id?chessDetail:null,flip=g.color==='black',b=fenBoard(g.fen),legal=d&&g.my_turn?d.legal:[];
+ if(chessSel!==null&&!legal.some(m=>sqIndex(m)===chessSel))chessSel=null;
+ const last=g.last?[sqIndex(g.last),sqIndex(g.last.slice(2))]:[],white=g.fen.split(' ')[1]==='w',check=g.check?b.indexOf(white?'K':'k'):-1;
+ const targets=chessSel===null?[]:legal.filter(m=>sqIndex(m)===chessSel).map(m=>sqIndex(m.slice(2)));
+ let h='';
+ for(let row=0;row<8;row++)for(let col=0;col<8;col++){
+  const s=flip?row*8+(7-col):(7-row)*8+col,light=((s&7)+(s>>3))&1,c=b[s];
+  const cls=['sq',light?'l':'d',last.includes(s)?'last':'',s===chessSel?'sel':'',s===check?'check':'',targets.includes(s)?(c?'to cap':'to'):''].filter(Boolean).join(' ');
+  h+=`<button class="${cls}" data-sq="${s}" aria-label="${sqName(s)}${c?' '+c:''}">${c?pieceSvg(c):''}${col===0?`<i class="rk">${(s>>3)+1}</i>`:''}${row===7?`<i class="fl">${'abcdefgh'[s&7]}</i>`:''}</button>`}
+ $('board').innerHTML=h;
+ const mine=g.color==='white',diff=material(g.fen,mine)-material(g.fen,!mine),p=peer(g.peer);
+ $('cTop').innerHTML=`<span class="disc ${mine?'b':'w'}"></span><b>${esc(g.name)}</b><small class="muted">${p&&p.heard?ago(age(p))+(age(p)<60?'':' назад'):''}</small>`;
+ $('cBottom').innerHTML=`<span class="disc ${mine?'w':'b'}"></span><b>Вы</b>${diff?`<span class="adv ${diff>0?'ok':'bad'}">${diff>0?'+':''}${diff}</span>`:''}`;
+ const sub=g.out_status===4?`<small class="bad">${deliveryText(g)}</small>`:!g.my_turn&&g.state!=='over'&&g.out_status?`<small>${deliveryText(g)}</small>`:g.draw_offer==='mine'&&g.state==='playing'?'<small>Вы предложили ничью</small>':'';
+ $('cState').innerHTML=`<b class="${chessTone(g)}">${esc(chessState(g,true))}</b>${sub}`;
+ $('cOffer').hidden=!(g.state==='playing'&&g.draw_offer==='theirs');$('cOffer').innerHTML=`<span>${esc(g.name)} предлагает ничью</span><button class="btn primary" data-chess="draw">Согласиться</button>`;
+ const acts=[],armed=a=>chessArmed===a?' armed':'';
+ if(g.out_status===4&&g.state!=='over')acts.push(['resend','Повторить отправку','primary']);
+ if(g.state==='invited')acts.push(['accept','Принять вызов','primary'],['decline','Отказаться','danger']);
+ if(g.state==='inviting')acts.push(['decline','Отменить вызов','danger']);
+ if(g.state==='playing'){if(g.draw_offer!=='theirs')acts.push(['draw',g.draw_offer==='mine'?'Ничья предложена':'Предложить ничью','']);acts.push(['resign',chessArmed==='resign'?'Точно сдаться?':'Сдаться','danger'+armed('resign')])}
+ if(g.state==='over'){if(g.out_status===4)acts.push(['resend','Повторить отправку','']);acts.push(['rematch','Реванш (цвета меняются)','primary'],['remove',chessArmed==='remove'?'Точно удалить?':'Удалить партию','danger'+armed('remove')])}
+ $('cActs').innerHTML=acts.map(([a,t,c])=>`<button class="btn ${c}" data-chess="${a}"${a==='draw'&&g.draw_offer==='mine'?' disabled':''}>${t}</button>`).join('');
+ const san=d?d.san:[];let m='';for(let i=0;i<san.length;i+=2)m+=`<i>${i/2+1}.</i><span class="${i===san.length-1?'now':''}">${esc(ruSan(san[i]))}</span><span class="${i+1===san.length-1?'now':''}">${esc(ruSan(san[i+1]||''))}</span>`;
+ $('cMoves').innerHTML=m||`<span class="muted small" style="grid-column:1/-1">${g.state==='invited'?'Примите вызов, чтобы начать':'Ходов ещё нет'}</span>`;
+ if(m){const box=$('cMoves');box.scrollTop=box.scrollHeight}
+ const pr=$('cPromo');pr.hidden=!chessPromo;if(chessPromo)pr.innerHTML=`<b>Превратить пешку в</b><div>${'qrbn'.split('').map(k=>`<button data-promo="${k}" aria-label="${{q:'Ферзь',r:'Ладья',b:'Слон',n:'Конь'}[k]}">${pieceSvg(mine?k.toUpperCase():k)}</button>`).join('')}</div><button class="btn" style="margin-top:8px;min-height:32px" data-promo="x">Отмена</button>`}
+
+async function chessCommand(line,ok,tone='ok'){chessQuiet=true;try{const r=await command(line);if(ok)notify(ok,tone);return r}catch(e){notify(String(e.message).replace(/^ERR\s*/,'Не выполнено: '),'bad');return null}finally{await refreshChess(true);chessQuiet=false}}
+async function chessClick(d){
+ if(d.chesscolor!==undefined){chessColor=+d.chesscolor;store('chess-color',chessColor);renderChessList();return}
+ if(d.invite){const r=await chessCommand(`chess invite ${d.invite} ${'wbr'[chessColor]}`);if(r){notify(`Вызов отправлен: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
+ const g=chessGame(param);if(!g)return;
+ if(d.promo){const from=chessPromo;chessPromo=null;if(d.promo==='x'||!from){renderBoard();return}await chessMove(sqName(from.from)+sqName(from.to)+d.promo);return}
+ if(d.sq!==undefined){await chessTap(+d.sq,g);return}
+ const a=d.chess;
+ if((a==='resign'||a==='remove')&&chessArmed!==a){chessArmed=a;renderBoard();setTimeout(()=>{if(chessArmed===a){chessArmed='';renderBoard()}},4000);return}
+ chessArmed='';
+ if(a==='rematch'){const r=await chessCommand(`chess invite ${g.peer} ${g.color==='white'?'b':'w'}`);if(r){notify(`Реванш: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
+ const said={accept:['Вызов принят','ok'],decline:[g.state==='invited'?'Вызов отклонён':'Вызов отменён','muted'],draw:[g.draw_offer==='theirs'?'Ничья принята':'Ничья предложена','ok'],resign:['Вы сдались','muted'],resend:['Отправлено повторно','ok'],remove:['Партия удалена','muted']}[a];
+ if(!said)return;const r=await chessCommand(`chess ${a} ${g.id}`,said[0],said[1]);if(r&&a==='remove')go('chess')}
+async function chessTap(s,g){
+ if(!g.my_turn){notify(g.state==='playing'?'Сейчас ход соперника':g.state==='invited'?'Сначала примите вызов':g.state==='inviting'?'Ждём ответа на вызов':'Партия окончена','muted');return}
+ const d=chessDetail;if(!d||d.id!==g.id){notify('Загружаю партию…','muted');return}
+ const b=fenBoard(g.fen),own=c=>!!c&&(c===c.toUpperCase())===(g.color==='white');
+ if(chessSel!==null&&s!==chessSel){const moves=d.legal.filter(m=>sqIndex(m)===chessSel&&sqIndex(m.slice(2))===s);
+  if(moves.length>1){chessPromo={from:chessSel,to:s};renderBoard();return}
+  if(moves.length===1){await chessMove(moves[0]);return}}
+ if(own(b[s])&&d.legal.some(m=>sqIndex(m)===s))chessSel=s===chessSel?null:s;
+ else{if(chessSel!==null)notify(d.check?'Нельзя: королю шах':'Сюда нельзя','warn');else if(own(b[s]))notify('Эта фигура не может ходить','muted');chessSel=null}
+ renderBoard()}
+async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=null;if(!g)return;await chessCommand(`chess move ${g.id} ${uci}`)}
+
 // Wiring. Skipped outside a browser: tools/check_web_*.cjs run the functions above in Node.
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-promo]');if(!t)return;const d=t.dataset;
+  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
   else if(d.csi)radarAction({action:'csi',role:d.csi}).then(pollRadar)});
@@ -623,6 +774,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('resize',()=>{if(route==='map')drawMap();if(route==='game')renderGame()});
  $('uploadMap').onclick=uploadMap;$('buildForm').onsubmit=buildMap;$('saveBuilder').onclick=()=>download(originalHtml,'meshmesh-maps.html','text/html');
  $('standalone').onclick=()=>{standaloneMode=true;$('login').hidden=true;$('app').hidden=false;$('builder').open=true;$('uploader').hidden=true;go('map')};
+ $('chessSound').onclick=()=>{chessSound=!chessSound;store('chess-sound',chessSound);if(chessSound)chessBeep(true);renderChessList()};
  $('game').onclick=e=>gameClick(e.target.closest('[data-pile]'),false);
  $('gameUndo').onclick=()=>{if(collecting)return;if(undoMove(game)){pick=null;saveGame();renderGame()}else notify('Нечего отменять','warn')};
  $('gameHint').onclick=()=>{const h=hint(game);if(!h){notify('Полезных ходов нет: отмените или начните заново','warn');return}if(h[0]===0)notify(game.pile[0].length?'Подсказка: сдайте из колоды':'Подсказка: переверните колоду');hintMove=h;renderGame();setTimeout(()=>{hintMove=null;renderGame()},1600)};

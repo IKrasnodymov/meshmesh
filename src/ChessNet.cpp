@@ -84,8 +84,9 @@ bool ChessNet::receive(uint64_t from,const char* name,const char* text){
     if(ply!=g.plies+1u||g.pos.side!=theirs||!g.pos.parseUci(b,mv)){event=String(m->name)+tr(": move not accepted (",": ход не принят (")+b+")";events++;dirty=true;return true;}
     char san[12];g.pos.san(mv,san,sizeof san);g.play(mv);received(*m,true);if(m->drawOffer==ChessMatch::OfferedByMe)m->drawOffer=ChessMatch::NoOffer;
     judge(*m);
-    String what=String(m->name)+": "+san;
+    String what=String(m->name)+": "+chessLocalSan(san);
     if(m->state==ChessMatch::Over)what+=m->won()?tr(" · you won",", вы победили"):m->lost()?tr(" · you lost",", вы проиграли"):tr(" · draw",", ничья");
+    else what+=g.pos.inCheck()?tr(" · check, your move",", шах, ваш ход"):tr(" · your move",", ваш ход");
     news(*m,what);hardware.ping(1100,60);changed(*m);return true;
   }
   if(!strcmp(a,"yes")){if(m->state!=ChessMatch::Inviting)return true;m->state=ChessMatch::Playing;received(*m,false);news(*m,String(m->name)+tr(" accepted: game on"," принял вызов: играем"));hardware.ping(1320,120);changed(*m);return true;}
@@ -173,21 +174,42 @@ void ChessNet::load(){
   free(buf);if(dropped){event=tr("Chess: a damaged game was dropped","Шахматы: повреждённая партия удалена");events++;}dirty=true;
 }
 
+String chessLocalSan(const char* san){
+  String out;
+  for(const char* c=san;*c;c++){
+    bool piece=strchr("KQRBN",*c)&&(c==san||c[-1]=='=');
+    if(piece&&config.russian){switch(*c){case 'K':out+="Кр";break;case 'Q':out+="Ф";break;case 'R':out+="Л";break;case 'B':out+="С";break;default:out+="К";}}
+    else out+=*c;
+  }
+  return out;
+}
+String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();String s;serializeJson(d,s);s.remove(s.length()-1);return s+",\"games\":"+json()+"}";}
+String ChessNet::detail(const ChessMatch& m) const{
+  DynamicJsonDocument d(12288);char id[5];snprintf(id,sizeof id,"%04X",m.id);d["id"]=id;
+  // Standard notation of every move, replayed from the start (the saved form is the move list).
+  JsonArray san=d.createNestedArray("san");Position p;p.start();char b[12];
+  for(unsigned i=0;i<m.game.plies;i++){p.san(m.game.moves[i],b,sizeof b);san.add(b);p.apply(m.game.moves[i]);}
+  JsonArray legal=d.createNestedArray("legal");
+  if(m.myTurn()){Move list[MaxMoves];unsigned n=m.game.pos.legal(list);for(unsigned i=0;i<n;i++){uci(list[i],b);legal.add(b);}}
+  d["check"]=m.game.pos.inCheck();
+  String s;serializeJson(d,s);return s;
+}
 String ChessNet::json() const{
-  DynamicJsonDocument d(4096);JsonArray list=d.to<JsonArray>();
+  DynamicJsonDocument d(6144);JsonArray list=d.to<JsonArray>();
   static const char* states[]={"free","inviting","invited","playing","over"};static const char* results[]={"","white","black","draw"};
   static const char* reasons[]={"","mate","resigned","stalemate","repetition","fifty","material","too_long","agreed","declined","cancelled"};
   for(auto& m:matches){
     if(m.state==ChessMatch::Free)continue;JsonObject o=list.createNestedObject();char id[5];snprintf(id,sizeof id,"%04X",m.id);char fen[96];m.game.pos.fen(fen,sizeof fen);
     o["id"]=id;o["peer"]=meshRadio.idText(m.peer);o["name"]=m.name;o["state"]=states[m.state];o["color"]=m.mine==White?"white":"black";o["plies"]=m.game.plies;o["fen"]=fen;
-    if(m.game.plies){char u[6];uci(m.game.moves[m.game.plies-1],u);o["last"]=u;}
+    if(m.game.plies){char u[6],san[12];uci(m.game.moves[m.game.plies-1],u);o["last"]=u;m.game.at(m.game.plies-1).san(m.game.moves[m.game.plies-1],san,sizeof san);o["last_san"]=san;}
     o["my_turn"]=m.myTurn();o["result"]=results[m.result];o["reason"]=reasons[m.reason];o["draw_offer"]=m.drawOffer==ChessMatch::OfferedByMe?"mine":m.drawOffer==ChessMatch::OfferedToMe?"theirs":"";
-    o["unseen"]=m.unseen;o["out_status"]=m.outStatus;
+    o["unseen"]=m.unseen;o["out_status"]=m.outStatus;o["updated"]=m.updated;o["check"]=m.game.pos.inCheck();
   }
   String s;serializeJson(d,s);return s;
 }
 String ChessNet::command(const String& line){
   if(line=="chess")return json();
+  if(line=="chess web")return web();
   String rest=line.substring(6);rest.trim();int sp=rest.indexOf(' ');String verb=sp<0?rest:rest.substring(0,sp),arg=sp<0?String():rest.substring(sp+1);arg.trim();
   if(verb=="invite"){
     int at=arg.indexOf(' ');String node=at<0?arg:arg.substring(0,at),color=at<0?String("r"):arg.substring(at+1);
@@ -196,7 +218,7 @@ String ChessNet::command(const String& line){
   }
   int at=arg.indexOf(' ');String gid=at<0?arg:arg.substring(0,at),extra=at<0?String():arg.substring(at+1);
   char* e=nullptr;unsigned long id=strtoul(gid.c_str(),&e,16);ChessMatch* m=id&&e&&!*e&&gid.length()==4?find(uint16_t(id)):nullptr;
-  if(!m)return "ERR chess invite|accept|decline|move|draw|resign|resend|remove GAME_ID ...";
+  if(!m)return "ERR chess invite|accept|decline|move|draw|resign|resend|remove|show|seen GAME_ID ...";
   bool done=false;
   if(verb=="accept")done=accept(*m);
   else if(verb=="decline")done=decline(*m);
@@ -205,6 +227,8 @@ String ChessNet::command(const String& line){
   else if(verb=="resign")done=resign(*m);
   else if(verb=="resend")done=resend(*m);
   else if(verb=="remove")done=remove(*m);
+  else if(verb=="show")return detail(*m);
+  else if(verb=="seen"){viewed(*m);return "OK seen";}
   else return "ERR unknown chess command";
   return done?"OK "+verb:"ERR "+verb+" not possible now";
 }

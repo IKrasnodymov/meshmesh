@@ -43,9 +43,7 @@ void drawPiece(int8_t piece,int x,int y,int scale=1){
  for(int r=0;r<18;r++)for(int c=0;c<20;c++){uint32_t bit=1u<<c;uint16_t color;if(s.body[r]&bit)color=fill;else if(s.line[r]&bit)color=ink;else if(s.edge[r]&bit)color=edge;else continue;
   if(scale==1)g().drawPixel(x+c,y+r,color);else g().fillRect(x+c*scale,y+r*scale,scale,scale,color);}
 }
-// Letters of the notation: K Q R B N, or Кр Ф Л С К in Russian.
-String pieceName(char letter){if(!config.russian)return String(letter);switch(letter){case 'K':return "Кр";case 'Q':return "Ф";case 'R':return "Л";case 'B':return "С";case 'N':return "К";}return String(letter);}
-String localSan(const char* san){String out;for(const char* c=san;*c;c++){bool piece=strchr("KQRBN",*c)&&(c==san||c[-1]=='=');out+=piece?pieceName(*c):String(*c);}return out;}
+String localSan(const char* san){return chessLocalSan(san);}
 String lastSan(const ChessMatch& m){if(!m.game.plies)return "";char s[12];m.game.at(m.game.plies-1).san(m.game.moves[m.game.plies-1],s,sizeof s);return localSan(s);}
 String moveCount(const ChessMatch& m){return count((m.game.plies+1)/2,"move","moves","ход","хода","ходов");}
 String colorName(uint8_t c,bool of=false){return c==ch::White?(of?t("White","белыми"):t("White","белые")):(of?t("Black","чёрными"):t("Black","чёрные"));}

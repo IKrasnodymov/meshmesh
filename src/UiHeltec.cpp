@@ -2,6 +2,7 @@
 #include "Hardware.h"
 #include "MeshRadio.h"
 #include "Radar.h"
+#include "ChessNet.h"
 #include <math.h>
 #include <time.h>
 // One PRG button: click = next screen or next menu item; hold = the screen's action, or its menu.
@@ -10,6 +11,7 @@ enum Page {Home,Messages,Nodes,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
 const char* pageNames[]={"home","messages","nodes","radar","gps","wifi","ble","settings","modules"};
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
+uint32_t chessPopupAt=0,chessSeen=0; // chess news: Heltec has no board, the game is played on the Wi-Fi page
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
@@ -145,10 +147,17 @@ void drawPopup(const ChatMessage& m){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
  say(18,11,clipped(String(m.name)+(m.destination==meshmesh::Broadcast?" #":""),18),bold);textLines(m.text,25,3);sayRight(126,62,t("click: close","клик: закрыть"));
 }
+void drawChessPopup(){
+ auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
+ c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1); // a pawn
+ say(18,11,t("Chess","Шахматы"),bold);textLines(chessNet.event,25,3);sayRight(126,62,portalActive()?t("play on the Wi-Fi page","играть: Wi-Fi-страница"):t("Wi-Fi page to play","играть: включите Wi-Fi"),small);
+}
 void draw(){
  auto& c=*hardware.canvas;c.fillScreen(0);const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){drawPopup(*last);hardware.flush();return;}
- popupAt=0;String title;
+ popupAt=0;
+ if(chessPopupAt&&millis()-chessPopupAt<8000){drawChessPopup();hardware.flush();return;}
+ chessPopupAt=0;String title;
  switch(page){
  case Home:{title=config.name;say(0,31,clockText(time(nullptr)),u8g2_font_10x20_t_cyrillic);
   if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(" MHz"," МГц"));sayRight(128,30,"SF"+String(config.sf)+" BW"+String(config.bandwidth,1));}else sayRight(128,24,t("Radio error ","Ошибка радио ")+String(meshRadio.radioError));
@@ -216,6 +225,7 @@ void uiKey(int key){
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness);return;} // the first press only wakes the panel
  if(popupAt){popupAt=0;if(key==13)return;}
+ if(chessPopupAt){chessPopupAt=0;if(key==13)return;}
  if(menuOpen){menuAt=millis();Act acts[8];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(key==13||key==0x82){menuIndex=(menuIndex+1)%n;return;}
   if(key==0xa3){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;}return;}
@@ -223,12 +233,13 @@ void uiKey(int key){
  if(key==0xa3){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 bool uiRadarPage(){return page==Signals;}
-void uiBegin(){pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
+void uiBegin(){chessSeen=chessNet.events;pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
+String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
  if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
+ if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(ledAt){uint32_t e=now-ledAt;digitalWrite(pins::led,e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;digitalWrite(pins::led,LOW);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;
