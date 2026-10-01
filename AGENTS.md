@@ -16,7 +16,7 @@
 
 ## Репозиторий
 
-GitHub: публичный `IKrasnodymov/meshmesh` (MIT), основная ветка `main`. Сайт —
+GitHub: публичный `IKrasnodymov/meshmesh` (MIT; `README.md` — английский, `README.ru.md` — полный русский), основная ветка `main`. Сайт —
 GitHub Pages из `site/` (https://ikrasnodymov.github.io/meshmesh/): `.github/workflows/pages.yml`
 собирает все платы, APK и `tools/pages.py` (манифесты браузерной установки ESP Web Tools,
 запись по смещениям без стирания NVS). Скриншоты экрана — `tools/ui_preview`.
