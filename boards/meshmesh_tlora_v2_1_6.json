@@ -1,0 +1,28 @@
+{
+  "build": {
+    "arduino": {
+      "ldscript": "esp32_out.ld",
+      "partitions": "default.csv"
+    },
+    "core": "esp32",
+    "extra_flags": [],
+    "f_cpu": "240000000L",
+    "f_flash": "40000000L",
+    "flash_mode": "dio",
+    "mcu": "esp32",
+    "variant": "esp32"
+  },
+  "frameworks": [
+    "arduino"
+  ],
+  "name": "MeshMesh / LilyGO T-LoRa V2.1-1.6",
+  "upload": {
+    "flash_size": "4MB",
+    "maximum_ram_size": 327680,
+    "maximum_size": 3080192,
+    "require_upload_port": true,
+    "speed": 460800
+  },
+  "url": "https://www.lilygo.cc/products/lora3",
+  "vendor": "LilyGO"
+}

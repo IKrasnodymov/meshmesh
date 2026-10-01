@@ -1,5 +1,5 @@
 #include "Maps.h"
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
 #include <esp_heap_caps.h>
 #include <esp32s3/rom/miniz.h>
 // Web map tiles: non-interlaced PNG, 256 or 512 px square, any colour type.

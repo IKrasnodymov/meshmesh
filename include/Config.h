@@ -1,13 +1,10 @@
 #pragma once
 #include <Arduino.h>
 #include <Preferences.h>
+#include "Board.h"
 
 struct Config {
-#if defined(MM_HELTEC_V4)
-  char name[25]="Heltec V4";
-#else
-  char name[25]="M9";
-#endif
+  char name[25]=MM_NODE_NAME;
   float frequency=868.731f, bandwidth=62.5f;
   uint8_t sf=8, cr=6, hops=3, brightness=180;
   int8_t power=10;

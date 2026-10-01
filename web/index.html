@@ -217,7 +217,9 @@ let route='home',param='',fetchedAt=Date.now(),clockBase={unix:0,at:0},refreshin
 let recipient='ALL',eventSeen=null,readInit=false,trackAt=0,deleteArmed='',wifiArmed=0,scopeRef=null,scopeManual=false,radarTimer=null,radarBusy=false;
 let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
-const heltec=()=>status.board==='heltec_v4';
+// Board family: 'compact' (128x64 screen, one button) or 'full' (320x240 screen and keyboard). Older firmware: board only.
+const heltec=()=>status.family?status.family==='compact':status.board==='heltec_v4';
+const extGps=()=>status.board==='heltec_v4'||status.board==='station_g2',boardName=()=>status.board_name||(heltec()?'Heltec V4':'ThinkNode M9');
 
 // Helpers: storage (per browser, may be unavailable), escaping, icons, Russian plurals.
 function store(key,value){try{if(value===undefined)return JSON.parse(localStorage.getItem('mm-'+key));localStorage.setItem('mm-'+key,JSON.stringify(value))}catch{return null}}
@@ -267,8 +269,8 @@ function pathText(p){if(p.path_length===255)return'путь неизвестен
 function distance(p){if(!p.position||!status.gps_fix)return null;const r=Math.PI/180,la1=status.latitude*r,la2=p.latitude*r,dl=(p.longitude-status.longitude)*r,a=Math.sin((la2-la1)/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dl/2)**2,m=12742000*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)),b=(Math.atan2(Math.sin(dl)*Math.cos(la2),Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl))/r+360)%360;return (m<1000?Math.floor(m/10)*10+' м':(m/1000).toFixed(m<10000?1:0)+' км')+' '+['С','СВ','В','ЮВ','Ю','ЮЗ','З','СЗ'][Math.floor((b+22.5)/45)%8]}
 function batteryPercent(v){const mv=[3300,3500,3600,3700,3800,3900,4000,4100,4200],pc=[0,5,15,35,55,70,82,93,100];if(v<=mv[0])return 0;for(let i=1;i<9;i++)if(v<=mv[i])return Math.round(pc[i-1]+(pc[i]-pc[i-1])*(v-mv[i-1])/(mv[i]-mv[i-1]));return 100}
 function moduleStates(){return [status.radio,status.keyboard,status.sd,status.storage,status.rtc_valid,status.gps_sentences>0,status.compass_sample,status.imu_sample]}
-const absent=i=>heltec()&&[1,2,4,6,7].includes(i);
-function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(heltec()&&i===5)).length}
+const absent=i=>(status.absent||(heltec()?[1,2,4,6,7]:[])).includes(i);
+function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()&&i===5)).length}
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
@@ -378,7 +380,7 @@ function renderNav(){
  if(valid){const r=h*P,bx=6*Math.cos(r),by=6*Math.sin(r);s+=`<polygon points="${60+48*Math.sin(r)},${60-48*Math.cos(r)} ${60+bx},${60+by} ${60-bx},${60-by}" fill="var(--accent)"/><circle cx="60" cy="60" r="3.5" fill="var(--ink)"/>`}else s+='<text x="60" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="var(--faint)">--</text>';
  $('rose').innerHTML=s;$('headingText').innerHTML=valid?`<b style="font-size:20px">${Math.round(h)%360}°</b> <span class="muted">магнитный</span>`:`<span class="warn">${!navInfo.available?'нет магнитометра':navInfo.calibrated?'держите ровно':'не откалиброван'}</span>`;
  const fix=status.gps_fix,src=status.clock_source,gps=!config.gps?['выключен','muted']:fix?['позиция есть','ok']:status.clock_conflict?['старая дата','warn']:['поиск','warn'];
- const rows=[[heltec()?'Внешний GPS':'GPS',gps[0],gps[1]],['Спутники',status.satellites??0],['Широта',fix?status.latitude.toFixed(5):'—'],['Долгота',fix?status.longitude.toFixed(5):'—'],['Часы',(src==='unset'?'не задано':src==='manual'?'вручную':src)+(status.clock_trusted?' · доверено':'')],['Компас',!navInfo.available?'нет':navInfo.calibrating?plural(navInfo.samples,'отсчёт','отсчёта','отсчётов'):navInfo.calibrated?'откалиброван':'нужна калибровка',navInfo.calibrating?'warn':'']];
+ const rows=[[extGps()?'Внешний GPS':'GPS',gps[0],gps[1]],['Спутники',status.satellites??0],['Широта',fix?status.latitude.toFixed(5):'—'],['Долгота',fix?status.longitude.toFixed(5):'—'],['Часы',(src==='unset'?'не задано':src==='manual'?'вручную':src)+(status.clock_trusted?' · доверено':'')],['Компас',!navInfo.available?'нет':navInfo.calibrating?plural(navInfo.samples,'отсчёт','отсчёта','отсчётов'):navInfo.calibrated?'откалиброван':'нужна калибровка',navInfo.calibrating?'warn':'']];
  $('navRows').innerHTML=rows.map(([a,b,c])=>`<div class="detail"><span>${a}</span><span class="${c||''}">${esc(b)}</span></div>`).join('');
  $('shareHint').textContent=fix?'Объявление с GPS':'Нужна свежая позиция GPS';$('calTitle').textContent=navInfo.calibrating?'Завершить калибровку':'Калибровать компас';$('calHint').textContent=!navInfo.available?'У этого узла нет магнитометра':navInfo.calibrating?'Вращайте во все стороны':'Вращение 20+ секунд';$('calibrate').disabled=!navInfo.available;
  $('clockInfo').textContent=status.unix_time>1700000000?'Время узла: '+clockText()+(status.clock_conflict?' · GPS сообщает другое время; сохранено установленное':''):'Время не установлено: отметки сообщений без времени';
@@ -463,11 +465,11 @@ function renderMotion(){const d=radarData;if(!d){$('motionView').innerHTML='<p c
 // Module health, as on the diagnostics page.
 function keyName(k){return {0:'—',13:'OK',8:'DEL',32:'пробел',0x81:'MSG',0x82:'HOME',0x83:'@',0x84:'ADV',0x85:'MAP',0x86:'BACK',0x87:'удерж. ADV',0x88:'MIC',0x90:'CTRL',0xa3:'удерж. OK',0xb4:'Влево',0xb5:'Вверх',0xb6:'Вниз',0xb7:'Вправо'}[k]||(k>32&&k<127?`'${String.fromCharCode(k)}'`:'0x'+Number(k||0).toString(16))}
 function renderModules(){const s=moduleStates(),names=['LoRa','Клавиатура','SD','LittleFS','RTC','GPS / NMEA','Компас','IMU'];
- $('modList').innerHTML=names.map((n,i)=>{const na=absent(i)||(heltec()&&i===5&&!s[i]);const c=s[i]?'ok':na?'faint':'bad';return `<div class="mod"><i style="background:var(--${c==='faint'?'faint':c})"></i><span>${n}</span><small class="${c}">${s[i]?'OK':na?(i===5?'внешний':'не в плате'):'нет'}</small></div>`}).join('');
+ $('modList').innerHTML=names.map((n,i)=>{const na=absent(i)||(extGps()&&i===5&&!s[i]);const c=s[i]?'ok':na?'faint':'bad';return `<div class="mod"><i style="background:var(--${c==='faint'?'faint':c})"></i><span>${n}</span><small class="${c}">${s[i]?'OK':na?(i===5?'внешний':'не в плате'):'нет'}</small></div>`}).join('');
  const up=status.uptime||0,cells=[['RX',status.rx],['TX',status.tx],['Переслано',status.relayed],['Отклонено',status.rejected],['RSSI',Math.round(status.rssi||0)+' dBm'],['SNR',Number(status.snr||0).toFixed(1)+' dB'],['RAM',Math.round((status.heap||0)/1024)+' K'],['Работа',`${up/3600|0}:${two((up/60|0)%60)}:${two(up%60)}`]];
  $('cells').innerHTML=cells.map(([a,b])=>`<div><small>${a}</small><b>${b??'—'}</b></div>`).join('');
  $('bootLine').textContent=`Загрузка ${status.boot}`+(heltec()?'':` · последняя клавиша: ${keyName(status.last_key)}`)+(status.event?' · событие: '+eventLabel(status.event):'');
- $('firmware').innerHTML=[['Прошивка',status.firmware],['Плата',heltec()?'Heltec V4':'ThinkNode M9'],['Узел',status.node],['Протокол','MeshCore · канал Public'],['Сборка',String(status.build_sha256||'').slice(0,16)],['Свободно PSRAM',Math.round((status.psram||0)/1024)+' K']].map(([a,b])=>`<div class="detail"><span>${a}</span><span class="${a==='Сборка'?'mono':''}">${esc(b)}</span></div>`).join('')}
+ $('firmware').innerHTML=[['Прошивка',status.firmware],['Плата',boardName()],['Узел',status.node],['Протокол','MeshCore · канал Public'],['Сборка',String(status.build_sha256||'').slice(0,16)],['Свободно PSRAM',Math.round((status.psram||0)/1024)+' K']].map(([a,b])=>`<div class="detail"><span>${a}</span><span class="${a==='Сборка'?'mono':''}">${esc(b)}</span></div>`).join('')}
 
 // Settings: the M9 settings list and its two editors.
 function renderSettings(){
@@ -481,7 +483,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'bandwidth',n:'Полоса',h:'62.5 / 125 / 250 / 500 кГц',t:'sel',o:[[62.5,'62.5 кГц'],[125,'125 кГц'],[250,'250 кГц'],[500,'500 кГц']]},
  {k:'sf',n:'Фактор SF',h:'Больше SF — дальше, но медленнее',t:'sel',o:[7,8,9,10,11,12].map(v=>[v,'SF'+v])},
  {k:'cr',n:'Кодирование CR',h:'Избыточность кода 4/5 … 4/8',t:'sel',o:[5,6,7,8].map(v=>[v,'4/'+v])},
- {k:'power',n:'Мощность, dBm',h:'Настройка чипа, 0–22 dBm',t:'num',min:0,max:22,step:1},
+ {k:'power',n:'Мощность, dBm',h:`Настройка чипа, 0–${status.max_power||22} dBm`,t:'num',min:0,max:status.max_power||22,step:1},
  {k:'hops',n:'Предел наших пересылок',h:'Только пакеты, пересылаемые этим узлом',t:'num',min:0,max:7,step:1},
  {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'}]:[
  {k:'name',n:'Имя',h:'1–24 байта UTF-8',t:'text'},
@@ -489,7 +491,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
  ...h?[]:[{k:'sound',n:'Звуки',h:'Сигнал о сообщениях и подтверждениях',t:'sw'},{k:'auto_lock',n:'Автоблокировка, с',h:'0 = выкл, 30–600 с',t:'num',min:0,max:600,step:30}],
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},
- {k:'gps',n:h?'Внешний GPS':'Приёмник GPS',h:'Питание приёмника',t:'sw'},
+ ...absent(5)?[]:[{k:'gps',n:extGps()?'Внешний GPS':'Приёмник GPS',h:'Питание приёмника',t:'sw'}],
  {k:'utc_offset',n:'Смещение UTC',h:'Местное время, шаг 15 минут',t:'sel',o:utcOptions()},
  {k:'battery_volts',n:'Батарея в строке',h:'Оценка заряда или измеренное напряжение',t:'sel',o:[[false,'Проценты'],[true,'Вольты']]}]}
 let draft={};
@@ -511,8 +513,8 @@ async function saveEditor(page){const changes={};for(const f of fields(page))if(
  if(changes.auto_lock&&changes.auto_lock<30){notify('Автоблокировка: 0 или 30–600 с','bad');return}if(changes.dim_after&&changes.dim_after<10){notify('Гасить экран: 0 или 10–600 с','bad');return}
  try{await request('/api/config',changes);notify('Настройки сохранены','ok');config=await request('/api/config');await refresh();go('settings')}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}}
 function renderHelp(){
- const keys=heltec()?[['PRG','короткое нажатие — следующая страница'],['PRG','удержание — действие страницы или меню действий']]:[['MSG','Чаты'],['MAP','Карта; L — список карт'],['HOME','Главное меню'],['BACK','Предыдущий экран'],['CTRL','Настройки'],['ADV','Объявить узел; удержание — GPS вкл/выкл'],['@','функц. клавиша (не Sym+@): RU/EN в чате'],['MIC','Блокировка (микрофона нет)'],['OK','Открыть / отправить; удержание — вход'],['2×пробел','в тексте: RU/EN; → — заглавная']];
- $('helpKeys').innerHTML=`<h3>${heltec()?'Кнопка Heltec V4':'Клавиши M9'}</h3><div class="card" style="padding:6px 10px">${keys.map(([k,a],i)=>`<div class="keyrow"><span class="key">${k}</span><span class="${i%2?'muted':''}">${a}</span></div>`).join('')}</div>`;
+ const btn=status.button||'PRG',keys=heltec()?[[btn,'короткое нажатие — следующая страница'],[btn,'удержание — действие страницы или меню действий']]:status.board==='tdeck'?[['Шар','перемещение по меню, спискам и карте'],['Нажатие','открыть / отправить'],['Удерж. шар','вход; в чате — русская раскладка'],['Enter','открыть / отправить'],['DEL','удалить; без текста — назад'],['2×пробел','в тексте: RU/EN'],['L','на карте: список карт'],['+ −','масштаб карты'],['P','узел на карте']]:[['MSG','Чаты'],['MAP','Карта; L — список карт'],['HOME','Главное меню'],['BACK','Предыдущий экран'],['CTRL','Настройки'],['ADV','Объявить узел; удержание — GPS вкл/выкл'],['@','функц. клавиша (не Sym+@): RU/EN в чате'],['MIC','Блокировка (микрофона нет)'],['OK','Открыть / отправить; удержание — вход'],['2×пробел','в тексте: RU/EN; → — заглавная']];
+ $('helpKeys').innerHTML=`<h3>${heltec()?'Кнопка '+boardName():'Клавиши '+(status.board==='tdeck'?'T-Deck':'M9')}</h3><div class="card" style="padding:6px 10px">${keys.map(([k,a],i)=>`<div class="keyrow"><span class="key">${k}</span><span class="${i%2?'muted':''}">${a}</span></div>`).join('')}</div>`;
  const ru='абцдефгхийклмнопярстувшжыз',rows=['qwertyuiop','asdfghjkl','zxcvbnm'];
  $('layout').innerHTML=rows.map(r=>`<div>${[...r].map(k=>`<span>${k}<b>${ru[k.charCodeAt(0)-97]}</b></span>`).join('')}</div>`).join('')+`<div class="x">${[...'1234567'].map((k,i)=>`<span>${k}<b>${'чщъьэюё'[i]}</b></span>`).join('')}</div>`}
 

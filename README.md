@@ -5,6 +5,9 @@
 Пакеты: `artifacts/meshmesh-m9-0.3.2`, `artifacts/meshmesh-heltec-v4-0.3.2`.
 Аппаратные результаты и ограничения: [отчёт проверки](docs/verification.md).
 Что есть и чего нет по сравнению с MeshCore и WadaMesh: [сравнение](docs/feature-parity.md).
+Сборки для десяти плат сообщества (Heltec V3 и Wireless Tracker, LilyGO T-Deck,
+T-Beam, T-Beam Supreme, T3-S3 и T-LoRa, XIAO ESP32S3 + Wio-SX1262, Station G2,
+ThinkNode M2) — [docs/boards.md](docs/boards.md); на этих платах прошивка ещё не запускалась.
 
 В 0.3.2 добавлен радар сигналов — по идее RSSI-трекера и радарных HUD
 [Stevee87](https://github.com/Stevee87) (без датчика RD-03D и LiDAR: их на платах нет).

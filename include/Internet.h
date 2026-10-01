@@ -5,7 +5,7 @@
 // the radar and the USB Wi-Fi probe, and reconnects when they release it.
 // Network I/O and PNG decoding run on a worker task; SD stays on the loop task
 // because SD, display and LoRa share one SPI bus.
-#if defined(MM_HELTEC_V4)
+#if defined(MM_COMPACT)
 class Internet {
  public:
   bool online() const {return false;}

@@ -11,6 +11,7 @@ enum Page {Home,Messages,Nodes,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
 const char* pageNames[]={"home","messages","nodes","radar","gps","wifi","ble","settings","modules"};
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
+inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
 uint32_t chessPopupAt=0,chessSeen=0; // chess news: Heltec has no board, the game is played on the Wi-Fi page
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
@@ -233,21 +234,21 @@ void uiKey(int key){
  if(key==0xa3){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 bool uiRadarPage(){return page==Signals;}
-void uiBegin(){chessSeen=chessNet.events;pinMode(pins::led,OUTPUT);digitalWrite(pins::led,LOW);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
+void uiBegin(){chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
 String uiStatus(){StaticJsonDocument<384>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=pageNames[page];d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
  if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
  if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
- if(ledAt){uint32_t e=now-ledAt;digitalWrite(pins::led,e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;digitalWrite(pins::led,LOW);}}
+ if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;led(false);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;
   if(fresh&&radar.focus.kind==RadarTarget::Lora){if(radar.samples!=pingedSamples){pingedSamples=radar.samples;pingAt=now;}}
   else if(fresh&&now-pingAt>=uint32_t(1200-1140*level*level))pingAt=now;
-  digitalWrite(pins::led,pingAt&&now-pingAt<40);}
- else if(!ledAt&&page==Signals&&radar.csi==Radar::CsiSensor){lastInput=now;pingAt=1;digitalWrite(pins::led,radar.moving);} // LED on while motion is sensed
- else if(!ledAt&&pingAt){pingAt=0;digitalWrite(pins::led,LOW);}
+  led(pingAt&&now-pingAt<40);}
+ else if(!ledAt&&page==Signals&&radar.csi==Radar::CsiSensor){lastInput=now;pingAt=1;led(radar.moving);} // LED on while motion is sensed
+ else if(!ledAt&&pingAt){pingAt=0;led(false);}
  if(menuOpen&&now-menuAt>10000){menuOpen=false;dirty=true;}
  if(config.dimAfter&&!screenOff&&now-lastInput>=config.dimAfter*1000UL){screenOff=true;hardware.brightness(0);}
  if(screenOff)return;

@@ -3,6 +3,8 @@
 #include "BoardPins.h"
 #if defined(MM_HELTEC_V4)
 #include <Adafruit_SSD1306.h>
+#elif defined(MM_COMPACT)
+#include <Adafruit_GFX.h>
 #else
 #include <Adafruit_ST7789.h>
 #endif
@@ -14,6 +16,8 @@ class Hardware {
  public:
 #if defined(MM_HELTEC_V4)
   Adafruit_SSD1306 display;
+#elif defined(MM_COMPACT)
+  Adafruit_GFX* panel=nullptr; // the board's screen; nullptr when it has none or it did not answer
 #else
   Adafruit_ST7789 display;
 #endif
@@ -29,6 +33,8 @@ class Hardware {
   uint8_t keyboardHw=0, keyboardFw=0;
 #if defined(MM_HELTEC_V4)
   Hardware():display(128,64,&Wire,pins::oledReset) {}
+#elif defined(MM_COMPACT)
+  Hardware() {}
 #else
   Hardware():display(&SPI,pins::lcdCs,pins::lcdDc,pins::lcdReset) {}
 #endif

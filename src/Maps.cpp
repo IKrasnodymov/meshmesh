@@ -6,7 +6,11 @@
 #include <esp_heap_caps.h>
 #include <mbedtls/base64.h>
 #include <math.h>
+#if CONFIG_IDF_TARGET_ESP32S3
 #include <esp32s3/rom/miniz.h>
+#else
+#include <esp32/rom/miniz.h>
+#endif
 #include <Mm1Packet.h>
 Maps maps;
 uint32_t mapCrc(uint32_t crc,const uint8_t* bytes,size_t size) {
@@ -21,7 +25,7 @@ double px(double lon,int z) {return (lon+180)/360*(256UL<<z);}
 double py(double lat,int z) {double r=constrain(lat,-85.05112878,85.05112878)*M_PI/180;return (1-log(tan(r)+1/cos(r))/M_PI)/2*(256UL<<z);}
 }
 void Maps::begin() {
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
   available=hardware.sdOk;
   // The last view the user chose (or the IP location) opens the map without any preloaded area.
   Preferences p;if(p.begin("mm-map",true)){double lat=p.getDouble("lat",NAN),lon=p.getDouble("lon",NAN);int z=p.getUChar("z",0);p.end();
@@ -182,7 +186,7 @@ String Maps::command(const String& line) {
 // Web tiles: the worker downloads and decodes; the loop shows the tile at once and
 // writes the same MMT1 file an upload would, in 4 KB steps so LoRa keeps its turn.
 void Maps::netTick(){
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
   bool on=internet.online();
   if(on!=wasOnline){wasOnline=on;for(auto& t:tiles){if(on&&t.missing)t.z=-1;if(!on&&t.fetch){t.fetch=false;t.missing=true;}}dirty=true;}
   if(!cacheOut){

@@ -11,8 +11,9 @@
 #include "WifiDiagnostics.h"
 #include "Internet.h"
 #include "ChessNet.h"
+#include "Board.h"
 #include <esp_system.h>
-#if defined(MM_HELTEC_V4)
+#if defined(MM_NATIVE_USB)
 #include <hal/usb_serial_jtag_ll.h>
 #endif
 namespace {
@@ -32,7 +33,7 @@ void usbScreenshot() {
   memcpy(usbBytes,header,length);memcpy(usbBytes+length,hardware.canvas->getBuffer(),size);usbBytes[usbSize-1]='\n';
 }
 void usbTick() {
-#if defined(MM_HELTEC_V4)
+#if defined(MM_NATIVE_USB)
   // The Arduino HWCDC driver can leave bytes queued when its SOF connection
   // check briefly reports disconnection. Kick the FIFO without clearing it.
   if(HWCDC::isPlugged()&&Serial.availableForWrite()<2048){usb_serial_jtag_ll_txfifo_flush();usb_serial_jtag_ll_ena_intr_mask(USB_SERIAL_JTAG_INTR_SERIAL_IN_EMPTY);}
@@ -46,13 +47,9 @@ void usbTick() {
 }
 void setup() {
   Serial.setRxBufferSize(2048);Serial.setTxBufferSize(2048);Serial.begin(115200);delay(300);
-#if defined(MM_HELTEC_V4)
-  Serial.printf("\n" MESHMM_FIRMWARE " / Heltec V4 / reset=%d\n",esp_reset_reason());
-#else
-  Serial.printf("\n" MESHMM_FIRMWARE " / ThinkNode M9 / reset=%d\n",esp_reset_reason());
-#endif
+  Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   config.load();hardware.beginClock();hardware.begin();chessNet.begin();meshRadio.begin();maps.begin();
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
   internet.begin();
 #endif
   navigation.begin();portalBegin();uiBegin();
@@ -61,7 +58,7 @@ void setup() {
 }
 void loop() {
   hardware.tick();meshRadio.tick();chessNet.tick();
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
   internet.tick();
 #endif
   maps.tick();navigation.tick();radar.tick();
@@ -72,7 +69,7 @@ void loop() {
     char c=Serial.read();baudExpires=millis()+10000;
     if(c=='\n') {
       if(command.startsWith("baud ")) {
-#if defined(MM_HELTEC_V4)
+#if defined(MM_NATIVE_USB)
         usbLine("ERR native USB does not need baud switching");
 #else
         unsigned rate=command.substring(5).toInt();if(rate==115200||rate==460800||rate==921600){pendingBaud=rate;usbLine("OK USB baud switching");}else usbLine("ERR baud 115200/460800/921600");
@@ -99,7 +96,7 @@ void loop() {
   }
   portalTick();uiTick();usbTick();
   if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_NATIVE_USB)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif
   delay(2);

@@ -1,6 +1,6 @@
 #include "Internet.h"
 Internet internet;
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
 #include "App.h"
 #include "Hardware.h"
 #include "Radar.h"

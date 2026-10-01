@@ -32,6 +32,14 @@ Wi-Fi-пароли и BLE PIN даже в приватный репозитор�
   OLED 128×64 и кнопка PRG. Цель `heltec_v4`.
 - Цель `heltec_v4_r8` предназначена для другой ревизии с 8 МБ PSRAM;
   успешная сборка не означает аппаратную проверку этой ревизии.
+- Платы сообщества (`docs/boards.md`): `heltec_v3`, `heltec_tracker`, `tdeck`,
+  `tbeam`, `tbeam_supreme`, `t3s3`, `tlora_v2_1_6`, `xiao_s3_wio`, `station_g2`,
+  `thinknode_m2`. Устройств нет: проверены сборка, эмулятор и веб-страница; работу
+  на плате подтверждают владельцы. Выводы — `include/BoardPins.h`, свойства платы —
+  `include/Board.h`; однокнопочные платы — `src/HardwareCompact.cpp` с интерфейсом
+  Heltec, T-Deck — `src/HardwareTDeck.cpp` с интерфейсом M9. Общий код различает
+  семейство (`MM_COMPACT`), трансивер (`MM_RADIO_*`) и native USB (`MM_NATIVE_USB`),
+  а не конкретные платы.
 - Последние известные порты: M9 `/dev/cu.wchusbserial110`,
   Heltec `/dev/cu.usbmodem101`; `tools/ports.py` находит их по USB-мосту.
   Проверять наличие и идентичность устройств; имена портов меняются после
@@ -73,6 +81,7 @@ WadaMesh использует ядро MeshCore; справочные исход
 .venv/bin/python tools/package.py m9
 .venv/bin/python tools/package.py heltec_v4
 .venv/bin/python tools/package.py heltec_v4_r8
+# платы сообщества: те же команды с их целями; пакет включает factory-образ и INSTALL.txt
 ```
 
 Собирать затронутые платы. Повторять и расширять проверки по обнаруженным

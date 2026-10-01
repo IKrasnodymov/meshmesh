@@ -14,8 +14,11 @@
 #include <SHA256.h>
 #include "ChessNet.h"
 MeshRadio meshRadio;
-#if defined(MM_HELTEC_V4)
+#if defined(MM_RADIO_SX1262)
 constexpr uint32_t irqTxDone=RADIOLIB_SX126X_IRQ_TX_DONE,irqPreamble=RADIOLIB_SX126X_IRQ_PREAMBLE_DETECTED,irqRxDone=RADIOLIB_SX126X_IRQ_RX_DONE;
+#elif defined(MM_RADIO_SX1276)
+// SX127x has no preamble flag in LoRa mode; a valid header marks a packet being received.
+constexpr uint32_t irqTxDone=RADIOLIB_SX127X_CLEAR_IRQ_FLAG_TX_DONE,irqPreamble=RADIOLIB_SX127X_CLEAR_IRQ_FLAG_VALID_HEADER,irqRxDone=RADIOLIB_SX127X_CLEAR_IRQ_FLAG_RX_DONE;
 #else
 constexpr uint32_t irqTxDone=RADIOLIB_LR11X0_IRQ_TX_DONE,irqPreamble=RADIOLIB_LR11X0_IRQ_PREAMBLE_DETECTED,irqRxDone=RADIOLIB_LR11X0_IRQ_RX_DONE;
 #endif
@@ -177,7 +180,12 @@ class MeshCoreBackend:public BaseChatMesh {
  bool forget(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c||!removeContact(*c))return false;saveContacts();return true;}
  void tick(){if(!protectedAt||millis()-protectedAt>=5000)protectContacts();loop();if(contactsDue&&int32_t(millis()-contactsDue)>=0)saveContacts();}
 };
+#if defined(MM_RADIO_SX1276)
+// SX127x routes interrupts to fixed DIO pins: only RX done (DIO0) is used, CRC is checked by readData.
+int16_t MeshRadio::startReceiving(){return radio.startReceive();}
+#else
 int16_t MeshRadio::startReceiving(){constexpr uint32_t mask=(1UL<<RADIOLIB_IRQ_RX_DONE)|(1UL<<RADIOLIB_IRQ_CRC_ERR)|(1UL<<RADIOLIB_IRQ_HEADER_ERR)|(1UL<<RADIOLIB_IRQ_TIMEOUT);return radio.startReceive(UINT32_MAX,RADIOLIB_IRQ_RX_DEFAULT_FLAGS,mask);}
+#endif
 String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%012llX",(unsigned long long)id);return b;}
 String MeshRadio::publicKeyText() const{if(!core)return "";char out[65];mesh::Utils::toHex(out,core->self_id.pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return destination==meshmesh::Broadcast?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
@@ -193,16 +201,29 @@ void MeshRadio::cancelPending(){for(auto& p:pending)if(p.active){status(p.messag
 bool MeshRadio::applyConfig(){
  if(transmitting)return false;cancelPending();
  uint16_t preamble=config.sf<=8?32:16;
+#if defined(MM_RADIO_SX1276)
+ radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);
+ if(radioError){delay(150);radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);}ready=radioError==0;
+#else
  radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);
  if(radioError){delay(150);radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);}ready=radioError==0;
+#endif
  if(ready){
 #if defined(MM_HELTEC_V4)
  extern int heltecFemTx;radio.setRfSwitchPins(RADIOLIB_NC,heltecFemTx);
+#elif defined(MM_RADIO_SX1276)
+ radio.setCurrentLimit(120);radio.setCRC(true);
+#elif defined(MM_RADIO_SX1262)
+ radio.setCurrentLimit(140);if(pins::radioRxEn>=0)radio.setRfSwitchPins(pins::radioRxEn,RADIOLIB_NC);
 #else
  static const uint32_t dios[Module::RFSWITCH_MAX_PINS]={RADIOLIB_LR11X0_DIO5,RADIOLIB_LR11X0_DIO6,RADIOLIB_NC,RADIOLIB_NC,RADIOLIB_NC};
  static const Module::RfSwitchMode_t modes[]={{LR11x0::MODE_STBY,{LOW,LOW}},{LR11x0::MODE_RX,{HIGH,LOW}},{LR11x0::MODE_TX,{HIGH,HIGH}},{LR11x0::MODE_TX_HP,{LOW,HIGH}},{LR11x0::MODE_TX_HF,{LOW,LOW}},{LR11x0::MODE_GNSS,{LOW,LOW}},{LR11x0::MODE_WIFI,{LOW,LOW}},END_OF_MODE_TABLE};radio.setRfSwitchTable(dios,modes);
 #endif
- radio.setRxBoostedGainMode(true);radio.setPacketReceivedAction(onRadioIrq);radioIrq=false;radioError=startReceiving();ready=radioError==0;
+ // Station G2: its LNA saturates with the boosted gain (MeshCore keeps it off on this board).
+#if !defined(MM_RADIO_SX1276) && !defined(MM_BOARD_STATION_G2)
+ radio.setRxBoostedGainMode(true);
+#endif
+ radio.setPacketReceivedAction(onRadioIrq);radioIrq=false;radioError=startReceiving();ready=radioError==0;
  }event=ready?"MeshCore radio ready":"Radio error "+String(radioError);dirty=true;return ready;
 }
 bool MeshRadio::sendHello(){return ready&&core&&core->advertise();}

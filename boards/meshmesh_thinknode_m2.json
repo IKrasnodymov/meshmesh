@@ -1,0 +1,32 @@
+{
+  "build": {
+    "arduino": {
+      "ldscript": "esp32s3_out.ld",
+      "partitions": "default.csv",
+      "memory_type": "qio_qspi"
+    },
+    "core": "esp32",
+    "extra_flags": [
+      "-DARDUINO_USB_CDC_ON_BOOT=0"
+    ],
+    "f_cpu": "240000000L",
+    "f_flash": "80000000L",
+    "flash_mode": "dio",
+    "mcu": "esp32s3",
+    "variant": "esp32s3",
+    "psram_type": "qspi"
+  },
+  "frameworks": [
+    "arduino"
+  ],
+  "name": "MeshMesh / Elecrow ThinkNode M2",
+  "upload": {
+    "flash_size": "4MB",
+    "maximum_ram_size": 327680,
+    "maximum_size": 3080192,
+    "require_upload_port": true,
+    "speed": 115200
+  },
+  "url": "https://www.elecrow.com/thinknode-m2-meshtastic-lora-signal-transceiver.html",
+  "vendor": "Elecrow"
+}

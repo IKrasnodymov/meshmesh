@@ -14,11 +14,13 @@
 #include <time.h>
 String statusJson() {
   StaticJsonDocument<3072> d;
-#if defined(MM_HELTEC_V4)
-  d["board"]="heltec_v4";
+  d["board"]=MM_BOARD_ID;d["board_name"]=MM_BOARD_NAME;d["max_power"]=MM_MAX_POWER;
+#if defined(MM_COMPACT)
+  d["family"]="compact";d["button"]=MM_BUTTON;
 #else
-  d["board"]="m9";
+  d["family"]="full";
 #endif
+  {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
   char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
   d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;
@@ -59,7 +61,7 @@ String applySettings(JsonObjectConst v) {
       if(!value.is<int>())return "ERR integer value required";int n=value.as<int>();
       if(name=="sf") {if(n<7||n>12)return "ERR SF 7..12";next.sf=n;}
       if(name=="cr") {if(n<5||n>8)return "ERR CR 5..8";next.cr=n;}
-      if(name=="power") {if(n<0||n>22)return "ERR power 0..22 dBm";next.power=n;}
+      if(name=="power") {if(n<0||n>MM_MAX_POWER)return "ERR power 0.." + String(MM_MAX_POWER) + " dBm";next.power=n;}
       if(name=="hops") {if(n<0||n>7)return "ERR hops 0..7";next.hops=n;}
       if(name=="brightness") {if(n<10||n>255)return "ERR brightness 10..255";next.brightness=n;}
     } else if(name=="utc_offset") {
@@ -82,7 +84,7 @@ String applySettings(JsonObjectConst v) {
 String executeCommand(const String& input) {
   String line=input;line.trim();
   if(line.startsWith("map "))return maps.command(line);
-#if !defined(MM_HELTEC_V4)
+#if !defined(MM_COMPACT)
   if(line=="internet"||line.startsWith("internet "))return internet.command(line);
 #endif
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);

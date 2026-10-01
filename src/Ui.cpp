@@ -629,9 +629,15 @@ void drawDiagnostics(){
  footer({{"OK",t("Crypto test + sound","Тест шифрования и звука")},{"BACK",t("Back","Назад")}});
 }
 void drawHelp(){
+#if defined(MM_BOARD_TDECK)
+ Hint keys[]={{config.russian?"Шар":"Ball",t("Move: menu, lists, map","Перемещение: меню, списки, карта")},{config.russian?"Нажатие":"Click",t("Open / send","Открыть / отправить")},{config.russian?"Удерж. шар":"Hold ball",t("Unlock; in chat: Russian layout","Вход; в чате: русская раскладка")},
+  {"Enter",t("Open / send","Открыть / отправить")},{"DEL",t("Delete; with no text: back","Удалить; без текста: назад")},{config.russian?"2×пробел":"2x space",t("in text: switch RU/EN","в тексте: RU/EN")},
+  {"L",t("Map: saved maps","Карта: список карт")},{"+ -",t("Map zoom","Масштаб карты")},{"P",t("Nodes: show on map","Узлы: показать на карте")},{"HOME",t("Menu: DEL until the tiles","Меню: DEL до плиток")}};
+#else
  Hint keys[]={{"MSG",t("Chats","Чаты")},{"MAP",t("Map; L - saved maps","Карта; L - список карт")},{"HOME",t("Menu","Главное меню")},{"BACK",t("Previous screen","Предыдущий экран")},{"CTRL",t("Settings","Настройки")},
   {"ADV",t("Announce this node; hold: GPS on/off","Объявить узел; удерж.: GPS вкл/выкл")},{"@",t("function key, not Sym+@: RU/EN in chat","функц. клавиша (не Sym+@): RU/EN в чате")},{"MIC",t("Lock screen (there is no microphone)","Блокировка (микрофона нет)")},
   {"OK",t("Open / send; hold: unlock","Открыть / отправить; удерж.: вход")},{config.russian?"2×пробел":"2x space",t("in text: switch RU/EN; Right: capital","в тексте: RU/EN; -> : заглавная")}};
+#endif
  for(int i=0;i<10;i++){int y=24+i*19;int kw=max(30,measure(keys[i].key,small)+10);g().fillRoundRect(10,y,kw,15,3,line);textCenter(10+kw/2,y+11,keys[i].key,ink,small);text(max(50,kw+16),y+12,fit(keys[i].action,258),i%2?dim:ink);}
  footer({{"OK",t("Russian layout","Русская раскладка")},{"BACK",t("Settings","Настройки")}});
 }
@@ -698,7 +704,7 @@ void drawLayoutHelp(){
  text(16,208,t("2x space: RU/EN   Shift or Right after a letter: capital","2×пробел: RU/EN   Shift или -> после буквы: заглавная"),dim,small);
 }
 
-void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,22);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;}}else switch(selected){case 1:draft.russian=!draft.russian;break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;}dirty=true;}
+void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;}}else switch(selected){case 1:draft.russian=!draft.russian;break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;}dirty=true;}
 void saveDraft(){StaticJsonDocument<768>d;deserializeJson(d,configJson());if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;}else{d["name"]=draft.name;d["russian"]=draft.russian;d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
 void runNodeAction(){
  Peer* p=focusedPeer();if(!p)return;NodeAction acts[4];unsigned n=nodeActions(*p,acts);NodeAction a=acts[constrain(action,0,int(n)-1)];
@@ -717,6 +723,10 @@ bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
 void uiBegin(){Preferences p;keyboardRussian=config.russian;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",config.russian);p.end();}lastInput=millis();draw();}
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
+#if defined(MM_BOARD_TDECK)
+ // The T-Deck has no BACK key: DEL goes back when there is no text here to delete.
+ if(key==Erase&&!editing&&!(page==Chat&&composer.length()))key=KeyBack;
+#endif
  if(key==KeyMic){locked=true;return;}
  if(layoutHelp){layoutHelp=false;return;}
  if(key==KeyAt&&(page==Chat||(page==Display&&editing))){toggleLanguage();return;}
