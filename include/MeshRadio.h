@@ -18,6 +18,10 @@ struct ChatMessage {
   uint8_t protocol=2; // 1: archived MM/1; 2: MeshCore
   bool game=false;    // a chess command: sent like a message, kept out of the chat history
   enum Status:uint8_t { Received,Queued,Sent,Delivered,Failed } status=Received;
+  // How it travelled: outgoing - the current attempt, then the one that got the ACK; incoming - the received packet.
+  // Flood hops of a delivered message are those of the path returned with the ACK. 255: not known.
+  enum Route:uint8_t { RouteNone,RouteDirect,RouteFlood } route=RouteNone;
+  uint8_t hops=255,tries=0;
 };
 struct Peer {
   uint64_t id=0;char name[25]={};uint32_t seen=0;
@@ -44,16 +48,17 @@ class MeshRadio {
   bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
+  String routeText(const ChatMessage& m,bool brief=false) const; // e.g. "via 2 rpt · 2/3"; empty when unknown
  private:
   friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;
   MeshCoreBackend* core=nullptr;
-  struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0;} pending[4];
+  struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};} pending[4];
   uint32_t sequence=0,lastHello=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);
   int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
-  void status(uint32_t id,ChatMessage::Status value);void persist(const ChatMessage& m);
+  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false);void persist(const ChatMessage& m);
   Peer* contact(uint64_t id);
 };
 extern MeshRadio meshRadio;

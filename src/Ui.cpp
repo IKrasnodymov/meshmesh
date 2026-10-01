@@ -289,7 +289,7 @@ void drawChat(){
  int end=max(0,total-chatOffset),bottom=boxY-5;const int top=41;
  for(int j=end-1;j>=0&&bottom>top+20;j--){
   auto& m=meshRadio.history[indices[j]];String lines[7];unsigned n=wrap(m.text,lines,7,214);bool named=!m.outgoing&&recipient==meshmesh::Broadcast;
-  String when=timeText(m.timestamp),state=m.status==ChatMessage::Failed?t("not confirmed","не подтверждено"):String();if(m.protocol==1)state="MM/1 "+state;
+  String when=timeText(m.timestamp),state=m.status==ChatMessage::Failed?t("not confirmed","не подтверждено"):meshRadio.routeText(m);if(m.protocol==1)state="MM/1 "+state;
   int metaW=measure(when,small)+(state.length()?measure(state,small)+4:0)+(m.outgoing?12:0),w=metaW;
   for(unsigned k=0;k<n;k++)w=max(w,measure(lines[k]));if(named)w=max(w,measure(m.name,small));w=max(44,w+16);
   int h=7+(named?11:0)+n*13+10;if(bottom-h<top){if(j!=end-1)break;n=max(1,(bottom-top-7-(named?11:0)-10)/13);h=7+(named?11:0)+n*13+10;}

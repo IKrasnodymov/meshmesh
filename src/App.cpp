@@ -32,8 +32,9 @@ String statusJson() {
   d["event"]=meshRadio.event;d["wifi"]=portalActive();d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
 String messagesJson() {
-  DynamicJsonDocument d(24576);JsonArray a=d.to<JsonArray>();
-  for(unsigned i=0;i<meshRadio.historyCount;i++) {const auto& m=meshRadio.history[i];JsonObject j=a.createNestedObject();j["protocol"]=m.protocol;j["source"]=meshRadio.idText(m.source);j["destination"]=meshRadio.idText(m.destination);j["session"]=m.session;j["id"]=m.id;j["name"]=m.name;j["text"]=m.text;j["time"]=m.timestamp;j["outgoing"]=m.outgoing;j["status"]=int(m.status);}
+  DynamicJsonDocument d(32768);JsonArray a=d.to<JsonArray>();
+  for(unsigned i=0;i<meshRadio.historyCount;i++) {const auto& m=meshRadio.history[i];JsonObject j=a.createNestedObject();j["protocol"]=m.protocol;j["source"]=meshRadio.idText(m.source);j["destination"]=meshRadio.idText(m.destination);j["session"]=m.session;j["id"]=m.id;j["name"]=m.name;j["text"]=m.text;j["time"]=m.timestamp;j["outgoing"]=m.outgoing;j["status"]=int(m.status);
+   if(m.route){j["route"]=m.route==ChatMessage::RouteDirect?"direct":"flood";if(m.hops!=255)j["hops"]=m.hops;if(m.tries)j["tries"]=m.tries;}}
   String s;serializeJson(d,s);return s;
 }
 String nodesJson(){DynamicJsonDocument d(16384);JsonArray a=d.to<JsonArray>();for(unsigned i=0;i<meshRadio.peerCount;i++){auto& p=meshRadio.peers[i];JsonObject j=a.createNestedObject();char key[65];mesh::Utils::toHex(key,p.publicKey,32);j["public_key"]=key;j["type"]=p.type;j["heard"]=p.heard;j["path_length"]=p.pathLength;j["id"]=meshRadio.idText(p.id);j["name"]=p.name;j["rssi"]=p.rssi;j["snr"]=p.snr;if(p.heard)j["age_seconds"]=(millis()-p.seen)/1000;else j["age_seconds"]=nullptr;j["hops"]=p.hops;j["position"]=p.position;if(p.position){j["latitude"]=p.latitude;j["longitude"]=p.longitude;}}String s;serializeJson(d,s);return s;}

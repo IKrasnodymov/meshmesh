@@ -166,7 +166,7 @@ void draw(){
   unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t("USB power","Питание USB"):String(mv/1000.f,2)+"V")+(config.relay?t("  relay on","  ретрансляция"):""),small);break;}
  case Messages:{const ChatMessage* m=shownMessage();title=t("Messages","Сообщения")+(m?" "+String(meshRadio.historyCount-messageOffset)+"/"+String(meshRadio.historyCount):"");
   if(m){String who=m->outgoing?t("You","Вы"):String(m->name);if(m->destination==meshmesh::Broadcast)who+=" #";const char* en[]={"","queued","sent","delivered","no ACK"},*ru[]={"","очередь","отправл.","доставл.","нет ACK"};
-   String st=m->outgoing?String(config.russian?ru[m->status]:en[m->status]):clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(m->text,36,2);}
+   String route=meshRadio.routeText(*m,true),st=m->outgoing?String(config.russian?ru[m->status]:en[m->status])+(route.length()?" "+route:String()):(route.length()?route+" ":String())+clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(m->text,36,2);}
   else{say(0,30,t("No messages yet","Сообщений ещё нет"));say(0,44,t("They appear here","Здесь появятся входящие"),small);}break;}
  case Nodes:{unsigned order[24];unsigned n=sortedNodes(order);Peer* p=shownNode();title=t("Nodes","Узлы")+(n?" "+String(nodeIndex%n+1)+"/"+String(n):"");
   if(p){say(0,23,clipped(p->name,21),bold);say(0,33,typeText(p->type)+", "+pathText(*p),small);

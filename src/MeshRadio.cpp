@@ -62,17 +62,17 @@ class MeshCoreBackend:public BaseChatMesh {
  struct ContactBlob {uint32_t version=1,count=0;SavedContact contacts[24]={};uint8_t hash[32]={};};
  struct ReceivedId{uint64_t source=0;uint32_t stamp=0,hash=0;} received[128];unsigned nextReceived=0;
  bool duplicate(uint64_t source,uint32_t stamp,const char* text){uint32_t hash;mesh::Utils::sha256((uint8_t*)&hash,4,(const uint8_t*)text,strlen(text));for(const auto& r:received)if(r.source==source&&r.stamp==stamp&&r.hash==hash)return true;received[nextReceived]={source,stamp,hash};nextReceived=(nextReceived+1)%128;return false;}
- void receiveMessage(uint64_t source,uint64_t dest,uint32_t stamp,const char* name,const char* text){size_t n=strnlen(text,MAX_TEXT_LEN+1);if(!n||n>MAX_TEXT_LEN||!meshmesh::validUtf8((const uint8_t*)text,n)){owner.rejected++;return;}if(duplicate(source,stamp,text))return;for(unsigned i=0;i<owner.historyCount;i++){const auto& old=owner.history[i];if(old.protocol==2&&!old.outgoing&&old.source==source&&old.session==stamp&&!strcmp(old.text,text))return;}
+ void receiveMessage(uint64_t source,uint64_t dest,uint32_t stamp,const char* name,const char* text,const mesh::Packet* packet,uint8_t hops){size_t n=strnlen(text,MAX_TEXT_LEN+1);if(!n||n>MAX_TEXT_LEN||!meshmesh::validUtf8((const uint8_t*)text,n)){owner.rejected++;return;}if(duplicate(source,stamp,text))return;for(unsigned i=0;i<owner.historyCount;i++){const auto& old=owner.history[i];if(old.protocol==2&&!old.outgoing&&old.source==source&&old.session==stamp&&!strcmp(old.text,text))return;}
   // Chess commands come only from direct messages of keyed contacts, never from the channel.
   if(dest!=meshmesh::Broadcast&&chessNet.receive(source,name,text))return;
- ChatMessage m;m.source=source;m.destination=dest;m.timestamp=uint32_t(time(nullptr));m.session=stamp;mesh::Utils::sha256((uint8_t*)&m.id,4,(const uint8_t*)text,n);copyUtf8(m.name,name,sizeof(m.name));copyUtf8(m.text,text,sizeof(m.text));owner.addMessage(m);hardware.beep();owner.event="New message from "+String(m.name);}
- void updateContact(const ContactInfo& c,bool heard,uint8_t hops=0){
+ ChatMessage m;m.source=source;m.destination=dest;m.timestamp=uint32_t(time(nullptr));m.session=stamp;m.route=packet->isRouteFlood()?ChatMessage::RouteFlood:ChatMessage::RouteDirect;m.hops=hops;mesh::Utils::sha256((uint8_t*)&m.id,4,(const uint8_t*)text,n);copyUtf8(m.name,name,sizeof(m.name));copyUtf8(m.text,text,sizeof(m.text));owner.addMessage(m);hardware.beep();owner.event="New message from "+String(m.name);}
+ void updateContact(const ContactInfo& c,bool heard,uint8_t hops=255){ // hops 255: not known, kept
   if(!meshmesh::validUtf8((const uint8_t*)c.name,strnlen(c.name,sizeof(c.name)))){owner.rejected++;return;}
   uint64_t id=aliasOf(c.id.pub_key);Peer* p=owner.contact(id);if(!p){if(owner.peerCount>=24)return;p=&owner.peers[owner.peerCount++];*p={};p->id=id;}
   // Short UI IDs are aliases only. Full keys are always used for cryptography.
   if(p->type&&memcmp(p->publicKey,c.id.pub_key,32)){owner.rejected++;owner.event="Contact ID collision";return;}
   memcpy(p->publicKey,c.id.pub_key,32);copyUtf8(p->name,c.name,sizeof(p->name));p->type=c.type;p->pathLength=c.out_path_len;p->position=c.gps_lat||c.gps_lon;p->latitude=c.gps_lat/1e6f;p->longitude=c.gps_lon/1e6f;
-  if(heard){p->heard=true;p->seen=millis();p->rssi=owner.lastRssi;p->snr=owner.lastSnr;p->hops=hops;}owner.dirty=true;
+  if(heard){p->heard=true;p->seen=millis();p->rssi=owner.lastRssi;p->snr=owner.lastSnr;if(hops!=255)p->hops=hops;}owner.dirty=true;
  }
  // A full table makes room for a new node: MeshCore overwrites the contact heard longest ago that
  // is not a favourite. Favourites here are chat nodes and any node with chat history or a chess game.
@@ -95,21 +95,27 @@ class MeshCoreBackend:public BaseChatMesh {
   uint32_t ack;memcpy(&ack,data,4);
   for(auto& wait:owner.pending)if(wait.active&&wait.started)for(unsigned i=0;i<wait.attempts;i++)if(wait.ack[i]==ack){
    Peer* p=owner.contact(wait.message.destination);ContactInfo* c=p?lookupContactByPubKey(p->publicKey,32):nullptr;if(!c)return nullptr;
-   wait.active=false;updateContact(*c,true);owner.status(wait.message.id,ChatMessage::Delivered);if(!wait.message.game){owner.event="Delivered to "+String(c->name);hardware.beep();}return c;
+   // The ACK packet itself is not at hand: its signal and hops may be a repeater's. Only a zero-hop direct
+   // delivery proves the node still hears us directly.
+   wait.active=false;updateContact(*c,false);if(wait.route[i]==ChatMessage::RouteDirect&&!wait.hops[i]){p->heard=true;p->seen=millis();p->hops=0;}
+   owner.track(wait,i,true);owner.status(wait.message.id,ChatMessage::Delivered);if(!wait.message.game){owner.event="Delivered to "+String(c->name);hardware.beep();}return c;
   }return nullptr;
  }
  void onContactPathUpdated(const ContactInfo& c) override{updateContact(c,false);contactsDue=millis()+2000;}
- void onMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t timestamp,const char* text) override{updateContact(c,true,packet->getPathHashCount());receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,timestamp,c.name,text);}
+ // A flood packet carries the hops it travelled; a direct one arrives with its path consumed, so the
+ // (symmetric) path to the sender stands for it.
+ static uint8_t hopsOf(const ContactInfo& c,const mesh::Packet* packet){return packet->isRouteFlood()?packet->getPathHashCount():c.out_path_len==OUT_PATH_UNKNOWN?255:c.out_path_len&63;}
+ void onMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t timestamp,const char* text) override{uint8_t hops=hopsOf(c,packet);updateContact(c,true,hops);receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,timestamp,c.name,text,packet,hops);}
  void onCommandDataRecv(const ContactInfo&,mesh::Packet*,uint32_t,const char*) override{}
  void onSignedMessageRecv(const ContactInfo&,mesh::Packet*,uint32_t,const uint8_t*,const char*) override{}
  uint32_t calcFloodTimeoutMillisFor(uint32_t airtime) const override{return 15000+airtime*4+config.hops*5000;}
  uint32_t calcDirectTimeoutMillisFor(uint32_t airtime,uint8_t path) const override{return 10000+airtime*4*(1+(path&63));}
  void onSendTimeout() override{} // Facade owns four pending sends and bounded retries.
- void onChannelMessageRecv(const mesh::GroupChannel&,mesh::Packet*,uint32_t stamp,const char* text) override{
+ void onChannelMessageRecv(const mesh::GroupChannel&,mesh::Packet* packet,uint32_t stamp,const char* text) override{
   const char* split=strstr(text,": ");String name=split?String(text).substring(0,split-text):"Public";
   uint8_t hash[32];mesh::Utils::sha256(hash,32,(const uint8_t*)name.c_str(),name.length());uint64_t source=aliasOf(hash);
   // Channel sender names are unverified; never turn them into keyed contacts.
-  receiveMessage(source,meshmesh::Broadcast,stamp,name.c_str(),split?split+2:text);
+  receiveMessage(source,meshmesh::Broadcast,stamp,name.c_str(),split?split+2:text,packet,packet->isRouteFlood()?packet->getPathHashCount():255);
  }
  uint8_t onContactRequest(const ContactInfo&,uint32_t,const uint8_t*,uint8_t,uint8_t*) override{return 0;}
  void onContactResponse(const ContactInfo&,const uint8_t*,uint8_t) override{}
@@ -141,19 +147,27 @@ class MeshCoreBackend:public BaseChatMesh {
  void saveContacts(){ContactBlob* blob=new ContactBlob;blob->count=min(getNumContacts(),24);for(unsigned i=0;i<blob->count;i++){ContactInfo c;if(!getContactByIdx(i,c))continue;auto& dest=blob->contacts[i];memcpy(dest.key,c.id.pub_key,32);memcpy(dest.name,c.name,32);dest.type=c.type;dest.pathLength=c.out_path_len;memcpy(dest.path,c.out_path,64);dest.advert=c.last_advert_timestamp;dest.lat=c.gps_lat;dest.lon=c.gps_lon;}mesh::Utils::sha256(blob->hash,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));Preferences p;if(p.begin("meshmesh-mc",false)){p.putBytes("contacts",blob,sizeof(*blob));p.end();}delete blob;contactsDue=0;}
  bool reserveStamp(uint32_t stamp){Preferences p;if(!p.begin("meshmesh-mc",false))return false;bool saved=p.putUInt("last_tx",stamp)==4;p.end();return saved;}
  bool advertise(bool requirePosition=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;p.end();if(!saved){releasePacket(pkt);return false;}sendFlood(pkt);return true;}
+ // A relayed path came with a path return and is used as is (the retries flood). "Direct" holds only while the
+ // node is heard without relays: within 30 minutes (our nodes announce every 5) and 5 dB over the SF floor.
+ bool pathTrusted(const ContactInfo& c){
+  if(c.out_path_len&63)return true;Peer* p=owner.contact(aliasOf(c.id.pub_key));
+  return p&&p->heard&&p->hops==0&&millis()-p->seen<1800000&&p->snr>=-2.5f*(config.sf-4)+5;
+ }
  bool startMessage(MeshRadio::Pending& wait){
   mesh::Packet* packet=nullptr;unsigned attempt=wait.attempts;
   if(wait.message.destination==meshmesh::Broadcast){ChannelDetails channel;getChannel(0,channel);uint8_t bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);String text=String(config.name)+": "+wait.message.text;memcpy(bytes+5,text.c_str(),text.length());packet=createGroupDatagram(PAYLOAD_TYPE_GRP_TXT,channel.channel,bytes,5+text.length());}
   else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||c->type!=ADV_TYPE_CHAT){owner.event="Contact is not a chat node";return false;}
    // Stock MeshCore layout. Keep timestamp/text stable for retries; attempt changes the ACK/hash.
    uint8_t bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);bytes[4]=attempt&3;size_t n=strlen(wait.message.text);memcpy(bytes+5,wait.message.text,n);mesh::Utils::sha256((uint8_t*)&wait.ack[attempt],4,bytes,5+n,self_id.pub_key,32);packet=createDatagram(PAYLOAD_TYPE_TXT_MSG,c->id,c->getSharedSecret(self_id),bytes,5+n);
-   if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);// The last attempt floods even with a known path: a broken route must not lose the message,
-   // and the receiver's flood reply carries the new path back (as stock MeshCore companions do).
-   if(c->out_path_len==OUT_PATH_UNKNOWN||attempt>=2)sendFlood(packet);else sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcFloodTimeoutMillisFor(coreRadio.getEstAirtimeFor(packet->getRawLength()));}
+   // Only the first attempt follows a trusted path; the retries flood, so a broken route does not lose the
+   // message and the receiver's flood reply carries the new path back.
+   if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);uint32_t airtime=coreRadio.getEstAirtimeFor(packet->getRawLength());
+    bool viaPath=!attempt&&c->out_path_len!=OUT_PATH_UNKNOWN&&pathTrusted(*c);wait.route[attempt]=viaPath?ChatMessage::RouteDirect:ChatMessage::RouteFlood;wait.hops[attempt]=viaPath?c->out_path_len&63:255;
+    if(viaPath){sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcDirectTimeoutMillisFor(airtime,c->out_path_len);}else{sendFlood(packet);wait.due=millis()+calcFloodTimeoutMillisFor(airtime);}}
   }
   if(!packet)return false;
-  if(wait.message.destination==meshmesh::Broadcast){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);sendFlood(packet);wait.due=millis()+45000;}
-  wait.started=true;wait.attempts++;return true;
+  if(wait.message.destination==meshmesh::Broadcast){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);wait.route[0]=ChatMessage::RouteFlood;wait.hops[0]=255;sendFlood(packet);wait.due=millis()+45000;}
+  owner.track(wait,attempt);wait.started=true;wait.attempts++;return true;
  }
  // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.
  bool resetPath(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c)return false;resetPathTo(*c);saveContacts();return true;}
@@ -199,6 +213,25 @@ uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game){
  auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=destination==meshmesh::Broadcast?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
 void MeshRadio::status(uint32_t id,ChatMessage::Status value){for(auto& p:pending)if(p.message.game&&p.message.id==id){chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered)return;history[i].status=value;persist(history[i]);dirty=true;break;}}
+// Route of an outgoing message: the current attempt, or the one that got the ACK. Saved with the next status.
+void MeshRadio::track(const Pending& wait,unsigned attempt,bool delivered){
+ if(wait.message.game||attempt>2)return;
+ for(unsigned i=0;i<historyCount;i++){auto& m=history[i];if(m.protocol!=2||!m.outgoing||m.source!=nodeId||m.session!=config.bootCounter||m.id!=wait.message.id)continue;
+  m.route=ChatMessage::Route(wait.route[attempt]);m.hops=wait.hops[attempt];m.tries=attempt+1;
+  // A flood delivery brings the path back with the ACK.
+  if(delivered&&m.route==ChatMessage::RouteFlood){const Peer* p=contact(m.destination);m.hops=p&&p->pathLength!=255?p->pathLength&63:255;}
+  dirty=true;break;}
+}
+String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
+ bool ru=config.russian;
+ if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";
+ String hops=m.hops==255?String():!m.hops?String(ru?(brief?"напр.":"напрямую"):"direct"):(brief?String(m.hops)+(ru?" ретр.":" rpt"):String(ru?"через ":"via ")+m.hops+(ru?" ретр.":" rpt"));
+ String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(ru?"по маршруту":"routed"))
+  :!m.outgoing?(hops.length()?hops:String("flood")) // incoming: how far it came
+  :m.status==ChatMessage::Delivered&&hops.length()&&!brief?"flood, "+hops:String("flood");
+ if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(ru?" · попытка ":" · try ")+m.tries):" "+String(m.tries)+"/3";
+ return s;
+}
 void MeshRadio::addMessage(const ChatMessage& m,bool save) {
   if(historyCount==64) {memmove(history,history+1,sizeof(ChatMessage)*63);historyCount=63;}
   history[historyCount++]=m;if(save)persist(m);dirty=true;
@@ -208,7 +241,7 @@ void MeshRadio::persist(const ChatMessage& m) {
   File f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);if(!f) {fs->mkdir("/meshmesh");f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);}if(!f)return;
   // Bound the log: retain one previous segment; never touch other apps' files.
   if(f.size()>256*1024) {f.close();fs->remove("/meshmesh/history.previous.jsonl");fs->rename("/meshmesh/history.jsonl","/meshmesh/history.previous.jsonl");f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);}
-  StaticJsonDocument<768> d;d["protocol"]=m.protocol;d["source"]=idText(m.source);d["destination"]=idText(m.destination);d["session"]=m.session;d["id"]=m.id;d["time"]=m.timestamp;d["name"]=m.name;d["text"]=m.text;d["outgoing"]=m.outgoing;d["status"]=int(m.status);serializeJson(d,f);f.println();f.close();
+  StaticJsonDocument<768> d;d["protocol"]=m.protocol;d["source"]=idText(m.source);d["destination"]=idText(m.destination);d["session"]=m.session;d["id"]=m.id;d["time"]=m.timestamp;d["name"]=m.name;d["text"]=m.text;d["outgoing"]=m.outgoing;d["status"]=int(m.status);if(m.route){d["route"]=int(m.route);d["hops"]=m.hops;d["tries"]=m.tries;}serializeJson(d,f);f.println();f.close();
 }
 void MeshRadio::restoreHistory() {
   fs::FS* fs=hardware.sdOk?static_cast<fs::FS*>(&SD):hardware.fsOk?static_cast<fs::FS*>(&LittleFS):nullptr;if(!fs)return;
@@ -218,8 +251,9 @@ void MeshRadio::restoreHistory() {
       String row=f.readStringUntil('\n');StaticJsonDocument<768> d;if(deserializeJson(d,row))continue;
       ChatMessage m;m.protocol=d["protocol"]|1;m.source=strtoull(d["source"]|"0",nullptr,16);const char* dest=d["destination"]|"ALL";m.destination=strcmp(dest,"ALL")==0?meshmesh::Broadcast:strtoull(dest,nullptr,16);
       m.session=d["session"]|0;m.id=d["id"]|0;m.timestamp=d["time"]|0;m.outgoing=d["outgoing"]|false;m.status=ChatMessage::Status(constrain(d["status"]|0,0,4));
+      m.route=ChatMessage::Route(constrain(d["route"]|0,0,2));m.hops=d["hops"]|255;m.tries=d["tries"]|0;
       strlcpy(m.name,d["name"]|"?",sizeof(m.name));strlcpy(m.text,d["text"]|"",sizeof(m.text));
-      bool found=false;for(unsigned i=0;i<historyCount;i++) if(history[i].protocol==m.protocol && history[i].source==m.source && history[i].session==m.session && history[i].id==m.id) {history[i].status=m.status;found=true;break;}
+      bool found=false;for(unsigned i=0;i<historyCount;i++) if(history[i].protocol==m.protocol && history[i].source==m.source && history[i].session==m.session && history[i].id==m.id) {history[i].status=m.status;if(m.route){history[i].route=m.route;history[i].hops=m.hops;history[i].tries=m.tries;}found=true;break;}
       if(!found)addMessage(m,false);
     }
     f.close();
