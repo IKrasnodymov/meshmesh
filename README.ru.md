@@ -354,7 +354,15 @@ RX/TX, не использует подстановку радиопакетов
 .venv/bin/python tools/device.py selftest
 .venv/bin/python tools/device.py key --output backups/meshmesh-private-config.json
 .venv/bin/python tools/device.py --screenshot artifacts/home.ppm
+.venv/bin/python tools/device.py role                    # текущий режим
+.venv/bin/python tools/device.py 'role repeater'         # normal | repeater | room; перезапуск
+.venv/bin/python tools/device.py server                  # репитер/комната: статус без паролей
+.venv/bin/python tools/device.py 'server cli get repeat' # CLI MeshCore как локальный администратор
+.venv/bin/python tools/device.py 'server post Текст'     # пост от имени комнаты
 ```
+
+`server secrets` выводит пароли администратора и гостя (комнаты); как и `connections`,
+не включайте его в диагностические отчёты. Подробности режимов — [docs/repeater.md](docs/repeater.md).
 
 Команды `wifi` и `ble` включают/выключают соответствующий интерфейс.
 После включения Wi-Fi раздел «Подключение» показывает SSID и пароль; веб-адрес
