@@ -74,7 +74,22 @@ class MeshCoreBackend:public BaseChatMesh {
   memcpy(p->publicKey,c.id.pub_key,32);copyUtf8(p->name,c.name,sizeof(p->name));p->type=c.type;p->pathLength=c.out_path_len;p->position=c.gps_lat||c.gps_lon;p->latitude=c.gps_lat/1e6f;p->longitude=c.gps_lon/1e6f;
   if(heard){p->heard=true;p->seen=millis();p->rssi=owner.lastRssi;p->snr=owner.lastSnr;p->hops=hops;}owner.dirty=true;
  }
+ // A full table makes room for a new node: MeshCore overwrites the contact heard longest ago that
+ // is not a favourite. Favourites here are chat nodes and any node with chat history or a chess game.
+ uint32_t protectedAt=0;
+ bool keep(uint64_t id,uint8_t type){
+  if(type==ADV_TYPE_CHAT)return true;
+  for(unsigned i=0;i<owner.historyCount;i++){auto& m=owner.history[i];if(m.source==id||m.destination==id)return true;}
+  for(auto& g:chessNet.matches)if(g.state!=ChessMatch::Free&&g.peer==id)return true;
+  return false;
+ }
+ void protectContacts(){for(int i=0;i<getNumContacts();i++){ContactInfo c;if(!getContactByIdx(i,c))continue;ContactInfo* p=lookupContactByPubKey(c.id.pub_key,32);if(p)p->flags=(p->flags&~1)|(keep(aliasOf(p->id.pub_key),p->type)?1:0);}protectedAt=millis();}
  protected:
+ bool shouldOverwriteWhenFull() const override{return true;}
+ void onContactOverwrite(const uint8_t* key) override{
+  Peer* p=owner.contact(aliasOf(key));if(p){unsigned i=p-owner.peers;memmove(owner.peers+i,owner.peers+i+1,sizeof(Peer)*(owner.peerCount-i-1));owner.peerCount--;owner.peers[owner.peerCount]={};}
+  owner.replaced++;contactsDue=millis()+2000;owner.dirty=true;
+ }
  void onDiscoveredContact(ContactInfo& c,bool,uint8_t pathLen,const uint8_t*) override{updateContact(c,true,pathLen&63);contactsDue=millis()+2000;}
  ContactInfo* processAck(const uint8_t* data) override{
   uint32_t ack;memcpy(&ack,data,4);
@@ -119,7 +134,7 @@ class MeshCoreBackend:public BaseChatMesh {
   uint32_t last=max(p.getUInt("last_advert",0),p.getUInt("last_tx",0));if(last<2147483647U)coreRtc.setCurrentTime(last+1);
   if(p.getBytesLength("contacts")==sizeof(ContactBlob)){
    ContactBlob* blob=new ContactBlob;p.getBytes("contacts",blob,sizeof(*blob));uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));
-   if(blob->version==1&&blob->count<=24&&!memcmp(digest,blob->hash,32))for(unsigned i=0;i<blob->count;i++){auto& saved=blob->contacts[i];if(!mesh::Packet::isValidPathLen(saved.pathLength)&&saved.pathLength!=OUT_PATH_UNKNOWN)continue;ContactInfo c={};c.id=mesh::Identity(saved.key);memcpy(c.name,saved.name,32);c.name[31]=0;if(!meshmesh::validUtf8((const uint8_t*)c.name,strlen(c.name)))continue;c.type=saved.type;c.out_path_len=saved.pathLength;memcpy(c.out_path,saved.path,64);c.last_advert_timestamp=saved.advert;c.gps_lat=saved.lat;c.gps_lon=saved.lon;addContact(c);updateContact(c,false);}
+   if(blob->version==1&&blob->count<=24&&!memcmp(digest,blob->hash,32))for(unsigned i=0;i<blob->count;i++){auto& saved=blob->contacts[i];if(!mesh::Packet::isValidPathLen(saved.pathLength)&&saved.pathLength!=OUT_PATH_UNKNOWN)continue;ContactInfo c={};c.id=mesh::Identity(saved.key);memcpy(c.name,saved.name,32);c.name[31]=0;if(!meshmesh::validUtf8((const uint8_t*)c.name,strlen(c.name)))continue;c.type=saved.type;c.out_path_len=saved.pathLength;memcpy(c.out_path,saved.path,64);c.last_advert_timestamp=saved.advert;c.lastmod=min(saved.advert,coreRtc.getCurrentTime());c.gps_lat=saved.lat;c.gps_lon=saved.lon;addContact(c);updateContact(c,false);} // last advert: the order of replacement
    delete blob;
   }p.end();begin();return true;
  }
@@ -143,7 +158,7 @@ class MeshCoreBackend:public BaseChatMesh {
  // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.
  bool resetPath(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c)return false;resetPathTo(*c);saveContacts();return true;}
  bool forget(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c||!removeContact(*c))return false;saveContacts();return true;}
- void tick(){loop();if(contactsDue&&int32_t(millis()-contactsDue)>=0)saveContacts();}
+ void tick(){if(!protectedAt||millis()-protectedAt>=5000)protectContacts();loop();if(contactsDue&&int32_t(millis()-contactsDue)>=0)saveContacts();}
 };
 int16_t MeshRadio::startReceiving(){constexpr uint32_t mask=(1UL<<RADIOLIB_IRQ_RX_DONE)|(1UL<<RADIOLIB_IRQ_CRC_ERR)|(1UL<<RADIOLIB_IRQ_HEADER_ERR)|(1UL<<RADIOLIB_IRQ_TIMEOUT);return radio.startReceive(UINT32_MAX,RADIOLIB_IRQ_RX_DEFAULT_FLAGS,mask);}
 String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%012llX",(unsigned long long)id);return b;}

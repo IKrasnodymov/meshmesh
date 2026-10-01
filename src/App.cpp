@@ -21,7 +21,7 @@ String statusJson() {
 #endif
   d["firmware"]=MESHMM_FIRMWARE;d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
   char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
-  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;
+  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
   d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
   d["compass"]=hardware.compassOk;d["compass_sample"]=hardware.compassSample;d["imu"]=hardware.imuOk;d["imu_sample"]=hardware.imuSample;
