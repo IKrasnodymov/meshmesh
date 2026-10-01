@@ -15,5 +15,6 @@ String connectionCredentials();
 void bleToggle();bool bleActive();
 // Radar holders: the web page (Portal.cpp) and the screen pages (Ui.cpp / UiHeltec.cpp).
 bool webRadarActive();bool uiRadarPage();
+String webRadarCommand(const String& line); // "radar web" and "radar do {JSON}"
 
 uint32_t blePin();

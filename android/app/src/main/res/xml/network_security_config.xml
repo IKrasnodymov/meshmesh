@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The device's access point serves plain HTTP with Basic authentication on 192.168.4.1;
+     a manually entered address (another board, the USB bridge on a computer) is also plain HTTP. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

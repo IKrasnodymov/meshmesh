@@ -9,6 +9,8 @@ from device import connect, command
 from ports import M9_PORT, HELTEC_PORT
 
 RADIO_FIELDS = ('frequency', 'bandwidth', 'sf', 'cr', 'power', 'hops')
+# What two nodes must share to hear each other; power and hops are each node's own choice.
+PROFILE_FIELDS = ('frequency', 'bandwidth', 'sf', 'cr')
 
 def read(device, name):
     return json.loads(command(device, name))
@@ -62,7 +64,7 @@ def main():
             apply(heltec, {**{k: source[k] for k in RADIO_FIELDS}, 'name': 'Heltec V4'})
         configs = [read(d, 'config') for d in (m9, heltec)]
         before = [read(d, 'status') for d in (m9, heltec)]
-        for key in RADIO_FIELDS:
+        for key in PROFILE_FIELDS:
             if abs(configs[0][key] - configs[1][key]) > .0001:
                 raise AssertionError(f'Radio setting mismatch: {key}')
         if before[0]['node'] == before[1]['node'] or before[0]['network'] != before[1]['network']:
@@ -91,6 +93,7 @@ def main():
                 raise AssertionError('Physical RX/TX counters did not increase')
         report = {'transport': 'physical LoRa; no USB packet injection',
                   'radio': {k: configs[0][k] for k in RADIO_FIELDS},
+                  'radio_heltec': {k: configs[1][k] for k in RADIO_FIELDS},
                   'checks': checks, 'before': before, 'after': after}
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.touch(mode=0o600, exist_ok=True)

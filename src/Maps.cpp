@@ -167,6 +167,13 @@ String Maps::command(const String& line) {
   if(line=="map locate"){haveCenter=false;located=false;locateAt=0;follow=true;dirty=true;return internet.online()?"OK locating by IP":"OK waiting for GPS or internet";}
   if(line.startsWith("map forget ")){String id=line.substring(11);if(!available||id.length()!=8||output)return "ERR map catalog busy or invalid ID";for(char c:id)if(!isxdigit(c))return "ERR map ID";return SD.remove("/meshmesh/maps/areas/"+id+".json")?"OK map catalog entry removed":"ERR map entry not found";}
   if(line.startsWith("map has ")){unsigned z,x,y,size,crc;if(sscanf(line.c_str(),"map has %u %u %u %u %u",&z,&x,&y,&size,&crc)!=5)return "ERR map has fields";File f=openTile(z,x,y);uint8_t h[24];bool ok=f&&f.read(h,24)==24&&!memcmp(h,"MMT1",4)&&h[4]==z&&u32(h+8)==x&&u32(h+12)==y&&u32(h+16)==size&&u32(h+20)==crc&&f.size()==24+size;if(f)f.close();return ok?"OK map tile exists":"OK map tile missing";}
+  // A saved tile file in parts for the app over USB or BLE: "OK tile SIZE OFFSET BASE64".
+  if(line.startsWith("map tile ")){unsigned z,x,y,offset,length=4096;int n=sscanf(line.c_str(),"map tile %u %u %u %u %u",&z,&x,&y,&offset,&length);
+    if(n<4||!length||length>6144)return "ERR map tile Z X Y OFFSET [LENGTH 1..6144]";
+    File f=openTile(z,x,y);if(!f)return "ERR map tile not saved";uint32_t size=f.size();if(offset>size){f.close();return "ERR map tile offset";}
+    length=min<uint32_t>(length,size-offset);size_t room=(length+2)/3*4+1,written=0;uint8_t* raw=(uint8_t*)malloc(length+1);char* text=(char*)malloc(room);
+    bool ok=raw&&text&&f.seek(offset)&&f.read(raw,length)==length&&!mbedtls_base64_encode((uint8_t*)text,room,&written,raw,length);f.close();
+    String reply;if(ok){text[written]=0;reply="OK tile "+String(size)+" "+String(offset)+" "+text;}free(raw);free(text);return ok?reply:"ERR map tile read";}
   if(line.startsWith("map select "))return selectArea(line.substring(11))?"OK map area selected":"ERR map area not found";
   if(line=="map cancel"){uploadCancel();return "OK map upload cancelled";}
   if(line=="map finish")return uploadFinish()?"OK map tile saved":"ERR "+error;

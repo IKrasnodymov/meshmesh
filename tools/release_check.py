@@ -20,10 +20,15 @@ def main():
  with ExitStack() as stack:
   devices=[stack.enter_context(connect(p)) for p in [M9_PORT,HELTEC_PORT]]
   status=[read(d,'status') for d in devices];config=[read(d,'key') for d in devices]
-  expected=dict(frequency=868.731,bandwidth=62.5,sf=8,cr=6,power=10,hops=3)
+  # The network's radio profile is fixed; power and hops are each node's own (user) choice and
+  # must only survive the update (M9: the config saved before installation).
+  expected=dict(frequency=868.731,bandwidth=62.5,sf=8,cr=6)
   for s,c in zip(status,config):
    assert s['firmware']==FIRMWARE and s['radio'] and s['radio_error']==0 and s['storage'] and s['psram']>0
    for k,v in expected.items():assert abs(c[k]-v)<.0001,(k,c[k])
+  before=Path('artifacts/m9-config-before-finish.json')
+  if before.exists():
+   for k,v in json.loads(before.read_text()).items():assert config[0][k]==v,('M9 setting changed by the update',k)
   for board,s in zip(['m9','heltec_v4'],status):assert s['build_sha256']==json.loads(Path('artifacts','meshmesh-'+('m9' if board=='m9' else 'heltec-v4')+'-'+VERSION,'manifest.json').read_text())['app_elf_sha256']
   assert [s['board'] for s in status]==['m9','heltec_v4']
   for board,c in zip(['m9','heltec_v4'],config):assert c['key']==json.loads(Path('backups/before-meshcore-0.3',board+'-key.json').read_text())['key']
@@ -59,7 +64,7 @@ def main():
    if s['clock_conflict']:assert not s['gps_fix'],'Conflicting GNSS date must not be used as a current fix'
   for d in devices:assert command(d,'selftest').startswith('OK crypto/UTF-8/tamper selftest')
   report={'firmware':FIRMWARE,'result':'passed_hardware_suite','package_manifest_sha256':receipt['package_manifest_sha256'],'devices':['ThinkNode M9','Heltec V4'],'boot':[s['boot'] for s in status],
-   'radio':{k:config[0][k] for k in RADIO_FIELDS},'checks':reports,'legacy_keys_preserved':True,'radio_protocol':'MeshCore',
+   'radio':{k:config[0][k] for k in RADIO_FIELDS},'radio_heltec':{k:config[1][k] for k in RADIO_FIELDS},'checks':reports,'legacy_keys_preserved':True,'radio_protocol':'MeshCore',
    'maps':areas,'compass_calibration_preserved':True,'status':status,'clock':clocks,'test_notes':receipt.get('notes',[]),
    'web_codec':'Python/browser exact roundtrip, malformed packages rejected; 70379-feature city index checked',
    'limitations':['New web layout not visually tested in a browser; physical Wi-Fi/HTTP/API tested on both boards',

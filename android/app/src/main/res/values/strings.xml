@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MeshMesh</string>
+    <string name="channel_link">Подключение к устройству</string>
+    <string name="channel_messages">Сообщения</string>
+    <string name="disconnect">Отключить</string>
+</resources>

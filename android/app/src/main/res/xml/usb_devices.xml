@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ThinkNode M9: WCH CH340 bridge; Heltec V4: ESP32-S3 native USB (Serial/JTAG) -->
+<resources>
+    <usb-device vendor-id="6790" product-id="29986" />
+    <usb-device vendor-id="6790" product-id="29987" />
+    <usb-device vendor-id="12346" product-id="4097" />
+</resources>

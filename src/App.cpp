@@ -91,6 +91,8 @@ String executeCommand(const String& input) {
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
   if(line=="radar")return radar.json();
+  if(line=="radar web"||line.startsWith("radar do "))return webRadarCommand(line);
+  if(line=="connections")return connectionCredentials(); // Wi-Fi password and BLE PIN: USB or a paired BLE client
   if(line=="calibrate start"){if(!hardware.compassOk)return "ERR compass unavailable";navigation.start();return "OK rotate device in all directions for at least 20 seconds";}
   if(line=="calibrate finish")return navigation.finish()?"OK compass calibration saved":"ERR calibration needs 20 samples and wider rotation";
   if(line=="clock")return hardware.clockInfo();
@@ -124,6 +126,8 @@ String executeCommand(const String& input) {
     if(reset)return meshRadio.resetPath(id)?"OK path reset; next message floods":"ERR path reset failed";
     return meshRadio.removeContact(id)?"OK contact removed; its next advert adds it again":"ERR contact not removed";
   }
+  // The app over USB or BLE: text with line breaks, which a command line cannot carry.
+  if(line.startsWith("sendjson ")){StaticJsonDocument<1024>d;if(deserializeJson(d,line.substring(9))||!d["to"].is<const char*>()||!d["text"].is<const char*>())return "ERR sendjson {\"to\":\"ALL|NODE_ID\",\"text\":\"...\"}";return executeCommand("send "+d["to"].as<String>()+" "+d["text"].as<String>());}
   if(line.startsWith("send ")) {
     int at=line.indexOf(' ',5);if(at<0)return "ERR send ALL|NODE_ID text";
     String to=line.substring(5,at);uint64_t id=meshmesh::Broadcast;
@@ -134,5 +138,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, messages, radar, set {JSON}, send ALL|NODE_ID text, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
+  return "Commands: status, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
 }

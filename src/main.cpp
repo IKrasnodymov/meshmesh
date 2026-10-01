@@ -79,7 +79,6 @@ void loop() {
       // Research: raw CSI lines ("CSI us rssi iqhex") while on; beacon frames per second.
       else if(command=="csistream on"||command=="csistream off"){radar.csiStream=command.endsWith("on");usbLine(radar.csiStream?"OK CSI stream on":"OK CSI stream off");}
       else if(command.startsWith("csirate ")){radar.setBeaconHz(command.substring(8).toInt());usbLine("OK beacon "+String(radar.beaconHz)+" Hz");}
-      else if(command=="connections")usbLine(connectionCredentials());
       else if(command=="bleprobe")usbLine(bleProbeResult());
       else if(command=="wifiprobe")usbLine(wifiProbeResult());
       else if(command.startsWith("wifiprobe ")){StaticJsonDocument<512>d;if(deserializeJson(d,command.substring(10)))usbLine("ERR Wi-Fi probe JSON");else usbLine(startWifiProbe(d.as<JsonObjectConst>()));}

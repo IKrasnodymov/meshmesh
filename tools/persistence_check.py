@@ -32,7 +32,12 @@ def main():
    pending=json.loads(pending_path.read_text());identity=(pending['source'],pending['session'],pending['id']);restored=index.get(identity,first_index.get(identity));assert restored is not None
    assert restored['text']==pending['text']
    if pending['status'] in (1,2):assert restored['status']==4;pending_checked=True
-  for k in RADIO_FIELDS:assert abs(config[k]-original_config[k])<.0001
+  # Settings must survive this update: compared with M9's config saved just before installation
+  # (finish_on_hardware.py); the user may have changed them since the migration snapshot.
+  before_path=Path('artifacts/m9-config-before-finish.json')
+  before=json.loads(before_path.read_text()) if before_path.exists() else original_config
+  for k in RADIO_FIELDS:assert abs(config[k]-before[k])<.0001, f'Radio setting changed by the update: {k}'
+  if before is not original_config:assert all(config[k]==v for k,v in before.items()), 'Settings changed by the update'
   assert config['key']==original_config['key'] and nav['calibrated'] and not nav['calibrating']
   areas=read(d,'map areas')
   # Remove only the catalog entry created by our one-tile compression test.

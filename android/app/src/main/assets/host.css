@@ -1,0 +1,19 @@
+/* The connection screen of the Android app, built from the page's own classes (web/index.html). */
+#hostPanel{margin-top:4px}
+#hostPanel .tabs button{display:flex;align-items:center;justify-content:center;gap:6px}
+#hostPanel .tabs .ic{font-size:16px}
+.hbody{padding:10px}
+.hbody p.small{margin:8px 4px}
+.hrow{position:relative;display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;border:0;background:none;text-align:left;width:100%;min-height:56px;color:inherit}
+.hrow:hover,.hrow:focus-visible{background:var(--hi);outline:0}
+.hrow .icbox{width:36px;height:36px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-size:20px;flex:none}
+.hrow .main{flex:1;min-width:0}.hrow .main b,.hrow .main small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hrow .main small{font-size:13px;color:var(--dim);margin-top:2px}
+.hrow .side{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px;flex:none}
+.hrow.sel{background:var(--hi)}.hrow.sel::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--accent)}
+.hstate{display:flex;align-items:center;gap:12px;padding:12px;margin-top:8px}
+.hstate .spin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:hspin 0.9s linear infinite;flex:none}
+@keyframes hspin{to{transform:rotate(360deg)}}
+.hrecent{margin-top:10px}
+.hempty{padding:18px 8px;text-align:center;color:var(--dim);font-size:13px}
+.hlink{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);padding:2px 4px 8px}
+.hlink b{color:var(--ink);font-weight:600}

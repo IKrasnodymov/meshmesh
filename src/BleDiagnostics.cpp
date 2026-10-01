@@ -84,10 +84,10 @@ void probe(void*) {
     DynamicJsonDocument document(capacity);
     if(!flag(&State::status,!deserializeJson(document,response) && document["firmware"]==MESHMM_FIRMWARE && document["radio"].as<bool>())) {error("Invalid fragmented status JSON");break;}
     stage("config");if(!request(rx,"config"))break;document.clear();
+    // The radio profile that makes two nodes hear each other; power and hops are each node's own choice.
     bool matchedConfig=!deserializeJson(document,response) && abs(document["frequency"].as<float>()-auth.frequency)<.0001f &&
-      document["bandwidth"].as<float>()==auth.bandwidth && document["sf"].as<int>()==auth.sf &&
-      document["cr"].as<int>()==auth.cr && document["power"].as<int>()==auth.power && document["hops"].as<int>()==auth.hops;
-    if(!flag(&State::config,matchedConfig)) {error("Radio configuration mismatch over BLE");break;}
+      document["bandwidth"].as<float>()==auth.bandwidth && document["sf"].as<int>()==auth.sf && document["cr"].as<int>()==auth.cr;
+    if(!flag(&State::config,matchedConfig)) {error("Radio profile mismatch over BLE");break;}
     stage("messages");if(!request(rx,"messages"))break;document.clear();
     portENTER_CRITICAL(&guard);state.historyBytes=used;portEXIT_CRITICAL(&guard);
     if(!flag(&State::messages,!deserializeJson(document,response) && document.is<JsonArray>())) {error("Invalid fragmented message history JSON");break;}

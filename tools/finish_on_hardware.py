@@ -137,6 +137,14 @@ def main():
         save(receipt)
 
     try:
+        if 'flash-m9' not in receipt['completed']:
+            # The user's settings before installation: persistence_check.py compares with them.
+            with connect(M9) as device:
+                before = {k: v for k, v in json.loads(command(device, 'key')).items() if k != 'key'}
+            path = ROOT / 'artifacts/m9-config-before-finish.json'
+            path.touch(mode=0o600, exist_ok=True)
+            path.chmod(0o600)
+            path.write_text(json.dumps(before, ensure_ascii=False, indent=2) + '\n')
         run('flash-m9', *flash_m9)
         ready(M9, 'm9')
         # The clock test resets M9. All remaining M9 evidence uses that boot.

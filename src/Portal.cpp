@@ -15,6 +15,7 @@
 #include <freertos/queue.h>
 #include <bootloader_random.h>
 #include <mbedtls/base64.h>
+#include "nimble/porting/nimble/include/os/os_mbuf.h"
 
 namespace {
 WebServer server(80);
@@ -57,6 +58,13 @@ class BleCallbacks:public NimBLECharacteristicCallbacks {
 BleCallbacks bleCallbacks;
 }
 bool webRadarActive() {return webRadar;}
+// The page's radar over USB or BLE (the Android app): the same hold, JSON and actions as /api/radar.
+// Unlike the diagnostic "radar", it carries network and device names, as the web page does.
+String webRadarCommand(const String& line){
+  if(line=="radar web"){if(!radar.active)radar.open();webRadar=true;webRadarAt=millis();return radar.webJson();}
+  StaticJsonDocument<256>d;if(deserializeJson(d,line.substring(9))||!d.is<JsonObject>())return "ERR radar do {JSON}";
+  if(webRadar)webRadarAt=millis();return radarAction(d.as<JsonObjectConst>());
+}
 bool portalActive() {return wifiOn;}String portalPassword() {return password;}
 bool bleActive() {return bluetoothOn;}
 uint32_t blePin() {return pinCode;}
@@ -143,9 +151,13 @@ void portalTick() {
   }
   if(bleTx && bleResponse.length() && int32_t(millis()-nextNotification)>=0) {
     if(!bleTx->getSubscribedCount()) {bleResponse="";bleOffset=0;return;}
-    unsigned length=min(unsigned(20),bleResponse.length()-bleOffset);
-    bleTx->setValue((const uint8_t*)bleResponse.c_str()+bleOffset,length);
-    bleTx->notify();bleOffset+=length;nextNotification=millis()+15;
+    // Notifications as large as the smallest negotiated MTU allows (20 bytes without an exchange),
+    // sent only while the host has spare buffers: a dropped notification would corrupt the reply.
+    if(os_msys_num_free()<6){nextNotification=millis()+4;return;}
+    unsigned room=244;NimBLEServer* s=NimBLEDevice::getServer();
+    for(uint16_t id:s->getPeerDevices()){unsigned mtu=s->getPeerMTU(id);if(mtu>=23&&mtu-3<room)room=mtu-3;}
+    unsigned length=min(room,bleResponse.length()-bleOffset);
+    bleTx->notify((const uint8_t*)bleResponse.c_str()+bleOffset,length);bleOffset+=length;nextNotification=millis()+(length>20?8:15);
     if(bleOffset==bleResponse.length()) {bleResponse="";bleOffset=0;}
   }
 }

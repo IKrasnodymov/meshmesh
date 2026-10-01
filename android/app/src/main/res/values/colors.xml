@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The palette of the M9 screen and the web page (web/index.html :root). -->
+<resources>
+    <color name="bg">#080C11</color>
+    <color name="bar">#000000</color>
+    <color name="accent">#1FC2AE</color>
+</resources>
