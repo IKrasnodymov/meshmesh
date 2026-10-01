@@ -315,8 +315,8 @@ footer a{color:var(--dim)}
     <p lang="en">Plug the board in over USB and install the firmware right from this page.</p></div>
    <div class="step"><div class="n">2</div>
     <h3 lang="ru">Включите</h3><h3 lang="en">Power on</h3>
-    <p lang="ru">Устройство объявит себя, найдёт соседей и само построит маршруты.</p>
-    <p lang="en">The device announces itself, finds its neighbours and learns routes on its own.</p></div>
+    <p lang="ru">Устройство объявит себя, найдёт соседей и само построит маршруты. В первые 5 секунд можно выбрать режим: обычный, репитер или комната.</p>
+    <p lang="en">The device announces itself, finds its neighbours and learns routes on its own. In the first 5 seconds you can pick its mode: normal, repeater or room server.</p></div>
    <div class="step"><div class="n">3</div>
     <h3 lang="ru">Пишите</h3><h3 lang="en">Chat</h3>
     <p lang="ru">С клавиатуры M9, кнопкой Heltec, из браузера или приложения для Android.</p>
@@ -425,7 +425,8 @@ const ICONS={
  compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
  keyboard:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M7 14h10"/>',
  phone:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',oled:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h10"/>',
- pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>'
+ pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+ tower:'<path d="M12 10 7 21M12 10l5 11M12 10v11M9 16h6"/><circle cx="12" cy="7.5" r="1.6"/><path d="M8.6 4a5 5 0 0 0 0 7M15.4 4a5 5 0 0 1 0 7"/>'
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless web: true) and short captions.
 const FEATURES=[
@@ -449,6 +450,8 @@ const FEATURES=[
   shots:[['m9-home','Главное меню','Home'],['m9-layout','Русская раскладка','Cyrillic layout'],['m9-locked','Блокировка','Lock screen']]},
  {ic:'sliders',c:'#8d99a6',t:['Настройки и диагностика','Settings and diagnostics'],d:['Радио, экран, связь и состояние всех модулей — на самом устройстве.','Radio, display, connections and module health — on the device itself.'],
   shots:[['m9-settings','Настройки','Settings'],['m9-radio','Радио','Radio'],['m9-diagnostics','Состояние модулей','Module health'],['heltec-settings','Heltec: настройки','Heltec: settings']]},
+ {ic:'tower',c:'#a78bfa',t:['Репитер и комната','Repeater and room server'],d:['Режим выбирается при включении: устройство становится репитером или комнатой MeshCore, вход и настройка из приложения MeshCore.','Pick the mode at power-on: the device becomes a MeshCore repeater or room server, with login and settings from the MeshCore app.'],
+  shots:[['m9-role-boot','Выбор режима при включении','Mode choice at power-on'],['m9-repeater','Репитер: пароли, пересылка, объявления','Repeater: passwords, forwarding, adverts'],['m9-room','Комната: пароль комнаты и посты','Room server: room password and posts'],['m9-room-post','Пост от имени комнаты','A post from the room'],['heltec-role','Heltec: выбор режима кнопкой','Heltec: mode choice with the button'],['heltec-repeater','Heltec: репитер','Heltec: repeater'],['heltec-room','Heltec: комната','Heltec: room server']]},
  {ic:'oled',c:'#e4e9ee',t:['Одна кнопка','One button'],d:['Heltec и похожие платы: клик — следующий экран, удержание — действие.','Heltec and similar boards: click for the next screen, hold for an action.'],
   oled:true,shots:[['heltec-home','Главный экран','Home'],['heltec-messages-menu','Меню по удержанию','Hold menu'],['heltec-wifi-on','Точка доступа для телефона','Access point for a phone']]},
  {ic:'phone',c:'#4f9df7',t:['Телефон и браузер','Phone and browser'],d:['Веб-интерфейс по Wi-Fi устройства и приложение для Android: Wi-Fi, Bluetooth, USB.','Web interface over the device Wi-Fi, and an Android app: Wi-Fi, Bluetooth, USB.'],
@@ -461,6 +464,7 @@ const DOCS=[
  ['docs/meshcore-migration.md','MeshCore: ключи и совместимость','MeshCore: keys and compatibility'],
  ['docs/boards.md','Платы и выводы','Boards and pins'],
  ['docs/android.md','Приложение для Android','Android app'],
+ ['docs/repeater.md','Репитер и комната','Repeater and room server'],
  ['docs/chess.md','Шахматы: протокол','Chess protocol'],
  ['docs/maps-format.md','Формат карт','Map format'],
  ['docs/feature-parity.md','Сравнение с MeshCore','Comparison with MeshCore'],

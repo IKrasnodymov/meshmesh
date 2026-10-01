@@ -53,3 +53,14 @@ String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
  if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(ru?" · попытка ":" · try ")+m.tries):" "+String(m.tries)+"/3";
  return s;
 }
+// Device modes: a repeater or room server with made-up passwords and counts.
+#include "MeshServer.h"
+MeshServer meshServer;
+bool MeshServer::room() const{return config.role==RoleRoom;}
+ServerView MeshServer::view(){ServerView v;v.running=config.role!=RoleNormal;v.room=room();v.forwarding=!v.room;v.password="48213906";v.guest=v.room?"garden":"";
+ v.advertMinutes=120;v.floodAdvertHours=47;v.floodMax=64;v.neighbours=v.room?0:3;v.posts=v.room?12:0;v.clients=v.room?4:1;v.admins=1;v.uptime=3*3600+1240;return v;}
+String MeshServer::command(const String&){return "OK";}
+bool MeshServer::post(const String&){return true;}
+bool MeshServer::advertise(bool){return true;}
+const char* roleName(uint8_t role){return role==RoleRepeater?"repeater":role==RoleRoom?"room":"normal";}
+String setRole(uint8_t role){return String("OK role ")+roleName(role)+"; restarting";}

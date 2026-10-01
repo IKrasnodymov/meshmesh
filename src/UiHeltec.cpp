@@ -66,7 +66,16 @@ int nextPage(int p){do p=(p+1)%PageCount;while(!pageShown(p));return p;}
 // Device role: offered for 5 s after boot (click: next, hold: choose) and from the menus.
 bool rolePick=false,rolePickBoot=false;int roleSel=0;uint32_t rolePickAt=0;
 String roleShort(int r){return r==RoleRepeater?t("Repeater","Репитер"):r==RoleRoom?t("Room server","Комната"):t("Normal","Обычный");}
-void openRolePick(bool atBoot){rolePick=true;rolePickBoot=atBoot;rolePickAt=millis();roleSel=config.role;dirty=true;}
+// Boards without a screen (XIAO, a T-Beam without OLED) skip the boot choice: a press there would
+// change the mode unseen. The web page, BLE and USB change it instead.
+bool screenPresent(){
+#if defined(MM_COMPACT) && !defined(MM_HELTEC_V4)
+ return hardware.panel!=nullptr;
+#else
+ return true;
+#endif
+}
+void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;rolePickBoot=atBoot;rolePickAt=millis();roleSel=config.role;dirty=true;}
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
