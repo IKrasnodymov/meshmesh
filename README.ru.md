@@ -19,16 +19,22 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
+## 0.3.3 — репитер и комната
+
+Устройство может работать в одном из трёх режимов: обычном, репитера MeshCore или комнаты MeshCore
+(room server). Режим выбирается в первые 5 секунд после загрузки (экран M9 и T-Deck, кнопка
+однокнопочных плат), в настройках, на веб-странице или по USB. Вход администратора и CLI доступны
+из приложения MeshCore; ключ узла и данные общие для всех режимов. Проверено со стороны официальной
+MeshCore companion v1.17.1 — [docs/repeater.md](docs/repeater.md).
+Пакеты: `artifacts/meshmesh-<плата>-0.3.3`.
+
 ## 0.3.2 — MeshCore
 
 Радио переведено на MeshCore; наш интерфейс, карты и настройки сохранены.
 Порядок обнаружения, параметры, ключи и ограничения — в [руководстве перехода](docs/meshcore-migration.md).
-Пакеты: `artifacts/meshmesh-m9-0.3.2`, `artifacts/meshmesh-heltec-v4-0.3.2`.
+Пакеты 0.3.2: `artifacts/meshmesh-m9-0.3.2`, `artifacts/meshmesh-heltec-v4-0.3.2`.
 Аппаратные результаты и ограничения: [отчёт проверки](docs/verification.md).
 Что есть и чего нет по сравнению с MeshCore и WadaMesh: [сравнение](docs/feature-parity.md).
-Режимы репитера и комнаты (room server) MeshCore: выбор при загрузке (экран M9, кнопка Heltec), в настройках,
-на веб-странице или по USB; вход администратора и CLI из приложения MeshCore, ключ и данные общие —
-[docs/repeater.md](docs/repeater.md).
 Сборки для десяти плат сообщества (Heltec V3 и Wireless Tracker, LilyGO T-Deck,
 T-Beam, T-Beam Supreme, T3-S3 и T-LoRa, XIAO ESP32S3 + Wio-SX1262, Station G2,
 ThinkNode M2) — [docs/boards.md](docs/boards.md); на этих платах прошивка ещё не запускалась.
