@@ -78,6 +78,14 @@
 #define MM_BUTTON "USER"
 #define MM_NODE_NAME "M2"
 #define MM_ABSENT 1,2,4,5,6,7,
+#elif defined(MM_BOARD_GAT562)
+// nRF52840: no Wi-Fi. The SX1262 drives a power amplifier (the seller states 30 dBm at the 22 dBm setting).
+#define MM_BOARD_ID "gat562_30s"
+#define MM_BOARD_NAME "GAT562 30S Mesh Kit"
+#define MM_BUTTON "joystick"
+#define MM_NODE_NAME "GAT562"
+#define MM_GPS_DEFAULT true
+#define MM_ABSENT 1,2,4,6,7,
 #else
 #define MM_BOARD_ID "m9"
 #define MM_BOARD_NAME "ThinkNode M9"
@@ -101,6 +109,14 @@
 #define MM_RADIO_SX1262 1
 #else
 #define MM_RADIO_LR1110 1
+#endif
+// Five-way joystick and a back button instead of the single button of the compact boards.
+#if defined(MM_BOARD_GAT562)
+#define MM_JOYSTICK 1
+#endif
+// No Wi-Fi radio (nRF52): no access point, Wi-Fi radar or CSI; the app reaches it over BLE or USB.
+#if defined(MM_NRF52)
+#define MM_NO_WIFI 1
 #endif
 // Native USB (ESP32-S3 USB Serial/JTAG) instead of a USB-UART bridge.
 #if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT

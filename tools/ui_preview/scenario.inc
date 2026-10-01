@@ -1,6 +1,20 @@
 // Screens rendered by the preview; the key codes are the production M9 codes.
 static void scenario(){
-#if defined(MM_HELTEC_V4)
+#if defined(MM_JOYSTICK)
+ // GAT562: joystick arrows 0xb4..0xb7, centre 13 (hold 0xa3), Back 0x86 (hold 0x82).
+ for(int i=0;i<6;i++)tick(); // the boot choice times out
+ shot("gat562-home");key(13);shot("gat562-home-menu");key(13);
+ {int r=0,c=0;auto at=[&](int row,int col){while(r<row){key(0xb6);r++;}while(r>row){key(0xb5);r--;}while(c<col){key(0xb7);c++;}while(c>col){key(0xb4);c--;}key(13);};
+  if(config.russian){at(1,2);at(1,3);at(0,8);at(0,2);at(0,5);at(1,5);}else{at(0,7);at(0,4);at(0,11);at(0,11);at(1,1);}
+  shot("gat562-keyboard");key(0x82);}
+ auto sayId=[](int peer,const char* name,unsigned id,const char* body){char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X %s",id,body);chessNet.receive(peerId(peer),name,t);};
+ ChessMatch* g=chessNet.invite(peerId(0),chess::White);sayId(0,"Heltec V4",g->id,"yes");
+ for(const char* u:{"e2e4","e7e5","g1f3","b8c6","f1c4","f8c5"}){if(g->myTurn()){chess::Move mv;if(g->game.pos.parseUci(u,mv))chessNet.move(*g,mv);}else{char b[16];snprintf(b,sizeof b,"%u %s",g->game.plies+1,u);sayId(0,"Heltec V4",g->id,b);}}
+ chessNet.events=0;for(int i=0;i<9;i++)tick(); // no news popup over the board
+ key(0x86);key(0xb7);key(0xb7);key(0xb7);shot("gat562-chess-list");key(13);key(13);shot("gat562-chess");key(0x86);key(0x86);
+ key(0xb7);for(int i=0;i<3;i++)tick();shot("gat562-radar");
+ key(0xb4);key(0xb4);key(13);shot("gat562-node-menu");key(0x86);
+#elif defined(MM_HELTEC_V4)
  shot("heltec-role");for(int i=0;i<5;i++)tick(); // the boot choice times out
  for(const char* n:{"home","messages","nodes","radar","gps","wifi","ble","settings","modules"}){shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}
  {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;}shot("heltec-popup");
@@ -38,7 +52,8 @@ static void scenario(){
  }
 #endif
  // Device modes: the repeater and room pages, the mode choice from Settings.
-#if defined(MM_HELTEC_V4)
+#if defined(MM_JOYSTICK)
+#elif defined(MM_HELTEC_V4)
  auto home=[]{for(int i=0;i<12&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(13);};
  for(int i=0;i<9;i++)tick(); // the message popup closes
  config.role=RoleRepeater;home();shot("heltec-repeater");key(0xa3);shot("heltec-repeater-menu");key(0x82);key(0x82);key(0xa3);shot("heltec-role-menu");key(0xa3); // holding the current mode closes the list

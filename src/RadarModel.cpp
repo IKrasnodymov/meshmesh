@@ -67,7 +67,7 @@ String Radar::json() const{
  d["wifi_targets"]=counted(RadarTarget::Wifi);d["ble_targets"]=counted(RadarTarget::Ble);d["lora_targets"]=counted(RadarTarget::Lora);d["personal"]=personal(30000);
  auto describe=[&](JsonObject o,const RadarTarget& t){o["kind"]=kinds[t.kind];o["rssi"]=t.rssi;
   if(t.kind==RadarTarget::Wifi)o["channel"]=t.channel;if(t.kind==RadarTarget::Ble)o["device"]=devices[t.device];
-  if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%012llX",(unsigned long long)t.id);o["node"]=node;}
+  if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%04lX%08lX",(unsigned long)(t.id>>32),(unsigned long)(t.id&0xffffffffu));o["node"]=node;}
   o["meshmesh"]=t.kind==RadarTarget::Lora||!strncmp(t.name,t.kind==RadarTarget::Ble?"MeshMesh ":"MM-",t.kind==RadarTarget::Ble?9:3);o["age_ms"]=now-t.seen;};
  JsonArray a=d.createNestedArray("strongest");for(unsigned i=0;i<count&&i<10;i++)describe(a.createNestedObject(),targets[i]);
  d["tracking"]=tracking;
@@ -82,7 +82,7 @@ String Radar::webJson() const{
  auto describe=[&](JsonObject o,const RadarTarget& t){o["kind"]=kinds[t.kind];o["ref"]=placement(t);o["name"]=t.name;o["rssi"]=t.rssi;o["age_ms"]=now-t.seen;
   if(t.kind==RadarTarget::Wifi){o["channel"]=t.channel;o["open"]=t.open;}
   if(t.kind==RadarTarget::Ble){o["device"]=devices[t.device];if(t.vendor!=0xffff)o["vendor"]=t.vendor;}
-  if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%012llX",(unsigned long long)t.id);o["node"]=node;}};
+  if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%04lX%08lX",(unsigned long)(t.id>>32),(unsigned long)(t.id&0xffffffffu));o["node"]=node;}};
  JsonArray a=d.createNestedArray("targets");for(unsigned i=0;i<count&&i<40;i++)describe(a.createNestedObject(),targets[i]);
  if(tracking){JsonObject f=d.createNestedObject("focus");describe(f,focus);f["samples"]=samples;f["rate"]=rate;f["fast"]=serialized(String(fast,1));f["peak"]=serialized(String(peak,1));f["trend"]=trend();f["fresh"]=fresh();f["sample_age_ms"]=samples?now-lastSample:0;
   JsonArray h=f.createNestedArray("history");for(unsigned i=0;i<historyCount();i++)h.add(sample(i));}

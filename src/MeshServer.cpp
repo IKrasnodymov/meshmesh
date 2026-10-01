@@ -24,6 +24,8 @@
 #include <SHA256.h>
 #include <algorithm>
 #include <math.h>
+#include <time.h>
+#include <esp_system.h>
 MeshServer meshServer;
 namespace {
 constexpr unsigned maxNeighbours=32,maxPosts=32,maxPostText=160-9;
@@ -125,7 +127,7 @@ class ServerMesh:public mesh::Mesh,public CommonCLICallbacks {
   uint64_t uptimeMillis=0;
   const uint8_t type;
  protected:
-  FILESYSTEM* fs=&LittleFS;
+  decltype(&LittleFS) fs=&LittleFS; // ESP32 LittleFS or the nRF52 MeshFS, both with open(name,mode,create)
   uint32_t lastMillis=0;
   unsigned long nextLocalAdvert=0,nextFloodAdvert=0,setRadioAt=0,revertRadioAt=0,dirtyContactsExpiry=0;
   bool logging=false,regionLoadActive=false;String rejected; // why the last CLI change was refused

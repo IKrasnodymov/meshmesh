@@ -6,7 +6,16 @@
 #include <helpers/SimpleMeshTables.h>
 #include <Preferences.h>
 #include <LittleFS.h>
+#if defined(MM_NRF52)
+using HistoryFs=MeshFS; // no SD card; a smaller log in the 100 KB internal storage
+static constexpr size_t historySegment=12*1024;
+static HistoryFs* historyFs(){return hardware.fsOk?&LittleFS:nullptr;}
+#else
 #include <SD.h>
+using HistoryFs=fs::FS;
+static constexpr size_t historySegment=256*1024;
+static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):hardware.fsOk?static_cast<fs::FS*>(&LittleFS):nullptr;}
+#endif
 #include <ArduinoJson.h>
 #include <esp_system.h>
 #include <bootloader_random.h>
@@ -193,7 +202,7 @@ int16_t MeshRadio::startReceiving(){return radio.startReceive();}
 #else
 int16_t MeshRadio::startReceiving(){constexpr uint32_t mask=(1UL<<RADIOLIB_IRQ_RX_DONE)|(1UL<<RADIOLIB_IRQ_CRC_ERR)|(1UL<<RADIOLIB_IRQ_HEADER_ERR)|(1UL<<RADIOLIB_IRQ_TIMEOUT);return radio.startReceive(UINT32_MAX,RADIOLIB_IRQ_RX_DEFAULT_FLAGS,mask);}
 #endif
-String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%012llX",(unsigned long long)id);return b;}
+String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%04lX%08lX",(unsigned long)(id>>32),(unsigned long)(id&0xffffffffu));return b;}
 static const mesh::LocalIdentity* selfIdentity(MeshCoreBackend* core){return core?&core->self_id:meshServer.identity();}
 String MeshRadio::publicKeyText() const{auto* self=selfIdentity(core);if(!self)return "";char out[65];mesh::Utils::toHex(out,self->pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return destination==meshmesh::Broadcast?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
@@ -276,14 +285,14 @@ void MeshRadio::addMessage(const ChatMessage& m,bool save) {
   history[historyCount++]=m;if(save)persist(m);dirty=true;
 }
 void MeshRadio::persist(const ChatMessage& m) {
-  fs::FS* fs=hardware.sdOk?static_cast<fs::FS*>(&SD):hardware.fsOk?static_cast<fs::FS*>(&LittleFS):nullptr;if(!fs)return;
+  HistoryFs* fs=historyFs();if(!fs)return;
   File f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);if(!f) {fs->mkdir("/meshmesh");f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);}if(!f)return;
   // Bound the log: retain one previous segment; never touch other apps' files.
-  if(f.size()>256*1024) {f.close();fs->remove("/meshmesh/history.previous.jsonl");fs->rename("/meshmesh/history.jsonl","/meshmesh/history.previous.jsonl");f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);}
+  if(f.size()>historySegment) {f.close();fs->remove("/meshmesh/history.previous.jsonl");fs->rename("/meshmesh/history.jsonl","/meshmesh/history.previous.jsonl");f=fs->open("/meshmesh/history.jsonl",FILE_APPEND);}
   StaticJsonDocument<768> d;d["protocol"]=m.protocol;d["source"]=idText(m.source);d["destination"]=idText(m.destination);d["session"]=m.session;d["id"]=m.id;d["time"]=m.timestamp;d["name"]=m.name;d["text"]=m.text;d["outgoing"]=m.outgoing;d["status"]=int(m.status);if(m.route){d["route"]=int(m.route);d["hops"]=m.hops;d["tries"]=m.tries;}serializeJson(d,f);f.println();f.close();
 }
 void MeshRadio::restoreHistory() {
-  fs::FS* fs=hardware.sdOk?static_cast<fs::FS*>(&SD):hardware.fsOk?static_cast<fs::FS*>(&LittleFS):nullptr;if(!fs)return;
+  HistoryFs* fs=historyFs();if(!fs)return;
   for(const char* path:{"/meshmesh/history.previous.jsonl","/meshmesh/history.jsonl"}) {
     File f=fs->open(path,FILE_READ);if(!f)continue;
     while(f.available()) {

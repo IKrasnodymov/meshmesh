@@ -6,10 +6,21 @@
 #include "MeshServer.h"
 #include <math.h>
 #include <time.h>
+#if defined(MM_NRF52)
+#include <esp_system.h> // ESP.getFreeHeap(); Arduino.h provides it on the ESP32
+#endif
 // One PRG button: click = next screen or next menu item; hold = the screen's action, or its menu.
+// Joystick boards (MM_JOYSTICK, GAT562): left/right change the screen, up/down scroll the screen or
+// the menu, the centre runs the action or opens the menu, Back closes and goes home; messages are
+// written on an on-screen keyboard (UiCompose.inc).
 namespace {
+#if defined(MM_JOYSTICK)
+enum Page {Home,Messages,Nodes,Chess,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
+const char* pageNames[]={"home","messages","nodes","chess","radar","gps","wifi","ble","settings","modules"};
+#else
 enum Page {Home,Messages,Nodes,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
 const char* pageNames[]={"home","messages","nodes","radar","gps","wifi","ble","settings","modules"};
+#endif
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
@@ -57,12 +68,21 @@ String signalName(const RadarTarget& r){
 const char* kindLetter(const RadarTarget& r){return r.kind==RadarTarget::Lora?"L ":r.kind==RadarTarget::Ble?"B ":"W ";}
 float signalLevel(int rssi){return constrain((rssi+100)/65.f,0.f,1.f);} // -100 .. -35 dBm
 bool homingFresh(){return radar.fresh();}
-String wifiState(){switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
+String wifiState(){
+#if defined(MM_NO_WIFI)
+ return ""; // no Wi-Fi radio: the radar lists BLE and LoRa
+#endif
+ switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
 void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==Messages){messageOffset=0;unreadCount=0;}}
 // Server roles show the pages that still mean something: no chats, nodes or radar.
-bool pageShown(int p){return config.role==RoleNormal||p==Home||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;}
+bool pageShown(int p){
+#if defined(MM_NO_WIFI)
+ if(p==Wifi)return false; // no Wi-Fi radio
+#endif
+ return config.role==RoleNormal||p==Home||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;}
 int nextPage(int p){do p=(p+1)%PageCount;while(!pageShown(p));return p;}
+int previousPage(int p){do p=(p+PageCount-1)%PageCount;while(!pageShown(p));return p;}
 // Device role: offered for 5 s after boot (click: next, hold: choose) and from the menus.
 bool rolePick=false,rolePickBoot=false;int roleSel=0;uint32_t rolePickAt=0;
 String roleShort(int r){return r==RoleRepeater?t("Repeater","Репитер"):r==RoleRoom?t("Room server","Комната"):t("Normal","Обычный");}
@@ -76,28 +96,62 @@ bool screenPresent(){
 #endif
 }
 void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;rolePickBoot=atBoot;rolePickAt=millis();roleSel=config.role;dirty=true;}
+#if defined(MM_JOYSTICK)
+#include "UiCompose.inc"
+#include "UiChessCompact.inc"
+#endif
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
+enum Act {ActFormat,ActWrite,ActChess,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
 unsigned actions(Act* out){
  unsigned n=0;switch(page){
- case Home:out[n++]=ActAdvert;if(config.role!=RoleNormal){out[n++]=ActForward;out[n++]=ActRole;}break;
- case Messages:if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
- case Nodes:if(Peer* p=shownNode()){out[n++]=ActNextNode;if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
- case Signals:if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
+ case Home:
+#if defined(MM_NRF52)
+  if(!hardware.fsOk)out[n++]=ActFormat; // settings live in this storage: without it nothing is saved or sent
+#endif
+#if defined(MM_JOYSTICK)
+  if(config.role==RoleNormal)out[n++]=ActWrite;
+#endif
+  out[n++]=ActAdvert;if(config.role!=RoleNormal){out[n++]=ActForward;out[n++]=ActRole;}break;
+ case Messages:
+#if defined(MM_JOYSTICK)
+  out[n++]=ActWrite;
+#endif
+  if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
+ case Nodes:if(Peer* p=shownNode()){
+#if defined(MM_JOYSTICK)
+  if(p->type==1){out[n++]=ActWrite;out[n++]=ActChess;}
+#else
+  out[n++]=ActNextNode;
+#endif
+  if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
+ case Signals:
+#if defined(MM_NO_WIFI)
+  if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}else if(radar.count)out[n++]=ActHoming;break; // no Wi-Fi CSI
+#endif
+  if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
   else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
   else{out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff){out[n++]=ActCsiSensor;if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}}}break; // CSI first: the beacon is the usual Heltec role
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
- case Settings:out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;break;
+ case Settings:
+#if defined(MM_JOYSTICK)
+  out[n++]=ActSound; // the GAT562 buzzer
+#endif
+  out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;break;
  case Modules:out[n++]=ActSelfTest;break;
  }if(n>1)out[n++]=ActClose;return n;
 }
-bool keepsMenu(Act a){return a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
+bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
 String actName(Act a){
  const ChatMessage* m=shownMessage();bool publicChat=m&&m->destination==meshmesh::Broadcast;
  switch(a){
+ case ActWrite:return page==Nodes?t("Write message...","Написать...")
+  :page==Messages&&m&&!publicChat?t("Write reply...","Ответить текстом..."):t("Write to channel...","Написать в канал...");
+ case ActFormat:return t("Create storage...","Создать хранилище...");
+ case ActChess:return t("Chess: invite","Шахматы: вызвать");
+ case ActSound:return config.sound?t("Sound: on","Звук: вкл."):t("Sound: off","Звук: выкл.");
  case ActRole:return t("Device mode...","Режим работы...");case ActForward:return meshServer.view().forwarding?t("Forwarding: off","Пересылка: выкл."):t("Forwarding: on","Пересылка: вкл.");
  case ActAdvert:return t("Announce node","Объявить узел");case ActReplyOk:return t("Reply: OK","Ответить: OK")+String(publicChat?" #":"");case ActReplyAck:return t("Reply: Got it","Ответить: Принято");
  case ActOlder:return t("Older message","Предыдущее");case ActNewer:return t("Newer message","Следующее");case ActNextNode:return t("Next node","Следующий узел");case ActNodeOk:return t("Send: OK","Написать: OK");case ActResetPath:return t("Reset path","Сбросить путь");
@@ -116,6 +170,22 @@ String actName(Act a){
 void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=m->destination==meshmesh::Broadcast?meshmesh::Broadcast:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadio.sendMessage(text,to);notice(sent?t("Reply ","Ответ ")+text+t(" queued"," в очереди"):t("Reply not queued","Ответ не отправлен"));}
 void run(Act a){
  switch(a){
+ case ActFormat:{static uint32_t armed=0;
+  if(!armed||millis()-armed>5000){armed=millis();notice(t("OK again: erase old data","Ещё раз OK: стереть"));break;}
+  armed=0;String r=executeCommand("fsformat");if(r.startsWith("OK"))executeCommand("restart");notice(r.startsWith("OK")?t("Storage created, restart","Создано, перезапуск"):r);break;}
+ case ActWrite:
+#if defined(MM_JOYSTICK)
+  if(page==Nodes){if(Peer* p=shownNode())openCompose(p->id,p->name);}
+  else if(page==Messages&&shownMessage()&&shownMessage()->destination!=meshmesh::Broadcast){const ChatMessage* m=shownMessage();uint64_t to=m->outgoing?m->destination:m->source;String name=m->name;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==to)name=meshRadio.peers[i].name;openCompose(to,name);}
+  else openCompose(meshmesh::Broadcast,t("Public channel","Общий канал"));
+#endif
+  break;
+ case ActChess:
+#if defined(MM_JOYSTICK)
+  if(Peer* p=shownNode()){ // the board shows the invitation; no news popup for it
+   uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t("Challenge sent","Вызов отправлен"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=chessNet.events;}
+#endif
+  break;
  case ActRole:openRolePick(false);break;
  case ActForward:{String r=meshServer.command(meshServer.view().forwarding?"set repeat off":"set repeat on");notice(r.startsWith("OK")?(meshServer.view().forwarding?t("Forwarding on","Пересылка вкл."):t("Forwarding off","Пересылка выкл.")):r);break;}
  case ActAdvert:notice(meshRadio.sendHello()?t("Node announced","Узел объявлен"):t("Announcement failed","Объявление не отправлено"));break;
@@ -126,6 +196,7 @@ void run(Act a){
  case ActGps:notice(applyOne("gps",!config.gps).startsWith("OK")?"GPS: "+String(config.gps?t("on","вкл"):t("off","выкл")):t("Radio busy, retry","Радио занято, повторите"));break;
  case ActPosition:notice(meshRadio.sendPosition()?t("Position shared","Позиция передана"):t("Needs a GPS fix","Нужна позиция GPS"));break;
  case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
+ case ActSound:applyOne("sound",!config.sound);hardware.beep();break;
  case ActLanguage:applyOne("russian",!config.russian);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
  case ActContrast:{const uint8_t steps[]={40,120,200,255};int i=0;while(i<3&&steps[i]<config.brightness)i++;applyOne("brightness",steps[(i+1)%4]);break;}
@@ -157,12 +228,21 @@ void footer(const String& hint){
  auto& c=*hardware.canvas;for(int i=0,x=1;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
  if(hint.length())sayRight(128,63,clipped(hint,20));
 }
+#if defined(MM_JOYSTICK)
+String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return "<  >";return n==1?t("OK: ","OK: ")+actName(acts[0]):t("OK: menu  < >","OK: меню  < >");}
+#else
 String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return "";return n==1?t("hold: ","держ: ")+actName(acts[0]):t("hold: menu","держ: меню");}
+#endif
 void drawMenu(){
  auto& c=*hardware.canvas;Act acts[8];unsigned n=actions(acts);if(!n){menuOpen=false;return;}menuIndex%=n;int first=max(0,min(menuIndex-1,int(n)-3));
  c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,1);
  for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=14+(i-first)*14;bool focus=int(i)==menuIndex;if(focus)c.fillRect(2,y,124,13,1);say(5,y+10,clipped(actName(acts[i]),20),body,focus?0:1);}
- c.fillRect(0,57,128,7,0);footer(t("click-next hold-run","клик-далее держ-ОК"));
+ c.fillRect(0,57,128,7,0);
+#if defined(MM_JOYSTICK)
+ footer(t("up/down, OK, back","выбор, OK, назад"));
+#else
+ footer(t("click-next hold-run","клик-далее держ-ОК"));
+#endif
 }
 void drawPopup(const ChatMessage& m){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
@@ -171,14 +251,25 @@ void drawPopup(const ChatMessage& m){
 void drawChessPopup(){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
  c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1); // a pawn
- say(18,11,t("Chess","Шахматы"),bold);textLines(chessNet.event,25,3);sayRight(126,62,portalActive()?t("play on the Wi-Fi page","играть: Wi-Fi-страница"):t("Wi-Fi page to play","играть: включите Wi-Fi"),small);
+ say(18,11,t("Chess","Шахматы"),bold);textLines(chessNet.event,25,3);
+#if defined(MM_NO_WIFI)
+ sayRight(126,62,t("play in the app (BLE)","играть: приложение (BLE)"),small);
+#else
+ sayRight(126,62,portalActive()?t("play on the Wi-Fi page","играть: Wi-Fi-страница"):t("Wi-Fi page to play","играть: включите Wi-Fi"),small);
+#endif
 }
 void drawRolePick(){
  auto& c=*hardware.canvas;c.fillScreen(0);
  for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,roleShort(r),body,!focus);if(r==config.role)sayRight(125,y,t("now","сейчас"),small,!focus);}
  uint32_t gone=millis()-rolePickAt;unsigned left=gone>=5000?0:(5000-gone+999)/1000;
  header(t("Device mode","Режим работы"));
- sayRight(128,63,rolePickBoot?t("as now in ","как сейчас через ")+String(left)+t("s","с"):t("click-next hold-choose","клик-далее держ-выбор"),small);
+ sayRight(128,63,rolePickBoot?t("as now in ","как сейчас через ")+String(left)+t("s","с"):
+#if defined(MM_JOYSTICK)
+ t("up/down, OK","вверх/вниз, OK")
+#else
+ t("click-next hold-choose","клик-далее держ-выбор")
+#endif
+ ,small);
  if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
  hardware.flush();
 }
@@ -191,7 +282,11 @@ void drawServerHome(){
  say(0,49,(room?t("room ","комната "):t("guest ","гость "))+(v.guest.length()?v.guest:t("none","нет"))+(v.forwarding?"":t("  no fwd","  без перес.")),small);
 }
 void draw(){
- auto& c=*hardware.canvas;if(rolePick){drawRolePick();return;}c.fillScreen(0);const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
+ auto& c=*hardware.canvas;if(rolePick){drawRolePick();return;}
+#if defined(MM_JOYSTICK)
+ if(composing){drawCompose();return;}
+#endif
+ c.fillScreen(0);const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){drawPopup(*last);hardware.flush();return;}
  popupAt=0;
  if(chessPopupAt&&millis()-chessPopupAt<8000){drawChessPopup();hardware.flush();return;}
@@ -231,9 +326,19 @@ void draw(){
    String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(" pkts"," пак."):String(radar.rate)+t("/s","/с");say(30,62,st,small);}
   else{bool beacon=radar.csi==Radar::CsiBeacon;int sel=shownSignal();
    // Beacon: sweeps and BLE pause, so the title shows the beacon instead of the counts.
-   title=beacon?t("CSI beacon ","Маяк CSI ")+String(radar.csiRate)+t("/s","/с"):t("Radar","Радар")+" W"+String(radar.counted(RadarTarget::Wifi))+" B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));
+   title=beacon?t("CSI beacon ","Маяк CSI ")+String(radar.csiRate)+t("/s","/с"):t("Radar","Радар")+
+#if !defined(MM_NO_WIFI)
+   " W"+String(radar.counted(RadarTarget::Wifi))+
+#endif
+   " B"+String(radar.counted(RadarTarget::Ble))+" L"+String(radar.counted(RadarTarget::Lora));
    String st=beacon?String():wifiState();if(!st.length()&&!beacon)st=bleState();
-   if(sel<0){say(0,30,beacon?t("Beacon on","Маяк включён"):t("No signals yet","Сигналов пока нет"));say(0,44,st.length()?st:beacon?t("hold: switch off","держите: выключить"):t("Wi-Fi and LoRa","Wi-Fi и LoRa"),small);}
+   if(sel<0){say(0,30,beacon?t("Beacon on","Маяк включён"):t("No signals yet","Сигналов пока нет"));say(0,44,st.length()?st:beacon?t("hold: switch off","держите: выключить"):
+#if defined(MM_NO_WIFI)
+    t("BLE and LoRa","BLE и LoRa")
+#else
+    t("Wi-Fi and LoRa","Wi-Fi и LoRa")
+#endif
+   ,small);}
    else{unsigned rows=st.length()?3:4; // a status line takes the 4th row, clear of the bottom hint
     int first=max(0,min(sel-1,int(radar.count)-int(rows)));for(int i=first;i<int(radar.count)&&i<first+int(rows);i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
      if(i==sel)c.fillRect(0,y-8,128,10,1);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i!=sel);sayRight(127,y,String(int(r.rssi)),small,i!=sel);}
@@ -249,8 +354,11 @@ void draw(){
  case Settings:title=t("Settings","Настройки");say(0,20,t("Language: ","Язык: ")+(config.russian?"русский":"English"),small);say(0,28,t("Battery: ","Батарея: ")+(config.batteryVolts?t("volts","вольты"):t("percent","проценты")),small);
   say(0,36,t("Screen off: ","Гасить экран: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда")),small);say(0,44,t("Contrast: ","Контраст: ")+String(config.brightness),small);
   say(0,52,String(config.frequency,3)+" SF"+String(config.sf)+" CR4/"+String(config.cr)+" "+String(config.power)+"dBm",small);break;
+ #if defined(MM_JOYSTICK)
+ case Chess:if(chessOpen&&chessOpen->state!=ChessMatch::Free){drawChessBoard(*chessOpen);return;}chessOpen=nullptr;drawChessList(title);break;
+ #endif
  default:title=t("Modules","Модули");say(0,21,"LoRa "+String(meshRadio.ready?"OK":"ERR")+"  FS "+String(hardware.fsOk?"OK":"ERR")+"  GPS "+String(!config.gps?"-":hardware.gps.passedChecksum()?"OK":"?"),small);
-  say(0,30,String(ESP.getFreeHeap()/1024)+"K RAM  "+String(ESP.getFreePsram()/1024)+"K PSRAM",small);say(0,39,t("relayed ","переслано ")+String(meshRadio.relayed)+t("  rejected ","  откл. ")+String(meshRadio.rejected),small);
+  say(0,30,String(ESP.getFreeHeap()/1024)+"K RAM"+(ESP.getPsramSize()?"  "+String(ESP.getFreePsram()/1024)+"K PSRAM":String()),small);say(0,39,t("relayed ","переслано ")+String(meshRadio.relayed)+t("  rejected ","  откл. ")+String(meshRadio.rejected),small);
   say(0,48,t("up ","работа ")+ago(millis())+t("  boot ","  загр. ")+String(config.bootCounter),small);
  }
  header(title);
@@ -259,9 +367,39 @@ void draw(){
  hardware.flush();
 }
 }
+#if defined(MM_JOYSTICK)
+// Up/down inside a screen: older/newer message, previous/next node or signal.
+void scroll(int step){
+ if(page==Messages){messageOffset=max(0,messageOffset-step);shownMessage();}
+ else if(page==Nodes){unsigned n=meshRadio.peerCount;if(n)nodeIndex=(nodeIndex+n+step)%n;}
+ else if(page==Signals&&radar.count&&!radar.tracking){int i=shownSignal();signalManual=true;if(i>=0){i=(i+radar.count+step)%radar.count;signalId=radar.targets[i].id;signalKind=radar.targets[i].kind;}}
+}
+void joystickKey(int key){
+ bool up=key==0xb5,down=key==0xb6,left=key==0xb4,right=key==0xb7,ok=key==13||key==0xa3,back=key==0x86||key==0x82;
+ if(composing){composeKey(key);return;}
+ if(rolePick){
+  if(up||down){roleSel=(roleSel+(up?RoleCount-1:1))%RoleCount;rolePickBoot=false;return;}
+  if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;return;}
+  if(back)rolePick=false;return;}
+ if(popupAt){popupAt=0;if(ok)showPage(Messages);return;}
+ if(chessPopupAt){chessPopupAt=0;if(ok&&config.role==RoleNormal){ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);}return;}
+ if(menuOpen){menuAt=millis();Act acts[8];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
+  if(up||down){menuIndex=(menuIndex+(up?n-1:1))%n;return;}
+  if(ok){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;return;}
+  menuOpen=false;return;}
+ if(page==Chess&&chessKey(key))return;
+ if(left||right){showPage(left?previousPage(page):nextPage(page));return;}
+ if(back){if(page!=Home)showPage(Home);return;}
+ if(up||down){scroll(up?-1:1);return;}
+ if(ok){Act acts[8];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
+}
+#endif
 void uiKey(int key){
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness);return;} // the first press only wakes the panel
+#if defined(MM_JOYSTICK)
+ joystickKey(key);return;
+#endif
  if(rolePick){if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
   if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;}return;}
  if(popupAt){popupAt=0;if(key==13)return;}
@@ -274,7 +412,12 @@ void uiKey(int key){
 }
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<448>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<448>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+#if defined(MM_JOYSTICK)
+ if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;}
+ if(composing){d["compose"]=true;d["draft"]=draft;d["keyboard"]=layoutNames[kbLayout];d["key_row"]=kbRow;d["key_col"]=kbCol;}
+#endif
+if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
@@ -293,5 +436,9 @@ void uiTick(){
  if(menuOpen&&now-menuAt>10000){menuOpen=false;dirty=true;}
  if(config.dimAfter&&!screenOff&&now-lastInput>=config.dimAfter*1000UL){screenOff=true;hardware.brightness(0);}
  if(screenOff)return;
+ #if defined(MM_JOYSTICK)
+ if(composing||(page==Chess&&chessOpen&&chessHeld>=0))dirty=true; // blinking cursor or picked piece
+ if(chessNet.dirty&&page==Chess){dirty=true;chessNet.dirty=false;}
+ #endif
  if((dirty||meshRadio.dirty||radar.dirty||now-drawAt>1000)&&now-drawAt>150){draw();drawAt=now;dirty=false;meshRadio.dirty=false;radar.dirty=false;}
 }

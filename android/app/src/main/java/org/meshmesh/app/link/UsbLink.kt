@@ -61,12 +61,15 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
         const val M9_VID = 0x1A86
         const val ESP_VID = 0x303A
         const val ESP_NATIVE_PID = 0x1001
+        const val NRF_VID = 0x239A // Adafruit nRF52 core (GAT562): TinyUSB CDC, sends nothing without DTR
+        const val NRF_APP_PID = 0x8029
 
         private val prober by lazy {
             val table = ProbeTable()
             table.addProduct(M9_VID, 0x7522, Ch34xSerialDriver::class.java)
             table.addProduct(M9_VID, 0x7523, Ch34xSerialDriver::class.java)
             table.addProduct(ESP_VID, ESP_NATIVE_PID, CdcAcmSerialDriver::class.java)
+            table.addProduct(NRF_VID, NRF_APP_PID, CdcAcmSerialDriver::class.java)
             UsbSerialProber(table)
         }
 
@@ -78,6 +81,7 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
         fun describe(device: UsbDevice): String = when {
             device.vendorId == M9_VID -> "ThinkNode M9 (CH340)"
             isNative(device) -> "Heltec V4 (USB ESP32-S3)"
+            device.vendorId == NRF_VID -> "GAT562 (USB nRF52840)"
             else -> device.productName ?: "USB-устройство ${"%04X:%04X".format(device.vendorId, device.productId)}"
         }
 
@@ -94,8 +98,8 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
             port.open(connection)
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
             val native = isNative(device)
-            // Heltec native USB: DTR on, RTS off; M9 CH340 auto-reset circuit: both off.
-            runCatching { port.dtr = native }
+            // Heltec native USB and nRF52 TinyUSB: DTR on, RTS off; M9 CH340 auto-reset circuit: both off.
+            runCatching { port.dtr = native || device.vendorId == NRF_VID }
             runCatching { port.rts = false }
             return UsbLink(port, native)
         }

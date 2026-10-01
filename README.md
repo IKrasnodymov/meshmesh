@@ -4,7 +4,7 @@
 
 **Website and one-click browser install: https://ikrasnodymov.github.io/meshmesh/**
 
-Off-grid messaging firmware for ESP32 LoRa devices. Messages hop by radio from device to
+Off-grid messaging firmware for ESP32 and nRF52 LoRa devices. Messages hop by radio from device to
 device, with no internet, no cell network and no servers. The radio layer is
 [MeshCore](https://github.com/meshcore-dev/MeshCore), so MeshMesh nodes talk to standard
 MeshCore nodes.
@@ -38,10 +38,12 @@ MeshCore nodes.
 |---|---|
 | Elecrow ThinkNode M9 (keyboard, 320×240 screen) | tested on hardware |
 | Heltec WiFi LoRa 32 V4 (OLED, one button) | tested on hardware |
+| GAT562 30S Mesh Kit (nRF52840, OLED, joystick; no Wi-Fi) | tested on hardware, GPS not working yet — [docs/gat562.md](docs/gat562.md) |
 | Heltec V4-R8, Heltec V3, Heltec Wireless Tracker, LilyGO T-Deck, T-Beam, T-Beam Supreme, T3-S3, T-LoRa V2.1-1.6, Seeed XIAO ESP32S3 + Wio-SX1262, B&Q Station G2, Elecrow ThinkNode M2 | builds only, not yet run on hardware — reports welcome |
 
-ESP32 and ESP32-S3 only: the firmware needs Wi-Fi and Bluetooth. Pins and details:
-[docs/boards.md](docs/boards.md).
+ESP32 boards have every feature. The GAT562 (nRF52840) has no Wi-Fi: no access point, Wi-Fi radar,
+motion sensor or internet client; the phone connects through the Android app over Bluetooth or USB.
+It adds an on-screen keyboard and chess on the OLED. Pins and details: [docs/boards.md](docs/boards.md).
 
 ## Install
 
@@ -57,6 +59,9 @@ python -m esptool --chip esp32s3 --port PORT write-flash --flash-mode dio --flas
 ```
 
 (ESP32 boards: `--chip esp32`, bootloader at `0x1000`, `--flash-freq 40m`; flash size per board.)
+
+**GAT562 (nRF52840):** press RESET twice — a `GAT562-BOOT` drive appears — and copy `firmware.uf2`
+from the website onto it. Later updates: `python tools/nrf52.py flash PACKAGE` ([docs/gat562.md](docs/gat562.md)).
 
 Default radio: 868.731 MHz, BW 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio; all nodes
 of a network must match. Follow your country's radio regulations.
@@ -77,7 +82,7 @@ The screen UI can be rendered on a computer without a board: `tools/ui_preview/b
 
 Detailed documentation is in Russian: [README.ru.md](README.ru.md) (controls and features),
 [MeshCore compatibility](docs/meshcore-migration.md), [boards](docs/boards.md),
-[Android](docs/android.md), [repeater and room modes](docs/repeater.md), [chess protocol](docs/chess.md), [map format](docs/maps-format.md),
+[GAT562](docs/gat562.md), [Android](docs/android.md), [repeater and room modes](docs/repeater.md), [chess protocol](docs/chess.md), [map format](docs/maps-format.md),
 [comparison with MeshCore](docs/feature-parity.md), [hardware verification](docs/verification.md).
 
 Not verified yet: LoRa range, GPS accuracy under open sky, compass accuracy, relaying through a

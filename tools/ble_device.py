@@ -34,7 +34,8 @@ async def run(args):
                 await client.read_gatt_char(TX)
                 break
             except (TimeoutError, BleakError) as error:
-                if isinstance(error, BleakError) and 'Encryption is insufficient' not in str(error):
+                # ESP32 (NimBLE) answers insufficient encryption, nRF52 (SoftDevice) insufficient authentication.
+                if isinstance(error, BleakError) and 'is insufficient' not in str(error):
                     raise
                 if asyncio.get_running_loop().time() >= deadline:
                     raise TimeoutError('Pairing did not finish; enter the device PIN and retry') from error

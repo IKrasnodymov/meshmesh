@@ -88,6 +88,19 @@ constexpr int sda=16, scl=15, oledReset=-1, button=47, vext=46, vextOn=HIGH;
 constexpr int battery=17, adcEnable=-1, gpsRx=-1, gpsTx=-1, gpsEnable=-1, gpsOn=HIGH, gpsReset=-1, buzzer=5;
 constexpr float batteryScale=1.509f;
 constexpr int led=6, ledOn=HIGH;
+#elif defined(MM_BOARD_GAT562)
+// nRF52840 GPIO numbers (P1.xx = 32+xx), from MeshCore's gat562_30s_mesh_kit variant. LoRa has
+// its own SPI pins; radioPower switches the SX1262 supply. Joystick and back button pull to GND.
+constexpr int spiClock=43, spiMiso=45, spiMosi=44, radioCs=42, radioIrq=47, radioReset=38, radioBusy=46, radioRxEn=-1;
+constexpr int radioPower=37;
+constexpr float radioTcxo=1.8f;
+constexpr int sda=13, scl=14, oledReset=-1, button=26, vext=-1, vextOn=HIGH;
+constexpr int keyUp=28, keyDown=4, keyLeft=30, keyRight=31, keyPress=26, keyBack=9;
+// GPS (L76K) on Serial1, WisBlock IO2 (34) up as MeshCore does. MeshCore's variant also calls 33 PIN_GPS_EN,
+// but 33 drives the buzzer (heard on the device), so it is not held high.
+constexpr int battery=5, adcEnable=-1, gpsRx=15, gpsTx=16, gpsEnable=-1, gpsOn=HIGH, gpsReset=-1, gpsPower=34, buzzer=33;
+constexpr float batteryScale=1.f;
+constexpr int led=36, ledOn=HIGH, txLed=35;
 #endif
 #elif defined(MM_BOARD_TDECK)
 // LilyGO T-Deck / T-Deck Plus: display, LoRa and SD share one SPI bus, as on the M9.

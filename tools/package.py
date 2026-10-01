@@ -26,6 +26,9 @@ COMMUNITY = {
     'thinknode_m2': ('thinknode-m2', 'esp32s3', '4MB'),
 }
 TARGETS.update({env: name for env, (name, _, _) in COMMUNITY.items()})
+# nRF52 boards (tools/nrf52.py): UF2 and DFU packages instead of ESP images.
+NRF52 = {'gat562_30s': 'gat562-30s'}
+TARGETS.update(NRF52)
 
 INSTALL = """MeshMesh {version} для {board}
 
@@ -48,6 +51,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('environment', choices=TARGETS)
     args = parser.parse_args()
+    if args.environment in NRF52:
+        import nrf52
+        nrf52.package(args.environment)
+        return
     version = re.search(r'MESHMM_VERSION "([^"]+)"', (ROOT/'include/Version.h').read_text())[1]
     build = ROOT / '.pio/build' / args.environment
     package = ROOT / 'artifacts' / f'meshmesh-{TARGETS[args.environment]}-{version}'

@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        env: [m9, heltec_v4, heltec_v4_r8, heltec_v3, heltec_tracker, tdeck, tbeam, tbeam_supreme, t3s3, tlora_v2_1_6, xiao_s3_wio, station_g2, thinknode_m2]
+        env: [m9, heltec_v4, heltec_v4_r8, heltec_v3, heltec_tracker, tdeck, tbeam, tbeam_supreme, t3s3, tlora_v2_1_6, xiao_s3_wio, station_g2, thinknode_m2, gat562_30s]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -81,7 +81,7 @@ jobs:
           name: apk
           path: apk
       - run: |
-          python tools/pages.py _site m9 heltec_v4 heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
+          python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
           mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk
       - uses: actions/upload-pages-artifact@v3
         with:

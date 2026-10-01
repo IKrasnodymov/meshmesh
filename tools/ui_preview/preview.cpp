@@ -85,6 +85,9 @@ int main(int argc,char** argv){
  config.russian=argc<=2||strcmp(argv[2],"en");
 #if defined(MM_HELTEC_V4)
  hardware.canvas=new GFXcanvas16(128,64);strcpy(config.name,"Heltec V4");
+#if defined(MM_JOYSTICK)
+ strcpy(config.name,"GAT562");
+#endif
 #else
  hardware.canvas=new GFXcanvas16(320,240);strcpy(config.name,"M9");
 #endif

@@ -348,7 +348,7 @@ footer a{color:var(--dim)}
    <div class="panel">
     <h3 lang="ru">Установка</h3><h3 lang="en">Install</h3>
     <div class="chosen"><div><b id="chosenName">—</b><small id="chosenInfo"></small></div><span class="tag" id="chosenTag"></span></div>
-    <ol>
+    <ol id="espSteps">
      <li lang="ru"><span>Подключите плату по USB. <b>Нет порта?</b> Удерживайте BOOT и нажмите RESET.</span></li>
      <li lang="en"><span>Plug the board in over USB. <b>No port?</b> Hold BOOT and press RESET.</span></li>
      <li lang="ru"><span>Нажмите <b>«Установить»</b> и выберите порт.</span></li>
@@ -356,7 +356,16 @@ footer a{color:var(--dim)}
      <li lang="ru"><span>Дождитесь окончания (около минуты) — плата перезапустится.</span></li>
      <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts.</span></li>
     </ol>
+    <ol id="uf2Steps" hidden>
+     <li lang="ru"><span>Скачайте <b>firmware.uf2</b> кнопкой ниже.</span></li>
+     <li lang="en"><span>Download <b>firmware.uf2</b> with the button below.</span></li>
+     <li lang="ru"><span>Подключите плату по USB и <b>дважды быстро нажмите RESET</b>: появится диск (например, GAT562-BOOT).</span></li>
+     <li lang="en"><span>Plug the board in over USB and <b>press RESET twice quickly</b>: a drive appears (e.g. GAT562-BOOT).</span></li>
+     <li lang="ru"><span>Скопируйте firmware.uf2 на этот диск — плата перезапустится с MeshMesh. Ключ, настройки и история сохраняются.</span></li>
+     <li lang="en"><span>Copy firmware.uf2 onto that drive — the board restarts with MeshMesh. Key, settings and history are kept.</span></li>
+    </ol>
     <div class="row">
+     <a class="btn primary" id="uf2" href="#" download hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span>firmware.uf2</span></a>
      <esp-web-install-button id="installer" manifest="firmware/m9/manifest.json">
       <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span lang="ru">Установить</span><span lang="en">Install</span></button>
       <span slot="unsupported" class="unsup"><span lang="ru">Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере.</span><span lang="en">This browser has no Web Serial — open the page in Chrome or Edge on a computer.</span></span>
@@ -364,7 +373,7 @@ footer a{color:var(--dim)}
      </esp-web-install-button>
      <a class="btn" id="zip" href="#" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Файлы</span><span lang="en">Files</span></a>
     </div>
-    <div class="note"><span lang="ru"><b>«Failed to open serial port»</b> — порт занят другой программой (Arduino IDE, монитор порта, другая вкладка) или завис драйвер USB: закройте её и переподключите кабель.</span><span lang="en"><b>“Failed to open serial port”</b> — another program holds the port (Arduino IDE, a serial monitor, another tab) or the USB driver is stuck: close it and replug the cable.</span></div>
+    <div class="note esp-only"><span lang="ru"><b>«Failed to open serial port»</b> — порт занят другой программой (Arduino IDE, монитор порта, другая вкладка) или завис драйвер USB: закройте её и переподключите кабель.</span><span lang="en"><b>“Failed to open serial port”</b> — another program holds the port (Arduino IDE, a serial monitor, another tab) or the USB driver is stuck: close it and replug the cable.</span></div>
     <div class="note warn" id="communityNote" hidden><span lang="ru"><b>Плата сообщества.</b> Сборка проверена на компьютере, но на этой плате прошивку ещё никто не запускал. Расскажите в Issues, что работает.</span><span lang="en"><b>Community board.</b> The build is checked on a computer, but nobody has run it on this board yet. Tell us in Issues what works.</span></div>
    </div>
    <div class="panel">
@@ -372,8 +381,8 @@ footer a{color:var(--dim)}
     <ol>
      <li lang="ru"><span><b>Обновление MeshMesh</b> сохраняет ключ, контакты, настройки и историю — не ставьте галочку «Стереть».</span></li>
      <li lang="en"><span><b>Updating MeshMesh</b> keeps your key, contacts, settings and history — leave “Erase” unticked.</span></li>
-     <li lang="ru"><span><b>Первая установка</b> поверх Meshtastic, MeshCore или другой прошивки — отметьте «Стереть устройство».</span></li>
-     <li lang="en"><span><b>First install</b> over Meshtastic, MeshCore or other firmware — tick “Erase device”.</span></li>
+     <li lang="ru" class="esp-only"><span><b>Первая установка</b> поверх Meshtastic, MeshCore или другой прошивки — отметьте «Стереть устройство».</span></li>
+     <li lang="en" class="esp-only"><span><b>First install</b> over Meshtastic, MeshCore or other firmware — tick “Erase device”.</span></li>
      <li lang="ru"><span><b>Радио по умолчанию:</b> 868.731 МГц, 62.5 кГц, SF8, CR4/6 — меняется в «Настройки → Радио». У всех узлов сети параметры должны совпадать.</span></li>
      <li lang="en"><span><b>Default radio:</b> 868.731 MHz, 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio. All nodes of a network must match.</span></li>
      <li lang="ru"><span><b>Соблюдайте</b> правила использования радиочастот в своей стране.</span></li>
@@ -430,6 +439,8 @@ const ICONS={
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless web: true) and short captions.
 const FEATURES=[
+ {ic:'oled',c:'#e4e9ee',t:['GAT562: джойстик, без Wi-Fi','GAT562: joystick, no Wi-Fi'],d:['Первая плата на nRF52840: письма на экранной клавиатуре, шахматы на OLED, радар BLE и LoRa; телефон подключается через приложение по Bluetooth.','The first nRF52840 board: messages on an on-screen keyboard, chess on the OLED, a BLE and LoRa radar; the phone connects through the app over Bluetooth.'],
+  oled:true,shots:[['gat562-home','Главный экран','Home'],['gat562-keyboard','Экранная клавиатура: EN, RU, символы','On-screen keyboard: EN, RU, symbols'],['gat562-chess','Шахматы: фигура выбрана, рокировка','Chess: piece picked, castling'],['gat562-chess-list','Список партий','Games'],['gat562-radar','Радар: BLE и LoRa','Radar: BLE and LoRa'],['gat562-node-menu','Узел: написать или вызвать на партию','Node: write or challenge']]},
  {ic:'tower',c:'#a78bfa',t:['Репитер и комната','Repeater and room server'],d:['Режим выбирается при включении: устройство становится репитером или комнатой MeshCore, вход и настройка из приложения MeshCore.','Pick the mode at power-on: the device becomes a MeshCore repeater or room server, with login and settings from the MeshCore app.'],
   shots:[['m9-role-boot','Выбор режима при включении','Mode choice at power-on'],['m9-repeater','Репитер: пароли, пересылка, объявления','Repeater: passwords, forwarding, adverts'],['m9-room','Комната: пароль комнаты и посты','Room server: room password and posts'],['m9-room-post','Пост от имени комнаты','A post from the room'],['heltec-role','Heltec: выбор режима кнопкой','Heltec: mode choice with the button'],['heltec-repeater','Heltec: репитер','Heltec: repeater'],['heltec-room','Heltec: комната','Heltec: room server']]},
  {ic:'chat',c:'#1fc2ae',t:['Чаты','Chats'],d:['Личные и общий чат, отметки доставки ✓✓, повтор при сбое.','Direct and public chats, ✓✓ delivery marks, automatic retries.'],
@@ -463,6 +474,7 @@ const DOCS=[
  ['README.ru.md','Обзор и управление','Overview and controls'],
  ['docs/meshcore-migration.md','MeshCore: ключи и совместимость','MeshCore: keys and compatibility'],
  ['docs/boards.md','Платы и выводы','Boards and pins'],
+ ['docs/gat562.md','GAT562 (nRF52840)','GAT562 (nRF52840)'],
  ['docs/android.md','Приложение для Android','Android app'],
  ['docs/repeater.md','Репитер и комната','Repeater and room server'],
  ['docs/chess.md','Шахматы: протокол','Chess protocol'],
@@ -530,7 +542,7 @@ document.getElementById('lb').addEventListener('touchstart',e=>touchX=e.touches[
 document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>50)lbStep(dx<0?1:-1);touchX=null});
 // Boards and installer
 let BOARDS=[],board='m9';
-const SUB={m9:['клавиатура, экран 320×240, GPS','keyboard, 320×240 screen, GPS'],heltec_v4:['OLED 128×64, кнопка PRG','128×64 OLED, PRG button'],heltec_v4_r8:['ревизия с 8 МБ PSRAM','8 MB PSRAM revision'],tdeck:['клавиатура, интерфейс как у M9','keyboard, M9 interface']};
+const SUB={gat562_30s:['nRF52840, OLED, джойстик, без Wi-Fi','nRF52840, OLED, joystick, no Wi-Fi'],m9:['клавиатура, экран 320×240, GPS','keyboard, 320×240 screen, GPS'],heltec_v4:['OLED 128×64, кнопка PRG','128×64 OLED, PRG button'],heltec_v4_r8:['ревизия с 8 МБ PSRAM','8 MB PSRAM revision'],tdeck:['клавиатура, интерфейс как у M9','keyboard, M9 interface']};
 function renderBoards(){
  const box=document.getElementById('boards');
  if(!BOARDS.length){box.innerHTML='';return}
@@ -538,7 +550,11 @@ function renderBoards(){
  box.innerHTML=`<h4><span class="tag ok">✓</span>${L(['Проверено на устройстве','Tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>b.verified).map(card).join('')}</div>`
   +`<h4><span class="tag cm">β</span>${L(['Сборки для других плат — на железе ещё не проверены','Builds for other boards — not yet tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>!b.verified).map(card).join('')}</div>`;
  const b=BOARDS.find(x=>x.env===board)||BOARDS[0];
- document.getElementById('installer').setAttribute('manifest',`firmware/${b.env}/manifest.json`);
+ // nRF52 boards install by copying a UF2 file to the bootloader drive, not over Web Serial.
+ const uf2=b.install==='uf2';
+ document.getElementById('installer').style.display=uf2?'none':'';document.getElementById('espSteps').hidden=uf2;
+ for(const e of document.querySelectorAll('.esp-only'))e.style.display=uf2?'none':'';document.getElementById('uf2Steps').hidden=!uf2;document.getElementById('uf2').hidden=!uf2;
+ if(uf2)document.getElementById('uf2').href=b.uf2;else document.getElementById('installer').setAttribute('manifest',`firmware/${b.env}/manifest.json`);
  document.getElementById('zip').href=b.zip;
  document.getElementById('chosenName').textContent=b.name;
  document.getElementById('chosenInfo').textContent=`MeshMesh ${VERSION} · ${b.chip} · ${b.flash}`;

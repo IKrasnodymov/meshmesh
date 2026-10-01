@@ -16,10 +16,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
-from package import COMMUNITY, TARGETS  # noqa: E402
+from package import COMMUNITY, NRF52, TARGETS  # noqa: E402
 
 # Boards whose packages are installed and checked on real hardware (docs/verification.md).
-VERIFIED = {'m9', 'heltec_v4'}
+VERIFIED = {'m9', 'heltec_v4', 'gat562_30s'}
 README = """MeshMesh {version} — {board}
 
 Update (keeps key, settings, contacts and history):
@@ -41,6 +41,19 @@ def main():
         package = ROOT/'artifacts'/f'meshmesh-{TARGETS[env]}-{version}'
         meta = json.loads((package/'manifest.json').read_text())
         board_json = json.loads((ROOT/f'boards/meshmesh_{env}.json').read_text())
+        if env in NRF52:
+            # nRF52: no Web Serial installer; the UF2 file goes to the bootloader drive.
+            target = out/'firmware'/env
+            target.mkdir(parents=True)
+            shutil.copyfile(package/'firmware.uf2', target/'firmware.uf2')
+            archive = out/'firmware'/f'meshmesh-{TARGETS[env]}-{version}.zip'
+            with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
+                for f in sorted(package.iterdir()):
+                    z.write(f, f'{package.name}/{f.name}')
+            boards.append({'env': env, 'name': board_json['name'].removeprefix('MeshMesh / '), 'chip': 'nRF52840', 'flash': '1MB',
+                           'verified': env in VERIFIED, 'community': False, 'install': 'uf2', 'uf2': f'firmware/{env}/firmware.uf2',
+                           'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
+            continue
         chip = COMMUNITY[env][1] if env in COMMUNITY else 'esp32s3'
         size = board_json['upload']['flash_size']
         boot = 0x1000 if chip == 'esp32' else 0

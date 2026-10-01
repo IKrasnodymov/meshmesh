@@ -1,6 +1,15 @@
 #pragma once
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#if defined(MM_NRF52)
+// nRF52 boards: no SD card for offline maps (src/nrf52/Stubs.cpp answers the map commands).
+class Maps {
+ public:
+  bool available=false,dirty=false;
+  void begin(){}void tick(){}
+  String info();String command(const String& line);String areas();
+};
+#else
 #include <FS.h>
 class Maps {
  public:
@@ -39,5 +48,6 @@ class Maps {
   Tile* request(int z,int x,int y);
   void invalidate();
 };
+#endif
 extern Maps maps;
 uint32_t mapCrc(uint32_t crc,const uint8_t* bytes,size_t size);

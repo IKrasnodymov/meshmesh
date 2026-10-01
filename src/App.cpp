@@ -32,7 +32,11 @@ String statusJson() {
   if(d["gps_fix"].as<bool>()) {d["latitude"]=hardware.gps.location.lat();d["longitude"]=hardware.gps.location.lng();}
   JsonArray a=d.createNestedArray("mag");for(float n:hardware.mag)a.add(n);a=d.createNestedArray("accel");for(float n:hardware.accel)a.add(n);
   d["clock_trusted"]=hardware.clockTrusted;d["busy"]=meshRadio.busy();if(meshRadio.lastRxAt)d["rx_age"]=(millis()-meshRadio.lastRxAt)/1000;
-  d["event"]=meshRadio.event;d["wifi"]=portalActive();d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
+  d["event"]=meshRadio.event;d["wifi"]=portalActive();
+#if defined(MM_NRF52)
+  d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
+#endif
+  d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
 String messagesJson() {
   DynamicJsonDocument d(32768);JsonArray a=d.to<JsonArray>();
@@ -129,6 +133,7 @@ String executeCommand(const String& input) {
   if(line=="selftest")return meshRadio.selfTest()?"OK crypto/UTF-8/tamper selftest":"ERR selftest";
   if(line=="wifi") {portalToggle();return portalActive()?"OK Wi-Fi portal on; credentials on device":"OK Wi-Fi off";}
   if(line=="ble") {bleToggle();return bleActive()?"OK BLE on":"OK BLE off";}
+  if(line=="restart"){restartAt=millis()+1000;return "OK restarting";} // e.g. after fsformat: the settings are read at boot
   if(line=="fsformat") {
     if(hardware.fsOk)return "ERR filesystem already mounted; no format";
     if(meshRadio.busy())return "ERR radio busy";
@@ -153,5 +158,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat, restart";
 }

@@ -16,6 +16,10 @@
 #if defined(MM_NATIVE_USB)
 #include <hal/usb_serial_jtag_ll.h>
 #endif
+#if defined(MM_NRF52)
+#include <LittleFS.h>
+bool mountStorage();
+#endif
 namespace {
 uint8_t* usbBytes=nullptr;
 size_t usbSize=0,usbOffset=0;
@@ -45,8 +49,12 @@ void usbTick() {
   if(usbOffset==usbSize) {free(usbBytes);usbBytes=nullptr;usbSize=usbOffset=0;}
 }
 }
-void setup() {
+void appSetup() {
+#if defined(MM_NRF52)
+  Serial.begin(115200);delay(300);mountStorage(); // the settings live in the same storage
+#else
   Serial.setRxBufferSize(2048);Serial.setTxBufferSize(2048);Serial.begin(115200);delay(300);
+#endif
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   config.load();hardware.beginClock();hardware.begin();chessNet.begin();meshRadio.begin();maps.begin();
 #if !defined(MM_COMPACT)
@@ -56,7 +64,7 @@ void setup() {
   Serial.println(meshRadio.selfTest()?"SELFTEST crypto/UTF-8/tamper PASS":"SELFTEST FAIL");
   Serial.println("READY: USB commands are available; type help");
 }
-void loop() {
+void appLoop() {
   hardware.tick();meshRadio.tick();if(config.role==RoleNormal)chessNet.tick(); // games wait for the normal mode
 #if !defined(MM_COMPACT)
   internet.tick();
@@ -69,7 +77,7 @@ void loop() {
     char c=Serial.read();baudExpires=millis()+10000;
     if(c=='\n') {
       if(command.startsWith("baud ")) {
-#if defined(MM_NATIVE_USB)
+#if defined(MM_NATIVE_USB) || defined(MM_NRF52)
         usbLine("ERR native USB does not need baud switching");
 #else
         unsigned rate=command.substring(5).toInt();if(rate==115200||rate==460800||rate==921600){pendingBaud=rate;usbLine("OK USB baud switching");}else usbLine("ERR baud 115200/460800/921600");
@@ -87,6 +95,19 @@ void loop() {
         if(deserializeJson(options,command.substring(9)) || !options.is<JsonObject>())usbLine("ERR bleprobe JSON");
         else usbLine(startBleProbe(options.as<JsonObjectConst>()));
       }
+#if defined(MM_NRF52)
+      // USB only, read-only: raw flash for backups (CURRENT.UF2 of the bootloader stops at 0xEA000).
+      else if(command.startsWith("flashread ")){uint32_t at=strtoul(command.c_str()+10,nullptr,16),n=0;int sp=command.indexOf(' ',10);if(sp>0)n=strtoul(command.c_str()+sp+1,nullptr,16);
+        if(sp<0||!n||n>2048||at<0x1000||at+n>0x100000)usbLine("ERR flashread ADDR LEN (hex, LEN<=800)");
+        else{String hex;hex.reserve(n*2+12);hex="FLASH "+String(at,HEX)+" ";for(uint32_t i=0;i<n;i++){uint8_t v=*(const uint8_t*)(at+i);hex+="0123456789abcdef"[v>>4];hex+="0123456789abcdef"[v&15];}usbLine(hex);}}
+      // USB only, hardware bring-up: "gpio N" reads a pin, "gpio N 0|1" drives it, "gpio N tone HZ" sounds it.
+      else if(command.startsWith("gpio ")){int n=command.substring(5).toInt();int sp=command.indexOf(' ',5);String arg=sp>0?command.substring(sp+1):String();
+        if(n<0||n>47)usbLine("ERR gpio 0..47");
+        else if(!arg.length()){pinMode(n,INPUT);usbLine("GPIO "+String(n)+" "+String(digitalRead(n)));}
+        else if(arg.startsWith("tone ")){tone(n,arg.substring(5).toInt(),300);usbLine("OK tone");}
+        else if(arg=="watch"){pinMode(n,INPUT);int last=digitalRead(n),edges=0,lows=0;uint32_t start=millis();while(millis()-start<1500){int v=digitalRead(n);edges+=v!=last;lows+=!v;last=v;}usbLine("GPIO "+String(n)+" edges "+String(edges)+" lowsamples "+String(lows));}
+        else{pinMode(n,OUTPUT);digitalWrite(n,arg.toInt()?HIGH:LOW);usbLine("OK gpio "+String(n)+"="+String(arg.toInt()?1:0));}}
+#endif
       else if(command.startsWith("uikey ")) {uiKey(strtol(command.substring(6).c_str(),nullptr,0));usbLine("OK UI key");}
       else usbLine(executeCommand(command));command="";
     }
@@ -95,8 +116,17 @@ void loop() {
   }
   portalTick();uiTick();usbTick();restartTick();
   if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
-#if !defined(MM_NATIVE_USB)
+#if !defined(MM_NATIVE_USB) && !defined(MM_NRF52)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif
   delay(2);
 }
+#if defined(MM_NRF52)
+// The core's loop task has a 4 KB stack; the JSON replies need more. The application runs in
+// its own task and the Arduino loop task stays suspended.
+void setup() {xTaskCreate([](void*){appSetup();for(;;)appLoop();},"meshmesh",4096,nullptr,TASK_PRIO_LOW,nullptr);}
+void loop() {suspendLoop();}
+#else
+void setup() {appSetup();}
+void loop() {appLoop();}
+#endif

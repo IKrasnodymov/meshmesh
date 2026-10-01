@@ -88,5 +88,5 @@ class String {
 };
 class HardwareSerialShim:public Print{public:size_t write(uint8_t c) override{return fputc(c,stderr)!=EOF;}void begin(unsigned){}int available(){return 0;}int read(){return -1;}};
 extern HardwareSerialShim Serial;
-class EspShim{public:uint32_t getFreeHeap(){return 187*1024;}uint32_t getFreePsram(){return 7900*1024;}uint64_t getEfuseMac(){return 0x1234567890ULL;}};
+class EspShim{public:uint32_t getFreeHeap(){return 187*1024;}uint32_t getFreePsram(){return 7900*1024;}uint32_t getPsramSize(){return 8192*1024;}uint64_t getEfuseMac(){return 0x1234567890ULL;}};
 extern EspShim ESP;

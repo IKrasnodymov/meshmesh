@@ -151,10 +151,10 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <main class="login" id="login"><div class="brand"><svg class="ic"><use href="#i-radio"/></svg><b>MESHMESH</b><small>Ваши люди. Ваша сеть.</small></div>
 <form class="card pad" id="loginForm"><label class="field">Пароль Wi-Fi<input id="password" type="password" autocomplete="current-password" required></label><p class="small muted">Пароль показан на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</p><button class="btn primary save">Подключиться</button></form>
 <details class="more"><summary>Подготовить карту без устройства</summary><p class="muted small">Для подготовки нужен интернет. Скачайте файл карты, затем подключитесь к Wi-Fi M9 и загрузите его в разделе «Карта».</p><button class="btn soft save" id="standalone" type="button">Открыть подготовку карты</button></details>
-<p class="foot">MeshMesh · <span class="version">0.3.3</span></p></main>
+<p class="foot">MeshMesh · <span class="version">0.3.4</span></p></main>
 
 <main class="wrap" id="app" hidden>
-<section class="page" id="p-home"><div class="card ident" id="ident"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.3</span> · локальная сеть, без интернета</p></section>
+<section class="page" id="p-home"><div class="card ident" id="ident"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.4</span> · локальная сеть, без интернета</p></section>
 
 <section class="page" id="p-chats" hidden><div class="list" id="conversations"></div></section>
 
@@ -202,7 +202,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <details class="more"><summary>Команды MeshCore (CLI)</summary><p class="muted small">Те же команды, что в приложении MeshCore после входа администратора: <code>get repeat</code>, <code>set flood.max 8</code>, <code>neighbors</code>, <code>stats-packets</code>, <code>ver</code>. Частота, полоса, SF, CR, мощность и имя общие с настройками MeshMesh.</p><form id="rptCli" class="two"><input id="rptLine" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="get repeat" maxlength="160"><button class="btn primary">Выполнить</button></form><pre id="rptOut"></pre></details></section>
 <section class="page" id="p-radio" hidden><div class="card" style="padding:4px 0" id="radioForm"></div><button class="btn save" id="radioSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px">Параметры радио должны совпадать у всех узлов сети. Применяются при сохранении; при ошибке радио возвращаются прежние.</p></section>
 <section class="page" id="p-device" hidden><div class="card" style="padding:4px 0" id="deviceForm"></div><button class="btn save" id="deviceSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px" id="deviceNote">Язык меню относится к экрану устройства. Радио продолжает работать при блокировке и погашенном экране.</p></section>
-<section class="page" id="p-help" hidden><div id="helpKeys"></div><h3>Русский ввод: фонетический</h3><div class="layout" id="layout"></div><p class="small muted" style="margin:0 4px">2×пробел — RU/EN; Shift или → после буквы — заглавная.</p></section>
+<section class="page" id="p-help" hidden><div id="helpKeys"></div><div id="layoutHelp"><h3>Русский ввод: фонетический</h3><div class="layout" id="layout"></div><p class="small muted" style="margin:0 4px">2×пробел — RU/EN; Shift или → после буквы — заглавная.</p></div></section>
 
 <section class="page" id="p-game" hidden><div class="game" id="game"></div><div class="gstat" id="gameStat"></div><div class="btns"><button class="btn" id="gameUndo">Отмена</button><button class="btn" id="gameHint">Подсказка</button><button class="btn" id="gameCollect">Собрать в дома</button></div><div class="btns" style="margin-top:8px"><button class="btn" id="gameNew">Новая партия</button><button class="btn" id="gameDraw">Сдача по 1</button></div><p class="small faint" style="margin:10px 4px">Нажмите карту, затем стопку, куда её положить; повторное нажатие кладёт карту само. Партия идёт в этом браузере, отдельно от «Косынки» на экране M9.</p></section>
 
@@ -226,6 +226,8 @@ let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Ma
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
 // Board family: 'compact' (128x64 screen, one button) or 'full' (320x240 screen and keyboard). Older firmware: board only.
 const heltec=()=>status.family?status.family==='compact':status.board==='heltec_v4';
+// Boards without a Wi-Fi radio (nRF52: GAT562) reach this page only through the app (BLE/USB).
+const noWifi=()=>status.wifi_radio===false;
 const extGps=()=>status.board==='heltec_v4'||status.board==='station_g2',boardName=()=>status.board_name||(heltec()?'Heltec V4':'ThinkNode M9');
 
 // Helpers: storage (per browser, may be unavailable), escaping, icons, Russian plurals.
@@ -340,7 +342,7 @@ function renderHome(){
   ['map','pin','ok','Карта',!mapInfo.available?'Нет SD-карты':mapInfo.name||'Карт пока нет'],
   ['nodes','mesh','violet','Узлы',`${near} из ${peers.length} рядом`],
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
-  ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар','Wi-Fi, BLE, LoRa'],
+  ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар',noWifi()?'BLE, LoRa':'Wi-Fi, BLE, LoRa'],
   ['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],
   ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],['chess','chess','','Шахматы',chessTileText(),chess.waiting]];
  $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
@@ -399,7 +401,7 @@ function renderNav(){
 async function loadConnections(){try{conn=await request('/api/connections')}catch(e){notify(e.message,'bad')}if(route==='connect')renderConnect()}
 function renderConnect(){const c=conn||{},wifi=status.wifi,ble=status.ble;
  const card=(id,icon,on,name,state,extra)=>`<div class="card conn"><div class="top"><span class="icbox">${ic(icon,on?'info':'faint')}</span><div><b>${name}</b><small>${state}</small></div>${id?`<button class="sw${on?' on':''}" data-toggle="${id}" role="switch" aria-checked="${on}" aria-label="${name}"></button>`:''}</div>${extra?`<div class="extra">${extra}</div>`:''}</div>`;
- $('connList').innerHTML=card('wifi','wifi',wifi,'Точка доступа Wi-Fi',wifi?'Веб-чат и загрузка карт':'Выключена',wifi&&c.ssid?`<b class="acc">${esc(c.ssid)}</b><div>Пароль: <span class="mono" style="font-size:14px">${esc(c.password)}</span></div><small class="muted">${esc(c.ip)} · выключение прервёт эту страницу</small>`:'')
+ $('connList').innerHTML=(noWifi()?'':card('wifi','wifi',wifi,'Точка доступа Wi-Fi',wifi?'Веб-чат и загрузка карт':'Выключена',wifi&&c.ssid?`<b class="acc">${esc(c.ssid)}</b><div>Пароль: <span class="mono" style="font-size:14px">${esc(c.password)}</span></div><small class="muted">${esc(c.ip)} · выключение прервёт эту страницу</small>`:''))
   +card('ble','ble',ble,'Bluetooth LE',ble?'Защищённое сопряжение, сервис MeshMesh':'Выключен',ble&&c.pin?`<b class="acc">PIN ${esc(c.pin)}</b><div class="small muted">${esc(c.ble_name||'')}</div>`:'')
   +card('','key',true,'Ключ MeshCore','Открытый ключ этого узла',`<div class="mono" id="pubkey" style="user-select:all">${esc(status.public_key)}</div>`)}
 async function toggle(which){
@@ -421,10 +423,10 @@ function wifiState(d){return {portal:'Wi-Fi-сети не сканируются
 function bleState(d){return {busy:'Bluetooth занят проверкой',failed:'Ошибка Bluetooth'}[d.ble]||''}
 function scopeSelected(){const t=radarData?.targets||[];if(!t.length)return -1;if(scopeManual){const i=t.findIndex(x=>x.ref===scopeRef?.ref&&x.kind===scopeRef?.kind);if(i>=0)return i}scopeRef={ref:t[0].ref,kind:t[0].kind};return 0}
 function renderScope(){const d=radarData;if(!d){$('radarCounts').textContent='Запуск радара…';return}
- const t=d.targets,sel=scopeSelected(),count=k=>t.filter(x=>x.kind===k).length;$('radarCounts').textContent=`Wi-Fi ${count('wifi')} · BLE ${count('ble')} · LoRa ${count('lora')}`;
+ const t=d.targets,sel=scopeSelected(),count=k=>t.filter(x=>x.kind===k).length;$('radarCounts').textContent=`${noWifi()?'':`Wi-Fi ${count('wifi')} · `}BLE ${count('ble')} · LoRa ${count('lora')}`;document.querySelector('#p-radar [data-go="motion"]').hidden=noWifi();
  $('signalList').innerHTML=t.length?t.map((x,i)=>`<button class="sig${i===sel?' sel':''}" data-sig="${i}"><i style="background:${targetHue(x)}"></i><span>${esc(targetName(x))}</span><b>${x.rssi}</b></button>`).join(''):'<p class="muted small" style="padding:8px 4px">Сигналов пока нет</p>';
  let s=wifiState(d)||bleState(d);if(!s&&d.personal)s=plural(d.personal,'телефон/часы рядом','телефона/часов рядом','телефонов/часов рядом');
- $('radarState').textContent=s;$('radarState').className='small '+(d.wifi==='ready'&&!bleState(d)?'muted':'warn');$('startHoming').disabled=sel<0}
+ $('radarState').textContent=s;$('radarState').className='small '+((d.wifi==='ready'||noWifi())&&!bleState(d)?'muted':'warn');$('startHoming').disabled=sel<0}
 function animateScope(){if(route!=='radar'||!radarTimer)return;drawScope();requestAnimationFrame(animateScope)}
 function drawScope(){const c=$('scopeCanvas'),dpr=window.devicePixelRatio||1,size=c.clientWidth||300;if(c.width!==Math.round(size*dpr)){c.width=c.height=Math.round(size*dpr)}const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
  const R=size/2-4,cx=size/2,cy=size/2,now=performance.now(),sweep=(now%3000)/3000*2*Math.PI;x.clearRect(0,0,size,size);
@@ -483,7 +485,7 @@ function renderModules(){const s=moduleStates(),names=['LoRa','Клавиату�
 // Settings: the M9 settings list and its two editors.
 function renderSettings(){
  const items=[['radio','radio','acc','Радио',`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info','Экран и устройство',`${heltec()?'Контраст':'Яркость'} ${config.brightness} · ${config.russian?'Русский':'English'}`],
-  ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['connect','wifi','info','Подключения',`Wi-Fi ${status.wifi?'вкл':'выкл'} · BLE ${status.ble?'вкл':'выкл'}`],
+  ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['connect','wifi','info','Подключения',`${noWifi()?'':`Wi-Fi ${status.wifi?'вкл':'выкл'} · `}BLE ${status.ble?'вкл':'выкл'}`],
   ['modules','pulse','ok','Состояние модулей',`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted','Клавиши и подсказки','Что делает каждая клавиша'],['library','pin','ok','Сохранённые карты',mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:'Карт нет'],['role','tower','violet','Режим работы',status.role==='repeater'?'Репитер MeshCore':status.role==='room'?'Комната MeshCore':'Обычный: чаты, карты, радар']];
  $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
 function utcOptions(){const o=[];for(let m=-720;m<=840;m+=15){const a=Math.abs(m);o.push([m,(m<0?'−':'+')+two(a/60|0)+':'+two(a%60)])}return o}
@@ -522,8 +524,9 @@ async function saveEditor(page){const changes={};for(const f of fields(page))if(
  if(changes.auto_lock&&changes.auto_lock<30){notify('Автоблокировка: 0 или 30–600 с','bad');return}if(changes.dim_after&&changes.dim_after<10){notify('Гасить экран: 0 или 10–600 с','bad');return}
  try{await request('/api/config',changes);notify('Настройки сохранены','ok');config=await request('/api/config');await refresh();go('settings')}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}}
 function renderHelp(){
- const btn=status.button||'PRG',keys=heltec()?[[btn,'короткое нажатие — следующая страница'],[btn,'удержание — действие страницы или меню действий']]:status.board==='tdeck'?[['Шар','перемещение по меню, спискам и карте'],['Нажатие','открыть / отправить'],['Удерж. шар','вход; в чате — русская раскладка'],['Enter','открыть / отправить'],['DEL','удалить; без текста — назад'],['2×пробел','в тексте: RU/EN'],['L','на карте: список карт'],['+ −','масштаб карты'],['P','узел на карте']]:[['MSG','Чаты'],['MAP','Карта; L — список карт'],['HOME','Главное меню'],['BACK','Предыдущий экран'],['CTRL','Настройки'],['ADV','Объявить узел; удержание — GPS вкл/выкл'],['@','функц. клавиша (не Sym+@): RU/EN в чате'],['MIC','Блокировка (микрофона нет)'],['OK','Открыть / отправить; удержание — вход'],['2×пробел','в тексте: RU/EN; → — заглавная']];
- $('helpKeys').innerHTML=`<h3>${heltec()?'Кнопка '+boardName():'Клавиши '+(status.board==='tdeck'?'T-Deck':'M9')}</h3><div class="card" style="padding:6px 10px">${keys.map(([k,a],i)=>`<div class="keyrow"><span class="key">${k}</span><span class="${i%2?'muted':''}">${a}</span></div>`).join('')}</div>`;
+ const btn=status.button||'PRG',keys=btn==='joystick'?[['← →','страницы'],['↑ ↓','сообщения, узлы, сигналы, пункты меню'],['Центр','действие страницы или меню; в шахматах — фигура, затем клетка'],['Удерж. центр','в клавиатуре — отправить; в шахматах — меню партии'],['Назад','закрыть; в клавиатуре — стереть символ; иначе — главный экран'],['Удерж. назад','главный экран; закрыть клавиатуру']]:heltec()?[[btn,'короткое нажатие — следующая страница'],[btn,'удержание — действие страницы или меню действий']]:status.board==='tdeck'?[['Шар','перемещение по меню, спискам и карте'],['Нажатие','открыть / отправить'],['Удерж. шар','вход; в чате — русская раскладка'],['Enter','открыть / отправить'],['DEL','удалить; без текста — назад'],['2×пробел','в тексте: RU/EN'],['L','на карте: список карт'],['+ −','масштаб карты'],['P','узел на карте']]:[['MSG','Чаты'],['MAP','Карта; L — список карт'],['HOME','Главное меню'],['BACK','Предыдущий экран'],['CTRL','Настройки'],['ADV','Объявить узел; удержание — GPS вкл/выкл'],['@','функц. клавиша (не Sym+@): RU/EN в чате'],['MIC','Блокировка (микрофона нет)'],['OK','Открыть / отправить; удержание — вход'],['2×пробел','в тексте: RU/EN; → — заглавная']];
+ $('layoutHelp').hidden=btn==='joystick'; // the joystick keyboard is on the screen
+ $('helpKeys').innerHTML=`<h3>${btn==='joystick'?'Джойстик '+boardName():heltec()?'Кнопка '+boardName():'Клавиши '+(status.board==='tdeck'?'T-Deck':'M9')}</h3><div class="card" style="padding:6px 10px">${keys.map(([k,a],i)=>`<div class="keyrow"><span class="key">${k}</span><span class="${i%2?'muted':''}">${a}</span></div>`).join('')}</div>`;
  const ru='абцдефгхийклмнопярстувшжыз',rows=['qwertyuiop','asdfghjkl','zxcvbnm'];
  $('layout').innerHTML=rows.map(r=>`<div>${[...r].map(k=>`<span>${k}<b>${ru[k.charCodeAt(0)-97]}</b></span>`).join('')}</div>`).join('')+`<div class="x">${[...'1234567'].map((k,i)=>`<span>${k}<b>${'чщъьэюё'[i]}</b></span>`).join('')}</div>`}
 
