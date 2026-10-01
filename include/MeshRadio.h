@@ -53,7 +53,7 @@ class MeshRadio {
   friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;
   MeshCoreBackend* core=nullptr;
   struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};} pending[4];
-  uint32_t sequence=0,lastHello=0,autoHelloDue=0;
+  uint32_t sequence=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);

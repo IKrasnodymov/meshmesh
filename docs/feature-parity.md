@@ -11,7 +11,7 @@
 | Функция | MeshMesh | Где |
 | --- | --- | --- |
 | Ключ Ed25519, подписанные adverts, приём чужих adverts | Есть | `src/MeshRadio.cpp` |
-| Позиция GPS в advert, периодический advert (5 мин) и кнопка ADV | Есть | `MeshCoreBackend::advertise` |
+| Позиция GPS в advert и кнопка ADV; как у штатного компаньона, без периодических adverts: сам узел объявляется только при новом ключе или новом имени после загрузки | Есть | `MeshCoreBackend::advertise` |
 | Личные сообщения TXT_MSG, ACK, 3 попытки, direct/flood по известному пути | Есть | `startMessage`, `processAck` |
 | Канал Public (GRP_TXT) | Есть | `onChannelMessageRecv` |
 | Ретрансляция с нашим пределом пересылок, подавление повторов | Есть | `allowPacketForward` |

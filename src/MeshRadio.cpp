@@ -128,14 +128,17 @@ class MeshCoreBackend:public BaseChatMesh {
  }
  void logTxFail(mesh::Packet* packet,int) override{uint8_t hash[8];packet->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);for(auto& p:owner.pending)if(p.active&&p.hash==id){p.active=false;owner.status(p.message.id,ChatMessage::Failed);}owner.radioError=owner.radioError?owner.radioError:RADIOLIB_ERR_TX_TIMEOUT;owner.event="Radio TX error "+String(owner.radioError);owner.dirty=true;}
  public:
- bool identitySaved=false;
+ bool identitySaved=false,announce=false;
  MeshCoreBackend(MeshRadio& o):BaseChatMesh(coreRadio,coreMillis,coreRandom,coreRtc,corePool,coreTables),owner(o){}
  bool initialize(){
   Preferences p;if(!p.begin("meshmesh-mc",false))return false;uint8_t identity[96]={};
   if(p.getBytesLength("identity")==96){p.getBytes("identity",identity,96);self_id.readFrom(identity,96);mesh::LocalIdentity derived;derived.readFrom(identity,64);if(!derived.matches(self_id)||!mesh::LocalIdentity::validatePrivateKey(identity)){p.end();return false;}}
-  else{bootloader_random_enable();do{self_id=mesh::LocalIdentity(&coreRandom);}while(self_id.pub_key[0]==0||self_id.pub_key[0]==255);bootloader_random_disable();self_id.writeTo(identity,96);if(p.putBytes("identity",identity,96)!=96){p.end();return false;}}
+  else{bootloader_random_enable();do{self_id=mesh::LocalIdentity(&coreRandom);}while(self_id.pub_key[0]==0||self_id.pub_key[0]==255);bootloader_random_disable();self_id.writeTo(identity,96);if(p.putBytes("identity",identity,96)!=96){p.end();return false;}announce=true;}
   memset(identity,0,sizeof(identity));identitySaved=true;
   owner.nodeId=aliasOf(self_id.pub_key);addChannel("Public","izOH6cXN6mrJ5e26oRXNcg==");ChannelDetails channel;getChannel(0,channel);mesh::Utils::sha256((uint8_t*)&owner.networkId,4,channel.channel.secret,16);
+  // Like a stock companion, the node announces itself on its own only when a new key or a new name has not
+  // been announced yet; otherwise adverts are manual (ADV, position, "hello").
+  if(p.getString("adv_name","")!=config.name)announce=true;
   // Keep advert timestamps monotonic across resets even without an RTC.
   uint32_t last=max(p.getUInt("last_advert",0),p.getUInt("last_tx",0));if(last<2147483647U)coreRtc.setCurrentTime(last+1);
   if(p.getBytesLength("contacts")==sizeof(ContactBlob)){
@@ -146,9 +149,9 @@ class MeshCoreBackend:public BaseChatMesh {
  }
  void saveContacts(){ContactBlob* blob=new ContactBlob;blob->count=min(getNumContacts(),24);for(unsigned i=0;i<blob->count;i++){ContactInfo c;if(!getContactByIdx(i,c))continue;auto& dest=blob->contacts[i];memcpy(dest.key,c.id.pub_key,32);memcpy(dest.name,c.name,32);dest.type=c.type;dest.pathLength=c.out_path_len;memcpy(dest.path,c.out_path,64);dest.advert=c.last_advert_timestamp;dest.lat=c.gps_lat;dest.lon=c.gps_lon;}mesh::Utils::sha256(blob->hash,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));Preferences p;if(p.begin("meshmesh-mc",false)){p.putBytes("contacts",blob,sizeof(*blob));p.end();}delete blob;contactsDue=0;}
  bool reserveStamp(uint32_t stamp){Preferences p;if(!p.begin("meshmesh-mc",false))return false;bool saved=p.putUInt("last_tx",stamp)==4;p.end();return saved;}
- bool advertise(bool requirePosition=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;p.end();if(!saved){releasePacket(pkt);return false;}sendFlood(pkt);return true;}
+ bool advertise(bool requirePosition=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved)p.putString("adv_name",config.name);p.end();if(!saved){releasePacket(pkt);return false;}sendFlood(pkt);return true;}
  // A relayed path came with a path return and is used as is (the retries flood). "Direct" holds only while the
- // node is heard without relays: within 30 minutes (our nodes announce every 5) and 5 dB over the SF floor.
+ // node is heard without relays: within 30 minutes and 5 dB over the SF floor (nodes do not announce periodically).
  bool pathTrusted(const ContactInfo& c){
   if(c.out_path_len&63)return true;Peer* p=owner.contact(aliasOf(c.id.pub_key));
   return p&&p->heard&&p->hops==0&&millis()-p->seen<1800000&&p->snr>=-2.5f*(config.sf-4)+5;
@@ -184,7 +187,7 @@ bool MeshRadio::removeContact(uint64_t id){
  if(!core->forget(p->publicKey))return false;unsigned i=p-peers;memmove(peers+i,peers+i+1,sizeof(Peer)*(peerCount-i-1));peerCount--;peers[peerCount]={};dirty=true;return true;
 }
 Peer* MeshRadio::contact(uint64_t id){for(unsigned i=0;i<peerCount;i++)if(peers[i].id==id)return &peers[i];return nullptr;}
-void MeshRadio::begin(){nodeId=ESP.getEfuseMac();if(applyConfig()){core=new MeshCoreBackend(*this);if(!core->initialize()){ready=false;event="MeshCore identity storage error";}}restoreHistory();if(ready)autoHelloDue=millis()+3000+esp_random()%2000;}
+void MeshRadio::begin(){nodeId=ESP.getEfuseMac();if(applyConfig()){core=new MeshCoreBackend(*this);if(!core->initialize()){ready=false;event="MeshCore identity storage error";}}restoreHistory();if(ready&&core->announce)autoHelloDue=millis()+3000+esp_random()%2000;}
 bool MeshRadio::busy() const{return transmitting||corePool.getOutboundTotal()>0;}
 void MeshRadio::cancelPending(){for(auto& p:pending)if(p.active){status(p.message.id,ChatMessage::Failed);p.active=false;}while(corePool.getOutboundTotal()){auto* packet=corePool.removeOutboundByIdx(0);corePool.free(packet);}}
 bool MeshRadio::applyConfig(){
@@ -202,7 +205,7 @@ bool MeshRadio::applyConfig(){
  radio.setRxBoostedGainMode(true);radio.setPacketReceivedAction(onRadioIrq);radioIrq=false;radioError=startReceiving();ready=radioError==0;
  }event=ready?"MeshCore radio ready":"Radio error "+String(radioError);dirty=true;return ready;
 }
-bool MeshRadio::sendHello(){if(!ready||!core)return false;bool ok=core->advertise();if(ok)lastHello=millis();return ok;}
+bool MeshRadio::sendHello(){return ready&&core&&core->advertise();}
 bool MeshRadio::sendPosition(){if(!config.gps||!hardware.gpsFix()){event="GPS: waiting for fix";dirty=true;return false;}return sendHello();}
 bool MeshRadio::sendMessage(const String& text,uint64_t destination){return queue(text,destination,false);}
 uint32_t MeshRadio::sendGame(const String& text,uint64_t destination){return destination==meshmesh::Broadcast?0:queue(text,destination,true);}
@@ -273,7 +276,6 @@ void MeshRadio::tick(){
  if(!ready||!core)return;core->tick();uint32_t now=millis();
  for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.attempts>=3||p.message.destination==meshmesh::Broadcast){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(p.message.destination!=meshmesh::Broadcast){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
- if(lastHello&&now-lastHello>300000&&!busy())sendHello();
 }
 bool MeshRadio::selfTest(){if(!core||!core->identitySaved||!mesh::Utils::selfTestAES())return false;const uint8_t text[]="MeshCore: Привет";uint8_t signature[64];core->self_id.sign(signature,text,sizeof(text)-1);if(!core->self_id.verify(signature,text,sizeof(text)-1))return false;signature[0]^=1;if(core->self_id.verify(signature,text,sizeof(text)-1))return false;uint8_t secret[32]={},cipher[64],plain[64];esp_fill_random(secret,32);int n=mesh::Utils::encryptThenMAC(secret,cipher,text,sizeof(text)-1);int len=mesh::Utils::MACThenDecrypt(secret,plain,cipher,n);if(len<int(sizeof(text)-1)||memcmp(text,plain,sizeof(text)-1))return false;cipher[n-1]^=1;if(mesh::Utils::MACThenDecrypt(secret,plain,cipher,n))return false;SHA256 hmac;hmac.resetHMAC(secret,32);hmac.update(cipher+2,n-3);hmac.finalizeHMAC(secret,32,cipher,2);if(mesh::Utils::MACThenDecrypt(secret,plain,cipher,n-1))return false;return meshmesh::validUtf8(text,sizeof(text)-1);}
 String MeshRadio::diagnosticFrame() const{String result;result.reserve(lastFrameSize*2);char hex[3];for(size_t i=0;i<lastFrameSize;i++){snprintf(hex,3,"%02x",lastFrame[i]);result+=hex;}return result;}
