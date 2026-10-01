@@ -50,14 +50,14 @@ void setup() {
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   config.load();hardware.beginClock();hardware.begin();chessNet.begin();meshRadio.begin();maps.begin();
 #if !defined(MM_COMPACT)
-  internet.begin();
+  if(config.role==RoleNormal)internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
   navigation.begin();portalBegin();uiBegin();
   Serial.println(meshRadio.selfTest()?"SELFTEST crypto/UTF-8/tamper PASS":"SELFTEST FAIL");
   Serial.println("READY: USB commands are available; type help");
 }
 void loop() {
-  hardware.tick();meshRadio.tick();chessNet.tick();
+  hardware.tick();meshRadio.tick();if(config.role==RoleNormal)chessNet.tick(); // games wait for the normal mode
 #if !defined(MM_COMPACT)
   internet.tick();
 #endif
@@ -93,7 +93,7 @@ void loop() {
     else if(c!='\r' && command.length()<1024)command+=c;
     else if(command.length()>=1024) {command="";usbLine("ERR command too long");}
   }
-  portalTick();uiTick();usbTick();
+  portalTick();uiTick();usbTick();restartTick();
   if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
 #if !defined(MM_NATIVE_USB)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}

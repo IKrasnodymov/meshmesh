@@ -19,7 +19,7 @@ def command(s,text,timeout=8):
     deadline=time.monotonic()+timeout
     pending=bytearray()
     last_line=''
-    json_response=text in ('status','config','key','messages','nodes','ui','navigation','connections','clock','bleprobe','wifiprobe','map info','map areas','radar','radar web','internet','chess','chess web') or text.startswith('chess show ')
+    json_response=text in ('status','config','key','messages','nodes','ui','navigation','connections','clock','bleprobe','wifiprobe','map info','map areas','radar','radar web','internet','chess','chess web','role','server','server secrets') or text.startswith('chess show ')
     ping_at=time.monotonic()+.4
     while time.monotonic()<deadline:
         pending.extend(s.read(max(1,min(4096,s.in_waiting))))
@@ -40,6 +40,7 @@ def command(s,text,timeout=8):
                 try:json.loads(line);return line
                 except json.JSONDecodeError:continue
             if text=='txframe' and all(c in '0123456789abcdef' for c in line):return line
+            if text.startswith('server cli '):return line # MeshCore CLI replies have no OK/ERR prefix
     # Report the operation without printing credentials or a partial JSON body.
     raise TimeoutError(f'No response from MeshMesh to {text.split()[0]} '
                        f'({len(pending)} buffered bytes; last line {last_line[:3]!r})')

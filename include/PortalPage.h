@@ -58,6 +58,7 @@ label.field{display:grid;gap:5px;margin:8px 0;font-size:13px;color:var(--dim)}
 input[type=text],input[type=password],input[type=number],input:not([type]),select,textarea.plain{background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;color:var(--ink)}
 input:focus,select:focus,textarea.plain:focus{outline:0;border-color:var(--accent)}input[type=file]{width:100%;margin:6px 0;color:var(--dim)}
 progress{width:100%;height:10px;accent-color:var(--accent)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row.pick{background:var(--hi);box-shadow:inset 0 0 0 2px var(--accent)}#rptOut{white-space:pre-wrap;word-break:break-word;background:var(--card);border-radius:8px;padding:8px 10px;margin:8px 0 0;max-height:220px;overflow:auto;font-size:12px}#rptOut:empty{display:none}.set input.pw{width:130px}
 .set{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;position:relative;min-height:52px}.set:focus-within{background:var(--hi)}.set:focus-within::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--accent)}
 .set .dot{width:6px;height:6px;border-radius:50%;flex:none}.set.changed .dot{background:var(--accent)}.set .name{flex:1;min-width:0}.set .name small{display:block;font-size:12px;color:var(--faint)}
 .set input,.set select{width:auto;max-width:48%;text-align:right}.set.changed input,.set.changed select{color:var(--accent);font-weight:700}.set input[type=range]{width:44%;accent-color:var(--accent)}
@@ -194,6 +195,12 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <section class="page" id="p-modules" hidden><div class="mods" id="modList"></div><div class="card" style="margin-top:8px"><div class="cells" id="cells"></div></div><p class="small faint" style="margin:10px 4px" id="bootLine"></p><button class="btn primary save" data-cmd="selftest">Тест шифрования</button><h3>Прошивка</h3><div class="card" style="padding:4px 12px" id="firmware"></div></section>
 
 <section class="page" id="p-settings" hidden><div class="list" id="settingsList"></div></section>
+<section class="page" id="p-role" hidden><div class="list" style="gap:8px" id="roleList"></div><button class="btn save" id="roleApply" disabled>Режим не изменён</button><p class="small faint" style="margin:10px 4px">Смена режима перезапускает устройство. Сообщения, контакты, карты и настройки сохраняются, ключ узла остаётся прежним. После перезапуска точку доступа Wi-Fi нужно включить снова, у неё будет новый пароль. На экране M9 режим выбирается в первые 5 секунд после включения.</p></section>
+<section class="page" id="p-server" hidden><div class="card" style="margin-bottom:8px"><div class="cells" id="rptStats"></div></div>
+<div id="roomBox" hidden><h3>Посты комнаты</h3><form id="roomPost" class="composer" style="position:static;margin:0 0 8px"><div class="box"><textarea id="roomText" rows="1" placeholder="Пост от имени комнаты…" maxlength="151"></textarea><button class="send" aria-label="Отправить"><svg class="ic"><use href="#i-send"/></svg></button></div></form><div class="list" id="roomPosts"></div></div>
+<h3>Настройки</h3><div class="card" style="padding:4px 0" id="rptForm"></div><div class="btns" style="margin-top:8px"><button class="btn" id="rptAdvert"><svg class="ic violet"><use href="#i-tower"/></svg>Объявить узел всей сети</button></div>
+<div id="nbBox"><h3>Соседние репитеры</h3><div class="list" id="rptNeighbours"></div></div>
+<details class="more"><summary>Команды MeshCore (CLI)</summary><p class="muted small">Те же команды, что в приложении MeshCore после входа администратора: <code>get repeat</code>, <code>set flood.max 8</code>, <code>neighbors</code>, <code>stats-packets</code>, <code>ver</code>. Частота, полоса, SF, CR, мощность и имя общие с настройками MeshMesh.</p><form id="rptCli" class="two"><input id="rptLine" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="get repeat" maxlength="160"><button class="btn primary">Выполнить</button></form><pre id="rptOut"></pre></details></section>
 <section class="page" id="p-radio" hidden><div class="card" style="padding:4px 0" id="radioForm"></div><button class="btn save" id="radioSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px">Параметры радио должны совпадать у всех узлов сети. Применяются при сохранении; при ошибке радио возвращаются прежние.</p></section>
 <section class="page" id="p-device" hidden><div class="card" style="padding:4px 0" id="deviceForm"></div><button class="btn save" id="deviceSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px" id="deviceNote">Язык меню относится к экрану устройства. Радио продолжает работать при блокировке и погашенном экране.</p></section>
 <section class="page" id="p-help" hidden><div id="helpKeys"></div><h3>Русский ввод: фонетический</h3><div class="layout" id="layout"></div><p class="small muted" style="margin:0 4px">2×пробел — RU/EN; Shift или → после буквы — заглавная.</p></section>
@@ -275,7 +282,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -302,10 +309,12 @@ function enter(page,prev){
  if(page==='library'||page==='map')loadAreas();
  if(page==='radio'||page==='device')buildEditor(page);
  if(page==='help')renderHelp();
+ if(page==='role'){roleChoice=null;renderRole()}
+ if(page==='server'){rptFormBuilt=false;loadServer(true)}
  if(page==='game')enterGame();
  if(page==='board')enterBoard();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,game:renderGame,chess:renderChessList,board:renderBoard}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
@@ -328,7 +337,7 @@ function renderHome(){
  const r=config,ready=status.radio;
  $('ident').innerHTML=`${ic('radio',ready?'acc':'bad')}<div class="who"><b>${esc(config.name)}</b><small class="${ready?'muted':'bad'}">${ready?`${Number(r.frequency).toFixed(3)} МГц · SF${r.sf} · BW ${r.bandwidth} · CR 4/${r.cr}`:'Ошибка радио '+status.radio_error}</small></div><div class="txrx"><div><i class="acc">▲</i>${status.tx??'—'}</div><div><i class="ok">▼</i>${status.rx??'—'}</div></div>`;
  const u=unreadTotal(),near=peers.filter(p=>p.heard&&age(p)<1800).length,f=faults(),links=status.wifi&&status.ble?'Wi-Fi + BLE':status.wifi?'Wi-Fi':status.ble?'Bluetooth':'Всё выключено';
- const tiles=[['chats','chat','acc','Чаты',u?plural(u,'новое','новых','новых'):plural(history.length,'сообщение','сообщения','сообщений'),u],
+ const tiles=serverRole()?[['server',status.role==='room'?'room':'tower',status.role==='room'?'warn':'violet',status.role==='room'?'Комната':'Репитер',status.role==='room'?'Посты и участники':plural(status.relayed||0,'пакет переслан','пакета переслано','пакетов переслано')],['connect','wifi','info','Связь',links],['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],['settings','gear','muted','Настройки','Радио, экран, режим']]:[['chats','chat','acc','Чаты',u?plural(u,'новое','новых','новых'):plural(history.length,'сообщение','сообщения','сообщений'),u],
   ['map','pin','ok','Карта',!mapInfo.available?'Нет SD-карты':mapInfo.name||'Карт пока нет'],
   ['nodes','mesh','violet','Узлы',`${near} из ${peers.length} рядом`],
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
@@ -476,7 +485,7 @@ function renderModules(){const s=moduleStates(),names=['LoRa','Клавиату�
 function renderSettings(){
  const items=[['radio','radio','acc','Радио',`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info','Экран и устройство',`${heltec()?'Контраст':'Яркость'} ${config.brightness} · ${config.russian?'Русский':'English'}`],
   ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['connect','wifi','info','Подключения',`Wi-Fi ${status.wifi?'вкл':'выкл'} · BLE ${status.ble?'вкл':'выкл'}`],
-  ['modules','pulse','ok','Состояние модулей',`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted','Клавиши и подсказки','Что делает каждая клавиша'],['library','pin','ok','Сохранённые карты',mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:'Карт нет']];
+  ['modules','pulse','ok','Состояние модулей',`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted','Клавиши и подсказки','Что делает каждая клавиша'],['library','pin','ok','Сохранённые карты',mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:'Карт нет'],['role','tower','violet','Режим работы',status.role==='repeater'?'Репитер MeshCore':status.role==='room'?'Комната MeshCore':'Обычный: чаты, карты, радар']];
  $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
 function utcOptions(){const o=[];for(let m=-720;m<=840;m+=15){const a=Math.abs(m);o.push([m,(m<0?'−':'+')+two(a/60|0)+':'+two(a%60)])}return o}
 function fields(page){const h=heltec();return page==='radio'?[
@@ -606,10 +615,47 @@ function gameClick(el,auto){if(!el||collecting)return;const p=+el.dataset.pile,i
 function newGame(){const g=game;if(g&&g.counted&&!won(g)){if(Date.now()-newArmed>4000){newArmed=Date.now();notify('Ещё раз: новая партия, эта будет проиграна','warn');return}const s=stats();s.played++;store('solstats',s)}newArmed=0;game=deal(drawNext);pick=hintMove=null;saveGame();renderGame()}
 
 // Data: the screen state, polled; events become toasts as on the M9.
+// Device role and the server roles (src/MeshServer.cpp). Their settings go through the MeshCore CLI, as from the app.
+let roleChoice=null,rpt={},rptSecrets={},rptFormBuilt=false;
+const ROLES=[['normal','chat','acc','Обычный режим','Экран, чаты, карты, радар и игры; узел-собеседник MeshCore'],['repeater','tower','violet','Репитер MeshCore','Пересылает пакеты сети, без чатов; вход и настройка из приложения MeshCore'],['room','room','warn','Комната MeshCore','Хранит посты и раздаёт их участникам; пароль комнаты и настройка из приложения MeshCore']];
+function serverRole(){return status.role==='repeater'||status.role==='room'}
+function renderRole(){const cur=status.role||'normal';if(roleChoice===null)roleChoice=cur;
+ $('roleList').innerHTML=ROLES.map(([id,i,c,n,d])=>`<button class="row${roleChoice===id?' pick':''}" data-role="${id}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}${cur===id?' · сейчас':''}</b><small>${d}</small></span><span class="go">${roleChoice===id?ic('sent','acc'):''}</span></button>`).join('');
+ const b=$('roleApply'),change=roleChoice!==cur;b.disabled=!change;b.className='btn save'+(change?' primary':'');b.textContent=change?'Перезапустить в выбранном режиме':'Режим не изменён'}
+async function applyRole(){try{const r=await command('role '+roleChoice);notify(r.includes('restarting')?'Устройство перезапускается. Включите Wi-Fi на нём снова: пароль будет новым':r,'ok')}catch(e){notify(e.message,'bad')}}
+function uptimeText(s){s=s|0;return s<3600?(s/60|0)+' мин':s<86400?(s/3600|0)+' ч '+(s/60%60|0)+' мин':(s/86400|0)+' д '+(s/3600%24|0)+' ч'}
+async function loadServer(secrets){if(!serverRole()){renderServer();return}try{rpt=await command('server');if(secrets)rptSecrets=await command('server secrets')}catch(e){notify(e.message,'bad')}if(route==='server')renderServer()}
+const ADVERT_MINUTES=[0,60,90,120,150,180,210,240],FLOOD_HOURS=[0,3,6,12,24,47,72,120,168];
+function intervalOptions(list,value,unit){const all=list.includes(value)?list:[...list,value].sort((a,b)=>a-b);return all.map(v=>`<option value="${v}"${v===value?' selected':''}>${v?v+' '+unit:'выкл'}</option>`).join('')}
+function renderServer(){
+ const room=rpt.role==='room';
+ if(!serverRole()||!rpt.running){$('rptStats').innerHTML='<p class="muted" style="grid-column:1/-1;margin:0">Устройство работает в обычном режиме. Репитер или комната включаются в разделе «Настройки → Режим работы».</p>';$('rptForm').innerHTML='';$('rptNeighbours').innerHTML='';$('roomBox').hidden=true;$('nbBox').hidden=true;return}
+ $('roomBox').hidden=!room;$('nbBox').hidden=room;
+ const cells=room?[['Постов',(rpt.posts||[]).length],['Вошли',`${rpt.clients} (${rpt.admins} адм.)`],['Разослано',rpt.pushed],['Работает',uptimeText(rpt.uptime)],['Flood RX',rpt.flood_rx],['Flood TX',rpt.flood_tx],['Direct RX',rpt.direct_rx],['Direct TX',rpt.direct_tx]]
+  :[['Переслано',status.relayed],['Соседей',(rpt.neighbours||[]).length],['Вошли',`${rpt.clients} (${rpt.admins} адм.)`],['Работает',uptimeText(rpt.uptime)],['Flood RX',rpt.flood_rx],['Flood TX',rpt.flood_tx],['Direct RX',rpt.direct_rx],['Direct TX',rpt.direct_tx]];
+ $('rptStats').innerHTML=cells.map(([n,v])=>`<div><small>${n}</small><b>${esc(String(v??'—'))}</b></div>`).join('');
+ if(room){const posts=rpt.posts||[];$('roomPosts').innerHTML=posts.length?posts.map(m=>`<div class="row" style="min-height:44px;align-items:flex-start">${ic(m.own?'room':'person',m.own?'warn':'muted')}<span class="main"><b style="white-space:normal">${esc(m.text)}</b><small>${m.own?'комната':esc(m.author)} · ${timeText(m.time)||''}</small></span></div>`).join(''):'<p class="small muted" style="margin:4px">Постов пока нет. Участники пишут из приложения MeshCore после входа с паролем комнаты.</p>'}
+ else{const nb=rpt.neighbours||[];$('rptNeighbours').innerHTML=nb.length?nb.map(n=>`<div class="row" style="min-height:44px">${ic('tower','violet')}<span class="main"><b>${esc(n.key)}</b><small>${n.seconds<60?'только что':ago(n.seconds)+' назад'} · SNR ${Number(n.snr).toFixed(1)} дБ</small></span></div>`).join(''):'<p class="small muted" style="margin:4px">Соседние репитеры пока не слышны. Они появляются по своим объявлениям без пересылки или после команды <code>discover.neighbors</code>.</p>'}
+ if(rptFormBuilt&&$('rptForm').contains(document.activeElement))return; // do not rebuild under the cursor
+ rptFormBuilt=true;const set=(id,n,h,c)=>`<div class="set"><span class="dot"></span><label class="name" for="${id}">${n}<small>${h}</small></label>${c}</div>`;
+ const sw=(id,on)=>`<button type="button" id="${id}" class="sw${on?' on':''}" role="switch" aria-checked="${!!on}"></button>`;
+ const fwd=set('rptFwd','Пересылка',room?'Пересылать чужие пакеты (у комнаты обычно выключено)':'Пересылать пакеты других узлов MeshCore',sw('rptFwd',rpt.forwarding));
+ $('rptForm').innerHTML=(room?'':fwd)
+  +set('rptPass','Пароль администратора','Вход из приложения MeshCore; 1–15 символов',`<input id="rptPass" class="pw" maxlength="15" autocomplete="off" value="${esc(rptSecrets.password||'')}"><button type="button" class="btn" data-pw="admin">OK</button>`)
+  +set('rptGuest',room?'Пароль комнаты':'Гостевой пароль',room?'Участники читают и пишут; пусто — пустой пароль':'Только чтение; пусто — вход с пустым паролем',`<input id="rptGuest" class="pw" maxlength="15" autocomplete="off" value="${esc(rptSecrets.guest_password||'')}"><button type="button" class="btn" data-pw="guest">OK</button>`)
+  +(room?set('rptRead','Чтение без пароля','С любым паролем — только чтение',sw('rptRead',rpt.read_only_login)):'')
+  +set('rptAdv','Объявление рядом','Без пересылки, раз в N минут',`<select id="rptAdv">${intervalOptions(ADVERT_MINUTES,rpt.advert_minutes,'мин')}</select>`)
+  +set('rptFlood','Объявление на сеть','С пересылкой, раз в N часов',`<select id="rptFlood">${intervalOptions(FLOOD_HOURS,rpt.flood_advert_hours,'ч')}</select>`)+(room?fwd:'')}
+async function rptRun(line,ok){try{const r=await command('server cli '+line),bad=/^(Err|Error)/i.test(r);notify(bad?r:ok||r,bad?'bad':'ok');rptFormBuilt=false;await loadServer(true);return r}catch(e){notify(e.message,'bad')}}
+async function rptPassword(kind){const v=$(kind==='admin'?'rptPass':'rptGuest').value;if(/[^\x20-\x7e]/.test(v)){notify('Только латиница, цифры и символы','bad');return}if(kind==='admin'&&!v){notify('Пароль администратора не может быть пустым','bad');return}await rptRun(kind==='admin'?'password '+v:'set guest.password '+v,'Пароль сохранён')}
+async function roomPost(){const t=$('roomText').value.trim();if(!t)return;if(bytes(t)>151){notify('Пост: до 151 байта UTF-8','bad');return}try{await command('server post '+t);$('roomText').value='';notify('Пост сохранён; участники получат его по очереди','ok');await loadServer(false)}catch(e){notify(e.message,'bad')}}
+
 async function refresh(){if(refreshing||uploading||!auth)return;refreshing=true;try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
  await refreshChess(false,false);
+ PAGES.server[0]=status.role==='room'?'Комната':'Репитер';
+ if(route==='server')await loadServer(false);
  if(!readInit){readInit=true;if(store('read')===null)for(const id of conversationIds())markRead(id)}
  const e=status.event;if(eventSeen!==null&&e!==eventSeen){if(route==='chat')notify(eventLabel(e),e.startsWith('Delivered')?'ok':/^No delivery|^Radio TX|^TX failed/.test(e)?'bad':'accent');else if(e.startsWith('New message from ')&&route!=='chats')notify(eventLabel(e))}eventSeen=e;
  if(mapState.follow&&status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};
@@ -771,6 +817,11 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('downloadKey').onclick=async()=>{try{download(JSON.stringify(await request('/api/key'),null,2),'meshmesh-private-config.json','application/json')}catch(e){notify(e.message,'bad')}};
  for(const page of ['radio','device']){$(page+'Form').addEventListener('input',e=>{const el=e.target.closest('[data-k]');if(!el)return;draft[el.dataset.k]=editorValue(el);if(el.type==='range')$(el.id+'-v').textContent=el.value;editorState(page)});
   $(page+'Form').addEventListener('click',e=>{const el=e.target.closest('.sw[data-k]');if(!el)return;const k=el.dataset.k;draft[k]=!draft[k];el.classList.toggle('on',draft[k]);el.setAttribute('aria-checked',draft[k]);editorState(page)});$(page+'Save').onclick=()=>saveEditor(page)}
+ $('roleList').onclick=e=>{const t=e.target.closest('[data-role]');if(t){roleChoice=t.dataset.role;renderRole()}};$('roleApply').onclick=applyRole;
+ $('rptForm').addEventListener('click',e=>{if(e.target.id==='rptFwd')rptRun(rpt.forwarding?'set repeat off':'set repeat on',rpt.forwarding?'Пересылка выключена':'Пересылка включена');if(e.target.id==='rptRead')rptRun(rpt.read_only_login?'set allow.read.only off':'set allow.read.only on','Сохранено');const b=e.target.closest('[data-pw]');if(b)rptPassword(b.dataset.pw)});
+ $('rptForm').addEventListener('change',e=>{if(e.target.id==='rptAdv')rptRun('set advert.interval '+e.target.value,'Интервал сохранён');if(e.target.id==='rptFlood')rptRun('set flood.advert.interval '+e.target.value,'Интервал сохранён')});
+ $('rptAdvert').onclick=()=>run('hello','Узел объявлен');$('roomPost').onsubmit=e=>{e.preventDefault();roomPost()};$('roomText').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();roomPost()}};
+ $('rptCli').onsubmit=async e=>{e.preventDefault();const line=$('rptLine').value.trim();if(!line)return;try{const r=await command('server cli '+line);$('rptOut').textContent=`> ${line}\n${r}\n`+$('rptOut').textContent;$('rptLine').value='';rptFormBuilt=false;loadServer(true)}catch(err){$('rptOut').textContent=`> ${line}\n${err.message}\n`+$('rptOut').textContent}};
  $('mapMinus').onclick=()=>{mapState.z=Math.max(10,mapState.z-1);drawMap()};$('mapPlus').onclick=()=>{mapState.z=Math.min(17,mapState.z+1);drawMap()};
  $('mapGps').onclick=()=>{mapState.follow=true;if(status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};else notify('Ожидание GPS-позиции','warn');drawMap()};
  let drag=null;const box=$('mapBox');box.onpointerdown=e=>{if(!mapState.center)return;drag={x:e.clientX,y:e.clientY,lat:mapState.lat,lon:mapState.lon};box.setPointerCapture(e.pointerId)};

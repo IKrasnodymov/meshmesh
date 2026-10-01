@@ -3,6 +3,8 @@
 #include <Preferences.h>
 #include "Board.h"
 
+// Device role, chosen at boot: the usual chat device, a MeshCore repeater or room server. A change takes a restart.
+enum DeviceRole:uint8_t {RoleNormal=0,RoleRepeater=1,RoleRoom=2,RoleCount};
 struct Config {
   char name[25]=MM_NODE_NAME;
   float frequency=868.731f, bandwidth=62.5f;
@@ -13,10 +15,12 @@ struct Config {
   int16_t utcOffset=180;
   uint8_t key[32]={};
   uint32_t bootCounter=0;
+  uint8_t role=RoleNormal;
   void load();
   void save();
   bool valid() const;
   String keyHex() const;
   bool setKey(const String& text);
+  bool saveRole(uint8_t next); // stored for the next boot; role stays the running one
 };
 extern Config config;

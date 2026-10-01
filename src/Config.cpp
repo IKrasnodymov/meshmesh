@@ -21,6 +21,7 @@ void Config::load() {
   sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); russian=p.getBool("russian",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);
   utcOffset=p.getShort("utc_offset",180);
+  role=p.getUChar("role",RoleNormal);if(role>=RoleCount)role=RoleNormal;
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
   else {bootloader_random_enable();esp_fill_random(key,32);bootloader_random_disable();p.putBytes("key",key,32);}
   bootCounter=p.getUInt("boot",0)+1;
@@ -35,6 +36,7 @@ void Config::save() {
   p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putBool("russian",russian);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }
+bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role
 String Config::keyHex() const {String s; s.reserve(64);char b[3];for(auto v:key) {snprintf(b,3,"%02x",v);s+=b;}return s;}
 bool Config::setKey(const String& text) {
   if(text.length()!=64) return false;

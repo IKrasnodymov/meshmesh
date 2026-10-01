@@ -1,0 +1,8 @@
+{
+  "name": "CayenneLPP",
+  "version": "0.0.1-meshmesh",
+  "description": "Minimal Cayenne LPP encoder for MeshCore telemetry replies (MeshMesh). Encoder only; no JSON decoding.",
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "espressif32"
+}

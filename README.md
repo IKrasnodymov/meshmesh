@@ -23,6 +23,10 @@ MeshCore nodes.
 - **Signal radar** — Wi-Fi, Bluetooth and LoRa around you, with “warmer / colder” homing.
 - **Motion sensor** — two boards detect a person walking between them (Wi-Fi CSI).
 - **Chess** with your contacts over the mesh, and Klondike solitaire on the M9.
+- **Repeater and room server modes** — chosen at boot (M9 screen, Heltec button) or in Settings,
+  on the web page, over USB: the device becomes a stock-compatible MeshCore repeater or room server
+  with admin login and remote CLI from the MeshCore app; key, contacts and history stay.
+  [docs/repeater.md](docs/repeater.md)
 - **GPS and compass**, position sharing, lock screen, phonetic Cyrillic keyboard input.
 - **Web interface** over the device's own Wi-Fi access point, and an **Android app**
   (Wi-Fi, Bluetooth LE or USB) with message notifications.
@@ -73,7 +77,7 @@ The screen UI can be rendered on a computer without a board: `tools/ui_preview/b
 
 Detailed documentation is in Russian: [README.ru.md](README.ru.md) (controls and features),
 [MeshCore compatibility](docs/meshcore-migration.md), [boards](docs/boards.md),
-[Android](docs/android.md), [chess protocol](docs/chess.md), [map format](docs/maps-format.md),
+[Android](docs/android.md), [repeater and room modes](docs/repeater.md), [chess protocol](docs/chess.md), [map format](docs/maps-format.md),
 [comparison with MeshCore](docs/feature-parity.md), [hardware verification](docs/verification.md).
 
 Not verified yet: LoRa range, GPS accuracy under open sky, compass accuracy, relaying through a

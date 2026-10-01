@@ -10,6 +10,7 @@
 #include "Radar.h"
 #include "Internet.h"
 #include "ChessNet.h"
+#include "MeshServer.h"
 #include <LittleFS.h>
 #include <time.h>
 String statusJson() {
@@ -21,7 +22,7 @@ String statusJson() {
   d["family"]="full";
 #endif
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
-  d["firmware"]=MESHMM_FIRMWARE;d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
+  d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
   char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
   d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
@@ -78,9 +79,16 @@ String applySettings(JsonObjectConst v) {
   if(!next.valid())return "ERR invalid settings; M9 868 MHz range is 863..870";
   Config old=config;config=next;
   if(!meshRadio.applyConfig()) {config=old;meshRadio.applyConfig();return "ERR radio rejected settings; restored previous";}
-  config.save();hardware.brightness(config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
+  config.save();meshServer.configChanged();hardware.brightness(config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
   meshRadio.event="Settings saved";meshRadio.dirty=true;return "OK settings saved";
 }
+namespace {uint32_t restartAt=0;}
+const char* roleName(uint8_t role){return role==RoleRepeater?"repeater":role==RoleRoom?"room":"normal";}
+String setRole(uint8_t role){
+  if(role>=RoleCount)return "ERR role normal|repeater|room";if(role==config.role)return String("OK role ")+roleName(role)+" already running";
+  if(!config.saveRole(role))return "ERR role not saved";restartAt=millis()+1500;return String("OK role ")+roleName(role)+"; restarting";
+}
+void restartTick(){if(restartAt&&int32_t(millis()-restartAt)>=0)ESP.restart();}
 String executeCommand(const String& input) {
   String line=input;line.trim();
   if(line.startsWith("map "))return maps.command(line);
@@ -98,6 +106,13 @@ String executeCommand(const String& input) {
   if(line=="clock")return hardware.clockInfo();
   if(line.startsWith("clock ")){StaticJsonDocument<128>d;if(deserializeJson(d,line.substring(6))||!d["unix"].is<uint32_t>())return "ERR clock JSON unix seconds";return hardware.setUtc(d["unix"],"manual",true)?"OK UTC clock synchronized":"ERR clock range 2025..2038";}
   if(line=="status")return statusJson();
+  if(line=="role")return String("{\"role\":\"")+roleName(config.role)+"\",\"roles\":[\"normal\",\"repeater\",\"room\"]}";
+  if(line.startsWith("role ")){String r=line.substring(5);return setRole(r=="normal"?RoleNormal:r=="repeater"?RoleRepeater:r=="room"?RoleRoom:RoleCount);}
+  // Repeater or room server: status (no passwords), its passwords, its MeshCore CLI as the local admin, a room post.
+  if(line=="server")return meshServer.json();
+  if(line=="server secrets")return meshServer.json(true);
+  if(line.startsWith("server cli ")){if(!meshServer.running())return "ERR server role is not running";int at=input.indexOf("server cli ");return meshServer.command(input.substring(at+11));} // untrimmed: "set guest.password " clears it
+  if(line.startsWith("server post ")){if(!meshServer.room())return "ERR room server role is not running";return meshServer.post(line.substring(12))?"OK post stored":"ERR post: 1-151 UTF-8 bytes";}
   if(line=="config")return configJson();
   if(line=="key")return configJson(true); // explicitly requested; never put in ordinary diagnostics
   if(line=="messages")return messagesJson();
@@ -138,5 +153,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat";
 }

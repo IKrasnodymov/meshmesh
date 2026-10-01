@@ -26,6 +26,9 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 Пакеты: `artifacts/meshmesh-m9-0.3.2`, `artifacts/meshmesh-heltec-v4-0.3.2`.
 Аппаратные результаты и ограничения: [отчёт проверки](docs/verification.md).
 Что есть и чего нет по сравнению с MeshCore и WadaMesh: [сравнение](docs/feature-parity.md).
+Режимы репитера и комнаты (room server) MeshCore: выбор при загрузке (экран M9, кнопка Heltec), в настройках,
+на веб-странице или по USB; вход администратора и CLI из приложения MeshCore, ключ и данные общие —
+[docs/repeater.md](docs/repeater.md).
 Сборки для десяти плат сообщества (Heltec V3 и Wireless Tracker, LilyGO T-Deck,
 T-Beam, T-Beam Supreme, T3-S3 и T-LoRa, XIAO ESP32S3 + Wio-SX1262, Station G2,
 ThinkNode M2) — [docs/boards.md](docs/boards.md); на этих платах прошивка ещё не запускалась.
