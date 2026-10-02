@@ -221,6 +221,8 @@ const originalHtml='<!doctype html>'+document.documentElement.outerHTML;
 const $=id=>document.getElementById(id);
 let auth='',status={},config={},history=[],peers=[],mapInfo={},navInfo={},areas=[],conn=null,radarData=null;
 let route='home',param='',fetchedAt=Date.now(),clockBase={unix:0,at:0},refreshing=false,timer=null,uploading=false,standaloneMode=false;
+// The site's chess page talks to a stock MeshCore companion instead of a board (web/chess-companion.js).
+let companion=null;
 let recipient='ALL',eventSeen=null,readInit=false,trackAt=0,deleteArmed='',wifiArmed=0,scopeRef=null,scopeManual=false,radarTimer=null,radarBusy=false;
 let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
@@ -237,7 +239,7 @@ const ic=(name,cls='')=>`<svg class="ic ${cls}"><use href="#i-${name}"/></svg>`;
 function plural(n,a,b,c){const m=n%100,d=n%10;return n+' '+(m>=11&&m<=14?c:d===1?a:d>=2&&d<=4?b:c)}
 const bytes=s=>new TextEncoder().encode(s).length;
 function notify(text,tone='accent'){const n=$('notice');n.textContent=text;n.style.setProperty('--tone',`var(--${tone})`);clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.textContent='',4000)}
-async function request(path,data){const r=await fetch(path,{method:data===undefined?'GET':'POST',headers:{Authorization:auth,'Content-Type':data instanceof Uint8Array?'application/octet-stream':'application/json'},body:data===undefined?undefined:data instanceof Uint8Array?data:JSON.stringify(data)});const text=await r.text();if(!r.ok)throw Error(text||r.status);try{return JSON.parse(text)}catch{return text}}
+async function request(path,data){if(companion)return companion.request(path,data);const r=await fetch(path,{method:data===undefined?'GET':'POST',headers:{Authorization:auth,'Content-Type':data instanceof Uint8Array?'application/octet-stream':'application/json'},body:data===undefined?undefined:data instanceof Uint8Array?data:JSON.stringify(data)});const text=await r.text();if(!r.ok)throw Error(text||r.status);try{return JSON.parse(text)}catch{return text}}
 async function command(line){const r=await request('/api/command',{command:line});if(typeof r==='string'&&r.startsWith('ERR'))throw Error(r);return r}
 async function run(line,ok,tone='ok'){try{const r=await command(line);notify(ok||r,tone);await refresh()}catch(e){notify(e.message,'bad')}}
 
@@ -288,7 +290,7 @@ const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
  if(!auth&&!standaloneMode)return;
- let [name,...rest]=(location.hash.slice(1)||'home').split('/');if(!PAGES[name]||standaloneMode&&name!=='map')name=standaloneMode?'map':'home';
+ let [name,...rest]=(location.hash.slice(1)||'home').split('/');if(!PAGES[name]||standaloneMode&&name!=='map')name=standaloneMode?'map':'home';if(companion&&name!=='board')name='chess';
  const prev=route,next=name,arg=decodeURIComponent(rest.join('/'));
  if(prev==='settings'&&['nav','connect','modules','library'].includes(next))cameFrom[next]='settings';else if(prev==='home')delete cameFrom[next];
  if(next==='chat'&&prev==='node')cameFrom.chat='node/'+param;else if(next==='chat'&&prev!=='chat')delete cameFrom.chat;
@@ -320,8 +322,9 @@ function render(){hud();const f={home:renderHome,chats:renderThreads,chat:render
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
  const t=standaloneMode?'Подготовка карты':PAGES[route][0]??(route==='chat'?nodeName(recipient):route==='board'?'Шахматы · '+(chessGame(param)?.name||''):peer(param)?.name||'Узел');
- $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode;
+ $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode||!!companion&&route==='chess';
  if(!auth){$('icons').innerHTML='';return}
+ if(companion){$('icons').innerHTML=companion.icons();return}
  let h='';const n=route==='chats'||route==='chat'?0:unreadTotal();
  if(n)h+=`<span class="warn" style="display:inline-flex;align-items:center;gap:3px">${ic('mail')}${n}</span>`;
  if(status.ble)h+=`<span class="info" title="Bluetooth включён">${ic('ble')}</span>`;
@@ -652,7 +655,7 @@ async function rptRun(line,ok){try{const r=await command('server cli '+line),bad
 async function rptPassword(kind){const v=$(kind==='admin'?'rptPass':'rptGuest').value;if(/[^\x20-\x7e]/.test(v)){notify('Только латиница, цифры и символы','bad');return}if(kind==='admin'&&!v){notify('Пароль администратора не может быть пустым','bad');return}await rptRun(kind==='admin'?'password '+v:'set guest.password '+v,'Пароль сохранён')}
 async function roomPost(){const t=$('roomText').value.trim();if(!t)return;if(bytes(t)>151){notify('Пост: до 151 байта UTF-8','bad');return}try{await command('server post '+t);$('roomText').value='';notify('Пост сохранён; участники получат его по очереди','ok');await loadServer(false)}catch(e){notify(e.message,'bad')}}
 
-async function refresh(){if(refreshing||uploading||!auth)return;refreshing=true;try{
+async function refresh(){if(refreshing||uploading||!auth||companion)return;refreshing=true;try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
  await refreshChess(false,false);
@@ -738,7 +741,7 @@ function renderChessList(){
  $('chessColors').innerHTML=['Белыми','Чёрными','Случайно'].map((n,i)=>`<button data-chesscolor="${i}" class="${i===chessColor?'on':''}">${i<2?`<span class="disc ${'wb'[i]}"></span>`:''}${n}</button>`).join('');
  const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
  $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
-  :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите узел в разделе «Узлы» и дождитесь объявления соперника.</p>`;
+  :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите ${companion?'себя кнопкой «Объявить» выше':'узел в разделе «Узлы»'} и дождитесь объявления соперника.</p>`;
  $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`}
 
 function enterBoard(){chessSel=null;chessPromo=null;chessArmed='';chessDetail=null;refreshChess(true)}

@@ -4,7 +4,8 @@
 For checking the app in the Android emulator (it reaches this computer as 10.0.2.2) with a real
 board: the app speaks exactly the USB protocol, so its command layer is the one a phone uses over
 USB. Control lines as tools/device.py (no reset). Baud switching is refused: the bridge stays at
-115200. Usage: usb_tcp_bridge.py [--port PORT] [--listen 8771]
+115200. --raw passes bytes as they are, for binary protocols (the MeshCore companion frames of
+tools/chess_companion_check.py). Usage: usb_tcp_bridge.py [--port PORT] [--listen 8771] [--raw]
 """
 import argparse
 import socket
@@ -18,6 +19,7 @@ def main():
     p.add_argument('--port', default=M9_PORT)
     p.add_argument('--listen', type=int, default=8771)
     p.add_argument('--host', default='127.0.0.1')
+    p.add_argument('--raw', action='store_true', help='no line handling: bytes as they are')
     a = p.parse_args()
     device = connect(a.port)
     device.timeout = 0.05
@@ -48,6 +50,9 @@ def main():
                 data = client.recv(4096)
                 if not data:
                     break
+                if a.raw:
+                    device.write(data)
+                    continue
                 pending += data
                 while b'\n' in pending:
                     line, _, pending = pending.partition(b'\n')

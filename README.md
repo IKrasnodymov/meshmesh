@@ -23,6 +23,8 @@ MeshCore nodes.
 - **Signal radar** — Wi-Fi, Bluetooth and LoRa around you, with “warmer / colder” homing.
 - **Motion sensor** — two boards detect a person walking between them (Wi-Fi CSI).
 - **Chess** with your contacts over the mesh, and Klondike solitaire on the M9.
+- **Chess without MeshMesh on your device**: [the chess page](https://ikrasnodymov.github.io/meshmesh/chess/) plays through a
+  board running the official MeshCore Companion firmware, over USB (Web Serial) or Bluetooth (Web Bluetooth), in Chrome or Edge.
 - **Repeater and room server modes** — chosen at boot (M9 screen, Heltec button) or in Settings,
   on the web page, over USB: the device becomes a stock-compatible MeshCore repeater or room server
   with admin login and remote CLI from the MeshCore app; key, contacts and history stay.

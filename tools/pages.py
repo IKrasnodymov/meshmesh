@@ -17,6 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from package import COMMUNITY, NRF52, TARGETS  # noqa: E402
+from chess_site import build as build_chess  # noqa: E402
 
 # Boards whose packages are installed and checked on real hardware (docs/verification.md).
 VERIFIED = {'m9', 'heltec_v4', 'gat562_30s'}
@@ -36,6 +37,7 @@ def main():
     if out.exists():
         shutil.rmtree(out)
     shutil.copytree(ROOT/'site', out)
+    build_chess(out)  # chess/: the chess page for a stock MeshCore companion
     boards = []
     for env in envs:
         package = ROOT/'artifacts'/f'meshmesh-{TARGETS[env]}-{version}'
