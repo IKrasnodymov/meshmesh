@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en" class="loading">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MeshMesh</title>
-<meta name="description" content="MeshMesh — прошивка для LoRa-устройств на ESP32 и nRF52: чаты без интернета и сотовой связи, офлайн-карты, радар сигналов. Совместима с MeshCore. Установка прямо из браузера.">
-<meta property="og:title" content="MeshMesh — связь без интернета">
-<meta property="og:description" content="Прошивка для LoRa-устройств: чаты, карты, радар. Совместима с MeshCore. Установка из браузера.">
+<meta name="description" content="" data-i18n-content="meta.description">
+<meta property="og:title" content="" data-i18n-content="meta.ogTitle">
+<meta property="og:description" content="" data-i18n-content="meta.ogDescription">
 <meta property="og:image" content="https://ikrasnodymov.github.io/meshmesh/img/og.png">
 <meta name="theme-color" content="#080c11">
 <link rel="icon" href="img/icon.svg" type="image/svg+xml">
@@ -17,8 +17,11 @@
 :root{color-scheme:dark;--bg:#080c11;--bg2:#0c1218;--card:#131a22;--hi:#1c2835;--line:#2a3542;--ink:#e4e9ee;--dim:#8d99a6;--faint:#56626e;--accent:#1fc2ae;--deep:#14524b;--ok:#4cc26b;--warn:#e9b13b;--info:#4f9df7;--violet:#a78bfa;--pink:#f472b6;--r:16px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:72px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-html[lang=ru] :not(html)[lang=en],html[lang=en] :not(html)[lang=ru]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI","Noto Sans","Noto Sans Arabic","PingFang SC","Hiragino Sans","Apple SD Gothic Neo","Microsoft YaHei","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html.loading body{visibility:hidden} /* until the language is applied */
+:lang(zh),:lang(ja),:lang(ko){word-break:keep-all;line-break:strict}
+:lang(ar) .kicker,:lang(ar) h1,:lang(ar) h2,:lang(ar) h3{letter-spacing:0} /* spacing breaks the joined letters */
+:lang(zh) h1,:lang(ja) h1,:lang(ko) h1,:lang(zh) h2,:lang(ja) h2,:lang(ko) h2{letter-spacing:0}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 img{display:block;max-width:100%}
@@ -39,12 +42,13 @@ header .wrap{display:flex;align-items:center;gap:28px;height:64px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--ink)}
 .logo:hover{text-decoration:none}
 .logo img{width:28px;height:28px}
-nav{display:flex;gap:22px;margin-left:auto}
+nav{display:flex;gap:22px;margin-inline-start:auto}
 nav a{color:var(--dim);font-size:15px;font-weight:500}
 nav a:hover{color:var(--ink);text-decoration:none}
-.lang{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
-.lang button{background:none;border:0;color:var(--dim);font:600 13px Inter,sans-serif;padding:7px 10px;cursor:pointer}
-html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(--hi);color:var(--ink)}
+.lang{position:relative;display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;color:var(--dim)}
+.lang svg{position:absolute;inset-inline-start:9px;width:16px;height:16px;pointer-events:none}
+.lang select{appearance:none;-webkit-appearance:none;background:none;border:0;color:var(--ink);font:600 13px Inter,system-ui,sans-serif;padding:7px 12px;padding-inline-start:30px;cursor:pointer;max-width:150px}
+.lang select option{background:var(--card);color:var(--ink)}
 .gh{display:flex;color:var(--dim)}
 .gh svg{width:22px;height:22px}
 .gh:hover{color:var(--ink)}
@@ -58,6 +62,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
 .cta-more{display:none} /* the header menu links to the features; shown when the menu is hidden */
 .facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;color:var(--dim);font-size:14px}
+[dir=rtl] .news i,[dir=rtl] .lb .nav svg{transform:scaleX(-1)}
 .news{display:flex;align-items:center;gap:14px;max-width:560px;margin-top:24px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;font-size:15px;line-height:1.4;transition:border-color .15s}.news:hover{border-color:var(--accent)}.news .t{width:34px;height:34px;border-radius:10px;background:var(--deep);color:var(--accent);display:grid;place-items:center;flex:none}.news .t svg{width:20px;height:20px}.news>span{flex:1}.news i{font-style:normal;color:var(--accent)}
 .facts b{display:block;color:var(--ink);font-size:22px;font-weight:700}
 /* devices */
@@ -95,7 +100,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .step p{margin:0;color:var(--dim);font-size:15px}
 /* features */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
-.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:zoom-in;transition:transform .2s,border-color .2s;display:flex;flex-direction:column;text-align:left;padding:0;color:inherit;font:inherit}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:zoom-in;transition:transform .2s,border-color .2s;display:flex;flex-direction:column;text-align:start;padding:0;color:inherit;font:inherit}
 .feat:hover{transform:translateY(-3px);border-color:#3a4a5c}
 .feat .shot{background:#000;aspect-ratio:4/3;position:relative;overflow:hidden}
 .feat .shot img{width:100%;height:100%;object-fit:cover}
@@ -113,9 +118,9 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .boards{margin-top:36px}
 .boards h4{margin:24px 0 10px;font:600 13px Inter,sans-serif;color:var(--dim);display:flex;align-items:center;gap:8px}
 .boards h4:first-child{margin-top:0}
-.boards h4 .tag{margin-left:0}
+.boards h4 .tag{margin-inline-start:0}
 .boards .bg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-.board{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;color:var(--ink);font:inherit;text-align:left;transition:border-color .15s,background .15s}
+.board{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;color:var(--ink);font:inherit;text-align:start;transition:border-color .15s,background .15s}
 .board:hover{border-color:#3a4a5c}
 .board.on{border-color:var(--accent);background:#0f2522}
 .board .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--faint);flex:none;position:relative}
@@ -123,7 +128,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .board.on .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent)}
 .board b{font-weight:600;font-size:15px;display:block}
 .board small{color:var(--faint);font-size:12.5px}
-.tag{margin-left:auto;font:600 11px Inter,sans-serif;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.tag{margin-inline-start:auto;font:600 11px Inter,sans-serif;padding:3px 8px;border-radius:6px;white-space:nowrap}
 .tag.ok{background:rgba(76,194,107,.14);color:var(--ok)}
 .tag.cm{background:rgba(233,177,59,.12);color:var(--warn)}
 /* install */
@@ -145,6 +150,10 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 esp-web-install-button{display:inline-block}
 .unsup{color:var(--warn);font-size:15px}
+.fwlang{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.fwlang label{color:var(--ink);font-weight:600;font-size:15px}
+.fwlang select{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;font:500 15px Inter,system-ui,sans-serif;padding:8px 10px}
+.fwlang small{color:var(--faint);font-size:13px;flex-basis:100%}
 /* docs */
 .docs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
 .doc{display:block;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px;color:var(--ink);transition:border-color .15s,transform .15s}
@@ -182,7 +191,7 @@ footer a{color:var(--dim)}
  .docs{grid-template-columns:repeat(2,1fr)}
  nav{display:none}
  .cta-more{display:inline-flex}
- .lang{margin-left:auto}
+ .lang{margin-inline-start:auto}
 }
 @media (max-width:760px){.heltec{left:-70px}.gat{right:-70px}}
 @media (max-width:620px){
@@ -212,12 +221,12 @@ footer a{color:var(--dim)}
  <div class="wrap">
   <a class="logo" href="#"><img src="img/icon.svg" alt="">MeshMesh</a>
   <nav>
-   <a href="#how"><span lang="ru">Как работает</span><span lang="en">How it works</span></a>
-   <a href="#features"><span lang="ru">Возможности</span><span lang="en">Features</span></a>
-   <a href="#install"><span lang="ru">Установка</span><span lang="en">Install</span></a>
-   <a href="#docs"><span lang="ru">Документация</span><span lang="en">Docs</span></a>
+   <a href="#how"><span data-i18n="nav.how"></span></a>
+   <a href="#features"><span data-i18n="nav.features"></span></a>
+   <a href="#install"><span data-i18n="nav.install"></span></a>
+   <a href="#docs"><span data-i18n="nav.docs"></span></a>
   </nav>
-  <div class="lang"><button data-l="ru">RU</button><button data-l="en">EN</button></div>
+  <label class="lang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><select id="siteLang" data-i18n-aria="lang.site"></select></label>
   <a class="gh" href="https://github.com/IKrasnodymov/meshmesh" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg></a>
  </div>
 </header>
@@ -227,21 +236,19 @@ footer a{color:var(--dim)}
  <div class="wrap">
   <div>
    <div class="kicker">LoRa · MeshCore · ESP32 · nRF52</div>
-   <h1 lang="ru">Связь там, где <em>нет связи</em></h1>
-   <h1 lang="en">Talk where there's <em>no signal</em></h1>
-   <p class="lead" lang="ru">Прошивка для карманных LoRa-устройств. Сообщения идут по радио от устройства к устройству — без интернета, сотовой сети и серверов.</p>
-   <p class="lead" lang="en">Firmware for pocket LoRa devices. Messages hop by radio from device to device — no internet, no cell network, no servers.</p>
+   <h1 data-i18n="hero.title"></h1>
+   <p class="lead" data-i18n="hero.lead"></p>
    <div class="cta">
-    <a class="btn primary cta-install" href="#install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Установить из браузера</span><span lang="en">Install from browser</span></a>
-    <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span lang="ru">Приложение Android</span><span lang="en">Android app</span></a>
-    <a class="btn cta-more" href="#features"><span lang="ru">Что умеет</span><span lang="en">What it does</span></a>
+    <a class="btn primary cta-install" href="#install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span data-i18n="cta.install"></span></a>
+    <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="cta.apk"></span></a>
+    <a class="btn cta-more" href="#features"><span data-i18n="cta.more"></span></a>
    </div>
-   <a class="news" href="chess/"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg></b><span lang="ru"><b>Новое:</b> шахматы со штатной MeshCore Companion — прямо в браузере</span><span lang="en"><b>New:</b> chess with the stock MeshCore Companion, right in the browser</span><i>→</i></a>
+   <a class="news" href="chess/"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg></b><span data-i18n="news.chess"></span><i>→</i></a>
    <div class="facts">
-    <div><b>14</b><span lang="ru">плат ESP32 и nRF52</span><span lang="en">ESP32 and nRF52 boards</span></div>
-    <div><b>MeshCore</b><span lang="ru">совместимое радио</span><span lang="en">compatible radio</span></div>
-    <div><b>RU / EN</b><span lang="ru">интерфейс</span><span lang="en">interface</span></div>
-    <div><b>MIT</b><span lang="ru">открытый код</span><span lang="en">open source</span></div>
+    <div><b>14</b><span data-i18n="facts.boards"></span></div>
+    <div><b>MeshCore</b><span data-i18n="facts.radio"></span></div>
+    <div><b>15</b><span data-i18n="facts.ui"></span></div>
+    <div><b>MIT</b><span data-i18n="facts.license"></span></div>
    </div>
   </div>
   <div>
@@ -260,11 +267,9 @@ footer a{color:var(--dim)}
 
 <section class="how" id="how">
  <div class="wrap">
-  <div class="kicker"><span lang="ru">Как это работает</span><span lang="en">How it works</span></div>
-  <h2 lang="ru">Каждое устройство — узел сети</h2>
-  <h2 lang="en">Every device is a node of the network</h2>
-  <p class="lead" lang="ru">Узлы слышат друг друга по LoRa и передают чужие сообщения дальше. Телефон подключается к своему устройству по Wi-Fi, Bluetooth или USB.</p>
-  <p class="lead" lang="en">Nodes hear each other over LoRa and pass other people's messages along. A phone connects to its own device over Wi-Fi, Bluetooth or USB.</p>
+  <div class="kicker"><span data-i18n="how.kicker"></span></div>
+  <h2 data-i18n="how.title"></h2>
+  <p class="lead" data-i18n="how.lead"></p>
   <div class="diagram">
    <svg class="horiz" viewBox="0 0 1080 300" role="img" aria-label="LoRa mesh">
     <defs>
@@ -281,22 +286,22 @@ footer a{color:var(--dim)}
      <rect x="50" y="90" width="180" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <rect x="80" y="108" width="120" height="56" rx="5" fill="#080c11" stroke="#1fc2ae"/>
      <text x="140" y="142" fill="#1fc2ae" font-size="15" font-weight="700">M9</text>
-     <text x="140" y="192" fill="#8d99a6" font-size="13"><tspan class="t-ru">твоё устройство</tspan></text>
+     <text x="140" y="192" fill="#8d99a6" font-size="13"><tspan data-i18n="svg.you"></tspan></text>
      <rect x="440" y="90" width="200" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <circle cx="540" cy="132" r="22" fill="#14524b"/>
      <path d="M528 140 l12 -18 l12 18" stroke="#1fc2ae" stroke-width="3" fill="none"/>
-     <text x="540" y="186" fill="#e4e9ee" font-size="15" font-weight="600" class="t-relay">ретранслятор</text>
+     <text x="540" y="186" fill="#e4e9ee" font-size="15" font-weight="600" data-i18n="svg.relay"></text>
      <rect x="850" y="90" width="180" height="120" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <rect x="880" y="112" width="120" height="44" rx="4" fill="#000" stroke="#56626e"/>
      <text x="940" y="140" fill="#e4e9ee" font-size="13" font-family="JetBrains Mono,monospace">Heltec</text>
-     <text x="940" y="192" fill="#8d99a6" font-size="13" class="t-friend">друг</text>
+     <text x="940" y="192" fill="#8d99a6" font-size="13" data-i18n="svg.friend"></text>
      <text x="335" y="132" fill="#1fc2ae" font-size="14" font-weight="600">LoRa · 868 MHz</text>
-     <text x="745" y="132" fill="#1fc2ae" font-size="14" font-weight="600" class="t-km">через ретрансляторы</text>
+     <text x="745" y="132" fill="#1fc2ae" font-size="14" font-weight="600" data-i18n="svg.km"></text>
      <text x="140" y="276" fill="#4f9df7" font-size="13" font-weight="600">Wi-Fi · BLE · USB</text>
      <text x="940" y="276" fill="#4f9df7" font-size="13" font-weight="600">Wi-Fi · BLE · USB</text>
-     <text x="335" y="178" fill="#56626e" font-size="12" class="t-enc">шифрование MeshCore</text>
-     <text x="745" y="178" fill="#56626e" font-size="12" class="t-ack">ответ ✓✓ о доставке</text>
-     <text x="540" y="40" fill="#8d99a6" font-size="13" class="t-top">без интернета, сотовой сети и серверов</text>
+     <text x="335" y="178" fill="#56626e" font-size="12" data-i18n="svg.enc"></text>
+     <text x="745" y="178" fill="#56626e" font-size="12" data-i18n="svg.ack"></text>
+     <text x="540" y="40" fill="#8d99a6" font-size="13" data-i18n="svg.top"></text>
     </g>
    </svg>
    <svg class="vert" viewBox="0 0 340 600" role="img" aria-label="LoRa mesh">
@@ -307,22 +312,22 @@ footer a{color:var(--dim)}
     </g>
     <g fill="none" stroke="#4f9df7" stroke-width="2" stroke-dasharray="4 6"><path d="M210 95 H250"/><path d="M210 505 H250"/></g>
     <g font-family="Inter,sans-serif" text-anchor="middle">
-     <text x="170" y="22" fill="#8d99a6" font-size="13" class="t-top">без интернета, сотовой сети и серверов</text>
+     <text x="170" y="22" fill="#8d99a6" font-size="13" data-i18n="svg.top"></text>
      <rect x="30" y="40" width="180" height="110" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <rect x="60" y="56" width="120" height="50" rx="5" fill="#080c11" stroke="#1fc2ae"/>
      <text x="120" y="87" fill="#1fc2ae" font-size="15" font-weight="700">M9</text>
-     <text x="120" y="134" fill="#8d99a6" font-size="13" class="t-ru">твоё устройство</text>
+     <text x="120" y="134" fill="#8d99a6" font-size="13" data-i18n="svg.you"></text>
      <rect x="30" y="250" width="180" height="100" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <circle cx="120" cy="286" r="20" fill="#14524b"/>
      <path d="M109 293 l11 -16 l11 16" stroke="#1fc2ae" stroke-width="3" fill="none"/>
-     <text x="120" y="334" fill="#e4e9ee" font-size="15" font-weight="600" class="t-relay">ретранслятор</text>
+     <text x="120" y="334" fill="#e4e9ee" font-size="15" font-weight="600" data-i18n="svg.relay"></text>
      <rect x="30" y="450" width="180" height="110" rx="16" fill="#1c2835" stroke="#2a3542"/>
      <rect x="60" y="468" width="120" height="40" rx="4" fill="#000" stroke="#56626e"/>
      <text x="120" y="493" fill="#e4e9ee" font-size="13" font-family="JetBrains Mono,monospace">Heltec</text>
-     <text x="120" y="542" fill="#8d99a6" font-size="13" class="t-friend">друг</text>
+     <text x="120" y="542" fill="#8d99a6" font-size="13" data-i18n="svg.friend"></text>
      <g text-anchor="start" font-size="13" font-weight="600">
-      <text x="134" y="196" fill="#1fc2ae">LoRa · 868 MHz</text><text x="134" y="214" fill="#56626e" font-weight="400" font-size="12" class="t-enc">шифрование MeshCore</text>
-      <text x="134" y="396" fill="#1fc2ae" class="t-km">через ретрансляторы</text><text x="134" y="414" fill="#56626e" font-weight="400" font-size="12" class="t-ack">ответ ✓✓ о доставке</text>
+      <text x="134" y="196" fill="#1fc2ae">LoRa · 868 MHz</text><text x="134" y="214" fill="#56626e" font-weight="400" font-size="12" data-i18n="svg.enc"></text>
+      <text x="134" y="396" fill="#1fc2ae" data-i18n="svg.km"></text><text x="134" y="414" fill="#56626e" font-weight="400" font-size="12" data-i18n="svg.ack"></text>
       <text x="256" y="92" fill="#4f9df7">Wi-Fi</text><text x="256" y="108" fill="#4f9df7">BLE · USB</text>
       <text x="256" y="502" fill="#4f9df7">Wi-Fi</text><text x="256" y="518" fill="#4f9df7">BLE · USB</text>
      </g>
@@ -331,92 +336,76 @@ footer a{color:var(--dim)}
   </div>
   <div class="steps">
    <div class="step"><div class="n">1</div>
-    <h3 lang="ru">Прошейте</h3><h3 lang="en">Flash</h3>
-    <p lang="ru">Подключите плату по USB и установите прошивку прямо с этой страницы.</p>
-    <p lang="en">Plug the board in over USB and install the firmware right from this page.</p></div>
+    <h3 data-i18n="step1.title"></h3>
+    <p data-i18n="step1.text"></p></div>
    <div class="step"><div class="n">2</div>
-    <h3 lang="ru">Включите</h3><h3 lang="en">Power on</h3>
-    <p lang="ru">Устройство объявит себя, найдёт соседей и само построит маршруты. В первые 5 секунд можно выбрать режим: обычный, репитер или комната.</p>
-    <p lang="en">The device announces itself, finds its neighbours and learns routes on its own. In the first 5 seconds you can pick its mode: normal, repeater or room server.</p></div>
+    <h3 data-i18n="step2.title"></h3>
+    <p data-i18n="step2.text"></p></div>
    <div class="step"><div class="n">3</div>
-    <h3 lang="ru">Пишите</h3><h3 lang="en">Chat</h3>
-    <p lang="ru">С клавиатуры M9, кнопкой Heltec, из браузера или приложения для Android.</p>
-    <p lang="en">From the M9 keyboard, the Heltec button, a browser or the Android app.</p></div>
+    <h3 data-i18n="step3.title"></h3>
+    <p data-i18n="step3.text"></p></div>
   </div>
  </div>
 </section>
 
 <section id="features">
  <div class="wrap">
-  <div class="kicker"><span lang="ru">Возможности</span><span lang="en">Features</span></div>
-  <h2 lang="ru">Всё, что нужно вне сети</h2>
-  <h2 lang="en">Everything you need off the grid</h2>
-  <p class="lead" lang="ru">Нажмите на карточку, чтобы посмотреть все экраны. Это настоящий интерфейс прошивки.</p>
-  <p class="lead" lang="en">Tap a card to see every screen. This is the real firmware interface.</p>
+  <div class="kicker"><span data-i18n="features.kicker"></span></div>
+  <h2 data-i18n="features.title"></h2>
+  <p class="lead" data-i18n="features.lead"></p>
   <div class="grid" id="features-grid"></div>
  </div>
 </section>
 
 <section class="install" id="install">
  <div class="wrap">
-  <div class="kicker"><span lang="ru">Установка</span><span lang="en">Install</span></div>
-  <h2 lang="ru">Прошивка из браузера за минуту</h2>
-  <h2 lang="en">Flash from your browser in a minute</h2>
-  <p class="lead" lang="ru">Нужен Chrome или Edge на компьютере и USB-кабель. Ничего устанавливать не нужно.</p>
-  <p class="lead" lang="en">You need Chrome or Edge on a computer and a USB cable. Nothing to install.</p>
+  <div class="kicker"><span data-i18n="install.kicker"></span></div>
+  <h2 data-i18n="install.title"></h2>
+  <p class="lead" data-i18n="install.lead"></p>
   <div class="boards" id="boards"></div>
   <div class="flash">
    <div class="panel">
-    <h3 lang="ru">Установка</h3><h3 lang="en">Install</h3>
+    <h3 data-i18n="install.panel"></h3>
     <div class="chosen"><div><b id="chosenName">—</b><small id="chosenInfo"></small></div><span class="tag" id="chosenTag"></span></div>
+    <div class="fwlang"><label for="fwLang" data-i18n="lang.device"></label><select id="fwLang"></select><small data-i18n="lang.deviceNote"></small></div>
     <ol id="espSteps">
-     <li lang="ru"><span>Подключите плату по USB. <b>Нет порта?</b> Удерживайте BOOT и нажмите RESET.</span></li>
-     <li lang="en"><span>Plug the board in over USB. <b>No port?</b> Hold BOOT and press RESET.</span></li>
-     <li lang="ru"><span>Нажмите <b>«Установить»</b> и выберите порт.</span></li>
-     <li lang="en"><span>Press <b>Install</b> and choose the port.</span></li>
-     <li lang="ru"><span>Дождитесь окончания (около минуты) — плата перезапустится.</span></li>
-     <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts.</span></li>
+     <li><span data-i18n="esp.step1"></span></li>
+     <li><span data-i18n="esp.step2"></span></li>
+     <li><span data-i18n="esp.step3"></span></li>
     </ol>
     <ol id="uf2Steps" hidden>
-     <li lang="ru"><span>Подключите плату по USB. <b>На плате MeshCore или другая прошивка?</b> Сначала дважды быстро нажмите RESET — появится диск, его не трогайте.</span></li>
-     <li lang="en"><span>Plug the board in over USB. <b>MeshCore or other firmware on it?</b> First press RESET twice quickly — a drive appears; leave it alone.</span></li>
-     <li lang="ru"><span>Нажмите <b>«Установить»</b> и выберите порт платы. Плата с MeshMesh сама перейдёт в загрузчик — тогда нажмите <b>«Продолжить»</b> и выберите порт ещё раз.</span></li>
-     <li lang="en"><span>Press <b>Install</b> and choose the board's port. A board running MeshMesh switches to its bootloader by itself — then press <b>Continue</b> and choose the port again.</span></li>
-     <li lang="ru"><span>Дождитесь окончания (около минуты) — плата перезапустится. Ключ, настройки и история сохраняются.</span></li>
-     <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts. Key, settings and history are kept.</span></li>
+     <li><span data-i18n="uf2.step1"></span></li>
+     <li><span data-i18n="uf2.step2"></span></li>
+     <li><span data-i18n="uf2.step3"></span></li>
     </ol>
     <div class="row">
-     <button class="btn primary" id="nrfInstall" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="nrfLabel"><span lang="ru">Установить</span><span lang="en">Install</span></span></button>
+     <button class="btn primary" id="nrfInstall" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="nrfLabel"><span data-i18n="btn.install"></span></span></button>
      <a class="btn" id="uf2" href="#" download hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span>firmware.uf2</span></a>
      <esp-web-install-button id="installer" manifest="firmware/m9/manifest.json">
-      <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span lang="ru">Установить</span><span lang="en">Install</span></button>
-      <span slot="unsupported" class="unsup"><span lang="ru">Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере.</span><span lang="en">This browser has no Web Serial — open the page in Chrome or Edge on a computer.</span></span>
-      <span slot="not-allowed" class="unsup"><span lang="ru">Нужно открыть страницу по HTTPS.</span><span lang="en">The page must be opened over HTTPS.</span></span>
+      <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="btn.install"></span></button>
+      <span slot="unsupported" class="unsup"><span data-i18n="web.unsupported"></span></span>
+      <span slot="not-allowed" class="unsup"><span data-i18n="web.https"></span></span>
      </esp-web-install-button>
-     <a class="btn" id="zip" href="#" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Файлы</span><span lang="en">Files</span></a>
+     <a class="btn" id="zip" href="#" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span data-i18n="btn.files"></span></a>
     </div>
     <div class="note" id="nrfStatus" hidden><div id="nrfText"></div><progress id="nrfProgress" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress></div>
-    <div class="note" id="uf2Note" hidden><span lang="ru"><b>Без Chrome или Edge:</b> скачайте firmware.uf2, дважды нажмите RESET и скопируйте файл на появившийся диск.</span><span lang="en"><b>Without Chrome or Edge:</b> download firmware.uf2, press RESET twice and copy the file onto the drive that appears.</span></div>
-    <div class="note esp-only"><span lang="ru"><b>«Failed to open serial port»</b> — порт занят другой программой (Arduino IDE, монитор порта, другая вкладка) или завис драйвер USB: закройте её и переподключите кабель.</span><span lang="en"><b>“Failed to open serial port”</b> — another program holds the port (Arduino IDE, a serial monitor, another tab) or the USB driver is stuck: close it and replug the cable.</span></div>
-    <div class="note warn" id="communityNote" hidden><span lang="ru"><b>Плата сообщества.</b> Сборка проверена на компьютере, но на этой плате прошивку ещё никто не запускал. Расскажите в Issues, что работает.</span><span lang="en"><b>Community board.</b> The build is checked on a computer, but nobody has run it on this board yet. Tell us in Issues what works.</span></div>
+    <div class="note" id="uf2Note" hidden><span data-i18n="uf2.note"></span></div>
+    <div class="note esp-only"><span data-i18n="esp.portBusy"></span></div>
+    <div class="note warn" id="communityNote" hidden><span data-i18n="board.communityNote"></span></div>
    </div>
    <div class="panel">
-    <h3 lang="ru">Важно знать</h3><h3 lang="en">Good to know</h3>
+    <h3 data-i18n="good.title"></h3>
     <ol>
-     <li lang="ru"><span><b>Обновление MeshMesh</b> сохраняет ключ, контакты, настройки и историю — не ставьте галочку «Стереть».</span></li>
-     <li lang="en"><span><b>Updating MeshMesh</b> keeps your key, contacts, settings and history — leave “Erase” unticked.</span></li>
-     <li lang="ru" class="esp-only"><span><b>Первая установка</b> поверх Meshtastic, MeshCore или другой прошивки — отметьте «Стереть устройство».</span></li>
-     <li lang="en" class="esp-only"><span><b>First install</b> over Meshtastic, MeshCore or other firmware — tick “Erase device”.</span></li>
-     <li lang="ru"><span><b>Радио по умолчанию:</b> 868.731 МГц, 62.5 кГц, SF8, CR4/6 — меняется в «Настройки → Радио». У всех узлов сети параметры должны совпадать.</span></li>
-     <li lang="en"><span><b>Default radio:</b> 868.731 MHz, 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio. All nodes of a network must match.</span></li>
-     <li lang="ru"><span><b>Соблюдайте</b> правила использования радиочастот в своей стране.</span></li>
-     <li lang="en"><span><b>Follow</b> your country's radio regulations.</span></li>
+     <li><span data-i18n="good.update"></span></li>
+     <li class="esp-only"><span data-i18n="good.first"></span></li>
+     <li><span data-i18n="good.radio"></span></li>
+     <li><span data-i18n="good.law"></span></li>
     </ol>
-    <div class="note"><span lang="ru"><b>Приложение для Android</b> — тот же интерфейс по Wi-Fi, Bluetooth или USB, уведомления о сообщениях.</span><span lang="en"><b>Android app</b> — the same interface over Wi-Fi, Bluetooth or USB, with message notifications.</span>
-     <div class="row" style="margin-top:12px"><a class="btn" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span lang="ru">Скачать APK</span><span lang="en">Download APK</span></a><small style="color:var(--faint)">Android 10+</small></div>
+    <div class="note"><span data-i18n="app.note"></span>
+     <div class="row" style="margin-top:12px"><a class="btn" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="app.download"></span></a><small style="color:var(--faint)">Android 10+</small></div>
     </div>
-    <div class="note"><span lang="ru"><b>Шахматы со штатной MeshCore</b> — без MeshMesh на своей плате: страница подключается к прошивке MeshCore Companion по USB или Bluetooth (Chrome, Edge) и играет обычными личными сообщениями с M9, Heltec, GAT562 или такой же страницей.</span><span lang="en"><b>Chess with stock MeshCore</b> — no MeshMesh on your board: the page connects to the MeshCore Companion firmware over USB or Bluetooth (Chrome, Edge) and plays by ordinary direct messages with an M9, Heltec, GAT562 or the same page.</span>
-     <div class="row" style="margin-top:12px"><a class="btn" href="chess/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg><span lang="ru">Открыть шахматы</span><span lang="en">Open chess</span></a></div>
+    <div class="note"><span data-i18n="chess.note"></span>
+     <div class="row" style="margin-top:12px"><a class="btn" href="chess/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg><span data-i18n="chess.open"></span></a></div>
     </div>
    </div>
   </div>
@@ -425,11 +414,9 @@ footer a{color:var(--dim)}
 
 <section id="docs">
  <div class="wrap">
-  <div class="kicker"><span lang="ru">Документация</span><span lang="en">Documentation</span></div>
-  <h2 lang="ru">Подробности</h2>
-  <h2 lang="en">Details</h2>
-  <p class="lead" lang="ru">Документация написана по-русски.</p>
-  <p class="lead" lang="en">The documentation is written in Russian.</p>
+  <div class="kicker"><span data-i18n="docs.kicker"></span></div>
+  <h2 data-i18n="docs.title"></h2>
+  <p class="lead" data-i18n="docs.lead"></p>
   <div class="docs" id="docs-list"></div>
  </div>
 </section>
@@ -438,20 +425,23 @@ footer a{color:var(--dim)}
 <footer>
  <div class="wrap">
   <span>MeshMesh <span id="ver"></span> · <a href="https://github.com/IKrasnodymov/meshmesh/blob/main/LICENSE">MIT</a></span>
-  <span><span lang="ru">Радио —</span><span lang="en">Radio by</span> <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> · <span lang="ru">карты</span><span lang="en">maps</span> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></span>
+  <span><span data-i18n="footer.radio"></span> <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> · <span data-i18n="footer.maps"></span> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></span>
  </div>
 </footer>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true">
- <button class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
- <button class="nav prev" data-step="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
- <button class="nav next" data-step="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+ <button class="x" data-close data-i18n-aria="aria.close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+ <button class="nav prev" data-step="-1" data-i18n-aria="aria.prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+ <button class="nav next" data-step="1" data-i18n-aria="aria.next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
  <figure><img id="lbImg" alt=""><figcaption><b id="lbTitle"></b><span id="lbText"></span></figcaption></figure>
  <div class="thumbs" id="lbThumbs"></div>
 </div>
 
 <script>
 const REPO='https://github.com/IKrasnodymov/meshmesh';
+// Site and device languages (include/I18n.h order); site/i18n/<code>.json holds the page text.
+const LANGS=[['en','English'],['ru','Русский'],['uk','Українська'],['es','Español'],['pt','Português'],['fr','Français'],['de','Deutsch'],['it','Italiano'],['pl','Polski'],['tr','Türkçe'],['zh','中文'],['ja','日本語'],['ko','한국어'],['ar','العربية'],['id','Bahasa Indonesia']];
+const CODES=LANGS.map(l=>l[0]),RTL=['ar'];
 const ICONS={
  chat:'<path d="M4 5h16v11H8l-4 4z"/>',map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
  nodes:'<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M11 7.3 6.2 15.8M13 7.3l4.8 8.5M7.5 18h9"/>',
@@ -464,98 +454,93 @@ const ICONS={
  pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
  tower:'<path d="M12 10 7 21M12 10l5 11M12 10v11M9 16h6"/><circle cx="12" cy="7.5" r="1.6"/><path d="M8.6 4a5 5 0 0 0 0 7M15.4 4a5 5 0 0 1 0 7"/>'
 };
-// Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless web: true) and short captions.
+// Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless phone: true); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
- {ic:'chess',c:'#4cc26b',t:['Шахматы со штатной MeshCore','Chess with stock MeshCore'],d:['Без MeshMesh на своей плате: страница chess/ подключается к прошивке MeshCore Companion по USB или Bluetooth (Chrome, Edge) и играет обычными личными сообщениями.','No MeshMesh on your board: the chess/ page connects to the MeshCore Companion firmware over USB or Bluetooth (Chrome, Edge) and plays by ordinary direct messages.'],
-  phone:true,shots:[['web-chess-companion-board','Партия с M9: касание фигуры показывает её ходы','A game with an M9: tap a piece to see its moves'],['web-chess-companion-list','Партии, вызовы и контакты companion','Games, challenges and the companion contacts'],['web-chess-companion-connect','Подключение к companion по USB или Bluetooth','Connect to the companion over USB or Bluetooth']]},
- {ic:'oled',c:'#e4e9ee',t:['GAT562: джойстик, без Wi-Fi','GAT562: joystick, no Wi-Fi'],d:['Первая плата на nRF52840: письма на экранной клавиатуре, шахматы на OLED, радар BLE и LoRa; телефон подключается через приложение по Bluetooth.','The first nRF52840 board: messages on an on-screen keyboard, chess on the OLED, a BLE and LoRa radar; the phone connects through the app over Bluetooth.'],
-  oled:true,shots:[['gat562-home','Главный экран','Home'],['gat562-keyboard','Экранная клавиатура: EN, RU, символы','On-screen keyboard: EN, RU, symbols'],['gat562-chess','Шахматы: фигура выбрана, рокировка','Chess: piece picked, castling'],['gat562-chess-list','Список партий','Games'],['gat562-radar','Радар: BLE и LoRa','Radar: BLE and LoRa'],['gat562-node-menu','Узел: написать или вызвать на партию','Node: write or challenge']]},
- {ic:'tower',c:'#a78bfa',t:['Репитер и комната','Repeater and room server'],d:['Режим выбирается при включении: устройство становится репитером или комнатой MeshCore, вход и настройка из приложения MeshCore.','Pick the mode at power-on: the device becomes a MeshCore repeater or room server, with login and settings from the MeshCore app.'],
-  shots:[['m9-role-boot','Выбор режима при включении','Mode choice at power-on'],['m9-repeater','Репитер: пароли, пересылка, объявления','Repeater: passwords, forwarding, adverts'],['m9-room','Комната: пароль комнаты и посты','Room server: room password and posts'],['m9-room-post','Пост от имени комнаты','A post from the room'],['heltec-role','Heltec: выбор режима кнопкой','Heltec: mode choice with the button'],['heltec-repeater','Heltec: репитер','Heltec: repeater'],['heltec-room','Heltec: комната','Heltec: room server']]},
- {ic:'chat',c:'#1fc2ae',t:['Чаты','Chats'],d:['Личные и общий чат, отметки доставки ✓✓, повтор при сбое.','Direct and public chats, ✓✓ delivery marks, automatic retries.'],
-  shots:[['m9-threads','Список разговоров','Conversations'],['m9-chat','Личный чат: путь и доставка','Direct chat: route and delivery'],['m9-chat-public','Общий канал Public','Public channel'],['heltec-messages','Heltec: сообщения на OLED','Heltec: messages on the OLED'],['heltec-popup','Heltec: новое сообщение','Heltec: new message']]},
- {ic:'map',c:'#4f9df7',t:['Офлайн-карты','Offline maps'],d:['OpenStreetMap на SD-карте, ваша позиция по GPS и узлы на карте.','OpenStreetMap on the SD card, your GPS position and nodes on the map.'],
-  shots:[['m9-map','Карта с компасом и масштабом','Map with compass and scale'],['m9-library','Сохранённые области','Saved areas']]},
- {ic:'nodes',c:'#a78bfa',t:['Узлы рядом','Nearby nodes'],d:['Кто в сети: сигнал, число ретрансляторов, расстояние и направление.','Who is on the air: signal, hops, distance and bearing.'],
-  shots:[['m9-nodes','Контакты, ретрансляторы и комнаты','Contacts, repeaters and rooms'],['m9-node','Карточка узла','Node card'],['heltec-nodes','Heltec: узлы','Heltec: nodes']]},
- {ic:'radar',c:'#f472b6',t:['Радар сигналов','Signal radar'],d:['Wi-Fi, Bluetooth и LoRa вокруг. Пеленг «теплее — холоднее» со звуком.','Wi-Fi, Bluetooth and LoRa around you. “Warmer / colder” homing with sound.'],
-  shots:[['m9-radar','Развёртка: ближе к центру — сильнее','Sweep: closer to centre — stronger'],['m9-homing','Пеленг выбранной цели','Homing on a target'],['heltec-radar','Heltec: радар','Heltec: radar'],['heltec-homing','Heltec: пеленг','Heltec: homing']]},
- {ic:'motion',c:'#e9b13b',t:['Датчик движения','Motion sensor'],d:['Две платы замечают человека, проходящего между ними (Wi-Fi CSI).','Two boards notice a person walking between them (Wi-Fi CSI).'],
-  shots:[['m9-motion','Приёмник: движение обнаружено','Receiver: motion detected']]},
- {ic:'chess',c:'#4cc26b',t:['Шахматы','Chess'],d:['Партии с контактами по радио: каждый ход — сообщение с подтверждением.','Play your contacts over radio: every move is an acknowledged message.'],
-  shots:[['m9-chess-italian','Партия с Heltec V4','A game with Heltec V4'],['m9-chess-promotion','Превращение пешки','Pawn promotion']]},
- {ic:'cards',c:'#e5564d',t:['Косынка','Solitaire'],d:['Классический пасьянс на M9 — пока ждёте ответа.','Classic Klondike on the M9 — while you wait for a reply.'],
-  shots:[['m9-solitaire-played','Партия с подсказкой','A game with a hint']]},
- {ic:'compass',c:'#4f9df7',t:['GPS и компас','GPS and compass'],d:['Координаты, спутники, азимут; отправка своей позиции контактам.','Coordinates, satellites, heading; share your position with contacts.'],
-  shots:[['m9-sensors','Навигация','Navigation'],['heltec-gps','Heltec: GPS','Heltec: GPS']]},
- {ic:'keyboard',c:'#1fc2ae',t:['Экран и клавиатура','Screen and keyboard'],d:['Меню из плиток, фонетический русский ввод, экран блокировки.','Tile menu, phonetic Cyrillic input, lock screen.'],
-  shots:[['m9-home','Главное меню','Home'],['m9-layout','Русская раскладка','Cyrillic layout'],['m9-locked','Блокировка','Lock screen']]},
- {ic:'sliders',c:'#8d99a6',t:['Настройки и диагностика','Settings and diagnostics'],d:['Радио, экран, связь и состояние всех модулей — на самом устройстве.','Radio, display, connections and module health — on the device itself.'],
-  shots:[['m9-settings','Настройки','Settings'],['m9-radio','Радио','Radio'],['m9-diagnostics','Состояние модулей','Module health'],['heltec-settings','Heltec: настройки','Heltec: settings']]},
- {ic:'oled',c:'#e4e9ee',t:['Одна кнопка','One button'],d:['Heltec и похожие платы: клик — следующий экран, удержание — действие.','Heltec and similar boards: click for the next screen, hold for an action.'],
-  oled:true,shots:[['heltec-home','Главный экран','Home'],['heltec-messages-menu','Меню по удержанию','Hold menu'],['heltec-wifi-on','Точка доступа для телефона','Access point for a phone']]},
- {ic:'phone',c:'#4f9df7',t:['Телефон и браузер','Phone and browser'],d:['Веб-интерфейс по Wi-Fi устройства и приложение для Android: Wi-Fi, Bluetooth, USB.','Web interface over the device Wi-Fi, and an Android app: Wi-Fi, Bluetooth, USB.'],
-  phone:true,shots:[['web-home','Главное меню в браузере телефона','Home in a phone browser'],['web-chat','Чат: маршрут и ✓✓ доставки','Chat: route and ✓✓ delivery'],['web-public','Общий канал','Public channel'],['web-nodes','Узлы','Nodes'],['web-map','Карта с SD-карты устройства','Map from the device SD card'],['web-radar','Радар','Radar'],['web-homing','Пеленг','Homing'],['web-motion','Датчик движения','Motion sensor'],['web-board','Шахматы','Chess'],['web-radio','Настройки радио','Radio settings'],['web-desktop','На компьютере','On a computer']]}
+ {id:'chessCompanion',ic:'chess',c:'#4cc26b',phone:true,shots:['web-chess-companion-board','web-chess-companion-list','web-chess-companion-connect']},
+ {id:'gat562',ic:'oled',c:'#e4e9ee',oled:true,shots:['gat562-home','gat562-keyboard','gat562-chess','gat562-chess-list','gat562-radar','gat562-node-menu']},
+ {id:'modes',ic:'tower',c:'#a78bfa',shots:['m9-role-boot','m9-repeater','m9-room','m9-room-post','heltec-role','heltec-repeater','heltec-room']},
+ {id:'chats',ic:'chat',c:'#1fc2ae',shots:['m9-threads','m9-chat','m9-chat-public','heltec-messages','heltec-popup']},
+ {id:'maps',ic:'map',c:'#4f9df7',shots:['m9-map','m9-library']},
+ {id:'nodes',ic:'nodes',c:'#a78bfa',shots:['m9-nodes','m9-node','heltec-nodes']},
+ {id:'radar',ic:'radar',c:'#f472b6',shots:['m9-radar','m9-homing','heltec-radar','heltec-homing']},
+ {id:'motion',ic:'motion',c:'#e9b13b',shots:['m9-motion']},
+ {id:'chess',ic:'chess',c:'#4cc26b',shots:['m9-chess-italian','m9-chess-promotion']},
+ {id:'solitaire',ic:'cards',c:'#e5564d',shots:['m9-solitaire-played']},
+ {id:'gps',ic:'compass',c:'#4f9df7',shots:['m9-sensors','heltec-gps']},
+ {id:'screen',ic:'keyboard',c:'#1fc2ae',shots:['m9-home','m9-layout','m9-locked']},
+ {id:'settings',ic:'sliders',c:'#8d99a6',shots:['m9-settings','m9-radio','m9-diagnostics','heltec-settings']},
+ {id:'oneButton',ic:'oled',c:'#e4e9ee',oled:true,shots:['heltec-home','heltec-messages-menu','heltec-wifi-on']},
+ {id:'phone',ic:'phone',c:'#4f9df7',phone:true,shots:['web-home','web-chat','web-public','web-nodes','web-map','web-radar','web-homing','web-motion','web-board','web-radio','web-desktop']}
 ];
 const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motion'];
 const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
 const GAT=['gat562-home','gat562-keyboard','gat562-chess','gat562-radar','gat562-chess-list','gat562-node-menu'];
-const DOCS=[
- ['README.ru.md','Обзор и управление','Overview and controls'],
- ['docs/meshcore-migration.md','MeshCore: ключи и совместимость','MeshCore: keys and compatibility'],
- ['docs/boards.md','Платы и выводы','Boards and pins'],
- ['docs/gat562.md','GAT562 (nRF52840)','GAT562 (nRF52840)'],
- ['docs/android.md','Приложение для Android','Android app'],
- ['docs/repeater.md','Репитер и комната','Repeater and room server'],
- ['docs/chess.md','Шахматы: протокол','Chess protocol'],
- ['docs/maps-format.md','Формат карт','Map format'],
- ['docs/feature-parity.md','Сравнение с MeshCore','Comparison with MeshCore'],
- ['docs/verification.md','Что проверено на железе','Hardware verification']
-];
-let lang='ru';
-const L=a=>a[lang==='ru'?0:1];
+// Documents: the overview in every language; the details in Russian, translated to English (docs/en).
+const DOCS=[['README.md','doc.readme'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/android.md','doc.android'],['docs/repeater.md','doc.repeater'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
+function docPath(path){
+ if(path==='README.md')return lang==='en'?path:`README.${lang}.md`;
+ return lang==='ru'?path:path.replace('docs/','docs/en/');
+}
+let lang='en',T={},EN={};
+const L=k=>T[k]??EN[k]??k;
+// Screenshots: generated for each language (tools/site_shots.py); English when one is missing.
 const shotSrc=(n,web)=>web?`img/${n}.webp`:`img/${n}-${lang}.png`;
+const shotFallback='onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/-[a-z]+\\.png$/,\'-en.png\')}"';
 const svg=(k,col)=>`<svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
-
+const dicts={};
+function loadDict(code){return dicts[code]||(dicts[code]=fetch(`i18n/${code}.json`).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}));}
+function pickLang(){
+ const q=new URLSearchParams(location.search).get('lang');if(CODES.includes(q))return q;
+ try{const s=localStorage.getItem('mm-lang');if(CODES.includes(s))return s}catch(e){}
+ for(const l of navigator.languages||[navigator.language||'']){const c=(l||'').toLowerCase().split('-')[0];if(CODES.includes(c))return c;if(c==='be')return 'ru'}
+ return 'en';
+}
+async function setLang(code,remember){
+ try{[EN,T]=await Promise.all([loadDict('en'),loadDict(code)]);lang=code}catch(e){try{EN=T=await loadDict('en')}catch(e){};lang='en'}
+ if(remember)try{localStorage.setItem('mm-lang',lang)}catch(e){}
+ render();document.documentElement.classList.remove('loading');
+}
 function render(){
- document.documentElement.lang=lang;
- document.querySelectorAll('[data-shot]').forEach(i=>i.src=shotSrc(i.dataset.shot));
+ const root=document.documentElement;root.lang=lang;root.dir=RTL.includes(lang)?'rtl':'ltr';
+ document.getElementById('siteLang').value=lang;
+ for(const e of document.querySelectorAll('[data-i18n]'))e.innerHTML=L(e.dataset.i18n);
+ for(const e of document.querySelectorAll('[data-i18n-content]'))e.content=L(e.dataset.i18nContent);
+ for(const e of document.querySelectorAll('[data-i18n-aria]'))e.setAttribute('aria-label',L(e.dataset.i18nAria));
+ document.querySelectorAll('[data-shot]').forEach(i=>{i.dataset.f='';i.src=shotSrc(i.dataset.shot)});
  document.getElementById('features-grid').innerHTML=FEATURES.map((f,i)=>{
   const s=f.shots[0];
   const cls=f.oled?'shot oled':f.phone?'shot phone':'shot';
-  return `<button class="feat" data-f="${i}"><div class="${cls}">${s?`<img loading="lazy" src="${shotSrc(s[0],f.phone)}" alt="${L(f.t)}">`:''}${f.shots.length>1?`<span class="count">${f.shots.length}</span>`:''}</div><div class="txt"><h3><span class="ic" style="background:${f.c}22">${svg(f.ic,f.c)}</span>${L(f.t)}</h3><p>${L(f.d)}</p></div></button>`}).join('');
- document.getElementById('docs-list').innerHTML=DOCS.map(d=>`<a class="doc" href="${REPO}/blob/main/${d[0]}"><b>${L([d[1],d[2]])}</b><span>${d[0].replace('docs/','')}</span></a>`).join('');
- const svgText={'t-relay':['ретранслятор','repeater'],'t-friend':['друг','a friend'],'t-km':['через ретрансляторы','via repeaters'],'t-enc':['шифрование MeshCore','MeshCore encryption'],'t-ack':['ответ ✓✓ о доставке','✓✓ delivery receipt'],'t-top':['без интернета, сотовой сети и серверов','no internet, no cell network, no servers'],'t-ru':['твоё устройство','your device']};
- for(const [c,v] of Object.entries(svgText))document.querySelectorAll('.'+c).forEach(e=>e.textContent=L(v));
- buildHero();renderBoards();
- try{localStorage.setItem('mm-lang',lang)}catch(e){}
+  return `<button class="feat" data-f="${i}"><div class="${cls}">${s?`<img loading="lazy" src="${shotSrc(s,f.phone)}" ${shotFallback} alt="${L('f.'+f.id+'.t')}">`:''}${f.shots.length>1?`<span class="count">${f.shots.length}</span>`:''}</div><div class="txt"><h3><span class="ic" style="background:${f.c}22">${svg(f.ic,f.c)}</span>${L('f.'+f.id+'.t')}</h3><p>${L('f.'+f.id+'.d')}</p></div></button>`}).join('');
+ document.getElementById('docs-list').innerHTML=DOCS.map(d=>{const p=docPath(d[0]);return `<a class="doc" href="${REPO}/blob/main/${p}"><b>${L(d[1])}</b><span dir="ltr">${p.replace(/^docs\/(en\/)?/,'')}</span></a>`}).join('');
+ fwLangDefault();buildHero();renderBoards();
 }
 // Hero slideshow
 let heroI=0,heroTimer;
 function buildHero(){
  const box=document.getElementById('heroScreen');
- box.innerHTML=HERO.map((n,i)=>`<img src="${shotSrc(n)}" alt="" class="${i===heroI?'on':''}">`).join('');
+ box.innerHTML=HERO.map((n,i)=>`<img src="${shotSrc(n)}" ${shotFallback} alt="" class="${i===heroI?'on':''}">`).join('');
  document.getElementById('heroDots').innerHTML=HERO.map((_,i)=>`<button aria-label="${i+1}" class="${i===heroI?'on':''}" data-h="${i}"></button>`).join('');
 }
 function heroGo(i){
  heroI=(i+HERO.length)%HERO.length;
  document.querySelectorAll('#heroScreen img').forEach((im,k)=>im.classList.toggle('on',k===heroI));
  document.querySelectorAll('#heroDots button').forEach((b,k)=>b.classList.toggle('on',k===heroI));
- document.getElementById('heroOled').src=shotSrc(OLED[heroI%OLED.length]);
- document.getElementById('heroGat').src=shotSrc(GAT[heroI%GAT.length]);
+ for(const [id,list] of [['heroOled',OLED],['heroGat',GAT]]){const im=document.getElementById(id);im.dataset.f='';im.src=shotSrc(list[heroI%list.length])}
 }
 function heroStart(){clearInterval(heroTimer);heroTimer=setInterval(()=>heroGo(heroI+1),3200)}
 document.getElementById('heroDots').addEventListener('click',e=>{const b=e.target.closest('[data-h]');if(b){heroGo(+b.dataset.h);heroStart()}});
+for(const id of ['heroOled','heroGat'])document.getElementById(id).addEventListener('error',e=>{const im=e.target;if(!im.dataset.f){im.dataset.f=1;im.src=im.src.replace(/-[a-z]+\.png$/,'-en.png')}});
 // Lightbox
 let lbF=null,lbI=0;
 function lbShow(){
  const f=FEATURES[lbF],s=f.shots[lbI],img=document.getElementById('lbImg');
- img.src=shotSrc(s[0],f.phone);img.alt=L([s[1],s[2]]);
+ img.dataset.f='';img.onerror=()=>{if(!img.dataset.f){img.dataset.f=1;img.src=img.src.replace(/-[a-z]+\.png$/,'-en.png')}};
+ img.src=shotSrc(s,f.phone);img.alt=L('shot.'+s);
  img.classList.toggle('px',!f.phone);
- img.style.maxWidth=f.phone&&s[0]!=='web-desktop'?'380px':'';
- document.getElementById('lbTitle').textContent=L([s[1],s[2]]);
- document.getElementById('lbText').textContent=f.shots.length>1?`${L(f.t)} · ${lbI+1} / ${f.shots.length}`:L(f.t);
- document.getElementById('lbThumbs').innerHTML=f.shots.length>1?f.shots.map((t,i)=>`<button class="${i===lbI?'on':''}" data-t="${i}"><img src="${shotSrc(t[0],f.phone)}" alt=""></button>`).join(''):'';
+ img.style.maxWidth=f.phone&&s!=='web-desktop'?'380px':'';
+ document.getElementById('lbTitle').textContent=L('shot.'+s);
+ document.getElementById('lbText').textContent=f.shots.length>1?`${L('f.'+f.id+'.t')} · ${lbI+1} / ${f.shots.length}`:L('f.'+f.id+'.t');
+ document.getElementById('lbThumbs').innerHTML=f.shots.length>1?f.shots.map((t,i)=>`<button class="${i===lbI?'on':''}" data-t="${i}"><img src="${shotSrc(t,f.phone)}" ${shotFallback} alt=""></button>`).join(''):'';
  document.querySelectorAll('#lb .nav').forEach(n=>n.style.visibility=f.shots.length>1?'':'hidden');
 }
 function lbOpen(i){if(!FEATURES[i].shots.length)return;lbF=i;lbI=0;lbShow();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
@@ -567,66 +552,83 @@ document.getElementById('lb').addEventListener('click',e=>{
  const s=e.target.closest('[data-step]');if(s)return lbStep(+s.dataset.step);
  const t=e.target.closest('[data-t]');if(t){lbI=+t.dataset.t;lbShow()}
 });
-document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')lbClose();if(e.key==='ArrowRight')lbStep(1);if(e.key==='ArrowLeft')lbStep(-1)});
+// Arrow keys follow the reading direction.
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;const r=document.documentElement.dir==='rtl'?-1:1;if(e.key==='Escape')lbClose();if(e.key==='ArrowRight')lbStep(r);if(e.key==='ArrowLeft')lbStep(-r)});
 let touchX=null;
 document.getElementById('lb').addEventListener('touchstart',e=>touchX=e.touches[0].clientX,{passive:true});
 document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>50)lbStep(dx<0?1:-1);touchX=null});
 // Boards and installer
 let BOARDS=[],board='m9';
-const SUB={gat562_30s:['nRF52840, OLED, джойстик, без Wi-Fi','nRF52840, OLED, joystick, no Wi-Fi'],m9:['клавиатура, экран 320×240, GPS','keyboard, 320×240 screen, GPS'],heltec_v4:['OLED 128×64, кнопка PRG','128×64 OLED, PRG button'],heltec_v4_r8:['ревизия с 8 МБ PSRAM','8 MB PSRAM revision'],tdeck:['клавиатура, интерфейс как у M9','keyboard, M9 interface']};
+const SUB=['gat562_30s','m9','heltec_v4','heltec_v4_r8','tdeck'];
+// The device language: the site's unless the visitor picked another; ESP32 boards get the partition table
+// with it (firmware/<env>/manifest-<code>.json), nRF52 boards a patched image (nrf52 module below).
+let fwLangPicked=false;
+const fwLang=()=>document.getElementById('fwLang').value;
+function fwLangDefault(){if(!fwLangPicked)document.getElementById('fwLang').value=lang;}
 function renderBoards(){
  const box=document.getElementById('boards');
  if(!BOARDS.length){box.innerHTML='';return}
- const card=b=>`<button class="board${b.env===board?' on':''}" data-b="${b.env}"><span class="radio"></span><span><b>${b.name}</b><small>${SUB[b.env]?L(SUB[b.env]):`${b.chip} · ${b.flash}`}</small></span></button>`;
- box.innerHTML=`<h4><span class="tag ok">✓</span>${L(['Проверено на устройстве','Tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>b.verified).map(card).join('')}</div>`
-  +`<h4><span class="tag cm">β</span>${L(['Сборки для других плат — на железе ещё не проверены','Builds for other boards — not yet tested on hardware'])}</h4><div class="bg">${BOARDS.filter(b=>!b.verified).map(card).join('')}</div>`;
+ const card=b=>`<button class="board${b.env===board?' on':''}" data-b="${b.env}"><span class="radio"></span><span><b>${b.name}</b><small>${SUB.includes(b.env)?L('sub.'+b.env):`${b.chip} · ${b.flash}`}</small></span></button>`;
+ box.innerHTML=`<h4><span class="tag ok">✓</span>${L('boards.verified')}</h4><div class="bg">${BOARDS.filter(b=>b.verified).map(card).join('')}</div>`
+  +`<h4><span class="tag cm">β</span>${L('boards.beta')}</h4><div class="bg">${BOARDS.filter(b=>!b.verified).map(card).join('')}</div>`;
  const b=BOARDS.find(x=>x.env===board)||BOARDS[0];
  // nRF52 boards install by copying a UF2 file to the bootloader drive, not over Web Serial.
  const uf2=b.install==='uf2';
  document.getElementById('installer').style.display=uf2?'none':'';document.getElementById('espSteps').hidden=uf2;
  document.getElementById('nrfInstall').hidden=!uf2||!b.dfu;document.getElementById('uf2Note').hidden=!uf2;if(window.nrfReset)window.nrfReset();
  for(const e of document.querySelectorAll('.esp-only'))e.style.display=uf2?'none':'';document.getElementById('uf2Steps').hidden=!uf2;document.getElementById('uf2').hidden=!uf2;
- if(uf2)document.getElementById('uf2').href=b.uf2;else document.getElementById('installer').setAttribute('manifest',`firmware/${b.env}/manifest.json`);
+ if(uf2)document.getElementById('uf2').href=b.uf2;else document.getElementById('installer').setAttribute('manifest',b.langs?`firmware/${b.env}/manifest-${fwLang()}.json`:`firmware/${b.env}/manifest.json`);
  document.getElementById('zip').href=b.zip;
  document.getElementById('chosenName').textContent=b.name;
  document.getElementById('chosenInfo').textContent=`MeshMesh ${VERSION} · ${b.chip} · ${b.flash}`;
  const tag=document.getElementById('chosenTag');
- tag.className='tag '+(b.verified?'ok':'cm');tag.textContent=b.verified?L(['проверено на устройстве','tested on hardware']):L(['не проверено на плате','not tested on hardware']);
+ tag.className='tag '+(b.verified?'ok':'cm');tag.textContent=b.verified?L('tag.verified'):L('tag.unverified');
  document.getElementById('communityNote').hidden=b.verified;
 }
 document.getElementById('boards').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(b){board=b.dataset.b;renderBoards()}});
+for(const id of ['siteLang','fwLang'])document.getElementById(id).innerHTML=LANGS.map(([c,n])=>`<option value="${c}" lang="${c}">${n}</option>`).join('');
+document.getElementById('siteLang').addEventListener('change',e=>setLang(e.target.value,true));
+document.getElementById('fwLang').addEventListener('change',()=>{fwLangPicked=true;renderBoards()});
 let VERSION='';
-fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARDS=j.boards;document.getElementById('ver').textContent=j.version;renderBoards()}).catch(()=>{document.getElementById('boards').innerHTML=`<p class="unsup">${L(['Сборки ещё публикуются — загляните через пару минут.','Builds are still being published — check back in a few minutes.'])}</p>`});
-document.querySelector('.lang').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b){lang=b.dataset.l;render()}});
-try{lang=localStorage.getItem('mm-lang')||(navigator.language||'').toLowerCase().startsWith('ru')&&'ru'||'en'}catch(e){lang=(navigator.language||'').toLowerCase().startsWith('ru')?'ru':'en'}
-render();heroStart();
+fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARDS=j.boards;document.getElementById('ver').textContent=j.version;renderBoards()}).catch(()=>{document.getElementById('boards').innerHTML=`<p class="unsup">${L('boards.publishing')}</p>`});
+setLang(pickLang(),false).then(heroStart);
+setTimeout(()=>document.documentElement.classList.remove('loading'),2500); // never stay hidden
 </script>
 <script type="module">
 // nRF52 boards (GAT562): install over Web Serial with the bootloader's serial DFU (site/nrf52dfu.js).
-import {dfuFlash,touch1200,webSerialIo,isBootloader} from './nrf52dfu.js';
-const el=id=>document.getElementById(id),T=(ru,en)=>lang==='en'?en:ru;
+import {dfuFlash,touch1200,webSerialIo,isBootloader,withLanguage,uf2WithLanguage} from './nrf52dfu.js';
+const el=id=>document.getElementById(id),T=k=>L(k);
 let continuing=false;
-function label(next){continuing=next;el('nrfLabel').innerHTML=next?'<span>'+T('Продолжить','Continue')+'</span>':'<span>'+T('Установить','Install')+'</span>';}
+function label(next){continuing=next;el('nrfLabel').innerHTML='<span>'+T(next?'nrf.continue':'btn.install')+'</span>';}
 function say(text,cls='',progress=null){const s=el('nrfStatus');s.hidden=false;s.className='note '+cls;el('nrfText').textContent=text;const p=el('nrfProgress');p.hidden=progress===null;if(progress!==null)p.value=progress;}
 window.nrfReset=()=>{el('nrfStatus').hidden=true;label(false);};
 async function files(b){const get=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.arrayBuffer()}).then(a=>new Uint8Array(a));return Promise.all([get(b.dfu.bin),get(b.dfu.dat)]);}
 el('nrfInstall').addEventListener('click',async()=>{
  const b=BOARDS.find(x=>x.env===board)||BOARDS[0],btn=el('nrfInstall');
  if(!b||!b.dfu)return;
- if(!('serial' in navigator)){say(T('Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере или используйте firmware.uf2.','This browser has no Web Serial — open the page in Chrome or Edge on a computer, or use firmware.uf2.'),'warn');return;}
+ if(!('serial' in navigator)){say(T('nrf.noSerial'),'warn');return;}
  btn.disabled=true;
  try{
   const port=await navigator.serial.requestPort({filters:[{usbVendorId:0x239a}]});
   if(!isBootloader(port)){
-   say(T('Перевожу плату в загрузчик…','Switching the board to its bootloader…'));await touch1200(port);
-   label(true);say(T('Плата в загрузчике. Нажмите «Продолжить» и выберите порт ещё раз (имя порта может измениться).','The board is in its bootloader. Press Continue and choose the port again (its name may change).'));return;}
-  label(false);say(T('Загружаю файлы прошивки…','Downloading the firmware…'),'',0);
-  const [bin,dat]=await files(b);const io=await webSerialIo(port);
-  try{await dfuFlash(io,bin,dat,(part,stage)=>say(stage==='erase'?T('Стираю старую прошивку…','Erasing the old firmware…'):stage==='done'?T('Записано.','Written.'):T('Запись: ','Writing: ')+Math.round(part*100)+'%','',part));}
+   say(T('nrf.toBootloader'));await touch1200(port);
+   label(true);say(T('nrf.inBootloader'));return;}
+  label(false);say(T('nrf.downloading'),'',0);
+  const [raw,rawDat]=await files(b);const [bin,dat]=withLanguage(raw,rawDat,fwLang());const io=await webSerialIo(port);
+  try{await dfuFlash(io,bin,dat,(part,stage)=>say(stage==='erase'?T('nrf.erasing'):stage==='done'?T('nrf.written'):T('nrf.writing')+Math.round(part*100)+'%','',part));}
   finally{await io.close();}
-  say(T('Готово: плата перезапускается с MeshMesh ','Done: the board restarts with MeshMesh ')+VERSION+'.','ok',null);
- }catch(e){if(e.name==='NotFoundError'){if(!continuing)el('nrfStatus').hidden=true;}else say(T('Ошибка: ','Error: ')+e.message+T(' — повторите или используйте firmware.uf2.',' — retry or use firmware.uf2.'),'warn');}
+  say(T('nrf.done')+VERSION+'.','ok',null);
+ }catch(e){if(e.name==='NotFoundError'){if(!continuing)el('nrfStatus').hidden=true;}else say(T('nrf.error')+e.message+T('nrf.retry'),'warn');}
  finally{btn.disabled=false;}
+});
+// firmware.uf2 for the bootloader drive, with the chosen device language.
+el('uf2').addEventListener('click',async e=>{
+ const b=BOARDS.find(x=>x.env===board);if(!b||!b.uf2||e.currentTarget.dataset.ready)return;
+ e.preventDefault();const a=e.currentTarget;
+ try{const raw=new Uint8Array(await (await fetch(b.uf2)).arrayBuffer());
+  const url=URL.createObjectURL(new Blob([uf2WithLanguage(raw,fwLang())],{type:'application/octet-stream'}));
+  a.href=url;a.dataset.ready=1;a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.href=b.uf2;delete a.dataset.ready},4000);
+ }catch(err){say(T('nrf.error')+err.message,'warn');}
 });
 </script>
 </body>

@@ -34,6 +34,11 @@ jobs:
       - run: pip install platformio esptool
       - run: pio run -e ${{ matrix.env }}
       - run: python tools/package.py ${{ matrix.env }}
+      # The screens in every interface language for the site (host build of the UI; needs the m9 libraries).
+      # Without them the site falls back to the committed English and Russian screenshots.
+      - if: matrix.env == 'm9'
+        continue-on-error: true
+        run: pip install pillow && python tools/site_shots.py artifacts/site-shots
       - uses: actions/upload-artifact@v4
         with:
           name: package-${{ matrix.env }}
@@ -80,6 +85,7 @@ jobs:
         with:
           name: apk
           path: apk
+      - run: python tools/i18n.py check
       - run: |
           python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
           mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk

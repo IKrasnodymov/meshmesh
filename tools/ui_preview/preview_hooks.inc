@@ -43,19 +43,19 @@ Internet internet;
 #if !defined(MM_HELTEC_V4)
 void Internet::setEnabled(bool on){enabled=on;}void Internet::rescan(){}void Internet::connectTo(const String&){}
 bool Internet::save(const String&,const String&){return true;}bool Internet::forget(const String&){return true;}
-String Internet::savedName(unsigned){return "";}String Internet::stateText(bool russian){return russian?"Выключено":"Off";}
+String Internet::savedName(unsigned){return "";}String Internet::stateText(){return tr("Off","Выключен");}
 #endif
 bool Maps::inArea() const{return true;}
 bool webRadarActive(){return false;}
+String executeCommand(const String&){return "OK";} // UiHeltec.cpp: the GAT562 GPS menu
 // Same as src/MeshRadio.cpp (the preview does not link the radio).
 String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
- bool ru=config.russian;
  if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";
- String hops=m.hops==255?String():!m.hops?String(ru?(brief?"напр.":"напрямую"):"direct"):(brief?String(m.hops)+(ru?" ретр.":" rpt"):String(ru?"через ":"via ")+m.hops+(ru?" ретр.":" rpt"));
- String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(ru?"по маршруту":"routed"))
+ String hops=m.hops==255?String():!m.hops?String(brief?tr("direct","напр."):tr("direct","напрямую")):(brief?String(m.hops)+tr(" rpt"," ретр."):String(tr("via ","через "))+m.hops+tr(" rpt"," ретр."));
+ String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr("routed","по маршруту")))
   :!m.outgoing?(hops.length()?hops:String("flood")) // incoming: how far it came
   :m.status==ChatMessage::Delivered&&hops.length()&&!brief?"flood, "+hops:String("flood");
- if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(ru?" · попытка ":" · try ")+m.tries):" "+String(m.tries)+"/3";
+ if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(tr(" · try "," · попытка "))+m.tries):" "+String(m.tries)+"/3";
  return s;
 }
 // Device modes: a repeater or room server with made-up passwords and counts.

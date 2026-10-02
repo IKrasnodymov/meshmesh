@@ -6,6 +6,11 @@ Each board gets firmware/<env>/manifest.json for ESP Web Tools and a zip of its 
 The browser installer writes the four components at their offsets, as an update with esptool
 does: NVS (key, settings, contacts) and LittleFS (history) stay untouched unless the user
 chooses to erase the device.
+
+Device language: manifest-<lang>.json writes partitions-<lang>.bin, the partition table with
+"MMLANG:<lang>" in the unused tail of its sector (0x8C00); the firmware applies it once
+(src/I18n.cpp, Config::load). nRF52 images carry a "MMLANG:--" field that the page fills in.
+Screenshots in every language come from tools/site_shots.py (artifacts/site-shots).
 """
 import json
 import re
@@ -18,6 +23,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from package import COMMUNITY, NRF52, TARGETS  # noqa: E402
 from chess_site import build as build_chess  # noqa: E402
+from i18n import CODES  # noqa: E402
+
+LANG_AT = 0xc00  # in the partition table sector; the table itself ends before it
+
+
+def lang_field(code):
+    return f'MMLANG:{code}'.encode().ljust(16, b'\0')
+
 
 # Boards whose packages are installed and checked on real hardware (docs/verification.md).
 VERIFIED = {'m9', 'heltec_v4', 'gat562_30s'}
@@ -38,6 +51,10 @@ def main():
         shutil.rmtree(out)
     shutil.copytree(ROOT/'site', out)
     build_chess(out)  # chess/: the chess page for a stock MeshCore companion
+    shots = ROOT/'artifacts'/'site-shots'
+    if shots.exists():  # screenshots in every language over the committed ru/en ones
+        for f in shots.glob('*.png'):
+            shutil.copyfile(f, out/'img'/f.name)
     boards = []
     for env in envs:
         package = ROOT/'artifacts'/f'meshmesh-{TARGETS[env]}-{version}'
@@ -54,12 +71,14 @@ def main():
                     raise SystemExit(f'{env}: DFU package and firmware.bin differ')
                 (target/'firmware.dat').write_bytes(dfu.read('firmware.dat'))
             shutil.copyfile(package/'firmware.bin', target/'firmware.bin')
+            if (package/'firmware.bin').read_bytes().count(lang_field('--')) != 1:
+                raise SystemExit(f'{env}: firmware.bin needs exactly one language field')
             archive = out/'firmware'/f'meshmesh-{TARGETS[env]}-{version}.zip'
             with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
                 for f in sorted(package.iterdir()):
                     z.write(f, f'{package.name}/{f.name}')
             boards.append({'env': env, 'name': board_json['name'].removeprefix('MeshMesh / '), 'chip': 'nRF52840', 'flash': '1MB',
-                           'verified': env in VERIFIED, 'community': False, 'install': 'uf2', 'uf2': f'firmware/{env}/firmware.uf2',
+                           'verified': env in VERIFIED, 'community': False, 'install': 'uf2', 'uf2': f'firmware/{env}/firmware.uf2', 'langs': True,
                            'dfu': {'bin': f'firmware/{env}/firmware.bin', 'dat': f'firmware/{env}/firmware.dat'},
                            'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
             continue
@@ -80,6 +99,15 @@ def main():
                     'builds': [{'chipFamily': 'ESP32' if chip == 'esp32' else 'ESP32-S3',
                                 'parts': [{'path': n, 'offset': o} for n, o in parts]}]}
         (target/'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+        table = (package/'partitions.bin').read_bytes()
+        if len(table) > LANG_AT or table[LANG_AT - 32:].strip(b'\xff'):
+            raise SystemExit(f'{env}: partition table reaches the language field')
+        for code in CODES:
+            (target/f'partitions-{code}.bin').write_bytes(table.ljust(LANG_AT, b'\xff') + lang_field(code) + b'\xff'*(0x1000 - LANG_AT - 16))
+            localized = json.loads(json.dumps(manifest))
+            assert localized['builds'][0]['parts'][1]['path'] == 'partitions.bin'
+            localized['builds'][0]['parts'][1]['path'] = f'partitions-{code}.bin'
+            (target/f'manifest-{code}.json').write_text(json.dumps(localized, indent=2) + '\n')
         archive = out/'firmware'/f'meshmesh-{TARGETS[env]}-{version}.zip'
         with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
             for f in sorted(package.iterdir()):
@@ -89,7 +117,7 @@ def main():
                     version=version, board=name, chip=chip, size=size, boot=hex(boot),
                     freq='40m' if chip == 'esp32' else '80m'))
         boards.append({'env': env, 'name': name, 'chip': manifest['builds'][0]['chipFamily'], 'flash': size,
-                       'verified': env in VERIFIED, 'community': env in COMMUNITY,
+                       'verified': env in VERIFIED, 'community': env in COMMUNITY, 'langs': True,
                        'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
     (out/'firmware/boards.json').write_text(json.dumps({'version': version, 'boards': boards}, ensure_ascii=False, indent=2) + '\n')
     print(out, len(boards), 'boards')

@@ -29,7 +29,7 @@ class Internet {
   bool save(const String& name,const String& password);bool forget(const String& name);
   unsigned savedCount();String savedName(unsigned i);bool isSaved(const String& name);
   void connectTo(const String& name);
-  String info();String command(const String& line);String stateText(bool russian);
+  String info();String command(const String& line);String stateText();
   // Tile and location jobs; one at a time. Results stay owned by the worker
   // until the loop calls release().
   bool idle();bool fetchTile(int z,int x,int y);bool locate();

@@ -1,0 +1,4442 @@
+{
+ "697bece7": {
+  "en": ": challenge refused, no free board",
+  "ru": ": вызов отклонён, нет свободной доски",
+  "text": ": 도전 거절, 빈 대국판 없음"
+ },
+ "306c837e": {
+  "en": " challenges you to chess",
+  "ru": " вызывает на партию в шахматы",
+  "text": " 님이 체스 대국 신청"
+ },
+ "7a061014": {
+  "en": "Chess: move for an unknown game",
+  "ru": "Шахматы: ход в неизвестной партии",
+  "text": "체스: 알 수 없는 대국의 수"
+ },
+ "2a21ea97": {
+  "en": ": move not accepted (",
+  "ru": ": ход не принят (",
+  "text": ": 수 거부됨 ("
+ },
+ "8dc24eb8": {
+  "en": " · you won",
+  "ru": ", вы победили",
+  "text": " · 승리"
+ },
+ "d8d54131": {
+  "en": " · you lost",
+  "ru": ", вы проиграли",
+  "text": " · 패배"
+ },
+ "1ff1a3c9": {
+  "en": " · draw",
+  "ru": ", ничья",
+  "text": " · 무승부"
+ },
+ "c8821ac7": {
+  "en": " · check, your move",
+  "ru": ", шах, ваш ход",
+  "text": " · 체크, 내 차례"
+ },
+ "aa49eb86": {
+  "en": " · your move",
+  "ru": ", ваш ход",
+  "text": " · 내 차례"
+ },
+ "9a4275c0": {
+  "en": " accepted: game on",
+  "ru": " принял вызов: играем",
+  "text": " 님 수락: 대국 시작"
+ },
+ "74a0890e": {
+  "en": " declined the game",
+  "ru": " отказался от партии",
+  "text": " 님이 대국 거절"
+ },
+ "d09dd582": {
+  "en": " cancelled the game",
+  "ru": " отменил партию",
+  "text": " 님이 대국 취소"
+ },
+ "e89e051f": {
+  "en": "Draw agreed",
+  "ru": "Ничья по соглашению",
+  "text": "무승부 합의"
+ },
+ "1ececb54": {
+  "en": " offers a draw",
+  "ru": " предлагает ничью",
+  "text": " 님이 무승부 제안"
+ },
+ "cda0bfbb": {
+  "en": " accepted the draw",
+  "ru": " согласился на ничью",
+  "text": " 님이 무승부 수락"
+ },
+ "e1d23979": {
+  "en": " resigned: you won",
+  "ru": " сдался: вы победили",
+  "text": " 님 기권: 승리"
+ },
+ "409973f3": {
+  "en": "Chess: choose a chat contact",
+  "ru": "Шахматы: выберите чат-контакт",
+  "text": "체스: 채팅 연락처를 선택하세요"
+ },
+ "8d623b26": {
+  "en": "Chess: all boards busy, finish a game",
+  "ru": "Шахматы: все доски заняты, завершите партию",
+  "text": "체스: 빈 판 없음, 대국을 끝내세요"
+ },
+ "2c55656b": {
+  "en": " · MeshMesh chess: you play Black",
+  "ru": " · шахматы MeshMesh: вы играете чёрными",
+  "text": " · MeshMesh 체스: 당신은 흑"
+ },
+ "18818e2c": {
+  "en": " · MeshMesh chess: you play White",
+  "ru": " · шахматы MeshMesh: вы играете белыми",
+  "text": " · MeshMesh 체스: 당신은 백"
+ },
+ "1853c6ab": {
+  "en": "Chess: cannot save games",
+  "ru": "Шахматы: не удалось сохранить партии",
+  "text": "체스: 대국 저장 실패"
+ },
+ "6835e49d": {
+  "en": "Chess: a damaged game was dropped",
+  "ru": "Шахматы: повреждённая партия удалена",
+  "text": "체스: 손상된 대국 삭제됨"
+ },
+ "47db5665": {
+  "en": ": no confirmation for 24 h, R resends",
+  "ru": ": нет подтверждения 24 ч, R — повторить",
+  "text": ": 24시간 확인 없음, R: 재전송"
+ },
+ "39cb9385": {
+  "en": ": not confirmed, will resend",
+  "ru": ": не подтвердил, повторю автоматически",
+  "text": ": 미확인, 자동 재전송 예정"
+ },
+ "576dfcbc": {
+  "en": "Paused: access point on",
+  "ru": "Пауза: включена точка доступа",
+  "text": "일시정지: 액세스 포인트 켜짐"
+ },
+ "cb27d627": {
+  "en": "Paused: radar open",
+  "ru": "Пауза: открыт радар",
+  "text": "일시정지: 레이더 열림"
+ },
+ "bc285d2c": {
+  "en": "Paused",
+  "ru": "Пауза",
+  "text": "일시정지"
+ },
+ "1d72981e": {
+  "en": "Scanning...",
+  "ru": "Поиск сетей...",
+  "text": "검색 중..."
+ },
+ "58c6fad0": {
+  "en": "Connecting: ",
+  "ru": "Подключение: ",
+  "text": "연결 중: "
+ },
+ "e7e708ec": {
+  "en": "Choose a network",
+  "ru": "Выберите сеть",
+  "text": "네트워크 선택"
+ },
+ "d28b921c": {
+  "en": "direct",
+  "ru": "напр.",
+  "text": "직접"
+ },
+ "7ca84b76": {
+  "en": " rpt",
+  "ru": " ретр.",
+  "text": " 홉"
+ },
+ "3229100a": {
+  "en": "via ",
+  "ru": "через ",
+  "text": "중계 "
+ },
+ "316f0f3e": {
+  "en": "routed",
+  "ru": "по маршруту",
+  "text": "경로 전송"
+ },
+ "b27e0742": {
+  "en": " · try ",
+  "ru": " · попытка ",
+  "text": " · 시도 "
+ },
+ "78219be4": {
+  "en": "Clock not set",
+  "ru": "Время не установлено",
+  "text": "시계 미설정"
+ },
+ "5fdc2c68": {
+  "en": "Sunday",
+  "ru": "воскресенье",
+  "text": "일요일"
+ },
+ "28602bcb": {
+  "en": "Monday",
+  "ru": "понедельник",
+  "text": "월요일"
+ },
+ "c29ee76a": {
+  "en": "Tuesday",
+  "ru": "вторник",
+  "text": "화요일"
+ },
+ "bffed2ec": {
+  "en": "Wednesday",
+  "ru": "среда",
+  "text": "수요일"
+ },
+ "e556b4a9": {
+  "en": "Thursday",
+  "ru": "четверг",
+  "text": "목요일"
+ },
+ "eabd49b9": {
+  "en": "Friday",
+  "ru": "пятница",
+  "text": "금요일"
+ },
+ "6391ad44": {
+  "en": "Saturday",
+  "ru": "суббота",
+  "text": "토요일"
+ },
+ "b6e1a436": {
+  "en": "January",
+  "ru": "января",
+  "text": "1월"
+ },
+ "90807320": {
+  "en": "February",
+  "ru": "февраля",
+  "text": "2월"
+ },
+ "490ebdb3": {
+  "en": "March",
+  "ru": "марта",
+  "text": "3월"
+ },
+ "12affdd6": {
+  "en": "April",
+  "ru": "апреля",
+  "text": "4월"
+ },
+ "b8b5122f": {
+  "en": "May",
+  "ru": "мая",
+  "text": "5월"
+ },
+ "ab1a581a": {
+  "en": "June",
+  "ru": "июня",
+  "text": "6월"
+ },
+ "c39091a2": {
+  "en": "July",
+  "ru": "июля",
+  "text": "7월"
+ },
+ "0f1156cb": {
+  "en": "August",
+  "ru": "августа",
+  "text": "8월"
+ },
+ "60f6ab26": {
+  "en": "September",
+  "ru": "сентября",
+  "text": "9월"
+ },
+ "98cbe749": {
+  "en": "October",
+  "ru": "октября",
+  "text": "10월"
+ },
+ "9e763213": {
+  "en": "November",
+  "ru": "ноября",
+  "text": "11월"
+ },
+ "4eeb9034": {
+  "en": "December",
+  "ru": "декабря",
+  "text": "12월"
+ },
+ "9c80e40e": {
+  "en": "{weekday}, {month} {day}",
+  "ru": "{weekday}, {day} {month}",
+  "text": "{month} {day}일 {weekday}"
+ },
+ "ec0794a8": {
+  "en": "now",
+  "ru": "сейчас",
+  "text": "지금"
+ },
+ "c6bda571": {
+  "en": " min",
+  "ru": " мин",
+  "text": " 분"
+ },
+ "8b6e1e22": {
+  "en": " h",
+  "ru": " ч",
+  "text": " 시간"
+ },
+ "1dd263ea": {
+  "en": " d",
+  "ru": " д",
+  "text": " 일"
+ },
+ "d0ba0a93": {
+  "en": "path unknown",
+  "ru": "путь неизвестен",
+  "text": "경로 모름"
+ },
+ "4cddae25": {
+  "en": "direct",
+  "ru": "напрямую",
+  "text": "직접"
+ },
+ "ced70db7": {
+  "en": {
+   "one": "hop",
+   "other": "hops"
+  },
+  "ru": {
+   "one": "хоп",
+   "few": "хопа",
+   "many": "хопов"
+  },
+  "forms": {
+   "other": "{n}홉"
+  }
+ },
+ "23f80afc": {
+  "en": "Chat node",
+  "ru": "Чат-узел",
+  "text": "채팅 노드"
+ },
+ "dce9a2fb": {
+  "en": "Repeater",
+  "ru": "Ретранслятор",
+  "text": "리피터"
+ },
+ "03bb2b95": {
+  "en": "Room server",
+  "ru": "Сервер комнаты",
+  "text": "룸 서버"
+ },
+ "fbcdc319": {
+  "en": "Sensor",
+  "ru": "Датчик",
+  "text": "센서"
+ },
+ "fb0ce938": {
+  "en": "Node",
+  "ru": "Узел",
+  "text": "노드"
+ },
+ "a6a26add": {
+  "en": "N",
+  "ru": "С",
+  "text": "북"
+ },
+ "8a7102a8": {
+  "en": "NE",
+  "ru": "СВ",
+  "text": "북동"
+ },
+ "bc5fcbef": {
+  "en": "E",
+  "ru": "В",
+  "text": "동"
+ },
+ "7014dc62": {
+  "en": "SE",
+  "ru": "ЮВ",
+  "text": "남동"
+ },
+ "7dcf5fc1": {
+  "en": "S",
+  "ru": "Ю",
+  "text": "남"
+ },
+ "fa4eb15b": {
+  "en": "SW",
+  "ru": "ЮЗ",
+  "text": "남서"
+ },
+ "96d57542": {
+  "en": "W",
+  "ru": "З",
+  "text": "서"
+ },
+ "99609c59": {
+  "en": "NW",
+  "ru": "СЗ",
+  "text": "북서"
+ },
+ "c122103d": {
+  "en": " m",
+  "ru": " м",
+  "text": " m"
+ },
+ "2f0a99c6": {
+  "en": " km",
+  "ru": " км",
+  "text": " km"
+ },
+ "767dd86f": {
+  "en": "Chats",
+  "ru": "Чаты",
+  "text": "채팅"
+ },
+ "be41ddda": {
+  "en": "Map",
+  "ru": "Карта",
+  "text": "지도"
+ },
+ "e0fef172": {
+  "en": "Nodes",
+  "ru": "Узлы",
+  "text": "노드"
+ },
+ "54eed9b7": {
+  "en": "Navigation",
+  "ru": "Навигация",
+  "text": "내비게이션"
+ },
+ "95a9f71d": {
+  "en": "Settings",
+  "ru": "Настройки",
+  "text": "설정"
+ },
+ "a9ef56b3": {
+  "en": "Radio",
+  "ru": "Радио",
+  "text": "무선"
+ },
+ "021121c7": {
+  "en": "Screen & device",
+  "ru": "Экран и устройство",
+  "text": "화면 및 장치"
+ },
+ "6d9242a4": {
+  "en": "Connections",
+  "ru": "Подключения",
+  "text": "연결"
+ },
+ "1e1fe6d3": {
+  "en": "Module health",
+  "ru": "Состояние модулей",
+  "text": "모듈 상태"
+ },
+ "13db9cb2": {
+  "en": "Keys",
+  "ru": "Клавиши",
+  "text": "키"
+ },
+ "7a9fed24": {
+  "en": "Saved maps",
+  "ru": "Сохранённые карты",
+  "text": "저장된 지도"
+ },
+ "613fda65": {
+  "en": "Radar: signals",
+  "ru": "Радар: сигналы",
+  "text": "레이더: 신호"
+ },
+ "20138dbc": {
+  "en": "Homing",
+  "ru": "Пеленг",
+  "text": "추적"
+ },
+ "77001ca0": {
+  "en": "Radar: motion (CSI)",
+  "ru": "Радар: движение (CSI)",
+  "text": "레이더: 움직임 (CSI)"
+ },
+ "abc6508d": {
+  "en": "Internet over Wi-Fi",
+  "ru": "Интернет по Wi-Fi",
+  "text": "Wi-Fi 인터넷"
+ },
+ "21ed1545": {
+  "en": "Chess",
+  "ru": "Шахматы",
+  "text": "체스"
+ },
+ "171b883c": {
+  "en": "New chess game",
+  "ru": "Новая партия",
+  "text": "새 체스 대국"
+ },
+ "969e0815": {
+  "en": "Device mode",
+  "ru": "Режим работы",
+  "text": "장치 모드"
+ },
+ "4f63d746": {
+  "en": "Room server",
+  "ru": "Комната",
+  "text": "룸 서버"
+ },
+ "1809e055": {
+  "en": "Repeater",
+  "ru": "Репитер",
+  "text": "리피터"
+ },
+ "9e61ffe9": {
+  "en": " MHz · SF",
+  "ru": " МГц · SF",
+  "text": " MHz · SF"
+ },
+ "704528a8": {
+  "en": "Radio error ",
+  "ru": "Ошибка радио ",
+  "text": "무선 오류 "
+ },
+ "6a4fb7b4": {
+  "en": "Internet",
+  "ru": "Интернет",
+  "text": "인터넷"
+ },
+ "d6404c3c": {
+  "en": "All off",
+  "ru": "Всё выключено",
+  "text": "모두 꺼짐"
+ },
+ "2aef0bab": {
+  "en": {
+   "one": "new",
+   "other": "new"
+  },
+  "ru": {
+   "one": "новое",
+   "few": "новых",
+   "many": "новых"
+  },
+  "forms": {
+   "other": "신규 {n}"
+  }
+ },
+ "d04d1711": {
+  "en": {
+   "one": "message",
+   "other": "messages"
+  },
+  "ru": {
+   "one": "сообщение",
+   "few": "сообщения",
+   "many": "сообщений"
+  },
+  "forms": {
+   "other": "메시지 {n}개"
+  }
+ },
+ "81fe7504": {
+  "en": "Online map",
+  "ru": "Онлайн-карта",
+  "text": "온라인 지도"
+ },
+ "d3a5328b": {
+  "en": "No SD card",
+  "ru": "Нет SD-карты",
+  "text": "SD 카드 없음"
+ },
+ "69cf6474": {
+  "en": "No maps yet",
+  "ru": "Карт пока нет",
+  "text": "지도 없음"
+ },
+ "6d76d314": {
+  "en": " of ",
+  "ru": " из ",
+  "text": " / "
+ },
+ "015405e4": {
+  "en": " nearby",
+  "ru": " рядом",
+  "text": " 근처"
+ },
+ "2a76df25": {
+  "en": "GPS: searching",
+  "ru": "GPS: поиск",
+  "text": "GPS: 검색 중"
+ },
+ "68b4f3f9": {
+  "en": "GPS off",
+  "ru": "GPS выключен",
+  "text": "GPS 꺼짐"
+ },
+ "8909ac1f": {
+  "en": {
+   "one": "sat",
+   "other": "sats"
+  },
+  "ru": {
+   "one": "спутник",
+   "few": "спутника",
+   "many": "спутников"
+  },
+  "forms": {
+   "other": "위성 {n}개"
+  }
+ },
+ "d3cc0c6b": {
+  "en": "Connect",
+  "ru": "Связь",
+  "text": "연결"
+ },
+ "08d8e8c9": {
+  "en": "Radar",
+  "ru": "Радар",
+  "text": "레이더"
+ },
+ "33c54309": {
+  "en": "Module health",
+  "ru": "Модули",
+  "text": "모듈 상태"
+ },
+ "ccae0228": {
+  "en": "All OK",
+  "ru": "Всё в норме",
+  "text": "모두 정상"
+ },
+ "a0b97800": {
+  "en": {
+   "one": "fault",
+   "other": "faults"
+  },
+  "ru": {
+   "one": "ошибка",
+   "few": "ошибки",
+   "many": "ошибок"
+  },
+  "forms": {
+   "other": "오류 {n}"
+  }
+ },
+ "226808f5": {
+  "en": "Radio, screen",
+  "ru": "Радио, экран",
+  "text": "무선, 화면"
+ },
+ "7226324f": {
+  "en": "Solitaire",
+  "ru": "Косынка",
+  "text": "솔리테어"
+ },
+ "b784e416": {
+  "en": "Open",
+  "ru": "Открыть",
+  "text": "열기"
+ },
+ "64010381": {
+  "en": "Lock",
+  "ru": "Блок",
+  "text": "잠금"
+ },
+ "2b67ee1b": {
+  "en": "You: ",
+  "ru": "Вы: ",
+  "text": "나: "
+ },
+ "9161fba7": {
+  "en": "Open MeshCore channel",
+  "ru": "Открытый канал MeshCore",
+  "text": "MeshCore 공개 채널"
+ },
+ "162429ce": {
+  "en": "No messages yet",
+  "ru": "Сообщений ещё нет",
+  "text": "메시지 없음"
+ },
+ "7c285a3c": {
+  "en": "Select",
+  "ru": "Выбор",
+  "text": "선택"
+ },
+ "d8735ad9": {
+  "en": "Announce",
+  "ru": "Объявить",
+  "text": "알리기"
+ },
+ "d3ced5d8": {
+  "en": "Menu",
+  "ru": "Меню",
+  "text": "메뉴"
+ },
+ "7360652d": {
+  "en": "Open channel · senders unverified · no ACK",
+  "ru": "Открытый канал · без подтверждений",
+  "text": "공개 채널 · 발신자 미검증 · ACK 없음"
+ },
+ "b86cfa5d": {
+  "en": "Not in contacts",
+  "ru": "Нет в контактах",
+  "text": "연락처에 없음"
+ },
+ "514d3458": {
+  "en": "not confirmed",
+  "ru": "не подтверждено",
+  "text": "미확인"
+ },
+ "f951850c": {
+  "en": "No messages yet",
+  "ru": "Сообщений пока нет",
+  "text": "아직 메시지가 없습니다"
+ },
+ "dff4c599": {
+  "en": "Type and press OK to send",
+  "ru": "Наберите текст и нажмите OK",
+  "text": "입력 후 OK를 눌러 보내기"
+ },
+ "89d27660": {
+  "en": "Message...",
+  "ru": "Сообщение...",
+  "text": "메시지..."
+ },
+ "f353a373": {
+  "en": "2x space: RU/EN",
+  "ru": "2×пробел: RU/EN",
+  "text": "스페이스 2번: RU/EN"
+ },
+ "03b2add1": {
+  "en": "Send",
+  "ru": "Отпр.",
+  "text": "전송"
+ },
+ "d345a7e1": {
+  "en": "2x space",
+  "ru": "2×пробел",
+  "text": "스페이스 2번"
+ },
+ "a1d3f60b": {
+  "en": "hold OK",
+  "ru": "удерж. OK",
+  "text": "OK 길게"
+ },
+ "a23ea557": {
+  "en": "Layout",
+  "ru": "Раскладка",
+  "text": "자판"
+ },
+ "370e8321": {
+  "en": "Back",
+  "ru": "Назад",
+  "text": "뒤로"
+ },
+ "191fb7b9": {
+  "en": "Finding location by IP...",
+  "ru": "Определяю положение по IP...",
+  "text": "IP로 위치 찾는 중..."
+ },
+ "57dea6ab": {
+  "en": "Needs Wi-Fi internet or an SD card",
+  "ru": "Нужен интернет по Wi-Fi или SD-карта",
+  "text": "Wi-Fi 인터넷 또는 SD 카드 필요"
+ },
+ "774f7d04": {
+  "en": "Connect Wi-Fi or load a map",
+  "ru": "Подключите Wi-Fi или загрузите карту",
+  "text": "Wi-Fi를 연결하거나 지도를 넣으세요"
+ },
+ "f70b6fa8": {
+  "en": "GPS will take over after a fix",
+  "ru": "После GPS-фиксации карта перейдёт к ней",
+  "text": "GPS 위치가 잡히면 그쪽으로 이동"
+ },
+ "088500dd": {
+  "en": "Connections > Internet over Wi-Fi",
+  "ru": "Связь > Интернет по Wi-Fi",
+  "text": "연결 > Wi-Fi 인터넷"
+ },
+ "4dbd6570": {
+  "en": "Downloading map...",
+  "ru": "Загрузка карты из интернета...",
+  "text": "지도 다운로드 중..."
+ },
+ "43fc9cc9": {
+  "en": "Reading map from SD...",
+  "ru": "Чтение карты с SD...",
+  "text": "SD에서 지도 읽는 중..."
+ },
+ "7f780606": {
+  "en": "Tiles unavailable",
+  "ru": "Тайлы недоступны",
+  "text": "타일 사용 불가"
+ },
+ "947716e6": {
+  "en": "This zoom is not downloaded",
+  "ru": "Этот масштаб не загружен",
+  "text": "이 배율은 받지 않음"
+ },
+ "5d4af6bf": {
+  "en": "+/- zoom · Wi-Fi internet loads maps",
+  "ru": "+/- масштаб · интернет по Wi-Fi",
+  "text": "+/- 배율 · Wi-Fi 인터넷으로 지도 로드"
+ },
+ "ade18178": {
+  "en": "Offline map",
+  "ru": "Офлайн-карта",
+  "text": "오프라인 지도"
+ },
+ "85b905aa": {
+  "en": " · loading",
+  "ru": " · загрузка",
+  "text": " · 로드 중"
+ },
+ "abea9faa": {
+  "en": "GPS off",
+  "ru": "GPS выкл",
+  "text": "GPS 꺼짐"
+ },
+ "46b2c002": {
+  "en": "GPS: old date",
+  "ru": "GPS: старая дата",
+  "text": "GPS: 오래된 날짜"
+ },
+ "2c425015": {
+  "en": "Pan",
+  "ru": "Сдвиг",
+  "text": "이동"
+ },
+ "ecc9ef8c": {
+  "en": "Zoom",
+  "ru": "Масштаб",
+  "text": "배율"
+ },
+ "c6e21243": {
+  "en": "Following",
+  "ru": "Следую",
+  "text": "따라가기"
+ },
+ "a1bb0c43": {
+  "en": "To GPS",
+  "ru": "К GPS",
+  "text": "GPS로"
+ },
+ "cbdba42f": {
+  "en": "Maps",
+  "ru": "Карты",
+  "text": "지도"
+ },
+ "4dff575f": {
+  "en": "No saved maps",
+  "ru": "Сохранённых карт нет",
+  "text": "저장된 지도 없음"
+ },
+ "d8772b41": {
+  "en": "Upload a map via Wi-Fi or USB",
+  "ru": "Загрузите карту по Wi-Fi или USB",
+  "text": "Wi-Fi나 USB로 지도를 올리세요"
+ },
+ "0e82977b": {
+  "en": {
+   "one": "tile on SD",
+   "other": "tiles on SD"
+  },
+  "ru": {
+   "one": "тайл на SD",
+   "few": "тайла на SD",
+   "many": "тайлов на SD"
+  },
+  "forms": {
+   "other": "SD에 타일 {n}개"
+  }
+ },
+ "5bf49151": {
+  "en": "No nodes discovered yet",
+  "ru": "Узлы пока не обнаружены",
+  "text": "발견된 노드 없음"
+ },
+ "18721989": {
+  "en": "ADV sends your announcement",
+  "ru": "ADV отправит ваше объявление",
+  "text": "ADV: 내 노드 알리기"
+ },
+ "5d2fc914": {
+  "en": "saved",
+  "ru": "сохранён",
+  "text": "저장됨"
+ },
+ "28ca920e": {
+  "en": "Details",
+  "ru": "Карточка",
+  "text": "정보"
+ },
+ "10322163": {
+  "en": "On map",
+  "ru": "На карте",
+  "text": "지도에"
+ },
+ "cc4a6a69": {
+  "en": "Node was removed",
+  "ru": "Узел удалён",
+  "text": "노드가 삭제됨"
+ },
+ "ae7857c1": {
+  "en": "Last heard",
+  "ru": "Последний приём",
+  "text": "마지막 수신"
+ },
+ "b6a5c449": {
+  "en": " ago",
+  "ru": " назад",
+  "text": " 전"
+ },
+ "bca41134": {
+  "en": "not since boot",
+  "ru": "после запуска не слышен",
+  "text": "부팅 후 수신 없음"
+ },
+ "925d5b3e": {
+  "en": "Signal",
+  "ru": "Сигнал",
+  "text": "신호"
+ },
+ "3db61861": {
+  "en": "Route",
+  "ru": "Маршрут",
+  "text": "경로"
+ },
+ "236f8008": {
+  "en": " · flood",
+  "ru": " · flood",
+  "text": " · flood"
+ },
+ "fa43649a": {
+  "en": "Position",
+  "ru": "Позиция",
+  "text": "위치"
+ },
+ "962a598f": {
+  "en": "not shared",
+  "ru": "не передана",
+  "text": "공유 안 함"
+ },
+ "4ac9ad0f": {
+  "en": "Message",
+  "ru": "Написать",
+  "text": "메시지"
+ },
+ "3f10fa6d": {
+  "en": "Reset path",
+  "ru": "Сброс пути",
+  "text": "경로 초기화"
+ },
+ "709d4fe9": {
+  "en": "Sure?",
+  "ru": "Удалить?",
+  "text": "정말?"
+ },
+ "ddbf78c7": {
+  "en": "Forget",
+  "ru": "Удалить",
+  "text": "삭제"
+ },
+ "a3e2d1e0": {
+  "en": "Action",
+  "ru": "Действие",
+  "text": "작업"
+ },
+ "9a1bc86e": {
+  "en": "Run",
+  "ru": "Выполнить",
+  "text": "실행"
+ },
+ "57c157c0": {
+  "en": "hold flat",
+  "ru": "держите ровно",
+  "text": "평평하게 드세요"
+ },
+ "88ec3f75": {
+  "en": "not calibrated",
+  "ru": "не откалиброван",
+  "text": "보정 안 됨"
+ },
+ "a1b512d9": {
+  "en": "off",
+  "ru": "выключен",
+  "text": "꺼짐"
+ },
+ "2fbe4497": {
+  "en": "fix",
+  "ru": "позиция есть",
+  "text": "위치 확보"
+ },
+ "d7eb0252": {
+  "en": "old date",
+  "ru": "старая дата",
+  "text": "오래된 날짜"
+ },
+ "4153f73f": {
+  "en": "searching",
+  "ru": "поиск",
+  "text": "검색 중"
+ },
+ "513779dc": {
+  "en": "Satellites",
+  "ru": "Спутники",
+  "text": "위성"
+ },
+ "7f70d1b6": {
+  "en": "Latitude",
+  "ru": "Широта",
+  "text": "위도"
+ },
+ "37509630": {
+  "en": "Longitude",
+  "ru": "Долгота",
+  "text": "경도"
+ },
+ "163326b9": {
+  "en": "Clock",
+  "ru": "Часы",
+  "text": "시계"
+ },
+ "07dbc6c1": {
+  "en": "not set",
+  "ru": "не задано",
+  "text": "미설정"
+ },
+ "dd0e4fff": {
+  "en": "manual",
+  "ru": "вручную",
+  "text": "수동"
+ },
+ "e26038f9": {
+  "en": " · trusted",
+  "ru": " · доверено",
+  "text": " · 신뢰됨"
+ },
+ "09227b2f": {
+  "en": "Compass",
+  "ru": "Компас",
+  "text": "나침반"
+ },
+ "8425f8b4": {
+  "en": "calibrated",
+  "ru": "откалиброван",
+  "text": "보정됨"
+ },
+ "0740ad50": {
+  "en": "needs calibration",
+  "ru": "нужна калибровка",
+  "text": "보정 필요"
+ },
+ "ff725bd0": {
+  "en": {
+   "one": "sample",
+   "other": "samples"
+  },
+  "ru": {
+   "one": "отсчёт",
+   "few": "отсчёта",
+   "many": "отсчётов"
+  },
+  "forms": {
+   "other": "샘플 {n}개"
+  }
+ },
+ "2933373c": {
+  "en": "Share position",
+  "ru": "Передать позицию",
+  "text": "위치 공유"
+ },
+ "b5aff4ec": {
+  "en": "Finish calibration",
+  "ru": "Завершить калибровку",
+  "text": "보정 완료"
+ },
+ "8fa2d583": {
+  "en": "Calibrate compass",
+  "ru": "Калибровать компас",
+  "text": "나침반 보정"
+ },
+ "d9601486": {
+  "en": "Advert with GPS",
+  "ru": "Объявление с GPS",
+  "text": "GPS 포함 알림"
+ },
+ "b895df5f": {
+  "en": "Needs a fresh GPS fix",
+  "ru": "Нужна свежая позиция GPS",
+  "text": "새 GPS 위치 필요"
+ },
+ "c672f313": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте во все стороны",
+  "text": "모든 방향으로 돌리세요"
+ },
+ "efa838c3": {
+  "en": "Rotate for 20+ seconds",
+  "ru": "Вращение 20+ секунд",
+  "text": "20초 이상 돌리세요"
+ },
+ "e1038923": {
+  "en": "Phone",
+  "ru": "Телефон",
+  "text": "휴대폰"
+ },
+ "ad8fc0b2": {
+  "en": "Watch",
+  "ru": "Часы",
+  "text": "시계"
+ },
+ "d4ce8148": {
+  "en": "Headphones",
+  "ru": "Наушники",
+  "text": "헤드폰"
+ },
+ "e064027e": {
+  "en": "Phone/watch",
+  "ru": "Телефон/часы",
+  "text": "휴대폰/시계"
+ },
+ "365be1b5": {
+  "en": "BLE device",
+  "ru": "BLE-устройство",
+  "text": "BLE 장치"
+ },
+ "34f25d76": {
+  "en": "Hidden network",
+  "ru": "Скрытая сеть",
+  "text": "숨겨진 네트워크"
+ },
+ "c381ffad": {
+  "en": "Bluetooth busy: probe",
+  "ru": "Bluetooth занят проверкой",
+  "text": "Bluetooth 사용 중: 검사"
+ },
+ "4e0c4df4": {
+  "en": "Bluetooth error",
+  "ru": "Ошибка Bluetooth",
+  "text": "Bluetooth 오류"
+ },
+ "00f492ea": {
+  "en": "Wi-Fi busy: access point",
+  "ru": "Wi-Fi занят точкой доступа",
+  "text": "Wi-Fi 사용 중: 액세스 포인트"
+ },
+ "2787f2e9": {
+  "en": "Wi-Fi busy: probe",
+  "ru": "Wi-Fi занят проверкой",
+  "text": "Wi-Fi 사용 중: 검사"
+ },
+ "9e74a36c": {
+  "en": "Wi-Fi error",
+  "ru": "Ошибка Wi-Fi",
+  "text": "Wi-Fi 오류"
+ },
+ "728f9889": {
+  "en": "Scanning Wi-Fi...",
+  "ru": "Сканирую Wi-Fi...",
+  "text": "Wi-Fi 검색 중..."
+ },
+ "5bfd6d5f": {
+  "en": "closer to centre = stronger",
+  "ru": "ближе к центру - сильнее",
+  "text": "중심에 가까울수록 강함"
+ },
+ "fd8e3640": {
+  "en": {
+   "one": "phone/watch nearby",
+   "other": "phones/watches nearby"
+  },
+  "ru": {
+   "one": "телефон/часы рядом",
+   "few": "телефона/часов рядом",
+   "many": "телефонов/часов рядом"
+  },
+  "forms": {
+   "other": "근처 휴대폰/시계 {n}대"
+  }
+ },
+ "e6255712": {
+  "en": "No signals yet",
+  "ru": "Сигналов пока нет",
+  "text": "아직 신호 없음"
+ },
+ "d06f72f8": {
+  "en": "Home in",
+  "ru": "Пеленг",
+  "text": "추적"
+ },
+ "f639bb47": {
+  "en": "Motion",
+  "ru": "Движение",
+  "text": "움직임"
+ },
+ "dbef9d2d": {
+  "en": " · direct packets only",
+  "ru": " · только прямые пакеты",
+  "text": " · 직접 패킷만"
+ },
+ "5c0889d9": {
+  "en": " · address changes over time",
+  "ru": " · адрес со временем меняется",
+  "text": " · 주소가 수시로 바뀜"
+ },
+ "1556138f": {
+  "en": "channel ",
+  "ru": "канал ",
+  "text": "채널 "
+ },
+ "1558ea4d": {
+  "en": "Lost",
+  "ru": "Потерян",
+  "text": "놓침"
+ },
+ "00de4311": {
+  "en": "No signal",
+  "ru": "Нет сигнала",
+  "text": "신호 없음"
+ },
+ "0d293f43": {
+  "en": "Stronger",
+  "ru": "Теплее",
+  "text": "강해짐"
+ },
+ "9eccd626": {
+  "en": "Weaker",
+  "ru": "Холоднее",
+  "text": "약해짐"
+ },
+ "725f5ba1": {
+  "en": "Steady",
+  "ru": "Ровно",
+  "text": "유지"
+ },
+ "2cb4a1dc": {
+  "en": "keep moving",
+  "ru": "двигайтесь",
+  "text": "계속 이동"
+ },
+ "f005913c": {
+  "en": "peak ",
+  "ru": "пик ",
+  "text": "최고 "
+ },
+ "7412e829": {
+  "en": "Waiting for samples",
+  "ru": "Ожидание отсчётов",
+  "text": "샘플 대기 중"
+ },
+ "9b67b44b": {
+  "en": " adverts/s",
+  "ru": " объявл./с",
+  "text": " 알림/초"
+ },
+ "05a88b8a": {
+  "en": " beacons/s",
+  "ru": " маяков/с",
+  "text": " 비콘/초"
+ },
+ "c95cc2bb": {
+  "en": {
+   "one": "packet",
+   "other": "packets"
+  },
+  "ru": {
+   "one": "пакет",
+   "few": "пакета",
+   "many": "пакетов"
+  },
+  "forms": {
+   "other": "패킷 {n}개"
+  }
+ },
+ "9dec0212": {
+  "en": " s ago",
+  "ru": " с назад",
+  "text": " 초 전"
+ },
+ "68b02b99": {
+  "en": "Mute",
+  "ru": "Без звука",
+  "text": "음소거"
+ },
+ "b0a2d7e0": {
+  "en": "Sound",
+  "ru": "Звук",
+  "text": "소리"
+ },
+ "369317f0": {
+  "en": "Reset peak",
+  "ru": "Сброс пика",
+  "text": "최고치 초기화"
+ },
+ "d2606f92": {
+  "en": "List",
+  "ru": "Список",
+  "text": "목록"
+ },
+ "168f4a8e": {
+  "en": "Turn the access point off",
+  "ru": "Выключите точку доступа",
+  "text": "액세스 포인트를 끄세요"
+ },
+ "24f7b061": {
+  "en": "Beacon for another board",
+  "ru": "Маяк для другой платы",
+  "text": "다른 보드용 비콘"
+ },
+ "66266cbb": {
+  "en": "Sensor",
+  "ru": "Приёмник",
+  "text": "수신기"
+ },
+ "20b1a066": {
+  "en": " frames/s on channel 1",
+  "ru": " кадров/с на канале 1",
+  "text": " 프레임/초, 채널 1"
+ },
+ "ea4b933e": {
+  "en": "beacon ",
+  "ru": "маяк ",
+  "text": "비콘 "
+ },
+ "ce705430": {
+  "en": " frames/s · ",
+  "ru": " кадров/с · ",
+  "text": " 프레임/초 · "
+ },
+ "e3e8ef63": {
+  "en": "waiting: set the other board to CSI beacon",
+  "ru": "ждём маяк: включите «Маяк CSI» на другой плате",
+  "text": "대기 중: 다른 보드를 CSI 비콘으로 설정"
+ },
+ "23abfa05": {
+  "en": "NO WI-FI",
+  "ru": "НЕТ WI-FI",
+  "text": "WI-FI 없음"
+ },
+ "7ff1f086": {
+  "en": "BEACON ON",
+  "ru": "МАЯК РАБОТАЕТ",
+  "text": "비콘 켜짐"
+ },
+ "f0619d14": {
+  "en": "NO BEACON",
+  "ru": "НЕТ МАЯКА",
+  "text": "비콘 없음"
+ },
+ "5b31b3e0": {
+  "en": "CSI FROZEN",
+  "ru": "CSI НЕ МЕНЯЕТСЯ",
+  "text": "CSI 정지됨"
+ },
+ "6642a18e": {
+  "en": "CALIBRATING ",
+  "ru": "КАЛИБРОВКА ",
+  "text": "보정 중 "
+ },
+ "1e6b0825": {
+  "en": " s",
+  "ru": " с",
+  "text": " 초"
+ },
+ "8e2a5ac7": {
+  "en": "MOTION",
+  "ru": "ДВИЖЕНИЕ",
+  "text": "움직임"
+ },
+ "8857a995": {
+  "en": "STILL",
+  "ru": "ТИХО",
+  "text": "정지"
+ },
+ "bbd19641": {
+  "en": "activity ",
+  "ru": "активность ",
+  "text": "활동 "
+ },
+ "c84c187c": {
+  "en": "threshold ",
+  "ru": "порог ",
+  "text": "임계값 "
+ },
+ "fefa7779": {
+  "en": " (default)",
+  "ru": " (по умолч.)",
+  "text": " (기본값)"
+ },
+ "b162cbba": {
+  "en": "Walk between the boards to see the trace",
+  "ru": "Пройдите между платами — появится след",
+  "text": "보드 사이를 걸으면 흔적이 보입니다"
+ },
+ "2ec86228": {
+  "en": "Calibrate with the area empty and still (10 s)",
+  "ru": "Калибровка: 10 с, в зоне никого и ничего не движется",
+  "text": "구역을 비우고 움직임 없이 보정 (10초)"
+ },
+ "9044df68": {
+  "en": "Place the boards 2-5 m apart; motion between them is sensed",
+  "ru": "Расставьте платы в 2-5 м; движение между ними будет видно",
+  "text": "보드를 2-5 m 간격으로 두면 그 사이 움직임 감지"
+ },
+ "f0b1a92b": {
+  "en": "Signals",
+  "ru": "Сигналы",
+  "text": "신호"
+ },
+ "bef7960c": {
+  "en": "Calibrate",
+  "ru": "Калибровка",
+  "text": "보정"
+ },
+ "f0ff5e78": {
+  "en": "Beacon",
+  "ru": "Маяк",
+  "text": "비콘"
+ },
+ "a28e14f1": {
+  "en": "GPS & compass",
+  "ru": "GPS и компас",
+  "text": "GPS 및 나침반"
+ },
+ "447f2127": {
+  "en": "Keys & help",
+  "ru": "Клавиши и подсказки",
+  "text": "키 및 도움말"
+ },
+ "6be9cca9": {
+  "en": "Brightness ",
+  "ru": "Яркость ",
+  "text": "밝기 "
+ },
+ "7b798327": {
+  "en": "compass calibrated",
+  "ru": "компас откалиброван",
+  "text": "나침반 보정됨"
+ },
+ "8898dbce": {
+  "en": "compass not calibrated",
+  "ru": "компас не откалиброван",
+  "text": "나침반 보정 안 됨"
+ },
+ "5486642c": {
+  "en": " relayed",
+  "ru": " переслано",
+  "text": " 중계됨"
+ },
+ "3ac32671": {
+  "en": "What every key does",
+  "ru": "Что делает каждая клавиша",
+  "text": "각 키의 기능"
+ },
+ "a02852fd": {
+  "en": "No maps",
+  "ru": "Карт нет",
+  "text": "지도 없음"
+ },
+ "a514c5d1": {
+  "en": "MeshCore repeater",
+  "ru": "Репитер MeshCore",
+  "text": "MeshCore 리피터"
+ },
+ "1279e0a4": {
+  "en": "MeshCore room server",
+  "ru": "Комната MeshCore",
+  "text": "MeshCore 룸 서버"
+ },
+ "5bd15791": {
+  "en": "Normal: chats, maps, radar",
+  "ru": "Обычный: чаты, карты, радар",
+  "text": "일반: 채팅, 지도, 레이더"
+ },
+ "2788e2b9": {
+  "en": {
+   "one": "tile",
+   "other": "tiles"
+  },
+  "ru": {
+   "one": "тайл",
+   "few": "тайла",
+   "many": "тайлов"
+  },
+  "forms": {
+   "other": "타일 {n}"
+  }
+ },
+ "0210412b": {
+  "en": "Frequency",
+  "ru": "Частота",
+  "text": "주파수"
+ },
+ "f8db3325": {
+  "en": "Bandwidth",
+  "ru": "Полоса",
+  "text": "대역폭"
+ },
+ "ab7cf561": {
+  "en": "Spreading factor",
+  "ru": "Фактор SF",
+  "text": "확산 계수"
+ },
+ "0c25fa5a": {
+  "en": "Coding rate",
+  "ru": "Кодирование CR",
+  "text": "부호율"
+ },
+ "01cea44c": {
+  "en": "TX power",
+  "ru": "Мощность",
+  "text": "송신 출력"
+ },
+ "34e93b9a": {
+  "en": "Our relay limit",
+  "ru": "Предел наших пересылок",
+  "text": "중계 홉 한도"
+ },
+ "56531ac6": {
+  "en": "Relay packets",
+  "ru": "Ретрансляция",
+  "text": "패킷 중계"
+ },
+ "055e7477": {
+  "en": "Name",
+  "ru": "Имя",
+  "text": "이름"
+ },
+ "66b0abc2": {
+  "en": "Language",
+  "ru": "Язык",
+  "text": "언어"
+ },
+ "ee582c07": {
+  "en": "Brightness",
+  "ru": "Яркость",
+  "text": "밝기"
+ },
+ "5e28fa87": {
+  "en": "Sounds",
+  "ru": "Звуки",
+  "text": "소리"
+ },
+ "300b6860": {
+  "en": "Auto lock",
+  "ru": "Автоблокировка",
+  "text": "자동 잠금"
+ },
+ "cb2c63e1": {
+  "en": "Dim screen",
+  "ru": "Гасить экран",
+  "text": "화면 어둡게"
+ },
+ "0d1c950e": {
+  "en": "GPS receiver",
+  "ru": "Приёмник GPS",
+  "text": "GPS 수신기"
+ },
+ "27677b6a": {
+  "en": "UTC offset",
+  "ru": "Смещение UTC",
+  "text": "UTC 오프셋"
+ },
+ "b367cee2": {
+  "en": "Battery shows",
+  "ru": "Батарея в строке",
+  "text": "배터리 표시"
+ },
+ "f53b39c9": {
+  "en": " MHz",
+  "ru": " МГц",
+  "text": " MHz"
+ },
+ "f16f8305": {
+  "en": " kHz",
+  "ru": " кГц",
+  "text": " kHz"
+ },
+ "a9bc47f3": {
+  "en": "Volts",
+  "ru": "Вольты",
+  "text": "전압"
+ },
+ "1ff3c7f9": {
+  "en": "Percent",
+  "ru": "Проценты",
+  "text": "퍼센트"
+ },
+ "e1f39c44": {
+  "en": "1 kHz steps; must match every node",
+  "ru": "Шаг 1 кГц; должна совпадать у всех узлов",
+  "text": "1 kHz 단위, 모든 노드와 같아야 함"
+ },
+ "0cf557e9": {
+  "en": "62.5 / 125 / 250 / 500 kHz",
+  "ru": "62.5 / 125 / 250 / 500 кГц",
+  "text": "62.5 / 125 / 250 / 500 kHz"
+ },
+ "2d1dce7b": {
+  "en": "Higher SF: longer range, slower",
+  "ru": "Больше SF - дальше, но медленнее",
+  "text": "SF가 높을수록 멀리, 느리게"
+ },
+ "c1f2703b": {
+  "en": "Error correction 4/5 to 4/8",
+  "ru": "Избыточность кода 4/5 ... 4/8",
+  "text": "오류 정정 4/5 ~ 4/8"
+ },
+ "0e1a8928": {
+  "en": "Radio chip setting, 0-22 dBm",
+  "ru": "Настройка чипа, 0-22 dBm",
+  "text": "무선 칩 설정, 0-22 dBm"
+ },
+ "9817d2ff": {
+  "en": "Only packets relayed by this device",
+  "ru": "Только пакеты, пересылаемые этим узлом",
+  "text": "이 장치가 중계한 패킷만"
+ },
+ "012cb557": {
+  "en": "Forward other nodes' MeshCore packets",
+  "ru": "Пересылать чужие пакеты MeshCore",
+  "text": "다른 노드의 MeshCore 패킷 중계"
+ },
+ "7c140ddc": {
+  "en": "Applied to the radio when saved",
+  "ru": "Применяется к радио при сохранении",
+  "text": "저장하면 무선에 적용"
+ },
+ "5b61049f": {
+  "en": "OK: edit, 1-24 UTF-8 bytes",
+  "ru": "OK: изменить, 1-24 байта UTF-8",
+  "text": "OK: 편집, 1-24 UTF-8 바이트"
+ },
+ "3b695912": {
+  "en": "Menu language; typing layout is the @ key",
+  "ru": "Язык меню; раскладка ввода - клавиша @",
+  "text": "메뉴 언어; 입력 자판은 @ 키"
+ },
+ "ca6cea83": {
+  "en": "Tone for messages and ACKs",
+  "ru": "Сигнал о сообщениях и подтверждениях",
+  "text": "메시지 및 ACK 알림음"
+ },
+ "08099755": {
+  "en": "0 = off, 30-600 s",
+  "ru": "0 = выкл, 30-600 с",
+  "text": "0 = 끔, 30-600초"
+ },
+ "48d6ff09": {
+  "en": "0 = off, 10-600 s",
+  "ru": "0 = выкл, 10-600 с",
+  "text": "0 = 끔, 10-600초"
+ },
+ "44ec5f43": {
+  "en": "Receiver power",
+  "ru": "Питание приёмника",
+  "text": "수신기 전원"
+ },
+ "6d9fb533": {
+  "en": "Local time, 15 minute steps",
+  "ru": "Местное время, шаг 15 минут",
+  "text": "현지 시간, 15분 단위"
+ },
+ "6f973fc6": {
+  "en": "Status bar: charge estimate or measured voltage",
+  "ru": "Строка состояния: оценка заряда или измеренное напряжение",
+  "text": "상태 표시줄: 추정 잔량 또는 측정 전압"
+ },
+ "327bd270": {
+  "en": "Stored in device memory",
+  "ru": "Сохраняется в памяти устройства",
+  "text": "장치 메모리에 저장"
+ },
+ "bf27012a": {
+  "en": "Save changes",
+  "ru": "Сохранить изменения",
+  "text": "변경 사항 저장"
+ },
+ "9817a867": {
+  "en": "No changes",
+  "ru": "Нет изменений",
+  "text": "변경 없음"
+ },
+ "8759568a": {
+  "en": "Edit name",
+  "ru": "Изменить имя",
+  "text": "이름 편집"
+ },
+ "a33a94f9": {
+  "en": "Cancel",
+  "ru": "Отмена",
+  "text": "취소"
+ },
+ "9a8267a9": {
+  "en": "Change",
+  "ru": "Изменить",
+  "text": "변경"
+ },
+ "0b905bda": {
+  "en": "Save",
+  "ru": "Сохранить",
+  "text": "저장"
+ },
+ "ca4fcb20": {
+  "en": "Next value",
+  "ru": "Дальше",
+  "text": "다음 값"
+ },
+ "eccc8fe2": {
+  "en": "Wi-Fi access point",
+  "ru": "Точка доступа Wi-Fi",
+  "text": "Wi-Fi 액세스 포인트"
+ },
+ "e4fe0cf0": {
+  "en": "Web chat and map upload",
+  "ru": "Веб-чат и загрузка карт",
+  "text": "웹 채팅과 지도 업로드"
+ },
+ "bd132d01": {
+  "en": "Off",
+  "ru": "Выключена",
+  "text": "꺼짐"
+ },
+ "c604a10d": {
+  "en": "Password ",
+  "ru": "Пароль ",
+  "text": "비밀번호 "
+ },
+ "94fa3c79": {
+  "en": "Secure pairing, MeshMesh service",
+  "ru": "Защищённое сопряжение, сервис MeshMesh",
+  "text": "보안 페어링, MeshMesh 서비스"
+ },
+ "3efed7d9": {
+  "en": "Off",
+  "ru": "Выключен",
+  "text": "꺼짐"
+ },
+ "061557aa": {
+  "en": "MeshCore identity",
+  "ru": "Ключ MeshCore",
+  "text": "MeshCore 키"
+ },
+ "01f31114": {
+  "en": "Networks",
+  "ru": "Сети",
+  "text": "네트워크"
+ },
+ "e6b593c8": {
+  "en": "Toggle",
+  "ru": "Переключить",
+  "text": "전환"
+ },
+ "80266824": {
+  "en": "Wrong password or refused: ",
+  "ru": "Неверный пароль или отказ: ",
+  "text": "비밀번호 오류 또는 거부: "
+ },
+ "c2aec922": {
+  "en": "No answer from ",
+  "ru": "Нет ответа от ",
+  "text": "응답 없음: "
+ },
+ "4aea721f": {
+  "en": "No saved network in range",
+  "ru": "Сохранённых сетей рядом нет",
+  "text": "범위 내 저장된 네트워크 없음"
+ },
+ "77943e26": {
+  "en": "Connection lost",
+  "ru": "Связь с сетью потеряна",
+  "text": "연결 끊김"
+ },
+ "3517d70a": {
+  "en": "Wi-Fi scan failed",
+  "ru": "Сбой поиска сетей",
+  "text": "Wi-Fi 검색 실패"
+ },
+ "c0a8f4d6": {
+  "en": "Wi-Fi scan timed out",
+  "ru": "Поиск сетей не завершился",
+  "text": "Wi-Fi 검색 시간 초과"
+ },
+ "84fb5225": {
+  "en": "Clock not set",
+  "ru": "Часы не установлены",
+  "text": "시계 미설정"
+ },
+ "d85b75c4": {
+  "en": "SSID 1-32 bytes, password empty or 8-63",
+  "ru": "Имя 1-32 байта, пароль пустой или 8-63",
+  "text": "SSID 1-32바이트, 비밀번호 없음 또는 8-63"
+ },
+ "32e3b1d4": {
+  "en": "Tile is not 256 or 512 px",
+  "ru": "Тайл не 256/512 пикселей",
+  "text": "타일이 256/512 px가 아님"
+ },
+ "a218bb10": {
+  "en": "Not a PNG image",
+  "ru": "Сервер вернул не PNG",
+  "text": "PNG 이미지가 아님"
+ },
+ "9b52bbc9": {
+  "en": "No location",
+  "ru": "Положение по IP не найдено",
+  "text": "IP 위치를 찾지 못함"
+ },
+ "fe92dca2": {
+  "en": "SD full: web tiles not cached",
+  "ru": "SD заполнена: тайлы не сохраняются",
+  "text": "SD 가득 참: 웹 타일 저장 안 됨"
+ },
+ "45646152": {
+  "en": "Wi-Fi client on",
+  "ru": "Wi-Fi-клиент включён",
+  "text": "Wi-Fi 클라이언트 켜짐"
+ },
+ "71a638af": {
+  "en": "Wi-Fi client off",
+  "ru": "Wi-Fi-клиент выключен",
+  "text": "Wi-Fi 클라이언트 꺼짐"
+ },
+ "674356ff": {
+  "en": "Connecting to ",
+  "ru": "Подключение к ",
+  "text": "연결 중: "
+ },
+ "6fa9102f": {
+  "en": "Forgotten: ",
+  "ru": "Забыта: ",
+  "text": "삭제됨: "
+ },
+ "a2c6b137": {
+  "en": "Searching...",
+  "ru": "Поиск сетей...",
+  "text": "검색 중..."
+ },
+ "18631a5c": {
+  "en": "Wi-Fi client",
+  "ru": "Wi-Fi-клиент",
+  "text": "Wi-Fi 클라이언트"
+ },
+ "397eff34": {
+  "en": "Turn the client on to find networks",
+  "ru": "Включите клиент, чтобы найти сети",
+  "text": "클라이언트를 켜야 네트워크를 찾습니다"
+ },
+ "d54b728f": {
+  "en": "Searching for networks...",
+  "ru": "Поиск сетей...",
+  "text": "네트워크 검색 중..."
+ },
+ "292b3500": {
+  "en": "connected",
+  "ru": "подключено",
+  "text": "연결됨"
+ },
+ "7dd55181": {
+  "en": "saved",
+  "ru": "сохранена",
+  "text": "저장됨"
+ },
+ "04f9d959": {
+  "en": "saved, away",
+  "ru": "сохр., не рядом",
+  "text": "저장됨, 범위 밖"
+ },
+ "c1da06cb": {
+  "en": "open",
+  "ru": "открытая",
+  "text": "개방"
+ },
+ "19405072": {
+  "en": "On/off",
+  "ru": "Вкл/выкл",
+  "text": "켜기/끄기"
+ },
+ "9ac84c77": {
+  "en": "Connect",
+  "ru": "Подключить",
+  "text": "연결"
+ },
+ "89af1769": {
+  "en": "Forget",
+  "ru": "Забыть",
+  "text": "삭제"
+ },
+ "08a7df66": {
+  "en": "Rescan",
+  "ru": "Обновить",
+  "text": "재검색"
+ },
+ "f1102a51": {
+  "en": "@ (input language)",
+  "ru": "@ (язык ввода)",
+  "text": "@ (입력 언어)"
+ },
+ "64ca9615": {
+  "en": "hold ADV (GPS)",
+  "ru": "удерж. ADV (GPS)",
+  "text": "ADV 길게 (GPS)"
+ },
+ "2b18cfad": {
+  "en": "Left",
+  "ru": "Влево",
+  "text": "왼쪽"
+ },
+ "734cec5d": {
+  "en": "Up",
+  "ru": "Вверх",
+  "text": "위"
+ },
+ "2a7c8f4e": {
+  "en": "Down",
+  "ru": "Вниз",
+  "text": "아래"
+ },
+ "6e1282a0": {
+  "en": "Right",
+  "ru": "Вправо",
+  "text": "오른쪽"
+ },
+ "e3077ca9": {
+  "en": "space",
+  "ru": "пробел",
+  "text": "공백"
+ },
+ "d609b7de": {
+  "en": "Keyboard",
+  "ru": "Клавиатура",
+  "text": "키보드"
+ },
+ "837d5b49": {
+  "en": "n/a",
+  "ru": "нет",
+  "text": "없음"
+ },
+ "aef230e2": {
+  "en": "Relayed",
+  "ru": "Переслано",
+  "text": "중계됨"
+ },
+ "ebd1789d": {
+  "en": "Rejected",
+  "ru": "Отклонено",
+  "text": "거부됨"
+ },
+ "9e543f5c": {
+  "en": "Uptime",
+  "ru": "Работа",
+  "text": "가동 시간"
+ },
+ "a6022a7a": {
+  "en": "Boot ",
+  "ru": "Загрузка ",
+  "text": "부팅 "
+ },
+ "fd249ae3": {
+  "en": " · last key: ",
+  "ru": " · последняя клавиша: ",
+  "text": " · 마지막 키: "
+ },
+ "fe8668ce": {
+  "en": "Crypto test + sound",
+  "ru": "Тест шифрования и звука",
+  "text": "암호화 + 소리 테스트"
+ },
+ "537d87a8": {
+  "en": "Ball",
+  "ru": "Шар",
+  "text": "볼"
+ },
+ "39012b21": {
+  "en": "Move: menu, lists, map",
+  "ru": "Перемещение: меню, списки, карта",
+  "text": "이동: 메뉴, 목록, 지도"
+ },
+ "a9849595": {
+  "en": "Click",
+  "ru": "Нажатие",
+  "text": "클릭"
+ },
+ "ad13b2cf": {
+  "en": "Open / send",
+  "ru": "Открыть / отправить",
+  "text": "열기 / 보내기"
+ },
+ "8082be11": {
+  "en": "Hold ball",
+  "ru": "Удерж. шар",
+  "text": "볼 길게"
+ },
+ "da9299e5": {
+  "en": "Unlock; in chat: Russian layout",
+  "ru": "Вход; в чате: русская раскладка",
+  "text": "잠금 해제; 채팅: 러시아어 자판"
+ },
+ "dd425d56": {
+  "en": "Delete; with no text: back",
+  "ru": "Удалить; без текста: назад",
+  "text": "삭제; 텍스트 없으면 뒤로"
+ },
+ "609be88e": {
+  "en": "in text: switch RU/EN",
+  "ru": "в тексте: RU/EN",
+  "text": "입력 중: RU/EN 전환"
+ },
+ "de82dc1b": {
+  "en": "Map: saved maps",
+  "ru": "Карта: список карт",
+  "text": "지도: 저장된 지도"
+ },
+ "1e70c4ca": {
+  "en": "Map zoom",
+  "ru": "Масштаб карты",
+  "text": "지도 배율"
+ },
+ "75783192": {
+  "en": "Nodes: show on map",
+  "ru": "Узлы: показать на карте",
+  "text": "노드: 지도에 표시"
+ },
+ "1bd6e4b7": {
+  "en": "Menu: DEL until the tiles",
+  "ru": "Меню: DEL до плиток",
+  "text": "메뉴: 타일까지 DEL"
+ },
+ "b0916d3b": {
+  "en": "Map; L - saved maps",
+  "ru": "Карта; L - список карт",
+  "text": "지도; L - 저장된 지도"
+ },
+ "ffad6b6e": {
+  "en": "Menu",
+  "ru": "Главное меню",
+  "text": "메인 메뉴"
+ },
+ "e446fc2f": {
+  "en": "Previous screen",
+  "ru": "Предыдущий экран",
+  "text": "이전 화면"
+ },
+ "60ca84b7": {
+  "en": "Announce this node; hold: GPS on/off",
+  "ru": "Объявить узел; удерж.: GPS вкл/выкл",
+  "text": "노드 알리기; 길게: GPS 켜기/끄기"
+ },
+ "1d4452cb": {
+  "en": "function key, not Sym+@: RU/EN in chat",
+  "ru": "функц. клавиша (не Sym+@): RU/EN в чате",
+  "text": "기능 키 (Sym+@ 아님): 채팅 RU/EN"
+ },
+ "db1e8e1b": {
+  "en": "Lock screen (there is no microphone)",
+  "ru": "Блокировка (микрофона нет)",
+  "text": "화면 잠금 (마이크 없음)"
+ },
+ "61a3daa2": {
+  "en": "Open / send; hold: unlock",
+  "ru": "Открыть / отправить; удерж.: вход",
+  "text": "열기 / 보내기; 길게: 잠금 해제"
+ },
+ "9fb377cf": {
+  "en": "in text: switch RU/EN; Right: capital",
+  "ru": "в тексте: RU/EN; -> : заглавная",
+  "text": "입력 중: RU/EN 전환; ->: 대문자"
+ },
+ "7311d31b": {
+  "en": "Russian layout",
+  "ru": "Русская раскладка",
+  "text": "러시아어 자판"
+ },
+ "12ff5cad": {
+  "en": "Last from ",
+  "ru": "Последнее от ",
+  "text": "최근: "
+ },
+ "08d56a77": {
+  "en": {
+   "one": "new message",
+   "other": "new messages"
+  },
+  "ru": {
+   "one": "новое сообщение",
+   "few": "новых сообщения",
+   "many": "новых сообщений"
+  },
+  "forms": {
+   "other": "새 메시지 {n}개"
+  }
+ },
+ "7a531229": {
+  "en": "The repeater keeps relaying",
+  "ru": "Репитер продолжает пересылку",
+  "text": "리피터는 계속 중계합니다"
+ },
+ "f3158c93": {
+  "en": "The room keeps serving members",
+  "ru": "Комната продолжает работать",
+  "text": "룸은 계속 운영됩니다"
+ },
+ "2bc700f4": {
+  "en": "Radio and GPS keep working",
+  "ru": "Радио и GPS продолжают работать",
+  "text": "무선과 GPS는 계속 작동합니다"
+ },
+ "b72fb804": {
+  "en": "Radio error",
+  "ru": "Ошибка радио",
+  "text": "무선 오류"
+ },
+ "7ca7875d": {
+  "en": "Hold to unlock",
+  "ru": "Удерживайте для входа",
+  "text": "길게 눌러 잠금 해제"
+ },
+ "06e4383f": {
+  "en": "Network key · 64 hex",
+  "ru": "Ключ сети · 64 hex",
+  "text": "네트워크 키 · 64 hex"
+ },
+ "4b20829b": {
+  "en": "Wi-Fi password: ",
+  "ru": "Пароль Wi-Fi: ",
+  "text": "Wi-Fi 비밀번호: "
+ },
+ "1fc05d6f": {
+  "en": "Device name",
+  "ru": "Имя устройства",
+  "text": "장치 이름"
+ },
+ "20676a92": {
+  "en": " bytes",
+  "ru": " байт",
+  "text": " 바이트"
+ },
+ "60fa6a70": {
+  "en": "8-63 characters; -> after a letter: capital",
+  "ru": "8-63 символа; -> после буквы: заглавная",
+  "text": "8-63자; 글자 뒤 ->: 대문자"
+ },
+ "7a1da0b4": {
+  "en": "OK: post   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK: 게시   BACK: 취소"
+ },
+ "4bff5478": {
+  "en": "OK: save   BACK: cancel",
+  "ru": "OK: сохранить   BACK: отменить",
+  "text": "OK: 저장   BACK: 취소"
+ },
+ "5542d75b": {
+  "en": "Chess · ",
+  "ru": "Шахматы · ",
+  "text": "체스 · "
+ },
+ "99d92ee5": {
+  "en": "Input: Russian (phonetic)",
+  "ru": "Ввод: русский (фонетический)",
+  "text": "입력: 러시아어 (발음식)"
+ },
+ "f298c8d3": {
+  "en": "Input: English",
+  "ru": "Ввод: английский",
+  "text": "입력: 영어"
+ },
+ "c79e0520": {
+  "en": "Russian input: phonetic",
+  "ru": "Русский ввод: фонетический",
+  "text": "러시아어 입력: 발음식"
+ },
+ "e8ecae43": {
+  "en": "2x space: RU/EN   Shift or Right after a letter: capital",
+  "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
+  "text": "스페이스 2번: RU/EN   글자 뒤 Shift나 ->: 대문자"
+ },
+ "2ae7cabc": {
+  "en": "Settings saved",
+  "ru": "Настройки сохранены",
+  "text": "설정 저장됨"
+ },
+ "315b16c1": {
+  "en": "Radio busy, try again",
+  "ru": "Радио занято, повторите",
+  "text": "무선 사용 중, 다시 시도"
+ },
+ "0691ba75": {
+  "en": "Path reset: next message floods",
+  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
+  "text": "경로 초기화: 다음 메시지는 flood"
+ },
+ "7a14a9e8": {
+  "en": "Path reset failed",
+  "ru": "Не удалось сбросить путь",
+  "text": "경로 초기화 실패"
+ },
+ "08d31104": {
+  "en": "OK again removes the contact",
+  "ru": "Нажмите OK ещё раз для удаления",
+  "text": "OK를 한 번 더 누르면 연락처 삭제"
+ },
+ "17781681": {
+  "en": "Contact removed; its next advert adds it again",
+  "ru": "Контакт удалён; новое объявление вернёт его",
+  "text": "연락처 삭제됨; 다음 알림이 오면 다시 추가"
+ },
+ "3e33cd0f": {
+  "en": "Cannot remove while sending",
+  "ru": "Нельзя удалить во время отправки",
+  "text": "전송 중에는 삭제 불가"
+ },
+ "cb8d0572": {
+  "en": "Password: 8-63 characters",
+  "ru": "Пароль: 8-63 символа",
+  "text": "비밀번호: 8-63자"
+ },
+ "d4544911": {
+  "en": "Name: 1-24 UTF-8 bytes",
+  "ru": "Имя: 1-24 байта UTF-8",
+  "text": "이름: 1-24 UTF-8 바이트"
+ },
+ "0b2e473c": {
+  "en": "Not in this mode: Settings > Device mode",
+  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
+  "text": "이 모드에서 불가: 설정 > 장치 모드"
+ },
+ "cea9ae4c": {
+  "en": "Node announced",
+  "ru": "Узел объявлен",
+  "text": "노드 알림 전송"
+ },
+ "5b43376d": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить узел",
+  "text": "알림 전송 실패"
+ },
+ "aa9ad8ae": {
+  "en": "Message queued",
+  "ru": "Сообщение в очереди",
+  "text": "메시지 대기 중"
+ },
+ "5035dc01": {
+  "en": "Cannot send: empty, full queue or radio",
+  "ru": "Не отправлено: текст, очередь или радио",
+  "text": "전송 불가: 빈 글, 대기열 가득 또는 무선"
+ },
+ "d7961dd2": {
+  "en": "UTF-8 byte limit: ",
+  "ru": "Лимит байт UTF-8: ",
+  "text": "UTF-8 바이트 한도: "
+ },
+ "7a7a7a09": {
+  "en": "Waiting for GPS fix",
+  "ru": "Ожидание GPS-позиции",
+  "text": "GPS 위치 대기 중"
+ },
+ "916ad0e6": {
+  "en": "This node has not shared GPS",
+  "ru": "Узел пока не передал GPS",
+  "text": "이 노드는 GPS를 공유하지 않음"
+ },
+ "26314428": {
+  "en": "This board is now the beacon",
+  "ru": "Эта плата — маяк",
+  "text": "이제 이 보드가 비콘"
+ },
+ "c3f96c6f": {
+  "en": "This board is now the sensor",
+  "ru": "Эта плата — приёмник",
+  "text": "이제 이 보드가 수신기"
+ },
+ "a4a4ec2c": {
+  "en": "Peak reset",
+  "ru": "Пик сброшен",
+  "text": "최고치 초기화"
+ },
+ "8b1ba9b1": {
+  "en": "Map unavailable",
+  "ru": "Карта недоступна",
+  "text": "지도 사용 불가"
+ },
+ "a0b9db2e": {
+  "en": "Nothing to save",
+  "ru": "Изменений нет",
+  "text": "저장할 내용 없음"
+ },
+ "0a9fb2e4": {
+  "en": "Internet over Wi-Fi is off in this mode",
+  "ru": "Интернет по Wi-Fi выключен в этом режиме",
+  "text": "이 모드에서는 Wi-Fi 인터넷 꺼짐"
+ },
+ "b477e636": {
+  "en": "Public key: ",
+  "ru": "Открытый ключ: ",
+  "text": "공개 키: "
+ },
+ "1992c148": {
+  "en": "Position shared",
+  "ru": "Позиция передана",
+  "text": "위치 공유됨"
+ },
+ "3d7566e2": {
+  "en": "Calibration saved",
+  "ru": "Калибровка сохранена",
+  "text": "보정 저장됨"
+ },
+ "338a95a4": {
+  "en": "Rotate wider, at least 20 seconds",
+  "ru": "Вращайте шире, не менее 20 секунд",
+  "text": "더 크게, 20초 이상 돌리세요"
+ },
+ "f96aca09": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте устройство во все стороны",
+  "text": "장치를 모든 방향으로 돌리세요"
+ },
+ "c3938153": {
+  "en": "No signal selected",
+  "ru": "Сигнал не выбран",
+  "text": "선택된 신호 없음"
+ },
+ "51fd901e": {
+  "en": "Calibrating: keep the area still for 10 s",
+  "ru": "Калибровка: 10 с без движения в зоне",
+  "text": "보정 중: 10초간 움직임 없이 유지"
+ },
+ "9b3514a0": {
+  "en": "Needs a heard beacon",
+  "ru": "Нужен услышанный маяк",
+  "text": "수신된 비콘 필요"
+ },
+ "fa65940f": {
+  "en": "Ping on",
+  "ru": "Звук пеленга включён",
+  "text": "추적음 켜짐"
+ },
+ "21bdb533": {
+  "en": "Device sound is off in settings",
+  "ru": "Звук устройства выключен в настройках",
+  "text": "장치 소리가 설정에서 꺼져 있음"
+ },
+ "d3c484a4": {
+  "en": "Ping off",
+  "ru": "Звук пеленга выключен",
+  "text": "추적음 꺼짐"
+ },
+ "0eb32dbe": {
+  "en": "Encryption test passed",
+  "ru": "Проверка шифрования пройдена",
+  "text": "암호화 테스트 통과"
+ },
+ "4d624476": {
+  "en": "Encryption test failed",
+  "ru": "Ошибка шифрования",
+  "text": "암호화 테스트 실패"
+ },
+ "47cf8db9": {
+  "en": "New message from ",
+  "ru": "Сообщение от ",
+  "text": "새 메시지: "
+ },
+ "2d151551": {
+  "en": "Delivered to ",
+  "ru": "Доставлено: ",
+  "text": "전달됨: "
+ },
+ "53c958eb": {
+  "en": "Queued: waiting for delivery",
+  "ru": "Ожидание подтверждения",
+  "text": "대기: 전달 확인 대기 중"
+ },
+ "25fb6d11": {
+  "en": "Queued: broadcast",
+  "ru": "Сообщение в общем чате отправляется",
+  "text": "대기: 전체 채널로 전송 중"
+ },
+ "404ceb1a": {
+  "en": "No delivery ACK",
+  "ru": "Получатель не подтвердил доставку",
+  "text": "전달 ACK 없음"
+ },
+ "35b6fabd": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи по радио",
+  "text": "무선 송신 오류"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "켬"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "끔"
+ },
+ "4d885d93": {
+  "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
+  "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
+  "text": "수는 전달 확인이 있는 MeshCore 개인 메시지로 전송됩니다. 두 사람 모두 체스가 있는 MeshMesh M9이 필요합니다."
+ },
+ "5d22309c": {
+  "en": "Remove",
+  "ru": "Удалить",
+  "text": "삭제"
+ },
+ "d528eacc": {
+  "en": "You play",
+  "ru": "Вы играете",
+  "text": "내 색"
+ },
+ "62783142": {
+  "en": "White",
+  "ru": "Белыми",
+  "text": "백"
+ },
+ "6f9e93b0": {
+  "en": "Black",
+  "ru": "Чёрными",
+  "text": "흑"
+ },
+ "e0f041cb": {
+  "en": "Random",
+  "ru": "Случайно",
+  "text": "무작위"
+ },
+ "6ca6fac0": {
+  "en": "No chat contacts yet",
+  "ru": "Чат-контактов пока нет",
+  "text": "채팅 연락처 없음"
+ },
+ "789beead": {
+  "en": "Press ADV to announce this node and wait",
+  "ru": "Нажмите ADV, чтобы объявить узел, и",
+  "text": "ADV를 눌러 내 노드를 알리고"
+ },
+ "588b49c2": {
+  "en": "for the other player's announcement",
+  "ru": "дождитесь объявления соперника",
+  "text": "상대의 알림을 기다리세요"
+ },
+ "7e847eaa": {
+  "en": "Games",
+  "ru": "Партии",
+  "text": "대국"
+ },
+ "c07ba764": {
+  "en": "Challenge",
+  "ru": "Вызвать",
+  "text": "신청"
+ },
+ "ae88f6be": {
+  "en": "Colour",
+  "ru": "Цвет",
+  "text": "색"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "연락처"
+ },
+ "aa44e5b7": {
+  "en": "Waiting for reply",
+  "ru": "Ждём ответа",
+  "text": "응답 대기 중"
+ },
+ "dca15068": {
+  "en": "OK accepts",
+  "ru": "OK — принять",
+  "text": "OK: 수락"
+ },
+ "3fac31fc": {
+  "en": "No moves yet",
+  "ru": "Ходов ещё нет",
+  "text": "아직 수 없음"
+ },
+ "85c99d8f": {
+  "en": "You",
+  "ru": "Вы",
+  "text": "나"
+ },
+ "20d5b641": {
+  "en": "You offered a draw",
+  "ru": "Вы предложили ничью",
+  "text": "무승부를 제안함"
+ },
+ "75f6ec15": {
+  "en": "Draw? D accepts",
+  "ru": "Ничья? D — да",
+  "text": "무승부? D: 수락"
+ },
+ "c277d5da": {
+  "en": "Promote to",
+  "ru": "Превратить в",
+  "text": "승격:"
+ },
+ "740c7358": {
+  "en": "<> choose  OK put",
+  "ru": "<> выбор  OK поставить",
+  "text": "<> 선택  OK 놓기"
+ },
+ "670f51b6": {
+  "en": "Chess keys",
+  "ru": "Клавиши шахмат",
+  "text": "체스 키"
+ },
+ "ac1b6c25": {
+  "en": "Move the cursor (also ^v)",
+  "ru": "Курсор по доске (и ^v)",
+  "text": "커서 이동 (^v도 가능)"
+ },
+ "fa49730e": {
+  "en": "Take a piece / put it",
+  "ru": "Взять фигуру / поставить",
+  "text": "기물 들기 / 놓기"
+ },
+ "f5175dd0": {
+  "en": "Put back / to the games",
+  "ru": "Вернуть фигуру / к партиям",
+  "text": "되돌리기 / 대국 목록"
+ },
+ "ce172863": {
+  "en": "Offer a draw / accept one",
+  "ru": "Предложить / принять ничью",
+  "text": "무승부 제안 / 수락"
+ },
+ "034308ea": {
+  "en": "Resign (press twice)",
+  "ru": "Сдаться (дважды)",
+  "text": "기권 (두 번 누르기)"
+ },
+ "248514f4": {
+  "en": "Resend what was not delivered",
+  "ru": "Повторить недоставленное",
+  "text": "전달 안 된 것 재전송"
+ },
+ "478d1b4e": {
+  "en": "Rematch after the game",
+  "ru": "Реванш после партии",
+  "text": "대국 후 재대국"
+ },
+ "19708f45": {
+  "en": "Decline, cancel, remove",
+  "ru": "Отказ, отмена, удаление",
+  "text": "거절, 취소, 삭제"
+ },
+ "f1404ee2": {
+  "en": "Moves are sent as direct messages with ACK.",
+  "ru": "Ходы идут личными сообщениями с ACK.",
+  "text": "수는 ACK가 있는 개인 메시지로 전송됩니다."
+ },
+ "62d398c0": {
+  "en": "The game was removed",
+  "ru": "Партия удалена",
+  "text": "대국이 삭제됨"
+ },
+ "ba7b24ea": {
+  "en": "Piece",
+  "ru": "Фигура",
+  "text": "기물"
+ },
+ "2272813d": {
+  "en": "Put",
+  "ru": "Поставить",
+  "text": "놓기"
+ },
+ "cd4e738f": {
+  "en": "Accept",
+  "ru": "Принять",
+  "text": "수락"
+ },
+ "65bd4e6a": {
+  "en": "Decline",
+  "ru": "Отказать",
+  "text": "거절"
+ },
+ "a7c7b3a4": {
+  "en": "Resend",
+  "ru": "Повторить",
+  "text": "재전송"
+ },
+ "1654c55b": {
+  "en": "Cancel",
+  "ru": "Отменить",
+  "text": "취소"
+ },
+ "bb680145": {
+  "en": "Rematch",
+  "ru": "Реванш",
+  "text": "재대국"
+ },
+ "379c485e": {
+  "en": "Sure?",
+  "ru": "Сдаться?",
+  "text": "기권?"
+ },
+ "bb312581": {
+  "en": "Resign",
+  "ru": "Сдаться",
+  "text": "기권"
+ },
+ "9cf92c33": {
+  "en": "Put back",
+  "ru": "Вернуть",
+  "text": "되돌리기"
+ },
+ "75714961": {
+  "en": "Draw: yes",
+  "ru": "Ничья: да",
+  "text": "무승부: 예"
+ },
+ "03070e67": {
+  "en": "Not sent now: will resend automatically",
+  "ru": "Сейчас не отправлено: повторю автоматически",
+  "text": "지금 전송 안 됨: 자동 재전송 예정"
+ },
+ "019d15b0": {
+  "en": "Move refused",
+  "ru": "Ход не принят",
+  "text": "수 거부됨"
+ },
+ "42157e73": {
+  "en": "Accepted: ",
+  "ru": "Принято: ",
+  "text": "수락: "
+ },
+ "1e3621c0": {
+  "en": "you play ",
+  "ru": "вы играете ",
+  "text": "나는 "
+ },
+ "496afda0": {
+  "en": "Wait for their move",
+  "ru": "Дождитесь хода соперника",
+  "text": "상대의 수를 기다리세요"
+ },
+ "b7bda7d6": {
+  "en": "Waiting for the reply",
+  "ru": "Ждём ответа на вызов",
+  "text": "응답 대기 중"
+ },
+ "13fb6ab3": {
+  "en": "The game is over",
+  "ru": "Партия окончена",
+  "text": "대국 종료"
+ },
+ "aa62f4a9": {
+  "en": "This piece cannot move",
+  "ru": "Эта фигура не может ходить",
+  "text": "이 기물은 움직일 수 없음"
+ },
+ "2a10be85": {
+  "en": "Choose one of your pieces",
+  "ru": "Выберите свою фигуру",
+  "text": "내 기물을 선택하세요"
+ },
+ "d3394ad3": {
+  "en": "Not allowed: the king is in check",
+  "ru": "Нельзя: королю шах",
+  "text": "불가: 킹이 체크 상태"
+ },
+ "07fd4beb": {
+  "en": "Only finished games can be removed",
+  "ru": "Удалить можно только оконченную партию",
+  "text": "끝난 대국만 삭제 가능"
+ },
+ "a67b669f": {
+  "en": "DEL again removes the game",
+  "ru": "DEL ещё раз удалит партию",
+  "text": "DEL을 한 번 더 누르면 대국 삭제"
+ },
+ "3acc91e4": {
+  "en": "Game removed",
+  "ru": "Партия удалена",
+  "text": "대국 삭제됨"
+ },
+ "234a4c4f": {
+  "en": "Not sent now: will resend",
+  "ru": "Сейчас не отправлено: повторю",
+  "text": "지금 전송 안 됨: 재전송 예정"
+ },
+ "85d45442": {
+  "en": "Challenge sent: you play ",
+  "ru": "Вызов отправлен: вы играете ",
+  "text": "신청 보냄: 나는 "
+ },
+ "ce465914": {
+  "en": "Sent again",
+  "ru": "Отправлено повторно",
+  "text": "다시 보냄"
+ },
+ "4ed0ad26": {
+  "en": "Already sending",
+  "ru": "Уже отправляется",
+  "text": "이미 전송 중"
+ },
+ "bd192d17": {
+  "en": "Radio busy, will resend",
+  "ru": "Радио занято, повторю автоматически",
+  "text": "무선 사용 중, 자동 재전송 예정"
+ },
+ "a64d2944": {
+  "en": "Nothing to resend",
+  "ru": "Повторять нечего",
+  "text": "재전송할 것 없음"
+ },
+ "08e7b429": {
+  "en": "Draw accepted",
+  "ru": "Ничья принята",
+  "text": "무승부 수락됨"
+ },
+ "7146cbaf": {
+  "en": "Draw offered",
+  "ru": "Ничья предложена",
+  "text": "무승부 제안됨"
+ },
+ "6859f362": {
+  "en": "Draw already offered",
+  "ru": "Ничья уже предложена",
+  "text": "이미 무승부 제안함"
+ },
+ "6b3a84bd": {
+  "en": "No game in progress",
+  "ru": "Партия не идёт",
+  "text": "진행 중인 대국 없음"
+ },
+ "aa37fc61": {
+  "en": "X again resigns the game",
+  "ru": "X ещё раз — сдаться",
+  "text": "X를 한 번 더 누르면 기권"
+ },
+ "12fd654c": {
+  "en": "You resigned",
+  "ru": "Вы сдались",
+  "text": "기권함"
+ },
+ "0439dd72": {
+  "en": "Finish this game first",
+  "ru": "Сначала завершите партию",
+  "text": "먼저 이 대국을 끝내세요"
+ },
+ "a4ae14df": {
+  "en": "Rematch sent: you play ",
+  "ru": "Реванш: вы играете ",
+  "text": "재대국 신청: 나는 "
+ },
+ "29d3c3f3": {
+  "en": "Challenge cancelled",
+  "ru": "Вызов отменён",
+  "text": "신청 취소됨"
+ },
+ "aa46b89b": {
+  "en": "Resign with X",
+  "ru": "Сдаться — клавиша X",
+  "text": "기권은 X 키"
+ },
+ "47db78a2": {
+  "en": "White",
+  "ru": "белыми",
+  "text": "백"
+ },
+ "9bf07c85": {
+  "en": "White",
+  "ru": "белые",
+  "text": "백"
+ },
+ "858db4c1": {
+  "en": "Black",
+  "ru": "чёрными",
+  "text": "흑"
+ },
+ "187474f6": {
+  "en": "Black",
+  "ru": "чёрные",
+  "text": "흑"
+ },
+ "48b6d938": {
+  "en": "Challenge sent",
+  "ru": "Вызов отправлен",
+  "text": "신청 보냄"
+ },
+ "6bad4c1a": {
+  "en": "Challenges you: you play ",
+  "ru": "Вызывает вас: вы играете ",
+  "text": "대국 신청: 나는 "
+ },
+ "1a193c76": {
+  "en": "Offers a draw",
+  "ru": "Предлагает ничью",
+  "text": "무승부 제안"
+ },
+ "cb3d85dc": {
+  "en": "Your move: check!",
+  "ru": "Ваш ход: шах!",
+  "text": "내 차례: 체크!"
+ },
+ "4d46f025": {
+  "en": "Your move",
+  "ru": "Ваш ход",
+  "text": "내 차례"
+ },
+ "a6f14a0e": {
+  "en": "Their move",
+  "ru": "Ход соперника",
+  "text": "상대 차례"
+ },
+ "aacd4928": {
+  "en": "Challenge declined",
+  "ru": "Вызов отклонён",
+  "text": "신청 거절됨"
+ },
+ "549a1bb3": {
+  "en": "Game cancelled",
+  "ru": "Партия отменена",
+  "text": "대국 취소됨"
+ },
+ "61991a0e": {
+  "en": "You won",
+  "ru": "Победа",
+  "text": "승리"
+ },
+ "dfb81104": {
+  "en": "You lost",
+  "ru": "Поражение",
+  "text": "패배"
+ },
+ "eab5e796": {
+  "en": "Draw",
+  "ru": "Ничья",
+  "text": "무승부"
+ },
+ "0d93aa70": {
+  "en": ": checkmate",
+  "ru": ": мат",
+  "text": ": 체크메이트"
+ },
+ "92baa128": {
+  "en": ": they resigned",
+  "ru": ": соперник сдался",
+  "text": ": 상대 기권"
+ },
+ "5bfee96c": {
+  "en": ": you resigned",
+  "ru": ": вы сдались",
+  "text": ": 내가 기권"
+ },
+ "c0fae946": {
+  "en": ": stalemate",
+  "ru": ": пат",
+  "text": ": 스테일메이트"
+ },
+ "c63b402d": {
+  "en": ": repetition",
+  "ru": ": повторение",
+  "text": ": 반복"
+ },
+ "cf97e7ca": {
+  "en": ": 50 moves",
+  "ru": ": 50 ходов",
+  "text": ": 50수 규칙"
+ },
+ "8d1fda3e": {
+  "en": ": no mating material",
+  "ru": ": мало фигур",
+  "text": ": 기물 부족"
+ },
+ "7d67f337": {
+  "en": ": move limit",
+  "ru": ": предел ходов",
+  "text": ": 수 제한"
+ },
+ "ce25c704": {
+  "en": " by agreement",
+  "ru": " по соглашению",
+  "text": " (합의)"
+ },
+ "7b9cad7a": {
+  "en": "sending",
+  "ru": "отправляется",
+  "text": "전송 중"
+ },
+ "61133695": {
+  "en": "sent, no ACK yet",
+  "ru": "отправлено, ждём ACK",
+  "text": "전송됨, ACK 대기"
+ },
+ "b8709d46": {
+  "en": "delivered",
+  "ru": "доставлено",
+  "text": "전달됨"
+ },
+ "4b634e5b": {
+  "en": "not delivered (R)",
+  "ru": "не доставлено (R)",
+  "text": "전달 안 됨 (R)"
+ },
+ "218c5dac": {
+  "en": "not delivered, resending",
+  "ru": "не доставлено, повторяю",
+  "text": "전달 안 됨, 재전송 중"
+ },
+ "12e4ca70": {
+  "en": "not delivered, retry now",
+  "ru": "не доставлено, повтор сейчас",
+  "text": "전달 안 됨, 곧 재시도"
+ },
+ "8015d4d5": {
+  "en": "not delivered, retry in ",
+  "ru": "не доставлено, повтор через ",
+  "text": "전달 안 됨, 재시도까지 "
+ },
+ "7aa40299": {
+  "en": "With contacts",
+  "ru": "С контактами",
+  "text": "연락처와 대국"
+ },
+ "3297560c": {
+  "en": {
+   "one": "game waits",
+   "other": "games wait"
+  },
+  "ru": {
+   "one": "ждёт хода",
+   "few": "ждут хода",
+   "many": "ждут хода"
+  },
+  "forms": {
+   "other": "내 차례 {n}판"
+  }
+ },
+ "46c2b1d0": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "партия",
+   "few": "партии",
+   "many": "партий"
+  },
+  "forms": {
+   "other": "{n}판"
+  }
+ },
+ "bc812413": {
+  "en": "All boards busy: finish a game",
+  "ru": "Все доски заняты: завершите партию",
+  "text": "빈 판 없음: 대국을 끝내세요"
+ },
+ "5c2a0c3e": {
+  "en": "Challenge a chat contact",
+  "ru": "Вызвать чат-контакт",
+  "text": "채팅 연락처에게 대국 신청"
+ },
+ "9b8ef234": {
+  "en": "No games yet",
+  "ru": "Партий пока нет",
+  "text": "아직 대국 없음"
+ },
+ "d019e1e4": {
+  "en": "Nodes: OK - Chess invite",
+  "ru": "Узлы: OK - вызвать",
+  "text": "노드: OK - 체스 신청"
+ },
+ "0da32845": {
+  "en": "or accept a challenge",
+  "ru": "или примите вызов",
+  "text": "또는 신청을 수락"
+ },
+ "857a3f77": {
+  "en": " mv",
+  "ru": " ход",
+  "text": " 수"
+ },
+ "b8346143": {
+  "en": "Pick your piece",
+  "ru": "Выберите свою фигуру",
+  "text": "내 기물을 고르세요"
+ },
+ "cc1f16a5": {
+  "en": "Not a legal move",
+  "ru": "Так ходить нельзя",
+  "text": "둘 수 없는 수"
+ },
+ "a651a0e2": {
+  "en": "Not sent: will resend",
+  "ru": "Не отправлено: повторю",
+  "text": "전송 안 됨: 재전송 예정"
+ },
+ "8a315245": {
+  "en": "Move not sent",
+  "ru": "Ход не отправлен",
+  "text": "수 전송 안 됨"
+ },
+ "4625c5c3": {
+  "en": "invited, waiting",
+  "ru": "вызов отправлен",
+  "text": "신청함, 대기 중"
+ },
+ "5a4ec350": {
+  "en": "challenges you",
+  "ru": "вызывает вас",
+  "text": "대국 신청"
+ },
+ "27d01436": {
+  "en": "offers a draw",
+  "ru": "предлагает ничью",
+  "text": "무승부 제안"
+ },
+ "43db0ff4": {
+  "en": "your move, check!",
+  "ru": "ваш ход, шах!",
+  "text": "내 차례, 체크!"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "내 차례"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "상대 차례"
+ },
+ "8054c24f": {
+  "en": "you won",
+  "ru": "вы победили",
+  "text": "승리"
+ },
+ "c5a8f128": {
+  "en": "you lost",
+  "ru": "вы проиграли",
+  "text": "패배"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "무승부"
+ },
+ "df7afec4": {
+  "en": "ended",
+  "ru": "завершена",
+  "text": "종료"
+ },
+ "6e6fa95b": {
+  "en": "sending",
+  "ru": "отправка",
+  "text": "전송 중"
+ },
+ "0f0e7f9f": {
+  "en": "no ACK yet",
+  "ru": "ждём ACK",
+  "text": "ACK 대기"
+ },
+ "5b4bc08f": {
+  "en": "not delivered",
+  "ru": "не доставлено",
+  "text": "전달 안 됨"
+ },
+ "5165f173": {
+  "en": "will resend",
+  "ru": "повторю",
+  "text": "재전송 예정"
+ },
+ "9866b3af": {
+  "en": "Accept challenge",
+  "ru": "Принять вызов",
+  "text": "신청 수락"
+ },
+ "570a07aa": {
+  "en": "Decline / cancel",
+  "ru": "Отклонить / отменить",
+  "text": "거절 / 취소"
+ },
+ "b06e7266": {
+  "en": "Offer a draw",
+  "ru": "Предложить ничью",
+  "text": "무승부 제안"
+ },
+ "98dcc70a": {
+  "en": "Accept the draw",
+  "ru": "Согласиться на ничью",
+  "text": "무승부 수락"
+ },
+ "30cb036e": {
+  "en": "Send again",
+  "ru": "Отправить снова",
+  "text": "다시 보내기"
+ },
+ "74cfe069": {
+  "en": "Delete game",
+  "ru": "Удалить партию",
+  "text": "대국 삭제"
+ },
+ "6eb84c73": {
+  "en": "< Back to board",
+  "ru": "< К доске",
+  "text": "< 보드로"
+ },
+ "32de16c4": {
+  "en": "Not now: radio busy?",
+  "ru": "Сейчас нельзя",
+  "text": "지금 불가: 무선 사용 중?"
+ },
+ "0ea5571b": {
+  "en": "you: ",
+  "ru": "вы: ",
+  "text": "나: "
+ },
+ "62430fa5": {
+  "en": "white",
+  "ru": "белые",
+  "text": "백"
+ },
+ "a2296596": {
+  "en": "black",
+  "ru": "чёрные",
+  "text": "흑"
+ },
+ "1761fab5": {
+  "en": "hold OK: menu",
+  "ru": "держ.OK: меню",
+  "text": "OK 길게: 메뉴"
+ },
+ "8be6cc03": {
+  "en": "Nothing to send",
+  "ru": "Пустое сообщение",
+  "text": "보낼 내용 없음"
+ },
+ "2c4bf677": {
+  "en": "Queued to ",
+  "ru": "В очереди: ",
+  "text": "대기 중: "
+ },
+ "ee710f30": {
+  "en": "Not sent: radio busy?",
+  "ru": "Не отправлено",
+  "text": "전송 안 됨: 무선 사용 중?"
+ },
+ "5180d17b": {
+  "en": "Message is full",
+  "ru": "Сообщение заполнено",
+  "text": "메시지가 가득 참"
+ },
+ "df449de6": {
+  "en": "Draft discarded",
+  "ru": "Черновик удалён",
+  "text": "초안 삭제됨"
+ },
+ "d824a1c3": {
+  "en": "To ",
+  "ru": "Кому: ",
+  "text": "받는 이: "
+ },
+ "93d18358": {
+  "en": "Write message...",
+  "ru": "Написать...",
+  "text": "메시지 쓰기..."
+ },
+ "c0d1fe23": {
+  "en": "Write reply...",
+  "ru": "Ответить текстом...",
+  "text": "답장 쓰기..."
+ },
+ "269729a5": {
+  "en": "Write to channel...",
+  "ru": "Написать в канал...",
+  "text": "채널에 쓰기..."
+ },
+ "f769e02b": {
+  "en": "Create storage...",
+  "ru": "Создать хранилище...",
+  "text": "저장소 만들기..."
+ },
+ "1b6f6009": {
+  "en": "Chess: invite",
+  "ru": "Шахматы: вызвать",
+  "text": "체스: 신청"
+ },
+ "1bc1b700": {
+  "en": "Sound: on",
+  "ru": "Звук: вкл.",
+  "text": "소리: 켬"
+ },
+ "0cbb1fbc": {
+  "en": "Sound: off",
+  "ru": "Звук: выкл.",
+  "text": "소리: 끔"
+ },
+ "1106f73b": {
+  "en": "Device mode...",
+  "ru": "Режим работы...",
+  "text": "장치 모드..."
+ },
+ "e448d0c2": {
+  "en": "Forwarding: off",
+  "ru": "Пересылка: выкл.",
+  "text": "중계: 끔"
+ },
+ "b16132ba": {
+  "en": "Forwarding: on",
+  "ru": "Пересылка: вкл.",
+  "text": "중계: 켬"
+ },
+ "df15418c": {
+  "en": "Announce node",
+  "ru": "Объявить узел",
+  "text": "노드 알리기"
+ },
+ "47ee59e9": {
+  "en": "Reply: OK",
+  "ru": "Ответить: OK",
+  "text": "답장: OK"
+ },
+ "5d0d5182": {
+  "en": "Reply: Got it",
+  "ru": "Ответить: Принято",
+  "text": "답장: 알겠습니다"
+ },
+ "cfc14186": {
+  "en": "Older message",
+  "ru": "Предыдущее",
+  "text": "이전 메시지"
+ },
+ "0ee2be0a": {
+  "en": "Newer message",
+  "ru": "Следующее",
+  "text": "다음 메시지"
+ },
+ "cac89629": {
+  "en": "Next node",
+  "ru": "Следующий узел",
+  "text": "다음 노드"
+ },
+ "75c09e4a": {
+  "en": "Send: OK",
+  "ru": "Написать: OK",
+  "text": "보내기: OK"
+ },
+ "10d1258a": {
+  "en": "Reset path",
+  "ru": "Сбросить путь",
+  "text": "경로 초기화"
+ },
+ "10f55374": {
+  "en": "Turn GPS off",
+  "ru": "Выключить GPS",
+  "text": "GPS 끄기"
+ },
+ "201aeb3c": {
+  "en": "Turn GPS on",
+  "ru": "Включить GPS",
+  "text": "GPS 켜기"
+ },
+ "ec253eb8": {
+  "en": "Turn Wi-Fi off",
+  "ru": "Выключить Wi-Fi",
+  "text": "Wi-Fi 끄기"
+ },
+ "0d977904": {
+  "en": "Turn Wi-Fi on",
+  "ru": "Включить Wi-Fi",
+  "text": "Wi-Fi 켜기"
+ },
+ "267fd236": {
+  "en": "Turn BLE off",
+  "ru": "Выключить BLE",
+  "text": "BLE 끄기"
+ },
+ "c88589f0": {
+  "en": "Turn BLE on",
+  "ru": "Включить BLE",
+  "text": "BLE 켜기"
+ },
+ "929d4e52": {
+  "en": "Language: ",
+  "ru": "Язык: ",
+  "text": "언어: "
+ },
+ "76b94d9e": {
+  "en": "Battery: volts",
+  "ru": "Батарея: вольты",
+  "text": "배터리: 전압"
+ },
+ "5020984c": {
+  "en": "Battery: percent",
+  "ru": "Батарея: проценты",
+  "text": "배터리: 퍼센트"
+ },
+ "68dd789c": {
+  "en": "Screen off: ",
+  "ru": "Гасить: ",
+  "text": "화면 끄기: "
+ },
+ "daa68450": {
+  "en": "never",
+  "ru": "никогда",
+  "text": "안 함"
+ },
+ "f9a402d8": {
+  "en": "Contrast: ",
+  "ru": "Контраст: ",
+  "text": "대비: "
+ },
+ "ebe8ed14": {
+  "en": "Home in: ",
+  "ru": "Пеленг: ",
+  "text": "추적: "
+ },
+ "8c6e79c7": {
+  "en": "Next signal",
+  "ru": "Следующий сигнал",
+  "text": "다음 신호"
+ },
+ "85f7f65a": {
+  "en": "Stop beacon",
+  "ru": "Выключить маяк",
+  "text": "비콘 중지"
+ },
+ "bed0ca2f": {
+  "en": "CSI beacon: on",
+  "ru": "Маяк CSI: включить",
+  "text": "CSI 비콘: 켜기"
+ },
+ "98a10c4d": {
+  "en": "CSI motion: off",
+  "ru": "Движение CSI: выкл.",
+  "text": "CSI 움직임: 끔"
+ },
+ "3e153c9f": {
+  "en": "CSI sensor",
+  "ru": "Приёмник CSI",
+  "text": "CSI 수신기"
+ },
+ "58030672": {
+  "en": "Calibrate (10 s still)",
+  "ru": "Калибровка (10 с тихо)",
+  "text": "보정 (10초 정지)"
+ },
+ "9ac6a634": {
+  "en": "Stop homing",
+  "ru": "Остановить пеленг",
+  "text": "추적 중지"
+ },
+ "9c186ab6": {
+  "en": "Reset peak",
+  "ru": "Сбросить пик",
+  "text": "최고치 초기화"
+ },
+ "a1d384e9": {
+  "en": "Encryption test",
+  "ru": "Тест шифрования",
+  "text": "암호화 테스트"
+ },
+ "ceb1d0b2": {
+  "en": "< Close menu",
+  "ru": "< Закрыть меню",
+  "text": "< 메뉴 닫기"
+ },
+ "0fb4272f": {
+  "en": "Reply ",
+  "ru": "Ответ ",
+  "text": "답장 "
+ },
+ "203c0966": {
+  "en": " queued",
+  "ru": " в очереди",
+  "text": " 대기 중"
+ },
+ "85925479": {
+  "en": "Reply not queued",
+  "ru": "Ответ не отправлен",
+  "text": "답장 전송 안 됨"
+ },
+ "ff8d187c": {
+  "en": "OK again: erase old data",
+  "ru": "Ещё раз OK: стереть",
+  "text": "OK 한 번 더: 이전 데이터 삭제"
+ },
+ "78ae1f77": {
+  "en": "Storage created, restart",
+  "ru": "Создано, перезапуск",
+  "text": "저장소 생성됨, 재시작"
+ },
+ "3d4328cc": {
+  "en": "Public channel",
+  "ru": "Общий канал",
+  "text": "공개 채널"
+ },
+ "d5ea5328": {
+  "en": "Forwarding on",
+  "ru": "Пересылка вкл.",
+  "text": "중계 켜짐"
+ },
+ "cd02f62c": {
+  "en": "Forwarding off",
+  "ru": "Пересылка выкл.",
+  "text": "중계 꺼짐"
+ },
+ "9e7ab4be": {
+  "en": "Announcement failed",
+  "ru": "Объявление не отправлено",
+  "text": "알림 전송 실패"
+ },
+ "43d3ee81": {
+  "en": "Got it",
+  "ru": "Принято",
+  "text": "알겠습니다"
+ },
+ "7767eb16": {
+  "en": "OK queued",
+  "ru": "OK в очереди",
+  "text": "OK 대기 중"
+ },
+ "7c783220": {
+  "en": "Not queued",
+  "ru": "Не отправлено",
+  "text": "전송 안 됨"
+ },
+ "32f53834": {
+  "en": "Path reset",
+  "ru": "Путь сброшен",
+  "text": "경로 초기화됨"
+ },
+ "076d6a8f": {
+  "en": "Path reset failed",
+  "ru": "Путь не сброшен",
+  "text": "경로 초기화 실패"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "켬"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "끔"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "무선 사용 중, 재시도"
+ },
+ "5b16daae": {
+  "en": "Needs a GPS fix",
+  "ru": "Нужна позиция GPS",
+  "text": "GPS 위치 필요"
+ },
+ "42bb1cb5": {
+  "en": "Homing started",
+  "ru": "Пеленг начат",
+  "text": "추적 시작"
+ },
+ "d4e95b96": {
+  "en": "Calibrating 10 s",
+  "ru": "Калибровка 10 с",
+  "text": "보정 중 10초"
+ },
+ "fbdfd86b": {
+  "en": "No beacon heard",
+  "ru": "Маяк не слышен",
+  "text": "비콘 수신 없음"
+ },
+ "5287dab1": {
+  "en": "Encryption: OK",
+  "ru": "Шифрование: OK",
+  "text": "암호화: OK"
+ },
+ "f49b2a99": {
+  "en": "Encryption: ERROR",
+  "ru": "Шифрование: ошибка",
+  "text": "암호화: 오류"
+ },
+ "daa47cca": {
+  "en": "OK: ",
+  "ru": "OK: ",
+  "text": "OK: "
+ },
+ "1aae33d0": {
+  "en": "OK: menu  < >",
+  "ru": "OK: меню  < >",
+  "text": "OK: 메뉴  < >"
+ },
+ "1c9aa5a1": {
+  "en": "hold: ",
+  "ru": "держ: ",
+  "text": "길게: "
+ },
+ "6f3f3bbb": {
+  "en": "hold: menu",
+  "ru": "держ: меню",
+  "text": "길게: 메뉴"
+ },
+ "a66a5c3b": {
+  "en": "up/down, OK, back",
+  "ru": "выбор, OK, назад",
+  "text": "위/아래, OK, 뒤로"
+ },
+ "0cfaea2d": {
+  "en": "click-next hold-run",
+  "ru": "клик-далее держ-ОК",
+  "text": "클릭-다음 길게-실행"
+ },
+ "2353290b": {
+  "en": "click: close",
+  "ru": "клик: закрыть",
+  "text": "클릭: 닫기"
+ },
+ "ee662895": {
+  "en": "play in the app (BLE)",
+  "ru": "играть: приложение (BLE)",
+  "text": "앱에서 플레이 (BLE)"
+ },
+ "515e76ac": {
+  "en": "play on the Wi-Fi page",
+  "ru": "играть: Wi-Fi-страница",
+  "text": "Wi-Fi 페이지에서 플레이"
+ },
+ "abe87456": {
+  "en": "Wi-Fi page to play",
+  "ru": "играть: включите Wi-Fi",
+  "text": "Wi-Fi 페이지에서 플레이"
+ },
+ "a4e55627": {
+  "en": "as now in ",
+  "ru": "как сейчас через ",
+  "text": "현재대로: "
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "위/아래, OK"
+ },
+ "dc6208b5": {
+  "en": "click-next hold-choose",
+  "ru": "клик-далее держ-выбор",
+  "text": "클릭-다음 길게-선택"
+ },
+ "bbe40d91": {
+  "en": "posts ",
+  "ru": "постов ",
+  "text": "게시 "
+ },
+ "3ff011e5": {
+  "en": "  in ",
+  "ru": "  вошли ",
+  "text": "  접속 "
+ },
+ "47db2ee3": {
+  "en": " fwd ",
+  "ru": " перес. ",
+  "text": " 중계 "
+ },
+ "cb35fab6": {
+  "en": "admin ",
+  "ru": "админ ",
+  "text": "관리 "
+ },
+ "b3970895": {
+  "en": "room ",
+  "ru": "комната ",
+  "text": "룸 "
+ },
+ "d2b3452b": {
+  "en": "guest ",
+  "ru": "гость ",
+  "text": "게스트 "
+ },
+ "8628e989": {
+  "en": "  no fwd",
+  "ru": "  без перес.",
+  "text": "  중계 끔"
+ },
+ "3132d9df": {
+  "en": "  near ",
+  "ru": " рядом ",
+  "text": "  근처 "
+ },
+ "d5d1dc19": {
+  "en": "USB power",
+  "ru": "Питание USB",
+  "text": "USB 전원"
+ },
+ "d1f0e683": {
+  "en": "  relay on",
+  "ru": "  ретрансляция",
+  "text": "  중계 켬"
+ },
+ "8bd652c8": {
+  "en": "Messages",
+  "ru": "Сообщения",
+  "text": "메시지"
+ },
+ "64af19bb": {
+  "en": "queued",
+  "ru": "очередь",
+  "text": "대기"
+ },
+ "3e507c74": {
+  "en": "sent",
+  "ru": "отправл.",
+  "text": "전송됨"
+ },
+ "1a03858e": {
+  "en": "delivered",
+  "ru": "доставл.",
+  "text": "전달됨"
+ },
+ "470fbe82": {
+  "en": "no ACK",
+  "ru": "нет ACK",
+  "text": "ACK 없음"
+ },
+ "ae85b1ad": {
+  "en": "They appear here",
+  "ru": "Здесь появятся входящие",
+  "text": "여기에 표시됩니다"
+ },
+ "7bde9e87": {
+  "en": "saved, not heard",
+  "ru": "сохранён, не слышен",
+  "text": "저장됨, 수신 없음"
+ },
+ "17c4a94b": {
+  "en": " m ",
+  "ru": " м ",
+  "text": " m "
+ },
+ "45bbb2e4": {
+  "en": " km ",
+  "ru": " км ",
+  "text": " km "
+ },
+ "ffc12966": {
+  "en": "has GPS position",
+  "ru": "есть GPS-позиция",
+  "text": "GPS 위치 있음"
+ },
+ "43fdd0de": {
+  "en": "No nodes heard",
+  "ru": "Узлы пока не найдены",
+  "text": "수신된 노드 없음"
+ },
+ "c5158996": {
+  "en": "hold: announce",
+  "ru": "держите: объявить",
+  "text": "길게: 알리기"
+ },
+ "c24c5141": {
+  "en": "Motion CSI",
+  "ru": "Движение CSI",
+  "text": "CSI 움직임"
+ },
+ "9251c97f": {
+  "en": "no Wi-Fi: AP on?",
+  "ru": "нет Wi-Fi: точка?",
+  "text": "Wi-Fi 없음: AP 켜짐?"
+ },
+ "fe400256": {
+  "en": "no beacon",
+  "ru": "нет маяка",
+  "text": "비콘 없음"
+ },
+ "a173713a": {
+  "en": "CSI frozen",
+  "ru": "CSI стоит",
+  "text": "CSI 정지됨"
+ },
+ "79585709": {
+  "en": "calibrating",
+  "ru": "калибровка",
+  "text": "보정 중"
+ },
+ "5257b1c1": {
+  "en": "still",
+  "ru": "тихо",
+  "text": "정지"
+ },
+ "e2d6f9c5": {
+  "en": " / thr ",
+  "ru": " / порог ",
+  "text": " / 임계 "
+ },
+ "d63281b7": {
+  "en": "/s",
+  "ru": "/с",
+  "text": "/초"
+ },
+ "f7ade58d": {
+  "en": "lost",
+  "ru": "потерян",
+  "text": "놓침"
+ },
+ "5712c851": {
+  "en": "no signal",
+  "ru": "нет сигнала",
+  "text": "신호 없음"
+ },
+ "a8dee5ea": {
+  "en": "stronger",
+  "ru": "теплее",
+  "text": "강해짐"
+ },
+ "cf670717": {
+  "en": "weaker",
+  "ru": "холоднее",
+  "text": "약해짐"
+ },
+ "1f607748": {
+  "en": "steady",
+  "ru": "ровно",
+  "text": "유지"
+ },
+ "dbf59bc7": {
+  "en": " pkts",
+  "ru": " пак.",
+  "text": " 패킷"
+ },
+ "dbdadd08": {
+  "en": "CSI beacon ",
+  "ru": "Маяк CSI ",
+  "text": "CSI 비콘 "
+ },
+ "d3312a44": {
+  "en": "Beacon on",
+  "ru": "Маяк включён",
+  "text": "비콘 켜짐"
+ },
+ "11ec7a8e": {
+  "en": "hold: switch off",
+  "ru": "держите: выключить",
+  "text": "길게: 끄기"
+ },
+ "fcc3ce37": {
+  "en": "BLE and LoRa",
+  "ru": "BLE и LoRa",
+  "text": "BLE 및 LoRa"
+ },
+ "ccdf2191": {
+  "en": "Wi-Fi and LoRa",
+  "ru": "Wi-Fi и LoRa",
+  "text": "Wi-Fi 및 LoRa"
+ },
+ "34b27b92": {
+  "en": "Position fix",
+  "ru": "Позиция есть",
+  "text": "위치 확보"
+ },
+ "2f68d3a9": {
+  "en": "Old GPS date",
+  "ru": "Старая дата GPS",
+  "text": "오래된 GPS 날짜"
+ },
+ "7e2016f5": {
+  "en": "Searching sky",
+  "ru": "Поиск спутников",
+  "text": "위성 검색 중"
+ },
+ "9ef6ab1a": {
+  "en": "No data from GPS",
+  "ru": "Нет данных GPS",
+  "text": "GPS 데이터 없음"
+ },
+ "8e5d78e6": {
+  "en": "Satellites ",
+  "ru": "Спутники ",
+  "text": "위성 "
+ },
+ "313721f1": {
+  "en": "Clock ",
+  "ru": "Часы ",
+  "text": "시계 "
+ },
+ "60b9cc42": {
+  "en": "Access point off",
+  "ru": "Точка доступа выкл.",
+  "text": "액세스 포인트 꺼짐"
+ },
+ "90ea4994": {
+  "en": "Web chat and settings",
+  "ru": "Веб-чат и настройки",
+  "text": "웹 채팅 및 설정"
+ },
+ "8570bed8": {
+  "en": "Bluetooth off",
+  "ru": "Bluetooth выкл.",
+  "text": "Bluetooth 꺼짐"
+ },
+ "3af56354": {
+  "en": "Secure pairing",
+  "ru": "Защищённое сопряжение",
+  "text": "보안 페어링"
+ },
+ "e8ddba89": {
+  "en": "Battery: ",
+  "ru": "Батарея: ",
+  "text": "배터리: "
+ },
+ "dbd2bbf3": {
+  "en": "volts",
+  "ru": "вольты",
+  "text": "전압"
+ },
+ "8c5e57f9": {
+  "en": "percent",
+  "ru": "проценты",
+  "text": "퍼센트"
+ },
+ "f3aac08e": {
+  "en": "Screen off: ",
+  "ru": "Гасить экран: ",
+  "text": "화면 끄기: "
+ },
+ "a1841168": {
+  "en": "Modules",
+  "ru": "Модули",
+  "text": "모듈"
+ },
+ "15bd3514": {
+  "en": "relayed ",
+  "ru": "переслано ",
+  "text": "중계 "
+ },
+ "85f563da": {
+  "en": "  rejected ",
+  "ru": "  откл. ",
+  "text": "  거부 "
+ },
+ "1e3e470a": {
+  "en": "up ",
+  "ru": "работа ",
+  "text": "가동 "
+ },
+ "df641ccb": {
+  "en": "  boot ",
+  "ru": "  загр. ",
+  "text": "  부팅 "
+ },
+ "7854f1f9": {
+  "en": "s",
+  "ru": "с",
+  "text": "초"
+ },
+ "4f4367e9": {
+  "en": "m",
+  "ru": "м",
+  "text": "분"
+ },
+ "df643044": {
+  "en": "h",
+  "ru": "ч",
+  "text": "시간"
+ },
+ "7b108998": {
+  "en": "d",
+  "ru": "д",
+  "text": "일"
+ },
+ "4afdffa6": {
+  "en": "path ?",
+  "ru": "путь ?",
+  "text": "경로 ?"
+ },
+ "5cfad88d": {
+  "en": " hops",
+  "ru": " хоп.",
+  "text": " 홉"
+ },
+ "8c0d6692": {
+  "en": "repeater",
+  "ru": "ретранслятор",
+  "text": "리피터"
+ },
+ "247e64bb": {
+  "en": "room",
+  "ru": "комната",
+  "text": "룸"
+ },
+ "c8e30cd9": {
+  "en": "sensor",
+  "ru": "датчик",
+  "text": "센서"
+ },
+ "14acee03": {
+  "en": "chat",
+  "ru": "чат",
+  "text": "채팅"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "휴대폰"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "시계"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "헤드폰"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "휴대폰/시계"
+ },
+ "a71d0499": {
+  "en": "hidden network",
+  "ru": "скрытая сеть",
+  "text": "숨겨진 네트워크"
+ },
+ "e1d6680b": {
+  "en": "Wi-Fi: access point",
+  "ru": "Wi-Fi: точка доступа",
+  "text": "Wi-Fi: 액세스 포인트"
+ },
+ "b100920c": {
+  "en": "Wi-Fi busy",
+  "ru": "Wi-Fi занят",
+  "text": "Wi-Fi 사용 중"
+ },
+ "dba65692": {
+  "en": "scanning...",
+  "ru": "сканирую...",
+  "text": "검색 중..."
+ },
+ "b5065a2e": {
+  "en": "BLE busy",
+  "ru": "BLE занят",
+  "text": "BLE 사용 중"
+ },
+ "9159010a": {
+  "en": "BLE error",
+  "ru": "Ошибка BLE",
+  "text": "BLE 오류"
+ },
+ "6b18c42e": {
+  "en": "Normal",
+  "ru": "Обычный",
+  "text": "일반"
+ },
+ "a851b542": {
+  "en": "Announced to the network",
+  "ru": "Узел объявлен в сети",
+  "text": "네트워크에 알림 전송됨"
+ },
+ "bd0f256a": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить",
+  "text": "알림 전송 실패"
+ },
+ "5226c78b": {
+  "en": "Post to the room",
+  "ru": "Пост в комнату",
+  "text": "룸에 게시"
+ },
+ "c1dedaf2": {
+  "en": "Up to 151 bytes; @: input language",
+  "ru": "До 151 байта; @ - язык ввода",
+  "text": "최대 151바이트; @: 입력 언어"
+ },
+ "a120182c": {
+  "en": "1-15 characters; -> after a letter: capital",
+  "ru": "1-15 символов; -> после буквы: заглавная",
+  "text": "1-15자; 글자 뒤 ->: 대문자"
+ },
+ "4014819e": {
+  "en": "0-15 characters; empty: blank login",
+  "ru": "0-15 символов; пусто - вход без пароля",
+  "text": "0-15자; 비우면 빈 비밀번호로 로그인"
+ },
+ "43021aae": {
+  "en": "Empty post",
+  "ru": "Пустой пост",
+  "text": "빈 게시물"
+ },
+ "bdfe1fbd": {
+  "en": "Posted; members get it in turn",
+  "ru": "Пост сохранён; участники получат его по очереди",
+  "text": "게시됨; 멤버에게 차례로 전달"
+ },
+ "968ed0ed": {
+  "en": "Post not stored",
+  "ru": "Пост не сохранён",
+  "text": "게시물 저장 안 됨"
+ },
+ "48fa6389": {
+  "en": "Latin letters, digits and symbols only",
+  "ru": "Только латиница, цифры и символы",
+  "text": "라틴 문자, 숫자, 기호만"
+ },
+ "30da29b9": {
+  "en": "Admin password cannot be empty",
+  "ru": "Пароль администратора не может быть пустым",
+  "text": "관리자 비밀번호는 비울 수 없음"
+ },
+ "96cd5299": {
+  "en": "Up to 15 characters",
+  "ru": "Не более 15 символов",
+  "text": "최대 15자"
+ },
+ "125b8379": {
+  "en": "Normal mode",
+  "ru": "Обычный режим",
+  "text": "일반 모드"
+ },
+ "80267c09": {
+  "en": "running",
+  "ru": "сейчас",
+  "text": "실행 중"
+ },
+ "ee4bed74": {
+  "en": "Screen, chats, maps, radar and games",
+  "ru": "Экран, чаты, карты, радар и игры",
+  "text": "화면, 채팅, 지도, 레이더, 게임"
+ },
+ "3cc6ed1d": {
+  "en": "A MeshCore chat node; relays as set",
+  "ru": "Узел-собеседник MeshCore; пересылка по настройке",
+  "text": "MeshCore 채팅 노드; 설정대로 중계"
+ },
+ "2bbcf764": {
+  "en": "Relays the network's packets; no chats",
+  "ru": "Пересылает пакеты сети; без чатов",
+  "text": "네트워크 패킷 중계; 채팅 없음"
+ },
+ "05034a79": {
+  "en": "Login and settings from the MeshCore app",
+  "ru": "Вход и настройка из приложения MeshCore",
+  "text": "MeshCore 앱에서 로그인 및 설정"
+ },
+ "90a747f1": {
+  "en": "Keeps posts and hands them to members",
+  "ru": "Хранит посты и раздаёт их участникам",
+  "text": "게시물을 보관하고 멤버에게 전달"
+ },
+ "4fd18c22": {
+  "en": "Room password and settings from the MeshCore app",
+  "ru": "Пароль комнаты и настройка из приложения MeshCore",
+  "text": "룸 비밀번호와 설정은 MeshCore 앱에서"
+ },
+ "8487497d": {
+  "en": "Continues as now in ",
+  "ru": "Продолжение в текущем режиме через ",
+  "text": "현재 모드로 계속: "
+ },
+ "f2a6f444": {
+  "en": "A change restarts; data and settings stay",
+  "ru": "Смена перезапускает; данные и настройки сохраняются",
+  "text": "변경 시 재시작; 데이터와 설정은 유지"
+ },
+ "6cfcb203": {
+  "en": "Choose",
+  "ru": "Выбрать",
+  "text": "선택"
+ },
+ "ef107ddc": {
+  "en": "Continue",
+  "ru": "Продолжить",
+  "text": "계속"
+ },
+ "ea142785": {
+  "en": "Restarting: ",
+  "ru": "Перезапуск: ",
+  "text": "재시작: "
+ },
+ "8081ce34": {
+  "en": " h ",
+  "ru": " ч ",
+  "text": " 시간 "
+ },
+ "15e3d9e0": {
+  "en": " d ",
+  "ru": " д ",
+  "text": " 일 "
+ },
+ "a839fc2f": {
+  "en": "none",
+  "ru": "нет",
+  "text": "없음"
+ },
+ "51345e46": {
+  "en": "Forwarding",
+  "ru": "Пересылка",
+  "text": "중계"
+ },
+ "6068683b": {
+  "en": "Admin password",
+  "ru": "Пароль администратора",
+  "text": "관리자 비밀번호"
+ },
+ "e7150b06": {
+  "en": "Room password",
+  "ru": "Пароль комнаты",
+  "text": "룸 비밀번호"
+ },
+ "6ce06683": {
+  "en": "Guest password",
+  "ru": "Гостевой пароль",
+  "text": "게스트 비밀번호"
+ },
+ "18aacd32": {
+  "en": "Read without password",
+  "ru": "Чтение без пароля",
+  "text": "비밀번호 없이 읽기"
+ },
+ "be44e777": {
+  "en": "Post to the room",
+  "ru": "Написать в комнату",
+  "text": "룸에 게시"
+ },
+ "86655252": {
+  "en": "Nearby advert",
+  "ru": "Объявление рядом",
+  "text": "근처 알림"
+ },
+ "75481d2e": {
+  "en": "Network advert",
+  "ru": "Объявление на сеть",
+  "text": "네트워크 알림"
+ },
+ "5030ef5f": {
+  "en": "Advertise now",
+  "ru": "Объявить сейчас",
+  "text": "지금 알리기"
+ },
+ "c15f1276": {
+  "en": "Forward other nodes' packets (off for a room)",
+  "ru": "Пересылать чужие пакеты (у комнаты обычно выкл.)",
+  "text": "다른 노드의 패킷 중계 (룸은 보통 끔)"
+ },
+ "e89d5472": {
+  "en": "Forward other MeshCore nodes' packets",
+  "ru": "Пересылать пакеты других узлов MeshCore",
+  "text": "다른 MeshCore 노드의 패킷 중계"
+ },
+ "4add5de0": {
+  "en": "Admin login from the MeshCore app; OK: change",
+  "ru": "Вход администратора из приложения MeshCore; OK: изменить",
+  "text": "MeshCore 앱에서 관리자 로그인; OK: 변경"
+ },
+ "02134ead": {
+  "en": "Members read and post with it; none: blank",
+  "ru": "Участники читают и пишут; нет - пустой пароль",
+  "text": "멤버가 읽고 쓰는 비밀번호; 없음: 빈 값"
+ },
+ "533f225b": {
+  "en": "Read-only login; none: a blank password logs in",
+  "ru": "Вход только для чтения; нет - вход с пустым паролем",
+  "text": "읽기 전용 로그인; 없음: 빈 비밀번호로 로그인"
+ },
+ "84f54bf2": {
+  "en": "Any password gives read-only access",
+  "ru": "С любым паролем - только чтение",
+  "text": "어떤 비밀번호든 읽기 전용 접근"
+ },
+ "d9be51f2": {
+  "en": "A post from the room itself; OK: write",
+  "ru": "Пост от имени комнаты; OK: написать",
+  "text": "룸 이름으로 게시; OK: 쓰기"
+ },
+ "01ff7a69": {
+  "en": "Zero-hop advert: off or 60-240 min",
+  "ru": "Объявление без пересылки: выкл или 60-240 мин",
+  "text": "0홉 알림: 끔 또는 60-240분"
+ },
+ "d14850d6": {
+  "en": "Flooded advert: off or 3-168 h",
+  "ru": "Объявление на всю сеть: выкл или 3-168 ч",
+  "text": "전체 알림 (flood): 끔 또는 3-168시간"
+ },
+ "e99b80f0": {
+  "en": "Tell the whole network about this node",
+  "ru": "Сообщить об узле всей сети",
+  "text": "네트워크 전체에 이 노드 알리기"
+ },
+ "67dca228": {
+  "en": "Normal, repeater or room; a change restarts",
+  "ru": "Обычный, репитер или комната; смена перезапускает",
+  "text": "일반, 리피터 또는 룸; 변경 시 재시작"
+ },
+ "d2e88551": {
+  "en": "Posts ",
+  "ru": "Постов ",
+  "text": "게시물 "
+ },
+ "ea17de99": {
+  "en": " · members ",
+  "ru": " · вошли ",
+  "text": " · 접속 "
+ },
+ "d4327754": {
+  "en": "Relayed ",
+  "ru": "Переслано ",
+  "text": "중계 "
+ },
+ "2e67f21b": {
+  "en": " · neighbours ",
+  "ru": " · соседей ",
+  "text": " · 이웃 "
+ },
+ "6e08749f": {
+  "en": " · logged in ",
+  "ru": " · вошли ",
+  "text": " · 접속 "
+ },
+ "4a16c555": {
+  "en": "Advertise",
+  "ru": "Объявить",
+  "text": "알리기"
+ },
+ "94be0f84": {
+  "en": "Switch",
+  "ru": "Переключить",
+  "text": "전환"
+ },
+ "125df0fa": {
+  "en": "Saved",
+  "ru": "Сохранено",
+  "text": "저장됨"
+ },
+ "2eb069bb": {
+  "en": " · draw 3",
+  "ru": " · по 3",
+  "text": " · 3장씩"
+ },
+ "e828c963": {
+  "en": "Won ",
+  "ru": "Побед ",
+  "text": "승리 "
+ },
+ "fe802820": {
+  "en": "Klondike",
+  "ru": "Классика",
+  "text": "클론다이크"
+ },
+ "fb58f3f0": {
+  "en": {
+   "one": "move",
+   "other": "moves"
+  },
+  "ru": {
+   "one": "ход",
+   "few": "хода",
+   "many": "ходов"
+  },
+  "forms": {
+   "other": "{n}수"
+  }
+ },
+ "cdb0b1c7": {
+  "en": "All cards open: collecting",
+  "ru": "Все карты открыты: собираю",
+  "text": "모든 카드 공개: 정리 중"
+ },
+ "f6aae944": {
+  "en": "Cannot go there",
+  "ru": "Сюда нельзя",
+  "text": "그곳으로 갈 수 없음"
+ },
+ "05119e80": {
+  "en": "Stock is empty",
+  "ru": "Колода пуста",
+  "text": "덱이 비었음"
+ },
+ "f7b306da": {
+  "en": "No cards to take here",
+  "ru": "Здесь нечего взять",
+  "text": "가져갈 카드 없음"
+ },
+ "d38be328": {
+  "en": "No place for these cards",
+  "ru": "Этим картам некуда лечь",
+  "text": "이 카드를 놓을 곳 없음"
+ },
+ "f2e0850f": {
+  "en": "N again: new game (this one counts as lost)",
+  "ru": "N ещё раз: новая партия, эта будет проиграна",
+  "text": "N 한 번 더: 새 게임 (이번 판은 패배)"
+ },
+ "ced2141d": {
+  "en": "New game: draw 3",
+  "ru": "Новая партия: сдача по 3",
+  "text": "새 게임: 3장씩"
+ },
+ "27340420": {
+  "en": "New game",
+  "ru": "Новая партия",
+  "text": "새 게임"
+ },
+ "c8fc3ceb": {
+  "en": "Nothing to undo",
+  "ru": "Нечего отменять",
+  "text": "되돌릴 것 없음"
+ },
+ "2bf12d7a": {
+  "en": "Hint: turn the stock",
+  "ru": "Подсказка: сдайте из колоды",
+  "text": "힌트: 덱을 넘기세요"
+ },
+ "8edf4ef5": {
+  "en": "Hint: turn the waste over",
+  "ru": "Подсказка: переверните колоду",
+  "text": "힌트: 버린 카드를 뒤집으세요"
+ },
+ "a0faffc6": {
+  "en": "No useful moves: undo or start again",
+  "ru": "Полезных ходов нет: отмените или начните заново",
+  "text": "쓸 만한 수 없음: 되돌리거나 다시 시작"
+ },
+ "70772e45": {
+  "en": "Draw 3: dealt again",
+  "ru": "Сдача по 3: карты пересданы",
+  "text": "3장씩: 다시 배분됨"
+ },
+ "621ee201": {
+  "en": "Draw 1: dealt again",
+  "ru": "Сдача по 1: карты пересданы",
+  "text": "1장씩: 다시 배분됨"
+ },
+ "2adf9f5f": {
+  "en": "Next game: draw 3",
+  "ru": "Следующая партия: сдача по 3",
+  "text": "다음 게임: 3장씩"
+ },
+ "6e656e2f": {
+  "en": "Next game: draw 1",
+  "ru": "Следующая партия: сдача по 1",
+  "text": "다음 게임: 1장씩"
+ },
+ "b013048d": {
+  "en": "Solitaire keys",
+  "ru": "Клавиши «Косынки»",
+  "text": "솔리테어 키"
+ },
+ "f756a7e4": {
+  "en": "Choose a pile",
+  "ru": "Выбор стопки",
+  "text": "더미 선택"
+ },
+ "526fbff4": {
+  "en": "In a column: how many cards",
+  "ru": "В столбце: сколько карт взять",
+  "text": "열에서: 가져갈 카드 수"
+ },
+ "3c59a92b": {
+  "en": "Take / put; on the stock: turn",
+  "ru": "Взять / положить; на колоде: сдать",
+  "text": "들기 / 놓기; 덱에서: 넘기기"
+ },
+ "9756b440": {
+  "en": "Move automatically (or hold OK)",
+  "ru": "Переложить само (или удерж. OK)",
+  "text": "자동 이동 (또는 OK 길게)"
+ },
+ "27107b85": {
+  "en": "Undo (also U)",
+  "ru": "Отменить ход (или U)",
+  "text": "되돌리기 (U도 가능)"
+ },
+ "7dad6d91": {
+  "en": "Hint",
+  "ru": "Подсказка",
+  "text": "힌트"
+ },
+ "c9d19938": {
+  "en": "Collect to foundations",
+  "ru": "Собрать в дома",
+  "text": "파운데이션으로 정리"
+ },
+ "9e30e04f": {
+  "en": "Draw 1 / 3 (now: 3)",
+  "ru": "Сдача по 1 / 3 (сейчас: по 3)",
+  "text": "1장 / 3장씩 (현재: 3)"
+ },
+ "6045678f": {
+  "en": "Draw 1 / 3 (now: 1)",
+  "ru": "Сдача по 1 / 3 (сейчас: по 1)",
+  "text": "1장 / 3장씩 (현재: 1)"
+ },
+ "1f7edb03": {
+  "en": "Played ",
+  "ru": "Сыграно ",
+  "text": "플레이 "
+ },
+ "adca9639": {
+  "en": " · won ",
+  "ru": " · побед ",
+  "text": " · 승리 "
+ },
+ "326bd72e": {
+  "en": " · best ",
+  "ru": " · лучшее ",
+  "text": " · 최고 "
+ },
+ "9925e352": {
+  "en": " · score ",
+  "ru": " · очки ",
+  "text": " · 점수 "
+ },
+ "b4cb0676": {
+  "en": "You won!",
+  "ru": "Победа!",
+  "text": "승리!"
+ },
+ "d96d839a": {
+  "en": {
+   "one": "point",
+   "other": "points"
+  },
+  "ru": {
+   "one": "очко",
+   "few": "очка",
+   "many": "очков"
+  },
+  "forms": {
+   "other": "{n}점"
+  }
+ },
+ "f967f554": {
+  "en": "N: new game   BACK: menu",
+  "ru": "N: новая партия   BACK: меню",
+  "text": "N: 새 게임   BACK: 메뉴"
+ },
+ "7079216d": {
+  "en": "Undo",
+  "ru": "Отмена",
+  "text": "되돌리기"
+ },
+ "cfb1986b": {
+  "en": "Put",
+  "ru": "Положить",
+  "text": "놓기"
+ },
+ "8201e726": {
+  "en": "Auto",
+  "ru": "Само",
+  "text": "자동"
+ },
+ "91a09716": {
+  "en": "Turn",
+  "ru": "Сдать",
+  "text": "넘기기"
+ },
+ "d83d287e": {
+  "en": "Take",
+  "ru": "Взять",
+  "text": "들기"
+ }
+}

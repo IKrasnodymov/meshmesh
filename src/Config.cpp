@@ -18,9 +18,13 @@ void Config::load() {
   frequency=p.getFloat("freq",868.731f); bandwidth=p.getFloat("bw",62.5f);
   sf=p.getUChar("sf",8); cr=p.getUChar("cr",6); power=p.getChar("power",10);
   hops=p.getUChar("hops",3); relay=p.getBool("relay",true); gps=p.getBool("gps",MM_GPS_DEFAULT);
-  sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); russian=p.getBool("russian",false); brightness=p.getUChar("light",180);
+  sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);
   utcOffset=p.getShort("utc_offset",180);
+  // Language: "lang" since 0.3.7; older versions kept only "russian".
+  lang=p.isKey("lang")?p.getUChar("lang",LangEn):p.getBool("russian",false)?LangRu:LangEn;if(lang>=LangCount)lang=LangEn;
+  // The site installer's choice applies once per installation; afterwards Settings decide.
+  String chosen=installLanguage();if(chosen.length()&&p.getString("inst_lang","")!=chosen){lang=langFromCode(chosen);p.putUChar("lang",lang);p.putString("inst_lang",chosen);}
   role=p.getUChar("role",RoleNormal);if(role>=RoleCount)role=RoleNormal;
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
   else {bootloader_random_enable();esp_fill_random(key,32);bootloader_random_disable();p.putBytes("key",key,32);}
@@ -33,7 +37,7 @@ void Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return;
   p.putString("name",name); p.putFloat("freq",frequency); p.putFloat("bw",bandwidth);
   p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops);
-  p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putBool("russian",russian);
+  p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putUChar("lang",lang);p.putBool("russian",lang==LangRu);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }
 bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role

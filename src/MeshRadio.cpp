@@ -271,13 +271,12 @@ void MeshRadio::track(const Pending& wait,unsigned attempt,bool delivered){
   dirty=true;break;}
 }
 String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
- bool ru=config.russian;
  if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";
- String hops=m.hops==255?String():!m.hops?String(ru?(brief?"напр.":"напрямую"):"direct"):(brief?String(m.hops)+(ru?" ретр.":" rpt"):String(ru?"через ":"via ")+m.hops+(ru?" ретр.":" rpt"));
- String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(ru?"по маршруту":"routed"))
+ String hops=m.hops==255?String():!m.hops?String(brief?tr("direct","напр."):tr("direct","напрямую")):(brief?String(m.hops)+tr(" rpt"," ретр."):String(tr("via ","через "))+m.hops+tr(" rpt"," ретр."));
+ String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr("routed","по маршруту")))
   :!m.outgoing?(hops.length()?hops:String("flood")) // incoming: how far it came
   :m.status==ChatMessage::Delivered&&hops.length()&&!brief?"flood, "+hops:String("flood");
- if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(ru?" · попытка ":" · try ")+m.tries):" "+String(m.tries)+"/3";
+ if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(tr(" · try "," · попытка "))+m.tries):" "+String(m.tries)+"/3";
  return s;
 }
 void MeshRadio::addMessage(const ChatMessage& m,bool save) {

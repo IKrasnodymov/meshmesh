@@ -1,0 +1,4457 @@
+{
+ "697bece7": {
+  "en": ": challenge refused, no free board",
+  "ru": ": вызов отклонён, нет свободной доски",
+  "text": ": desafio recusado, sem tabuleiro livre"
+ },
+ "306c837e": {
+  "en": " challenges you to chess",
+  "ru": " вызывает на партию в шахматы",
+  "text": " desafia você para xadrez"
+ },
+ "7a061014": {
+  "en": "Chess: move for an unknown game",
+  "ru": "Шахматы: ход в неизвестной партии",
+  "text": "Xadrez: lance de partida desconhecida"
+ },
+ "2a21ea97": {
+  "en": ": move not accepted (",
+  "ru": ": ход не принят (",
+  "text": ": lance não aceito ("
+ },
+ "8dc24eb8": {
+  "en": " · you won",
+  "ru": ", вы победили",
+  "text": " · você venceu"
+ },
+ "d8d54131": {
+  "en": " · you lost",
+  "ru": ", вы проиграли",
+  "text": " · você perdeu"
+ },
+ "1ff1a3c9": {
+  "en": " · draw",
+  "ru": ", ничья",
+  "text": " · empate"
+ },
+ "c8821ac7": {
+  "en": " · check, your move",
+  "ru": ", шах, ваш ход",
+  "text": " · xeque, sua vez"
+ },
+ "aa49eb86": {
+  "en": " · your move",
+  "ru": ", ваш ход",
+  "text": " · sua vez"
+ },
+ "9a4275c0": {
+  "en": " accepted: game on",
+  "ru": " принял вызов: играем",
+  "text": " aceitou: vamos jogar"
+ },
+ "74a0890e": {
+  "en": " declined the game",
+  "ru": " отказался от партии",
+  "text": " recusou a partida"
+ },
+ "d09dd582": {
+  "en": " cancelled the game",
+  "ru": " отменил партию",
+  "text": " cancelou a partida"
+ },
+ "e89e051f": {
+  "en": "Draw agreed",
+  "ru": "Ничья по соглашению",
+  "text": "Empate acordado"
+ },
+ "1ececb54": {
+  "en": " offers a draw",
+  "ru": " предлагает ничью",
+  "text": " propõe empate"
+ },
+ "cda0bfbb": {
+  "en": " accepted the draw",
+  "ru": " согласился на ничью",
+  "text": " aceitou o empate"
+ },
+ "e1d23979": {
+  "en": " resigned: you won",
+  "ru": " сдался: вы победили",
+  "text": " desistiu: você venceu"
+ },
+ "409973f3": {
+  "en": "Chess: choose a chat contact",
+  "ru": "Шахматы: выберите чат-контакт",
+  "text": "Xadrez: escolha um contato de chat"
+ },
+ "8d623b26": {
+  "en": "Chess: all boards busy, finish a game",
+  "ru": "Шахматы: все доски заняты, завершите партию",
+  "text": "Xadrez: todos ocupados, termine uma partida"
+ },
+ "2c55656b": {
+  "en": " · MeshMesh chess: you play Black",
+  "ru": " · шахматы MeshMesh: вы играете чёрными",
+  "text": " · xadrez MeshMesh: você joga de pretas"
+ },
+ "18818e2c": {
+  "en": " · MeshMesh chess: you play White",
+  "ru": " · шахматы MeshMesh: вы играете белыми",
+  "text": " · xadrez MeshMesh: você joga de brancas"
+ },
+ "1853c6ab": {
+  "en": "Chess: cannot save games",
+  "ru": "Шахматы: не удалось сохранить партии",
+  "text": "Xadrez: falha ao salvar as partidas"
+ },
+ "6835e49d": {
+  "en": "Chess: a damaged game was dropped",
+  "ru": "Шахматы: повреждённая партия удалена",
+  "text": "Xadrez: partida corrompida removida"
+ },
+ "47db5665": {
+  "en": ": no confirmation for 24 h, R resends",
+  "ru": ": нет подтверждения 24 ч, R — повторить",
+  "text": ": sem confirmação em 24 h, R reenvia"
+ },
+ "39cb9385": {
+  "en": ": not confirmed, will resend",
+  "ru": ": не подтвердил, повторю автоматически",
+  "text": ": não confirmado, vou reenviar"
+ },
+ "576dfcbc": {
+  "en": "Paused: access point on",
+  "ru": "Пауза: включена точка доступа",
+  "text": "Pausa: ponto de acesso ligado"
+ },
+ "cb27d627": {
+  "en": "Paused: radar open",
+  "ru": "Пауза: открыт радар",
+  "text": "Pausa: radar aberto"
+ },
+ "bc285d2c": {
+  "en": "Paused",
+  "ru": "Пауза",
+  "text": "Pausa"
+ },
+ "1d72981e": {
+  "en": "Scanning...",
+  "ru": "Поиск сетей...",
+  "text": "Buscando..."
+ },
+ "58c6fad0": {
+  "en": "Connecting: ",
+  "ru": "Подключение: ",
+  "text": "Conectando: "
+ },
+ "e7e708ec": {
+  "en": "Choose a network",
+  "ru": "Выберите сеть",
+  "text": "Escolha uma rede"
+ },
+ "d28b921c": {
+  "en": "direct",
+  "ru": "напр.",
+  "text": "direto"
+ },
+ "7ca84b76": {
+  "en": " rpt",
+  "ru": " ретр.",
+  "text": " rep."
+ },
+ "3229100a": {
+  "en": "via ",
+  "ru": "через ",
+  "text": "via "
+ },
+ "316f0f3e": {
+  "en": "routed",
+  "ru": "по маршруту",
+  "text": "roteado"
+ },
+ "b27e0742": {
+  "en": " · try ",
+  "ru": " · попытка ",
+  "text": " · tentativa "
+ },
+ "78219be4": {
+  "en": "Clock not set",
+  "ru": "Время не установлено",
+  "text": "Relógio não ajustado"
+ },
+ "5fdc2c68": {
+  "en": "Sunday",
+  "ru": "воскресенье",
+  "text": "Domingo"
+ },
+ "28602bcb": {
+  "en": "Monday",
+  "ru": "понедельник",
+  "text": "Segunda-feira"
+ },
+ "c29ee76a": {
+  "en": "Tuesday",
+  "ru": "вторник",
+  "text": "Terça-feira"
+ },
+ "bffed2ec": {
+  "en": "Wednesday",
+  "ru": "среда",
+  "text": "Quarta-feira"
+ },
+ "e556b4a9": {
+  "en": "Thursday",
+  "ru": "четверг",
+  "text": "Quinta-feira"
+ },
+ "eabd49b9": {
+  "en": "Friday",
+  "ru": "пятница",
+  "text": "Sexta-feira"
+ },
+ "6391ad44": {
+  "en": "Saturday",
+  "ru": "суббота",
+  "text": "Sábado"
+ },
+ "b6e1a436": {
+  "en": "January",
+  "ru": "января",
+  "text": "janeiro"
+ },
+ "90807320": {
+  "en": "February",
+  "ru": "февраля",
+  "text": "fevereiro"
+ },
+ "490ebdb3": {
+  "en": "March",
+  "ru": "марта",
+  "text": "março"
+ },
+ "12affdd6": {
+  "en": "April",
+  "ru": "апреля",
+  "text": "abril"
+ },
+ "b8b5122f": {
+  "en": "May",
+  "ru": "мая",
+  "text": "maio"
+ },
+ "ab1a581a": {
+  "en": "June",
+  "ru": "июня",
+  "text": "junho"
+ },
+ "c39091a2": {
+  "en": "July",
+  "ru": "июля",
+  "text": "julho"
+ },
+ "0f1156cb": {
+  "en": "August",
+  "ru": "августа",
+  "text": "agosto"
+ },
+ "60f6ab26": {
+  "en": "September",
+  "ru": "сентября",
+  "text": "setembro"
+ },
+ "98cbe749": {
+  "en": "October",
+  "ru": "октября",
+  "text": "outubro"
+ },
+ "9e763213": {
+  "en": "November",
+  "ru": "ноября",
+  "text": "novembro"
+ },
+ "4eeb9034": {
+  "en": "December",
+  "ru": "декабря",
+  "text": "dezembro"
+ },
+ "9c80e40e": {
+  "en": "{weekday}, {month} {day}",
+  "ru": "{weekday}, {day} {month}",
+  "text": "{weekday}, {day} de {month}"
+ },
+ "ec0794a8": {
+  "en": "now",
+  "ru": "сейчас",
+  "text": "agora"
+ },
+ "c6bda571": {
+  "en": " min",
+  "ru": " мин",
+  "text": " min"
+ },
+ "8b6e1e22": {
+  "en": " h",
+  "ru": " ч",
+  "text": " h"
+ },
+ "1dd263ea": {
+  "en": " d",
+  "ru": " д",
+  "text": " d"
+ },
+ "d0ba0a93": {
+  "en": "path unknown",
+  "ru": "путь неизвестен",
+  "text": "rota desconhecida"
+ },
+ "4cddae25": {
+  "en": "direct",
+  "ru": "напрямую",
+  "text": "direto"
+ },
+ "ced70db7": {
+  "en": {
+   "one": "hop",
+   "other": "hops"
+  },
+  "ru": {
+   "one": "хоп",
+   "few": "хопа",
+   "many": "хопов"
+  },
+  "forms": {
+   "one": "{n} salto",
+   "other": "{n} saltos"
+  }
+ },
+ "23f80afc": {
+  "en": "Chat node",
+  "ru": "Чат-узел",
+  "text": "Nó de chat"
+ },
+ "dce9a2fb": {
+  "en": "Repeater",
+  "ru": "Ретранслятор",
+  "text": "Repetidor"
+ },
+ "03bb2b95": {
+  "en": "Room server",
+  "ru": "Сервер комнаты",
+  "text": "Servidor de sala"
+ },
+ "fbcdc319": {
+  "en": "Sensor",
+  "ru": "Датчик",
+  "text": "Sensor"
+ },
+ "fb0ce938": {
+  "en": "Node",
+  "ru": "Узел",
+  "text": "Nó"
+ },
+ "a6a26add": {
+  "en": "N",
+  "ru": "С",
+  "text": "N"
+ },
+ "8a7102a8": {
+  "en": "NE",
+  "ru": "СВ",
+  "text": "NE"
+ },
+ "bc5fcbef": {
+  "en": "E",
+  "ru": "В",
+  "text": "L"
+ },
+ "7014dc62": {
+  "en": "SE",
+  "ru": "ЮВ",
+  "text": "SE"
+ },
+ "7dcf5fc1": {
+  "en": "S",
+  "ru": "Ю",
+  "text": "S"
+ },
+ "fa4eb15b": {
+  "en": "SW",
+  "ru": "ЮЗ",
+  "text": "SO"
+ },
+ "96d57542": {
+  "en": "W",
+  "ru": "З",
+  "text": "O"
+ },
+ "99609c59": {
+  "en": "NW",
+  "ru": "СЗ",
+  "text": "NO"
+ },
+ "c122103d": {
+  "en": " m",
+  "ru": " м",
+  "text": " m"
+ },
+ "2f0a99c6": {
+  "en": " km",
+  "ru": " км",
+  "text": " km"
+ },
+ "767dd86f": {
+  "en": "Chats",
+  "ru": "Чаты",
+  "text": "Chats"
+ },
+ "be41ddda": {
+  "en": "Map",
+  "ru": "Карта",
+  "text": "Mapa"
+ },
+ "e0fef172": {
+  "en": "Nodes",
+  "ru": "Узлы",
+  "text": "Nós"
+ },
+ "54eed9b7": {
+  "en": "Navigation",
+  "ru": "Навигация",
+  "text": "Navegação"
+ },
+ "95a9f71d": {
+  "en": "Settings",
+  "ru": "Настройки",
+  "text": "Configurações"
+ },
+ "a9ef56b3": {
+  "en": "Radio",
+  "ru": "Радио",
+  "text": "Rádio"
+ },
+ "021121c7": {
+  "en": "Screen & device",
+  "ru": "Экран и устройство",
+  "text": "Tela e aparelho"
+ },
+ "6d9242a4": {
+  "en": "Connections",
+  "ru": "Подключения",
+  "text": "Conexões"
+ },
+ "1e1fe6d3": {
+  "en": "Module health",
+  "ru": "Состояние модулей",
+  "text": "Estado dos módulos"
+ },
+ "13db9cb2": {
+  "en": "Keys",
+  "ru": "Клавиши",
+  "text": "Teclas"
+ },
+ "7a9fed24": {
+  "en": "Saved maps",
+  "ru": "Сохранённые карты",
+  "text": "Mapas salvos"
+ },
+ "613fda65": {
+  "en": "Radar: signals",
+  "ru": "Радар: сигналы",
+  "text": "Radar: sinais"
+ },
+ "20138dbc": {
+  "en": "Homing",
+  "ru": "Пеленг",
+  "text": "Rastrear"
+ },
+ "77001ca0": {
+  "en": "Radar: motion (CSI)",
+  "ru": "Радар: движение (CSI)",
+  "text": "Radar: movimento (CSI)"
+ },
+ "abc6508d": {
+  "en": "Internet over Wi-Fi",
+  "ru": "Интернет по Wi-Fi",
+  "text": "Internet via Wi-Fi"
+ },
+ "21ed1545": {
+  "en": "Chess",
+  "ru": "Шахматы",
+  "text": "Xadrez"
+ },
+ "171b883c": {
+  "en": "New chess game",
+  "ru": "Новая партия",
+  "text": "Nova partida"
+ },
+ "969e0815": {
+  "en": "Device mode",
+  "ru": "Режим работы",
+  "text": "Modo do aparelho"
+ },
+ "4f63d746": {
+  "en": "Room server",
+  "ru": "Комната",
+  "text": "Sala"
+ },
+ "1809e055": {
+  "en": "Repeater",
+  "ru": "Репитер",
+  "text": "Repetidor"
+ },
+ "9e61ffe9": {
+  "en": " MHz · SF",
+  "ru": " МГц · SF",
+  "text": " MHz · SF"
+ },
+ "704528a8": {
+  "en": "Radio error ",
+  "ru": "Ошибка радио ",
+  "text": "Erro no rádio "
+ },
+ "6a4fb7b4": {
+  "en": "Internet",
+  "ru": "Интернет",
+  "text": "Internet"
+ },
+ "d6404c3c": {
+  "en": "All off",
+  "ru": "Всё выключено",
+  "text": "Tudo desligado"
+ },
+ "2aef0bab": {
+  "en": {
+   "one": "new",
+   "other": "new"
+  },
+  "ru": {
+   "one": "новое",
+   "few": "новых",
+   "many": "новых"
+  },
+  "forms": {
+   "one": "{n} nova",
+   "other": "{n} novas"
+  }
+ },
+ "d04d1711": {
+  "en": {
+   "one": "message",
+   "other": "messages"
+  },
+  "ru": {
+   "one": "сообщение",
+   "few": "сообщения",
+   "many": "сообщений"
+  },
+  "forms": {
+   "one": "{n} mensagem",
+   "other": "{n} mensagens"
+  }
+ },
+ "81fe7504": {
+  "en": "Online map",
+  "ru": "Онлайн-карта",
+  "text": "Mapa online"
+ },
+ "d3a5328b": {
+  "en": "No SD card",
+  "ru": "Нет SD-карты",
+  "text": "Sem cartão SD"
+ },
+ "69cf6474": {
+  "en": "No maps yet",
+  "ru": "Карт пока нет",
+  "text": "Ainda sem mapas"
+ },
+ "6d76d314": {
+  "en": " of ",
+  "ru": " из ",
+  "text": " de "
+ },
+ "015405e4": {
+  "en": " nearby",
+  "ru": " рядом",
+  "text": " por perto"
+ },
+ "2a76df25": {
+  "en": "GPS: searching",
+  "ru": "GPS: поиск",
+  "text": "GPS: buscando"
+ },
+ "68b4f3f9": {
+  "en": "GPS off",
+  "ru": "GPS выключен",
+  "text": "GPS desligado"
+ },
+ "8909ac1f": {
+  "en": {
+   "one": "sat",
+   "other": "sats"
+  },
+  "ru": {
+   "one": "спутник",
+   "few": "спутника",
+   "many": "спутников"
+  },
+  "forms": {
+   "one": "{n} satélite",
+   "other": "{n} satélites"
+  }
+ },
+ "d3cc0c6b": {
+  "en": "Connect",
+  "ru": "Связь",
+  "text": "Conexão"
+ },
+ "08d8e8c9": {
+  "en": "Radar",
+  "ru": "Радар",
+  "text": "Radar"
+ },
+ "33c54309": {
+  "en": "Module health",
+  "ru": "Модули",
+  "text": "Módulos"
+ },
+ "ccae0228": {
+  "en": "All OK",
+  "ru": "Всё в норме",
+  "text": "Tudo OK"
+ },
+ "a0b97800": {
+  "en": {
+   "one": "fault",
+   "other": "faults"
+  },
+  "ru": {
+   "one": "ошибка",
+   "few": "ошибки",
+   "many": "ошибок"
+  },
+  "forms": {
+   "one": "{n} falha",
+   "other": "{n} falhas"
+  }
+ },
+ "226808f5": {
+  "en": "Radio, screen",
+  "ru": "Радио, экран",
+  "text": "Rádio, tela"
+ },
+ "7226324f": {
+  "en": "Solitaire",
+  "ru": "Косынка",
+  "text": "Paciência"
+ },
+ "b784e416": {
+  "en": "Open",
+  "ru": "Открыть",
+  "text": "Abrir"
+ },
+ "64010381": {
+  "en": "Lock",
+  "ru": "Блок",
+  "text": "Bloq."
+ },
+ "2b67ee1b": {
+  "en": "You: ",
+  "ru": "Вы: ",
+  "text": "Você: "
+ },
+ "9161fba7": {
+  "en": "Open MeshCore channel",
+  "ru": "Открытый канал MeshCore",
+  "text": "Canal aberto MeshCore"
+ },
+ "162429ce": {
+  "en": "No messages yet",
+  "ru": "Сообщений ещё нет",
+  "text": "Sem mensagens ainda"
+ },
+ "7c285a3c": {
+  "en": "Select",
+  "ru": "Выбор",
+  "text": "Escolher"
+ },
+ "d8735ad9": {
+  "en": "Announce",
+  "ru": "Объявить",
+  "text": "Anunciar"
+ },
+ "d3ced5d8": {
+  "en": "Menu",
+  "ru": "Меню",
+  "text": "Menu"
+ },
+ "7360652d": {
+  "en": "Open channel · senders unverified · no ACK",
+  "ru": "Открытый канал · без подтверждений",
+  "text": "Canal aberto · remetente não verificado · sem ACK"
+ },
+ "b86cfa5d": {
+  "en": "Not in contacts",
+  "ru": "Нет в контактах",
+  "text": "Fora dos contatos"
+ },
+ "514d3458": {
+  "en": "not confirmed",
+  "ru": "не подтверждено",
+  "text": "não confirmado"
+ },
+ "f951850c": {
+  "en": "No messages yet",
+  "ru": "Сообщений пока нет",
+  "text": "Sem mensagens ainda"
+ },
+ "dff4c599": {
+  "en": "Type and press OK to send",
+  "ru": "Наберите текст и нажмите OK",
+  "text": "Digite e pressione OK para enviar"
+ },
+ "89d27660": {
+  "en": "Message...",
+  "ru": "Сообщение...",
+  "text": "Mensagem..."
+ },
+ "f353a373": {
+  "en": "2x space: RU/EN",
+  "ru": "2×пробел: RU/EN",
+  "text": "2x espaço: RU/EN"
+ },
+ "03b2add1": {
+  "en": "Send",
+  "ru": "Отпр.",
+  "text": "Enviar"
+ },
+ "d345a7e1": {
+  "en": "2x space",
+  "ru": "2×пробел",
+  "text": "2x espaço"
+ },
+ "a1d3f60b": {
+  "en": "hold OK",
+  "ru": "удерж. OK",
+  "text": "segurar OK"
+ },
+ "a23ea557": {
+  "en": "Layout",
+  "ru": "Раскладка",
+  "text": "Layout"
+ },
+ "370e8321": {
+  "en": "Back",
+  "ru": "Назад",
+  "text": "Voltar"
+ },
+ "191fb7b9": {
+  "en": "Finding location by IP...",
+  "ru": "Определяю положение по IP...",
+  "text": "Localizando pelo IP..."
+ },
+ "57dea6ab": {
+  "en": "Needs Wi-Fi internet or an SD card",
+  "ru": "Нужен интернет по Wi-Fi или SD-карта",
+  "text": "Requer internet via Wi-Fi ou cartão SD"
+ },
+ "774f7d04": {
+  "en": "Connect Wi-Fi or load a map",
+  "ru": "Подключите Wi-Fi или загрузите карту",
+  "text": "Conecte o Wi-Fi ou carregue um mapa"
+ },
+ "f70b6fa8": {
+  "en": "GPS will take over after a fix",
+  "ru": "После GPS-фиксации карта перейдёт к ней",
+  "text": "O GPS assume após obter posição"
+ },
+ "088500dd": {
+  "en": "Connections > Internet over Wi-Fi",
+  "ru": "Связь > Интернет по Wi-Fi",
+  "text": "Conexão > Internet via Wi-Fi"
+ },
+ "4dbd6570": {
+  "en": "Downloading map...",
+  "ru": "Загрузка карты из интернета...",
+  "text": "Baixando o mapa..."
+ },
+ "43fc9cc9": {
+  "en": "Reading map from SD...",
+  "ru": "Чтение карты с SD...",
+  "text": "Lendo mapa do SD..."
+ },
+ "7f780606": {
+  "en": "Tiles unavailable",
+  "ru": "Тайлы недоступны",
+  "text": "Blocos indisponíveis"
+ },
+ "947716e6": {
+  "en": "This zoom is not downloaded",
+  "ru": "Этот масштаб не загружен",
+  "text": "Este zoom não foi baixado"
+ },
+ "5d4af6bf": {
+  "en": "+/- zoom · Wi-Fi internet loads maps",
+  "ru": "+/- масштаб · интернет по Wi-Fi",
+  "text": "+/- zoom · internet Wi-Fi baixa mapas"
+ },
+ "ade18178": {
+  "en": "Offline map",
+  "ru": "Офлайн-карта",
+  "text": "Mapa offline"
+ },
+ "85b905aa": {
+  "en": " · loading",
+  "ru": " · загрузка",
+  "text": " · carregando"
+ },
+ "abea9faa": {
+  "en": "GPS off",
+  "ru": "GPS выкл",
+  "text": "GPS desl."
+ },
+ "46b2c002": {
+  "en": "GPS: old date",
+  "ru": "GPS: старая дата",
+  "text": "GPS: data antiga"
+ },
+ "2c425015": {
+  "en": "Pan",
+  "ru": "Сдвиг",
+  "text": "Mover"
+ },
+ "ecc9ef8c": {
+  "en": "Zoom",
+  "ru": "Масштаб",
+  "text": "Zoom"
+ },
+ "c6e21243": {
+  "en": "Following",
+  "ru": "Следую",
+  "text": "Seguindo"
+ },
+ "a1bb0c43": {
+  "en": "To GPS",
+  "ru": "К GPS",
+  "text": "Ao GPS"
+ },
+ "cbdba42f": {
+  "en": "Maps",
+  "ru": "Карты",
+  "text": "Mapas"
+ },
+ "4dff575f": {
+  "en": "No saved maps",
+  "ru": "Сохранённых карт нет",
+  "text": "Nenhum mapa salvo"
+ },
+ "d8772b41": {
+  "en": "Upload a map via Wi-Fi or USB",
+  "ru": "Загрузите карту по Wi-Fi или USB",
+  "text": "Envie um mapa via Wi-Fi ou USB"
+ },
+ "0e82977b": {
+  "en": {
+   "one": "tile on SD",
+   "other": "tiles on SD"
+  },
+  "ru": {
+   "one": "тайл на SD",
+   "few": "тайла на SD",
+   "many": "тайлов на SD"
+  },
+  "forms": {
+   "one": "{n} bloco no SD",
+   "other": "{n} blocos no SD"
+  }
+ },
+ "5bf49151": {
+  "en": "No nodes discovered yet",
+  "ru": "Узлы пока не обнаружены",
+  "text": "Nenhum nó encontrado ainda"
+ },
+ "18721989": {
+  "en": "ADV sends your announcement",
+  "ru": "ADV отправит ваше объявление",
+  "text": "ADV envia seu anúncio"
+ },
+ "5d2fc914": {
+  "en": "saved",
+  "ru": "сохранён",
+  "text": "salvo"
+ },
+ "28ca920e": {
+  "en": "Details",
+  "ru": "Карточка",
+  "text": "Detalhes"
+ },
+ "10322163": {
+  "en": "On map",
+  "ru": "На карте",
+  "text": "No mapa"
+ },
+ "cc4a6a69": {
+  "en": "Node was removed",
+  "ru": "Узел удалён",
+  "text": "Nó foi removido"
+ },
+ "ae7857c1": {
+  "en": "Last heard",
+  "ru": "Последний приём",
+  "text": "Ouvido por último"
+ },
+ "b6a5c449": {
+  "en": " ago",
+  "ru": " назад",
+  "text": " atrás"
+ },
+ "bca41134": {
+  "en": "not since boot",
+  "ru": "после запуска не слышен",
+  "text": "não ouvido desde o início"
+ },
+ "925d5b3e": {
+  "en": "Signal",
+  "ru": "Сигнал",
+  "text": "Sinal"
+ },
+ "3db61861": {
+  "en": "Route",
+  "ru": "Маршрут",
+  "text": "Rota"
+ },
+ "236f8008": {
+  "en": " · flood",
+  "ru": " · flood",
+  "text": " · flood"
+ },
+ "fa43649a": {
+  "en": "Position",
+  "ru": "Позиция",
+  "text": "Posição"
+ },
+ "962a598f": {
+  "en": "not shared",
+  "ru": "не передана",
+  "text": "não enviada"
+ },
+ "4ac9ad0f": {
+  "en": "Message",
+  "ru": "Написать",
+  "text": "Escrever"
+ },
+ "3f10fa6d": {
+  "en": "Reset path",
+  "ru": "Сброс пути",
+  "text": "Zerar rota"
+ },
+ "709d4fe9": {
+  "en": "Sure?",
+  "ru": "Удалить?",
+  "text": "Certeza?"
+ },
+ "ddbf78c7": {
+  "en": "Forget",
+  "ru": "Удалить",
+  "text": "Esquecer"
+ },
+ "a3e2d1e0": {
+  "en": "Action",
+  "ru": "Действие",
+  "text": "Ação"
+ },
+ "9a1bc86e": {
+  "en": "Run",
+  "ru": "Выполнить",
+  "text": "Executar"
+ },
+ "57c157c0": {
+  "en": "hold flat",
+  "ru": "держите ровно",
+  "text": "mantenha nivelado"
+ },
+ "88ec3f75": {
+  "en": "not calibrated",
+  "ru": "не откалиброван",
+  "text": "não calibrada"
+ },
+ "a1b512d9": {
+  "en": "off",
+  "ru": "выключен",
+  "text": "desligado"
+ },
+ "2fbe4497": {
+  "en": "fix",
+  "ru": "позиция есть",
+  "text": "posição ok"
+ },
+ "d7eb0252": {
+  "en": "old date",
+  "ru": "старая дата",
+  "text": "data antiga"
+ },
+ "4153f73f": {
+  "en": "searching",
+  "ru": "поиск",
+  "text": "buscando"
+ },
+ "513779dc": {
+  "en": "Satellites",
+  "ru": "Спутники",
+  "text": "Satélites"
+ },
+ "7f70d1b6": {
+  "en": "Latitude",
+  "ru": "Широта",
+  "text": "Latitude"
+ },
+ "37509630": {
+  "en": "Longitude",
+  "ru": "Долгота",
+  "text": "Longitude"
+ },
+ "163326b9": {
+  "en": "Clock",
+  "ru": "Часы",
+  "text": "Relógio"
+ },
+ "07dbc6c1": {
+  "en": "not set",
+  "ru": "не задано",
+  "text": "não definido"
+ },
+ "dd0e4fff": {
+  "en": "manual",
+  "ru": "вручную",
+  "text": "manual"
+ },
+ "e26038f9": {
+  "en": " · trusted",
+  "ru": " · доверено",
+  "text": " · confiável"
+ },
+ "09227b2f": {
+  "en": "Compass",
+  "ru": "Компас",
+  "text": "Bússola"
+ },
+ "8425f8b4": {
+  "en": "calibrated",
+  "ru": "откалиброван",
+  "text": "calibrada"
+ },
+ "0740ad50": {
+  "en": "needs calibration",
+  "ru": "нужна калибровка",
+  "text": "requer calibração"
+ },
+ "ff725bd0": {
+  "en": {
+   "one": "sample",
+   "other": "samples"
+  },
+  "ru": {
+   "one": "отсчёт",
+   "few": "отсчёта",
+   "many": "отсчётов"
+  },
+  "forms": {
+   "one": "{n} amostra",
+   "other": "{n} amostras"
+  }
+ },
+ "2933373c": {
+  "en": "Share position",
+  "ru": "Передать позицию",
+  "text": "Enviar posição"
+ },
+ "b5aff4ec": {
+  "en": "Finish calibration",
+  "ru": "Завершить калибровку",
+  "text": "Concluir calibração"
+ },
+ "8fa2d583": {
+  "en": "Calibrate compass",
+  "ru": "Калибровать компас",
+  "text": "Calibrar bússola"
+ },
+ "d9601486": {
+  "en": "Advert with GPS",
+  "ru": "Объявление с GPS",
+  "text": "Anúncio com GPS"
+ },
+ "b895df5f": {
+  "en": "Needs a fresh GPS fix",
+  "ru": "Нужна свежая позиция GPS",
+  "text": "Requer posição GPS recente"
+ },
+ "c672f313": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте во все стороны",
+  "text": "Gire em todas as direções"
+ },
+ "efa838c3": {
+  "en": "Rotate for 20+ seconds",
+  "ru": "Вращение 20+ секунд",
+  "text": "Gire por 20+ segundos"
+ },
+ "e1038923": {
+  "en": "Phone",
+  "ru": "Телефон",
+  "text": "Celular"
+ },
+ "ad8fc0b2": {
+  "en": "Watch",
+  "ru": "Часы",
+  "text": "Relógio"
+ },
+ "d4ce8148": {
+  "en": "Headphones",
+  "ru": "Наушники",
+  "text": "Fones"
+ },
+ "e064027e": {
+  "en": "Phone/watch",
+  "ru": "Телефон/часы",
+  "text": "Celular/relógio"
+ },
+ "365be1b5": {
+  "en": "BLE device",
+  "ru": "BLE-устройство",
+  "text": "Dispositivo BLE"
+ },
+ "34f25d76": {
+  "en": "Hidden network",
+  "ru": "Скрытая сеть",
+  "text": "Rede oculta"
+ },
+ "c381ffad": {
+  "en": "Bluetooth busy: probe",
+  "ru": "Bluetooth занят проверкой",
+  "text": "Bluetooth ocupado: teste"
+ },
+ "4e0c4df4": {
+  "en": "Bluetooth error",
+  "ru": "Ошибка Bluetooth",
+  "text": "Erro no Bluetooth"
+ },
+ "00f492ea": {
+  "en": "Wi-Fi busy: access point",
+  "ru": "Wi-Fi занят точкой доступа",
+  "text": "Wi-Fi ocupado: AP ativo"
+ },
+ "2787f2e9": {
+  "en": "Wi-Fi busy: probe",
+  "ru": "Wi-Fi занят проверкой",
+  "text": "Wi-Fi ocupado: teste"
+ },
+ "9e74a36c": {
+  "en": "Wi-Fi error",
+  "ru": "Ошибка Wi-Fi",
+  "text": "Erro no Wi-Fi"
+ },
+ "728f9889": {
+  "en": "Scanning Wi-Fi...",
+  "ru": "Сканирую Wi-Fi...",
+  "text": "Varrendo Wi-Fi..."
+ },
+ "5bfd6d5f": {
+  "en": "closer to centre = stronger",
+  "ru": "ближе к центру - сильнее",
+  "text": "mais perto do centro = mais forte"
+ },
+ "fd8e3640": {
+  "en": {
+   "one": "phone/watch nearby",
+   "other": "phones/watches nearby"
+  },
+  "ru": {
+   "one": "телефон/часы рядом",
+   "few": "телефона/часов рядом",
+   "many": "телефонов/часов рядом"
+  },
+  "forms": {
+   "one": "{n} celular/relógio perto",
+   "other": "{n} celulares/relógios perto"
+  }
+ },
+ "e6255712": {
+  "en": "No signals yet",
+  "ru": "Сигналов пока нет",
+  "text": "Nenhum sinal ainda"
+ },
+ "d06f72f8": {
+  "en": "Home in",
+  "ru": "Пеленг",
+  "text": "Rastrear"
+ },
+ "f639bb47": {
+  "en": "Motion",
+  "ru": "Движение",
+  "text": "Movimento"
+ },
+ "dbef9d2d": {
+  "en": " · direct packets only",
+  "ru": " · только прямые пакеты",
+  "text": " · só pacotes diretos"
+ },
+ "5c0889d9": {
+  "en": " · address changes over time",
+  "ru": " · адрес со временем меняется",
+  "text": " · endereço muda com o tempo"
+ },
+ "1556138f": {
+  "en": "channel ",
+  "ru": "канал ",
+  "text": "canal "
+ },
+ "1558ea4d": {
+  "en": "Lost",
+  "ru": "Потерян",
+  "text": "Perdido"
+ },
+ "00de4311": {
+  "en": "No signal",
+  "ru": "Нет сигнала",
+  "text": "Sem sinal"
+ },
+ "0d293f43": {
+  "en": "Stronger",
+  "ru": "Теплее",
+  "text": "Mais forte"
+ },
+ "9eccd626": {
+  "en": "Weaker",
+  "ru": "Холоднее",
+  "text": "Mais fraco"
+ },
+ "725f5ba1": {
+  "en": "Steady",
+  "ru": "Ровно",
+  "text": "Estável"
+ },
+ "2cb4a1dc": {
+  "en": "keep moving",
+  "ru": "двигайтесь",
+  "text": "continue andando"
+ },
+ "f005913c": {
+  "en": "peak ",
+  "ru": "пик ",
+  "text": "pico "
+ },
+ "7412e829": {
+  "en": "Waiting for samples",
+  "ru": "Ожидание отсчётов",
+  "text": "Aguardando amostras"
+ },
+ "9b67b44b": {
+  "en": " adverts/s",
+  "ru": " объявл./с",
+  "text": " anúncios/s"
+ },
+ "05a88b8a": {
+  "en": " beacons/s",
+  "ru": " маяков/с",
+  "text": " beacons/s"
+ },
+ "c95cc2bb": {
+  "en": {
+   "one": "packet",
+   "other": "packets"
+  },
+  "ru": {
+   "one": "пакет",
+   "few": "пакета",
+   "many": "пакетов"
+  },
+  "forms": {
+   "one": "{n} pacote",
+   "other": "{n} pacotes"
+  }
+ },
+ "9dec0212": {
+  "en": " s ago",
+  "ru": " с назад",
+  "text": " s atrás"
+ },
+ "68b02b99": {
+  "en": "Mute",
+  "ru": "Без звука",
+  "text": "Silenciar"
+ },
+ "b0a2d7e0": {
+  "en": "Sound",
+  "ru": "Звук",
+  "text": "Som"
+ },
+ "369317f0": {
+  "en": "Reset peak",
+  "ru": "Сброс пика",
+  "text": "Zerar pico"
+ },
+ "d2606f92": {
+  "en": "List",
+  "ru": "Список",
+  "text": "Lista"
+ },
+ "168f4a8e": {
+  "en": "Turn the access point off",
+  "ru": "Выключите точку доступа",
+  "text": "Desligue o ponto de acesso"
+ },
+ "24f7b061": {
+  "en": "Beacon for another board",
+  "ru": "Маяк для другой платы",
+  "text": "Beacon para outra placa"
+ },
+ "66266cbb": {
+  "en": "Sensor",
+  "ru": "Приёмник",
+  "text": "Receptor"
+ },
+ "20b1a066": {
+  "en": " frames/s on channel 1",
+  "ru": " кадров/с на канале 1",
+  "text": " quadros/s no canal 1"
+ },
+ "ea4b933e": {
+  "en": "beacon ",
+  "ru": "маяк ",
+  "text": "beacon "
+ },
+ "ce705430": {
+  "en": " frames/s · ",
+  "ru": " кадров/с · ",
+  "text": " quadros/s · "
+ },
+ "e3e8ef63": {
+  "en": "waiting: set the other board to CSI beacon",
+  "ru": "ждём маяк: включите «Маяк CSI» на другой плате",
+  "text": "aguardando: ative o beacon CSI na outra placa"
+ },
+ "23abfa05": {
+  "en": "NO WI-FI",
+  "ru": "НЕТ WI-FI",
+  "text": "SEM WI-FI"
+ },
+ "7ff1f086": {
+  "en": "BEACON ON",
+  "ru": "МАЯК РАБОТАЕТ",
+  "text": "BEACON LIGADO"
+ },
+ "f0619d14": {
+  "en": "NO BEACON",
+  "ru": "НЕТ МАЯКА",
+  "text": "SEM BEACON"
+ },
+ "5b31b3e0": {
+  "en": "CSI FROZEN",
+  "ru": "CSI НЕ МЕНЯЕТСЯ",
+  "text": "CSI CONGELADO"
+ },
+ "6642a18e": {
+  "en": "CALIBRATING ",
+  "ru": "КАЛИБРОВКА ",
+  "text": "CALIBRANDO "
+ },
+ "1e6b0825": {
+  "en": " s",
+  "ru": " с",
+  "text": " s"
+ },
+ "8e2a5ac7": {
+  "en": "MOTION",
+  "ru": "ДВИЖЕНИЕ",
+  "text": "MOVIMENTO"
+ },
+ "8857a995": {
+  "en": "STILL",
+  "ru": "ТИХО",
+  "text": "PARADO"
+ },
+ "bbd19641": {
+  "en": "activity ",
+  "ru": "активность ",
+  "text": "atividade "
+ },
+ "c84c187c": {
+  "en": "threshold ",
+  "ru": "порог ",
+  "text": "limiar "
+ },
+ "fefa7779": {
+  "en": " (default)",
+  "ru": " (по умолч.)",
+  "text": " (padrão)"
+ },
+ "b162cbba": {
+  "en": "Walk between the boards to see the trace",
+  "ru": "Пройдите между платами — появится след",
+  "text": "Ande entre as placas para ver o traço"
+ },
+ "2ec86228": {
+  "en": "Calibrate with the area empty and still (10 s)",
+  "ru": "Калибровка: 10 с, в зоне никого и ничего не движется",
+  "text": "Calibre com a área vazia e parada (10 s)"
+ },
+ "9044df68": {
+  "en": "Place the boards 2-5 m apart; motion between them is sensed",
+  "ru": "Расставьте платы в 2-5 м; движение между ними будет видно",
+  "text": "Coloque as placas a 2-5 m; o movimento entre elas é detectado"
+ },
+ "f0b1a92b": {
+  "en": "Signals",
+  "ru": "Сигналы",
+  "text": "Sinais"
+ },
+ "bef7960c": {
+  "en": "Calibrate",
+  "ru": "Калибровка",
+  "text": "Calibrar"
+ },
+ "f0ff5e78": {
+  "en": "Beacon",
+  "ru": "Маяк",
+  "text": "Beacon"
+ },
+ "a28e14f1": {
+  "en": "GPS & compass",
+  "ru": "GPS и компас",
+  "text": "GPS e bússola"
+ },
+ "447f2127": {
+  "en": "Keys & help",
+  "ru": "Клавиши и подсказки",
+  "text": "Teclas e ajuda"
+ },
+ "6be9cca9": {
+  "en": "Brightness ",
+  "ru": "Яркость ",
+  "text": "Brilho "
+ },
+ "7b798327": {
+  "en": "compass calibrated",
+  "ru": "компас откалиброван",
+  "text": "bússola calibrada"
+ },
+ "8898dbce": {
+  "en": "compass not calibrated",
+  "ru": "компас не откалиброван",
+  "text": "bússola não calibrada"
+ },
+ "5486642c": {
+  "en": " relayed",
+  "ru": " переслано",
+  "text": " retransmitidos"
+ },
+ "3ac32671": {
+  "en": "What every key does",
+  "ru": "Что делает каждая клавиша",
+  "text": "O que cada tecla faz"
+ },
+ "a02852fd": {
+  "en": "No maps",
+  "ru": "Карт нет",
+  "text": "Sem mapas"
+ },
+ "a514c5d1": {
+  "en": "MeshCore repeater",
+  "ru": "Репитер MeshCore",
+  "text": "Repetidor MeshCore"
+ },
+ "1279e0a4": {
+  "en": "MeshCore room server",
+  "ru": "Комната MeshCore",
+  "text": "Sala MeshCore"
+ },
+ "5bd15791": {
+  "en": "Normal: chats, maps, radar",
+  "ru": "Обычный: чаты, карты, радар",
+  "text": "Normal: chats, mapas, radar"
+ },
+ "2788e2b9": {
+  "en": {
+   "one": "tile",
+   "other": "tiles"
+  },
+  "ru": {
+   "one": "тайл",
+   "few": "тайла",
+   "many": "тайлов"
+  },
+  "forms": {
+   "one": "{n} bloco",
+   "other": "{n} blocos"
+  }
+ },
+ "0210412b": {
+  "en": "Frequency",
+  "ru": "Частота",
+  "text": "Frequência"
+ },
+ "f8db3325": {
+  "en": "Bandwidth",
+  "ru": "Полоса",
+  "text": "Banda"
+ },
+ "ab7cf561": {
+  "en": "Spreading factor",
+  "ru": "Фактор SF",
+  "text": "Fator de espalhamento"
+ },
+ "0c25fa5a": {
+  "en": "Coding rate",
+  "ru": "Кодирование CR",
+  "text": "Taxa de código"
+ },
+ "01cea44c": {
+  "en": "TX power",
+  "ru": "Мощность",
+  "text": "Potência TX"
+ },
+ "34e93b9a": {
+  "en": "Our relay limit",
+  "ru": "Предел наших пересылок",
+  "text": "Limite de retransmissão"
+ },
+ "56531ac6": {
+  "en": "Relay packets",
+  "ru": "Ретрансляция",
+  "text": "Retransmitir"
+ },
+ "055e7477": {
+  "en": "Name",
+  "ru": "Имя",
+  "text": "Nome"
+ },
+ "66b0abc2": {
+  "en": "Language",
+  "ru": "Язык",
+  "text": "Idioma"
+ },
+ "ee582c07": {
+  "en": "Brightness",
+  "ru": "Яркость",
+  "text": "Brilho"
+ },
+ "5e28fa87": {
+  "en": "Sounds",
+  "ru": "Звуки",
+  "text": "Sons"
+ },
+ "300b6860": {
+  "en": "Auto lock",
+  "ru": "Автоблокировка",
+  "text": "Bloqueio auto"
+ },
+ "cb2c63e1": {
+  "en": "Dim screen",
+  "ru": "Гасить экран",
+  "text": "Escurecer tela"
+ },
+ "0d1c950e": {
+  "en": "GPS receiver",
+  "ru": "Приёмник GPS",
+  "text": "Receptor GPS"
+ },
+ "27677b6a": {
+  "en": "UTC offset",
+  "ru": "Смещение UTC",
+  "text": "Fuso UTC"
+ },
+ "b367cee2": {
+  "en": "Battery shows",
+  "ru": "Батарея в строке",
+  "text": "Bateria mostra"
+ },
+ "f53b39c9": {
+  "en": " MHz",
+  "ru": " МГц",
+  "text": " MHz"
+ },
+ "f16f8305": {
+  "en": " kHz",
+  "ru": " кГц",
+  "text": " kHz"
+ },
+ "a9bc47f3": {
+  "en": "Volts",
+  "ru": "Вольты",
+  "text": "Volts"
+ },
+ "1ff3c7f9": {
+  "en": "Percent",
+  "ru": "Проценты",
+  "text": "Porcentagem"
+ },
+ "e1f39c44": {
+  "en": "1 kHz steps; must match every node",
+  "ru": "Шаг 1 кГц; должна совпадать у всех узлов",
+  "text": "Passos de 1 kHz; igual em todos os nós"
+ },
+ "0cf557e9": {
+  "en": "62.5 / 125 / 250 / 500 kHz",
+  "ru": "62.5 / 125 / 250 / 500 кГц",
+  "text": "62.5 / 125 / 250 / 500 kHz"
+ },
+ "2d1dce7b": {
+  "en": "Higher SF: longer range, slower",
+  "ru": "Больше SF - дальше, но медленнее",
+  "text": "SF maior: mais alcance, mais lento"
+ },
+ "c1f2703b": {
+  "en": "Error correction 4/5 to 4/8",
+  "ru": "Избыточность кода 4/5 ... 4/8",
+  "text": "Correção de erros 4/5 a 4/8"
+ },
+ "0e1a8928": {
+  "en": "Radio chip setting, 0-22 dBm",
+  "ru": "Настройка чипа, 0-22 dBm",
+  "text": "Ajuste do chip de rádio, 0-22 dBm"
+ },
+ "9817d2ff": {
+  "en": "Only packets relayed by this device",
+  "ru": "Только пакеты, пересылаемые этим узлом",
+  "text": "Só pacotes retransmitidos por este aparelho"
+ },
+ "012cb557": {
+  "en": "Forward other nodes' MeshCore packets",
+  "ru": "Пересылать чужие пакеты MeshCore",
+  "text": "Retransmitir pacotes MeshCore de outros nós"
+ },
+ "7c140ddc": {
+  "en": "Applied to the radio when saved",
+  "ru": "Применяется к радио при сохранении",
+  "text": "Aplicado ao rádio ao salvar"
+ },
+ "5b61049f": {
+  "en": "OK: edit, 1-24 UTF-8 bytes",
+  "ru": "OK: изменить, 1-24 байта UTF-8",
+  "text": "OK: editar, 1-24 bytes UTF-8"
+ },
+ "3b695912": {
+  "en": "Menu language; typing layout is the @ key",
+  "ru": "Язык меню; раскладка ввода - клавиша @",
+  "text": "Idioma do menu; layout de digitação na tecla @"
+ },
+ "ca6cea83": {
+  "en": "Tone for messages and ACKs",
+  "ru": "Сигнал о сообщениях и подтверждениях",
+  "text": "Som para mensagens e ACKs"
+ },
+ "08099755": {
+  "en": "0 = off, 30-600 s",
+  "ru": "0 = выкл, 30-600 с",
+  "text": "0 = desl., 30-600 s"
+ },
+ "48d6ff09": {
+  "en": "0 = off, 10-600 s",
+  "ru": "0 = выкл, 10-600 с",
+  "text": "0 = desl., 10-600 s"
+ },
+ "44ec5f43": {
+  "en": "Receiver power",
+  "ru": "Питание приёмника",
+  "text": "Energia do receptor"
+ },
+ "6d9fb533": {
+  "en": "Local time, 15 minute steps",
+  "ru": "Местное время, шаг 15 минут",
+  "text": "Hora local, passos de 15 minutos"
+ },
+ "6f973fc6": {
+  "en": "Status bar: charge estimate or measured voltage",
+  "ru": "Строка состояния: оценка заряда или измеренное напряжение",
+  "text": "Barra de status: carga estimada ou tensão medida"
+ },
+ "327bd270": {
+  "en": "Stored in device memory",
+  "ru": "Сохраняется в памяти устройства",
+  "text": "Salvo na memória do aparelho"
+ },
+ "bf27012a": {
+  "en": "Save changes",
+  "ru": "Сохранить изменения",
+  "text": "Salvar alterações"
+ },
+ "9817a867": {
+  "en": "No changes",
+  "ru": "Нет изменений",
+  "text": "Sem alterações"
+ },
+ "8759568a": {
+  "en": "Edit name",
+  "ru": "Изменить имя",
+  "text": "Editar nome"
+ },
+ "a33a94f9": {
+  "en": "Cancel",
+  "ru": "Отмена",
+  "text": "Cancelar"
+ },
+ "9a8267a9": {
+  "en": "Change",
+  "ru": "Изменить",
+  "text": "Alterar"
+ },
+ "0b905bda": {
+  "en": "Save",
+  "ru": "Сохранить",
+  "text": "Salvar"
+ },
+ "ca4fcb20": {
+  "en": "Next value",
+  "ru": "Дальше",
+  "text": "Próximo valor"
+ },
+ "eccc8fe2": {
+  "en": "Wi-Fi access point",
+  "ru": "Точка доступа Wi-Fi",
+  "text": "Ponto de acesso Wi-Fi"
+ },
+ "e4fe0cf0": {
+  "en": "Web chat and map upload",
+  "ru": "Веб-чат и загрузка карт",
+  "text": "Chat web e envio de mapas"
+ },
+ "bd132d01": {
+  "en": "Off",
+  "ru": "Выключена",
+  "text": "Desligado"
+ },
+ "c604a10d": {
+  "en": "Password ",
+  "ru": "Пароль ",
+  "text": "Senha "
+ },
+ "94fa3c79": {
+  "en": "Secure pairing, MeshMesh service",
+  "ru": "Защищённое сопряжение, сервис MeshMesh",
+  "text": "Pareamento seguro, serviço MeshMesh"
+ },
+ "3efed7d9": {
+  "en": "Off",
+  "ru": "Выключен",
+  "text": "Desligado"
+ },
+ "061557aa": {
+  "en": "MeshCore identity",
+  "ru": "Ключ MeshCore",
+  "text": "Identidade MeshCore"
+ },
+ "01f31114": {
+  "en": "Networks",
+  "ru": "Сети",
+  "text": "Redes"
+ },
+ "e6b593c8": {
+  "en": "Toggle",
+  "ru": "Переключить",
+  "text": "Alternar"
+ },
+ "80266824": {
+  "en": "Wrong password or refused: ",
+  "ru": "Неверный пароль или отказ: ",
+  "text": "Senha errada ou recusado: "
+ },
+ "c2aec922": {
+  "en": "No answer from ",
+  "ru": "Нет ответа от ",
+  "text": "Sem resposta de "
+ },
+ "4aea721f": {
+  "en": "No saved network in range",
+  "ru": "Сохранённых сетей рядом нет",
+  "text": "Nenhuma rede salva ao alcance"
+ },
+ "77943e26": {
+  "en": "Connection lost",
+  "ru": "Связь с сетью потеряна",
+  "text": "Conexão perdida"
+ },
+ "3517d70a": {
+  "en": "Wi-Fi scan failed",
+  "ru": "Сбой поиска сетей",
+  "text": "Falha na busca Wi-Fi"
+ },
+ "c0a8f4d6": {
+  "en": "Wi-Fi scan timed out",
+  "ru": "Поиск сетей не завершился",
+  "text": "Busca Wi-Fi expirou"
+ },
+ "84fb5225": {
+  "en": "Clock not set",
+  "ru": "Часы не установлены",
+  "text": "Relógio não ajustado"
+ },
+ "d85b75c4": {
+  "en": "SSID 1-32 bytes, password empty or 8-63",
+  "ru": "Имя 1-32 байта, пароль пустой или 8-63",
+  "text": "SSID 1-32 bytes, senha vazia ou 8-63"
+ },
+ "32e3b1d4": {
+  "en": "Tile is not 256 or 512 px",
+  "ru": "Тайл не 256/512 пикселей",
+  "text": "Bloco não é 256 ou 512 px"
+ },
+ "a218bb10": {
+  "en": "Not a PNG image",
+  "ru": "Сервер вернул не PNG",
+  "text": "Não é imagem PNG"
+ },
+ "9b52bbc9": {
+  "en": "No location",
+  "ru": "Положение по IP не найдено",
+  "text": "Localização não encontrada"
+ },
+ "fe92dca2": {
+  "en": "SD full: web tiles not cached",
+  "ru": "SD заполнена: тайлы не сохраняются",
+  "text": "SD cheio: blocos web não salvos"
+ },
+ "45646152": {
+  "en": "Wi-Fi client on",
+  "ru": "Wi-Fi-клиент включён",
+  "text": "Cliente Wi-Fi ligado"
+ },
+ "71a638af": {
+  "en": "Wi-Fi client off",
+  "ru": "Wi-Fi-клиент выключен",
+  "text": "Cliente Wi-Fi desligado"
+ },
+ "674356ff": {
+  "en": "Connecting to ",
+  "ru": "Подключение к ",
+  "text": "Conectando a "
+ },
+ "6fa9102f": {
+  "en": "Forgotten: ",
+  "ru": "Забыта: ",
+  "text": "Esquecida: "
+ },
+ "a2c6b137": {
+  "en": "Searching...",
+  "ru": "Поиск сетей...",
+  "text": "Buscando..."
+ },
+ "18631a5c": {
+  "en": "Wi-Fi client",
+  "ru": "Wi-Fi-клиент",
+  "text": "Cliente Wi-Fi"
+ },
+ "397eff34": {
+  "en": "Turn the client on to find networks",
+  "ru": "Включите клиент, чтобы найти сети",
+  "text": "Ligue o cliente para buscar redes"
+ },
+ "d54b728f": {
+  "en": "Searching for networks...",
+  "ru": "Поиск сетей...",
+  "text": "Buscando redes..."
+ },
+ "292b3500": {
+  "en": "connected",
+  "ru": "подключено",
+  "text": "conectado"
+ },
+ "7dd55181": {
+  "en": "saved",
+  "ru": "сохранена",
+  "text": "salva"
+ },
+ "04f9d959": {
+  "en": "saved, away",
+  "ru": "сохр., не рядом",
+  "text": "salva, longe"
+ },
+ "c1da06cb": {
+  "en": "open",
+  "ru": "открытая",
+  "text": "aberta"
+ },
+ "19405072": {
+  "en": "On/off",
+  "ru": "Вкл/выкл",
+  "text": "Lig/desl"
+ },
+ "9ac84c77": {
+  "en": "Connect",
+  "ru": "Подключить",
+  "text": "Conectar"
+ },
+ "89af1769": {
+  "en": "Forget",
+  "ru": "Забыть",
+  "text": "Esquecer"
+ },
+ "08a7df66": {
+  "en": "Rescan",
+  "ru": "Обновить",
+  "text": "Buscar"
+ },
+ "f1102a51": {
+  "en": "@ (input language)",
+  "ru": "@ (язык ввода)",
+  "text": "@ (idioma de entrada)"
+ },
+ "64ca9615": {
+  "en": "hold ADV (GPS)",
+  "ru": "удерж. ADV (GPS)",
+  "text": "segurar ADV (GPS)"
+ },
+ "2b18cfad": {
+  "en": "Left",
+  "ru": "Влево",
+  "text": "Esquerda"
+ },
+ "734cec5d": {
+  "en": "Up",
+  "ru": "Вверх",
+  "text": "Cima"
+ },
+ "2a7c8f4e": {
+  "en": "Down",
+  "ru": "Вниз",
+  "text": "Baixo"
+ },
+ "6e1282a0": {
+  "en": "Right",
+  "ru": "Вправо",
+  "text": "Direita"
+ },
+ "e3077ca9": {
+  "en": "space",
+  "ru": "пробел",
+  "text": "espaço"
+ },
+ "d609b7de": {
+  "en": "Keyboard",
+  "ru": "Клавиатура",
+  "text": "Teclado"
+ },
+ "837d5b49": {
+  "en": "n/a",
+  "ru": "нет",
+  "text": "n/d"
+ },
+ "aef230e2": {
+  "en": "Relayed",
+  "ru": "Переслано",
+  "text": "Retransm."
+ },
+ "ebd1789d": {
+  "en": "Rejected",
+  "ru": "Отклонено",
+  "text": "Rejeitados"
+ },
+ "9e543f5c": {
+  "en": "Uptime",
+  "ru": "Работа",
+  "text": "Ativo há"
+ },
+ "a6022a7a": {
+  "en": "Boot ",
+  "ru": "Загрузка ",
+  "text": "Boot "
+ },
+ "fd249ae3": {
+  "en": " · last key: ",
+  "ru": " · последняя клавиша: ",
+  "text": " · última tecla: "
+ },
+ "fe8668ce": {
+  "en": "Crypto test + sound",
+  "ru": "Тест шифрования и звука",
+  "text": "Teste de criptografia + som"
+ },
+ "537d87a8": {
+  "en": "Ball",
+  "ru": "Шар",
+  "text": "Bola"
+ },
+ "39012b21": {
+  "en": "Move: menu, lists, map",
+  "ru": "Перемещение: меню, списки, карта",
+  "text": "Mover: menu, listas, mapa"
+ },
+ "a9849595": {
+  "en": "Click",
+  "ru": "Нажатие",
+  "text": "Clique"
+ },
+ "ad13b2cf": {
+  "en": "Open / send",
+  "ru": "Открыть / отправить",
+  "text": "Abrir / enviar"
+ },
+ "8082be11": {
+  "en": "Hold ball",
+  "ru": "Удерж. шар",
+  "text": "Segurar bola"
+ },
+ "da9299e5": {
+  "en": "Unlock; in chat: Russian layout",
+  "ru": "Вход; в чате: русская раскладка",
+  "text": "Desbloquear; no chat: layout russo"
+ },
+ "dd425d56": {
+  "en": "Delete; with no text: back",
+  "ru": "Удалить; без текста: назад",
+  "text": "Apagar; sem texto: voltar"
+ },
+ "609be88e": {
+  "en": "in text: switch RU/EN",
+  "ru": "в тексте: RU/EN",
+  "text": "no texto: alternar RU/EN"
+ },
+ "de82dc1b": {
+  "en": "Map: saved maps",
+  "ru": "Карта: список карт",
+  "text": "Mapa: mapas salvos"
+ },
+ "1e70c4ca": {
+  "en": "Map zoom",
+  "ru": "Масштаб карты",
+  "text": "Zoom do mapa"
+ },
+ "75783192": {
+  "en": "Nodes: show on map",
+  "ru": "Узлы: показать на карте",
+  "text": "Nós: mostrar no mapa"
+ },
+ "1bd6e4b7": {
+  "en": "Menu: DEL until the tiles",
+  "ru": "Меню: DEL до плиток",
+  "text": "Menu: DEL até os blocos"
+ },
+ "b0916d3b": {
+  "en": "Map; L - saved maps",
+  "ru": "Карта; L - список карт",
+  "text": "Mapa; L - mapas salvos"
+ },
+ "ffad6b6e": {
+  "en": "Menu",
+  "ru": "Главное меню",
+  "text": "Menu"
+ },
+ "e446fc2f": {
+  "en": "Previous screen",
+  "ru": "Предыдущий экран",
+  "text": "Tela anterior"
+ },
+ "60ca84b7": {
+  "en": "Announce this node; hold: GPS on/off",
+  "ru": "Объявить узел; удерж.: GPS вкл/выкл",
+  "text": "Anunciar este nó; segurar: GPS lig/desl"
+ },
+ "1d4452cb": {
+  "en": "function key, not Sym+@: RU/EN in chat",
+  "ru": "функц. клавиша (не Sym+@): RU/EN в чате",
+  "text": "tecla de função, não Sym+@: RU/EN no chat"
+ },
+ "db1e8e1b": {
+  "en": "Lock screen (there is no microphone)",
+  "ru": "Блокировка (микрофона нет)",
+  "text": "Bloquear tela (não há microfone)"
+ },
+ "61a3daa2": {
+  "en": "Open / send; hold: unlock",
+  "ru": "Открыть / отправить; удерж.: вход",
+  "text": "Abrir / enviar; segurar: desbloquear"
+ },
+ "9fb377cf": {
+  "en": "in text: switch RU/EN; Right: capital",
+  "ru": "в тексте: RU/EN; -> : заглавная",
+  "text": "no texto: alternar RU/EN; Direita: maiúscula"
+ },
+ "7311d31b": {
+  "en": "Russian layout",
+  "ru": "Русская раскладка",
+  "text": "Layout russo"
+ },
+ "12ff5cad": {
+  "en": "Last from ",
+  "ru": "Последнее от ",
+  "text": "Última de "
+ },
+ "08d56a77": {
+  "en": {
+   "one": "new message",
+   "other": "new messages"
+  },
+  "ru": {
+   "one": "новое сообщение",
+   "few": "новых сообщения",
+   "many": "новых сообщений"
+  },
+  "forms": {
+   "one": "{n} mensagem nova",
+   "other": "{n} mensagens novas"
+  }
+ },
+ "7a531229": {
+  "en": "The repeater keeps relaying",
+  "ru": "Репитер продолжает пересылку",
+  "text": "O repetidor continua retransmitindo"
+ },
+ "f3158c93": {
+  "en": "The room keeps serving members",
+  "ru": "Комната продолжает работать",
+  "text": "A sala continua atendendo membros"
+ },
+ "2bc700f4": {
+  "en": "Radio and GPS keep working",
+  "ru": "Радио и GPS продолжают работать",
+  "text": "Rádio e GPS continuam funcionando"
+ },
+ "b72fb804": {
+  "en": "Radio error",
+  "ru": "Ошибка радио",
+  "text": "Erro no rádio"
+ },
+ "7ca7875d": {
+  "en": "Hold to unlock",
+  "ru": "Удерживайте для входа",
+  "text": "Segure para desbloquear"
+ },
+ "06e4383f": {
+  "en": "Network key · 64 hex",
+  "ru": "Ключ сети · 64 hex",
+  "text": "Chave da rede · 64 hex"
+ },
+ "4b20829b": {
+  "en": "Wi-Fi password: ",
+  "ru": "Пароль Wi-Fi: ",
+  "text": "Senha Wi-Fi: "
+ },
+ "1fc05d6f": {
+  "en": "Device name",
+  "ru": "Имя устройства",
+  "text": "Nome do aparelho"
+ },
+ "20676a92": {
+  "en": " bytes",
+  "ru": " байт",
+  "text": " bytes"
+ },
+ "60fa6a70": {
+  "en": "8-63 characters; -> after a letter: capital",
+  "ru": "8-63 символа; -> после буквы: заглавная",
+  "text": "8-63 caracteres; -> após letra: maiúscula"
+ },
+ "7a1da0b4": {
+  "en": "OK: post   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK: publicar   BACK: cancelar"
+ },
+ "4bff5478": {
+  "en": "OK: save   BACK: cancel",
+  "ru": "OK: сохранить   BACK: отменить",
+  "text": "OK: salvar   BACK: cancelar"
+ },
+ "5542d75b": {
+  "en": "Chess · ",
+  "ru": "Шахматы · ",
+  "text": "Xadrez · "
+ },
+ "99d92ee5": {
+  "en": "Input: Russian (phonetic)",
+  "ru": "Ввод: русский (фонетический)",
+  "text": "Entrada: russo (fonético)"
+ },
+ "f298c8d3": {
+  "en": "Input: English",
+  "ru": "Ввод: английский",
+  "text": "Entrada: inglês"
+ },
+ "c79e0520": {
+  "en": "Russian input: phonetic",
+  "ru": "Русский ввод: фонетический",
+  "text": "Entrada russa: fonética"
+ },
+ "e8ecae43": {
+  "en": "2x space: RU/EN   Shift or Right after a letter: capital",
+  "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
+  "text": "2x espaço: RU/EN   Shift ou Direita após letra: maiúscula"
+ },
+ "2ae7cabc": {
+  "en": "Settings saved",
+  "ru": "Настройки сохранены",
+  "text": "Configurações salvas"
+ },
+ "315b16c1": {
+  "en": "Radio busy, try again",
+  "ru": "Радио занято, повторите",
+  "text": "Rádio ocupado, tente de novo"
+ },
+ "0691ba75": {
+  "en": "Path reset: next message floods",
+  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
+  "text": "Rota zerada: próxima mensagem vai por flood"
+ },
+ "7a14a9e8": {
+  "en": "Path reset failed",
+  "ru": "Не удалось сбросить путь",
+  "text": "Falha ao zerar a rota"
+ },
+ "08d31104": {
+  "en": "OK again removes the contact",
+  "ru": "Нажмите OK ещё раз для удаления",
+  "text": "OK de novo remove o contato"
+ },
+ "17781681": {
+  "en": "Contact removed; its next advert adds it again",
+  "ru": "Контакт удалён; новое объявление вернёт его",
+  "text": "Contato removido; o próximo anúncio o traz de volta"
+ },
+ "3e33cd0f": {
+  "en": "Cannot remove while sending",
+  "ru": "Нельзя удалить во время отправки",
+  "text": "Não é possível remover enviando"
+ },
+ "cb8d0572": {
+  "en": "Password: 8-63 characters",
+  "ru": "Пароль: 8-63 символа",
+  "text": "Senha: 8-63 caracteres"
+ },
+ "d4544911": {
+  "en": "Name: 1-24 UTF-8 bytes",
+  "ru": "Имя: 1-24 байта UTF-8",
+  "text": "Nome: 1-24 bytes UTF-8"
+ },
+ "0b2e473c": {
+  "en": "Not in this mode: Settings > Device mode",
+  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
+  "text": "Indisponível aqui: Configurações > Modo do aparelho"
+ },
+ "cea9ae4c": {
+  "en": "Node announced",
+  "ru": "Узел объявлен",
+  "text": "Nó anunciado"
+ },
+ "5b43376d": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить узел",
+  "text": "Falha ao anunciar"
+ },
+ "aa9ad8ae": {
+  "en": "Message queued",
+  "ru": "Сообщение в очереди",
+  "text": "Mensagem na fila"
+ },
+ "5035dc01": {
+  "en": "Cannot send: empty, full queue or radio",
+  "ru": "Не отправлено: текст, очередь или радио",
+  "text": "Não enviada: vazia, fila cheia ou rádio"
+ },
+ "d7961dd2": {
+  "en": "UTF-8 byte limit: ",
+  "ru": "Лимит байт UTF-8: ",
+  "text": "Limite de bytes UTF-8: "
+ },
+ "7a7a7a09": {
+  "en": "Waiting for GPS fix",
+  "ru": "Ожидание GPS-позиции",
+  "text": "Aguardando posição GPS"
+ },
+ "916ad0e6": {
+  "en": "This node has not shared GPS",
+  "ru": "Узел пока не передал GPS",
+  "text": "Este nó não compartilhou GPS"
+ },
+ "26314428": {
+  "en": "This board is now the beacon",
+  "ru": "Эта плата — маяк",
+  "text": "Esta placa agora é o beacon"
+ },
+ "c3f96c6f": {
+  "en": "This board is now the sensor",
+  "ru": "Эта плата — приёмник",
+  "text": "Esta placa agora é o receptor"
+ },
+ "a4a4ec2c": {
+  "en": "Peak reset",
+  "ru": "Пик сброшен",
+  "text": "Pico zerado"
+ },
+ "8b1ba9b1": {
+  "en": "Map unavailable",
+  "ru": "Карта недоступна",
+  "text": "Mapa indisponível"
+ },
+ "a0b9db2e": {
+  "en": "Nothing to save",
+  "ru": "Изменений нет",
+  "text": "Nada para salvar"
+ },
+ "0a9fb2e4": {
+  "en": "Internet over Wi-Fi is off in this mode",
+  "ru": "Интернет по Wi-Fi выключен в этом режиме",
+  "text": "Internet via Wi-Fi desligada neste modo"
+ },
+ "b477e636": {
+  "en": "Public key: ",
+  "ru": "Открытый ключ: ",
+  "text": "Chave pública: "
+ },
+ "1992c148": {
+  "en": "Position shared",
+  "ru": "Позиция передана",
+  "text": "Posição enviada"
+ },
+ "3d7566e2": {
+  "en": "Calibration saved",
+  "ru": "Калибровка сохранена",
+  "text": "Calibração salva"
+ },
+ "338a95a4": {
+  "en": "Rotate wider, at least 20 seconds",
+  "ru": "Вращайте шире, не менее 20 секунд",
+  "text": "Gire mais amplo, ao menos 20 segundos"
+ },
+ "f96aca09": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте устройство во все стороны",
+  "text": "Gire em todas as direções"
+ },
+ "c3938153": {
+  "en": "No signal selected",
+  "ru": "Сигнал не выбран",
+  "text": "Nenhum sinal selecionado"
+ },
+ "51fd901e": {
+  "en": "Calibrating: keep the area still for 10 s",
+  "ru": "Калибровка: 10 с без движения в зоне",
+  "text": "Calibrando: área sem movimento por 10 s"
+ },
+ "9b3514a0": {
+  "en": "Needs a heard beacon",
+  "ru": "Нужен услышанный маяк",
+  "text": "Requer um beacon ouvido"
+ },
+ "fa65940f": {
+  "en": "Ping on",
+  "ru": "Звук пеленга включён",
+  "text": "Bipe ligado"
+ },
+ "21bdb533": {
+  "en": "Device sound is off in settings",
+  "ru": "Звук устройства выключен в настройках",
+  "text": "Som do aparelho desligado nas configurações"
+ },
+ "d3c484a4": {
+  "en": "Ping off",
+  "ru": "Звук пеленга выключен",
+  "text": "Bipe desligado"
+ },
+ "0eb32dbe": {
+  "en": "Encryption test passed",
+  "ru": "Проверка шифрования пройдена",
+  "text": "Teste de criptografia ok"
+ },
+ "4d624476": {
+  "en": "Encryption test failed",
+  "ru": "Ошибка шифрования",
+  "text": "Teste de criptografia falhou"
+ },
+ "47cf8db9": {
+  "en": "New message from ",
+  "ru": "Сообщение от ",
+  "text": "Nova mensagem de "
+ },
+ "2d151551": {
+  "en": "Delivered to ",
+  "ru": "Доставлено: ",
+  "text": "Entregue a "
+ },
+ "53c958eb": {
+  "en": "Queued: waiting for delivery",
+  "ru": "Ожидание подтверждения",
+  "text": "Na fila: aguardando entrega"
+ },
+ "25fb6d11": {
+  "en": "Queued: broadcast",
+  "ru": "Сообщение в общем чате отправляется",
+  "text": "Na fila: transmissão geral"
+ },
+ "404ceb1a": {
+  "en": "No delivery ACK",
+  "ru": "Получатель не подтвердил доставку",
+  "text": "Sem ACK de entrega"
+ },
+ "35b6fabd": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи по радио",
+  "text": "Erro de transmissão no rádio"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "Lig"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Desl"
+ },
+ "4d885d93": {
+  "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
+  "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
+  "text": "Os lances viajam como mensagens diretas MeshCore com confirmação de entrega. Os dois jogadores precisam de um MeshMesh M9 com xadrez."
+ },
+ "5d22309c": {
+  "en": "Remove",
+  "ru": "Удалить",
+  "text": "Remover"
+ },
+ "d528eacc": {
+  "en": "You play",
+  "ru": "Вы играете",
+  "text": "Você joga"
+ },
+ "62783142": {
+  "en": "White",
+  "ru": "Белыми",
+  "text": "Brancas"
+ },
+ "6f9e93b0": {
+  "en": "Black",
+  "ru": "Чёрными",
+  "text": "Pretas"
+ },
+ "e0f041cb": {
+  "en": "Random",
+  "ru": "Случайно",
+  "text": "Aleatório"
+ },
+ "6ca6fac0": {
+  "en": "No chat contacts yet",
+  "ru": "Чат-контактов пока нет",
+  "text": "Ainda sem contatos de chat"
+ },
+ "789beead": {
+  "en": "Press ADV to announce this node and wait",
+  "ru": "Нажмите ADV, чтобы объявить узел, и",
+  "text": "Pressione ADV para anunciar este nó e aguarde"
+ },
+ "588b49c2": {
+  "en": "for the other player's announcement",
+  "ru": "дождитесь объявления соперника",
+  "text": "o anúncio do outro jogador"
+ },
+ "7e847eaa": {
+  "en": "Games",
+  "ru": "Партии",
+  "text": "Partidas"
+ },
+ "c07ba764": {
+  "en": "Challenge",
+  "ru": "Вызвать",
+  "text": "Desafiar"
+ },
+ "ae88f6be": {
+  "en": "Colour",
+  "ru": "Цвет",
+  "text": "Cor"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "Contato"
+ },
+ "aa44e5b7": {
+  "en": "Waiting for reply",
+  "ru": "Ждём ответа",
+  "text": "Aguardando resposta"
+ },
+ "dca15068": {
+  "en": "OK accepts",
+  "ru": "OK — принять",
+  "text": "OK aceita"
+ },
+ "3fac31fc": {
+  "en": "No moves yet",
+  "ru": "Ходов ещё нет",
+  "text": "Nenhum lance ainda"
+ },
+ "85c99d8f": {
+  "en": "You",
+  "ru": "Вы",
+  "text": "Você"
+ },
+ "20d5b641": {
+  "en": "You offered a draw",
+  "ru": "Вы предложили ничью",
+  "text": "Você propôs empate"
+ },
+ "75f6ec15": {
+  "en": "Draw? D accepts",
+  "ru": "Ничья? D — да",
+  "text": "Empate? D aceita"
+ },
+ "c277d5da": {
+  "en": "Promote to",
+  "ru": "Превратить в",
+  "text": "Promover a"
+ },
+ "740c7358": {
+  "en": "<> choose  OK put",
+  "ru": "<> выбор  OK поставить",
+  "text": "<> escolher  OK colocar"
+ },
+ "670f51b6": {
+  "en": "Chess keys",
+  "ru": "Клавиши шахмат",
+  "text": "Teclas do xadrez"
+ },
+ "ac1b6c25": {
+  "en": "Move the cursor (also ^v)",
+  "ru": "Курсор по доске (и ^v)",
+  "text": "Mover o cursor (também ^v)"
+ },
+ "fa49730e": {
+  "en": "Take a piece / put it",
+  "ru": "Взять фигуру / поставить",
+  "text": "Pegar uma peça / colocá-la"
+ },
+ "f5175dd0": {
+  "en": "Put back / to the games",
+  "ru": "Вернуть фигуру / к партиям",
+  "text": "Devolver / às partidas"
+ },
+ "ce172863": {
+  "en": "Offer a draw / accept one",
+  "ru": "Предложить / принять ничью",
+  "text": "Propor empate / aceitar"
+ },
+ "034308ea": {
+  "en": "Resign (press twice)",
+  "ru": "Сдаться (дважды)",
+  "text": "Desistir (pressione 2x)"
+ },
+ "248514f4": {
+  "en": "Resend what was not delivered",
+  "ru": "Повторить недоставленное",
+  "text": "Reenviar o que não foi entregue"
+ },
+ "478d1b4e": {
+  "en": "Rematch after the game",
+  "ru": "Реванш после партии",
+  "text": "Revanche após a partida"
+ },
+ "19708f45": {
+  "en": "Decline, cancel, remove",
+  "ru": "Отказ, отмена, удаление",
+  "text": "Recusar, cancelar, remover"
+ },
+ "f1404ee2": {
+  "en": "Moves are sent as direct messages with ACK.",
+  "ru": "Ходы идут личными сообщениями с ACK.",
+  "text": "Lances vão como mensagens diretas com ACK."
+ },
+ "62d398c0": {
+  "en": "The game was removed",
+  "ru": "Партия удалена",
+  "text": "A partida foi removida"
+ },
+ "ba7b24ea": {
+  "en": "Piece",
+  "ru": "Фигура",
+  "text": "Peça"
+ },
+ "2272813d": {
+  "en": "Put",
+  "ru": "Поставить",
+  "text": "Colocar"
+ },
+ "cd4e738f": {
+  "en": "Accept",
+  "ru": "Принять",
+  "text": "Aceitar"
+ },
+ "65bd4e6a": {
+  "en": "Decline",
+  "ru": "Отказать",
+  "text": "Recusar"
+ },
+ "a7c7b3a4": {
+  "en": "Resend",
+  "ru": "Повторить",
+  "text": "Reenviar"
+ },
+ "1654c55b": {
+  "en": "Cancel",
+  "ru": "Отменить",
+  "text": "Cancelar"
+ },
+ "bb680145": {
+  "en": "Rematch",
+  "ru": "Реванш",
+  "text": "Revanche"
+ },
+ "379c485e": {
+  "en": "Sure?",
+  "ru": "Сдаться?",
+  "text": "Desistir?"
+ },
+ "bb312581": {
+  "en": "Resign",
+  "ru": "Сдаться",
+  "text": "Desistir"
+ },
+ "9cf92c33": {
+  "en": "Put back",
+  "ru": "Вернуть",
+  "text": "Devolver"
+ },
+ "75714961": {
+  "en": "Draw: yes",
+  "ru": "Ничья: да",
+  "text": "Empate: sim"
+ },
+ "03070e67": {
+  "en": "Not sent now: will resend automatically",
+  "ru": "Сейчас не отправлено: повторю автоматически",
+  "text": "Não enviado agora: reenvio automático"
+ },
+ "019d15b0": {
+  "en": "Move refused",
+  "ru": "Ход не принят",
+  "text": "Lance recusado"
+ },
+ "42157e73": {
+  "en": "Accepted: ",
+  "ru": "Принято: ",
+  "text": "Aceito: "
+ },
+ "1e3621c0": {
+  "en": "you play ",
+  "ru": "вы играете ",
+  "text": "você joga de "
+ },
+ "496afda0": {
+  "en": "Wait for their move",
+  "ru": "Дождитесь хода соперника",
+  "text": "Aguarde o lance do oponente"
+ },
+ "b7bda7d6": {
+  "en": "Waiting for the reply",
+  "ru": "Ждём ответа на вызов",
+  "text": "Aguardando a resposta"
+ },
+ "13fb6ab3": {
+  "en": "The game is over",
+  "ru": "Партия окончена",
+  "text": "A partida terminou"
+ },
+ "aa62f4a9": {
+  "en": "This piece cannot move",
+  "ru": "Эта фигура не может ходить",
+  "text": "Esta peça não pode mover"
+ },
+ "2a10be85": {
+  "en": "Choose one of your pieces",
+  "ru": "Выберите свою фигуру",
+  "text": "Escolha uma das suas peças"
+ },
+ "d3394ad3": {
+  "en": "Not allowed: the king is in check",
+  "ru": "Нельзя: королю шах",
+  "text": "Proibido: o rei está em xeque"
+ },
+ "07fd4beb": {
+  "en": "Only finished games can be removed",
+  "ru": "Удалить можно только оконченную партию",
+  "text": "Só partidas encerradas podem ser removidas"
+ },
+ "a67b669f": {
+  "en": "DEL again removes the game",
+  "ru": "DEL ещё раз удалит партию",
+  "text": "DEL de novo remove a partida"
+ },
+ "3acc91e4": {
+  "en": "Game removed",
+  "ru": "Партия удалена",
+  "text": "Partida removida"
+ },
+ "234a4c4f": {
+  "en": "Not sent now: will resend",
+  "ru": "Сейчас не отправлено: повторю",
+  "text": "Não enviado agora: vou reenviar"
+ },
+ "85d45442": {
+  "en": "Challenge sent: you play ",
+  "ru": "Вызов отправлен: вы играете ",
+  "text": "Desafio enviado: você joga de "
+ },
+ "ce465914": {
+  "en": "Sent again",
+  "ru": "Отправлено повторно",
+  "text": "Reenviado"
+ },
+ "4ed0ad26": {
+  "en": "Already sending",
+  "ru": "Уже отправляется",
+  "text": "Já enviando"
+ },
+ "bd192d17": {
+  "en": "Radio busy, will resend",
+  "ru": "Радио занято, повторю автоматически",
+  "text": "Rádio ocupado, vou reenviar"
+ },
+ "a64d2944": {
+  "en": "Nothing to resend",
+  "ru": "Повторять нечего",
+  "text": "Nada para reenviar"
+ },
+ "08e7b429": {
+  "en": "Draw accepted",
+  "ru": "Ничья принята",
+  "text": "Empate aceito"
+ },
+ "7146cbaf": {
+  "en": "Draw offered",
+  "ru": "Ничья предложена",
+  "text": "Empate proposto"
+ },
+ "6859f362": {
+  "en": "Draw already offered",
+  "ru": "Ничья уже предложена",
+  "text": "Empate já proposto"
+ },
+ "6b3a84bd": {
+  "en": "No game in progress",
+  "ru": "Партия не идёт",
+  "text": "Nenhuma partida em curso"
+ },
+ "aa37fc61": {
+  "en": "X again resigns the game",
+  "ru": "X ещё раз — сдаться",
+  "text": "X de novo para desistir"
+ },
+ "12fd654c": {
+  "en": "You resigned",
+  "ru": "Вы сдались",
+  "text": "Você desistiu"
+ },
+ "0439dd72": {
+  "en": "Finish this game first",
+  "ru": "Сначала завершите партию",
+  "text": "Termine esta partida antes"
+ },
+ "a4ae14df": {
+  "en": "Rematch sent: you play ",
+  "ru": "Реванш: вы играете ",
+  "text": "Revanche enviada: você joga de "
+ },
+ "29d3c3f3": {
+  "en": "Challenge cancelled",
+  "ru": "Вызов отменён",
+  "text": "Desafio cancelado"
+ },
+ "aa46b89b": {
+  "en": "Resign with X",
+  "ru": "Сдаться — клавиша X",
+  "text": "Desistir com X"
+ },
+ "47db78a2": {
+  "en": "White",
+  "ru": "белыми",
+  "text": "brancas"
+ },
+ "9bf07c85": {
+  "en": "White",
+  "ru": "белые",
+  "text": "brancas"
+ },
+ "858db4c1": {
+  "en": "Black",
+  "ru": "чёрными",
+  "text": "pretas"
+ },
+ "187474f6": {
+  "en": "Black",
+  "ru": "чёрные",
+  "text": "pretas"
+ },
+ "48b6d938": {
+  "en": "Challenge sent",
+  "ru": "Вызов отправлен",
+  "text": "Desafio enviado"
+ },
+ "6bad4c1a": {
+  "en": "Challenges you: you play ",
+  "ru": "Вызывает вас: вы играете ",
+  "text": "Desafia você: você joga de "
+ },
+ "1a193c76": {
+  "en": "Offers a draw",
+  "ru": "Предлагает ничью",
+  "text": "Propõe empate"
+ },
+ "cb3d85dc": {
+  "en": "Your move: check!",
+  "ru": "Ваш ход: шах!",
+  "text": "Sua vez: xeque!"
+ },
+ "4d46f025": {
+  "en": "Your move",
+  "ru": "Ваш ход",
+  "text": "Sua vez"
+ },
+ "a6f14a0e": {
+  "en": "Their move",
+  "ru": "Ход соперника",
+  "text": "Vez do oponente"
+ },
+ "aacd4928": {
+  "en": "Challenge declined",
+  "ru": "Вызов отклонён",
+  "text": "Desafio recusado"
+ },
+ "549a1bb3": {
+  "en": "Game cancelled",
+  "ru": "Партия отменена",
+  "text": "Partida cancelada"
+ },
+ "61991a0e": {
+  "en": "You won",
+  "ru": "Победа",
+  "text": "Você venceu"
+ },
+ "dfb81104": {
+  "en": "You lost",
+  "ru": "Поражение",
+  "text": "Você perdeu"
+ },
+ "eab5e796": {
+  "en": "Draw",
+  "ru": "Ничья",
+  "text": "Empate"
+ },
+ "0d93aa70": {
+  "en": ": checkmate",
+  "ru": ": мат",
+  "text": ": xeque-mate"
+ },
+ "92baa128": {
+  "en": ": they resigned",
+  "ru": ": соперник сдался",
+  "text": ": oponente desistiu"
+ },
+ "5bfee96c": {
+  "en": ": you resigned",
+  "ru": ": вы сдались",
+  "text": ": você desistiu"
+ },
+ "c0fae946": {
+  "en": ": stalemate",
+  "ru": ": пат",
+  "text": ": afogamento"
+ },
+ "c63b402d": {
+  "en": ": repetition",
+  "ru": ": повторение",
+  "text": ": repetição"
+ },
+ "cf97e7ca": {
+  "en": ": 50 moves",
+  "ru": ": 50 ходов",
+  "text": ": 50 lances"
+ },
+ "8d1fda3e": {
+  "en": ": no mating material",
+  "ru": ": мало фигур",
+  "text": ": material insuficiente"
+ },
+ "7d67f337": {
+  "en": ": move limit",
+  "ru": ": предел ходов",
+  "text": ": limite de lances"
+ },
+ "ce25c704": {
+  "en": " by agreement",
+  "ru": " по соглашению",
+  "text": " por acordo"
+ },
+ "7b9cad7a": {
+  "en": "sending",
+  "ru": "отправляется",
+  "text": "enviando"
+ },
+ "61133695": {
+  "en": "sent, no ACK yet",
+  "ru": "отправлено, ждём ACK",
+  "text": "enviado, sem ACK ainda"
+ },
+ "b8709d46": {
+  "en": "delivered",
+  "ru": "доставлено",
+  "text": "entregue"
+ },
+ "4b634e5b": {
+  "en": "not delivered (R)",
+  "ru": "не доставлено (R)",
+  "text": "não entregue (R)"
+ },
+ "218c5dac": {
+  "en": "not delivered, resending",
+  "ru": "не доставлено, повторяю",
+  "text": "não entregue, reenviando"
+ },
+ "12e4ca70": {
+  "en": "not delivered, retry now",
+  "ru": "не доставлено, повтор сейчас",
+  "text": "não entregue, reenvio agora"
+ },
+ "8015d4d5": {
+  "en": "not delivered, retry in ",
+  "ru": "не доставлено, повтор через ",
+  "text": "não entregue, reenvio em "
+ },
+ "7aa40299": {
+  "en": "With contacts",
+  "ru": "С контактами",
+  "text": "Com contatos"
+ },
+ "3297560c": {
+  "en": {
+   "one": "game waits",
+   "other": "games wait"
+  },
+  "ru": {
+   "one": "ждёт хода",
+   "few": "ждут хода",
+   "many": "ждут хода"
+  },
+  "forms": {
+   "one": "{n} aguarda",
+   "other": "{n} aguardam"
+  }
+ },
+ "46c2b1d0": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "партия",
+   "few": "партии",
+   "many": "партий"
+  },
+  "forms": {
+   "one": "{n} partida",
+   "other": "{n} partidas"
+  }
+ },
+ "bc812413": {
+  "en": "All boards busy: finish a game",
+  "ru": "Все доски заняты: завершите партию",
+  "text": "Tabuleiros ocupados: termine uma partida"
+ },
+ "5c2a0c3e": {
+  "en": "Challenge a chat contact",
+  "ru": "Вызвать чат-контакт",
+  "text": "Desafiar um contato de chat"
+ },
+ "9b8ef234": {
+  "en": "No games yet",
+  "ru": "Партий пока нет",
+  "text": "Sem partidas ainda"
+ },
+ "d019e1e4": {
+  "en": "Nodes: OK - Chess invite",
+  "ru": "Узлы: OK - вызвать",
+  "text": "Nós: OK - convidar"
+ },
+ "0da32845": {
+  "en": "or accept a challenge",
+  "ru": "или примите вызов",
+  "text": "ou aceite um desafio"
+ },
+ "857a3f77": {
+  "en": " mv",
+  "ru": " ход",
+  "text": " jog"
+ },
+ "b8346143": {
+  "en": "Pick your piece",
+  "ru": "Выберите свою фигуру",
+  "text": "Escolha sua peça"
+ },
+ "cc1f16a5": {
+  "en": "Not a legal move",
+  "ru": "Так ходить нельзя",
+  "text": "Lance ilegal"
+ },
+ "a651a0e2": {
+  "en": "Not sent: will resend",
+  "ru": "Не отправлено: повторю",
+  "text": "Não enviado: reenvio"
+ },
+ "8a315245": {
+  "en": "Move not sent",
+  "ru": "Ход не отправлен",
+  "text": "Lance não enviado"
+ },
+ "4625c5c3": {
+  "en": "invited, waiting",
+  "ru": "вызов отправлен",
+  "text": "convidado, aguarde"
+ },
+ "5a4ec350": {
+  "en": "challenges you",
+  "ru": "вызывает вас",
+  "text": "desafia você"
+ },
+ "27d01436": {
+  "en": "offers a draw",
+  "ru": "предлагает ничью",
+  "text": "propõe empate"
+ },
+ "43db0ff4": {
+  "en": "your move, check!",
+  "ru": "ваш ход, шах!",
+  "text": "sua vez, xeque!"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "sua vez"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "vez do oponente"
+ },
+ "8054c24f": {
+  "en": "you won",
+  "ru": "вы победили",
+  "text": "você venceu"
+ },
+ "c5a8f128": {
+  "en": "you lost",
+  "ru": "вы проиграли",
+  "text": "você perdeu"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "empate"
+ },
+ "df7afec4": {
+  "en": "ended",
+  "ru": "завершена",
+  "text": "encerrada"
+ },
+ "6e6fa95b": {
+  "en": "sending",
+  "ru": "отправка",
+  "text": "enviando"
+ },
+ "0f0e7f9f": {
+  "en": "no ACK yet",
+  "ru": "ждём ACK",
+  "text": "sem ACK ainda"
+ },
+ "5b4bc08f": {
+  "en": "not delivered",
+  "ru": "не доставлено",
+  "text": "não entregue"
+ },
+ "5165f173": {
+  "en": "will resend",
+  "ru": "повторю",
+  "text": "vou reenviar"
+ },
+ "9866b3af": {
+  "en": "Accept challenge",
+  "ru": "Принять вызов",
+  "text": "Aceitar desafio"
+ },
+ "570a07aa": {
+  "en": "Decline / cancel",
+  "ru": "Отклонить / отменить",
+  "text": "Recusar / cancelar"
+ },
+ "b06e7266": {
+  "en": "Offer a draw",
+  "ru": "Предложить ничью",
+  "text": "Propor empate"
+ },
+ "98dcc70a": {
+  "en": "Accept the draw",
+  "ru": "Согласиться на ничью",
+  "text": "Aceitar o empate"
+ },
+ "30cb036e": {
+  "en": "Send again",
+  "ru": "Отправить снова",
+  "text": "Enviar de novo"
+ },
+ "74cfe069": {
+  "en": "Delete game",
+  "ru": "Удалить партию",
+  "text": "Apagar partida"
+ },
+ "6eb84c73": {
+  "en": "< Back to board",
+  "ru": "< К доске",
+  "text": "< Ao tabuleiro"
+ },
+ "32de16c4": {
+  "en": "Not now: radio busy?",
+  "ru": "Сейчас нельзя",
+  "text": "Agora não: ocupado?"
+ },
+ "0ea5571b": {
+  "en": "you: ",
+  "ru": "вы: ",
+  "text": "você: "
+ },
+ "62430fa5": {
+  "en": "white",
+  "ru": "белые",
+  "text": "brancas"
+ },
+ "a2296596": {
+  "en": "black",
+  "ru": "чёрные",
+  "text": "pretas"
+ },
+ "1761fab5": {
+  "en": "hold OK: menu",
+  "ru": "держ.OK: меню",
+  "text": "seg. OK: menu"
+ },
+ "8be6cc03": {
+  "en": "Nothing to send",
+  "ru": "Пустое сообщение",
+  "text": "Nada para enviar"
+ },
+ "2c4bf677": {
+  "en": "Queued to ",
+  "ru": "В очереди: ",
+  "text": "Na fila para "
+ },
+ "ee710f30": {
+  "en": "Not sent: radio busy?",
+  "ru": "Не отправлено",
+  "text": "Não enviado: ocupado?"
+ },
+ "5180d17b": {
+  "en": "Message is full",
+  "ru": "Сообщение заполнено",
+  "text": "Mensagem cheia"
+ },
+ "df449de6": {
+  "en": "Draft discarded",
+  "ru": "Черновик удалён",
+  "text": "Rascunho descartado"
+ },
+ "d824a1c3": {
+  "en": "To ",
+  "ru": "Кому: ",
+  "text": "Para "
+ },
+ "93d18358": {
+  "en": "Write message...",
+  "ru": "Написать...",
+  "text": "Escrever mensagem..."
+ },
+ "c0d1fe23": {
+  "en": "Write reply...",
+  "ru": "Ответить текстом...",
+  "text": "Responder..."
+ },
+ "269729a5": {
+  "en": "Write to channel...",
+  "ru": "Написать в канал...",
+  "text": "Escrever no canal..."
+ },
+ "f769e02b": {
+  "en": "Create storage...",
+  "ru": "Создать хранилище...",
+  "text": "Preparar memória..."
+ },
+ "1b6f6009": {
+  "en": "Chess: invite",
+  "ru": "Шахматы: вызвать",
+  "text": "Xadrez: convidar"
+ },
+ "1bc1b700": {
+  "en": "Sound: on",
+  "ru": "Звук: вкл.",
+  "text": "Som: lig."
+ },
+ "0cbb1fbc": {
+  "en": "Sound: off",
+  "ru": "Звук: выкл.",
+  "text": "Som: desl."
+ },
+ "1106f73b": {
+  "en": "Device mode...",
+  "ru": "Режим работы...",
+  "text": "Modo do aparelho..."
+ },
+ "e448d0c2": {
+  "en": "Forwarding: off",
+  "ru": "Пересылка: выкл.",
+  "text": "Retransmissão: desl."
+ },
+ "b16132ba": {
+  "en": "Forwarding: on",
+  "ru": "Пересылка: вкл.",
+  "text": "Retransmissão: lig."
+ },
+ "df15418c": {
+  "en": "Announce node",
+  "ru": "Объявить узел",
+  "text": "Anunciar nó"
+ },
+ "47ee59e9": {
+  "en": "Reply: OK",
+  "ru": "Ответить: OK",
+  "text": "Responder: OK"
+ },
+ "5d0d5182": {
+  "en": "Reply: Got it",
+  "ru": "Ответить: Принято",
+  "text": "Responder: Entendido"
+ },
+ "cfc14186": {
+  "en": "Older message",
+  "ru": "Предыдущее",
+  "text": "Mensagem anterior"
+ },
+ "0ee2be0a": {
+  "en": "Newer message",
+  "ru": "Следующее",
+  "text": "Mensagem seguinte"
+ },
+ "cac89629": {
+  "en": "Next node",
+  "ru": "Следующий узел",
+  "text": "Próximo nó"
+ },
+ "75c09e4a": {
+  "en": "Send: OK",
+  "ru": "Написать: OK",
+  "text": "Enviar: OK"
+ },
+ "10d1258a": {
+  "en": "Reset path",
+  "ru": "Сбросить путь",
+  "text": "Zerar rota"
+ },
+ "10f55374": {
+  "en": "Turn GPS off",
+  "ru": "Выключить GPS",
+  "text": "Desligar GPS"
+ },
+ "201aeb3c": {
+  "en": "Turn GPS on",
+  "ru": "Включить GPS",
+  "text": "Ligar GPS"
+ },
+ "ec253eb8": {
+  "en": "Turn Wi-Fi off",
+  "ru": "Выключить Wi-Fi",
+  "text": "Desligar Wi-Fi"
+ },
+ "0d977904": {
+  "en": "Turn Wi-Fi on",
+  "ru": "Включить Wi-Fi",
+  "text": "Ligar Wi-Fi"
+ },
+ "267fd236": {
+  "en": "Turn BLE off",
+  "ru": "Выключить BLE",
+  "text": "Desligar BLE"
+ },
+ "c88589f0": {
+  "en": "Turn BLE on",
+  "ru": "Включить BLE",
+  "text": "Ligar BLE"
+ },
+ "929d4e52": {
+  "en": "Language: ",
+  "ru": "Язык: ",
+  "text": "Idioma: "
+ },
+ "76b94d9e": {
+  "en": "Battery: volts",
+  "ru": "Батарея: вольты",
+  "text": "Bateria: volts"
+ },
+ "5020984c": {
+  "en": "Battery: percent",
+  "ru": "Батарея: проценты",
+  "text": "Bateria: porcentagem"
+ },
+ "68dd789c": {
+  "en": "Screen off: ",
+  "ru": "Гасить: ",
+  "text": "Apagar tela: "
+ },
+ "daa68450": {
+  "en": "never",
+  "ru": "никогда",
+  "text": "nunca"
+ },
+ "f9a402d8": {
+  "en": "Contrast: ",
+  "ru": "Контраст: ",
+  "text": "Contraste: "
+ },
+ "ebe8ed14": {
+  "en": "Home in: ",
+  "ru": "Пеленг: ",
+  "text": "Rastrear: "
+ },
+ "8c6e79c7": {
+  "en": "Next signal",
+  "ru": "Следующий сигнал",
+  "text": "Próximo sinal"
+ },
+ "85f7f65a": {
+  "en": "Stop beacon",
+  "ru": "Выключить маяк",
+  "text": "Parar beacon"
+ },
+ "bed0ca2f": {
+  "en": "CSI beacon: on",
+  "ru": "Маяк CSI: включить",
+  "text": "Beacon CSI: ligar"
+ },
+ "98a10c4d": {
+  "en": "CSI motion: off",
+  "ru": "Движение CSI: выкл.",
+  "text": "Movimento CSI: desl."
+ },
+ "3e153c9f": {
+  "en": "CSI sensor",
+  "ru": "Приёмник CSI",
+  "text": "Receptor CSI"
+ },
+ "58030672": {
+  "en": "Calibrate (10 s still)",
+  "ru": "Калибровка (10 с тихо)",
+  "text": "Calibrar (10 s parado)"
+ },
+ "9ac6a634": {
+  "en": "Stop homing",
+  "ru": "Остановить пеленг",
+  "text": "Parar rastreio"
+ },
+ "9c186ab6": {
+  "en": "Reset peak",
+  "ru": "Сбросить пик",
+  "text": "Zerar pico"
+ },
+ "a1d384e9": {
+  "en": "Encryption test",
+  "ru": "Тест шифрования",
+  "text": "Testar criptografia"
+ },
+ "ceb1d0b2": {
+  "en": "< Close menu",
+  "ru": "< Закрыть меню",
+  "text": "< Fechar menu"
+ },
+ "0fb4272f": {
+  "en": "Reply ",
+  "ru": "Ответ ",
+  "text": "Resposta "
+ },
+ "203c0966": {
+  "en": " queued",
+  "ru": " в очереди",
+  "text": " na fila"
+ },
+ "85925479": {
+  "en": "Reply not queued",
+  "ru": "Ответ не отправлен",
+  "text": "Resposta não enviada"
+ },
+ "ff8d187c": {
+  "en": "OK again: erase old data",
+  "ru": "Ещё раз OK: стереть",
+  "text": "OK de novo: apagar dados"
+ },
+ "78ae1f77": {
+  "en": "Storage created, restart",
+  "ru": "Создано, перезапуск",
+  "text": "Criado, reiniciando"
+ },
+ "3d4328cc": {
+  "en": "Public channel",
+  "ru": "Общий канал",
+  "text": "Canal público"
+ },
+ "d5ea5328": {
+  "en": "Forwarding on",
+  "ru": "Пересылка вкл.",
+  "text": "Retransmissão lig."
+ },
+ "cd02f62c": {
+  "en": "Forwarding off",
+  "ru": "Пересылка выкл.",
+  "text": "Retransmissão desl."
+ },
+ "9e7ab4be": {
+  "en": "Announcement failed",
+  "ru": "Объявление не отправлено",
+  "text": "Falha ao anunciar"
+ },
+ "43d3ee81": {
+  "en": "Got it",
+  "ru": "Принято",
+  "text": "Entendido"
+ },
+ "7767eb16": {
+  "en": "OK queued",
+  "ru": "OK в очереди",
+  "text": "OK na fila"
+ },
+ "7c783220": {
+  "en": "Not queued",
+  "ru": "Не отправлено",
+  "text": "Não enviado"
+ },
+ "32f53834": {
+  "en": "Path reset",
+  "ru": "Путь сброшен",
+  "text": "Rota zerada"
+ },
+ "076d6a8f": {
+  "en": "Path reset failed",
+  "ru": "Путь не сброшен",
+  "text": "Falha ao zerar rota"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "lig"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "desl"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Rádio ocupado, repita"
+ },
+ "5b16daae": {
+  "en": "Needs a GPS fix",
+  "ru": "Нужна позиция GPS",
+  "text": "Requer posição GPS"
+ },
+ "42bb1cb5": {
+  "en": "Homing started",
+  "ru": "Пеленг начат",
+  "text": "Rastreio iniciado"
+ },
+ "d4e95b96": {
+  "en": "Calibrating 10 s",
+  "ru": "Калибровка 10 с",
+  "text": "Calibrando 10 s"
+ },
+ "fbdfd86b": {
+  "en": "No beacon heard",
+  "ru": "Маяк не слышен",
+  "text": "Beacon não ouvido"
+ },
+ "5287dab1": {
+  "en": "Encryption: OK",
+  "ru": "Шифрование: OK",
+  "text": "Criptografia: OK"
+ },
+ "f49b2a99": {
+  "en": "Encryption: ERROR",
+  "ru": "Шифрование: ошибка",
+  "text": "Criptografia: ERRO"
+ },
+ "daa47cca": {
+  "en": "OK: ",
+  "ru": "OK: ",
+  "text": "OK: "
+ },
+ "1aae33d0": {
+  "en": "OK: menu  < >",
+  "ru": "OK: меню  < >",
+  "text": "OK: menu  < >"
+ },
+ "1c9aa5a1": {
+  "en": "hold: ",
+  "ru": "держ: ",
+  "text": "seg.: "
+ },
+ "6f3f3bbb": {
+  "en": "hold: menu",
+  "ru": "держ: меню",
+  "text": "seg.: menu"
+ },
+ "a66a5c3b": {
+  "en": "up/down, OK, back",
+  "ru": "выбор, OK, назад",
+  "text": "escolher, OK, voltar"
+ },
+ "0cfaea2d": {
+  "en": "click-next hold-run",
+  "ru": "клик-далее держ-ОК",
+  "text": "clique-próx seg.-ir"
+ },
+ "2353290b": {
+  "en": "click: close",
+  "ru": "клик: закрыть",
+  "text": "clique: fechar"
+ },
+ "ee662895": {
+  "en": "play in the app (BLE)",
+  "ru": "играть: приложение (BLE)",
+  "text": "jogar no app (BLE)"
+ },
+ "515e76ac": {
+  "en": "play on the Wi-Fi page",
+  "ru": "играть: Wi-Fi-страница",
+  "text": "jogar na página Wi-Fi"
+ },
+ "abe87456": {
+  "en": "Wi-Fi page to play",
+  "ru": "играть: включите Wi-Fi",
+  "text": "ligue a página Wi-Fi"
+ },
+ "a4e55627": {
+  "en": "as now in ",
+  "ru": "как сейчас через ",
+  "text": "atual em "
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "cima/baixo, OK"
+ },
+ "dc6208b5": {
+  "en": "click-next hold-choose",
+  "ru": "клик-далее держ-выбор",
+  "text": "clique-próx seg.-sel."
+ },
+ "bbe40d91": {
+  "en": "posts ",
+  "ru": "постов ",
+  "text": "posts "
+ },
+ "3ff011e5": {
+  "en": "  in ",
+  "ru": "  вошли ",
+  "text": "  dentro "
+ },
+ "47db2ee3": {
+  "en": " fwd ",
+  "ru": " перес. ",
+  "text": " retr. "
+ },
+ "cb35fab6": {
+  "en": "admin ",
+  "ru": "админ ",
+  "text": "admin "
+ },
+ "b3970895": {
+  "en": "room ",
+  "ru": "комната ",
+  "text": "sala "
+ },
+ "d2b3452b": {
+  "en": "guest ",
+  "ru": "гость ",
+  "text": "convid. "
+ },
+ "8628e989": {
+  "en": "  no fwd",
+  "ru": "  без перес.",
+  "text": "  sem retr."
+ },
+ "3132d9df": {
+  "en": "  near ",
+  "ru": " рядом ",
+  "text": "  perto "
+ },
+ "d5d1dc19": {
+  "en": "USB power",
+  "ru": "Питание USB",
+  "text": "Energia USB"
+ },
+ "d1f0e683": {
+  "en": "  relay on",
+  "ru": "  ретрансляция",
+  "text": "  retransm. lig."
+ },
+ "8bd652c8": {
+  "en": "Messages",
+  "ru": "Сообщения",
+  "text": "Mensagens"
+ },
+ "64af19bb": {
+  "en": "queued",
+  "ru": "очередь",
+  "text": "na fila"
+ },
+ "3e507c74": {
+  "en": "sent",
+  "ru": "отправл.",
+  "text": "enviada"
+ },
+ "1a03858e": {
+  "en": "delivered",
+  "ru": "доставл.",
+  "text": "entregue"
+ },
+ "470fbe82": {
+  "en": "no ACK",
+  "ru": "нет ACK",
+  "text": "sem ACK"
+ },
+ "ae85b1ad": {
+  "en": "They appear here",
+  "ru": "Здесь появятся входящие",
+  "text": "Elas aparecem aqui"
+ },
+ "7bde9e87": {
+  "en": "saved, not heard",
+  "ru": "сохранён, не слышен",
+  "text": "salvo, não ouvido"
+ },
+ "17c4a94b": {
+  "en": " m ",
+  "ru": " м ",
+  "text": " m "
+ },
+ "45bbb2e4": {
+  "en": " km ",
+  "ru": " км ",
+  "text": " km "
+ },
+ "ffc12966": {
+  "en": "has GPS position",
+  "ru": "есть GPS-позиция",
+  "text": "tem posição GPS"
+ },
+ "43fdd0de": {
+  "en": "No nodes heard",
+  "ru": "Узлы пока не найдены",
+  "text": "Nenhum nó ouvido"
+ },
+ "c5158996": {
+  "en": "hold: announce",
+  "ru": "держите: объявить",
+  "text": "segurar: anunciar"
+ },
+ "c24c5141": {
+  "en": "Motion CSI",
+  "ru": "Движение CSI",
+  "text": "Movimento CSI"
+ },
+ "9251c97f": {
+  "en": "no Wi-Fi: AP on?",
+  "ru": "нет Wi-Fi: точка?",
+  "text": "sem Wi-Fi: AP lig.?"
+ },
+ "fe400256": {
+  "en": "no beacon",
+  "ru": "нет маяка",
+  "text": "sem beacon"
+ },
+ "a173713a": {
+  "en": "CSI frozen",
+  "ru": "CSI стоит",
+  "text": "CSI congelado"
+ },
+ "79585709": {
+  "en": "calibrating",
+  "ru": "калибровка",
+  "text": "calibrando"
+ },
+ "5257b1c1": {
+  "en": "still",
+  "ru": "тихо",
+  "text": "parado"
+ },
+ "e2d6f9c5": {
+  "en": " / thr ",
+  "ru": " / порог ",
+  "text": " / lim "
+ },
+ "d63281b7": {
+  "en": "/s",
+  "ru": "/с",
+  "text": "/s"
+ },
+ "f7ade58d": {
+  "en": "lost",
+  "ru": "потерян",
+  "text": "perdido"
+ },
+ "5712c851": {
+  "en": "no signal",
+  "ru": "нет сигнала",
+  "text": "sem sinal"
+ },
+ "a8dee5ea": {
+  "en": "stronger",
+  "ru": "теплее",
+  "text": "mais forte"
+ },
+ "cf670717": {
+  "en": "weaker",
+  "ru": "холоднее",
+  "text": "mais fraco"
+ },
+ "1f607748": {
+  "en": "steady",
+  "ru": "ровно",
+  "text": "estável"
+ },
+ "dbf59bc7": {
+  "en": " pkts",
+  "ru": " пак.",
+  "text": " pcts"
+ },
+ "dbdadd08": {
+  "en": "CSI beacon ",
+  "ru": "Маяк CSI ",
+  "text": "Beacon CSI "
+ },
+ "d3312a44": {
+  "en": "Beacon on",
+  "ru": "Маяк включён",
+  "text": "Beacon ligado"
+ },
+ "11ec7a8e": {
+  "en": "hold: switch off",
+  "ru": "держите: выключить",
+  "text": "segurar: desligar"
+ },
+ "fcc3ce37": {
+  "en": "BLE and LoRa",
+  "ru": "BLE и LoRa",
+  "text": "BLE e LoRa"
+ },
+ "ccdf2191": {
+  "en": "Wi-Fi and LoRa",
+  "ru": "Wi-Fi и LoRa",
+  "text": "Wi-Fi e LoRa"
+ },
+ "34b27b92": {
+  "en": "Position fix",
+  "ru": "Позиция есть",
+  "text": "Posição obtida"
+ },
+ "2f68d3a9": {
+  "en": "Old GPS date",
+  "ru": "Старая дата GPS",
+  "text": "Data GPS antiga"
+ },
+ "7e2016f5": {
+  "en": "Searching sky",
+  "ru": "Поиск спутников",
+  "text": "Buscando satélites"
+ },
+ "9ef6ab1a": {
+  "en": "No data from GPS",
+  "ru": "Нет данных GPS",
+  "text": "Sem dados do GPS"
+ },
+ "8e5d78e6": {
+  "en": "Satellites ",
+  "ru": "Спутники ",
+  "text": "Satélites "
+ },
+ "313721f1": {
+  "en": "Clock ",
+  "ru": "Часы ",
+  "text": "Relógio "
+ },
+ "60b9cc42": {
+  "en": "Access point off",
+  "ru": "Точка доступа выкл.",
+  "text": "Wi-Fi AP desligado"
+ },
+ "90ea4994": {
+  "en": "Web chat and settings",
+  "ru": "Веб-чат и настройки",
+  "text": "Chat web e ajustes"
+ },
+ "8570bed8": {
+  "en": "Bluetooth off",
+  "ru": "Bluetooth выкл.",
+  "text": "Bluetooth desl."
+ },
+ "3af56354": {
+  "en": "Secure pairing",
+  "ru": "Защищённое сопряжение",
+  "text": "Pareamento seguro"
+ },
+ "e8ddba89": {
+  "en": "Battery: ",
+  "ru": "Батарея: ",
+  "text": "Bateria: "
+ },
+ "dbd2bbf3": {
+  "en": "volts",
+  "ru": "вольты",
+  "text": "volts"
+ },
+ "8c5e57f9": {
+  "en": "percent",
+  "ru": "проценты",
+  "text": "porcentagem"
+ },
+ "f3aac08e": {
+  "en": "Screen off: ",
+  "ru": "Гасить экран: ",
+  "text": "Apagar tela: "
+ },
+ "a1841168": {
+  "en": "Modules",
+  "ru": "Модули",
+  "text": "Módulos"
+ },
+ "15bd3514": {
+  "en": "relayed ",
+  "ru": "переслано ",
+  "text": "retransm. "
+ },
+ "85f563da": {
+  "en": "  rejected ",
+  "ru": "  откл. ",
+  "text": "  rejeit. "
+ },
+ "1e3e470a": {
+  "en": "up ",
+  "ru": "работа ",
+  "text": "ativo "
+ },
+ "df641ccb": {
+  "en": "  boot ",
+  "ru": "  загр. ",
+  "text": "  boot "
+ },
+ "7854f1f9": {
+  "en": "s",
+  "ru": "с",
+  "text": "s"
+ },
+ "4f4367e9": {
+  "en": "m",
+  "ru": "м",
+  "text": "m"
+ },
+ "df643044": {
+  "en": "h",
+  "ru": "ч",
+  "text": "h"
+ },
+ "7b108998": {
+  "en": "d",
+  "ru": "д",
+  "text": "d"
+ },
+ "4afdffa6": {
+  "en": "path ?",
+  "ru": "путь ?",
+  "text": "rota ?"
+ },
+ "5cfad88d": {
+  "en": " hops",
+  "ru": " хоп.",
+  "text": " saltos"
+ },
+ "8c0d6692": {
+  "en": "repeater",
+  "ru": "ретранслятор",
+  "text": "repetidor"
+ },
+ "247e64bb": {
+  "en": "room",
+  "ru": "комната",
+  "text": "sala"
+ },
+ "c8e30cd9": {
+  "en": "sensor",
+  "ru": "датчик",
+  "text": "sensor"
+ },
+ "14acee03": {
+  "en": "chat",
+  "ru": "чат",
+  "text": "chat"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "celular"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "relógio"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "fones"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "celular/relógio"
+ },
+ "a71d0499": {
+  "en": "hidden network",
+  "ru": "скрытая сеть",
+  "text": "rede oculta"
+ },
+ "e1d6680b": {
+  "en": "Wi-Fi: access point",
+  "ru": "Wi-Fi: точка доступа",
+  "text": "Wi-Fi ocupado: AP"
+ },
+ "b100920c": {
+  "en": "Wi-Fi busy",
+  "ru": "Wi-Fi занят",
+  "text": "Wi-Fi ocupado"
+ },
+ "dba65692": {
+  "en": "scanning...",
+  "ru": "сканирую...",
+  "text": "varrendo..."
+ },
+ "b5065a2e": {
+  "en": "BLE busy",
+  "ru": "BLE занят",
+  "text": "BLE ocupado"
+ },
+ "9159010a": {
+  "en": "BLE error",
+  "ru": "Ошибка BLE",
+  "text": "Erro no BLE"
+ },
+ "6b18c42e": {
+  "en": "Normal",
+  "ru": "Обычный",
+  "text": "Normal"
+ },
+ "a851b542": {
+  "en": "Announced to the network",
+  "ru": "Узел объявлен в сети",
+  "text": "Anunciado na rede"
+ },
+ "bd0f256a": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить",
+  "text": "Falha ao anunciar"
+ },
+ "5226c78b": {
+  "en": "Post to the room",
+  "ru": "Пост в комнату",
+  "text": "Publicar na sala"
+ },
+ "c1dedaf2": {
+  "en": "Up to 151 bytes; @: input language",
+  "ru": "До 151 байта; @ - язык ввода",
+  "text": "Até 151 bytes; @: idioma de entrada"
+ },
+ "a120182c": {
+  "en": "1-15 characters; -> after a letter: capital",
+  "ru": "1-15 символов; -> после буквы: заглавная",
+  "text": "1-15 caracteres; -> após letra: maiúscula"
+ },
+ "4014819e": {
+  "en": "0-15 characters; empty: blank login",
+  "ru": "0-15 символов; пусто - вход без пароля",
+  "text": "0-15 caracteres; vazio: login sem senha"
+ },
+ "43021aae": {
+  "en": "Empty post",
+  "ru": "Пустой пост",
+  "text": "Post vazio"
+ },
+ "bdfe1fbd": {
+  "en": "Posted; members get it in turn",
+  "ru": "Пост сохранён; участники получат его по очереди",
+  "text": "Publicado; os membros recebem em sequência"
+ },
+ "968ed0ed": {
+  "en": "Post not stored",
+  "ru": "Пост не сохранён",
+  "text": "Post não salvo"
+ },
+ "48fa6389": {
+  "en": "Latin letters, digits and symbols only",
+  "ru": "Только латиница, цифры и символы",
+  "text": "Só letras latinas, dígitos e símbolos"
+ },
+ "30da29b9": {
+  "en": "Admin password cannot be empty",
+  "ru": "Пароль администратора не может быть пустым",
+  "text": "A senha de admin não pode ficar vazia"
+ },
+ "96cd5299": {
+  "en": "Up to 15 characters",
+  "ru": "Не более 15 символов",
+  "text": "Até 15 caracteres"
+ },
+ "125b8379": {
+  "en": "Normal mode",
+  "ru": "Обычный режим",
+  "text": "Modo normal"
+ },
+ "80267c09": {
+  "en": "running",
+  "ru": "сейчас",
+  "text": "ativo"
+ },
+ "ee4bed74": {
+  "en": "Screen, chats, maps, radar and games",
+  "ru": "Экран, чаты, карты, радар и игры",
+  "text": "Tela, chats, mapas, radar e jogos"
+ },
+ "3cc6ed1d": {
+  "en": "A MeshCore chat node; relays as set",
+  "ru": "Узел-собеседник MeshCore; пересылка по настройке",
+  "text": "Nó de chat MeshCore; retransmite se ativado"
+ },
+ "2bbcf764": {
+  "en": "Relays the network's packets; no chats",
+  "ru": "Пересылает пакеты сети; без чатов",
+  "text": "Retransmite os pacotes da rede; sem chats"
+ },
+ "05034a79": {
+  "en": "Login and settings from the MeshCore app",
+  "ru": "Вход и настройка из приложения MeshCore",
+  "text": "Login e ajustes pelo app MeshCore"
+ },
+ "90a747f1": {
+  "en": "Keeps posts and hands them to members",
+  "ru": "Хранит посты и раздаёт их участникам",
+  "text": "Guarda posts e os entrega aos membros"
+ },
+ "4fd18c22": {
+  "en": "Room password and settings from the MeshCore app",
+  "ru": "Пароль комнаты и настройка из приложения MeshCore",
+  "text": "Senha da sala e ajustes pelo app MeshCore"
+ },
+ "8487497d": {
+  "en": "Continues as now in ",
+  "ru": "Продолжение в текущем режиме через ",
+  "text": "Continua no modo atual em "
+ },
+ "f2a6f444": {
+  "en": "A change restarts; data and settings stay",
+  "ru": "Смена перезапускает; данные и настройки сохраняются",
+  "text": "Trocar reinicia; dados e configurações ficam"
+ },
+ "6cfcb203": {
+  "en": "Choose",
+  "ru": "Выбрать",
+  "text": "Escolher"
+ },
+ "ef107ddc": {
+  "en": "Continue",
+  "ru": "Продолжить",
+  "text": "Continuar"
+ },
+ "ea142785": {
+  "en": "Restarting: ",
+  "ru": "Перезапуск: ",
+  "text": "Reiniciando: "
+ },
+ "8081ce34": {
+  "en": " h ",
+  "ru": " ч ",
+  "text": " h "
+ },
+ "15e3d9e0": {
+  "en": " d ",
+  "ru": " д ",
+  "text": " d "
+ },
+ "a839fc2f": {
+  "en": "none",
+  "ru": "нет",
+  "text": "nenhum"
+ },
+ "51345e46": {
+  "en": "Forwarding",
+  "ru": "Пересылка",
+  "text": "Retransmissão"
+ },
+ "6068683b": {
+  "en": "Admin password",
+  "ru": "Пароль администратора",
+  "text": "Senha de admin"
+ },
+ "e7150b06": {
+  "en": "Room password",
+  "ru": "Пароль комнаты",
+  "text": "Senha da sala"
+ },
+ "6ce06683": {
+  "en": "Guest password",
+  "ru": "Гостевой пароль",
+  "text": "Senha de convidado"
+ },
+ "18aacd32": {
+  "en": "Read without password",
+  "ru": "Чтение без пароля",
+  "text": "Ler sem senha"
+ },
+ "be44e777": {
+  "en": "Post to the room",
+  "ru": "Написать в комнату",
+  "text": "Publicar na sala"
+ },
+ "86655252": {
+  "en": "Nearby advert",
+  "ru": "Объявление рядом",
+  "text": "Anúncio local"
+ },
+ "75481d2e": {
+  "en": "Network advert",
+  "ru": "Объявление на сеть",
+  "text": "Anúncio na rede"
+ },
+ "5030ef5f": {
+  "en": "Advertise now",
+  "ru": "Объявить сейчас",
+  "text": "Anunciar agora"
+ },
+ "c15f1276": {
+  "en": "Forward other nodes' packets (off for a room)",
+  "ru": "Пересылать чужие пакеты (у комнаты обычно выкл.)",
+  "text": "Retransmitir pacotes de outros nós (desl. numa sala)"
+ },
+ "e89d5472": {
+  "en": "Forward other MeshCore nodes' packets",
+  "ru": "Пересылать пакеты других узлов MeshCore",
+  "text": "Retransmitir pacotes de outros nós MeshCore"
+ },
+ "4add5de0": {
+  "en": "Admin login from the MeshCore app; OK: change",
+  "ru": "Вход администратора из приложения MeshCore; OK: изменить",
+  "text": "Login de admin pelo app MeshCore; OK: alterar"
+ },
+ "02134ead": {
+  "en": "Members read and post with it; none: blank",
+  "ru": "Участники читают и пишут; нет - пустой пароль",
+  "text": "Membros leem e publicam com ela; nenhum: vazia"
+ },
+ "533f225b": {
+  "en": "Read-only login; none: a blank password logs in",
+  "ru": "Вход только для чтения; нет - вход с пустым паролем",
+  "text": "Login só leitura; nenhum: senha vazia entra"
+ },
+ "84f54bf2": {
+  "en": "Any password gives read-only access",
+  "ru": "С любым паролем - только чтение",
+  "text": "Qualquer senha dá acesso só leitura"
+ },
+ "d9be51f2": {
+  "en": "A post from the room itself; OK: write",
+  "ru": "Пост от имени комнаты; OK: написать",
+  "text": "Post da própria sala; OK: escrever"
+ },
+ "01ff7a69": {
+  "en": "Zero-hop advert: off or 60-240 min",
+  "ru": "Объявление без пересылки: выкл или 60-240 мин",
+  "text": "Anúncio sem saltos: desl. ou 60-240 min"
+ },
+ "d14850d6": {
+  "en": "Flooded advert: off or 3-168 h",
+  "ru": "Объявление на всю сеть: выкл или 3-168 ч",
+  "text": "Anúncio na rede: desl. ou 3-168 h"
+ },
+ "e99b80f0": {
+  "en": "Tell the whole network about this node",
+  "ru": "Сообщить об узле всей сети",
+  "text": "Anunciar este nó para toda a rede"
+ },
+ "67dca228": {
+  "en": "Normal, repeater or room; a change restarts",
+  "ru": "Обычный, репитер или комната; смена перезапускает",
+  "text": "Normal, repetidor ou sala; trocar reinicia"
+ },
+ "d2e88551": {
+  "en": "Posts ",
+  "ru": "Постов ",
+  "text": "Posts "
+ },
+ "ea17de99": {
+  "en": " · members ",
+  "ru": " · вошли ",
+  "text": " · membros "
+ },
+ "d4327754": {
+  "en": "Relayed ",
+  "ru": "Переслано ",
+  "text": "Retransmitidos "
+ },
+ "2e67f21b": {
+  "en": " · neighbours ",
+  "ru": " · соседей ",
+  "text": " · vizinhos "
+ },
+ "6e08749f": {
+  "en": " · logged in ",
+  "ru": " · вошли ",
+  "text": " · conectados "
+ },
+ "4a16c555": {
+  "en": "Advertise",
+  "ru": "Объявить",
+  "text": "Anunciar"
+ },
+ "94be0f84": {
+  "en": "Switch",
+  "ru": "Переключить",
+  "text": "Alternar"
+ },
+ "125df0fa": {
+  "en": "Saved",
+  "ru": "Сохранено",
+  "text": "Salvo"
+ },
+ "2eb069bb": {
+  "en": " · draw 3",
+  "ru": " · по 3",
+  "text": " · virar 3"
+ },
+ "e828c963": {
+  "en": "Won ",
+  "ru": "Побед ",
+  "text": "Vitórias "
+ },
+ "fe802820": {
+  "en": "Klondike",
+  "ru": "Классика",
+  "text": "Klondike"
+ },
+ "fb58f3f0": {
+  "en": {
+   "one": "move",
+   "other": "moves"
+  },
+  "ru": {
+   "one": "ход",
+   "few": "хода",
+   "many": "ходов"
+  },
+  "forms": {
+   "one": "{n} jogada",
+   "other": "{n} jogadas"
+  }
+ },
+ "cdb0b1c7": {
+  "en": "All cards open: collecting",
+  "ru": "Все карты открыты: собираю",
+  "text": "Cartas abertas: recolhendo"
+ },
+ "f6aae944": {
+  "en": "Cannot go there",
+  "ru": "Сюда нельзя",
+  "text": "Não pode ir aí"
+ },
+ "05119e80": {
+  "en": "Stock is empty",
+  "ru": "Колода пуста",
+  "text": "Monte vazio"
+ },
+ "f7b306da": {
+  "en": "No cards to take here",
+  "ru": "Здесь нечего взять",
+  "text": "Nada para pegar aqui"
+ },
+ "d38be328": {
+  "en": "No place for these cards",
+  "ru": "Этим картам некуда лечь",
+  "text": "Sem lugar para estas cartas"
+ },
+ "f2e0850f": {
+  "en": "N again: new game (this one counts as lost)",
+  "ru": "N ещё раз: новая партия, эта будет проиграна",
+  "text": "N de novo: novo jogo (este conta como perdido)"
+ },
+ "ced2141d": {
+  "en": "New game: draw 3",
+  "ru": "Новая партия: сдача по 3",
+  "text": "Novo jogo: virar 3"
+ },
+ "27340420": {
+  "en": "New game",
+  "ru": "Новая партия",
+  "text": "Novo jogo"
+ },
+ "c8fc3ceb": {
+  "en": "Nothing to undo",
+  "ru": "Нечего отменять",
+  "text": "Nada para desfazer"
+ },
+ "2bf12d7a": {
+  "en": "Hint: turn the stock",
+  "ru": "Подсказка: сдайте из колоды",
+  "text": "Dica: vire o monte"
+ },
+ "8edf4ef5": {
+  "en": "Hint: turn the waste over",
+  "ru": "Подсказка: переверните колоду",
+  "text": "Dica: revire o descarte"
+ },
+ "a0faffc6": {
+  "en": "No useful moves: undo or start again",
+  "ru": "Полезных ходов нет: отмените или начните заново",
+  "text": "Sem jogadas úteis: desfaça ou recomece"
+ },
+ "70772e45": {
+  "en": "Draw 3: dealt again",
+  "ru": "Сдача по 3: карты пересданы",
+  "text": "Virar 3: cartas redistribuídas"
+ },
+ "621ee201": {
+  "en": "Draw 1: dealt again",
+  "ru": "Сдача по 1: карты пересданы",
+  "text": "Virar 1: cartas redistribuídas"
+ },
+ "2adf9f5f": {
+  "en": "Next game: draw 3",
+  "ru": "Следующая партия: сдача по 3",
+  "text": "Próximo jogo: virar 3"
+ },
+ "6e656e2f": {
+  "en": "Next game: draw 1",
+  "ru": "Следующая партия: сдача по 1",
+  "text": "Próximo jogo: virar 1"
+ },
+ "b013048d": {
+  "en": "Solitaire keys",
+  "ru": "Клавиши «Косынки»",
+  "text": "Teclas da Paciência"
+ },
+ "f756a7e4": {
+  "en": "Choose a pile",
+  "ru": "Выбор стопки",
+  "text": "Escolher pilha"
+ },
+ "526fbff4": {
+  "en": "In a column: how many cards",
+  "ru": "В столбце: сколько карт взять",
+  "text": "Na coluna: quantas cartas"
+ },
+ "3c59a92b": {
+  "en": "Take / put; on the stock: turn",
+  "ru": "Взять / положить; на колоде: сдать",
+  "text": "Pegar / soltar; no monte: virar"
+ },
+ "9756b440": {
+  "en": "Move automatically (or hold OK)",
+  "ru": "Переложить само (или удерж. OK)",
+  "text": "Mover sozinho (ou segurar OK)"
+ },
+ "27107b85": {
+  "en": "Undo (also U)",
+  "ru": "Отменить ход (или U)",
+  "text": "Desfazer (também U)"
+ },
+ "7dad6d91": {
+  "en": "Hint",
+  "ru": "Подсказка",
+  "text": "Dica"
+ },
+ "c9d19938": {
+  "en": "Collect to foundations",
+  "ru": "Собрать в дома",
+  "text": "Recolher às fundações"
+ },
+ "9e30e04f": {
+  "en": "Draw 1 / 3 (now: 3)",
+  "ru": "Сдача по 1 / 3 (сейчас: по 3)",
+  "text": "Virar 1 / 3 (agora: 3)"
+ },
+ "6045678f": {
+  "en": "Draw 1 / 3 (now: 1)",
+  "ru": "Сдача по 1 / 3 (сейчас: по 1)",
+  "text": "Virar 1 / 3 (agora: 1)"
+ },
+ "1f7edb03": {
+  "en": "Played ",
+  "ru": "Сыграно ",
+  "text": "Jogos "
+ },
+ "adca9639": {
+  "en": " · won ",
+  "ru": " · побед ",
+  "text": " · vitórias "
+ },
+ "326bd72e": {
+  "en": " · best ",
+  "ru": " · лучшее ",
+  "text": " · recorde "
+ },
+ "9925e352": {
+  "en": " · score ",
+  "ru": " · очки ",
+  "text": " · pontos "
+ },
+ "b4cb0676": {
+  "en": "You won!",
+  "ru": "Победа!",
+  "text": "Você venceu!"
+ },
+ "d96d839a": {
+  "en": {
+   "one": "point",
+   "other": "points"
+  },
+  "ru": {
+   "one": "очко",
+   "few": "очка",
+   "many": "очков"
+  },
+  "forms": {
+   "one": "{n} ponto",
+   "other": "{n} pontos"
+  }
+ },
+ "f967f554": {
+  "en": "N: new game   BACK: menu",
+  "ru": "N: новая партия   BACK: меню",
+  "text": "N: novo jogo   BACK: menu"
+ },
+ "7079216d": {
+  "en": "Undo",
+  "ru": "Отмена",
+  "text": "Desfazer"
+ },
+ "cfb1986b": {
+  "en": "Put",
+  "ru": "Положить",
+  "text": "Soltar"
+ },
+ "8201e726": {
+  "en": "Auto",
+  "ru": "Само",
+  "text": "Auto"
+ },
+ "91a09716": {
+  "en": "Turn",
+  "ru": "Сдать",
+  "text": "Virar"
+ },
+ "d83d287e": {
+  "en": "Take",
+  "ru": "Взять",
+  "text": "Pegar"
+ }
+}

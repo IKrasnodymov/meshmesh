@@ -486,9 +486,12 @@ function renderModules(){const s=moduleStates(),names=['LoRa','Клавиату�
  $('bootLine').textContent=`Загрузка ${status.boot}`+(heltec()?'':` · последняя клавиша: ${keyName(status.last_key)}`)+(status.event?' · событие: '+eventLabel(status.event):'');
  $('firmware').innerHTML=[['Прошивка',status.firmware],['Плата',boardName()],['Узел',status.node],['Протокол','MeshCore · канал Public'],['Сборка',String(status.build_sha256||'').slice(0,16)],['Свободно PSRAM',Math.round((status.psram||0)/1024)+' K']].map(([a,b])=>`<div class="detail"><span>${a}</span><span class="${a==='Сборка'?'mono':''}">${esc(b)}</span></div>`).join('')}
 
+// Screen languages of the firmware (include/I18n.h); firmware before 0.3.7 knows only "russian".
+const SCREEN_LANGS=[['en','English'],['ru','Русский'],['uk','Українська'],['es','Español'],['pt','Português'],['fr','Français'],['de','Deutsch'],['it','Italiano'],['pl','Polski'],['tr','Türkçe'],['zh','中文'],['ja','日本語'],['ko','한국어'],['ar','العربية'],['id','Bahasa Indonesia']];
+function langName(){const l=SCREEN_LANGS.find(x=>x[0]===config.lang);return l?l[1]:config.russian?'Русский':'English'}
 // Settings: the M9 settings list and its two editors.
 function renderSettings(){
- const items=[['radio','radio','acc','Радио',`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info','Экран и устройство',`${heltec()?'Контраст':'Яркость'} ${config.brightness} · ${config.russian?'Русский':'English'}`],
+ const items=[['radio','radio','acc','Радио',`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info','Экран и устройство',`${heltec()?'Контраст':'Яркость'} ${config.brightness} · ${langName()}`],
   ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['connect','wifi','info','Подключения',`${noWifi()?'':`Wi-Fi ${status.wifi?'вкл':'выкл'} · `}BLE ${status.ble?'вкл':'выкл'}`],
   ['modules','pulse','ok','Состояние модулей',`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted','Клавиши и подсказки','Что делает каждая клавиша'],['library','pin','ok','Сохранённые карты',mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:'Карт нет'],['role','tower','violet','Режим работы',status.role==='repeater'?'Репитер MeshCore':status.role==='room'?'Комната MeshCore':'Обычный: чаты, карты, радар']];
  $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
@@ -502,7 +505,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'hops',n:'Предел наших пересылок',h:'Только пакеты, пересылаемые этим узлом',t:'num',min:0,max:7,step:1},
  {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'}]:[
  {k:'name',n:'Имя',h:'1–24 байта UTF-8',t:'text'},
- {k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]},
+ config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:SCREEN_LANGS},
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
  ...h?[]:[{k:'sound',n:'Звуки',h:'Сигнал о сообщениях и подтверждениях',t:'sw'},{k:'auto_lock',n:'Автоблокировка, с',h:'0 = выкл, 30–600 с',t:'num',min:0,max:600,step:30}],
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},

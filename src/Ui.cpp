@@ -40,7 +40,8 @@ const uint16_t bg=rgb(0x080c11),bar=rgb(0x000000),card=rgb(0x131a22),cardHi=rgb(
 const uint16_t accent=rgb(0x1fc2ae),ok=rgb(0x4cc26b),warn=rgb(0xe9b13b),bad=rgb(0xe5564d),info=rgb(0x4f9df7),violet=rgb(0xa78bfa),outBubble=rgb(0x103a35),inBubble=rgb(0x1a232d);
 const uint16_t avatarHues[]={rgb(0x2f7d6f),rgb(0x3f6fb5),rgb(0x8a5cc2),rgb(0xb5693f),rgb(0x4f8a3a),rgb(0xa8466a),rgb(0x3a8aa0),rgb(0x8f7a2e)};
 
-// Text: the Cyrillic fonts lack Latin-1 and punctuation such as "·", "°", "№".
+// Text: the Cyrillic fonts lack Latin-1 and punctuation such as "·", "°", "№"; other languages' letters
+// come from the fallback fonts of I18n.h, and Arabic is drawn in visual order.
 struct Face{const uint8_t* main;const uint8_t* latin;};
 const Face body{u8g2_font_6x13_t_cyrillic,u8g2_font_6x13_tf},bold{u8g2_font_6x13B_t_cyrillic,u8g2_font_6x13B_tf},small{u8g2_font_5x8_t_cyrillic,u8g2_font_5x8_tf};
 const Face big{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf},digits{u8g2_font_logisoso42_tn,nullptr};
@@ -51,14 +52,15 @@ const char* substitute(uint32_t cp){switch(cp){case 0x2026:return "...";case 0x2
 int glyph(int x,int y,uint32_t cp,const Face& f,uint16_t color,bool paint){
  auto& u=hardware.font;const uint8_t* use=nullptr;
  if(cp<=0xffff){useFont(f.main);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.main;else if(f.latin){useFont(f.latin);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.latin;}}
+ if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f.main);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;} // other languages' letters
  if(!use){
   if(const char* sub=substitute(cp)){String s(sub);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(x+w,y,nextCp(s,i),f,color,paint);return w;}
   useFont(f.main);int w=u8g2_GetGlyphWidth(&u.u8g2,'0'),a=u.getFontAscent();if(paint)hardware.canvas->drawRect(x+1,y-a,max(2,w-2),a,color);return w; // visible placeholder, e.g. emoji
  }
  useFont(use);if(!paint)return u8g2_GetGlyphWidth(&u.u8g2,cp);u.setForegroundColor(color);return u.drawGlyph(x,y,cp);
 }
-int measure(const String& s,const Face& f=body){int w=0;for(unsigned i=0;i<s.length();)w+=glyph(0,0,nextCp(s,i),f,0,false);return w;}
-int text(int x,int y,const String& s,uint16_t color=ink,const Face& f=body){for(unsigned i=0;i<s.length();)x+=glyph(x,y,nextCp(s,i),f,color,true);return x;}
+int measure(const String& text,const Face& f=body){String s=visualText(text);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(0,0,nextCp(s,i),f,0,false);return w;}
+int text(int x,int y,const String& logical,uint16_t color=ink,const Face& f=body){String s=visualText(logical);for(unsigned i=0;i<s.length();)x+=glyph(x,y,nextCp(s,i),f,color,true);return x;}
 void textRight(int x,int y,const String& s,uint16_t color=ink,const Face& f=body){text(x-measure(s,f),y,s,color,f);}
 void textCenter(int x,int y,const String& s,uint16_t color=ink,const Face& f=body){text(x-measure(s,f)/2,y,s,color,f);}
 String fit(const String& s,int px,const Face& f=body){
@@ -79,9 +81,9 @@ unsigned wrap(const String& s,String* rows,unsigned maxRows,int px,const Face& f
  }
  if(row.length()&&count<maxRows)rows[count++]=row;return count;
 }
-String t(const char* en,const char* ru){return config.russian?ru:en;}
+String t(const char* en,const char* ru){return tr(en,ru);}
 String flag(bool v){return v?t("On","Вкл"):t("Off","Выкл");}
-String count(unsigned n,const char* one,const char* many,const char* ru1,const char* ru2,const char* ru5){if(!config.russian)return String(n)+" "+(n==1?one:many);unsigned m=n%100,d=n%10;return String(n)+" "+(m>=11&&m<=14?ru5:d==1?ru1:d>=2&&d<=4?ru2:ru5);}
+String count(unsigned n,const char* one,const char* many,const char* ru1,const char* ru2,const char* ru5){return plural(n,one,many,ru1,ru2,ru5);}
 void notice(const String& value,uint16_t color=accent){toast=value;toastAt=millis();toastColor=color;dirty=true;}
 
 // Drawing primitives and icons (drawn, not font glyphs, so they scale and take state colours).
@@ -179,7 +181,12 @@ void change(Page next){if(page==Game&&next!=Game)gameLeave();if(next==Game&&page
 bool localTime(time_t at,tm& out){if(at<1700000000)return false;at+=config.utcOffset*60;out=*gmtime(&at);return true;}
 String clockText(){tm v;if(!localTime(time(nullptr),v))return "--:--";char b[6];snprintf(b,sizeof b,"%02d:%02d",v.tm_hour,v.tm_min);return b;}
 String timeText(uint32_t at){tm v,today;if(!localTime(at,v))return "";char b[8];if(localTime(time(nullptr),today)&&(v.tm_yday!=today.tm_yday||v.tm_year!=today.tm_year))snprintf(b,sizeof b,"%02d.%02d",v.tm_mday,v.tm_mon+1);else snprintf(b,sizeof b,"%02d:%02d",v.tm_hour,v.tm_min);return b;}
-String dateText(){tm v;if(!localTime(time(nullptr),v))return t("Clock not set","Время не установлено");const char* dayRu[]={"воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"},*dayEn[]={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};const char* monRu[]={"января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"},*monEn[]={"January","February","March","April","May","June","July","August","September","October","November","December"};return config.russian?String(dayRu[v.tm_wday])+", "+String(v.tm_mday)+" "+monRu[v.tm_mon]:String(dayEn[v.tm_wday])+", "+monEn[v.tm_mon]+" "+String(v.tm_mday);}
+String dateText(){tm v;if(!localTime(time(nullptr),v))return t("Clock not set","Время не установлено");
+ const char* days[]={tr("Sunday","воскресенье"),tr("Monday","понедельник"),tr("Tuesday","вторник"),tr("Wednesday","среда"),tr("Thursday","четверг"),tr("Friday","пятница"),tr("Saturday","суббота")};
+ // Month names as the date below uses them (Russian: genitive).
+ const char* months[]={tr("January","января"),tr("February","февраля"),tr("March","марта"),tr("April","апреля"),tr("May","мая"),tr("June","июня"),tr("July","июля"),tr("August","августа"),tr("September","сентября"),tr("October","октября"),tr("November","ноября"),tr("December","декабря")};
+ String s=t("{weekday}, {month} {day}","{weekday}, {day} {month}");s.replace("{weekday}",days[v.tm_wday]);s.replace("{month}",months[v.tm_mon]);s.replace("{day}",String(v.tm_mday));return s;
+}
 String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return t("now","сейчас");if(s<3600)return String(s/60)+t(" min"," мин");if(s<86400)return String(s/3600)+t(" h"," ч");return String(s/86400)+t(" d"," д");}
 String pathText(const Peer& p){if(p.pathLength==255)return t("path unknown","путь неизвестен");if(!(p.pathLength&63))return t("direct","напрямую");return count(p.pathLength&63,"hop","hops","хоп","хопа","хопов");}
 String typeText(uint8_t type){switch(type){case 1:return t("Chat node","Чат-узел");case 2:return t("Repeater","Ретранслятор");case 3:return t("Room server","Сервер комнаты");case 4:return t("Sensor","Датчик");}return t("Node","Узел");}
@@ -189,7 +196,7 @@ bool distanceTo(const Peer& p,float& metres,float& bearing){
  double a=sin((la2-la1)/2)*sin((la2-la1)/2)+cos(la1)*cos(la2)*sin(dl/2)*sin(dl/2);metres=12742000*atan2(sqrt(a),sqrt(1-a));
  bearing=fmod(atan2(sin(dl)*cos(la2),cos(la1)*sin(la2)-sin(la1)*cos(la2)*cos(dl))*180/M_PI+360,360);return true;
 }
-String distanceText(float m,float bearing){const char* ru[]={"С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"},*en[]={"N","NE","E","SE","S","SW","W","NW"};int k=int((bearing+22.5f)/45)%8;return (m<1000?String(int(m/10)*10)+t(" m"," м"):String(m/1000,m<10000?1:0)+t(" km"," км"))+" "+(config.russian?ru[k]:en[k]);}
+String distanceText(float m,float bearing){const char* dirs[]={tr("N","С"),tr("NE","СВ"),tr("E","В"),tr("SE","ЮВ"),tr("S","Ю"),tr("SW","ЮЗ"),tr("W","З"),tr("NW","СЗ")};int k=int((bearing+22.5f)/45)%8;return (m<1000?String(int(m/10)*10)+t(" m"," м"):String(m/1000,m<10000?1:0)+t(" km"," км"))+" "+dirs[k];}
 unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3900,4000,4100,4200};static const uint8_t pc[]={0,5,15,35,55,70,82,93,100};uint16_t v=hardware.batteryMv;if(v<=mv[0])return 0;for(int i=1;i<9;i++)if(v<=mv[i])return pc[i-1]+(pc[i]-pc[i-1])*(v-mv[i-1])/(mv[i]-mv[i-1]);return 100;}
 
 // Status bar (HUD): title on the left; radio, GPS, links, clock and battery on the right.
@@ -307,7 +314,7 @@ void drawChat(){
  else{d.fillRect(14,boxY+5,2,12,accent);text(20,boxY+15,t("Message...","Сообщение..."),faint);textRight(306,boxY+15,t("2x space: RU/EN","2×пробел: RU/EN"),faint,small);}
  unsigned used=composer.length(),limit=meshRadio.messageLimit(recipient);String counter=String(used)+"/"+String(limit);
  textRight(306,boxY+boxH-3,counter,used*10>=limit*9?(used>=limit?bad:warn):faint,small);
- footer({{"OK",t("Send","Отпр.")},{config.russian?"2×пробел":"2x space","RU/EN"},{t("hold OK","удерж. OK").c_str(),t("Layout","Раскладка")},{"BACK",t("Back","Назад")}});
+ footer({{"OK",t("Send","Отпр.")},{tr("2x space","2×пробел"),"RU/EN"},{t("hold OK","удерж. OK").c_str(),t("Layout","Раскладка")},{"BACK",t("Back","Назад")}});
 }
 // Map: north-up tiles with HUD chips, own position, node markers and a scale bar.
 void drawMap(){
@@ -388,7 +395,7 @@ void drawNode(){
 void compassRose(int cx,int cy,int r){
  auto& d=g();d.fillCircle(cx,cy,r,card);d.drawCircle(cx,cy,r,line);d.drawCircle(cx,cy,r-1,line);
  for(int a=0;a<360;a+=30){float rad=a*M_PI/180;int l=a%90?4:7;d.drawLine(cx+roundf((r-2)*sinf(rad)),cy-roundf((r-2)*cosf(rad)),cx+roundf((r-2-l)*sinf(rad)),cy-roundf((r-2-l)*cosf(rad)),a%90?faint:dim);}
- const char* ru[]={"С","В","Ю","З"},*en[]={"N","E","S","W"};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,config.russian?ru[k]:en[k],k?dim:bad,bold);}
+ const char* dirs[]={tr("N","С"),tr("E","В"),tr("S","Ю"),tr("W","З")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}
  if(navigation.headingValid){float a=navigation.heading*M_PI/180;int tx=cx+roundf((r-8)*sinf(a)),ty=cy-roundf((r-8)*cosf(a));d.fillTriangle(tx,ty,cx+roundf(5*cosf(a)),cy+roundf(5*sinf(a)),cx-roundf(5*cosf(a)),cy-roundf(5*sinf(a)),accent);d.fillCircle(cx,cy,3,ink);}
  else textCenter(cx,cy+4,"--",faint,bold);
 }
@@ -518,7 +525,7 @@ void drawSettings(){
  Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin,IcTower};uint16_t hues[]={accent,info,warn,info,ok,dim,ok,violet};
  String names[]={t("Radio","Радио"),t("Screen & device","Экран и устройство"),t("GPS & compass","GPS и компас"),t("Connections","Подключения"),t("Module health","Состояние модулей"),t("Keys & help","Клавиши и подсказки"),t("Saved maps","Сохранённые карты"),t("Device mode","Режим работы")};
  String details[]={String(config.frequency,3)+t(" MHz · SF"," МГц · SF")+String(config.sf)+" · "+String(config.power)+" dBm",
-  t("Brightness ","Яркость ")+String(config.brightness)+" · "+(config.russian?"Русский":"English"),
+  t("Brightness ","Яркость ")+String(config.brightness)+" · "+langNames[config.lang<LangCount?config.lang:0],
   "GPS "+flag(config.gps)+" · "+(navigation.calibrated?t("compass calibrated","компас откалиброван"):t("compass not calibrated","компас не откалиброван")),
   "Wi-Fi "+flag(portalActive())+" · BLE "+flag(bleActive()),"RX "+String(meshRadio.rxCount)+" · TX "+String(meshRadio.txCount)+" · "+String(meshRadio.relayed)+t(" relayed"," переслано"),
   t("What every key does","Что делает каждая клавиша"),maps.title.length()?maps.title+" · "+count(maps.tileCount,"tile","tiles","тайл","тайла","тайлов"):t("No maps","Карт нет"),config.role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):config.role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal: chats, maps, radar","Обычный: чаты, карты, радар")};
@@ -528,12 +535,12 @@ void drawSettings(){
 }
 int settingRows(){return page==Radio?8:10;}
 String settingName(int i){
- if(page==Radio){const char* en[]={"Frequency","Bandwidth","Spreading factor","Coding rate","TX power","Our relay limit","Relay packets"};const char* ru[]={"Частота","Полоса","Фактор SF","Кодирование CR","Мощность","Предел наших пересылок","Ретрансляция"};return i<7?(config.russian?ru[i]:en[i]):"";}
- const char* en[]={"Name","Language","Brightness","Sounds","Auto lock","Dim screen","GPS receiver","UTC offset","Battery shows"};const char* ru[]={"Имя","Язык","Яркость","Звуки","Автоблокировка","Гасить экран","Приёмник GPS","Смещение UTC","Батарея в строке"};return i<9?(config.russian?ru[i]:en[i]):"";
+ if(page==Radio){const char* names[]={tr("Frequency","Частота"),tr("Bandwidth","Полоса"),tr("Spreading factor","Фактор SF"),tr("Coding rate","Кодирование CR"),tr("TX power","Мощность"),tr("Our relay limit","Предел наших пересылок"),tr("Relay packets","Ретрансляция")};return i<7?names[i]:"";}
+ const char* names[]={tr("Name","Имя"),tr("Language","Язык"),tr("Brightness","Яркость"),tr("Sounds","Звуки"),tr("Auto lock","Автоблокировка"),tr("Dim screen","Гасить экран"),tr("GPS receiver","Приёмник GPS"),tr("UTC offset","Смещение UTC"),tr("Battery shows","Батарея в строке")};return i<9?names[i]:"";
 }
 String settingValue(const Config& c,int i){
  if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(" MHz"," МГц");case 1:return String(c.bandwidth,1)+t(" kHz"," кГц");case 2:return "SF"+String(c.sf);case 3:return "4/"+String(c.cr);case 4:return String(c.power)+" dBm";case 5:return String(c.hops);case 6:return flag(c.relay);}return "";}
- switch(i){case 0:return c.name;case 1:return c.russian?"Русский":"English";case 2:return String(c.brightness);case 3:return flag(c.sound);case 4:return c.autoLock?String(c.autoLock)+t(" s"," с"):t("Off","Выкл");case 5:return c.dimAfter?String(c.dimAfter)+t(" s"," с"):t("Off","Выкл");case 6:return flag(c.gps);case 7:{int m=abs(c.utcOffset);char b[12];snprintf(b,sizeof b,"%c%02d:%02d",c.utcOffset<0?'-':'+',m/60,m%60);return b;}case 8:return c.batteryVolts?t("Volts","Вольты"):t("Percent","Проценты");}return "";
+ switch(i){case 0:return c.name;case 1:return langNames[c.lang<LangCount?c.lang:0];case 2:return String(c.brightness);case 3:return flag(c.sound);case 4:return c.autoLock?String(c.autoLock)+t(" s"," с"):t("Off","Выкл");case 5:return c.dimAfter?String(c.dimAfter)+t(" s"," с"):t("Off","Выкл");case 6:return flag(c.gps);case 7:{int m=abs(c.utcOffset);char b[12];snprintf(b,sizeof b,"%c%02d:%02d",c.utcOffset<0?'-':'+',m/60,m%60);return b;}case 8:return c.batteryVolts?t("Volts","Вольты"):t("Percent","Проценты");}return "";
 }
 String settingHint(int i){
  if(page==Radio){switch(i){case 0:return t("1 kHz steps; must match every node","Шаг 1 кГц; должна совпадать у всех узлов");case 1:return t("62.5 / 125 / 250 / 500 kHz","62.5 / 125 / 250 / 500 кГц");case 2:return t("Higher SF: longer range, slower","Больше SF - дальше, но медленнее");case 3:return t("Error correction 4/5 to 4/8","Избыточность кода 4/5 ... 4/8");case 4:return t("Radio chip setting, 0-22 dBm","Настройка чипа, 0-22 dBm");case 5:return t("Only packets relayed by this device","Только пакеты, пересылаемые этим узлом");case 6:return t("Forward other nodes' MeshCore packets","Пересылать чужие пакеты MeshCore");}return t("Applied to the radio when saved","Применяется к радио при сохранении");}
@@ -560,7 +567,7 @@ void drawNetwork(){
  auto cardAt=[&](int i,int h,Icon ic,const String& name,const String& state,bool on){bool focus=selected==i;panel(8,y,304,h,focus?cardHi:card,8);if(focus)ring(8,y,304,h,8);d.fillRoundRect(16,y+7,24,24,6,bg);icon(ic,28,y+19,7,on?info:faint,bg);text(48,y+17,name,ink,bold);text(48,y+30,fit(state,220,small),dim,small);};
  int wh=wifi?56:38;cardAt(0,wh,IcWifi,t("Wi-Fi access point","Точка доступа Wi-Fi"),wifi?t("Web chat and map upload","Веб-чат и загрузка карт"):t("Off","Выключена"),wifi);toggle(274,y+11,wifi);
  if(wifi){String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);int x=text(48,y+48,ssid,accent,bold);text(x+8,y+48,t("Password ","Пароль ")+portalPassword(),ink);textRight(302,y+48,"192.168.4.1",dim,small);}
- y+=wh+6;cardAt(1,38,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(config.russian),internet.online());toggle(274,y+11,web);
+ y+=wh+6;cardAt(1,38,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(),internet.online());toggle(274,y+11,web);
  y+=44;cardAt(2,38,IcBle,"Bluetooth LE",ble?t("Secure pairing, MeshMesh service","Защищённое сопряжение, сервис MeshMesh"):t("Off","Выключен"),ble);toggle(274,y+11,ble);
  if(ble)textRight(266,y+17,"PIN "+String(blePin()),accent,bold);
  y+=44;if(y+38<=216)cardAt(3,38,IcKey,t("MeshCore identity","Ключ MeshCore"),meshRadio.publicKeyText().substring(0,24)+"...",true);
@@ -575,11 +582,11 @@ unsigned netRows(NetRow* rows,unsigned max){
  return n;
 }
 // Internet errors come in English from Internet.cpp (also shown over USB).
-String netError(){String e=internet.error;if(!config.russian)return e;
+String netError(){String e=internet.error;if(config.lang==LangEn)return e;
  const char* map[][2]={{"Wrong password or refused: ","Неверный пароль или отказ: "},{"No answer from ","Нет ответа от "},{"No saved network in range","Сохранённых сетей рядом нет"},{"Connection lost","Связь с сетью потеряна"},
   {"Wi-Fi scan failed","Сбой поиска сетей"},{"Wi-Fi scan timed out","Поиск сетей не завершился"},{"Clock not set","Часы не установлены"},{"SSID 1-32 bytes, password empty or 8-63","Имя 1-32 байта, пароль пустой или 8-63"},
   {"Tile is not 256 or 512 px","Тайл не 256/512 пикселей"},{"Not a PNG image","Сервер вернул не PNG"},{"No location","Положение по IP не найдено"},{"SD full: web tiles not cached","SD заполнена: тайлы не сохраняются"}};
- for(auto& m:map)if(e.startsWith(m[0]))return String(m[1])+e.substring(strlen(m[0]));return e;}
+ for(auto& m:map)if(e.startsWith(m[0]))return String(tr(m[0],m[1]))+e.substring(strlen(m[0]));return e;}
 unsigned netCount(){NetRow rows[Internet::MaxSeen+Internet::MaxSaved];return netRows(rows,Internet::MaxSeen+Internet::MaxSaved);}
 uint32_t netScanAt=0;
 void netListEnter(){
@@ -598,10 +605,10 @@ void drawNetList(){
  d.fillRoundRect(16,33,24,24,6,bg);icon(IcWifi,28,45,7,internet.online()?ok:internet.enabled?info:faint,bg);
  // The last failure (wrong password, no answer) stays visible until the next attempt starts.
  bool failed=internet.enabled&&!internet.online()&&internet.error.length()&&internet.state!=Internet::Connecting&&internet.state!=Internet::Scanning;
- text(48,42,t("Wi-Fi client","Wi-Fi-клиент"),ink,bold);text(48,56,fit(failed?netError():internet.stateText(config.russian),220,small),internet.online()?ok:failed?warn:dim,small);toggle(274,37,internet.enabled);
+ text(48,42,t("Wi-Fi client","Wi-Fi-клиент"),ink,bold);text(48,56,fit(failed?netError():internet.stateText(),220,small),internet.online()?ok:failed?warn:dim,small);toggle(274,37,internet.enabled);
  NetRow rows[Internet::MaxSeen+Internet::MaxSaved];unsigned total=netRows(rows,Internet::MaxSeen+Internet::MaxSaved);
  if(!internet.enabled)textCenter(160,120,t("Turn the client on to find networks","Включите клиент, чтобы найти сети"),dim);
- else if(!total)textCenter(160,120,internet.state==Internet::Paused?internet.stateText(config.russian):t("Searching for networks...","Поиск сетей..."),dim);
+ else if(!total)textCenter(160,120,internet.state==Internet::Paused?internet.stateText():t("Searching for networks...","Поиск сетей..."),dim);
  int first=max(0,selected-1-5);
  for(unsigned i=first;i<total&&i<unsigned(first+6);i++){int y=70+(i-first)*24;auto& r=rows[i];bool f=selected==int(i)+1;listRow(y,22,f);
   bool current=internet.online()&&internet.ssid==r.ssid;
@@ -631,13 +638,13 @@ void drawDiagnostics(){
 }
 void drawHelp(){
 #if defined(MM_BOARD_TDECK)
- Hint keys[]={{config.russian?"Шар":"Ball",t("Move: menu, lists, map","Перемещение: меню, списки, карта")},{config.russian?"Нажатие":"Click",t("Open / send","Открыть / отправить")},{config.russian?"Удерж. шар":"Hold ball",t("Unlock; in chat: Russian layout","Вход; в чате: русская раскладка")},
-  {"Enter",t("Open / send","Открыть / отправить")},{"DEL",t("Delete; with no text: back","Удалить; без текста: назад")},{config.russian?"2×пробел":"2x space",t("in text: switch RU/EN","в тексте: RU/EN")},
+ Hint keys[]={{tr("Ball","Шар"),t("Move: menu, lists, map","Перемещение: меню, списки, карта")},{tr("Click","Нажатие"),t("Open / send","Открыть / отправить")},{tr("Hold ball","Удерж. шар"),t("Unlock; in chat: Russian layout","Вход; в чате: русская раскладка")},
+  {"Enter",t("Open / send","Открыть / отправить")},{"DEL",t("Delete; with no text: back","Удалить; без текста: назад")},{tr("2x space","2×пробел"),t("in text: switch RU/EN","в тексте: RU/EN")},
   {"L",t("Map: saved maps","Карта: список карт")},{"+ -",t("Map zoom","Масштаб карты")},{"P",t("Nodes: show on map","Узлы: показать на карте")},{"HOME",t("Menu: DEL until the tiles","Меню: DEL до плиток")}};
 #else
  Hint keys[]={{"MSG",t("Chats","Чаты")},{"MAP",t("Map; L - saved maps","Карта; L - список карт")},{"HOME",t("Menu","Главное меню")},{"BACK",t("Previous screen","Предыдущий экран")},{"CTRL",t("Settings","Настройки")},
   {"ADV",t("Announce this node; hold: GPS on/off","Объявить узел; удерж.: GPS вкл/выкл")},{"@",t("function key, not Sym+@: RU/EN in chat","функц. клавиша (не Sym+@): RU/EN в чате")},{"MIC",t("Lock screen (there is no microphone)","Блокировка (микрофона нет)")},
-  {"OK",t("Open / send; hold: unlock","Открыть / отправить; удерж.: вход")},{config.russian?"2×пробел":"2x space",t("in text: switch RU/EN; Right: capital","в тексте: RU/EN; -> : заглавная")}};
+  {"OK",t("Open / send; hold: unlock","Открыть / отправить; удерж.: вход")},{tr("2x space","2×пробел"),t("in text: switch RU/EN; Right: capital","в тексте: RU/EN; -> : заглавная")}};
 #endif
  for(int i=0;i<10;i++){int y=24+i*19;int kw=max(30,measure(keys[i].key,small)+10);g().fillRoundRect(10,y,kw,15,3,line);textCenter(10+kw/2,y+11,keys[i].key,ink,small);text(max(50,kw+16),y+12,fit(keys[i].action,258),i%2?dim:ink);}
  footer({{"OK",t("Russian layout","Русская раскладка")},{"BACK",t("Settings","Настройки")}});
@@ -707,8 +714,8 @@ void drawLayoutHelp(){
  text(16,208,t("2x space: RU/EN   Shift or Right after a letter: capital","2×пробел: RU/EN   Shift или -> после буквы: заглавная"),dim,small);
 }
 
-void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;}}else switch(selected){case 1:draft.russian=!draft.russian;break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;}dirty=true;}
-void saveDraft(){StaticJsonDocument<768>d;deserializeJson(d,configJson());if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;}else{d["name"]=draft.name;d["russian"]=draft.russian;d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
+void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;}}else switch(selected){case 1:draft.lang=(draft.lang+LangCount+(dir<0?-1:1))%LangCount;break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;}dirty=true;}
+void saveDraft(){StaticJsonDocument<768>d;deserializeJson(d,configJson());if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;}else{d["name"]=draft.name;d["lang"]=langCodes[draft.lang];d.remove("russian");d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
 void runNodeAction(){
  Peer* p=focusedPeer();if(!p)return;NodeAction acts[4];unsigned n=nodeActions(*p,acts);NodeAction a=acts[constrain(action,0,int(n)-1)];
  if(a!=ActForget)deleteArmed=false;
@@ -723,7 +730,7 @@ void runNodeAction(){
 }
 }
 bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
-void uiBegin(){Preferences p;keyboardRussian=config.russian;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",config.russian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
+void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
 #if defined(MM_BOARD_TDECK)
@@ -773,7 +780,7 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==Motion){if(radar.csi==Radar::CsiSensor&&radar.beaconHeard()){radar.calibrate();notice(t("Calibrating: keep the area still for 10 s","Калибровка: 10 с без движения в зоне"),info);}else notice(t("Needs a heard beacon","Нужен услышанный маяк"),warn);}
  else if(page==Homing){radarSound=!radarSound;notice(radarSound?(config.sound?t("Ping on","Звук пеленга включён"):t("Device sound is off in settings","Звук устройства выключен в настройках")):t("Ping off","Звук пеленга выключен"),radarSound&&!config.sound?warn:dim);}
  else if(page==Diagnostics){hardware.beep();bool passed=meshRadio.selfTest();notice(passed?t("Encryption test passed","Проверка шифрования пройдена"):t("Encryption test failed","Ошибка шифрования"),passed?ok:bad);}}
-String eventLabel(const String& value){if(!config.russian)return value;if(value.startsWith("New message from "))return "Сообщение от "+value.substring(17);if(value.startsWith("Delivered to "))return "Доставлено: "+value.substring(13);if(value=="Queued: waiting for delivery")return "Ожидание подтверждения";if(value=="Queued: broadcast")return "Сообщение в общем чате отправляется";if(value=="No delivery ACK")return "Получатель не подтвердил доставку";if(value.startsWith("Radio TX error")||value.startsWith("TX failed"))return "Ошибка передачи по радио";return value;}
+String eventLabel(const String& value){if(value.startsWith("New message from "))return tr("New message from ","Сообщение от ")+value.substring(17);if(value.startsWith("Delivered to "))return tr("Delivered to ","Доставлено: ")+value.substring(13);if(value=="Queued: waiting for delivery")return tr("Queued: waiting for delivery","Ожидание подтверждения");if(value=="Queued: broadcast")return tr("Queued: broadcast","Сообщение в общем чате отправляется");if(value=="No delivery ACK")return tr("No delivery ACK","Получатель не подтвердил доставку");if(config.lang!=LangEn&&(value.startsWith("Radio TX error")||value.startsWith("TX failed")))return tr("Radio TX error","Ошибка передачи по радио");return value;}
 void uiTick(){uint32_t now=millis();
  if(bootPick&&page==RolePick&&now-bootPickAt>=bootPickMs){bootPick=false;change(homePage());}
  if(page==Game)gameTick(now);

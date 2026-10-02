@@ -13,7 +13,7 @@ bool composing=false,kbShift=true;int kbRow=0,kbCol=0,kbLayout=0;String draft;ui
 // The n-th UTF-8 character of a row.
 String cell(const char* row,int n){int i=0;while(row[i]&&n>0){uint8_t c=row[i];i+=c<128?1:(c&0xe0)==0xc0?2:3;n--;}if(!row[i])return "";uint8_t c=row[i];int len=c<128?1:(c&0xe0)==0xc0?2:3;return String(row).substring(i,i+len);}
 void eraseLast(){int i=draft.length();if(!i)return;do i--;while(i>0&&(uint8_t(draft[i])&0xc0)==0x80);draft.remove(i);}
-void openCompose(uint64_t to,const String& name){composing=true;draft="";composeTo=to;composeName=name;kbRow=kbCol=0;kbShift=true;kbLayout=config.russian?1:0;menuOpen=false;dirty=true;}
+void openCompose(uint64_t to,const String& name){composing=true;draft="";composeTo=to;composeName=name;kbRow=kbCol=0;kbShift=true;kbLayout=config.lang==LangRu||config.lang==LangUk?1:0;menuOpen=false;dirty=true;}
 void sendDraft(){
  String text=draft;text.trim();if(!text.length()){notice(t("Nothing to send","Пустое сообщение"));return;}
  bool sent=composeTo!=meshRadio.nodeId&&meshRadio.sendMessage(text,composeTo);
@@ -58,7 +58,7 @@ void drawCompose(){
   String ch=cell(layouts[kbLayout][kbShift][r],k);int x=1+k*9+(r==2?0:0),y=20+r*11;bool focus=r==kbRow&&k==kbCol;
   if(focus)c.fillRect(x,y-9,9,11,1);useFont(u8g2_font_6x12_t_cyrillic);int w=hardware.font.getUTF8Width(ch.c_str());hardware.text(x+(9-w)/2,y,ch,!focus);
  }
- const char* labels[SpecialCount]={kbShift?"ABC":"abc",layoutNames[(kbLayout+1)%3],config.russian?"пробел":"space","<-",config.russian?"Отпр.":"Send"};
+ const char* labels[SpecialCount]={kbShift?"ABC":"abc",layoutNames[(kbLayout+1)%3],tr("space","пробел"),"<-",tr("Send","Отпр.")};
  const int xs[SpecialCount+1]={0,22,40,82,100,128};
  for(int k=0;k<SpecialCount;k++){bool focus=kbRow==3&&k==kbCol;int x=xs[k],w=xs[k+1]-xs[k];
   if(focus)c.fillRect(x,54,w-1,10,1);else c.drawRect(x,54,w-1,10,1);int tw=width(labels[k],small);say(x+(w-1-tw)/2,62,labels[k],small,!focus);}

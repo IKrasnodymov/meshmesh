@@ -18,9 +18,10 @@ void drawRolePick(){
   Icon ic=r==RoleRepeater?IcTower:r==RoleRoom?IcRoom:IcChat;uint16_t hue=r==RoleRepeater?violet:r==RoleRoom?warn:accent;
   g().fillRoundRect(16,y+8,28,28,7,bg);icon(ic,30,y+22,8,hue,bg);text(54,y+19,roleTitle(r),ink,bold);
   if(current){String now=t("running","сейчас");int w=measure(now,small)+10;g().fillRoundRect(302-w,y+8,w,14,7,rgb(0x14524b));textCenter(302-w/2,y+18,now,accent,small);}
-  const char* en[][2]={{"Screen, chats, maps, radar and games","A MeshCore chat node; relays as set"},{"Relays the network's packets; no chats","Login and settings from the MeshCore app"},{"Keeps posts and hands them to members","Room password and settings from the MeshCore app"}};
-  const char* ru[][2]={{"Экран, чаты, карты, радар и игры","Узел-собеседник MeshCore; пересылка по настройке"},{"Пересылает пакеты сети; без чатов","Вход и настройка из приложения MeshCore"},{"Хранит посты и раздаёт их участникам","Пароль комнаты и настройка из приложения MeshCore"}};
-  for(int i=0;i<2;i++)text(54,y+33+i*12,fit(config.russian?ru[r][i]:en[r][i],250,small),dim,small);
+  const char* about[][2]={{tr("Screen, chats, maps, radar and games","Экран, чаты, карты, радар и игры"),tr("A MeshCore chat node; relays as set","Узел-собеседник MeshCore; пересылка по настройке")},
+   {tr("Relays the network's packets; no chats","Пересылает пакеты сети; без чатов"),tr("Login and settings from the MeshCore app","Вход и настройка из приложения MeshCore")},
+   {tr("Keeps posts and hands them to members","Хранит посты и раздаёт их участникам"),tr("Room password and settings from the MeshCore app","Пароль комнаты и настройка из приложения MeshCore")}};
+  for(int i=0;i<2;i++)text(54,y+33+i*12,fit(about[r][i],250,small),dim,small);
  }
  if(bootPick){uint32_t gone=millis()-bootPickAt;unsigned left=gone>=bootPickMs?0:(bootPickMs-gone+999)/1000;textCenter(160,212,t("Continues as now in ","Продолжение в текущем режиме через ")+String(left)+t(" s"," с"),warn);}
  else textCenter(160,212,t("A change restarts; data and settings stay","Смена перезапускает; данные и настройки сохраняются"),faint,small);

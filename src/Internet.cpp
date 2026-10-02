@@ -216,14 +216,14 @@ bool Internet::setTileUrl(const String& value){
   if(v.length()>=sizeof tileTemplate||!(v.startsWith("https://")||v.startsWith("http://"))||v.indexOf("{z}")<0||v.indexOf("{x}")<0||v.indexOf("{y}")<0||!idle())return false;
   strlcpy(tileTemplate,v.c_str(),sizeof tileTemplate);Preferences p;if(p.begin("mm-wifi",false)){if(v==DefaultTiles)p.remove("tiles");else p.putString("tiles",v);p.end();}return true;
 }
-String Internet::stateText(bool ru){
+String Internet::stateText(){
   switch(state){
-  case Off:return ru?"Выключен":"Off";
-  case Paused:return portalActive()?(ru?"Пауза: включена точка доступа":"Paused: access point on"):radar.active?(ru?"Пауза: открыт радар":"Paused: radar open"):(ru?"Пауза":"Paused");
-  case Scanning:return ru?"Поиск сетей...":"Scanning...";
-  case Connecting:return (ru?"Подключение: ":"Connecting: ")+ssid;
+  case Off:return tr("Off","Выключен");
+  case Paused:return portalActive()?tr("Paused: access point on","Пауза: включена точка доступа"):radar.active?tr("Paused: radar open","Пауза: открыт радар"):tr("Paused","Пауза");
+  case Scanning:return tr("Scanning...","Поиск сетей...");
+  case Connecting:return tr("Connecting: ","Подключение: ")+ssid;
   case Online:return ssid+" · "+WiFi.localIP().toString();
-  default:return savedCount()?(ru?"Сохранённых сетей рядом нет":"No saved network in range"):(ru?"Выберите сеть":"Choose a network");
+  default:return savedCount()?tr("No saved network in range","Сохранённых сетей рядом нет"):tr("Choose a network","Выберите сеть");
   }
 }
 // No passwords and no names of other people's networks: only the saved ones.

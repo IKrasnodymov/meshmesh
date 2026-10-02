@@ -28,19 +28,26 @@ uint32_t chessPopupAt=0,chessSeen=0; // chess news: Heltec has no board, the gam
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
-String t(const char* en,const char* ru){return config.russian?ru:en;}
-unsigned chars(const String& value){unsigned n=0;for(unsigned i=0;i<value.length();i++)n+=(uint8_t(value[i])&0xc0)!=0x80;return n;}
-String clipped(const String& value,unsigned count){unsigned i=0,n=0,cut=0;while(i<value.length()&&n<count){if(n+2==count)cut=i;uint8_t c=value[i];i+=c<128?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;n++;}return i<value.length()&&count>2?value.substring(0,cut)+"..":value.substring(0,i);}
+String t(const char* en,const char* ru){return tr(en,ru);}
+// Lengths in 6 px columns: CJK glyphs take two.
+unsigned chars(const String& value){unsigned n=0;for(unsigned i=0;i<value.length();)n+=glyphCells(utf8Next(value,i));return n;}
+String clipped(const String& value,unsigned count){unsigned i=0,n=0,cut=0;while(i<value.length()){unsigned at=i,w=glyphCells(utf8Next(value,i));if(n+w>count){i=at;break;}if(n+w+2<=count)cut=i;n+=w;}return i<value.length()&&count>2?value.substring(0,cut)+"..":value.substring(0,i);}
 void notice(const String& value){action=value;actionAt=millis();dirty=true;}
 // SetFont resets transparency; the monochrome canvas treats any non-zero colour as lit.
 void useFont(const uint8_t* f){if(f!=activeFont){hardware.font.setFont(f);hardware.font.setFontMode(1);activeFont=f;}}
-int width(const String& value,const uint8_t* f){useFont(f);return hardware.font.getUTF8Width(value.c_str());}
-void say(int x,int y,const String& value,const uint8_t* f=body,uint16_t color=1){useFont(f);hardware.text(x,y,value,color);}
+// Glyph by glyph: what the font lacks comes from its fallback fonts (I18n.h); Arabic in visual order.
+int glyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
+ const uint8_t* use=cp<=0xffff&&fontHasGlyph(f,cp)?f:nullptr;
+ if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;}
+ if(!use)return 0;useFont(use);if(!paint)return u8g2_GetGlyphWidth(&hardware.font.u8g2,cp);hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);
+}
+int width(const String& value,const uint8_t* f){String s=visualText(value);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(0,0,utf8Next(s,i),f,0,false);return w;}
+void say(int x,int y,const String& value,const uint8_t* f=body,uint16_t color=1){String s=visualText(value);for(unsigned i=0;i<s.length();)x+=glyph(x,y,utf8Next(s,i),f,color,true);}
 void sayRight(int x,int y,const String& value,const uint8_t* f=small,uint16_t color=1){say(x-width(value,f),y,value,f,color);}
 // Up to `maximum` 21-column rows, wrapped at spaces; longer text pages every four seconds.
 void textLines(const String& value,int y,unsigned maximum){
  String rows[12];unsigned at=0,count=0;
- while(at<value.length()&&count<12){unsigned n=0,end=at,space=0;while(end<value.length()&&n<21&&value[end]!='\n'){uint8_t c=value[end];end+=c<128?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;n++;if(c==' ')space=end;}
+ while(at<value.length()&&count<12){unsigned n=0,end=at,space=0;while(end<value.length()&&value[end]!='\n'){unsigned next=end;uint32_t c=utf8Next(value,next);if(n+glyphCells(c)>21)break;n+=glyphCells(c);end=next;if(c==' ')space=end;}
   if(end<value.length()&&value[end]!='\n'&&space>at)end=space;rows[count++]=value.substring(at,end);at=end;if(at<value.length()&&value[at]=='\n')at++;}
  unsigned first=count>maximum?(millis()/4000)%(count-maximum+1):0;for(unsigned i=first;i<count&&i<first+maximum;i++)say(0,y+(i-first)*12,rows[i]);
 }
@@ -157,7 +164,7 @@ String actName(Act a){
  case ActOlder:return t("Older message","Предыдущее");case ActNewer:return t("Newer message","Следующее");case ActNextNode:return t("Next node","Следующий узел");case ActNodeOk:return t("Send: OK","Написать: OK");case ActResetPath:return t("Reset path","Сбросить путь");
  case ActGps:return config.gps?t("Turn GPS off","Выключить GPS"):t("Turn GPS on","Включить GPS");case ActPosition:return t("Share position","Передать позицию");
  case ActWifi:return portalActive()?t("Turn Wi-Fi off","Выключить Wi-Fi"):t("Turn Wi-Fi on","Включить Wi-Fi");case ActBle:return bleActive()?t("Turn BLE off","Выключить BLE"):t("Turn BLE on","Включить BLE");
- case ActLanguage:return t("Language: English","Язык: русский");case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
+ case ActLanguage:return t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
  case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
  case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t("Stop beacon","Выключить маяк"):t("CSI beacon: on","Маяк CSI: включить");
@@ -197,7 +204,7 @@ void run(Act a){
  case ActPosition:notice(meshRadio.sendPosition()?t("Position shared","Позиция передана"):t("Needs a GPS fix","Нужна позиция GPS"));break;
  case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
  case ActSound:applyOne("sound",!config.sound);hardware.beep();break;
- case ActLanguage:applyOne("russian",!config.russian);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
+ case ActLanguage:applyOne("lang",langCodes[(config.lang+1)%LangCount]);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
  case ActContrast:{const uint8_t steps[]={40,120,200,255};int i=0;while(i<3&&steps[i]<config.brightness)i++;applyOne("brightness",steps[(i+1)%4]);break;}
  case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t("Homing started","Пеленг начат"));}break;}
@@ -298,13 +305,13 @@ void draw(){
   say(0,43,"RX "+String(meshRadio.rxCount)+"  TX "+String(meshRadio.txCount)+t("  near "," рядом ")+String(near),small);
   unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t("USB power","Питание USB"):String(mv/1000.f,2)+"V")+(config.relay?t("  relay on","  ретрансляция"):""),small);break;}
  case Messages:{const ChatMessage* m=shownMessage();title=t("Messages","Сообщения")+(m?" "+String(meshRadio.historyCount-messageOffset)+"/"+String(meshRadio.historyCount):"");
-  if(m){String who=m->outgoing?t("You","Вы"):String(m->name);if(m->destination==meshmesh::Broadcast)who+=" #";const char* en[]={"","queued","sent","delivered","no ACK"},*ru[]={"","очередь","отправл.","доставл.","нет ACK"};
-   String route=meshRadio.routeText(*m,true),st=m->outgoing?String(config.russian?ru[m->status]:en[m->status])+(route.length()?" "+route:String()):(route.length()?route+" ":String())+clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(m->text,36,2);}
+  if(m){String who=m->outgoing?t("You","Вы"):String(m->name);if(m->destination==meshmesh::Broadcast)who+=" #";const char* states[]={"",tr("queued","очередь"),tr("sent","отправл."),tr("delivered","доставл."),tr("no ACK","нет ACK")};
+   String route=meshRadio.routeText(*m,true),st=m->outgoing?String(states[m->status])+(route.length()?" "+route:String()):(route.length()?route+" ":String())+clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(m->text,36,2);}
   else{say(0,30,t("No messages yet","Сообщений ещё нет"));say(0,44,t("They appear here","Здесь появятся входящие"),small);}break;}
  case Nodes:{unsigned order[24];unsigned n=sortedNodes(order);Peer* p=shownNode();title=t("Nodes","Узлы")+(n?" "+String(nodeIndex%n+1)+"/"+String(n):"");
   if(p){say(0,23,clipped(p->name,21),bold);say(0,33,typeText(p->type)+", "+pathText(*p),small);
    say(0,42,p->heard?String(int(p->rssi))+" dBm SNR "+String(p->snr,1)+", "+ago(millis()-p->seen):t("saved, not heard","сохранён, не слышен"),small);
-   float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* ru[]={"С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"},*en[]={"N","NE","E","SE","S","SW","W","NW"};int k=int((bearing+22.5f)/45)%8;say(0,51,(metres<1000?String(int(metres))+t(" m "," м "):String(metres/1000,1)+t(" km "," км "))+(config.russian?ru[k]:en[k]),small);}
+   float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr("N","С"),tr("NE","СВ"),tr("E","В"),tr("SE","ЮВ"),tr("S","Ю"),tr("SW","ЮЗ"),tr("W","З"),tr("NW","СЗ")};int k=int((bearing+22.5f)/45)%8;say(0,51,(metres<1000?String(int(metres))+t(" m "," м "):String(metres/1000,1)+t(" km "," км "))+dirs[k],small);}
    else if(p->position)say(0,51,t("has GPS position","есть GPS-позиция"),small);}
   else{say(0,30,t("No nodes heard","Узлы пока не найдены"));say(0,44,t("hold: announce","держите: объявить"),small);}break;}
  case Signals:{
@@ -351,7 +358,7 @@ void draw(){
   say(0,51,t("Clock ","Часы ")+clockText(time(nullptr))+" "+(hardware.clockSource=="unset"?t("not set","не задано"):hardware.clockSource),small);break;}
  case Wifi:title="Wi-Fi";if(portalActive()){say(0,23,"MM-"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,"192.168.4.1",small);}else{say(0,27,t("Access point off","Точка доступа выкл."));say(0,41,t("Web chat and settings","Веб-чат и настройки"),small);}break;
  case Ble:title="Bluetooth";if(bleActive()){say(0,23,"MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,"PIN "+String(blePin()),bold);}else{say(0,27,t("Bluetooth off","Bluetooth выкл."));say(0,41,t("Secure pairing","Защищённое сопряжение"),small);}break;
- case Settings:title=t("Settings","Настройки");say(0,20,t("Language: ","Язык: ")+(config.russian?"русский":"English"),small);say(0,28,t("Battery: ","Батарея: ")+(config.batteryVolts?t("volts","вольты"):t("percent","проценты")),small);
+ case Settings:title=t("Settings","Настройки");say(0,20,t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t("Battery: ","Батарея: ")+(config.batteryVolts?t("volts","вольты"):t("percent","проценты")),small);
   say(0,36,t("Screen off: ","Гасить экран: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда")),small);say(0,44,t("Contrast: ","Контраст: ")+String(config.brightness),small);
   say(0,52,String(config.frequency,3)+" SF"+String(config.sf)+" CR4/"+String(config.cr)+" "+String(config.power)+"dBm",small);break;
  #if defined(MM_JOYSTICK)

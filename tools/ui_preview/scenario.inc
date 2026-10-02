@@ -5,7 +5,7 @@ static void scenario(){
  for(int i=0;i<6;i++)tick(); // the boot choice times out
  shot("gat562-home");key(13);shot("gat562-home-menu");key(13);
  {int r=0,c=0;auto at=[&](int row,int col){while(r<row){key(0xb6);r++;}while(r>row){key(0xb5);r--;}while(c<col){key(0xb7);c++;}while(c>col){key(0xb4);c--;}key(13);};
-  if(config.russian){at(1,2);at(1,3);at(0,8);at(0,2);at(0,5);at(1,5);}else{at(0,7);at(0,4);at(0,11);at(0,11);at(1,1);}
+  if(config.lang==LangRu||config.lang==LangUk){at(1,2);at(1,3);at(0,8);at(0,2);at(0,5);at(1,5);}else{at(0,7);at(0,4);at(0,11);at(0,11);at(1,1);}
   shot("gat562-keyboard");key(0x82);}
  auto sayId=[](int peer,const char* name,unsigned id,const char* body){char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X %s",id,body);chessNet.receive(peerId(peer),name,t);};
  ChessMatch* g=chessNet.invite(peerId(0),chess::White);sayId(0,"Heltec V4",g->id,"yes");
@@ -60,7 +60,7 @@ static void scenario(){
  config.role=RoleRoom;home();tick();tick();shot("heltec-room");config.role=RoleNormal;
 #else
  config.role=RoleRepeater;key(0x82);shot("repeater");key(0x86);
- config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.russian?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);
+ config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.lang==LangRu||config.lang==LangUk?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);
  key(0x90);key(0xb5);key(13);key(0xb6);shot("role-pick");key(0x86);config.role=RoleNormal;key(0x82);
 #endif
 }

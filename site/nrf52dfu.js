@@ -119,3 +119,41 @@ export const isBootloader = port => {
   const info = port.getInfo();
   return info.usbVendorId === 0x239a && !(info.usbProductId & 0x8000);
 };
+
+// The device language. The image keeps a 16-byte "MMLANG:--" field (src/I18n.cpp); the site writes the
+// chosen language code there, so the first start after this install shows its menus.
+const MARK = [...'MMLANG:--'].map(c => c.charCodeAt(0)), FIELD = 16, APP_BASE = 0x26000;
+function markAt(bin) {
+  let found = -1;
+  for (let i = 0; i + MARK.length <= bin.length; i++) {
+    let k = 0;
+    while (k < MARK.length && bin[i + k] === MARK[k]) k++;
+    if (k === MARK.length) { if (found >= 0) throw new Error('two language fields in the image'); found = i; }
+  }
+  if (found < 0) throw new Error('no language field in the image');
+  return found;
+}
+const field = code => { const f = new Uint8Array(FIELD); f.set([...`MMLANG:${code}`].map(c => c.charCodeAt(0))); return f; };
+
+// firmware.bin and its init packet (device type … CRC16 of the image in the last two bytes).
+export function withLanguage(bin, dat, code) {
+  const out = bin.slice(), at = markAt(bin);
+  out.set(field(code), at);
+  const init = dat.slice(), crc = crc16(out);
+  init[init.length - 2] = crc & 0xff; init[init.length - 1] = crc >> 8;
+  if (crc16(bin) !== (dat[dat.length - 2] | (dat[dat.length - 1] << 8))) throw new Error('init packet does not match the image');
+  return [out, init];
+}
+
+// firmware.uf2: 512-byte blocks, each with its flash address (offset 12), size (16) and data (32).
+export function uf2WithLanguage(uf2, code) {
+  const out = uf2.slice(), view = new DataView(out.buffer);
+  const app = [];
+  for (let b = 0; b + 512 <= out.length; b += 512) {
+    const addr = view.getUint32(b + 12, true), size = view.getUint32(b + 16, true);
+    for (let i = 0; i < size; i++) app[addr - APP_BASE + i] = b + 32 + i;
+  }
+  const bytes = Uint8Array.from(app, i => out[i] ?? 0xff), at = markAt(bytes), f = field(code);
+  for (let i = 0; i < FIELD; i++) out[app[at + i]] = f[i];
+  return out;
+}

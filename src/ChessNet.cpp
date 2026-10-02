@@ -9,7 +9,6 @@ using namespace chess;
 namespace {
 const char Tag[]="\xe2\x99\x9f"; // ♟
 constexpr uint8_t Queued=ChatMessage::Queued,Delivered=ChatMessage::Delivered,Failed=ChatMessage::Failed;
-String tr(const char* en,const char* ru){return config.russian?ru:en;}
 uint32_t unixNow(){time_t t=time(nullptr);return t>1700000000?uint32_t(t):0;}
 // Saved form: "MMC1", version, count, then per game a fixed header and its moves; CRC-32 at the end.
 constexpr uint8_t SaveVersion=2;          // 2: the open-move flag; version 1 files are still read
@@ -235,7 +234,7 @@ String chessLocalSan(const char* san){
   String out;
   for(const char* c=san;*c;c++){
     bool piece=strchr("KQRBN",*c)&&(c==san||c[-1]=='=');
-    if(piece&&config.russian){switch(*c){case 'K':out+="Кр";break;case 'Q':out+="Ф";break;case 'R':out+="Л";break;case 'B':out+="С";break;default:out+="К";}}
+    if(piece&&config.lang==LangRu){switch(*c){case 'K':out+="Кр";break;case 'Q':out+="Ф";break;case 'R':out+="Л";break;case 'B':out+="С";break;default:out+="К";}}
     else out+=*c;
   }
   return out;

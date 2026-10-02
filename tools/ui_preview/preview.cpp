@@ -82,7 +82,7 @@ static uint64_t peerId(int i){return 0xA1B2C3D40000ULL+i*0x1111;}
 static void scenario();
 int main(int argc,char** argv){
  outDir=argc>1?argv[1]:".";
- config.russian=argc<=2||strcmp(argv[2],"en");
+ config.lang=argc>2?max(0,langFromCode(argv[2])):LangRu; // a language code, Russian by default
 #if defined(MM_HELTEC_V4)
  hardware.canvas=new GFXcanvas16(128,64);strcpy(config.name,"Heltec V4");
 #if defined(MM_JOYSTICK)

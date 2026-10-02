@@ -100,7 +100,7 @@ void drawChessList(){
   if(m.unseen||m.state==ChessMatch::Invited||m.myTurn())g().fillCircle(300,y+32,4,accent);
  }
  scrollbar(first,4,total,24,190);
- if(!chessRowCount)for(int k=0;k<3;k++){const char* en[]={"Moves travel as direct MeshCore messages","with delivery confirmation. Both players","need a MeshMesh M9 with chess."},*ru[]={"Ходы идут личными сообщениями MeshCore","с подтверждением доставки. Сопернику","нужен MeshMesh M9 с шахматами."};textCenter(160,100+k*16,config.russian?ru[k]:en[k],faint);}
+ if(!chessRowCount){String rows[3];unsigned n=wrap(t("Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.","Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами."),rows,3,300);for(unsigned k=0;k<n;k++)textCenter(160,100+k*16,rows[k],faint);}
  bool over=selected>0&&chessRows[selected-1]->state==ChessMatch::Over;
  if(over)footer({{"OK",t("Open","Открыть")},{"DEL",chessRemoveArmed?t("Sure?","Удалить?"):t("Remove","Удалить")},{"BACK",t("Menu","Меню")}});
  else footer({{"OK",selected?t("Open","Открыть"):t("Choose","Выбрать")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});

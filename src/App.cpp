@@ -47,7 +47,7 @@ String messagesJson() {
 String nodesJson(){DynamicJsonDocument d(16384);JsonArray a=d.to<JsonArray>();for(unsigned i=0;i<meshRadio.peerCount;i++){auto& p=meshRadio.peers[i];JsonObject j=a.createNestedObject();char key[65];mesh::Utils::toHex(key,p.publicKey,32);j["public_key"]=key;j["type"]=p.type;j["heard"]=p.heard;j["path_length"]=p.pathLength;j["id"]=meshRadio.idText(p.id);j["name"]=p.name;j["rssi"]=p.rssi;j["snr"]=p.snr;if(p.heard)j["age_seconds"]=(millis()-p.seen)/1000;else j["age_seconds"]=nullptr;j["hops"]=p.hops;j["position"]=p.position;if(p.position){j["latitude"]=p.latitude;j["longitude"]=p.longitude;}}String s;serializeJson(d,s);return s;}
 String configJson(bool includeKey) {
   StaticJsonDocument<768> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
-  d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["russian"]=config.russian;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
+  d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;
   d["utc_offset"]=config.utcOffset;
   String s;serializeJson(d,s);return s;
@@ -75,9 +75,13 @@ String applySettings(JsonObjectConst v) {
       if(!value.is<int>())return "ERR integer value required";int n=value.as<int>();
       if(n!=0 && (n<(name=="auto_lock"?30:10)||n>600))return "ERR timeout 0 or 30..600 (dim: 10..600)";
       if(name=="auto_lock")next.autoLock=n;else next.dimAfter=n;
+    } else if(name=="lang") {
+      int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
+      if(l<0){String all;for(int i=0;i<LangCount;i++)all+=String(i?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;
     } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian"||name=="battery_volts") {
       if(!value.is<bool>())return "ERR boolean required";bool n=value.as<bool>();
-      if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="russian")next.russian=n;if(name=="battery_volts")next.batteryVolts=n;
+      if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="battery_volts")next.batteryVolts=n;
+      if(name=="russian"&&!v.containsKey("lang")&&(n||next.lang==LangRu))next.lang=n?LangRu:LangEn; // pages from before "lang": false leaves other languages alone
     } else return "ERR unknown setting: "+name;
   }
   if(!next.valid())return "ERR invalid settings; M9 868 MHz range is 863..870";
