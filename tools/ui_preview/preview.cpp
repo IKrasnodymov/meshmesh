@@ -95,7 +95,8 @@ int main(int argc,char** argv){
  hardware.keyboardOk=hardware.sdOk=hardware.fsOk=hardware.rtcOk=hardware.rtcValid=hardware.compassOk=hardware.imuOk=hardware.compassSample=hardware.imuSample=true;
  hardware.batteryMv=3980;hardware.gps.location={true,55.7963,49.1088};hardware.gps.satellites.v=9;hardware.gps.hdop.v=1.1;hardware.gps.date.valid=true;hardware.gps.sentences=1200;
  meshRadio.ready=true;meshRadio.nodeId=0x5A1F0C9E77D2ULL;meshRadio.rxCount=148;meshRadio.txCount=37;meshRadio.relayed=12;meshRadio.rejected=2;meshRadio.lastRssi=-71;meshRadio.lastSnr=9.5;meshRadio.lastRxAt=fakeMillis-20000;
- const char* names[]={"Heltec V4","Kazan RPT-1","Комната Казань","Игорь T-Deck","Sensor-12","Марат"};uint8_t types[]={1,2,3,1,4,1};
+ // Node names fit Peer::name (24 bytes, as the firmware allows).
+ const char* names[]={"Heltec V4","Kazan RPT-1","Комн. Казань","Игорь T-Deck","Sensor-12","Марат"};uint8_t types[]={1,2,3,1,4,1};
  for(int i=0;i<6;i++){auto& p=meshRadio.peers[meshRadio.peerCount++];p.id=peerId(i);strcpy(p.name,names[i]);p.type=types[i];p.heard=i!=4;p.seen=fakeMillis-(i*47000+3000);p.rssi=-58-i*11;p.snr=11-i*3.5f;p.hops=i==0?0:i;p.pathLength=i==0?0:i==2?255:i;p.position=i==0||i==1||i==3;p.latitude=55.7963+0.0011*(i+1)*(i%2?1:-1);p.longitude=49.1088+0.0013*(i+1)*(i%3?1:-1);p.publicKey[0]=0x10*i+3;}
  time_t now=time(nullptr);
  auto add=[&](uint64_t src,uint64_t dst,const char* name,const char* text,bool out,ChatMessage::Status st,int ago){ChatMessage m;m.source=src;m.destination=dst;strcpy(m.name,name);strcpy(m.text,text);m.outgoing=out;m.status=st;m.timestamp=now-ago;m.id=++nextId;meshRadio.history[meshRadio.historyCount++]=m;};
