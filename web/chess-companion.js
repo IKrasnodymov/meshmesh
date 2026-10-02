@@ -485,7 +485,7 @@ let lastPort=null,lastDevice=null,busy=false,drawTimer=0;
 const hasSerial=!!navigator.serial,hasBle=!!navigator.bluetooth;
 document.title='MeshMesh Chess';
 const style=document.createElement('style');
-style.textContent='.cmp{display:flex;gap:10px;align-items:center;padding:12px;margin-bottom:10px}.cmp .who{flex:1;min-width:0}.cmp .who b{display:block}.cmp .who small{color:var(--dim);display:block}.cmp .btn{min-height:34px;padding:6px 10px}.cmpwhy{margin:6px 4px 0}.others .row{min-height:44px;cursor:default}.cmpbtns{display:grid;gap:8px}';
+style.textContent='.cmp{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:12px;margin-bottom:10px}.cmp .who{flex:1 1 220px;min-width:0}.cmp .acts{display:flex;gap:6px;margin-left:auto}.cmp .who b{display:block}.cmp .who small{color:var(--dim);display:block}.cmp .btn{min-height:34px;padding:6px 10px}.cmpwhy{margin:6px 4px 0}.others .row{min-height:44px;cursor:default}.cmpbtns{display:grid;gap:8px}';
 document.head.appendChild(style);
 // The start screen: connect instead of the Wi-Fi password.
 const login=$('login');for(const el of login.querySelectorAll('form,details'))el.hidden=true;
@@ -505,7 +505,7 @@ function peersNow(){peers=link.peers();fetchedAt=Date.now()}
 function renderCard(){
  const s=link.self,on=link.connected,d=link.deviceInfo();
  card.innerHTML=`${ic(link.kind==='ble'?'ble':'bolt',on?'ok':'bad')}<span class="who"><b>${esc(s?s.name:'Companion')}</b><small>${on?`${link.kind==='ble'?'Bluetooth':'USB'} · ${s.freq.toFixed(3)} МГц · SF${s.sf} · BW ${s.bw} · CR 4/${s.cr}${d&&d.version?' · '+esc(d.version):''}`:'нет связи — ходы ждут подключения'}</small></span>`
-  +(on?`<button class="btn" data-cmp="advert" title="Объявить себя по сети">Объявить</button><button class="btn" data-cmp="off">Отключить</button>`:`<button class="btn primary" data-cmp="again">Подключить</button>`);
+  +`<span class="acts">${on?`<button class="btn" data-cmp="advert" title="Объявить себя по сети">Объявить</button><button class="btn" data-cmp="off">Отключить</button>`:`<button class="btn primary" data-cmp="again">Подключить</button>`}</span>`;
  other.innerHTML=others.length?`<h3>Другие сообщения</h3><div class="list others">${others.map(m=>`<div class="row">${avatar(m.from||'0',m.name,m.from?1:0)}<span class="main"><b>${esc(m.name)}</b><small>${esc(m.text)}</small></span><span class="side"><span>${timeText(m.at)}</span></span></div>`).join('')}</div><p class="small muted cmpwhy">Эти сообщения companion отдал странице; в приложении MeshCore их уже не будет.</p>`:''}
 card.addEventListener('click',async e=>{const b=e.target.closest('[data-cmp]');if(!b)return;const a=b.dataset.cmp;
  if(a==='advert'){try{await link.advert();notify('Объявление отправлено по сети','ok')}catch(err){notify(err.message,'bad')}}
