@@ -24,7 +24,11 @@ void Hardware::brightness(uint8_t level) {
 void Hardware::setGps(bool enabled) {
   gpsEnabled=enabled;
   pinMode(pins::gpsPower,OUTPUT);digitalWrite(pins::gpsPower,HIGH);
-  if(enabled){Serial1.setPins(pins::gpsRx,pins::gpsTx);Serial1.begin(9600);}else Serial1.end();
+  // The core's Uart::end() waits for stop events that a UART never started does not raise: with GPS
+  // off in the settings, the boot hung right after the splash. Start and stop the port only once.
+  static bool uartOn=false;
+  if(enabled&&!uartOn){Serial1.setPins(pins::gpsRx,pins::gpsTx);Serial1.begin(9600);uartOn=true;}
+  else if(!enabled&&uartOn){Serial1.end();uartOn=false;}
 }
 void Hardware::begin() {
   pinMode(pins::radioPower,OUTPUT);digitalWrite(pins::radioPower,HIGH);delay(10); // SX1262 supply

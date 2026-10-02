@@ -49,18 +49,42 @@ void usbTick() {
   if(usbOffset==usbSize) {free(usbBytes);usbBytes=nullptr;usbSize=usbOffset=0;}
 }
 }
+#if defined(MM_BOOT_TRACE)
+// Diagnostic builds only (-D MM_BOOT_TRACE): wait for the USB host, print each start step, and
+// before storage is mounted serve "flashread ADDR LEN" until "go", so storage can be saved first.
+#define BOOT(step) do{Serial.println("BOOT " step);Serial.flush();delay(30);}while(0)
+static void bootWindow(){
+  uint32_t t=millis();while(!Serial&&millis()-t<20000)delay(10);delay(200);
+  Serial.println("BOOT trace: flashread ADDR LEN, go");String line;t=millis();
+  while(millis()-t<60000){
+    if(!Serial.available()){delay(2);continue;}char c=Serial.read();if(c!='\n'){if(c!='\r')line+=c;continue;}
+    if(line=="go")break;
+    if(line.startsWith("flashread ")){uint32_t at=strtoul(line.c_str()+10,nullptr,16),n=0;int sp=line.indexOf(' ',10);if(sp>0)n=strtoul(line.c_str()+sp+1,nullptr,16);
+      if(n&&n<=2048&&at>=0x1000&&at+n<=0x100000){String h="FLASH "+String(at,HEX)+" ";for(uint32_t i=0;i<n;i++){uint8_t v=*(const uint8_t*)(at+i);h+="0123456789abcdef"[v>>4];h+="0123456789abcdef"[v&15];}Serial.println(h);}
+      else Serial.println("ERR flashread");t=millis();}
+    line="";
+  }
+}
+#else
+#define BOOT(step) do{}while(0)
+#endif
 void appSetup() {
 #if defined(MM_NRF52)
-  Serial.begin(115200);delay(300);mountStorage(); // the settings live in the same storage
+  Serial.begin(115200);delay(300);
+#if defined(MM_BOOT_TRACE)
+  bootWindow();
+#endif
+  BOOT("mount");mountStorage(); // the settings live in the same storage
 #else
   Serial.setRxBufferSize(2048);Serial.setTxBufferSize(2048);Serial.begin(115200);delay(300);
 #endif
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
-  config.load();hardware.beginClock();hardware.begin();chessNet.begin();meshRadio.begin();maps.begin();
+  BOOT("config");config.load();BOOT("clock");hardware.beginClock();BOOT("hardware");hardware.begin();
+  BOOT("chess");chessNet.begin();BOOT("radio");meshRadio.begin();BOOT("maps");maps.begin();
 #if !defined(MM_COMPACT)
   if(config.role==RoleNormal)internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
-  navigation.begin();portalBegin();uiBegin();
+  BOOT("navigation");navigation.begin();BOOT("portal");portalBegin();BOOT("ui");uiBegin();BOOT("selftest");
   Serial.println(meshRadio.selfTest()?"SELFTEST crypto/UTF-8/tamper PASS":"SELFTEST FAIL");
   Serial.println("READY: USB commands are available; type help");
 }

@@ -152,10 +152,10 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <main class="login" id="login"><div class="brand"><svg class="ic"><use href="#i-radio"/></svg><b>MESHMESH</b><small>Ваши люди. Ваша сеть.</small></div>
 <form class="card pad" id="loginForm"><label class="field">Пароль Wi-Fi<input id="password" type="password" autocomplete="current-password" required></label><p class="small muted">Пароль показан на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</p><button class="btn primary save">Подключиться</button></form>
 <details class="more"><summary>Подготовить карту без устройства</summary><p class="muted small">Для подготовки нужен интернет. Скачайте файл карты, затем подключитесь к Wi-Fi M9 и загрузите его в разделе «Карта».</p><button class="btn soft save" id="standalone" type="button">Открыть подготовку карты</button></details>
-<p class="foot">MeshMesh · <span class="version">0.3.4</span></p></main>
+<p class="foot">MeshMesh · <span class="version">0.3.5</span></p></main>
 
 <main class="wrap" id="app" hidden>
-<section class="page" id="p-home"><div class="card ident" id="ident"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.4</span> · локальная сеть, без интернета</p></section>
+<section class="page" id="p-home"><div class="card ident" id="ident"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.5</span> · локальная сеть, без интернета</p></section>
 
 <section class="page" id="p-chats" hidden><div class="list" id="conversations"></div></section>
 

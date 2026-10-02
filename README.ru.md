@@ -19,6 +19,11 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
+## 0.3.5 — исправление для GAT562
+
+GAT562 с выключенным в настройках GPS зависал на заставке при каждом запуске; исправлено.
+Остальные платы отличаются от 0.3.4 только строкой версии.
+
 ## 0.3.4 — GAT562 30S (nRF52840)
 
 Первая плата не на ESP32: GAT562 30S Mesh Kit — nRF52840, SX1262 с усилителем, OLED 128×64,
