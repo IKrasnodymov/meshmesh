@@ -22,8 +22,12 @@
 > 24 nodes and the chess games are in place. `set {"lang":…}` works; on the M9 the home screen and settings were
 > looked through via `screenshot` and `uikey` in de, zh, ja, ko, ar, uk, pl, on the Heltec the home screen in zh,
 > ja, ko, ar, de, uk; the language survives a restart (M9, boot 128). A message M9 → Heltec was delivered with ACK
-> as one copy. Both boards are back on their languages. The GAT562 was not connected — 0.3.7 is not checked on it;
-> installing from the site in Chrome and native-speaker review are not checked, the full
+> as one copy. GAT562 (`nrf52.py flash`, serial DFU): 0.3.6 → 0.3.7, then the final build — boot 52, hash
+> `E1ADA783…`, repeater mode, settings, key, 12 messages and 2 games in place; the OLED looked through in zh, ja, ko,
+> ar, pl, tr; after the Turkish title fix (“Röle” instead of the long “Tekrarlayıcı”) the final build is on the
+> Heltec too (boot 85, `49AE43CC…`), adverts GAT562 ↔ Heltec received both ways. The M9 runs the previous 0.3.7
+> build (`F70A0D6E…`), which differs only in that Turkish string. All boards are back on their languages.
+> Installing from the site in Chrome and native-speaker review are not checked, the full
 > `finish_on_hardware.py` run was not performed. Limits: 12 px Arabic on the OLED (and in the M9's small rows)
 > overlaps the next rows, 8 px CJK on the OLED is dense; incoming messages in these scripts show only the glyphs
 > of the subset; the device web page and the Android app are in Russian.
