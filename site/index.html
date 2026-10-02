@@ -16,6 +16,7 @@
 <style>
 :root{color-scheme:dark;--bg:#080c11;--bg2:#0c1218;--card:#131a22;--hi:#1c2835;--line:#2a3542;--ink:#e4e9ee;--dim:#8d99a6;--faint:#56626e;--accent:#1fc2ae;--deep:#14524b;--ok:#4cc26b;--warn:#e9b13b;--info:#4f9df7;--violet:#a78bfa;--pink:#f472b6;--r:16px}
 *{box-sizing:border-box}
+[hidden]{display:none!important} /* .btn and other display rules must not show hidden elements */
 html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI","Noto Sans","Noto Sans Arabic","PingFang SC","Hiragino Sans","Apple SD Gothic Neo","Microsoft YaHei","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 html.loading body{visibility:hidden} /* until the language is applied */
