@@ -231,9 +231,15 @@ void header(const String& title){
  if(unreadCount){String n=String(unreadCount);sayRight(x,7,n);x-=width(n,small)+1;c.drawRect(x-9,1,9,7,1);c.drawLine(x-9,1,x-5,5,1);c.drawLine(x-1,1,x-5,5,1);x-=12;}
  say(0,7,clipped(title,max(3,(x-2)/5)),small);c.drawFastHLine(0,10,128,1);
 }
+// The longest start of value that fits px with "..", measured in the font (fallback glyphs are wider than a column).
+String fitted(const String& value,int px,const uint8_t* f){
+ if(width(value,f)<=px)return value;int room=px-width("..",f);unsigned i=0,cut=0;
+ while(i<value.length()){unsigned next=i;utf8Next(value,next);if(width(value.substring(0,next),f)>room)break;cut=i=next;}
+ return value.substring(0,cut)+"..";
+}
 void footer(const String& hint){
- auto& c=*hardware.canvas;for(int i=0,x=1;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
- if(hint.length())sayRight(128,63,clipped(hint,20));
+ auto& c=*hardware.canvas;int x=1;for(int i=0;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
+ if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small));
 }
 #if defined(MM_JOYSTICK)
 String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return "<  >";return n==1?t("OK: ","OK: ")+actName(acts[0]):t("OK: menu  < >","OK: меню  < >");}

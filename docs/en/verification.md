@@ -16,10 +16,17 @@
 > hangs on the radio setup). The site is in 15 languages and asks for the device language before installing; for
 > nRF52 the page writes the language into the image and recomputes the DFU packet CRC (Node, GAT562 package: 2 bytes
 > change, the UF2 matches the image); the German and the Arabic (right-to-left) versions were looked through in
-> Chrome with a local build. **0.3.7 was not installed on the boards** — no devices were connected: the real
-> screens, installing from the site in Chrome and native-speaker review of the translations are not checked.
-> Limits: 12 px Arabic in small rows touches the next row, 8 px CJK on the OLED is dense; incoming messages in
-> these scripts show only the glyphs of the subset; the device web page and the Android app are in Russian.
+> Chrome with a local build. **On hardware** (3 October, `flash.py`): M9 0.3.6 → 0.3.7, boot 127 (build hash
+> `F70A0D6E…`); Heltec 0.3.3 → 0.3.7, boot 84 (`E058B815…`, with the OLED hint clipped by width). Settings and
+> key matched the snapshots taken before, the old `russian` became `lang` (M9 `ru`, Heltec `en`), 64 messages,
+> 24 nodes and the chess games are in place. `set {"lang":…}` works; on the M9 the home screen and settings were
+> looked through via `screenshot` and `uikey` in de, zh, ja, ko, ar, uk, pl, on the Heltec the home screen in zh,
+> ja, ko, ar, de, uk; the language survives a restart (M9, boot 128). A message M9 → Heltec was delivered with ACK
+> as one copy. Both boards are back on their languages. The GAT562 was not connected — 0.3.7 is not checked on it;
+> installing from the site in Chrome and native-speaker review are not checked, the full
+> `finish_on_hardware.py` run was not performed. Limits: 12 px Arabic on the OLED (and in the M9's small rows)
+> overlaps the next rows, 8 px CJK on the OLED is dense; incoming messages in these scripts show only the glyphs
+> of the subset; the device web page and the Android app are in Russian.
 
 > **Chess with a stock MeshCore companion — the site page `chess/`** (2 October 2026; `docs/chess.md`).
 > On the computer: `node tools/chess/companion_check.cjs` — 174 checks, including 300 random games
