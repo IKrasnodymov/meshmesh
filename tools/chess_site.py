@@ -2,7 +2,8 @@
 """Build the site's chess page for a stock MeshCore companion: OUTDIR/chess/.
 
 tools/chess_site.py OUTDIR   (tools/pages.py calls it for GitHub Pages)
-The page is web/index.html, the boards' own page, with web/chess-companion.js: the rules, the games
+The page is web/index.html, the boards' own page, with web/chess-companion.js and the tab icon
+web/chess-icon.svg: the rules, the games
 and the companion link run in the browser (docs/chess.md). Web Serial and Web Bluetooth need HTTPS,
 so the page works from the site, not from a board's access point.
 """
@@ -20,10 +21,11 @@ def build(out):
     for marker in ('<title>MeshMesh</title>', '</script></body>', 'let companion=null;'):
         if page.count(marker) != 1:
             raise SystemExit(f'web/index.html: expected one {marker!r}')
-    page = page.replace('<title>MeshMesh</title>', '<title>MeshMesh Chess</title>')
+    page = page.replace('<title>MeshMesh</title>', '<title>MeshMesh Chess</title><link rel="icon" href="icon.svg" type="image/svg+xml">')
     page = page.replace('</script></body>', '</script><script src="companion.js"></script></body>')
     (target/'index.html').write_text(page)
     shutil.copyfile(ROOT/'web/chess-companion.js', target/'companion.js')
+    shutil.copyfile(ROOT/'web/chess-icon.svg', target/'icon.svg')
     return target
 
 

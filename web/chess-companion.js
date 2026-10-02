@@ -484,6 +484,8 @@ const link=new Companion(),game=player(link,storage),net=game.net,others=[];
 let lastPort=null,lastDevice=null,busy=false,drawTimer=0;
 const hasSerial=!!navigator.serial,hasBle=!!navigator.bluetooth;
 document.title='MeshMesh Chess';
+// The boards' page names the tab MeshMesh (with the number of games waiting); here it is MeshMesh Chess.
+const boardRefresh=refreshChess;refreshChess=async(...a)=>{await boardRefresh(...a);document.title=document.title.replace(/MeshMesh$/,'MeshMesh Chess')};
 const style=document.createElement('style');
 style.textContent='.cmp{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:12px;margin-bottom:10px}.cmp .who{flex:1 1 220px;min-width:0}.cmp .acts{display:flex;gap:6px;margin-left:auto}.cmp .who b{display:block}.cmp .who small{color:var(--dim);display:block}.cmp .btn{min-height:34px;padding:6px 10px}.cmpwhy{margin:6px 4px 0}.others .row{min-height:44px;cursor:default}.cmpbtns{display:grid;gap:8px}';
 document.head.appendChild(style);

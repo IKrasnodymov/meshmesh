@@ -58,7 +58,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
 .cta-more{display:none} /* the header menu links to the features; shown when the menu is hidden */
 .facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;color:var(--dim);font-size:14px}
-.news{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;font-size:14px;background:var(--card)}.news:hover{border-color:var(--accent)}.news svg{width:18px;height:18px;color:var(--accent);flex:none}.news i{font-style:normal;color:var(--accent)}
+.news{display:flex;align-items:center;gap:14px;max-width:560px;margin-top:24px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;font-size:15px;line-height:1.4;transition:border-color .15s}.news:hover{border-color:var(--accent)}.news .t{width:34px;height:34px;border-radius:10px;background:var(--deep);color:var(--accent);display:grid;place-items:center;flex:none}.news .t svg{width:20px;height:20px}.news>span{flex:1}.news i{font-style:normal;color:var(--accent)}
 .facts b{display:block;color:var(--ink);font-size:22px;font-weight:700}
 /* devices */
 .stage{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:440px}
@@ -236,7 +236,7 @@ footer a{color:var(--dim)}
     <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span lang="ru">Приложение Android</span><span lang="en">Android app</span></a>
     <a class="btn cta-more" href="#features"><span lang="ru">Что умеет</span><span lang="en">What it does</span></a>
    </div>
-   <a class="news" href="chess/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg><span lang="ru"><b>Новое:</b> шахматы со штатной MeshCore Companion — прямо в браузере</span><span lang="en"><b>New:</b> chess with the stock MeshCore Companion, right in the browser</span><i>→</i></a>
+   <a class="news" href="chess/"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg></b><span lang="ru"><b>Новое:</b> шахматы со штатной MeshCore Companion — прямо в браузере</span><span lang="en"><b>New:</b> chess with the stock MeshCore Companion, right in the browser</span><i>→</i></a>
    <div class="facts">
     <div><b>14</b><span lang="ru">плат ESP32 и nRF52</span><span lang="en">ESP32 and nRF52 boards</span></div>
     <div><b>MeshCore</b><span lang="ru">совместимое радио</span><span lang="en">compatible radio</span></div>
