@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MeshMesh</title>
-<meta name="description" content="MeshMesh — прошивка для LoRa-устройств на ESP32: чаты без интернета и сотовой связи, офлайн-карты, радар сигналов. Совместима с MeshCore. Установка прямо из браузера.">
+<meta name="description" content="MeshMesh — прошивка для LoRa-устройств на ESP32 и nRF52: чаты без интернета и сотовой связи, офлайн-карты, радар сигналов. Совместима с MeshCore. Установка прямо из браузера.">
 <meta property="og:title" content="MeshMesh — связь без интернета">
 <meta property="og:description" content="Прошивка для LoRa-устройств: чаты, карты, радар. Совместима с MeshCore. Установка из браузера.">
 <meta property="og:image" content="https://ikrasnodymov.github.io/meshmesh/img/og.png">
@@ -56,6 +56,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero .lead{font-size:19px}
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.cta-more{display:none} /* the header menu links to the features; shown when the menu is hidden */
 .facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;color:var(--dim);font-size:14px}
 .facts b{display:block;color:var(--ink);font-size:22px;font-weight:700}
 /* devices */
@@ -71,6 +72,13 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .heltec .oled{aspect-ratio:2/1;background:#000;border-radius:3px;overflow:hidden;border:2px solid #05080b}
 .heltec .oled img{width:100%;height:100%}
 .heltec .lbl{display:flex;justify-content:space-between;margin-top:8px;font:500 9px "JetBrains Mono",monospace;color:#6c7f94}
+.gat{position:absolute;right:-34px;bottom:-40px;width:184px;background:linear-gradient(160deg,#2a2f37,#14181d);border-radius:14px;padding:12px 12px 10px;border:1px solid #3a424d;box-shadow:0 24px 50px -10px rgba(0,0,0,.8);transform:rotate(5deg)}
+.gat .oled{aspect-ratio:2/1;background:#000;border-radius:3px;overflow:hidden;border:2px solid #05080b}
+.gat .oled img{width:100%;height:100%}
+.gat .pad{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:10px}
+.gat .joy{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#56606c,#2a3038 70%);border:1px solid #4a535e;box-shadow:inset 0 -2px 3px rgba(0,0,0,.5)}
+.gat .back{width:14px;height:14px;border-radius:50%;background:#3a424d;border:1px solid #4f5965}
+.gat .lbl{display:flex;justify-content:space-between;margin-top:8px;font:500 9px "JetBrains Mono",monospace;color:#7d8794}
 .dots{display:flex;gap:8px;justify-content:center;margin-top:18px}
 .dots button{width:8px;height:8px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}
 .dots button.on{background:var(--accent);width:22px;border-radius:4px}
@@ -165,19 +173,27 @@ footer a{color:var(--dim)}
 .lb svg{width:20px;height:20px}
 @media (max-width:960px){
  .hero .wrap{grid-template-columns:1fr}
- .stage{min-height:0;margin-top:20px;padding-bottom:30px}
+ .stage{min-height:0;margin:20px auto 0;padding-bottom:30px;width:min(400px,100%)} /* Heltec and GAT562 sit at the M9's corners */
+ .heltec{left:-110px;bottom:-40px}
+ .gat{right:-110px;bottom:-30px}
  .grid{grid-template-columns:repeat(2,1fr)}
  .flash{grid-template-columns:1fr}
  .docs{grid-template-columns:repeat(2,1fr)}
  nav{display:none}
+ .cta-more{display:inline-flex}
  .lang{margin-left:auto}
 }
+@media (max-width:760px){.heltec{left:-70px}.gat{right:-70px}}
 @media (max-width:620px){
  .wrap{padding:0 16px}
  section{padding:64px 0}
  .hero{padding:40px 0 56px}
  .grid,.steps,.docs{grid-template-columns:1fr}
  .heltec{width:140px;left:-6px;bottom:-10px}
+ .gat{width:128px;right:-6px;bottom:-22px;padding:8px 8px 7px}
+ .gat .pad{gap:14px;margin-top:6px}.gat .joy{width:20px;height:20px}.gat .back{width:10px;height:10px}
+ .cta-apk{order:-1;background:var(--accent);border-color:var(--accent);color:#04201c}
+ .btn.primary.cta-install{background:var(--card);border-color:var(--line);color:var(--ink)}
  .lb .nav{display:none}
  .diagram .horiz{display:none}
  .diagram .vert{display:block}
@@ -209,17 +225,18 @@ footer a{color:var(--dim)}
 <section class="hero">
  <div class="wrap">
   <div>
-   <div class="kicker">LoRa · MeshCore · ESP32</div>
+   <div class="kicker">LoRa · MeshCore · ESP32 · nRF52</div>
    <h1 lang="ru">Связь там, где <em>нет связи</em></h1>
    <h1 lang="en">Talk where there's <em>no signal</em></h1>
    <p class="lead" lang="ru">Прошивка для карманных LoRa-устройств. Сообщения идут по радио от устройства к устройству — без интернета, сотовой сети и серверов.</p>
    <p class="lead" lang="en">Firmware for pocket LoRa devices. Messages hop by radio from device to device — no internet, no cell network, no servers.</p>
    <div class="cta">
-    <a class="btn primary" href="#install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Установить из браузера</span><span lang="en">Install from browser</span></a>
-    <a class="btn" href="#features"><span lang="ru">Что умеет</span><span lang="en">What it does</span></a>
+    <a class="btn primary cta-install" href="#install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Установить из браузера</span><span lang="en">Install from browser</span></a>
+    <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span lang="ru">Приложение Android</span><span lang="en">Android app</span></a>
+    <a class="btn cta-more" href="#features"><span lang="ru">Что умеет</span><span lang="en">What it does</span></a>
    </div>
    <div class="facts">
-    <div><b>13</b><span lang="ru">плат ESP32</span><span lang="en">ESP32 boards</span></div>
+    <div><b>14</b><span lang="ru">плат ESP32 и nRF52</span><span lang="en">ESP32 and nRF52 boards</span></div>
     <div><b>MeshCore</b><span lang="ru">совместимое радио</span><span lang="en">compatible radio</span></div>
     <div><b>RU / EN</b><span lang="ru">интерфейс</span><span lang="en">interface</span></div>
     <div><b>MIT</b><span lang="ru">открытый код</span><span lang="en">open source</span></div>
@@ -232,6 +249,7 @@ footer a{color:var(--dim)}
      <div class="keys" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="w"></i><i></i><i></i><i></i></div>
     </div>
     <div class="heltec" aria-label="Heltec V4"><div class="oled"><img id="heroOled" data-shot="heltec-home" alt="Heltec V4"></div><div class="lbl"><span>HELTEC V4</span><span>PRG ●</span></div></div>
+    <div class="gat" aria-label="GAT562 30S"><div class="oled"><img id="heroGat" data-shot="gat562-home" alt="GAT562"></div><div class="pad"><span class="joy"></span><span class="back"></span></div><div class="lbl"><span>GAT562 30S</span><span>nRF52</span></div></div>
    </div>
    <div class="dots" id="heroDots"></div>
   </div>
@@ -251,8 +269,8 @@ footer a{color:var(--dim)}
      <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1fc2ae"/></marker>
     </defs>
     <g fill="none" stroke="#1fc2ae" stroke-width="2.5" stroke-dasharray="7 7">
-     <path d="M230 150 H440" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
-     <path d="M640 150 H850" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M244 150 H426" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M654 150 H836" marker-end="url(#ar)" marker-start="url(#ar)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
     </g>
     <g fill="none" stroke="#4f9df7" stroke-width="2" stroke-dasharray="4 6">
      <path d="M140 210 V250"/><path d="M940 210 V250"/>
@@ -282,8 +300,8 @@ footer a{color:var(--dim)}
    <svg class="vert" viewBox="0 0 340 600" role="img" aria-label="LoRa mesh">
     <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1fc2ae"/></marker></defs>
     <g fill="none" stroke="#1fc2ae" stroke-width="2.5" stroke-dasharray="7 7">
-     <path d="M120 150 V250" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
-     <path d="M120 350 V450" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M120 164 V236" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
+     <path d="M120 364 V436" marker-end="url(#ar2)" marker-start="url(#ar2)"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></path>
     </g>
     <g fill="none" stroke="#4f9df7" stroke-width="2" stroke-dasharray="4 6"><path d="M210 95 H250"/><path d="M210 505 H250"/></g>
     <g font-family="Inter,sans-serif" text-anchor="middle">
@@ -474,6 +492,7 @@ const FEATURES=[
 ];
 const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motion'];
 const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
+const GAT=['gat562-home','gat562-keyboard','gat562-chess','gat562-radar','gat562-chess-list','gat562-node-menu'];
 const DOCS=[
  ['README.ru.md','Обзор и управление','Overview and controls'],
  ['docs/meshcore-migration.md','MeshCore: ключи и совместимость','MeshCore: keys and compatibility'],
@@ -516,6 +535,7 @@ function heroGo(i){
  document.querySelectorAll('#heroScreen img').forEach((im,k)=>im.classList.toggle('on',k===heroI));
  document.querySelectorAll('#heroDots button').forEach((b,k)=>b.classList.toggle('on',k===heroI));
  document.getElementById('heroOled').src=shotSrc(OLED[heroI%OLED.length]);
+ document.getElementById('heroGat').src=shotSrc(GAT[heroI%GAT.length]);
 }
 function heroStart(){clearInterval(heroTimer);heroTimer=setInterval(()=>heroGo(heroI+1),3200)}
 document.getElementById('heroDots').addEventListener('click',e=>{const b=e.target.closest('[data-h]');if(b){heroGo(+b.dataset.h);heroStart()}});
