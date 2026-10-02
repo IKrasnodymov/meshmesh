@@ -23,7 +23,7 @@ void Hardware::brightness(uint8_t level) {
 }
 void Hardware::setGps(bool enabled) {
   gpsEnabled=enabled;
-  pinMode(pins::gpsPower,OUTPUT);digitalWrite(pins::gpsPower,HIGH);
+  pinMode(pins::gpsPower,OUTPUT);digitalWrite(pins::gpsPower,enabled?HIGH:LOW); // IO2: the 3V3_GPS switch
   // The core's Uart::end() waits for stop events that a UART never started does not raise: with GPS
   // off in the settings, the boot hung right after the splash. Start and stop the port only once.
   static bool uartOn=false;

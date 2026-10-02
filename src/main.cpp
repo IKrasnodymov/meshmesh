@@ -12,6 +12,7 @@
 #include "Internet.h"
 #include "ChessNet.h"
 #include "Board.h"
+#include <Wire.h>
 #include <esp_system.h>
 #if defined(MM_NATIVE_USB)
 #include <hal/usb_serial_jtag_ll.h>
@@ -129,8 +130,10 @@ void appLoop() {
         if(n<0||n>47)usbLine("ERR gpio 0..47");
         else if(!arg.length()){pinMode(n,INPUT);usbLine("GPIO "+String(n)+" "+String(digitalRead(n)));}
         else if(arg.startsWith("tone ")){tone(n,arg.substring(5).toInt(),300);usbLine("OK tone");}
+        else if(arg=="pd"||arg=="pu"){pinMode(n,arg=="pd"?INPUT_PULLDOWN:INPUT_PULLUP);delay(5);usbLine("GPIO "+String(n)+" "+arg+" "+String(digitalRead(n)));}
         else if(arg=="watch"){pinMode(n,INPUT);int last=digitalRead(n),edges=0,lows=0;uint32_t start=millis();while(millis()-start<1500){int v=digitalRead(n);edges+=v!=last;lows+=!v;last=v;}usbLine("GPIO "+String(n)+" edges "+String(edges)+" lowsamples "+String(lows));}
         else{pinMode(n,OUTPUT);digitalWrite(n,arg.toInt()?HIGH:LOW);usbLine("OK gpio "+String(n)+"="+String(arg.toInt()?1:0));}}
+      else if(command=="i2cscan"){String r="I2C";for(uint8_t a=1;a<127;a++){Wire.beginTransmission(a);if(!Wire.endTransmission())r+=" 0x"+String(a,HEX);}usbLine(r);}
 #endif
       else if(command.startsWith("uikey ")) {uiKey(strtol(command.substring(6).c_str(),nullptr,0));usbLine("OK UI key");}
       else usbLine(executeCommand(command));command="";

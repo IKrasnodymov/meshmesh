@@ -96,8 +96,9 @@ constexpr int radioPower=37;
 constexpr float radioTcxo=1.8f;
 constexpr int sda=13, scl=14, oledReset=-1, button=26, vext=-1, vextOn=HIGH;
 constexpr int keyUp=28, keyDown=4, keyLeft=30, keyRight=31, keyPress=26, keyBack=9;
-// GPS (L76K) on Serial1, WisBlock IO2 (34) up as MeshCore does. MeshCore's variant also calls 33 PIN_GPS_EN,
-// but 33 drives the buzzer (heard on the device), so it is not held high.
+// GAT562 30S Mesh Kit V1.1 schematic (gat-iot/GAT562-family): L76K TXD -> P0.15, RXD <- P0.16 (diode),
+// TIMEPULSE -> P0.17 (not fitted: R23 NC); IO2 = P1.02 (34) switches 3V3_GPS through a MOSFET, HIGH = on.
+// BEE_EN = P1.01 (33) is the buzzer, although MeshCore's variant also names 33 PIN_GPS_EN.
 constexpr int battery=5, adcEnable=-1, gpsRx=15, gpsTx=16, gpsEnable=-1, gpsOn=HIGH, gpsReset=-1, gpsPower=34, buzzer=33;
 constexpr float batteryScale=1.f;
 constexpr int led=36, ledOn=HIGH, txLed=35;
