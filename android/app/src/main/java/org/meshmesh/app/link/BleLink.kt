@@ -39,7 +39,7 @@ class BleLink private constructor(private val context: Context, private val devi
     private val ops = Mutex()
     @Volatile private var op: CompletableDeferred<Int>? = null
     private val connected = CompletableDeferred<Unit>()
-    private val discovered = CompletableDeferred<Int>()
+    @Volatile private var discovered = CompletableDeferred<Int>()
     private val mtuDone = CompletableDeferred<Int>()
     @Volatile private var open = true
     var mtu = 23
@@ -81,9 +81,17 @@ class BleLink private constructor(private val context: Context, private val devi
         g.requestMtu(517)
         withTimeoutOrNull(5_000) { mtuDone.await() }
         g.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH)
-        g.discoverServices()
-        if (withTimeout(15_000) { discovered.await() } != BluetoothGatt.GATT_SUCCESS) throw IOException("Bluetooth: сервисы не найдены")
-        val service = g.getService(SERVICE) ?: throw IOException("Это не MeshMesh: нет сервиса MeshMesh BLE")
+        discover(g)
+        var service = g.getService(SERVICE)
+        if (service == null) {
+            // A phone bonded to the board under its previous firmware (same Bluetooth address, e.g. stock
+            // MeshCore on a GAT562) keeps that firmware's services in the Android cache: drop it, ask again.
+            onStage("Обновление списка сервисов…")
+            runCatching { g.javaClass.getMethod("refresh").invoke(g) }
+            delay(1_000)
+            discover(g)
+            service = g.getService(SERVICE) ?: throw IOException("Это не MeshMesh: нет сервиса MeshMesh BLE")
+        }
         rx = service.getCharacteristic(RX); tx = service.getCharacteristic(TX)
         if (rx == null || tx == null) throw IOException("Сервис MeshMesh неполный")
         // A protected read starts pairing; Android shows the PIN entry. Retried until bonded.
@@ -97,6 +105,12 @@ class BleLink private constructor(private val context: Context, private val devi
             else { @Suppress("DEPRECATION") run { cccd.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE; g.writeDescriptor(cccd) } }
         }
         if (status != BluetoothGatt.GATT_SUCCESS) throw IOException("Bluetooth: подписка не удалась (код $status)")
+    }
+
+    private suspend fun discover(g: BluetoothGatt) {
+        discovered = CompletableDeferred()
+        if (!g.discoverServices()) throw IOException("Bluetooth: поиск сервисов не начался")
+        if (withTimeout(15_000) { discovered.await() } != BluetoothGatt.GATT_SUCCESS) throw IOException("Bluetooth: сервисы не найдены")
     }
 
     private suspend fun pair(onStage: (String) -> Unit) {

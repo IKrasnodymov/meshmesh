@@ -22,8 +22,8 @@ android {
         applicationId = "org.meshmesh.app"
         minSdk = 29
         targetSdk = 35
-        versionCode = 5
-        versionName = "$firmwareVersion-app1"
+        versionCode = 6
+        versionName = "$firmwareVersion-app2"
         buildConfigField("String", "FIRMWARE", "\"$firmwareVersion\"")
     }
     buildFeatures { buildConfig = true }
