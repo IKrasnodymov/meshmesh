@@ -131,6 +131,7 @@ html[lang=ru] .lang [data-l=ru],html[lang=en] .lang [data-l=en]{background:var(-
 .chosen small{color:var(--dim)}
 .note{font-size:14px;color:var(--dim);padding:12px 14px;border-radius:10px;background:rgba(79,157,247,.08);border:1px solid rgba(79,157,247,.2);margin-top:16px}
 .note.warn{background:rgba(233,177,59,.08);border-color:rgba(233,177,59,.25)}
+.note.ok{background:rgba(31,194,174,.08);border-color:rgba(31,194,174,.3)}
 .note b{color:var(--ink)}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 esp-web-install-button{display:inline-block}
@@ -357,15 +358,16 @@ footer a{color:var(--dim)}
      <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts.</span></li>
     </ol>
     <ol id="uf2Steps" hidden>
-     <li lang="ru"><span>Скачайте <b>firmware.uf2</b> кнопкой ниже.</span></li>
-     <li lang="en"><span>Download <b>firmware.uf2</b> with the button below.</span></li>
-     <li lang="ru"><span>Подключите плату по USB и <b>дважды быстро нажмите RESET</b>: появится диск (например, GAT562-BOOT).</span></li>
-     <li lang="en"><span>Plug the board in over USB and <b>press RESET twice quickly</b>: a drive appears (e.g. GAT562-BOOT).</span></li>
-     <li lang="ru"><span>Скопируйте firmware.uf2 на этот диск — плата перезапустится с MeshMesh. Ключ, настройки и история сохраняются.</span></li>
-     <li lang="en"><span>Copy firmware.uf2 onto that drive — the board restarts with MeshMesh. Key, settings and history are kept.</span></li>
+     <li lang="ru"><span>Подключите плату по USB. <b>На плате MeshCore или другая прошивка?</b> Сначала дважды быстро нажмите RESET — появится диск, его не трогайте.</span></li>
+     <li lang="en"><span>Plug the board in over USB. <b>MeshCore or other firmware on it?</b> First press RESET twice quickly — a drive appears; leave it alone.</span></li>
+     <li lang="ru"><span>Нажмите <b>«Установить»</b> и выберите порт платы. Плата с MeshMesh сама перейдёт в загрузчик — тогда нажмите <b>«Продолжить»</b> и выберите порт ещё раз.</span></li>
+     <li lang="en"><span>Press <b>Install</b> and choose the board's port. A board running MeshMesh switches to its bootloader by itself — then press <b>Continue</b> and choose the port again.</span></li>
+     <li lang="ru"><span>Дождитесь окончания (около минуты) — плата перезапустится. Ключ, настройки и история сохраняются.</span></li>
+     <li lang="en"><span>Wait for it to finish (about a minute) — the board restarts. Key, settings and history are kept.</span></li>
     </ol>
     <div class="row">
-     <a class="btn primary" id="uf2" href="#" download hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span>firmware.uf2</span></a>
+     <button class="btn primary" id="nrfInstall" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="nrfLabel"><span lang="ru">Установить</span><span lang="en">Install</span></span></button>
+     <a class="btn" id="uf2" href="#" download hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span>firmware.uf2</span></a>
      <esp-web-install-button id="installer" manifest="firmware/m9/manifest.json">
       <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span lang="ru">Установить</span><span lang="en">Install</span></button>
       <span slot="unsupported" class="unsup"><span lang="ru">Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере.</span><span lang="en">This browser has no Web Serial — open the page in Chrome or Edge on a computer.</span></span>
@@ -373,6 +375,8 @@ footer a{color:var(--dim)}
      </esp-web-install-button>
      <a class="btn" id="zip" href="#" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span lang="ru">Файлы</span><span lang="en">Files</span></a>
     </div>
+    <div class="note" id="nrfStatus" hidden><div id="nrfText"></div><progress id="nrfProgress" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress></div>
+    <div class="note" id="uf2Note" hidden><span lang="ru"><b>Без Chrome или Edge:</b> скачайте firmware.uf2, дважды нажмите RESET и скопируйте файл на появившийся диск.</span><span lang="en"><b>Without Chrome or Edge:</b> download firmware.uf2, press RESET twice and copy the file onto the drive that appears.</span></div>
     <div class="note esp-only"><span lang="ru"><b>«Failed to open serial port»</b> — порт занят другой программой (Arduino IDE, монитор порта, другая вкладка) или завис драйвер USB: закройте её и переподключите кабель.</span><span lang="en"><b>“Failed to open serial port”</b> — another program holds the port (Arduino IDE, a serial monitor, another tab) or the USB driver is stuck: close it and replug the cable.</span></div>
     <div class="note warn" id="communityNote" hidden><span lang="ru"><b>Плата сообщества.</b> Сборка проверена на компьютере, но на этой плате прошивку ещё никто не запускал. Расскажите в Issues, что работает.</span><span lang="en"><b>Community board.</b> The build is checked on a computer, but nobody has run it on this board yet. Tell us in Issues what works.</span></div>
    </div>
@@ -553,6 +557,7 @@ function renderBoards(){
  // nRF52 boards install by copying a UF2 file to the bootloader drive, not over Web Serial.
  const uf2=b.install==='uf2';
  document.getElementById('installer').style.display=uf2?'none':'';document.getElementById('espSteps').hidden=uf2;
+ document.getElementById('nrfInstall').hidden=!uf2||!b.dfu;document.getElementById('uf2Note').hidden=!uf2;if(window.nrfReset)window.nrfReset();
  for(const e of document.querySelectorAll('.esp-only'))e.style.display=uf2?'none':'';document.getElementById('uf2Steps').hidden=!uf2;document.getElementById('uf2').hidden=!uf2;
  if(uf2)document.getElementById('uf2').href=b.uf2;else document.getElementById('installer').setAttribute('manifest',`firmware/${b.env}/manifest.json`);
  document.getElementById('zip').href=b.zip;
@@ -568,6 +573,34 @@ fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARD
 document.querySelector('.lang').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b){lang=b.dataset.l;render()}});
 try{lang=localStorage.getItem('mm-lang')||(navigator.language||'').toLowerCase().startsWith('ru')&&'ru'||'en'}catch(e){lang=(navigator.language||'').toLowerCase().startsWith('ru')?'ru':'en'}
 render();heroStart();
+</script>
+<script type="module">
+// nRF52 boards (GAT562): install over Web Serial with the bootloader's serial DFU (site/nrf52dfu.js).
+import {dfuFlash,touch1200,webSerialIo,isBootloader} from './nrf52dfu.js';
+const el=id=>document.getElementById(id),T=(ru,en)=>lang==='en'?en:ru;
+let continuing=false;
+function label(next){continuing=next;el('nrfLabel').innerHTML=next?'<span>'+T('Продолжить','Continue')+'</span>':'<span>'+T('Установить','Install')+'</span>';}
+function say(text,cls='',progress=null){const s=el('nrfStatus');s.hidden=false;s.className='note '+cls;el('nrfText').textContent=text;const p=el('nrfProgress');p.hidden=progress===null;if(progress!==null)p.value=progress;}
+window.nrfReset=()=>{el('nrfStatus').hidden=true;label(false);};
+async function files(b){const get=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.arrayBuffer()}).then(a=>new Uint8Array(a));return Promise.all([get(b.dfu.bin),get(b.dfu.dat)]);}
+el('nrfInstall').addEventListener('click',async()=>{
+ const b=BOARDS.find(x=>x.env===board)||BOARDS[0],btn=el('nrfInstall');
+ if(!b||!b.dfu)return;
+ if(!('serial' in navigator)){say(T('Браузер не поддерживает Web Serial — откройте страницу в Chrome или Edge на компьютере или используйте firmware.uf2.','This browser has no Web Serial — open the page in Chrome or Edge on a computer, or use firmware.uf2.'),'warn');return;}
+ btn.disabled=true;
+ try{
+  const port=await navigator.serial.requestPort({filters:[{usbVendorId:0x239a}]});
+  if(!isBootloader(port)){
+   say(T('Перевожу плату в загрузчик…','Switching the board to its bootloader…'));await touch1200(port);
+   label(true);say(T('Плата в загрузчике. Нажмите «Продолжить» и выберите порт ещё раз (имя порта может измениться).','The board is in its bootloader. Press Continue and choose the port again (its name may change).'));return;}
+  label(false);say(T('Загружаю файлы прошивки…','Downloading the firmware…'),'',0);
+  const [bin,dat]=await files(b);const io=await webSerialIo(port);
+  try{await dfuFlash(io,bin,dat,(part,stage)=>say(stage==='erase'?T('Стираю старую прошивку…','Erasing the old firmware…'):stage==='done'?T('Записано.','Written.'):T('Запись: ','Writing: ')+Math.round(part*100)+'%','',part));}
+  finally{await io.close();}
+  say(T('Готово: плата перезапускается с MeshMesh ','Done: the board restarts with MeshMesh ')+VERSION+'.','ok',null);
+ }catch(e){if(e.name==='NotFoundError'){if(!continuing)el('nrfStatus').hidden=true;}else say(T('Ошибка: ','Error: ')+e.message+T(' — повторите или используйте firmware.uf2.',' — retry or use firmware.uf2.'),'warn');}
+ finally{btn.disabled=false;}
+});
 </script>
 </body>
 </html>

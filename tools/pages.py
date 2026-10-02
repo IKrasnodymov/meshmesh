@@ -46,12 +46,19 @@ def main():
             target = out/'firmware'/env
             target.mkdir(parents=True)
             shutil.copyfile(package/'firmware.uf2', target/'firmware.uf2')
+            # Web Serial install (site/nrf52dfu.js): the application and the init packet of its DFU package.
+            with zipfile.ZipFile(package/'firmware-dfu.zip') as dfu:
+                if dfu.read('firmware.bin') != (package/'firmware.bin').read_bytes():
+                    raise SystemExit(f'{env}: DFU package and firmware.bin differ')
+                (target/'firmware.dat').write_bytes(dfu.read('firmware.dat'))
+            shutil.copyfile(package/'firmware.bin', target/'firmware.bin')
             archive = out/'firmware'/f'meshmesh-{TARGETS[env]}-{version}.zip'
             with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
                 for f in sorted(package.iterdir()):
                     z.write(f, f'{package.name}/{f.name}')
             boards.append({'env': env, 'name': board_json['name'].removeprefix('MeshMesh / '), 'chip': 'nRF52840', 'flash': '1MB',
                            'verified': env in VERIFIED, 'community': False, 'install': 'uf2', 'uf2': f'firmware/{env}/firmware.uf2',
+                           'dfu': {'bin': f'firmware/{env}/firmware.bin', 'dat': f'firmware/{env}/firmware.dat'},
                            'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
             continue
         chip = COMMUNITY[env][1] if env in COMMUNITY else 'esp32s3'

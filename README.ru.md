@@ -19,6 +19,11 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
+## Установка GAT562 из браузера
+
+Кнопка «Установить» на сайте работает и для GAT562: страница говорит с загрузчиком nRF52 по
+Web Serial (`site/nrf52dfu.js`, протокол `adafruit-nrfutil`). Подробности — [docs/gat562.md](docs/gat562.md).
+
 ## 0.3.6 — GPS у GAT562
 
 На нашей GAT562 модуль GPS не установлен (проверено по схеме производителя, измерениями и

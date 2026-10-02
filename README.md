@@ -60,8 +60,9 @@ python -m esptool --chip esp32s3 --port PORT write-flash --flash-mode dio --flas
 
 (ESP32 boards: `--chip esp32`, bootloader at `0x1000`, `--flash-freq 40m`; flash size per board.)
 
-**GAT562 (nRF52840):** press RESET twice — a `GAT562-BOOT` drive appears — and copy `firmware.uf2`
-from the website onto it. Later updates: `python tools/nrf52.py flash PACKAGE` ([docs/gat562.md](docs/gat562.md)).
+**GAT562 (nRF52840):** the same **Install** button on the website (serial DFU over Web Serial); a board
+with other firmware first needs RESET pressed twice. Or press RESET twice — a `GAT562-BOOT` drive
+appears — and copy `firmware.uf2` from the website onto it. Later updates: `python tools/nrf52.py flash PACKAGE` ([docs/gat562.md](docs/gat562.md)).
 
 Default radio: 868.731 MHz, BW 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio; all nodes
 of a network must match. Follow your country's radio regulations.
