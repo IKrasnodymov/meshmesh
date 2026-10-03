@@ -18,6 +18,8 @@ MeshCore nodes.
 ## Features
 
 - **Chats** — direct and public messages, ✓✓ delivery receipts, retries, route shown per message.
+- **Channels** — up to 8 MeshCore channels: join by #hashtag, `meshcore://` link or QR code, name and key;
+  create a private one, invite contacts by direct message, find channels heard on air. [docs/en/channels.md](docs/en/channels.md)
 - **Offline maps** — OpenStreetMap tiles on the SD card, GPS position and nodes on the map.
 - **Nearby nodes** — signal, hops, distance and bearing; contacts, repeaters and rooms.
 - **Signal radar** — Wi-Fi, Bluetooth and LoRa around you, with “warmer / colder” homing.
@@ -85,7 +87,7 @@ The screen UI can be rendered on a computer without a board: `tools/ui_preview/b
 
 ## Documentation
 
-Detailed documentation in English: [MeshCore compatibility](docs/en/meshcore-migration.md), [boards](docs/en/boards.md),
+Detailed documentation in English: [channels](docs/en/channels.md), [MeshCore compatibility](docs/en/meshcore-migration.md), [boards](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [repeater and room modes](docs/en/repeater.md),
 [chess protocol](docs/en/chess.md), [map format](docs/en/maps-format.md), [comparison with MeshCore](docs/en/feature-parity.md),
 [hardware verification](docs/en/verification.md). The Russian originals are in [docs/](docs/), with the full

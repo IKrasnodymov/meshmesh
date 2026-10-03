@@ -18,6 +18,8 @@ MeshCore 노드와 통신합니다.
 ## 기능
 
 - **채팅** — 개인 메시지와 공개 메시지, ✓✓ 전달 확인, 재전송, 메시지별 경로 표시.
+- **채널** — 최대 8개의 MeshCore 채널: #해시태그, `meshcore://` 링크나 QR 코드, 이름과 키로 참여합니다.
+  비공개 채널을 만들고, 개인 메시지로 연락처를 초대하고, 전파에서 수신된 채널을 찾을 수 있습니다. [docs/en/channels.md](docs/en/channels.md)
 - **오프라인 지도** — SD 카드의 OpenStreetMap 타일, 지도 위의 GPS 위치와 노드.
 - **주변 노드** — 신호, 홉, 거리, 방향; 연락처, 리피터, 룸.
 - **신호 레이더** — 주변의 Wi-Fi, Bluetooth, LoRa를 보여 주고 “가까워짐 / 멀어짐” 방식으로 추적합니다.
@@ -85,7 +87,7 @@ Android 앱: `cd android && ./gradlew testDebugUnitTest assembleRelease` ([docs/
 
 ## 문서
 
-영어로 된 자세한 문서: [MeshCore 호환성](docs/en/meshcore-migration.md), [보드](docs/en/boards.md),
+영어로 된 자세한 문서: [채널](docs/en/channels.md), [MeshCore 호환성](docs/en/meshcore-migration.md), [보드](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [리피터와 룸 모드](docs/en/repeater.md),
 [체스 프로토콜](docs/en/chess.md), [지도 형식](docs/en/maps-format.md), [MeshCore와 비교](docs/en/feature-parity.md),
 [하드웨어 검증](docs/en/verification.md). 러시아어 원문은 [docs/](docs/)에 있으며, 조작법과 기능 전체 안내는

@@ -174,6 +174,11 @@
   "ru": " · попытка ",
   "text": " · tentativo "
  },
+ "30b1f47d": {
+  "en": "Channel",
+  "ru": "Канал",
+  "text": "Canale"
+ },
  "78219be4": {
   "en": "Clock not set",
   "ru": "Время не установлено",
@@ -489,6 +494,11 @@
   "ru": "Режим работы",
   "text": "Modalità"
  },
+ "9d66fca4": {
+  "en": "Add a channel",
+  "ru": "Добавить канал",
+  "text": "Aggiungi canale"
+ },
  "4f63d746": {
   "en": "Room server",
   "ru": "Комната",
@@ -654,25 +664,35 @@
   "ru": "Блок",
   "text": "Blocca"
  },
+ "6bb58bc8": {
+  "en": "Hashtag, name and key, new, heard on air",
+  "ru": "Хештег, ключ, новый, услышанный в эфире",
+  "text": "Hashtag, chiave, nuovo, sentito in onda"
+ },
  "2b67ee1b": {
   "en": "You: ",
   "ru": "Вы: ",
   "text": "Tu: "
- },
- "9161fba7": {
-  "en": "Open MeshCore channel",
-  "ru": "Открытый канал MeshCore",
-  "text": "Canale aperto MeshCore"
  },
  "162429ce": {
   "en": "No messages yet",
   "ru": "Сообщений ещё нет",
   "text": "Nessun messaggio"
  },
- "7c285a3c": {
-  "en": "Select",
-  "ru": "Выбор",
-  "text": "Scegli"
+ "9161fba7": {
+  "en": "Open MeshCore channel",
+  "ru": "Открытый канал MeshCore",
+  "text": "Canale aperto MeshCore"
+ },
+ "8e999555": {
+  "en": "Open channel · no messages yet",
+  "ru": "Открытый канал · сообщений нет",
+  "text": "Canale aperto · nessun messaggio"
+ },
+ "0237fb5c": {
+  "en": "Private channel · no messages yet",
+  "ru": "Закрытый канал · сообщений нет",
+  "text": "Canale privato · nessun messaggio"
  },
  "d8735ad9": {
   "en": "Announce",
@@ -683,6 +703,16 @@
   "en": "Menu",
   "ru": "Меню",
   "text": "Menu"
+ },
+ "7c285a3c": {
+  "en": "Select",
+  "ru": "Выбор",
+  "text": "Scegli"
+ },
+ "9172b7d6": {
+  "en": "Private channel · senders unverified · no ACK",
+  "ru": "Закрытый канал · без подтверждений",
+  "text": "Canale privato · mittenti non verif. · no ACK"
  },
  "7360652d": {
   "en": "Open channel · senders unverified · no ACK",
@@ -724,11 +754,6 @@
   "ru": "Отпр.",
   "text": "Invia"
  },
- "d345a7e1": {
-  "en": "2x space",
-  "ru": "2×пробел",
-  "text": "2x spazio"
- },
  "a1d3f60b": {
   "en": "hold OK",
   "ru": "удерж. OK",
@@ -743,6 +768,11 @@
   "en": "Back",
   "ru": "Назад",
   "text": "Indietro"
+ },
+ "d345a7e1": {
+  "en": "2x space",
+  "ru": "2×пробел",
+  "text": "2x spazio"
  },
  "191fb7b9": {
   "en": "Finding location by IP...",
@@ -2419,6 +2449,281 @@
   "ru": "Выкл",
   "text": "Off"
  },
+ "8baa6473": {
+  "en": "Channel removed",
+  "ru": "Канал удалён",
+  "text": "Canale rimosso"
+ },
+ "acc0f007": {
+  "en": "Channel added",
+  "ru": "Канал добавлен",
+  "text": "Canale aggiunto"
+ },
+ "adbe8177": {
+  "en": "Hash ",
+  "ru": "Хеш ",
+  "text": "Hash "
+ },
+ "20190c0b": {
+  "en": "Key:",
+  "ru": "Ключ:",
+  "text": "Chiave:"
+ },
+ "78fe2f73": {
+  "en": "Every MeshCore node has it",
+  "ru": "Он есть у каждого узла MeshCore",
+  "text": "Ce l'ha ogni nodo MeshCore"
+ },
+ "ad3ac0ea": {
+  "en": "Scan with MeshMesh or the MeshCore app",
+  "ru": "Сканируйте в MeshMesh или приложении MeshCore",
+  "text": "Scansiona con MeshMesh o l'app MeshCore"
+ },
+ "bb68873f": {
+  "en": "Already in this channel",
+  "ru": "Вы уже в этом канале",
+  "text": "Sei già in questo canale"
+ },
+ "e029f399": {
+  "en": "Invite",
+  "ru": "Пригласить",
+  "text": "Invita"
+ },
+ "a01f083e": {
+  "en": "No chat contacts",
+  "ru": "Нет чат-контактов",
+  "text": "Nessun contatto chat"
+ },
+ "8931bf7f": {
+  "en": "Sure? OK again",
+  "ru": "Точно? Ещё OK",
+  "text": "Sicuro? Ancora OK"
+ },
+ "81b9b550": {
+  "en": "Leave channel",
+  "ru": "Покинуть канал",
+  "text": "Lascia canale"
+ },
+ "b4ff4ddb": {
+  "en": "8 channels at most",
+  "ru": "Не больше 8 каналов",
+  "text": "Massimo 8 canali"
+ },
+ "9c1eb940": {
+  "en": "Discover a chat contact first: ADV",
+  "ru": "Сначала найдите чат-контакт: ADV",
+  "text": "Prima trova un contatto chat: ADV"
+ },
+ "bcff9ec0": {
+  "en": "Invitation queued to ",
+  "ru": "Приглашение в очереди: ",
+  "text": "Invito in coda per "
+ },
+ "285885ee": {
+  "en": "Invitation not sent",
+  "ru": "Приглашение не отправлено",
+  "text": "Invito non inviato"
+ },
+ "4b09b69e": {
+  "en": "History stays; joining again shows it",
+  "ru": "История сохранится и вернётся при вступлении",
+  "text": "La cronologia resta; rientrando riappare"
+ },
+ "df759f29": {
+  "en": "Name: 1-31 bytes",
+  "ru": "Имя: 1-31 байт",
+  "text": "Nome: 1-31 byte"
+ },
+ "0f1754aa": {
+  "en": "Left ",
+  "ru": "Покинут: ",
+  "text": "Uscito da "
+ },
+ "eed537af": {
+  "en": "Cannot leave while sending",
+  "ru": "Нельзя во время отправки",
+  "text": "Non si esce durante l'invio"
+ },
+ "efa35629": {
+  "en": "Key: 32 hex or base64",
+  "ru": "Ключ: 32 hex или base64",
+  "text": "Chiave: 32 hex o base64"
+ },
+ "a6f0f217": {
+  "en": "Not a channel link",
+  "ru": "Это не ссылка на канал",
+  "text": "Non è un link di canale"
+ },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "Non in questa modalità"
+ },
+ "8b52ceba": {
+  "en": "Channel not saved",
+  "ru": "Канал не сохранён",
+  "text": "Canale non salvato"
+ },
+ "c5cf108a": {
+  "en": "Join",
+  "ru": "Вступить",
+  "text": "Entra"
+ },
+ "2619a283": {
+  "en": "Open channel",
+  "ru": "В канал",
+  "text": "Vai al canale"
+ },
+ "914eb578": {
+  "en": "Channel invitation: ",
+  "ru": "Приглашение в канал: ",
+  "text": "Invito al canale: "
+ },
+ "3830e96a": {
+  "en": "you are in it",
+  "ru": "вы в нём",
+  "text": "ne fai parte"
+ },
+ "ff8cdf20": {
+  "en": "<- join",
+  "ru": "<- вступить",
+  "text": "<- entra"
+ },
+ "24ed2403": {
+  "en": "Join by hashtag",
+  "ru": "Вступить по хештегу",
+  "text": "Entra con hashtag"
+ },
+ "2c75e156": {
+  "en": "Open channel: its key comes from the #name",
+  "ru": "Открытый канал: ключ из #имени",
+  "text": "Canale aperto: la chiave viene dal #nome"
+ },
+ "8f97f769": {
+  "en": "Name and key",
+  "ru": "Название и ключ",
+  "text": "Nome e chiave"
+ },
+ "4ca756d0": {
+  "en": "Key from another app: 32 hex or base64",
+  "ru": "Ключ из другого приложения: 32 hex или base64",
+  "text": "Chiave da un'altra app: 32 hex o base64"
+ },
+ "5371947b": {
+  "en": "Create a private channel",
+  "ru": "Создать закрытый канал",
+  "text": "Crea un canale privato"
+ },
+ "68f1d0cd": {
+  "en": "Random key; its QR invites the others",
+  "ru": "Случайный ключ; QR-код пригласит других",
+  "text": "Chiave casuale; il suo QR invita gli altri"
+ },
+ "4a5c1fd0": {
+  "en": "Heard on air: ",
+  "ru": "В эфире: ",
+  "text": "In onda: "
+ },
+ "ea7fdf5c": {
+  "en": " · OK: join",
+  "ru": " · OK: вступить",
+  "text": " · OK: entra"
+ },
+ "7425223a": {
+  "en": "Unknown channel ",
+  "ru": "Неизвестный канал ",
+  "text": "Canale ignoto "
+ },
+ "4685a184": {
+  "en": " · OK: try a #name",
+  "ru": " · OK: подобрать #имя",
+  "text": " · OK: prova un #nome"
+ },
+ "4d917356": {
+  "en": "Full: 8 channels, Public included",
+  "ru": "Заполнено: 8 каналов вместе с Public",
+  "text": "Pieno: 8 canali, Public incluso"
+ },
+ "0613ccea": {
+  "en": "Other channels heard: none",
+  "ru": "Других каналов в эфире не слышно",
+  "text": "Nessun altro canale sentito"
+ },
+ "f3b78c07": {
+  "en": "Channels heard on air will appear here",
+  "ru": "Здесь появятся каналы, услышанные в эфире",
+  "text": "Qui appariranno i canali sentiti in onda"
+ },
+ "7a0b46f9": {
+  "en": "Public channel of MeshCore",
+  "ru": "Общий канал MeshCore",
+  "text": "Canale pubblico di MeshCore"
+ },
+ "437ffb06": {
+  "en": "Private channel",
+  "ru": "Закрытый канал",
+  "text": "Canale privato"
+ },
+ "71c7250d": {
+  "en": "Hashtag channel",
+  "ru": "Канал-хештег",
+  "text": "Canale hashtag"
+ },
+ "42861984": {
+  "en": "Channel name",
+  "ru": "Название канала",
+  "text": "Nome del canale"
+ },
+ "7edbb5d8": {
+  "en": "Key of ",
+  "ru": "Ключ канала ",
+  "text": "Chiave di "
+ },
+ "2d4631d0": {
+  "en": "New private channel",
+  "ru": "Новый закрытый канал",
+  "text": "Nuovo canale privato"
+ },
+ "e1ecaa5a": {
+  "en": "32 hex digits or base64 (16 bytes)",
+  "ru": "32 hex-цифры или base64 (16 байт)",
+  "text": "32 cifre hex o base64 (16 byte)"
+ },
+ "6625f431": {
+  "en": "Heard on air: ",
+  "ru": "Слышен в эфире: ",
+  "text": "Sentito in onda: "
+ },
+ "c1174845": {
+  "en": "Same #name, same channel as in MeshCore apps",
+  "ru": "То же #имя — тот же канал, что в приложениях MeshCore",
+  "text": "Stesso #nome, stesso canale delle app MeshCore"
+ },
+ "a632f05f": {
+  "en": "The key is made on this device",
+  "ru": "Ключ создаст это устройство",
+  "text": "La chiave nasce su questo dispositivo"
+ },
+ "d2eba9c2": {
+  "en": "Then the key",
+  "ru": "Затем ключ",
+  "text": "Poi la chiave"
+ },
+ "588ee995": {
+  "en": "OK: next   BACK: cancel",
+  "ru": "OK: далее   BACK: отменить",
+  "text": "OK: avanti   BACK: annulla"
+ },
+ "46f06e78": {
+  "en": "OK: create   BACK: cancel",
+  "ru": "OK: создать   BACK: отменить",
+  "text": "OK: crea   BACK: annulla"
+ },
+ "f2a7febd": {
+  "en": "OK: join   BACK: cancel",
+  "ru": "OK: вступить   BACK: отменить",
+  "text": "OK: entra   BACK: annulla"
+ },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
   "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
@@ -3179,6 +3484,26 @@
   "ru": "Кому: ",
   "text": "A: "
  },
+ "c50372df": {
+  "en": "Invitation to channel ",
+  "ru": "Приглашение в канал ",
+  "text": "Invito al canale "
+ },
+ "dc58258c": {
+  "en": "Joined ",
+  "ru": "Вступили: ",
+  "text": "Entrato in "
+ },
+ "02e337ce": {
+  "en": "Already in ",
+  "ru": "Уже в канале ",
+  "text": "Già in "
+ },
+ "08e64970": {
+  "en": "Not joined",
+  "ru": "Не удалось вступить",
+  "text": "Ingresso fallito"
+ },
  "93d18358": {
   "en": "Write message...",
   "ru": "Написать...",
@@ -3193,6 +3518,16 @@
   "en": "Write to channel...",
   "ru": "Написать в канал...",
   "text": "Scrivi nel canale..."
+ },
+ "b5d624fa": {
+  "en": "Join ",
+  "ru": "Вступить: ",
+  "text": "Entra in "
+ },
+ "9ab8218a": {
+  "en": "Join heard ",
+  "ru": "Вступить: ",
+  "text": "Entra in "
  },
  "1b6f6009": {
   "en": "Chess: invite",

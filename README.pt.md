@@ -18,6 +18,8 @@ MeshCore padrão.
 ## Recursos
 
 - **Chats** — mensagens diretas e públicas, confirmações de entrega ✓✓, reenvios, rota exibida em cada mensagem.
+- **Canais** — até 8 canais MeshCore: entre por #hashtag, link `meshcore://` ou código QR, nome e chave;
+  crie um privado, convide contatos por mensagem direta, encontre canais ouvidos no ar. [docs/en/channels.md](docs/en/channels.md)
 - **Mapas offline** — blocos do OpenStreetMap no cartão SD, posição GPS e nós no mapa.
 - **Nós por perto** — sinal, saltos, distância e direção; contatos, repetidores e salas.
 - **Radar de sinais** — Wi-Fi, Bluetooth e LoRa ao seu redor, com rastreio “quente / frio”.
@@ -85,7 +87,7 @@ A interface da tela pode ser renderizada em um computador sem placa: `tools/ui_p
 
 ## Documentação
 
-Documentação detalhada em inglês: [compatibilidade com MeshCore](docs/en/meshcore-migration.md), [placas](docs/en/boards.md),
+Documentação detalhada em inglês: [canais](docs/en/channels.md), [compatibilidade com MeshCore](docs/en/meshcore-migration.md), [placas](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modos repetidor e sala](docs/en/repeater.md),
 [protocolo do xadrez](docs/en/chess.md), [formato dos mapas](docs/en/maps-format.md), [comparação com o MeshCore](docs/en/feature-parity.md),
 [verificação em hardware](docs/en/verification.md). Os originais em russo estão em [docs/](docs/), e o guia completo

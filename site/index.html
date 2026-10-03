@@ -244,7 +244,7 @@ footer a{color:var(--dim)}
     <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="cta.apk"></span></a>
     <a class="btn cta-more" href="#features"><span data-i18n="cta.more"></span></a>
    </div>
-   <a class="news" href="chess/"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg></b><span data-i18n="news.chess"></span><i>→</i></a>
+   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h15M4 15h15M10 3 8 21M16 3l-2 18"/></svg></b><span data-i18n="news.channels"></span><i>→</i></a>
    <div class="facts">
     <div><b>14</b><span data-i18n="facts.boards"></span></div>
     <div><b>MeshCore</b><span data-i18n="facts.radio"></span></div>
@@ -453,10 +453,12 @@ const ICONS={
  keyboard:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M7 14h10"/>',
  phone:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',oled:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h10"/>',
  pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+ hash:'<path d="M5 9h15M4 15h15M10 3 8 21M16 3l-2 18"/>',
  tower:'<path d="M12 10 7 21M12 10l5 11M12 10v11M9 16h6"/><circle cx="12" cy="7.5" r="1.6"/><path d="M8.6 4a5 5 0 0 0 0 7M15.4 4a5 5 0 0 1 0 7"/>'
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless phone: true); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'channels',ic:'hash',c:'#1fc2ae',shots:['m9-threads-channels','m9-channel-private','m9-channel-add','m9-chat-invite','heltec-invite-menu']},
  {id:'chessCompanion',ic:'chess',c:'#4cc26b',phone:true,shots:['web-chess-companion-board','web-chess-companion-list','web-chess-companion-connect']},
  {id:'gat562',ic:'oled',c:'#e4e9ee',oled:true,shots:['gat562-home','gat562-keyboard','gat562-chess','gat562-chess-list','gat562-radar','gat562-node-menu']},
  {id:'modes',ic:'tower',c:'#a78bfa',shots:['m9-role-boot','m9-repeater','m9-room','m9-room-post','heltec-role','heltec-repeater','heltec-room']},
@@ -471,13 +473,13 @@ const FEATURES=[
  {id:'screen',ic:'keyboard',c:'#1fc2ae',shots:['m9-home','m9-layout','m9-locked']},
  {id:'settings',ic:'sliders',c:'#8d99a6',shots:['m9-settings','m9-radio','m9-diagnostics','heltec-settings']},
  {id:'oneButton',ic:'oled',c:'#e4e9ee',oled:true,shots:['heltec-home','heltec-messages-menu','heltec-wifi-on']},
- {id:'phone',ic:'phone',c:'#4f9df7',phone:true,shots:['web-home','web-chat','web-public','web-nodes','web-map','web-radar','web-homing','web-motion','web-board','web-radio','web-desktop']}
+ {id:'phone',ic:'phone',c:'#4f9df7',phone:true,shots:['web-home','web-chat','web-channel-qr','web-channel-add','web-public','web-nodes','web-map','web-radar','web-homing','web-motion','web-board','web-radio','web-desktop']}
 ];
 const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motion'];
 const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
 const GAT=['gat562-home','gat562-keyboard','gat562-chess','gat562-radar','gat562-chess-list','gat562-node-menu'];
 // Documents: the overview in every language; the details in Russian, translated to English (docs/en).
-const DOCS=[['README.md','doc.readme'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/android.md','doc.android'],['docs/repeater.md','doc.repeater'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
+const DOCS=[['README.md','doc.readme'],['docs/channels.md','doc.channels'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/android.md','doc.android'],['docs/repeater.md','doc.repeater'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
 function docPath(path){
  if(path==='README.md')return lang==='en'?path:`README.${lang}.md`;
  return lang==='ru'?path:path.replace('docs/','docs/en/');

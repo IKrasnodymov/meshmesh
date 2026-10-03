@@ -24,6 +24,8 @@ MeshCore القياسية.
 ## الميزات
 
 - **المحادثات**: رسائل خاصة وعامة، وإشعارات تسليم ✓✓، وإعادة المحاولة، وعرض المسار لكل رسالة.
+- **القنوات**: حتى 8 قنوات MeshCore، مع الانضمام عبر #وسم أو رابط `meshcore://` أو رمز QR أو اسم ومفتاح؛
+  وإنشاء قناة خاصة، ودعوة جهات الاتصال برسالة خاصة، والعثور على القنوات المسموعة في البث. [docs/en/channels.md](docs/en/channels.md)
 - **خرائط دون اتصال**: مربعات OpenStreetMap على بطاقة SD، والموقع من GPS والعقد على الخريطة.
 - **العقد القريبة**: قوة الإشارة وعدد القفزات والمسافة والاتجاه؛ جهات الاتصال والمرحلات والغرف.
 - **رادار الإشارات**: Wi-Fi وBluetooth وLoRa من حولك، مع توجيه «أدفأ / أبرد» للوصول إلى المصدر.
@@ -99,7 +101,7 @@ python3 -m venv .venv
 
 ## التوثيق
 
-توثيق مفصل بالإنجليزية: [التوافق مع MeshCore](docs/en/meshcore-migration.md)، [اللوحات](docs/en/boards.md)،
+توثيق مفصل بالإنجليزية: [القنوات](docs/en/channels.md)، [التوافق مع MeshCore](docs/en/meshcore-migration.md)، [اللوحات](docs/en/boards.md)،
 [GAT562](docs/en/gat562.md)، [Android](docs/en/android.md)، [وضعا المرحل والغرفة](docs/en/repeater.md)،
 [بروتوكول الشطرنج](docs/en/chess.md)، [صيغة الخرائط](docs/en/maps-format.md)، [مقارنة مع MeshCore](docs/en/feature-parity.md)،
 [التحقق على الأجهزة](docs/en/verification.md). النصوص الروسية الأصلية في [docs/](docs/)، والدليل الكامل

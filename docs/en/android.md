@@ -79,6 +79,8 @@ Added to `executeCommand`, so they are available over USB, BLE and `/api/command
 | `radar do {JSON}` | `OK …` / `ERR …` | `/api/radar` actions: track, untrack, peak, csi, calibrate, close |
 | `map tile Z X Y OFFSET [LEN]` | `OK tile SIZE OFFSET BASE64` | a tile file from the SD card in parts of up to 6144 bytes |
 | `sendjson {"to":…,"text":…}` | same as `send` | text with a newline that does not fit on the command line |
+| `channels` | JSON `/api/channels` | MeshCore channels; for a paired client, with the links of private channels |
+| `channel do {JSON}` | `OK …` / `ERR …`, JSON for `probe` | `/api/channels` actions: add, remove, invite, probe |
 
 The diagnostic command `radar` still does not print network and device names; `radar web`
 prints them, like the page over Wi-Fi. The BLE response is now sent in notifications the size of
@@ -87,6 +89,21 @@ the negotiated MTU (up to 244 bytes instead of 20) and only when NimBLE buffers 
 
 Map tiles that have been read are cached on the phone (up to 200 MB); the copy is used as long as
 the tile header on the SD card (size and CRC) has not changed, so viewing again over BLE is fast.
+
+## MeshCore channels: QR codes and links
+
+Over BLE the channel list is cached like the nodes and reread after any action or when the number
+of channels in `status` changes. A channel invitation is a link
+`meshcore://channel/add?name=…&secret=…`; the app takes it in two ways:
+
+- `MeshNative.scanQr()` — the page opens a QR scanner (zxing-android-embedded, no Google
+  services). The camera permission is requested at the first scan.
+- A link from the phone's camera or a messenger opens the app (intent filter `meshcore://channel`).
+
+Both lead to `MeshHost.channelLink(text)` (`assets/host.js`): other text is rejected
+(“Это не ссылка на канал MeshCore”, “not a MeshCore channel link”), a link is passed to the page's
+`openChannelLink(link)`, which asks for confirmation. While no board is connected, the link waits
+for the connection; a link that launched the app is not repeated when Android recreates the screen.
 
 ## Testing on a computer
 
@@ -102,7 +119,8 @@ tests the HTTP client. The USB bridge stays at 115200 baud and refuses to change
 Unit tests (`./gradlew testDebugUnitTest`) cover what breaks silently:
 UTF-8 split across notifications, log lines among responses, a JSON response broken by a
 Wi-Fi driver log line, a late command response after a timeout, the 255-byte BLE limit when
-uploading a map, a newline in a message, response codes, tile assembly and the BLE list cache.
+uploading a map, a newline in a message, response codes, tile assembly, the BLE list cache and the
+channel commands (the page's JSON on one line, the `probe` answer, older firmware).
 
 ## Limitations
 
@@ -116,3 +134,6 @@ uploading a map, a newline in a message, response codes, tile assembly and the B
 - The ESP32 driver line `wifi:timeout when WiFi un-init` sometimes ends up inside a USB response
   (after closing the radar); the app detects the truncated JSON and repeats the command.
 - One board at a time; to switch — “Connections → Disconnect”.
+- The QR scanner and `meshcore://` links were checked in the emulator (camera prompt, refusal, the
+  scanner opening, a link before and after the page loads); reading a real QR code with a phone
+  camera has not been checked.

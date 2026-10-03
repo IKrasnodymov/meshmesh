@@ -5,6 +5,9 @@
 String statusJson();
 String messagesJson();
 String nodesJson();
+// Joined channels and those heard on air; private keys (in "link") only when secrets is true.
+String channelsJson(bool secrets);
+String channelCommand(JsonObjectConst request); // "channel do {JSON}" and POST /api/channels
 String configJson(bool includeKey=false);
 String applySettings(JsonObjectConst values);
 String executeCommand(const String& line);

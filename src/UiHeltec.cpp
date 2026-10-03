@@ -110,7 +110,12 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActFormat,ActWrite,ActChess,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
+enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
+// Channels are added on the web page or in the app; here: an invitation in a message and a hashtag heard on air.
+const HeardChannel* heardTag(){for(unsigned i=0;i<meshRadio.heardCount;i++)if(meshRadio.heard[i].name[0])return &meshRadio.heard[i];return nullptr;}
+String channelTag(uint64_t id){const channels::Channel* c=meshRadio.channel(id);return channels::isPublic(c?c->secret:channels::publicSecret)?String(" #"):" "+String(c->name[0]=='#'?"":"#")+c->name;}
+String messageText(const ChatMessage& m){String name;uint8_t key[16];return channels::parseLink(m.text,name,key)?t("Invitation to channel ","Приглашение в канал ")+name:String(m.text);}
+void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t("Joined ","Вступили: ")+name:r==MeshRadio::ChannelExists?t("Already in ","Уже в канале ")+name:r==MeshRadio::ChannelFull?t("8 channels at most","Не больше 8 каналов"):t("Not joined","Не удалось вступить"));}
 unsigned actions(Act* out){
  unsigned n=0;switch(page){
  case Home:
@@ -122,6 +127,8 @@ unsigned actions(Act* out){
 #endif
   out[n++]=ActAdvert;if(config.role!=RoleNormal){out[n++]=ActForward;out[n++]=ActRole;}break;
  case Messages:
+  {String name;uint8_t key[16];const ChatMessage* m=shownMessage();if(m&&channels::parseLink(m->text,name,key)&&!meshRadio.channel(channels::idOf(key)))out[n++]=ActJoin;}
+  if(heardTag())out[n++]=ActJoinHeard;
 #if defined(MM_JOYSTICK)
   out[n++]=ActWrite;
 #endif
@@ -152,11 +159,13 @@ unsigned actions(Act* out){
 }
 bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
 String actName(Act a){
- const ChatMessage* m=shownMessage();bool publicChat=m&&m->destination==meshmesh::Broadcast;
+ const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
  case ActWrite:return page==Nodes?t("Write message...","Написать...")
   :page==Messages&&m&&!publicChat?t("Write reply...","Ответить текстом..."):t("Write to channel...","Написать в канал...");
  case ActFormat:return t("Create storage...","Создать хранилище...");
+ case ActJoin:{String name;uint8_t key[16];channels::parseLink(m?m->text:"",name,key);return t("Join ","Вступить: ")+name;}
+ case ActJoinHeard:{const HeardChannel* h=heardTag();return t("Join heard ","Вступить: ")+(h?h->name:"");}
  case ActChess:return t("Chess: invite","Шахматы: вызвать");
  case ActSound:return config.sound?t("Sound: on","Звук: вкл."):t("Sound: off","Звук: выкл.");
  case ActRole:return t("Device mode...","Режим работы...");case ActForward:return meshServer.view().forwarding?t("Forwarding: off","Пересылка: выкл."):t("Forwarding: on","Пересылка: вкл.");
@@ -174,7 +183,7 @@ String actName(Act a){
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  }return "";
 }
-void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=m->destination==meshmesh::Broadcast?meshmesh::Broadcast:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadio.sendMessage(text,to);notice(sent?t("Reply ","Ответ ")+text+t(" queued"," в очереди"):t("Reply not queued","Ответ не отправлен"));}
+void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadio.sendMessage(text,to);notice(sent?t("Reply ","Ответ ")+text+t(" queued"," в очереди"):t("Reply not queued","Ответ не отправлен"));}
 void run(Act a){
  switch(a){
  case ActFormat:{static uint32_t armed=0;
@@ -184,10 +193,13 @@ void run(Act a){
   if(!armed||millis()-armed>5000){armed=millis();notice(t("Hold again: erase","Удерж. ещё: стереть"));break;}
 #endif
   armed=0;String r=executeCommand("fsformat");if(r.startsWith("OK"))executeCommand("restart");notice(r.startsWith("OK")?t("Storage created, restart","Создано, перезапуск"):r);break;}
+ case ActJoin:{const ChatMessage* m=shownMessage();String name;uint8_t key[16];if(m&&channels::parseLink(m->text,name,key))joinedNotice(meshRadio.joinLink(m->text),name);break;}
+ case ActJoinHeard:{const HeardChannel* h=heardTag();if(h){String name=h->name;joinedNotice(meshRadio.joinHashtag(name),name);}break;}
  case ActWrite:
 #if defined(MM_JOYSTICK)
   if(page==Nodes){if(Peer* p=shownNode())openCompose(p->id,p->name);}
-  else if(page==Messages&&shownMessage()&&shownMessage()->destination!=meshmesh::Broadcast){const ChatMessage* m=shownMessage();uint64_t to=m->outgoing?m->destination:m->source;String name=m->name;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==to)name=meshRadio.peers[i].name;openCompose(to,name);}
+  else if(page==Messages&&shownMessage()&&channels::isChannel(shownMessage()->destination)){const ChatMessage* m=shownMessage();const channels::Channel* c=meshRadio.channel(m->destination);if(c)openCompose(c->id,c->name);else openCompose(meshmesh::Broadcast,t("Public channel","Общий канал"));}
+  else if(page==Messages&&shownMessage()){const ChatMessage* m=shownMessage();uint64_t to=m->outgoing?m->destination:m->source;String name=m->name;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==to)name=meshRadio.peers[i].name;openCompose(to,name);}
   else openCompose(meshmesh::Broadcast,t("Public channel","Общий канал"));
 #endif
   break;
@@ -263,7 +275,7 @@ void drawMenu(){
 }
 void drawPopup(const ChatMessage& m){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
- say(18,11,clipped(String(m.name)+(m.destination==meshmesh::Broadcast?" #":""),18),bold);textLines(m.text,25,3);sayRight(126,62,t("click: close","клик: закрыть"));
+ say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t("click: close","клик: закрыть"));
 }
 void drawChessPopup(){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
@@ -315,8 +327,8 @@ void draw(){
   say(0,43,"RX "+String(meshRadio.rxCount)+"  TX "+String(meshRadio.txCount)+t("  near "," рядом ")+String(near),small);
   unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t("USB power","Питание USB"):String(mv/1000.f,2)+"V")+(config.relay?t("  relay on","  ретрансляция"):""),small);break;}
  case Messages:{const ChatMessage* m=shownMessage();title=t("Messages","Сообщения")+(m?" "+String(meshRadio.historyCount-messageOffset)+"/"+String(meshRadio.historyCount):"");
-  if(m){String who=m->outgoing?t("You","Вы"):String(m->name);if(m->destination==meshmesh::Broadcast)who+=" #";const char* states[]={"",tr("queued","очередь"),tr("sent","отправл."),tr("delivered","доставл."),tr("no ACK","нет ACK")};
-   String route=meshRadio.routeText(*m,true),st=m->outgoing?String(states[m->status])+(route.length()?" "+route:String()):(route.length()?route+" ":String())+clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(m->text,36,2);}
+  if(m){String who=m->outgoing?t("You","Вы"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={"",tr("queued","очередь"),tr("sent","отправл."),tr("delivered","доставл."),tr("no ACK","нет ACK")};
+   String route=meshRadio.routeText(*m,true),st=m->outgoing?String(states[m->status])+(route.length()?" "+route:String()):(route.length()?route+" ":String())+clockText(m->timestamp);say(0,23,clipped(who,20-chars(st)),bold);sayRight(128,22,st);textLines(messageText(*m),36,2);}
   else{say(0,30,t("No messages yet","Сообщений ещё нет"));say(0,44,t("They appear here","Здесь появятся входящие"),small);}break;}
  case Nodes:{unsigned order[24];unsigned n=sortedNodes(order);Peer* p=shownNode();title=t("Nodes","Узлы")+(n?" "+String(nodeIndex%n+1)+"/"+String(n):"");
   if(p){say(0,23,clipped(p->name,21),bold);say(0,33,typeText(p->type)+", "+pathText(*p),small);

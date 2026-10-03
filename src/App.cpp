@@ -23,7 +23,7 @@ String statusJson() {
 #endif
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
-  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
+  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["channels"]=meshRadio.channelCount;d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
   d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
   d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
@@ -45,6 +45,46 @@ String messagesJson() {
   String s;serializeJson(d,s);return s;
 }
 String nodesJson(){DynamicJsonDocument d(16384);JsonArray a=d.to<JsonArray>();for(unsigned i=0;i<meshRadio.peerCount;i++){auto& p=meshRadio.peers[i];JsonObject j=a.createNestedObject();char key[65];mesh::Utils::toHex(key,p.publicKey,32);j["public_key"]=key;j["type"]=p.type;j["heard"]=p.heard;j["path_length"]=p.pathLength;j["id"]=meshRadio.idText(p.id);j["name"]=p.name;j["rssi"]=p.rssi;j["snr"]=p.snr;if(p.heard)j["age_seconds"]=(millis()-p.seen)/1000;else j["age_seconds"]=nullptr;j["hops"]=p.hops;j["position"]=p.position;if(p.position){j["latitude"]=p.latitude;j["longitude"]=p.longitude;}}String s;serializeJson(d,s);return s;}
+String channelsJson(bool secrets){
+  DynamicJsonDocument d(6144);d["max"]=channels::Max;JsonArray a=d.createNestedArray("channels");
+  for(unsigned i=0;i<meshRadio.channelCount;i++){const auto& c=meshRadio.channelList[i];JsonObject j=a.createNestedObject();bool open=!i||channels::isHashtag(c);
+   j["id"]=meshRadio.idText(c.id);j["name"]=c.name;j["kind"]=!i?"public":open?"hashtag":"private";char hash[3];snprintf(hash,3,"%02X",channels::hashOf(c.secret));j["hash"]=hash;
+   if(secrets||open)j["link"]=channels::link(c);}
+  a=d.createNestedArray("heard");
+  for(unsigned i=0;i<meshRadio.heardCount;i++){const auto& h=meshRadio.heard[i];JsonObject j=a.createNestedObject();char hash[3];snprintf(hash,3,"%02X",h.hash);j["hash"]=hash;j["packets"]=h.packets;j["age"]=(millis()-h.at)/1000;if(h.name[0])j["name"]=h.name;}
+  d["samples"]=meshRadio.heardSamples;String s;serializeJson(d,s);return s;
+}
+// Replies: "OK channel added|exists ID", "OK ..." or "ERR <reason>: ..." (the page translates the reason).
+String channelCommand(JsonObjectConst v){
+  String action=v["action"]|"";
+  auto id=[](const char* text,uint64_t& out){String s=text?text:"";if(s=="ALL"){out=meshmesh::Broadcast;return true;}char* e=nullptr;out=strtoull(s.c_str(),&e,16);return s.length()&&s.length()<=16&&e&&!*e&&out;};
+  if(action=="add"){
+    if(config.role!=RoleNormal||!meshRadio.ready)return "ERR mode: channels need the normal mode and a working radio";
+    MeshRadio::ChannelResult r;uint64_t added=0;
+    if(v.containsKey("hashtag"))r=meshRadio.joinHashtag(v["hashtag"]|"",&added);
+    else if(v.containsKey("link"))r=meshRadio.joinLink(v["link"]|"",&added);
+    else if(v.containsKey("create"))r=meshRadio.createChannel(v["create"]|"",&added);
+    else if(v.containsKey("key")){uint8_t key[16];if(!channels::parseKey(v["key"]|"",key))return "ERR key: 32 hexadecimal digits or base64 of 16 bytes";r=meshRadio.addChannel(v["name"]|"",key,&added);memset(key,0,16);}
+    else return "ERR channel add: hashtag, link, create or name+key";
+    switch(r){
+    case MeshRadio::ChannelAdded:return "OK channel added "+meshRadio.idText(added);
+    case MeshRadio::ChannelExists:return "OK channel exists "+meshRadio.idText(added);
+    case MeshRadio::ChannelFull:return "ERR full: "+String(channels::Max)+" channels at most, Public included";
+    case MeshRadio::ChannelBadName:return "ERR name: 1-31 bytes of UTF-8";
+    case MeshRadio::ChannelBadKey:return "ERR key: 32 hexadecimal digits or base64 of 16 bytes";
+    case MeshRadio::ChannelBadLink:return "ERR link: meshcore://channel/add?name=...&secret=<32 hex>";
+    case MeshRadio::ChannelUnavailable:return "ERR mode: channels need the normal mode and a working radio";
+    default:return "ERR storage: channel not saved";
+    }
+  }
+  if(action=="remove"){uint64_t c;if(!id(v["channel"],c))return "ERR channel ID";if(c==meshmesh::Broadcast)return "ERR public: Public stays";if(!meshRadio.channel(c))return "ERR unknown channel";return meshRadio.removeChannel(c)?"OK channel removed":"ERR busy: a message to this channel is being sent";}
+  if(action=="invite"){uint64_t c,to;if(!id(v["channel"],c)||!meshRadio.channel(c))return "ERR unknown channel";if(!id(v["to"],to)||channels::isChannel(to))return "ERR node ID";
+    if(channels::link(*meshRadio.channel(c),true).length()>meshRadio.messageLimit(to))return "ERR long: the channel name is too long for an invitation";
+    return meshRadio.sendInvite(to,c)?"OK invitation queued":"ERR send: contact unknown, queue full or radio offline";}
+  if(action=="probe"){String tag=channels::hashtag(v["hashtag"]|"");if(!tag.length())return "ERR name: 1-31 bytes of UTF-8";int n=meshRadio.probeHashtag(tag);uint8_t key[16];channels::hashtagSecret(tag,key);
+    StaticJsonDocument<192>d;d["name"]=tag;char hash[3];snprintf(hash,3,"%02X",channels::hashOf(key));d["hash"]=hash;d["opened"]=n;d["samples"]=meshRadio.heardSamples;d["joined"]=meshRadio.channel(channels::idOf(key))!=nullptr;String s;serializeJson(d,s);return s;}
+  return "ERR channel action add|remove|invite|probe";
+}
 String configJson(bool includeKey) {
   StaticJsonDocument<768> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
   d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
@@ -125,6 +165,8 @@ String executeCommand(const String& input) {
   if(line=="key")return configJson(true); // explicitly requested; never put in ordinary diagnostics
   if(line=="messages")return messagesJson();
   if(line=="nodes")return nodesJson();
+  if(line=="channels")return channelsJson(true); // USB and a paired BLE client: the private links too
+  if(line.startsWith("channel do ")){StaticJsonDocument<512>d;if(deserializeJson(d,line.substring(11))||!d.is<JsonObject>())return "ERR channel do {JSON}";return channelCommand(d.as<JsonObjectConst>());}
   if(line=="hello")return meshRadio.sendHello()?"OK hello queued":"ERR hello failed";
   if(line=="position")return meshRadio.sendPosition()?"OK position queued":"ERR position needs GPS fix";
   if(line=="txframe")return meshRadio.diagnosticFrame();
@@ -162,5 +204,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID text, sendjson {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat, restart";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat, restart";
 }

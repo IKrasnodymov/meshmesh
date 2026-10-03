@@ -17,7 +17,7 @@ void openCompose(uint64_t to,const String& name){composing=true;draft="";compose
 void sendDraft(){
  String text=draft;text.trim();if(!text.length()){notice(t("Nothing to send","Пустое сообщение"));return;}
  bool sent=composeTo!=meshRadio.nodeId&&meshRadio.sendMessage(text,composeTo);
- if(sent){composing=false;notice(t("Queued to ","В очереди: ")+composeName);if(composeTo==meshmesh::Broadcast||page==Messages)showPage(Messages);}
+ if(sent){composing=false;notice(t("Queued to ","В очереди: ")+composeName);if(channels::isChannel(composeTo)||page==Messages)showPage(Messages);}
  else notice(t("Not sent: radio busy?","Не отправлено"));
 }
 void typeKey(){

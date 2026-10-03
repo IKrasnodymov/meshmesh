@@ -32,7 +32,7 @@ object Replies {
     private val jsonCommands = setOf(
         "status", "config", "key", "messages", "nodes", "ui", "navigation", "connections", "clock",
         "bleprobe", "wifiprobe", "map info", "map areas", "radar", "radar web", "internet", "internet info",
-        "chess", "chess web",
+        "chess", "chess web", "channels",
     )
 
     fun expectsJson(command: String) = command in jsonCommands || command.startsWith("chess show ")
@@ -40,7 +40,9 @@ object Replies {
     /** True when [line] is the answer to [command]. */
     fun answers(command: String, line: String): Boolean {
         if (isError(line)) return true
-        return if (expectsJson(command)) looksLikeJson(line) else line.startsWith("OK")
+        if (expectsJson(command)) return looksLikeJson(line)
+        // "channel do" answers OK…, or JSON for the action "probe".
+        return line.startsWith("OK") || (command.startsWith("channel do ") && looksLikeJson(line))
     }
 
     /** True for any line that is some command's answer (used to drop late answers). */

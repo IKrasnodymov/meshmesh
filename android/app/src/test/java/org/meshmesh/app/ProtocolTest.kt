@@ -146,4 +146,37 @@ class ProtocolTest {
         api.request("GET", "/api/status", null); api.request("GET", "/api/messages", null)
         assertEquals(2, board.commands.count { it == "messages" })
     }
+
+    @Test fun channelsGoAsCommandsAndListRefreshesAfterChange() = runBlocking {
+        val board = FakeBoard { c -> listOf(when {
+            c == "status" -> """{"rx":1,"channels":1}"""
+            c == "channels" -> """{"max":8,"channels":[]}"""
+            c.contains("\"probe\"") -> """{"name":"#test","opened":0}"""
+            c.contains("\"link\"") -> "ERR link: meshcore://channel/add?name=...&secret=<32 hex>"
+            else -> "OK channel added 1A2B"
+        }) }
+        val api = CommandApi(LineTransport(board), "ble", "test", null)
+        api.request("GET", "/api/status", null)
+        assertEquals(200, api.request("GET", "/api/channels", null).status)
+        assertEquals(200, api.request("GET", "/api/channels", null).status)
+        assertEquals(1, board.commands.count { it == "channels" }) // BLE: cached
+        // Pretty-printed JSON from the page becomes one command line.
+        assertEquals(200, api.request("POST", "/api/channels", "{\n \"action\": \"add\",\n \"hashtag\": \"#test\"\n}").status)
+        val sent = board.commands.last()
+        assertTrue(sent.startsWith("channel do {") && !sent.contains('\n'))
+        assertEquals("#test", JSONObject(sent.removePrefix("channel do ")).getString("hashtag"))
+        api.request("GET", "/api/channels", null)
+        assertEquals(2, board.commands.count { it == "channels" }) // the change rereads the list
+        assertEquals(400, api.request("POST", "/api/channels", """{"action":"add","link":"x"}""").status)
+        val probe = api.request("POST", "/api/channels", """{"action":"probe","hashtag":"#test"}""")
+        assertEquals(200, probe.status)
+        assertEquals("#test", JSONObject(probe.body).getString("name"))
+    }
+
+    @Test fun channelsOnOlderFirmwareAreNamed() = runBlocking {
+        val board = FakeBoard { listOf("Commands: status, config, key, messages, radar") }
+        val api = CommandApi(LineTransport(board), "usb", "test", null)
+        assertEquals(501, api.request("GET", "/api/channels", null).status)
+        assertEquals(501, api.request("POST", "/api/channels", """{"action":"add","hashtag":"#test"}""").status)
+    }
 }

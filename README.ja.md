@@ -18,6 +18,8 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
 ## 機能
 
 - **チャット** — 個人メッセージと公開メッセージ、✓✓ の配信確認、再送、メッセージごとの経路表示。
+- **チャンネル** — MeshCore チャンネルを最大 8 個。#ハッシュタグ、`meshcore://` リンクや QR コード、名前と鍵で参加できます。
+  非公開チャンネルを作成し、個人メッセージで連絡先を招待し、電波で受信したチャンネルを見つけられます。[docs/en/channels.md](docs/en/channels.md)
 - **オフライン地図** — SD カード上の OpenStreetMap タイル、地図上の GPS 位置とノード。
 - **周辺のノード** — 信号強度、ホップ数、距離と方位。連絡先、リピーター、ルーム。
 - **信号レーダー** — 周囲の Wi-Fi、Bluetooth、LoRa を表示し、「近い / 遠い」で発信源を探せます。
@@ -85,7 +87,7 @@ Android アプリ: `cd android && ./gradlew testDebugUnitTest assembleRelease` (
 
 ## ドキュメント
 
-英語の詳細なドキュメント: [MeshCore との互換性](docs/en/meshcore-migration.md)、[ボード](docs/en/boards.md)、
+英語の詳細なドキュメント: [チャンネル](docs/en/channels.md)、[MeshCore との互換性](docs/en/meshcore-migration.md)、[ボード](docs/en/boards.md)、
 [GAT562](docs/en/gat562.md)、[Android](docs/en/android.md)、[リピーターとルームのモード](docs/en/repeater.md)、
 [チェスのプロトコル](docs/en/chess.md)、[地図フォーマット](docs/en/maps-format.md)、[MeshCore との比較](docs/en/feature-parity.md)、
 [ハードウェア検証](docs/en/verification.md)。ロシア語の原文は [docs/](docs/) にあり、操作と機能の完全な

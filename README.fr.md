@@ -18,6 +18,8 @@ nœuds MeshCore standard.
 ## Fonctions
 
 - **Chats** — messages privés et publics, accusés de remise ✓✓, renvois, route affichée pour chaque message.
+- **Canaux** — jusqu'à 8 canaux MeshCore : rejoindre par #hashtag, lien `meshcore://` ou QR code, nom et clé ;
+  créer un canal privé, inviter des contacts par message privé, trouver les canaux captés sur les ondes. [docs/en/channels.md](docs/en/channels.md)
 - **Cartes hors ligne** — tuiles OpenStreetMap sur la carte SD, position GPS et nœuds sur la carte.
 - **Nœuds à proximité** — signal, sauts, distance et cap ; contacts, répéteurs et salons.
 - **Radar de signaux** — Wi-Fi, Bluetooth et LoRa autour de vous, avec un pistage « chaud / froid ».
@@ -85,7 +87,7 @@ L'interface de l'écran peut être rendue sur un ordinateur sans carte : `tools/
 
 ## Documentation
 
-Documentation détaillée en anglais : [compatibilité MeshCore](docs/en/meshcore-migration.md), [cartes](docs/en/boards.md),
+Documentation détaillée en anglais : [canaux](docs/en/channels.md), [compatibilité MeshCore](docs/en/meshcore-migration.md), [cartes](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modes répéteur et salon](docs/en/repeater.md),
 [protocole d'échecs](docs/en/chess.md), [format des cartes](docs/en/maps-format.md), [comparaison avec MeshCore](docs/en/feature-parity.md),
 [vérification matérielle](docs/en/verification.md). Les originaux russes se trouvent dans [docs/](docs/), avec le guide

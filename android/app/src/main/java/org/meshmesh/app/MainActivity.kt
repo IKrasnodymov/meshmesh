@@ -41,6 +41,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
     private var service: MeshService? = null
     private var pageReady = false
     private var pendingIntent: Intent? = null
+    private var pendingLink: String? = null
     private val bluetooth by lazy { getSystemService(BluetoothManager::class.java)?.adapter }
     private val usb by lazy { getSystemService(UsbManager::class.java) }
 
@@ -98,6 +101,7 @@ class MainActivity : ComponentActivity() {
         runCatching { contentResolver.openOutputStream(uri)!!.use { it.write(data) } }
             .onSuccess { toast("Файл сохранён", "ok") }.onFailure { toast("Файл не сохранён: ${it.message}", "bad") }
     }
+    private val qrScanner = registerForActivityResult(ScanContract()) { r -> r.contents?.let(::channelLink) }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +140,7 @@ class MainActivity : ComponentActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 pageReady = true
                 service?.let { js("MeshHost.state(${it.stateJson()})") }
+                pendingLink?.let { pendingLink = null; channelLink(it) }
             }
         }
         web.webChromeClient = object : WebChromeClient() {
@@ -154,6 +159,8 @@ class MainActivity : ComponentActivity() {
                 web.evaluateJavascript("window.MeshHost?MeshHost.back():false") { handled -> if (handled != "true") moveTaskToBack(true) }
             }
         })
+        // A link is opened once: not again when Android recreates the activity or reopens it from recents.
+        if (savedInstanceState != null || intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) intent.data = null
         handleIntent(intent)
     }
 
@@ -182,6 +189,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleIntent(intent: Intent?) {
         intent ?: return
+        intent.data?.takeIf { it.scheme == "meshcore" }?.let { channelLink(it.toString()); intent.data = null }
         if (service == null) { pendingIntent = intent; return }
         intent.getStringExtra(EXTRA_ROUTE)?.let { route -> js("MeshHost.go(${JSONObject.quote(route)})") }
         if (intent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
@@ -195,6 +203,19 @@ class MainActivity : ComponentActivity() {
 
     private fun js(code: String) {
         web.post { if (pageReady || code.startsWith("MeshHost.done")) web.evaluateJavascript("window.MeshHost&&$code", null) }
+    }
+
+    /** A scanned QR code or a meshcore:// link; host.js checks it and passes channel links to the page. */
+    private fun channelLink(text: String) {
+        if (pageReady) js("MeshHost.channelLink(${JSONObject.quote(text)})") else pendingLink = text
+    }
+
+    private fun scanQr() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) return toast("В этом телефоне нет камеры", "bad")
+        need(listOf(Manifest.permission.CAMERA), {
+            qrScanner.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setPrompt("Наведите камеру на QR-код канала")
+                .setBeepEnabled(false).setOrientationLocked(false))
+        }, "Без доступа к камере QR-код не прочитать")
     }
 
     private fun toast(text: String, tone: String) = js("MeshHost.toast(${JSONObject.quote(text)},'$tone')")
@@ -367,6 +388,7 @@ class MainActivity : ComponentActivity() {
             saveType = type.ifBlank { "application/octet-stream" }
             saveFile.launch(name)
         }
+        @android.webkit.JavascriptInterface fun scanQr() = runOnUiThread { this@MainActivity.scanQr() }
         @android.webkit.JavascriptInterface fun version(): String = BuildConfig.VERSION_NAME
     }
 

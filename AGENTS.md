@@ -3,7 +3,7 @@
 ## Назначение и коммуникация
 
 Проект — прошивка для Elecrow ThinkNode M9, Heltec V4 и GAT562 30S (nRF52840): автономный интерфейс,
-чаты, LoRa, офлайн-карты, Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
+чаты и каналы MeshCore (хештег, ссылка/QR, ключ, приглашения; `docs/channels.md`, `src/Channels.cpp`), LoRa, офлайн-карты, Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
 шахматы с контактами (экран M9 и веб обеих плат, личные сообщения MeshCore,
 `docs/chess.md`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
 `web/chess-companion.js`, `tools/chess_site.py`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем

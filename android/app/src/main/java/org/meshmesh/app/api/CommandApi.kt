@@ -117,6 +117,10 @@ class CommandApi(
             }
             "/api/config" -> return ok(run("set " + JSONObject(body)))
             "/api/radar" -> return ok(run("radar do " + JSONObject(body)))
+            "/api/channels" -> {
+                val reply = run("channel do " + JSONObject(body))
+                return ApiReply(if (reply.startsWith("ERR")) 400 else 200, reply) // "probe" answers JSON
+            }
             "/api/maps/chunk" -> return chunk(JSONObject(body).getString("data"))
         }
         return ApiReply(404, "Not found")
@@ -176,12 +180,12 @@ class CommandApi(
             "/api/status" to "status", "/api/messages" to "messages", "/api/nodes" to "nodes",
             "/api/config" to "config", "/api/key" to "key", "/api/navigation" to "navigation",
             "/api/maps" to "map info", "/api/maps/areas" to "map areas", "/api/clock" to "clock",
-            "/api/connections" to "connections",
+            "/api/connections" to "connections", "/api/channels" to "channels",
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
-        private val APP_COMMANDS = listOf("radar web", "radar do ", "map tile ", "connections", "sendjson ")
-        private val SLOW = setOf("messages", "nodes", "config", "chess web", "map areas")
-        private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy")
+        private val APP_COMMANDS = listOf("radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")
+        private val SLOW = setOf("messages", "nodes", "config", "chess web", "map areas", "channels")
+        private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy", "channels")
     }
 }
 

@@ -29,6 +29,10 @@ window.MeshHost={
   else renderPanel();
   void before},
  toast(text,tone){notify(text,tone||'accent')},
+ // A scanned QR code or a meshcore:// link: the page asks to join the channel once a board is connected.
+ channelLink(text){text=String(text||'').trim();
+  if(!/^meshcore:\/\/channel\/add\?/i.test(text)){notify('Это не ссылка на канал MeshCore','warn');return}
+  H.link=text;if(H.inApp)openLink();else notify('Подключитесь к устройству, чтобы добавить канал','accent')},
  go(target){if(H.inApp)go(target)},
  back(){
   if(typeof standaloneMode!=='undefined'&&standaloneMode){standaloneMode=false;$('app').hidden=true;$('login').hidden=false;loginHud();return true}
@@ -86,12 +90,14 @@ panel.addEventListener('click',e=>{const t=e.target.closest('[data-htab],[data-h
   connect({kind:'wifi',ssid:address==='192.168.4.1'?H.sel:'',password,address});return}
  if(d.hgo==='tcp'){connect({kind:'tcp',host:$('hHost').value.trim(),port:+$('hPort').value||8771});return}});
 
+function openLink(){const l=H.link;H.link='';if(l&&window.openChannelLink)openChannelLink(l)}
+
 // Connected: the same steps as the page's own login.
 async function enterApp(){
  if(H.inApp)return;H.inApp=true;auth='MeshMesh app';
  try{config=await request('/api/config')}catch(e){H.inApp=false;auth='';N.disconnect();notify('Устройство не ответило: '+e.message,'bad');return}
  $('login').hidden=true;$('app').hidden=false;await refresh();clearInterval(timer);timer=setInterval(refresh,H.state.kind==='ble'?4000:3000);route='';show();
- notify('Подключено: '+(H.state.label||''),'ok')}
+ notify('Подключено: '+(H.state.label||''),'ok');openLink()}
 function leaveApp(message,tone){
  H.inApp=false;auth='';clearInterval(timer);if(radarTimer){clearInterval(radarTimer);radarTimer=null;radarData=null}
  for(const [,p] of pending)p.reject(new TypeError('нет связи'));pending.clear();

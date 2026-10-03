@@ -49,6 +49,14 @@ static void scenario(){
   touch('t',160,10);touch('t',160,10);expect("chess list back to menu","\"page\":\"home\"");
   key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);touch('t',160,30);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
   touch('t',160,60+48+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
+ // Channels: "add a channel" row, the hashtag editor, a channel chat, its card from the footer "<" hint.
+ key(0x82);key(0x81);expect("chats","\"page\":\"threads\"");touch('t',160,24+3*48+20);expect("add row","\"page\":\"channel_add\"");
+ touch('t',160,24+20);expect("hashtag editor","\"editing\":true");touch('t',160,10);expect("editor cancelled","\"editing\":false");touch('t',160,10);expect("back to chats","\"page\":\"threads\"");
+ touch('t',160,24+48+20);expect("channel chat","\"page\":\"chat\"");
+ for(int x=4;x<316&&uiStatus().indexOf("\"page\":\"chat\"")>=0;x+=4){uiTouch('t',x,230);tick();}
+ expect("footer < opens the card","\"page\":\"channel\"");shot("tdeck-channel");
+ {unsigned before=meshRadio.historyCount;touch('t',250,158+14);if(meshRadio.historyCount!=before+1){printf("FAIL invite row did not send\n");exit(1);}}
+ touch('t',160,10);expect("card back to the chat","\"page\":\"chat\"");key(0x82);
  // Storage left by another firmware: OK on Module health, then OK again, formats and restarts.
  hardware.fsOk=false;key(0x82);key(0x83);shot("tdeck-format");previewCommands="";key(13);key(13);
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
@@ -58,7 +66,14 @@ static void scenario(){
  for(const char* n:{"home","messages","nodes","radar","gps","wifi","ble","settings","modules"}){shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}
  {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;}shot("heltec-popup");
 #else
- shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);key(0xb6);key(13);shot("chat");
+ shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);
+ // Channels: the list, a hashtag channel's card, a private channel and its card, adding one, an invitation.
+ key(0xb6);shot("threads-channels");key(0xb7);shot("channel-hashtag");key(0x86);
+ key(0xb6);key(0xb6);key(13);shot("chat-channel");key(0xb4);shot("channel-private");key(0xb6);key(13);shot("channel-leave");key(0x86);key(0x86);
+ key(0xb6);key(0xb6);key(0xb6);key(13);shot("channel-add");key(13);key(0x83);for(char ch:std::string("test"))key(ch);shot("channel-add-tag");key(0x83);key(0x86);key(0x86);
+ for(int i=0;i<4;i++)key(0xb6);key(13);shot("chat-invite");key(0xb4);shot("chat-invite-joined");key(0x86);
+ if(!meshRadio.channel(channels::idOf(meshRadio.channelList[3].secret))||strcmp(meshRadio.channelList[3].name,"Походы")){printf("FAIL invitation not joined\n");exit(1);}
+ for(int i=0;i<6;i++)key(0xb6);key(13);shot("chat");
  for(char ch:std::string("Privet! Kak dela? 5to novogo @ 5"))key(ch);key(0xb7);shot("compose");key(0xa3);shot("layout");key(0x86);key(0x86);key(0x86);
  key(0x85);shot("map");key(0xb7);key(0xb6);shot("map-browse");key('L');shot("library");key(0x86);
  key(0x82);key(0xb7);key(0xb7);key(13);shot("nodes");key(13);shot("node");key(0xb7);key(0xb7);key(0xb7);key(13);shot("node-forget");key(0x86);key(0x86);
@@ -97,6 +112,13 @@ static void scenario(){
  for(int i=0;i<9;i++)tick(); // the message popup closes
  config.role=RoleRepeater;home();shot("heltec-repeater");key(0xa3);shot("heltec-repeater-menu");key(0x82);key(0x82);key(0xa3);shot("heltec-role-menu");key(0xa3); // holding the current mode closes the list
  config.role=RoleRoom;home();tick();tick();shot("heltec-room");config.role=RoleNormal;
+ // An invitation to a channel: its card in Messages, "Join" first in the menu; a channel message names its channel.
+ {channels::Channel c{};strcpy(c.name,"Рыбалка");for(int i=0;i<16;i++)c.secret[i]=uint8_t(i*29+3);ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");
+  strcpy(m.text,channels::link(c).c_str());m.timestamp=time(nullptr);m.id=78;meshRadio.history[meshRadio.historyCount++]=m;}
+ home();key(13);shot("heltec-invite");key(0xa3);shot("heltec-invite-menu");key(0xa3);
+ if(!meshRadio.channel(channels::idOf(meshRadio.channelList[meshRadio.channelCount-1].secret))||strcmp(meshRadio.channelList[meshRadio.channelCount-1].name,"Рыбалка")){printf("FAIL heltec invitation not joined\n");exit(1);}
+ {ChatMessage m;m.source=0xA1B2C3D45555ULL;m.destination=meshRadio.channelList[1].id;strcpy(m.name,"Марат");strcpy(m.text,"Лёд на Кабане держит?");m.timestamp=time(nullptr);m.id=79;meshRadio.history[meshRadio.historyCount++]=m;}
+ home();key(13);shot("heltec-channel-message");
  // Storage left by another firmware: "Create storage..." heads the home menu, a second hold formats.
  hardware.fsOk=false;home();previewCommands="";key(0xa3);shot("heltec-format-menu");key(0xa3);shot("heltec-format-armed");key(0xa3);
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;

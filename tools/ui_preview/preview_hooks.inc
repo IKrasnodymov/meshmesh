@@ -53,7 +53,7 @@ static String previewCommands; // commands the screens ran, for the checks
 String executeCommand(const String& line){previewCommands+=line+";";return "OK";} // UiHeltec.cpp: the GAT562 GPS menu
 // Same as src/MeshRadio.cpp (the preview does not link the radio).
 String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
- if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";
+ if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||channels::isChannel(m.destination))))return "";
  String hops=m.hops==255?String():!m.hops?String(brief?tr("direct","напр."):tr("direct","напрямую")):(brief?String(m.hops)+tr(" rpt"," ретр."):String(tr("via ","через "))+m.hops+tr(" rpt"," ретр."));
  String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr("routed","по маршруту")))
   :!m.outgoing?(hops.length()?hops:String("flood")) // incoming: how far it came
@@ -72,3 +72,18 @@ bool MeshServer::post(const String&){return true;}
 bool MeshServer::advertise(bool){return true;}
 const char* roleName(uint8_t role){return role==RoleRepeater?"repeater":role==RoleRoom?"room":"normal";}
 String setRole(uint8_t role){return String("OK role ")+roleName(role)+"; restarting";}
+// Channels: the table in memory (src/MeshRadio.cpp keeps it in NVS and gives it to MeshCore); the names,
+// keys, links and QR codes are the real src/Channels.cpp.
+const channels::Channel* MeshRadio::channel(uint64_t id) const{int i=channelIndex(id);return i<0?nullptr:&channelList[i];}
+int MeshRadio::channelIndex(uint64_t id) const{for(unsigned i=0;i<channelCount;i++)if(channelList[i].id==id)return i;return -1;}
+MeshRadio::ChannelResult MeshRadio::addChannel(const String& name,const uint8_t secret[16],uint64_t* id){
+ uint64_t key=channels::idOf(secret);if(id)*id=key;if(channel(key))return ChannelExists;if(!channels::validName(name))return ChannelBadName;if(channelCount>=channels::Max)return ChannelFull;
+ auto& c=channelList[channelCount++];c={};strncpy(c.name,name.c_str(),channels::NameBytes);memcpy(c.secret,secret,16);c.id=key;
+ uint8_t hash=channels::hashOf(secret);for(unsigned i=0;i<heardCount;)if(heard[i].hash==hash){memmove(heard+i,heard+i+1,sizeof(HeardChannel)*(heardCount-i-1));heardCount--;}else i++;return ChannelAdded;
+}
+MeshRadio::ChannelResult MeshRadio::joinHashtag(const String& raw,uint64_t* id){String tag=channels::hashtag(raw);if(!tag.length())return ChannelBadName;uint8_t k[16];channels::hashtagSecret(tag,k);return addChannel(tag,k,id);}
+MeshRadio::ChannelResult MeshRadio::joinLink(const String& text,uint64_t* id){String name;uint8_t k[16];if(!channels::parseLink(text,name,k))return ChannelBadLink;return addChannel(name,k,id);}
+MeshRadio::ChannelResult MeshRadio::createChannel(const String& name,uint64_t* id){if(!channels::validName(name))return ChannelBadName;uint8_t k[16];for(int i=0;i<16;i++)k[i]=uint8_t(i*37+11);return addChannel(name,k,id);}
+bool MeshRadio::removeChannel(uint64_t id){int i=channelIndex(id);if(i<=0)return false;memmove(channelList+i,channelList+i+1,sizeof(channels::Channel)*(channelCount-i-1));channelCount--;return true;}
+bool MeshRadio::sendInvite(uint64_t contact,uint64_t id){const channels::Channel* c=channel(id);if(!c)return false;String l=channels::link(*c);if(l.length()>151)l=channels::link(*c,true);return sendMessage(l,contact);}
+int MeshRadio::probeHashtag(const String& raw){String tag=channels::hashtag(raw);if(!tag.length())return -1;for(unsigned i=0;i<heardCount;i++)if(tag==heard[i].name)return heard[i].packets;return tag=="#test"?2:0;}

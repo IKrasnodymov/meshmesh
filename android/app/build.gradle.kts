@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.webkit:webkit:1.12.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("com.github.mik3y:usb-serial-for-android:3.8.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0") // QR codes of MeshCore channels
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")

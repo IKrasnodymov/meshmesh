@@ -40,7 +40,7 @@ PLURALS = {
     'ar': ['zero', 'one', 'two', 'few', 'many', 'other'], 'id': ['other'],
 }
 # Interface families: the 320x240 keyboard interface and the 128x64 one; shared files go to both.
-FULL = ['src/Ui.cpp', 'src/UiServer.inc', 'src/UiSolitaire.inc', 'src/UiChess.inc']
+FULL = ['src/Ui.cpp', 'src/UiServer.inc', 'src/UiSolitaire.inc', 'src/UiChess.inc', 'src/UiChannels.inc']
 COMPACT = ['src/UiHeltec.cpp', 'src/UiCompose.inc', 'src/UiChessCompact.inc']
 SHARED = ['src/ChessNet.cpp', 'src/MeshRadio.cpp', 'src/Internet.cpp', 'src/MeshServer.cpp', 'src/App.cpp']
 
