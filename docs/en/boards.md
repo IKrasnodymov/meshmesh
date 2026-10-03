@@ -68,8 +68,12 @@ Packages: `artifacts/meshmesh-<board>-<version>/` (`tools/package.py <target>`),
   history are kept.
 
 If the LittleFS partition is left over from other firmware, MeshMesh does not format it: the USB
-log prints `LittleFS: partition holds other data`, and history and contacts are not saved until
-the USB command `fsformat`. The key and settings are stored in NVS and work regardless.
+log prints `LittleFS: partition holds other data` and the Modules page shows `FS ERR`. The key,
+settings and contacts are stored in NVS and are kept regardless; only the message history, chess
+games and room posts are not saved. The storage is created (the old data of the partition is
+erased and the board restarts) with the USB command `fsformat` or on the screen: on one-button
+boards with “Create storage...” in the menu of the home or Modules page (hold, then hold again within 5 s), on the
+T-Deck with OK on the “Module health” page and OK again.
 
 ## What has been verified (1 October 2026)
 

@@ -648,7 +648,7 @@ void drawDiagnostics(){
   {"RSSI",String(int(meshRadio.lastRssi))+" dBm"},{"SNR",String(meshRadio.lastSnr,1)+" dB"},{"RAM",String(ESP.getFreeHeap()/1024)+" K"},{t("Uptime","Работа"),uptime}};
  for(int i=0;i<8;i++){int x=16+(i%4)*75,y=134+(i/4)*32;text(x,y,cells[i][0],dim,small);text(x,y+15,cells[i][1],ink,bold);}
  text(10,207,t("Boot ","Загрузка ")+String(config.bootCounter)+t(" · last key: "," · последняя клавиша: ")+keyName(hardware.lastKey),faint,small);
- footer({{"OK",t("Crypto test + sound","Тест шифрования и звука")},{"BACK",t("Back","Назад")}});
+ footer({{"OK",hardware.fsOk?t("Crypto test + sound","Тест шифрования и звука"):t("Create storage...","Создать хранилище...")},{"BACK",t("Back","Назад")}});
 }
 void drawHelp(){
 #if defined(MM_BOARD_TDECK)
@@ -796,6 +796,9 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==Scope){int i=scopeSelected();if(i>=0&&radar.track(i)){scopeManual=true;pingedSamples=radar.samples;change(Homing);}else notice(t("No signal selected","Сигнал не выбран"),warn);}
  else if(page==Motion){if(radar.csi==Radar::CsiSensor&&radar.beaconHeard()){radar.calibrate();notice(t("Calibrating: keep the area still for 10 s","Калибровка: 10 с без движения в зоне"),info);}else notice(t("Needs a heard beacon","Нужен услышанный маяк"),warn);}
  else if(page==Homing){radarSound=!radarSound;notice(radarSound?(config.sound?t("Ping on","Звук пеленга включён"):t("Device sound is off in settings","Звук устройства выключен в настройках")):t("Ping off","Звук пеленга выключен"),radarSound&&!config.sound?warn:dim);}
+ else if(page==Diagnostics&&!hardware.fsOk){ // storage left by another firmware: create ours after a second OK
+  static uint32_t armed=0;if(!armed||millis()-armed>5000){armed=millis();notice(t("OK again: erase old data","Ещё раз OK: стереть"),warn);return;}
+  armed=0;String r=executeCommand("fsformat");bool done=r.startsWith("OK");if(done)executeCommand("restart");notice(done?t("Storage created, restart","Создано, перезапуск"):r,done?ok:bad);}
  else if(page==Diagnostics){hardware.beep();bool passed=meshRadio.selfTest();notice(passed?t("Encryption test passed","Проверка шифрования пройдена"):t("Encryption test failed","Ошибка шифрования"),passed?ok:bad);}}
 // Touch: the title bar goes back, footer hints are their keys, a tap on a list item or tile opens it
 // (settings rows, the mode choice and challenge contacts: the first tap selects), the chess board

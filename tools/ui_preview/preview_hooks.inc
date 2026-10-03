@@ -49,7 +49,8 @@ String Internet::address(){return "192.168.1.101";}
 #endif
 bool Maps::inArea() const{return true;}
 bool webRadarActive(){return false;}
-String executeCommand(const String&){return "OK";} // UiHeltec.cpp: the GAT562 GPS menu
+static String previewCommands; // commands the screens ran, for the checks
+String executeCommand(const String& line){previewCommands+=line+";";return "OK";} // UiHeltec.cpp: the GAT562 GPS menu
 // Same as src/MeshRadio.cpp (the preview does not link the radio).
 String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
  if(m.protocol!=2||m.route==ChatMessage::RouteNone||(m.outgoing&&(m.status==ChatMessage::Failed||m.destination==meshmesh::Broadcast)))return "";

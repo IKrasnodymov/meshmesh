@@ -1964,6 +1964,11 @@
   "ru": "Тест шифрования и звука",
   "text": "Test cifratura + suono"
  },
+ "f769e02b": {
+  "en": "Create storage...",
+  "ru": "Создать хранилище...",
+  "text": "Crea archivio..."
+ },
  "46b8241c": {
   "en": "Ball, swipe",
   "ru": "Шар, свайп",
@@ -2353,6 +2358,16 @@
   "en": "Ping off",
   "ru": "Звук пеленга выключен",
   "text": "Suono ricerca spento"
+ },
+ "ff8d187c": {
+  "en": "OK again: erase old data",
+  "ru": "Ещё раз OK: стереть",
+  "text": "OK ancora: cancella dati"
+ },
+ "78ae1f77": {
+  "en": "Storage created, restart",
+  "ru": "Создано, перезапуск",
+  "text": "Archivio creato, riavvio"
  },
  "0eb32dbe": {
   "en": "Encryption test passed",
@@ -3179,11 +3194,6 @@
   "ru": "Написать в канал...",
   "text": "Scrivi nel canale..."
  },
- "f769e02b": {
-  "en": "Create storage...",
-  "ru": "Создать хранилище...",
-  "text": "Crea archivio..."
- },
  "1b6f6009": {
   "en": "Chess: invite",
   "ru": "Шахматы: вызвать",
@@ -3384,15 +3394,10 @@
   "ru": "Ответ не отправлен",
   "text": "Risposta non inviata"
  },
- "ff8d187c": {
-  "en": "OK again: erase old data",
-  "ru": "Ещё раз OK: стереть",
-  "text": "OK ancora: cancella dati"
- },
- "78ae1f77": {
-  "en": "Storage created, restart",
-  "ru": "Создано, перезапуск",
-  "text": "Archivio creato, riavvio"
+ "58702a65": {
+  "en": "Hold again: erase",
+  "ru": "Удерж. ещё: стереть",
+  "text": "Tieni: cancella"
  },
  "3d4328cc": {
   "en": "Public channel",

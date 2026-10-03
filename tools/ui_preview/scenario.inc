@@ -49,6 +49,9 @@ static void scenario(){
   touch('t',160,10);touch('t',160,10);expect("chess list back to menu","\"page\":\"home\"");
   key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);touch('t',160,30);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
   touch('t',160,60+48+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
+ // Storage left by another firmware: OK on Module health, then OK again, formats and restarts.
+ hardware.fsOk=false;key(0x82);key(0x83);shot("tdeck-format");previewCommands="";key(13);key(13);
+ if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
  printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
  shot("heltec-role");for(int i=0;i<5;i++)tick(); // the boot choice times out
@@ -94,6 +97,9 @@ static void scenario(){
  for(int i=0;i<9;i++)tick(); // the message popup closes
  config.role=RoleRepeater;home();shot("heltec-repeater");key(0xa3);shot("heltec-repeater-menu");key(0x82);key(0x82);key(0xa3);shot("heltec-role-menu");key(0xa3); // holding the current mode closes the list
  config.role=RoleRoom;home();tick();tick();shot("heltec-room");config.role=RoleNormal;
+ // Storage left by another firmware: "Create storage..." heads the home menu, a second hold formats.
+ hardware.fsOk=false;home();previewCommands="";key(0xa3);shot("heltec-format-menu");key(0xa3);shot("heltec-format-armed");key(0xa3);
+ if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
 #else
  config.role=RoleRepeater;key(0x82);shot("repeater");key(0x86);
  config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.lang==LangRu||config.lang==LangUk?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);

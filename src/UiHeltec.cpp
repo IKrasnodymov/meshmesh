@@ -114,9 +114,9 @@ enum Act {ActFormat,ActWrite,ActChess,ActSound,ActRole,ActForward,ActAdvert,ActR
 unsigned actions(Act* out){
  unsigned n=0;switch(page){
  case Home:
-#if defined(MM_NRF52)
-  if(!hardware.fsOk)out[n++]=ActFormat; // settings live in this storage: without it nothing is saved or sent
-#endif
+  // Storage left by another firmware: on the nRF52 the settings live there (nothing is saved or sent
+  // without it); on the ESP32 the key, settings and contacts are in NVS, the history and games are not kept.
+  if(!hardware.fsOk)out[n++]=ActFormat;
 #if defined(MM_JOYSTICK)
   if(config.role==RoleNormal)out[n++]=ActWrite;
 #endif
@@ -147,7 +147,7 @@ unsigned actions(Act* out){
   out[n++]=ActSound; // the GAT562 buzzer
 #endif
   out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;break;
- case Modules:out[n++]=ActSelfTest;break;
+ case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
 bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
@@ -178,7 +178,11 @@ void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;
 void run(Act a){
  switch(a){
  case ActFormat:{static uint32_t armed=0;
+#if defined(MM_JOYSTICK)
   if(!armed||millis()-armed>5000){armed=millis();notice(t("OK again: erase old data","Ещё раз OK: стереть"));break;}
+#else
+  if(!armed||millis()-armed>5000){armed=millis();notice(t("Hold again: erase","Удерж. ещё: стереть"));break;}
+#endif
   armed=0;String r=executeCommand("fsformat");if(r.startsWith("OK"))executeCommand("restart");notice(r.startsWith("OK")?t("Storage created, restart","Создано, перезапуск"):r);break;}
  case ActWrite:
 #if defined(MM_JOYSTICK)
