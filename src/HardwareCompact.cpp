@@ -123,6 +123,8 @@ void Hardware::begin() {
   SPI.begin(pins::spiClock,pins::spiMiso,pins::spiMosi);
   if(pins::sda>=0){Wire.begin(pins::sda,pins::scl,400000);Wire.setTimeOut(20);}
 #if defined(MM_PANEL_SSD1306) || defined(MM_PANEL_SH1106)
+  // The panel answers on I2C only out of reset: Heltec V3 leaves its reset pin undriven.
+  if(pins::oledReset>=0){output(pins::oledReset,HIGH);delay(1);digitalWrite(pins::oledReset,LOW);delay(10);digitalWrite(pins::oledReset,HIGH);delay(10);}
   uint8_t address=probe(Wire,0x3c)?0x3c:probe(Wire,0x3d)?0x3d:0;
 #if defined(MM_PANEL_SSD1306)
   if(address&&oled.begin(SSD1306_SWITCHCAPVCC,address,true,false))panel=&oled;
