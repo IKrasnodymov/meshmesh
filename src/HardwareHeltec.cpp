@@ -1,12 +1,13 @@
 #include "Hardware.h"
 #include "Config.h"
+#include "OledLevel.h"
 #include <LittleFS.h>
 #include <driver/rtc_io.h>
 #include <sys/time.h>
 Hardware hardware;
 int heltecFemTx=46;
-// Level 0 switches the OLED panel off (no static image left to burn in); any other level is contrast.
-void Hardware::brightness(uint8_t level) {if(!level){display.ssd1306_command(SSD1306_DISPLAYOFF);return;}display.ssd1306_command(SSD1306_DISPLAYON);display.ssd1306_command(SSD1306_SETCONTRAST);display.ssd1306_command(level);}
+// Level 0 switches the OLED panel off (no static image left to burn in); any other level dims it.
+void Hardware::brightness(uint8_t level) {if(!level){display.ssd1306_command(SSD1306_DISPLAYOFF);return;}display.ssd1306_command(SSD1306_DISPLAYON);oledLevel(level,false,[this](uint8_t c){display.ssd1306_command(c);});}
 void Hardware::setGps(bool enabled) {
   gpsEnabled=enabled;pinMode(pins::gpsEnable,OUTPUT);digitalWrite(pins::gpsEnable,enabled?LOW:HIGH);
   if(enabled)Serial1.begin(9600,SERIAL_8N1,pins::gpsRx,pins::gpsTx);else Serial1.end();

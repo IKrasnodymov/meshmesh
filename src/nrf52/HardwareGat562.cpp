@@ -3,6 +3,7 @@
 // (UiHeltec.cpp) draws a 128x64 canvas; this file puts it on the panel and reads the keys.
 #include "Hardware.h"
 #include "Config.h"
+#include "OledLevel.h"
 #include <LittleFS.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -19,7 +20,7 @@ Key keys[]={{pins::keyUp,0xb5,0},{pins::keyDown,0xb6,0},{pins::keyLeft,0xb4,0},{
 }
 void Hardware::brightness(uint8_t level) {
   if(!panel)return;if(!level){oled.ssd1306_command(SSD1306_DISPLAYOFF);return;}
-  oled.ssd1306_command(SSD1306_DISPLAYON);oled.ssd1306_command(SSD1306_SETCONTRAST);oled.ssd1306_command(level);
+  oled.ssd1306_command(SSD1306_DISPLAYON);oledLevel(level,false,[](uint8_t c){oled.ssd1306_command(c);});
 }
 void Hardware::setGps(bool enabled) {
   gpsEnabled=enabled;

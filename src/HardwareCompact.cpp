@@ -5,6 +5,7 @@
 #include "Hardware.h"
 #include "Config.h"
 #include "GpsProbe.h"
+#include "OledLevel.h"
 #include "Storage.h"
 #include <LittleFS.h>
 #include <SPI.h>
@@ -95,9 +96,9 @@ void beginPmu() {
 }
 void Hardware::brightness(uint8_t level) {
 #if defined(MM_PANEL_SSD1306)
-  if(!panel)return;if(!level){oled.ssd1306_command(SSD1306_DISPLAYOFF);return;}oled.ssd1306_command(SSD1306_DISPLAYON);oled.ssd1306_command(SSD1306_SETCONTRAST);oled.ssd1306_command(level);
+  if(!panel)return;if(!level){oled.ssd1306_command(SSD1306_DISPLAYOFF);return;}oled.ssd1306_command(SSD1306_DISPLAYON);oledLevel(level,false,[](uint8_t c){oled.ssd1306_command(c);});
 #elif defined(MM_PANEL_SH1106)
-  if(!panel)return;if(!level){oled.oled_command(SH110X_DISPLAYOFF);return;}oled.oled_command(SH110X_DISPLAYON);oled.setContrast(level);
+  if(!panel)return;if(!level){oled.oled_command(SH110X_DISPLAYOFF);return;}oled.oled_command(SH110X_DISPLAYON);oledLevel(level,true,[](uint8_t c){oled.oled_command(c);});
 #elif defined(MM_PANEL_ST7735)
   ledcWrite(6,level);
 #else
