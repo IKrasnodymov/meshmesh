@@ -14,7 +14,7 @@ Page homePage(){return config.role==RoleNormal?Home:ServerHome;}
 String roleTitle(int role){return role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal mode","Обычный режим");}
 void drawRolePick(){
  for(int r=0;r<RoleCount;r++){
-  int y=24+r*58;bool focus=selected==r,current=config.role==r;panel(8,y,304,54,focus?cardHi:card,8);if(focus)ring(8,y,304,54,8);
+  int y=24+r*58;bool focus=selected==r,current=config.role==r;target(8,y,304,54,r);panel(8,y,304,54,focus?cardHi:card,8);if(focus)ring(8,y,304,54,8);
   Icon ic=r==RoleRepeater?IcTower:r==RoleRoom?IcRoom:IcChat;uint16_t hue=r==RoleRepeater?violet:r==RoleRoom?warn:accent;
   g().fillRoundRect(16,y+8,28,28,7,bg);icon(ic,30,y+22,8,hue,bg);text(54,y+19,roleTitle(r),ink,bold);
   if(current){String now=t("running","сейчас");int w=measure(now,small)+10;g().fillRoundRect(302-w,y+8,w,14,7,rgb(0x14524b));textCenter(302-w/2,y+18,now,accent,small);}
@@ -70,7 +70,7 @@ void drawServer(){
  text(16,76,fit(line+" · "+uptimeText(v.uptime),288,small),dim,small);
  int rows=serverRowCount(),first=max(0,selected-4);
  for(int i=first;i<rows&&i<first+5;i++){
-  int y=87+(i-first)*22;bool focus=selected==i;ServerRow r=serverRow(i);
+  int y=87+(i-first)*22;bool focus=selected==i;ServerRow r=serverRow(i);target(8,y,304,21,i);
   if(r==RowAnnounce||r==RowPost){panel(8,y,304,21,focus?accent:card,6);textCenter(160,y+15,serverName(r),focus?bg:ink,bold);continue;}
   listRow(y,21,focus);text(24,y+15,serverName(r),focus?ink:dim);
   if(r==RowForward||r==RowReadOnly){toggle(274,y+3,r==RowForward?v.forwarding:v.readOnlyLogin);continue;}

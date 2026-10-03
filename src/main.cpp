@@ -96,6 +96,9 @@ void appLoop() {
 #endif
   maps.tick();navigation.tick();radar.tick();
   int key=hardware.readKey();if(key)uiKey(key);
+#if defined(MM_BOARD_TDECK)
+  {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch)uiTouch(touch,x,y);}
+#endif
   static String command;
   unsigned budget=256;
   while(!usbBytes && Serial.available() && budget--) {
@@ -136,6 +139,10 @@ void appLoop() {
       else if(command=="i2cscan"){String r="I2C";for(uint8_t a=1;a<127;a++){Wire.beginTransmission(a);if(!Wire.endTransmission())r+=" 0x"+String(a,HEX);}usbLine(r);}
 #endif
       else if(command.startsWith("uikey ")) {uiKey(strtol(command.substring(6).c_str(),nullptr,0));usbLine("OK UI key");}
+#if !defined(MM_COMPACT)
+      // "uitouch t|h X Y" or "uitouch u|d|l|r": the T-Deck touch gestures, for checks without a finger.
+      else if(command.startsWith("uitouch ")&&command.length()>8&&strchr("thudlr",command[8])) {int x=0,y=0;sscanf(command.c_str()+9,"%d %d",&x,&y);uiTouch(command[8],x,y);usbLine("OK UI touch");}
+#endif
       else usbLine(executeCommand(command));command="";
     }
     else if(c!='\r' && command.length()<1024)command+=c;

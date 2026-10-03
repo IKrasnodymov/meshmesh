@@ -95,7 +95,9 @@ the USB command `fsformat`. The key and settings are stored in NVS and work rega
   release build pass.
 
 Nothing has been verified on the boards themselves: startup, screen, buttons, radio exchange with MeshCore,
-Wi-Fi, BLE, GPS, battery, PMU power.
+Wi-Fi, BLE, GPS, battery, PMU power. The exception is a T-Deck owner's report (3 October 2026,
+version 0.3.7 installed through a launcher): the firmware starts and the trackball works, the screen was
+upside down and touch did not work; the next version adds the rotation and touch, not yet checked on the board.
 
 ## What to check on the board first
 
@@ -114,10 +116,20 @@ Places where sources disagree or behaviour was chosen without a board:
   115200 baud until NMEA sentences with a correct checksum arrive (log:
   `GPS NMEA on GPIOn`). The firmware sends nothing to the GPS module.
 - **T-Deck:** the SX1262 DIO2 is left as the antenna switch (as in Meshtastic; MeshCore
-  disables it). Trackball directions follow Meshtastic. There is no BACK key: DEL with no
-  text is “back”. Therefore on the T-Deck a saved Wi-Fi network
-  and a finished chess game cannot be deleted from the screen (DEL in these lists is “back”); undo in Solitaire is
-  the U key. Backlight — 16 driver steps; no sound.
+  disables it). Trackball directions follow Meshtastic. The screen uses Adafruit_ST7789 rotation 3
+  (keyboard below; rotation 1 showed the image upside down, reported by an owner).
+  There is no BACK key: DEL on the keyboard with no text is “back”; undo in Solitaire is the U key.
+  Backlight — 16 driver steps; no sound.
+- **T-Deck touch screen** (GT911, I2C 0x5D/0x14 on the keyboard bus; coordinates mapped as in
+  LilyGO's and WadaMesh's code): tapping the title bar is “back”; the hints in the bottom row are
+  buttons for their keys (OK, BACK, DEL, MSG, MAP, HOME, ADV, MIC, CTRL, letters), so DEL from the
+  bottom row deletes a saved Wi-Fi network and a finished chess game; tapping a tile or a list row
+  opens it (in settings, the mode choice and the opponent choice the first tap selects); tapping a
+  board square moves the cursor there and presses OK; a swipe is the arrow in its direction, like the
+  ball; holding 0.8 s is “hold OK”. A tap made before the screen has redrawn after the previous action
+  is ignored. Solitaire cards cannot be picked by touch (the bottom row and swipes work).
+  Checked in the screen emulator (`tools/ui_preview/build.sh tdeck`, all 15 languages) and with the
+  USB command `uitouch`; not on the board itself.
 - **Station G2:** the screen is driven as an SH1106 (as in MeshCore); receive gain
   boost (boosted gain) is off, as in MeshCore for this board.
 - **ThinkNode M2:** TCXO 3.3 V, screen power GPIO46, button GPIO47, buzzer GPIO5 —

@@ -30,7 +30,7 @@ MeshCore düğümleriyle haberleşir.
   MeshCore uygulamasından yönetici girişi ve uzak CLI sunar; anahtar, kişiler ve geçmiş korunur.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS ve pusula**, konum paylaşımı, kilit ekranı, fonetik Kiril klavye girişi.
-- Cihazın kendi Wi-Fi erişim noktası üzerinden **web arayüzü** ve mesaj bildirimli bir **Android uygulaması**
+- Cihazın kendi Wi-Fi erişim noktası veya bağlandığı ev Wi-Fi ağı (M9, T-Deck) üzerinden **web arayüzü** ve mesaj bildirimli bir **Android uygulaması**
   (Wi-Fi, Bluetooth LE veya USB).
 - **15 dilde cihaz arayüzü**: İngilizce, Rusça, Ukraynaca, İspanyolca, Portekizce, Fransızca, Almanca, İtalyanca,
   Lehçe, Türkçe, Çince, Japonca, Korece, Arapça ve Endonezce. Web sitesi yazılımı seçtiğiniz dille yükler;

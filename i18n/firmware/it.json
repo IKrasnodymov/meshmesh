@@ -1964,10 +1964,10 @@
   "ru": "Тест шифрования и звука",
   "text": "Test cifratura + suono"
  },
- "537d87a8": {
-  "en": "Ball",
-  "ru": "Шар",
-  "text": "Sfera"
+ "46b8241c": {
+  "en": "Ball, swipe",
+  "ru": "Шар, свайп",
+  "text": "Sfera, scorri"
  },
  "39012b21": {
   "en": "Move: menu, lists, map",
@@ -1993,6 +1993,16 @@
   "en": "Unlock; in chat: Russian layout",
   "ru": "Вход; в чате: русская раскладка",
   "text": "Sblocca; in chat: layout russo"
+ },
+ "85013777": {
+  "en": "Tap",
+  "ru": "Касание",
+  "text": "Tocco"
+ },
+ "e96df6ee": {
+  "en": "Open; hints below are keys; title: back",
+  "ru": "Открыть; кнопки внизу; заголовок - назад",
+  "text": "Apri; in basso: tasti; titolo: indietro"
  },
  "dd425d56": {
   "en": "Delete; with no text: back",

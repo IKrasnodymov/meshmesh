@@ -216,6 +216,7 @@ bool Internet::setTileUrl(const String& value){
   if(v.length()>=sizeof tileTemplate||!(v.startsWith("https://")||v.startsWith("http://"))||v.indexOf("{z}")<0||v.indexOf("{x}")<0||v.indexOf("{y}")<0||!idle())return false;
   strlcpy(tileTemplate,v.c_str(),sizeof tileTemplate);Preferences p;if(p.begin("mm-wifi",false)){if(v==DefaultTiles)p.remove("tiles");else p.putString("tiles",v);p.end();}return true;
 }
+String Internet::address(){return online()?WiFi.localIP().toString():String();}
 String Internet::stateText(){
   switch(state){
   case Off:return tr("Off","Выключен");

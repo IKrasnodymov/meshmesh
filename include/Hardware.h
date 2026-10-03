@@ -47,6 +47,9 @@ class Hardware {
   void begin();
   void tick();
   int readKey();
+#if defined(MM_BOARD_TDECK)
+  char readTouch(int& x,int& y);
+#endif
   void brightness(uint8_t level);
   void setGps(bool enabled);
   void beep();

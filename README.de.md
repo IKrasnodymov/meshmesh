@@ -30,7 +30,7 @@ MeshCore-Knoten.
   mit Admin-Anmeldung und Fern-CLI aus der MeshCore-App; Schlüssel, Kontakte und Verlauf bleiben erhalten.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS und Kompass**, Teilen der Position, Sperrbildschirm, phonetische kyrillische Tastatureingabe.
-- **Weboberfläche** über den eigenen Wi-Fi-Access-Point des Geräts und eine **Android-App**
+- **Weboberfläche** über den eigenen Wi-Fi-Access-Point des Geräts oder das Heim-WLAN, mit dem es verbunden ist (M9, T-Deck), und eine **Android-App**
   (Wi-Fi, Bluetooth LE oder USB) mit Benachrichtigungen bei Nachrichten.
 - **Geräteoberfläche in 15 Sprachen**: Englisch, Russisch, Ukrainisch, Spanisch, Portugiesisch, Französisch, Deutsch, Italienisch,
   Polnisch, Türkisch, Chinesisch, Japanisch, Koreanisch, Arabisch und Indonesisch. Die Website installiert die Firmware in

@@ -30,7 +30,7 @@ MeshCore nodes.
   with admin login and remote CLI from the MeshCore app; key, contacts and history stay.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS and compass**, position sharing, lock screen, phonetic Cyrillic keyboard input.
-- **Web interface** over the device's own Wi-Fi access point, and an **Android app**
+- **Web interface** over the device's own Wi-Fi access point or the home Wi-Fi it joins (M9, T-Deck), and an **Android app**
   (Wi-Fi, Bluetooth LE or USB) with message notifications.
 - **Device UI in 15 languages**: English, Russian, Ukrainian, Spanish, Portuguese, French, German, Italian,
   Polish, Turkish, Chinese, Japanese, Korean, Arabic and Indonesian. The website installs the firmware with

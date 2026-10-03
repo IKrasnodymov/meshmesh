@@ -20,6 +20,8 @@
 namespace {
 WebServer server(80);
 bool wifiOn=false,bluetoothOn=false;
+// The page is served on the access point and, while the Wi-Fi client is online, on the home network.
+bool serving=false;
 String password;
 uint32_t pinCode=123456;
 NimBLECharacteristic* bleTx=nullptr;
@@ -70,7 +72,7 @@ bool bleActive() {return bluetoothOn;}
 uint32_t blePin() {return pinCode;}
 String connectionCredentials() {
   StaticJsonDocument<512> d;d["wifi"]=wifiOn;d["ssid"]="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);
-  d["password"]=password;d["ip"]="192.168.4.1";d["ble"]=bluetoothOn;
+  d["password"]=password;d["ip"]="192.168.4.1";if(internet.online())d["lan_ip"]=internet.address();d["ble"]=bluetoothOn;
   d["ble_name"]="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);d["pin"]=pinCode;
   if(bluetoothOn)d["ble_address"]=NimBLEDevice::getAddress().toString().c_str();
   String result;serializeJson(d,result);return result;
@@ -95,7 +97,8 @@ void portalBegin() {
   server.on("/api/chess",HTTP_GET,[]{if(!authorized())return;if(!server.hasArg("id")){answer(chessNet.web());return;}char* e=nullptr;unsigned long id=strtoul(server.arg("id").c_str(),&e,16);ChessMatch* m=id&&e&&!*e?chessNet.find(uint16_t(id)):nullptr;if(!m){answer("Unknown game",false);return;}answer(chessNet.detail(*m));});
   server.on("/api/messages",HTTP_GET,[]{if(authorized())answer(messagesJson());});
   server.on("/api/config",HTTP_GET,[]{if(authorized())answer(configJson());});
-  server.on("/api/key",HTTP_GET,[]{if(authorized())answer(configJson(true));});
+  // The private key only over the access point: on the home network the page is plain HTTP.
+  server.on("/api/key",HTTP_GET,[]{if(!authorized())return;if(!wifiOn){answer("ERR the key is given out on the device access point only",false);return;}answer(configJson(true));});
   server.on("/api/config",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=applySettings(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
   server.on("/api/command",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<2048>d;if(deserializeJson(d,server.arg("plain"))||!d["command"].is<const char*>()){answer("Invalid command",false);return;}if(d["command"]=="wifi"){wifiOffPending=true;answer("OK Wi-Fi off after this reply");return;}String reply=executeCommand(d["command"].as<String>());answer(reply,!reply.startsWith("ERR"));});
   server.on("/api/send",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d["text"].is<const char*>()||!d["to"].is<const char*>()){answer("Invalid message",false);return;}String reply=executeCommand("send "+d["to"].as<String>()+" "+d["text"].as<String>());answer(reply,reply.startsWith("OK"));});
@@ -104,11 +107,12 @@ void portalBegin() {
 void portalToggle() {
   if(wifiProbeActive()){meshRadio.event="Wi-Fi probe busy";meshRadio.dirty=true;return;}
   radar.release(); // the radar stops its Wi-Fi use (sweeps, homing, CSI beacon on the access point)
-  if(wifiOn) {server.stop();WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;webRadarRelease();meshRadio.event="Wi-Fi off";}
+  if(wifiOn) {server.stop();serving=false;WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;webRadarRelease();meshRadio.event="Wi-Fi off";}
   else {
+    server.stop();serving=false; // portalTick starts it again on the access point
     internet.yieldRadio(); // the Wi-Fi client resumes when the access point is off
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
-    wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);if(wifiOn)server.begin();meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
+    wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
   }
   meshRadio.dirty=true;
 }
@@ -139,7 +143,9 @@ void bleToggle() {
   meshRadio.dirty=true;
 }
 void portalTick() {
-  if(wifiOn)server.handleClient();
+  bool serve=wifiOn||internet.online();
+  if(serve!=serving){if(serve)server.begin();else server.stop();serving=serve;}
+  if(serving)server.handleClient();
   if(wifiOffPending){wifiOffPending=false;if(wifiOn)portalToggle();}
   if(webRadar&&millis()-webRadarAt>10000)webRadarRelease(); // the page was closed or the phone left
   if(commands && !bleResponse.length()) {

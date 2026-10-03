@@ -30,7 +30,7 @@ MeshCore estándar.
   con acceso de administrador y CLI remota desde la app MeshCore; la clave, los contactos y el historial se conservan.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS y brújula**, posición compartida, pantalla de bloqueo, escritura fonética en cirílico con el teclado.
-- **Interfaz web** a través del propio punto de acceso Wi-Fi del dispositivo, y una **app para Android**
+- **Interfaz web** a través del propio punto de acceso Wi-Fi del dispositivo o de la red Wi-Fi doméstica a la que se conecta (M9, T-Deck), y una **app para Android**
   (Wi-Fi, Bluetooth LE o USB) con notificaciones de mensajes.
 - **Interfaz del dispositivo en 15 idiomas**: inglés, ruso, ucraniano, español, portugués, francés, alemán, italiano,
   polaco, turco, chino, japonés, coreano, árabe e indonesio. El sitio web instala el firmware con

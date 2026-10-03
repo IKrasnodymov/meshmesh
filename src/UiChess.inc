@@ -90,7 +90,7 @@ void colorDisc(int cx,int cy,uint8_t c){g().fillCircle(cx,cy,5,c==ch::White?piec
 void drawChessList(){
  chessSortRows();int total=1+chessRowCount;if(selected>=total)selected=total-1;int first=max(0,selected-3);
  for(int i=first;i<total&&i<first+4;i++){
-  int y=24+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);
+  int y=24+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);target(8,y,304,45,i);
   if(i==0){g().fillCircle(32,y+22,15,rgb(0x14524b));g().fillRect(31,y+14,3,17,accent);g().fillRect(24,y+21,17,3,accent);text(56,y+19,t("New game","Новая партия"),ink,bold);text(56,y+35,fit(chessNet.count()>=ChessNet::MaxMatches?t("All boards busy: finish a game","Все доски заняты: завершите партию"):t("Challenge a chat contact","Вызвать чат-контакт"),240,small),dim,small);continue;}
   const ChessMatch& m=*chessRows[i-1];Peer* p=peerOf(m.peer);avatar(32,y+22,15,m.peer,m.name,p?p->type:-1);colorDisc(44,y+34,m.mine);
   String right=m.game.plies?moveCount(m):String();if(m.updated)right=timeText(m.updated);int rw=measure(right,small);
@@ -109,10 +109,11 @@ void drawChessPick(){
  chessSortPeers();panel(8,24,304,30,card,7);text(18,43,t("You play","Вы играете"),dim);
  String colors[]={t("White","Белыми"),t("Black","Чёрными"),t("Random","Случайно")};int cx=222;tri(cx-58,39,3,4,accent);tri(cx+58,39,1,4,accent);
  if(chessPickColor<2)colorDisc(cx-42,39,chessPickColor);textCenter(cx+(chessPickColor<2?6:0),44,colors[chessPickColor],ink,bold);
+ target(8,24,304,30,-KeyRight); // the colour
  if(!chessPeerCount){textCenter(160,100,t("No chat contacts yet","Чат-контактов пока нет"),ink,bold);textCenter(160,122,t("Press ADV to announce this node and wait","Нажмите ADV, чтобы объявить узел, и"),dim);textCenter(160,138,t("for the other player's announcement","дождитесь объявления соперника"),dim);footer({{"ADV",t("Announce","Объявить")},{"BACK",t("Games","Партии")}});return;}
  if(selected>=int(chessPeerCount))selected=chessPeerCount-1;int first=max(0,selected-2);
  for(int i=first;i<int(chessPeerCount)&&i<first+3;i++){
-  const Peer& p=meshRadio.peers[chessPeers[i]];int y=60+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);avatar(32,y+22,15,p.id,p.name,p.type);
+  const Peer& p=meshRadio.peers[chessPeers[i]];int y=60+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);target(8,y,304,45,i);avatar(32,y+22,15,p.id,p.name,p.type);
   text(56,y+19,fit(p.name,240,bold),ink,bold);
   text(56,y+35,fit((p.heard?(millis()-p.seen<60000?ago(0):ago(millis()-p.seen)+t(" ago"," назад"))+" · ":String())+pathText(p),240,small),p.heard&&millis()-p.seen<1800000?ok:dim,small);
  }

@@ -30,7 +30,7 @@ MeshCore standar.
   dengan login admin dan CLI jarak jauh dari aplikasi MeshCore; kunci, kontak dan riwayat tetap tersimpan.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS dan kompas**, berbagi posisi, layar kunci, input keyboard Sirilik fonetik.
-- **Antarmuka web** lewat titik akses Wi-Fi milik perangkat itu sendiri, dan **aplikasi Android**
+- **Antarmuka web** lewat titik akses Wi-Fi milik perangkat itu sendiri atau jaringan Wi-Fi rumah yang diikutinya (M9, T-Deck), dan **aplikasi Android**
   (Wi-Fi, Bluetooth LE atau USB) dengan notifikasi pesan.
 - **Antarmuka perangkat dalam 15 bahasa**: Inggris, Rusia, Ukraina, Spanyol, Portugis, Prancis, Jerman, Italia,
   Polandia, Turki, Tionghoa, Jepang, Korea, Arab dan Indonesia. Situs web menginstal firmware dengan

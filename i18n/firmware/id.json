@@ -1954,10 +1954,10 @@
   "ru": "Тест шифрования и звука",
   "text": "Tes kripto + suara"
  },
- "537d87a8": {
-  "en": "Ball",
-  "ru": "Шар",
-  "text": "Bola"
+ "46b8241c": {
+  "en": "Ball, swipe",
+  "ru": "Шар, свайп",
+  "text": "Bola, geser"
  },
  "39012b21": {
   "en": "Move: menu, lists, map",
@@ -1983,6 +1983,16 @@
   "en": "Unlock; in chat: Russian layout",
   "ru": "Вход; в чате: русская раскладка",
   "text": "Buka kunci; chat: tata letak Rusia"
+ },
+ "85013777": {
+  "en": "Tap",
+  "ru": "Касание",
+  "text": "Ketuk"
+ },
+ "e96df6ee": {
+  "en": "Open; hints below are keys; title: back",
+  "ru": "Открыть; кнопки внизу; заголовок - назад",
+  "text": "Buka; bawah: tombol; judul: kembali"
  },
  "dd425d56": {
   "en": "Delete; with no text: back",

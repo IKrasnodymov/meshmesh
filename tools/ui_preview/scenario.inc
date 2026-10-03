@@ -14,6 +14,42 @@ static void scenario(){
  key(0x86);key(0xb7);key(0xb7);key(0xb7);shot("gat562-chess-list");key(13);key(13);shot("gat562-chess");key(0x86);key(0x86);
  key(0xb7);for(int i=0;i<3;i++)tick();shot("gat562-radar");
  key(0xb4);key(0xb4);key(13);shot("gat562-node-menu");key(0x86);
+#elif defined(MM_BOARD_TDECK)
+ // Touch (uiTouch): each step checks the page the production UI reached.
+ auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
+ auto touch=[](char gesture,int x,int y){uiTouch(gesture,x,y);tick();};
+ // The rightmost footer hint (BACK on most pages), found by tapping from the right edge.
+ auto footerRight=[&](const char* page){for(int x=316;x>150&&uiStatus().indexOf(page)>=0;x-=4){uiTouch('t',x,230);tick();}};
+ shot("tdeck-role");touch('t',160,10);expect("title bar leaves the boot choice","\"page\":\"home\"");
+ touch('t',260,100);expect("Nodes tile","\"page\":\"nodes\"");shot("tdeck-nodes");
+ touch('t',160,90);expect("second node row","\"page\":\"node\"");expect("second node","\"selected_node\":\"A1B2C3D41111\"");
+ touch('t',160,10);expect("title bar back","\"page\":\"nodes\"");key(0x83);footerRight("\"page\":\"diagnostics\"");expect("footer BACK","\"page\":\"settings\"");key(0x82);
+ touch('d',0,0);expect("swipe down","\"selected\":3");touch('u',0,0);touch('l',0,0);expect("swipe left","\"selected\":2");
+ key(0x90);touch('t',160,24+32+10);expect("Settings row","\"page\":\"display\"");
+ touch('t',160,25+23+8);expect("first tap selects","\"selected\":1");shot("tdeck-display");
+ touch('t',160,10);expect("cancel the editor","\"page\":\"settings\"");
+ touch('t',160,24+3*32+10);expect("Connections","\"page\":\"network\"");touch('t',160,25+56+6+44+10);expect("Bluetooth card toggles","\"page\":\"network\"");
+ if(!bleActive()){printf("FAIL Bluetooth card did not toggle\n");exit(1);}
+ internet.state=Internet::Online;touch('t',160,25+38+6+10);expect("Internet card","\"page\":\"internet\"");
+ // Footer: OK (client on/off), DEL (rescan; on the T-Deck keyboard DEL would go back here), BACK.
+ {int rescans=previewRescans;for(int x=4;x<316&&previewRescans==rescans&&uiStatus().indexOf("\"page\":\"internet\"")>=0;x+=4){uiTouch('t',x,230);internet.enabled=false;tick();}
+  if(previewRescans==rescans){printf("FAIL footer DEL did not rescan: %s\n",uiStatus().c_str());exit(1);}}
+ expect("footer DEL stays on the list","\"page\":\"internet\"");
+ touch('t',160,10);expect("back to Connections","\"page\":\"network\"");shot("tdeck-network-lan");internet.state=Internet::Off;
+ key(0x88);expect("locked","\"locked\":true");touch('t',160,120);expect("a tap does not unlock","\"locked\":true");touch('h',160,120);expect("hold unlocks","\"locked\":false");
+ key(0x82);key(0xb6);key(0xb6);key(0xb7);key(0xb7);key(0x86);for(int i=0;i<3;i++)key(0xb6);key(0x86);
+ key(0x90);for(int i=0;i<5;i++)key(0xb6);key(13);shot("tdeck-help");key(0x86);
+ // Chess: the colour row, then a game opened by taps and a move made on the board.
+ {ChessMatch* g=chessNet.invite(peerId(0),chess::White);char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X yes",g->id);chessNet.receive(peerId(0),"Heltec V4",t);
+  chessNet.events=0;for(int i=0;i<9;i++)tick();
+  key(0x82);for(int i=0;i<3;i++)key(0xb6);touch('t',160,10);key(0x82);
+  for(int i=0;i<3;i++)key(0xb6);key(13);expect("chess list","\"page\":\"chess\"");touch('t',160,24+48+20);expect("game opens","\"page\":\"chess_board\"");
+  touch('t',4+4*24+12,25+6*24+12);expect("tap e2 takes the pawn","\"chess_held\":\"e2\"");touch('t',4+4*24+12,25+4*24+12);
+  if(g->game.plies!=1){printf("FAIL e2-e4 by taps: %u plies\n",g->game.plies);exit(1);}shot("tdeck-chess");
+  touch('t',160,10);touch('t',160,10);expect("chess list back to menu","\"page\":\"home\"");
+  key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);touch('t',160,30);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
+  touch('t',160,60+48+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
+ printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
  shot("heltec-role");for(int i=0;i<5;i++)tick(); // the boot choice times out
  for(const char* n:{"home","messages","nodes","radar","gps","wifi","ble","settings","modules"}){shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}

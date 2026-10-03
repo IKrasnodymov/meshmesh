@@ -131,6 +131,17 @@ void avatar(int cx,int cy,int r,uint64_t id,const String& name,int type=-1){
  if(type>1){uint16_t tc=type==2?violet:type==3?warn:info;g().fillCircle(cx,cy,r,card);g().drawCircle(cx,cy,r,tc);icon(type==2?IcTower:type==3?IcRoom:IcSensor,cx,cy,r/2+1,tc,card);return;}
  g().fillCircle(cx,cy,r,hue);textCenter(cx,cy+(r>12?5:4),initial(name),ink,r>12?bold:small);
 }
+// Touch targets of the frame on screen (uiTouch): the items a tap selects (index as in "selected")
+// and the footer hints, which act as their keys. draw() clears them.
+struct Target{int16_t x,y,w,h,index;};Target targets[16];unsigned targetCount=0;
+struct HintSpot{int16_t x0,x1;int key;};HintSpot hintSpots[6];unsigned hintCount=0;
+// index >= 0 selects that item; a negative index is a key (-KeyRight).
+void target(int x,int y,int w,int h,int index){if(targetCount<16)targets[targetCount++]={int16_t(x),int16_t(y),int16_t(w),int16_t(h),int16_t(index)};}
+int hintKey(const char* k){
+ static const struct{const char* name;int key;} keys[]={{"OK",Enter},{"BACK",KeyBack},{"DEL",Erase},{"MSG",KeyMsg},{"MAP",KeyMap},{"HOME",KeyHome},{"ADV",KeyAdv},{"MIC",KeyMic},{"CTRL",KeySet},{"SPC",' '},{"<>",KeyRight},{"^v",KeyDown},{"+/-",'+'},{"@",KeyAt}};
+ for(auto& v:keys)if(!strcmp(k,v.name))return v.key;
+ return k[0]>='A'&&k[0]<='Z'&&!k[1]?k[0]+32:0; // letter keys (chess, solitaire, map)
+}
 // Softkey footer: [KEY] action pairs; "<>" and "^v" draw arrow pairs.
 struct Hint{const char* key;String action;};
 void footer(std::initializer_list<Hint> hints){
@@ -138,6 +149,7 @@ void footer(std::initializer_list<Hint> hints){
  for(auto& h:hints){
   bool arrows=!strcmp(h.key,"<>")||!strcmp(h.key,"^v");int kw=arrows?17:measure(h.key,small)+8,aw=measure(h.action,body);
   if(x+kw+4+aw>316)break;
+  if(int key=hintKey(h.key))if(hintCount<6)hintSpots[hintCount++]={int16_t(x-3),int16_t(x+kw+4+aw+5),key};
   d.fillRoundRect(x,224,kw,13,3,line);
   if(!strcmp(h.key,"<>")){tri(x+5,230,3,3,ink);tri(x+12,230,1,3,ink);}else if(!strcmp(h.key,"^v")){tri(x+5,231,0,3,ink);tri(x+12,229,2,3,ink);}else text(x+4,234,h.key,ink,small);
   text(x+kw+4,235,h.action,dim);x+=kw+4+aw+10;
@@ -255,7 +267,7 @@ void drawHome(){
   {IcChess,ink,t("Chess","Шахматы"),chessTileDetail(),chessNet.waiting()}};
  int firstRow=max(0,selected/tileColumns-1);
  for(int i=firstRow*tileColumns;i<tileCount&&i<(firstRow+2)*tileColumns;i++){
-  int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);
+  int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);target(x,y,96,min(68,219-y),i);
   d.fillRoundRect(x+9,y+8,26,26,6,bg);icon(tiles[i].ic,x+22,y+21,8,tiles[i].hue,bg);
   if(tiles[i].badge){String b=tiles[i].badge>99?"99+":String(tiles[i].badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(x+88-w,y+8,w,13,6,bad);textCenter(x+88-w/2,y+18,b,ink,small);}
   text(x+9,y+49,fit(tiles[i].name,80,bold),ink,bold);text(x+9,y+61,fit(tiles[i].detail,80,small),dim,small);
@@ -266,7 +278,7 @@ void drawHome(){
 void drawThreads(){
  threads();if(selected>=int(conversationCount))selected=conversationCount-1;int first=max(0,selected-3);
  for(int i=first;i<int(conversationCount)&&i<first+4;i++){
-  uint64_t id=conversations[i];int y=24+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);
+  uint64_t id=conversations[i];int y=24+(i-first)*48;bool focus=selected==i;listRow(y,45,focus);target(8,y,304,45,i);
   Peer* p=peerOf(id);avatar(32,y+22,15,id,nameOf(id),p?p->type:-1);
   const ChatMessage* last=nullptr;for(int j=meshRadio.historyCount-1;j>=0;j--)if(belongs(meshRadio.history[j],id)){last=&meshRadio.history[j];break;}
   String when=last?timeText(last->timestamp):"";if(when.length())textRight(306,19+y,when,dim,small);
@@ -353,7 +365,7 @@ void drawMap(){
 }
 void drawLibrary(){
  unsigned total=library.size();if(!total){icon(IcPin,160,90,14,faint);textCenter(160,128,t("No saved maps","Сохранённых карт нет"),ink);textCenter(160,146,t("Upload a map via Wi-Fi or USB","Загрузите карту по Wi-Fi или USB"),dim,small);}
- int first=max(0,selected-3);for(unsigned i=first;i<total&&i<unsigned(first+4);i++){int y=24+(i-first)*48;bool focus=selected==int(i);listRow(y,45,focus);
+ int first=max(0,selected-3);for(unsigned i=first;i<total&&i<unsigned(first+4);i++){int y=24+(i-first)*48;bool focus=selected==int(i);listRow(y,45,focus);target(8,y,304,45,i);
   g().fillRoundRect(18,y+8,30,30,7,card);icon(IcPin,33,y+22,9,ok,card);String name=library[i]["name"].as<String>();
   text(58,y+19,fit(name,200,bold),ink,bold);text(58,y+36,count(library[i]["tiles"].as<unsigned>(),"tile on SD","tiles on SD","тайл на SD","тайла на SD","тайлов на SD"),dim,small);
   if(name==maps.title){g().drawLine(284,y+22,288,y+26,accent);g().drawLine(288,y+26,296,y+17,accent);g().drawLine(284,y+23,288,y+27,accent);g().drawLine(288,y+27,296,y+18,accent);}}
@@ -364,7 +376,7 @@ void drawNodes(){
  if(!nodeTotal){icon(IcMesh,160,86,16,faint);textCenter(160,126,t("No nodes discovered yet","Узлы пока не обнаружены"),ink);textCenter(160,144,t("ADV sends your announcement","ADV отправит ваше объявление"),dim,small);}
  int first=max(0,selected-3);uint32_t now=millis();
  for(unsigned i=first;i<nodeTotal&&i<unsigned(first+4);i++){
-  auto& p=meshRadio.peers[nodeOrder[i]];int y=24+(i-first)*48;bool focus=selected==int(i);listRow(y,45,focus);avatar(32,y+22,15,p.id,p.name,p.type);
+  auto& p=meshRadio.peers[nodeOrder[i]];int y=24+(i-first)*48;bool focus=selected==int(i);listRow(y,45,focus);target(8,y,304,45,i);avatar(32,y+22,15,p.id,p.name,p.type);
   String age=p.heard?ago(now-p.seen):t("saved","сохранён");textRight(306,y+18,age,p.heard&&now-p.seen<1800000?ok:dim,small);
   if(p.heard)bars(286-measure(age,small),y+18,snrLevel(p.snr),ok);
   text(56,y+18,fit(p.name,200-measure(age,small),bold),ink,bold);
@@ -389,7 +401,7 @@ void drawNode(){
  for(int i=0;i<5;i++){int y=90+i*18;text(14,y,rows[i][0],dim);textRight(306,y,fit(rows[i][1],180),ink);if(i<4)d.drawFastHLine(14,y+5,292,card);}
  NodeAction acts[4];unsigned n=nodeActions(*p,acts);action=constrain(action,0,int(n)-1);
  const String names[]={t("Message","Написать"),t("On map","На карте"),t("Reset path","Сброс пути"),deleteArmed?t("Sure?","Удалить?"):t("Forget","Удалить")};
- int w=(304-(n-1)*6)/n;for(unsigned i=0;i<n;i++){int x=8+i*(w+6);bool focus=action==int(i),danger=acts[i]==ActForget;panel(x,184,w,28,focus?(danger&&deleteArmed?bad:cardHi):card,7);if(focus)ring(x,184,w,28,7,danger?bad:accent);textCenter(x+w/2,202,fit(names[acts[i]],w-8),danger?(focus?ink:bad):ink);}
+ int w=(304-(n-1)*6)/n;for(unsigned i=0;i<n;i++){int x=8+i*(w+6);bool focus=action==int(i),danger=acts[i]==ActForget;target(x,184,w,28,i);panel(x,184,w,28,focus?(danger&&deleteArmed?bad:cardHi):card,7);if(focus)ring(x,184,w,28,7,danger?bad:accent);textCenter(x+w/2,202,fit(names[acts[i]],w-8),danger?(focus?ink:bad):ink);}
  footer({{"<>",t("Action","Действие")},{"OK",t("Run","Выполнить")},{"BACK",t("Nodes","Узлы")}});
 }
 void compassRose(int cx,int cy,int r){
@@ -412,7 +424,7 @@ void drawSensors(){
  row(t("Compass","Компас"),navigation.calibrating?count(navigation.samples,"sample","samples","отсчёт","отсчёта","отсчётов"):navigation.calibrated?t("calibrated","откалиброван"):t("needs calibration","нужна калибровка"),navigation.calibrating?warn:ink);
  String actions[]={t("Share position","Передать позицию"),navigation.calibrating?t("Finish calibration","Завершить калибровку"):t("Calibrate compass","Калибровать компас")};
  String hints[]={fix?t("Advert with GPS","Объявление с GPS"):t("Needs a fresh GPS fix","Нужна свежая позиция GPS"),navigation.calibrating?t("Rotate in all directions","Вращайте во все стороны"):t("Rotate for 20+ seconds","Вращение 20+ секунд")};
- for(int i=0;i<2;i++){int x=8+i*154;bool focus=selected==i;panel(x,168,150,46,focus?cardHi:card,7);if(focus)ring(x,168,150,46,7);text(x+10,186,fit(actions[i],132,bold),ink,bold);text(x+10,203,fit(hints[i],132,small),dim,small);}
+ for(int i=0;i<2;i++){int x=8+i*154;bool focus=selected==i;target(x,168,150,46,i);panel(x,168,150,46,focus?cardHi:card,7);if(focus)ring(x,168,150,46,7);text(x+10,186,fit(actions[i],132,bold),ink,bold);text(x+10,203,fit(hints[i],132,small),dim,small);}
  footer({{"<>",t("Select","Выбор")},{"OK",t("Run","Выполнить")},{"BACK",t("Back","Назад")}});
 }
 // Signal radar: Wi-Fi access points, Bluetooth devices and directly heard LoRa nodes. Nearer the centre means a
@@ -529,7 +541,7 @@ void drawSettings(){
   "GPS "+flag(config.gps)+" · "+(navigation.calibrated?t("compass calibrated","компас откалиброван"):t("compass not calibrated","компас не откалиброван")),
   "Wi-Fi "+flag(portalActive())+" · BLE "+flag(bleActive()),"RX "+String(meshRadio.rxCount)+" · TX "+String(meshRadio.txCount)+" · "+String(meshRadio.relayed)+t(" relayed"," переслано"),
   t("What every key does","Что делает каждая клавиша"),maps.title.length()?maps.title+" · "+count(maps.tileCount,"tile","tiles","тайл","тайла","тайлов"):t("No maps","Карт нет"),config.role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):config.role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal: chats, maps, radar","Обычный: чаты, карты, радар")};
- int first=max(0,selected-5);for(int i=first;i<settingsCount&&i<first+6;i++){int y=24+(i-first)*32;bool focus=selected==i;listRow(y,30,focus);
+ int first=max(0,selected-5);for(int i=first;i<settingsCount&&i<first+6;i++){int y=24+(i-first)*32;bool focus=selected==i;listRow(y,30,focus);target(8,y,304,30,i);
   g().fillRoundRect(16,y+4,22,22,5,card);icon(icons[i],27,y+15,7,hues[i],card);text(46,y+14,names[i],ink,bold);text(46,y+26,fit(details[i],250,small),dim,small);tri(302,y+15,1,4,focus?accent:faint);}
  scrollbar(first,6,settingsCount,24,190);footer({{"OK",t("Open","Открыть")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
 }
@@ -550,7 +562,7 @@ bool draftChanged(){for(int i=0;i<settingRows()-1;i++)if(settingValue(draft,i)!=
 void drawEditor(){
  int rows=settingRows(),first=max(0,selected-6);bool changed=draftChanged();
  for(int i=first;i<rows&&i<first+7;i++){
-  int y=25+(i-first)*23;bool focus=selected==i;
+  int y=25+(i-first)*23;bool focus=selected==i;target(8,y,304,21,i);
   if(i==rows-1){panel(8,y,304,21,changed?(focus?accent:rgb(0x14524b)):card,6);if(focus&&!changed)ring(8,y,304,21,6,line);textCenter(160,y+15,changed?t("Save changes","Сохранить изменения"):t("No changes","Нет изменений"),changed?(focus?bg:ink):dim,bold);continue;}
   listRow(y,21,focus);String value=settingValue(draft,i);bool diff=value!=settingValue(config,i);
   if(diff)g().fillCircle(17,y+10,2,accent);text(24,y+15,settingName(i),focus?ink:dim);
@@ -564,11 +576,13 @@ void drawEditor(){
 void toggle(int x,int y,bool on){panel(x,y,30,16,on?accent:line,8);g().fillCircle(on?x+22:x+8,y+8,6,on?bg:dim);}
 void drawNetwork(){
  auto& d=g();bool wifi=portalActive(),ble=bleActive(),web=internet.enabled;int y=25;
- auto cardAt=[&](int i,int h,Icon ic,const String& name,const String& state,bool on){bool focus=selected==i;panel(8,y,304,h,focus?cardHi:card,8);if(focus)ring(8,y,304,h,8);d.fillRoundRect(16,y+7,24,24,6,bg);icon(ic,28,y+19,7,on?info:faint,bg);text(48,y+17,name,ink,bold);text(48,y+30,fit(state,220,small),dim,small);};
+ auto cardAt=[&](int i,int h,Icon ic,const String& name,const String& state,bool on){bool focus=selected==i;target(8,y,304,h,i);panel(8,y,304,h,focus?cardHi:card,8);if(focus)ring(8,y,304,h,8);d.fillRoundRect(16,y+7,24,24,6,bg);icon(ic,28,y+19,7,on?info:faint,bg);text(48,y+17,name,ink,bold);text(48,y+30,fit(state,220,small),dim,small);};
  int wh=wifi?56:38;cardAt(0,wh,IcWifi,t("Wi-Fi access point","Точка доступа Wi-Fi"),wifi?t("Web chat and map upload","Веб-чат и загрузка карт"):t("Off","Выключена"),wifi);toggle(274,y+11,wifi);
  if(wifi){String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);int x=text(48,y+48,ssid,accent,bold);text(x+8,y+48,t("Password ","Пароль ")+portalPassword(),ink);textRight(302,y+48,"192.168.4.1",dim,small);}
- y+=wh+6;cardAt(1,38,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(),internet.online());toggle(274,y+11,web);
- y+=44;cardAt(2,38,IcBle,"Bluetooth LE",ble?t("Secure pairing, MeshMesh service","Защищённое сопряжение, сервис MeshMesh"):t("Off","Выключен"),ble);toggle(274,y+11,ble);
+ // On the home network the device page answers at the client's address, with the same password.
+ y+=wh+6;int ih=internet.online()?56:38;cardAt(1,ih,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(),internet.online());toggle(274,y+11,web);
+ if(internet.online()){text(48,y+48,"http://"+internet.address(),accent,bold);int pw=measure(portalPassword(),bold);textRight(302,y+48,portalPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==1?cardHi:card);} // the password, whole
+ y+=ih+6;cardAt(2,38,IcBle,"Bluetooth LE",ble?t("Secure pairing, MeshMesh service","Защищённое сопряжение, сервис MeshMesh"):t("Off","Выключен"),ble);toggle(274,y+11,ble);
  if(ble)textRight(266,y+17,"PIN "+String(blePin()),accent,bold);
  y+=44;if(y+38<=216)cardAt(3,38,IcKey,t("MeshCore identity","Ключ MeshCore"),meshRadio.publicKeyText().substring(0,24)+"...",true);
  footer({{"OK",selected==1?t("Networks","Сети"):t("Toggle","Переключить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
@@ -601,7 +615,7 @@ void netListErase(){
  internet.rescan();notice(t("Searching...","Поиск сетей..."),dim);
 }
 void drawNetList(){
- auto& d=g();bool focus=selected==0;panel(8,25,304,40,focus?cardHi:card,8);if(focus)ring(8,25,304,40,8);
+ auto& d=g();bool focus=selected==0;target(8,25,304,40,0);panel(8,25,304,40,focus?cardHi:card,8);if(focus)ring(8,25,304,40,8);
  d.fillRoundRect(16,33,24,24,6,bg);icon(IcWifi,28,45,7,internet.online()?ok:internet.enabled?info:faint,bg);
  // The last failure (wrong password, no answer) stays visible until the next attempt starts.
  bool failed=internet.enabled&&!internet.online()&&internet.error.length()&&internet.state!=Internet::Connecting&&internet.state!=Internet::Scanning;
@@ -610,7 +624,7 @@ void drawNetList(){
  if(!internet.enabled)textCenter(160,120,t("Turn the client on to find networks","Включите клиент, чтобы найти сети"),dim);
  else if(!total)textCenter(160,120,internet.state==Internet::Paused?internet.stateText():t("Searching for networks...","Поиск сетей..."),dim);
  int first=max(0,selected-1-5);
- for(unsigned i=first;i<total&&i<unsigned(first+6);i++){int y=70+(i-first)*24;auto& r=rows[i];bool f=selected==int(i)+1;listRow(y,22,f);
+ for(unsigned i=first;i<total&&i<unsigned(first+6);i++){int y=70+(i-first)*24;auto& r=rows[i];bool f=selected==int(i)+1;listRow(y,22,f);target(8,y,304,22,i+1);
   bool current=internet.online()&&internet.ssid==r.ssid;
   if(r.visible)bars(18,y+16,r.rssi>=-55?4:r.rssi>=-67?3:r.rssi>=-78?2:1,current?ok:f?ink:dim);else text(18,y+15,"--",faint,small);
   text(40,y+15,fit(r.ssid,150),current?ok:ink,f?bold:body);
@@ -638,8 +652,8 @@ void drawDiagnostics(){
 }
 void drawHelp(){
 #if defined(MM_BOARD_TDECK)
- Hint keys[]={{tr("Ball","Шар"),t("Move: menu, lists, map","Перемещение: меню, списки, карта")},{tr("Click","Нажатие"),t("Open / send","Открыть / отправить")},{tr("Hold ball","Удерж. шар"),t("Unlock; in chat: Russian layout","Вход; в чате: русская раскладка")},
-  {"Enter",t("Open / send","Открыть / отправить")},{"DEL",t("Delete; with no text: back","Удалить; без текста: назад")},{tr("2x space","2×пробел"),t("in text: switch RU/EN","в тексте: RU/EN")},
+ Hint keys[]={{tr("Ball, swipe","Шар, свайп"),t("Move: menu, lists, map","Перемещение: меню, списки, карта")},{tr("Click","Нажатие"),t("Open / send","Открыть / отправить")},{tr("Hold ball","Удерж. шар"),t("Unlock; in chat: Russian layout","Вход; в чате: русская раскладка")},
+  {tr("Tap","Касание"),t("Open; hints below are keys; title: back","Открыть; кнопки внизу; заголовок - назад")},{"DEL",t("Delete; with no text: back","Удалить; без текста: назад")},{tr("2x space","2×пробел"),t("in text: switch RU/EN","в тексте: RU/EN")},
   {"L",t("Map: saved maps","Карта: список карт")},{"+ -",t("Map zoom","Масштаб карты")},{"P",t("Nodes: show on map","Узлы: показать на карте")},{"HOME",t("Menu: DEL until the tiles","Меню: DEL до плиток")}};
 #else
  Hint keys[]={{"MSG",t("Chats","Чаты")},{"MAP",t("Map; L - saved maps","Карта; L - список карт")},{"HOME",t("Menu","Главное меню")},{"BACK",t("Previous screen","Предыдущий экран")},{"CTRL",t("Settings","Настройки")},
@@ -659,6 +673,7 @@ void drawLocked(){
 }
 #include "UiServer.inc"
 void drawEditing(){
+ targetCount=hintCount=0; // the page under the dialog does not take taps
  uint16_t* px=g().getBuffer();for(int i=0;i<320*240;i++)px[i]=(px[i]>>1)&0x7bef; // dim the page under the dialog
  bool key=page==Network,pass=page==NetList||page==ServerHome;panel(12,60,296,122,cardHi,10);g().drawRoundRect(12,60,296,122,10,line);
  text(26,82,key?t("Network key · 64 hex","Ключ сети · 64 hex"):page==ServerHome?serverEditTitle():pass?fit(t("Wi-Fi password: ","Пароль Wi-Fi: ")+pendingSsid,268,bold):t("Device name","Имя устройства"),ink,bold);
@@ -670,7 +685,7 @@ void drawEditing(){
 #include "UiChess.inc"
 String chessTitle(){return chessOpen&&chessOpen->state!=ChessMatch::Free?t("Chess · ","Шахматы · ")+chessOpen->name:t("Chess","Шахматы");}
 void draw(){
- auto& c=g();c.fillScreen(bg);
+ auto& c=g();c.fillScreen(bg);targetCount=hintCount=0;
  if(locked)drawLocked();
  else switch(page){
  case Home:drawHome();break;case Threads:drawThreads();break;case Chat:drawChat();break;case Map:drawMap();break;case Library:drawLibrary();break;
@@ -729,13 +744,15 @@ void runNodeAction(){
  }
 }
 }
+static bool realErase=false; // DEL tapped in the footer: a real delete, also on the T-Deck
 bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
 void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
 #if defined(MM_BOARD_TDECK)
- // The T-Deck has no BACK key: DEL goes back when there is no text here to delete.
- if(key==Erase&&!editing&&!(page==Chat&&composer.length()))key=KeyBack;
+ // The T-Deck has no BACK key: DEL goes back when there is no text here to delete (DEL tapped in the footer stays DEL).
+ bool erase=realErase;realErase=false;
+ if(key==Erase&&!erase&&!editing&&!(page==Chat&&composer.length()))key=KeyBack;
 #endif
  if(key==KeyMic){locked=true;return;}
  if(layoutHelp){layoutHelp=false;return;}
@@ -780,6 +797,26 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==Motion){if(radar.csi==Radar::CsiSensor&&radar.beaconHeard()){radar.calibrate();notice(t("Calibrating: keep the area still for 10 s","Калибровка: 10 с без движения в зоне"),info);}else notice(t("Needs a heard beacon","Нужен услышанный маяк"),warn);}
  else if(page==Homing){radarSound=!radarSound;notice(radarSound?(config.sound?t("Ping on","Звук пеленга включён"):t("Device sound is off in settings","Звук устройства выключен в настройках")):t("Ping off","Звук пеленга выключен"),radarSound&&!config.sound?warn:dim);}
  else if(page==Diagnostics){hardware.beep();bool passed=meshRadio.selfTest();notice(passed?t("Encryption test passed","Проверка шифрования пройдена"):t("Encryption test failed","Ошибка шифрования"),passed?ok:bad);}}
+// Touch: the title bar goes back, footer hints are their keys, a tap on a list item or tile opens it
+// (settings rows, the mode choice and challenge contacts: the first tap selects), the chess board
+// takes a tap as the cursor and OK; swipes are the arrows and a hold is "hold OK", as on the ball.
+void uiTouch(char gesture,int x,int y){
+ if(locked||wakeOnly){uiKey(gesture=='h'?KeyHold:0);return;} // a tap only wakes; a hold unlocks
+ if(gesture=='h'){uiKey(KeyHold);return;}
+ if(gesture!='t'){uiKey(gesture=='u'?KeyUp:gesture=='d'?KeyDown:gesture=='l'?KeyLeft:KeyRight);return;}
+ if(dirty)return; // the screen has not caught up with the last action: the tap was aimed at the old one
+ if(layoutHelp){uiKey(Enter);return;}
+ if(y<21){uiKey(KeyBack);return;}
+ if(y>=221){for(unsigned i=0;i<hintCount;i++)if(x>=hintSpots[i].x0&&x<hintSpots[i].x1){realErase=hintSpots[i].key==Erase;uiKey(hintSpots[i].key);return;}return;}
+ if(page==ChessBoard&&chessOpen&&chessOpen->state==ChessMatch::Playing&&chessPromo<0&&x>=BoardX&&x<BoardX+Cell*8&&y>=BoardY&&y<BoardY+Cell*8){
+  int f=(x-BoardX)/Cell,r=7-(y-BoardY)/Cell;if(flipped()){f=7-f;r=7-r;}chessCursor=r*8+f;uiKey(Enter);return;}
+ for(unsigned i=0;i<targetCount;i++){auto& v=targets[i];if(x<v.x||x>=v.x+v.w||y<v.y||y>=v.y+v.h)continue;
+  if(v.index<0){uiKey(-v.index);return;}
+  if(page==Node){action=v.index;uiKey(Enter);return;}
+  bool confirm=page==Radio||page==Display||page==ServerHome||page==RolePick||page==ChessPick;
+  if(confirm&&selected!=v.index){selected=v.index;dirty=true;lastInput=millis();return;}
+  selected=v.index;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;uiKey(Enter);return;}
+}
 String eventLabel(const String& value){if(value.startsWith("New message from "))return tr("New message from ","Сообщение от ")+value.substring(17);if(value.startsWith("Delivered to "))return tr("Delivered to ","Доставлено: ")+value.substring(13);if(value=="Queued: waiting for delivery")return tr("Queued: waiting for delivery","Ожидание подтверждения");if(value=="Queued: broadcast")return tr("Queued: broadcast","Сообщение в общем чате отправляется");if(value=="No delivery ACK")return tr("No delivery ACK","Получатель не подтвердил доставку");if(config.lang!=LangEn&&(value.startsWith("Radio TX error")||value.startsWith("TX failed")))return tr("Radio TX error","Ошибка передачи по радио");return value;}
 void uiTick(){uint32_t now=millis();
  if(bootPick&&page==RolePick&&now-bootPickAt>=bootPickMs){bootPick=false;change(homePage());}

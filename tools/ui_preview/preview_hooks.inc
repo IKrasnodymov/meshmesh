@@ -41,9 +41,11 @@ uint32_t MeshRadio::sendGame(const String&,uint64_t){return ++nextId;}
 #include "Internet.h"
 Internet internet;
 #if !defined(MM_HELTEC_V4)
-void Internet::setEnabled(bool on){enabled=on;}void Internet::rescan(){}void Internet::connectTo(const String&){}
+static int previewRescans=0; // the T-Deck touch check: DEL in the network list rescans
+void Internet::setEnabled(bool on){enabled=on;}void Internet::rescan(){previewRescans++;}void Internet::connectTo(const String&){}
 bool Internet::save(const String&,const String&){return true;}bool Internet::forget(const String&){return true;}
-String Internet::savedName(unsigned){return "";}String Internet::stateText(){return tr("Off","Выключен");}
+String Internet::savedName(unsigned){return "";}String Internet::stateText(){return online()?String("Home-WiFi · 192.168.1.101"):tr("Off","Выключен");}
+String Internet::address(){return "192.168.1.101";}
 #endif
 bool Maps::inArea() const{return true;}
 bool webRadarActive(){return false;}

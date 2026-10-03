@@ -110,7 +110,7 @@ constexpr int spiClock=40, spiMiso=38, spiMosi=41;
 constexpr int radioCs=9, radioIrq=45, radioReset=17, radioBusy=13, radioRxEn=-1;
 constexpr int lcdCs=12, lcdDc=11, lcdReset=-1, backlight=42, peripheralPower=10;
 constexpr int sdCs=39, keyboardSda=18, keyboardScl=8;
-constexpr int ballUp=3, ballDown=15, ballLeft=1, ballRight=2, ballClick=0;
+constexpr int ballUp=3, ballDown=15, ballLeft=1, ballRight=2, ballClick=0, touchInt=16;
 constexpr int gpsRx=44, gpsTx=43, battery=4;
 constexpr unsigned keyboardAddress=0x55;
 #else

@@ -30,7 +30,7 @@ węzłami MeshCore.
   oprogramowaniem, z logowaniem administratora i zdalnym CLI z aplikacji MeshCore; klucz, kontakty i historia zostają.
   [docs/en/repeater.md](docs/en/repeater.md)
 - **GPS i kompas**, udostępnianie pozycji, ekran blokady, fonetyczne pisanie cyrylicą z klawiatury.
-- **Interfejs www** przez własny punkt dostępu Wi-Fi urządzenia oraz **aplikacja na Androida**
+- **Interfejs www** przez własny punkt dostępu Wi-Fi urządzenia lub domową sieć Wi-Fi, do której się łączy (M9, T-Deck), oraz **aplikacja na Androida**
   (Wi-Fi, Bluetooth LE lub USB) z powiadomieniami o wiadomościach.
 - **Interfejs urządzenia w 15 językach**: angielskim, rosyjskim, ukraińskim, hiszpańskim, portugalskim, francuskim,
   niemieckim, włoskim, polskim, tureckim, chińskim, japońskim, koreańskim, arabskim i indonezyjskim. Strona instaluje

@@ -1954,10 +1954,10 @@
   "ru": "Тест шифрования и звука",
   "text": "암호화 + 소리 테스트"
  },
- "537d87a8": {
-  "en": "Ball",
-  "ru": "Шар",
-  "text": "볼"
+ "46b8241c": {
+  "en": "Ball, swipe",
+  "ru": "Шар, свайп",
+  "text": "볼, 스와이프"
  },
  "39012b21": {
   "en": "Move: menu, lists, map",
@@ -1983,6 +1983,16 @@
   "en": "Unlock; in chat: Russian layout",
   "ru": "Вход; в чате: русская раскладка",
   "text": "잠금 해제; 채팅: 러시아어 자판"
+ },
+ "85013777": {
+  "en": "Tap",
+  "ru": "Касание",
+  "text": "탭"
+ },
+ "e96df6ee": {
+  "en": "Open; hints below are keys; title: back",
+  "ru": "Открыть; кнопки внизу; заголовок - назад",
+  "text": "열기; 아래 힌트는 키; 제목: 뒤로"
  },
  "dd425d56": {
   "en": "Delete; with no text: back",
