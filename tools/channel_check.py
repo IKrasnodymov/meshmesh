@@ -35,6 +35,9 @@ async def main():
   raise AssertionError(f'M9 did not get {text!r} in {channel}')
  try:
   before=read('status');assert before['protocol']=='MeshCore' and before['role']=='normal'
+  # The companion on the radio profile of the M9 and the computer's clock, as the MeshCore app sets them.
+  cfg=read('config');assert (await stock.commands.set_radio(round(cfg['frequency'],3),cfg['bandwidth'],cfg['sf'],cfg['cr'])).type==EventType.OK
+  assert (await stock.commands.set_time(int(time.time()))).type==EventType.OK
   info=await stock.commands.send_appstart();assert info.type==EventType.SELF_INFO
   device=await stock.commands.send_device_query();stock_key=info.payload['public_key'];stock_node=stock_key[:16].upper()
   # Contacts both ways, for the invitation.
@@ -96,7 +99,7 @@ async def main():
   checks.append({'check':'leave and rejoin: same ID, history kept','passed':True})
   after=read('status');assert before['boot']==after['boot'] and after['rx']>before['rx'] and after['tx']>before['tx']
   report={'result':'passed','transport':'physical LoRa; no USB RF packet injection','meshmesh':before['firmware'],'meshmesh_build_sha256':before.get('build_sha256'),'stock':device.payload,'checks':checks,'boot':after['boot'],'rx':[before['rx'],after['rx']],'tx':[before['tx'],after['tx']]}
-  p=Path('artifacts/channel-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+  p=Path(__file__).resolve().parents[1]/'artifacts/channel-check.json';p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
   print('PASS channels with the official MeshCore companion: hashtag and private channels both ways, invitation, heard on air, leave and rejoin',flush=True)
  finally:
   m9.close();await stock.disconnect()

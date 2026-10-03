@@ -2,6 +2,30 @@
 
 > Translated from the Russian original [docs/verification.md](../verification.md); when they differ, the original is current.
 
+> **0.3.8 — MeshCore channels, contacts in LittleFS** (3 October 2026; `docs/channels.md`). **On hardware**
+> (`flash.py`): M9 0.3.8 — boots 137–139, ELF hash `A75EEFEC…`; Heltec 0.3.8 — `E92F48CE…`, boot 92. Both
+> boards' settings matched the snapshots taken before, 64 messages kept. Radio check MeshMesh ↔ MeshMesh
+> (M9 ↔ Heltec): a hashtag channel with the same ID on both, messages both ways, one copy each; a private
+> channel created on the M9 joined by the Heltec from a link inside a text; an invitation as a direct
+> message with an ACK, joined and answered; a channel the M9 had not joined counted by its hash, its hashtag
+> opened the stored packet, messages arrive after joining; 5 channels kept after an M9 restart; leaving
+> keeps the history, joining again gives the same ID, Public cannot be removed. Compatibility with the
+> official MeshCore companion v1.17.1 (temporarily on the Heltec, full flash copy verified before and after,
+> `tools/channel_check.py`, `artifacts/channel-check.json`): hashtag channel joined by name on both sides,
+> a private channel with the key from the MeshMesh link — messages both ways; the invitation received with
+> its key, ACK; an unknown channel counted and opened by its hashtag; leave and rejoin. The first install
+> showed the M9 NVS (20 KB) nearly full: 482 of 504 entries, the contact list (3.5 KB) and the channel block
+> could no longer be rewritten. Fixed: channels are stored compactly (joined ones only), contacts in
+> `/meshmesh/contacts.bin`, M9 read marks in `/meshmesh/read.bin` (LittleFS, written through a temporary
+> file); the old contact block is moved out of NVS at the first boot and removed. Afterwards the M9 NVS has
+> 280 used entries (350 free), the Heltec 228 (402); `status` reports `nvs_used`, `nvs_free`, `contacts_saved`.
+> The contacts matched one by one after an M9 restart. On the computer: 14 boards build (GAT562 692 of
+> 713 KB, 97%), the QR encoder matches python-qrcode and its JavaScript copy bit for bit, zxing reads the
+> codes from screenshots, host rendering and T-Deck touch checks, the page in headless Chrome with a mock
+> API, Android `testDebugUnitTest` and `assembleRelease`, 67 new strings in 13 languages. **Not checked**:
+> GAT562 and the community boards on hardware (moving the contacts on nRF52 is only built), the page and
+> the app with a real board, the QR scanner on a phone. The full `finish_on_hardware.py` run was not done.
+
 > **15 interface languages — 0.3.7** (2 October 2026; `i18n/README.md`). The M9/T-Deck screens and the OLED
 > boards (Heltec, GAT562, one-button boards) in English, Russian, Ukrainian, Spanish, Portuguese, French, German,
 > Italian, Polish, Turkish, Chinese, Japanese, Korean, Arabic and Indonesian: 861 strings in `i18n/firmware`,

@@ -5,7 +5,7 @@
 Channels are MeshCore group chats: all members share one 16-byte key (AES-128), messages flood through
 the mesh without delivery acknowledgements, and the sender's name is not verified. MeshMesh keeps up to
 8 channels, Public included; the list lives in NVS (`meshmesh-mc/channels`, the name and key of each
-channel) and survives firmware updates. Keys and links use the formats of the MeshCore app and WadaMesh,
+joined channel, about 50 bytes each) and survives firmware updates. Keys and links use the formats of the MeshCore app and WadaMesh,
 so channels and QR codes are interchangeable with them.
 
 ## Adding a channel

@@ -19,7 +19,7 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
-## Каналы MeshCore
+## 0.3.8 — каналы MeshCore
 
 До 8 каналов вместе с Public: вступить по #хештегу, ссылке `meshcore://channel/add?...` или QR-коду,
 по названию и ключу (32 hex или base64), создать закрытый канал со случайным ключом и пригласить в него
@@ -29,6 +29,10 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 меню, остальное — через веб-страницу и приложение (там же сканирование QR камерой и ссылки
 `meshcore://` из других приложений). Ключи и ссылки совместимы с приложением MeshCore и WadaMesh.
 Подробности — [docs/channels.md](docs/channels.md).
+
+Контакты и отметки прочтения теперь хранятся в LittleFS (`/meshmesh/contacts.bin`, `/meshmesh/read.bin`),
+а не в NVS: на M9 раздел NVS (20 КБ) заполнился, и список контактов перестал сохраняться. При первом
+запуске 0.3.8 старый список переносится сам; `status` показывает запас NVS (`nvs_free`).
 
 ## 0.3.7 — 15 языков
 

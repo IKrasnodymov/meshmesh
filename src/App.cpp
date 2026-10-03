@@ -12,6 +12,9 @@
 #include "ChessNet.h"
 #include "MeshServer.h"
 #include <LittleFS.h>
+#if !defined(MM_NRF52)
+#include <nvs.h>
+#endif
 #include <time.h>
 String statusJson() {
   StaticJsonDocument<3072> d;
@@ -24,7 +27,7 @@ String statusJson() {
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
   char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["channels"]=meshRadio.channelCount;d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();
-  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;
+  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;d["contacts_saved"]=meshRadio.contactsSaved;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
   d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
   d["compass"]=hardware.compassOk;d["compass_sample"]=hardware.compassSample;d["imu"]=hardware.imuOk;d["imu_sample"]=hardware.imuSample;
@@ -32,6 +35,9 @@ String statusJson() {
   if(d["gps_fix"].as<bool>()) {d["latitude"]=hardware.gps.location.lat();d["longitude"]=hardware.gps.location.lng();}
   JsonArray a=d.createNestedArray("mag");for(float n:hardware.mag)a.add(n);a=d.createNestedArray("accel");for(float n:hardware.accel)a.add(n);
   d["clock_trusted"]=hardware.clockTrusted;d["busy"]=meshRadio.busy();if(meshRadio.lastRxAt)d["rx_age"]=(millis()-meshRadio.lastRxAt)/1000;
+#if !defined(MM_NRF52)
+  {nvs_stats_t nvs;if(nvs_get_stats(nullptr,&nvs)==ESP_OK){d["nvs_used"]=nvs.used_entries;d["nvs_free"]=nvs.free_entries;}} // 32-byte entries; the contacts no longer live there
+#endif
   d["event"]=meshRadio.event;d["wifi"]=portalActive();
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
@@ -77,7 +83,7 @@ String channelCommand(JsonObjectConst v){
     default:return "ERR storage: channel not saved";
     }
   }
-  if(action=="remove"){uint64_t c;if(!id(v["channel"],c))return "ERR channel ID";if(c==meshmesh::Broadcast)return "ERR public: Public stays";if(!meshRadio.channel(c))return "ERR unknown channel";return meshRadio.removeChannel(c)?"OK channel removed":"ERR busy: a message to this channel is being sent";}
+  if(action=="remove"){uint64_t c;if(!id(v["channel"],c))return "ERR channel ID";if(c==meshmesh::Broadcast)return "ERR public: Public stays";if(!meshRadio.channel(c))return "ERR unknown channel";if(meshRadio.sending(c))return "ERR busy: a message to this channel is being sent";return meshRadio.removeChannel(c)?"OK channel removed":"ERR storage: channel list not saved";}
   if(action=="invite"){uint64_t c,to;if(!id(v["channel"],c)||!meshRadio.channel(c))return "ERR unknown channel";if(!id(v["to"],to)||channels::isChannel(to))return "ERR node ID";
     if(channels::link(*meshRadio.channel(c),true).length()>meshRadio.messageLimit(to))return "ERR long: the channel name is too long for an invitation";
     return meshRadio.sendInvite(to,c)?"OK invitation queued":"ERR send: contact unknown, queue full or radio offline";}

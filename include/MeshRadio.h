@@ -47,12 +47,14 @@ class MeshRadio {
   // Group channels: [0] is Public; the others are kept in NVS. Removing one keeps its history, joining it again shows it.
   channels::Channel channelList[channels::Max];unsigned channelCount=0;
   HeardChannel heard[8];unsigned heardCount=0,heardSamples=0;
+  bool contactsSaved=true; // the last save of the contact list reached storage
   enum ChannelResult:uint8_t {ChannelAdded,ChannelExists,ChannelFull,ChannelBadName,ChannelBadKey,ChannelBadLink,ChannelUnavailable,ChannelStorage};
   ChannelResult addChannel(const String& name,const uint8_t secret[16],uint64_t* id=nullptr);
   ChannelResult joinHashtag(const String& raw,uint64_t* id=nullptr);
   ChannelResult joinLink(const String& text,uint64_t* id=nullptr); // a meshcore://channel/add link, also inside a message
   ChannelResult createChannel(const String& name,uint64_t* id=nullptr); // a new random key
   bool removeChannel(uint64_t id); // never Public; not while a message to it waits
+  bool sending(uint64_t id) const; // a message to it waits to be sent
   const channels::Channel* channel(uint64_t id) const;
   int channelIndex(uint64_t id) const;
   bool sendInvite(uint64_t contact,uint64_t channel); // the channel link as a direct message
@@ -85,3 +87,6 @@ class MeshRadio {
   void loadChannels();bool saveChannels();void noteChannel(const uint8_t* payload,size_t length,uint32_t packetHash);
 };
 extern MeshRadio meshRadio;
+// A small file replaced whole through a temporary copy (MeshMesh storage); false without that storage.
+bool readStored(const char* path,const char* temp,void* out,size_t size);
+bool writeStored(const char* path,const char* temp,const void* data,size_t size);

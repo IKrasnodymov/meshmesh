@@ -87,3 +87,6 @@ MeshRadio::ChannelResult MeshRadio::createChannel(const String& name,uint64_t* i
 bool MeshRadio::removeChannel(uint64_t id){int i=channelIndex(id);if(i<=0)return false;memmove(channelList+i,channelList+i+1,sizeof(channels::Channel)*(channelCount-i-1));channelCount--;return true;}
 bool MeshRadio::sendInvite(uint64_t contact,uint64_t id){const channels::Channel* c=channel(id);if(!c)return false;String l=channels::link(*c);if(l.length()>151)l=channels::link(*c,true);return sendMessage(l,contact);}
 int MeshRadio::probeHashtag(const String& raw){String tag=channels::hashtag(raw);if(!tag.length())return -1;for(unsigned i=0;i<heardCount;i++)if(tag==heard[i].name)return heard[i].packets;return tag=="#test"?2:0;}
+// MeshMesh storage files: none in the preview (read marks fall back to the Preferences shim).
+bool readStored(const char*,const char*,void*,size_t){return false;}
+bool writeStored(const char*,const char*,const void*,size_t){return false;}

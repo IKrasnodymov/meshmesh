@@ -76,6 +76,23 @@ static bool loadIdentity(Preferences& p,mesh::LocalIdentity& self,bool& created)
 }
 // Keep advert timestamps monotonic across resets even without an RTC.
 static void restoreClockFloor(Preferences& p){uint32_t last=max(p.getUInt("last_advert",0),p.getUInt("last_tx",0));if(last<2147483647U)coreRtc.setCurrentTime(last+1);}
+// Small files replaced whole: written to a temporary file first, then renamed over the old one; a reset
+// between the two leaves the temporary file, which is read when the file itself is gone or damaged.
+static const char* const ContactsFile="/meshmesh/contacts.bin";static const char* const ContactsTemp="/meshmesh/contacts.tmp";
+bool readStored(const char* path,const char* temp,void* out,size_t size){
+ if(!hardware.fsOk)return false;
+ for(const char* name:{path,temp}){if(!LittleFS.exists(name))continue;File f=LittleFS.open(name,FILE_READ);if(!f)continue;bool ok=f.size()==size&&f.read((uint8_t*)out,size)==size;f.close();if(ok)return true;}
+ return false;
+}
+bool writeStored(const char* path,const char* temp,const void* data,size_t size){
+ if(!hardware.fsOk)return false;LittleFS.mkdir("/meshmesh");if(LittleFS.exists(temp))LittleFS.remove(temp);
+ File f=LittleFS.open(temp,FILE_WRITE);if(!f)return false;bool ok=f.write((const uint8_t*)data,size)==size;f.close();
+ if(!ok){LittleFS.remove(temp);return false;}
+#if defined(MM_NRF52)
+ if(LittleFS.exists(path)&&!LittleFS.remove(path))return false; // littlefs v1 of the Adafruit core does not rename over a file
+#endif
+ return LittleFS.rename(temp,path);
+}
 class MeshCoreBackend:public BaseChatMesh {
  MeshRadio& owner;
  uint32_t contactsDue=0;
@@ -171,13 +188,19 @@ class MeshCoreBackend:public BaseChatMesh {
   // from the repeater role has not been announced yet; otherwise adverts are manual (ADV, position, "hello").
   if(p.getString("adv_name","")!=config.name||p.getUChar("adv_type",ADV_TYPE_CHAT)!=ADV_TYPE_CHAT)announce=true;
   restoreClockFloor(p);
-  if(p.getBytesLength("contacts")==sizeof(ContactBlob)){
-   ContactBlob* blob=new ContactBlob;p.getBytes("contacts",blob,sizeof(*blob));uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));
-   if(blob->version==1&&blob->count<=24&&!memcmp(digest,blob->hash,32))for(unsigned i=0;i<blob->count;i++){auto& saved=blob->contacts[i];if(!mesh::Packet::isValidPathLen(saved.pathLength)&&saved.pathLength!=OUT_PATH_UNKNOWN)continue;ContactInfo c={};c.id=mesh::Identity(saved.key);memcpy(c.name,saved.name,32);c.name[31]=0;if(!meshmesh::validUtf8((const uint8_t*)c.name,strlen(c.name)))continue;c.type=saved.type;c.out_path_len=saved.pathLength;memcpy(c.out_path,saved.path,64);c.last_advert_timestamp=saved.advert;c.lastmod=min(saved.advert,coreRtc.getCurrentTime());c.gps_lat=saved.lat;c.gps_lon=saved.lon;addContact(c);updateContact(c,false);} // last advert: the order of replacement
+  // Contacts live in MeshMesh storage; an older firmware kept them in NVS, which is moved once and freed.
+  {ContactBlob* blob=new ContactBlob;bool found=readStored(ContactsFile,ContactsTemp,blob,sizeof(*blob))&&validBlob(*blob),fromNvs=false;
+   if(!found&&p.getBytesLength("contacts")==sizeof(ContactBlob)){p.getBytes("contacts",blob,sizeof(*blob));found=fromNvs=validBlob(*blob);}
+   if(found&&hardware.fsOk&&p.isKey("contacts")&&(!fromNvs||writeStored(ContactsFile,ContactsTemp,blob,sizeof(*blob))))p.remove("contacts");
+   if(found)for(unsigned i=0;i<blob->count;i++){auto& saved=blob->contacts[i];if(!mesh::Packet::isValidPathLen(saved.pathLength)&&saved.pathLength!=OUT_PATH_UNKNOWN)continue;ContactInfo c={};c.id=mesh::Identity(saved.key);memcpy(c.name,saved.name,32);c.name[31]=0;if(!meshmesh::validUtf8((const uint8_t*)c.name,strlen(c.name)))continue;c.type=saved.type;c.out_path_len=saved.pathLength;memcpy(c.out_path,saved.path,64);c.last_advert_timestamp=saved.advert;c.lastmod=min(saved.advert,coreRtc.getCurrentTime());c.gps_lat=saved.lat;c.gps_lon=saved.lon;addContact(c);updateContact(c,false);} // last advert: the order of replacement
    delete blob;
   }p.end();begin();return true;
  }
- void saveContacts(){ContactBlob* blob=new ContactBlob;blob->count=min(getNumContacts(),24);for(unsigned i=0;i<blob->count;i++){ContactInfo c;if(!getContactByIdx(i,c))continue;auto& dest=blob->contacts[i];memcpy(dest.key,c.id.pub_key,32);memcpy(dest.name,c.name,32);dest.type=c.type;dest.pathLength=c.out_path_len;memcpy(dest.path,c.out_path,64);dest.advert=c.last_advert_timestamp;dest.lat=c.gps_lat;dest.lon=c.gps_lon;}mesh::Utils::sha256(blob->hash,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));Preferences p;if(p.begin("meshmesh-mc",false)){p.putBytes("contacts",blob,sizeof(*blob));p.end();}delete blob;contactsDue=0;}
+ void saveContacts(){ContactBlob* blob=new ContactBlob;blob->count=min(getNumContacts(),24);for(unsigned i=0;i<blob->count;i++){ContactInfo c;if(!getContactByIdx(i,c))continue;auto& dest=blob->contacts[i];memcpy(dest.key,c.id.pub_key,32);memcpy(dest.name,c.name,32);dest.type=c.type;dest.pathLength=c.out_path_len;memcpy(dest.path,c.out_path,64);dest.advert=c.last_advert_timestamp;dest.lat=c.gps_lat;dest.lon=c.gps_lon;}mesh::Utils::sha256(blob->hash,32,(const uint8_t*)blob,offsetof(ContactBlob,hash));
+  // Without MeshMesh storage (another firmware's LittleFS) the contacts stay in NVS as before.
+  bool saved=writeStored(ContactsFile,ContactsTemp,blob,sizeof(*blob));if(!saved&&!hardware.fsOk){Preferences p;saved=p.begin("meshmesh-mc",false)&&p.putBytes("contacts",blob,sizeof(*blob))==sizeof(*blob);p.end();}
+  owner.contactsSaved=saved;delete blob;contactsDue=0;}
+ static bool validBlob(const ContactBlob& b){uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)&b,offsetof(ContactBlob,hash));return b.version==1&&b.count<=24&&!memcmp(digest,b.hash,32);}
  bool reserveStamp(uint32_t stamp){Preferences p;if(!p.begin("meshmesh-mc",false))return false;bool saved=p.putUInt("last_tx",stamp)==4;p.end();return saved;}
  bool advertise(bool requirePosition=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved){p.putString("adv_name",config.name);p.putUChar("adv_type",ADV_TYPE_CHAT);}p.end();if(!saved){releasePacket(pkt);return false;}sendFlood(pkt);return true;}
  // A relayed path came with a path return and is used as is (the retries flood). "Direct" holds only while the
@@ -338,8 +361,10 @@ String MeshRadio::diagnosticFrame() const{String result;result.reserve(lastFrame
 bool MeshRadio::diagnosticIngest(const uint8_t*,size_t){rejected++;return false;} // Do not bypass authenticated RF reception.
 // Channels: Public first, then the joined ones from NVS (name and key; the ID follows from the key).
 namespace {
+// Only the joined channels are stored (NVS is small and shared with Wi-Fi, Bluetooth and the contacts):
+// version, count, 8 bytes of SHA-256 of the list, then name and key of each.
 struct SavedChannel {char name[channels::NameBytes+1];uint8_t secret[16];};
-struct ChannelBlob {uint32_t version=1,count=0;SavedChannel list[channels::Max-1]={};uint8_t hash[32]={};};
+struct ChannelHead {uint8_t version=2,count=0,hash[8]={};};
 bool opens(const uint8_t key[16],const uint8_t* payload,size_t length){
  if(length<4)return false;uint8_t secret[32]={},plain[MAX_PACKET_PAYLOAD];memcpy(secret,key,16);
  return mesh::Utils::MACThenDecrypt(secret,plain,payload+1,length-1)>0;
@@ -348,23 +373,25 @@ bool opens(const uint8_t key[16],const uint8_t* payload,size_t length){
 void MeshRadio::loadChannels(){
  channelCount=1;channelList[0]={};strcpy(channelList[0].name,"Public");memcpy(channelList[0].secret,channels::publicSecret,16);channelList[0].id=meshmesh::Broadcast;
  Preferences p;if(!p.begin("meshmesh-mc",true))return;
- if(p.getBytesLength("channels")==sizeof(ChannelBlob)){
-  ChannelBlob* blob=new ChannelBlob;p.getBytes("channels",blob,sizeof(*blob));uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)blob,offsetof(ChannelBlob,hash));
-  if(blob->version==1&&blob->count<channels::Max&&!memcmp(digest,blob->hash,32))for(unsigned i=0;i<blob->count;i++){
-   auto& saved=blob->list[i];saved.name[channels::NameBytes]=0;
+ size_t n=p.getBytesLength("channels");uint8_t bytes[sizeof(ChannelHead)+sizeof(SavedChannel)*(channels::Max-1)];
+ if(n>=sizeof(ChannelHead)&&n<=sizeof(bytes)&&p.getBytes("channels",bytes,n)==n){
+  ChannelHead head;memcpy(&head,bytes,sizeof(head));uint8_t digest[8];size_t body=n-sizeof(head);mesh::Utils::sha256(digest,8,bytes+sizeof(head),body);
+  if(head.version==2&&head.count<channels::Max&&body==head.count*sizeof(SavedChannel)&&!memcmp(digest,head.hash,8))for(unsigned i=0;i<head.count;i++){
+   SavedChannel saved;memcpy(&saved,bytes+sizeof(head)+i*sizeof(saved),sizeof(saved));saved.name[channels::NameBytes]=0;
    if(!channels::validName(saved.name)||channels::isPublic(saved.secret)||channel(channels::idOf(saved.secret)))continue;
    auto& c=channelList[channelCount++];c={};strcpy(c.name,saved.name);memcpy(c.secret,saved.secret,16);c.id=channels::idOf(c.secret);
   }
-  delete blob;
+  memset(bytes,0,sizeof(bytes));
  }p.end();
 }
 bool MeshRadio::saveChannels(){
- ChannelBlob* blob=new ChannelBlob;blob->count=channelCount-1;
- for(unsigned i=1;i<channelCount;i++){strlcpy(blob->list[i-1].name,channelList[i].name,sizeof(blob->list[i-1].name));memcpy(blob->list[i-1].secret,channelList[i].secret,16);}
- mesh::Utils::sha256(blob->hash,32,(const uint8_t*)blob,offsetof(ChannelBlob,hash));
- Preferences p;bool saved=p.begin("meshmesh-mc",false)&&p.putBytes("channels",blob,sizeof(*blob))==sizeof(*blob);p.end();
- memset(blob,0,sizeof(*blob));delete blob;return saved;
+ uint8_t bytes[sizeof(ChannelHead)+sizeof(SavedChannel)*(channels::Max-1)]={};ChannelHead head;head.count=channelCount-1;
+ for(unsigned i=1;i<channelCount;i++){SavedChannel saved={};strlcpy(saved.name,channelList[i].name,sizeof(saved.name));memcpy(saved.secret,channelList[i].secret,16);memcpy(bytes+sizeof(head)+(i-1)*sizeof(saved),&saved,sizeof(saved));}
+ size_t body=head.count*sizeof(SavedChannel);mesh::Utils::sha256(head.hash,8,bytes+sizeof(head),body);memcpy(bytes,&head,sizeof(head));
+ Preferences p;bool saved=p.begin("meshmesh-mc",false)&&p.putBytes("channels",bytes,sizeof(head)+body)==sizeof(head)+body;p.end();
+ memset(bytes,0,sizeof(bytes));return saved;
 }
+bool MeshRadio::sending(uint64_t id) const{for(auto& wait:pending)if(wait.active&&wait.message.destination==id)return true;return false;}
 const channels::Channel* MeshRadio::channel(uint64_t id) const{int i=channelIndex(id);return i<0?nullptr:&channelList[i];}
 int MeshRadio::channelIndex(uint64_t id) const{for(unsigned i=0;i<channelCount;i++)if(channelList[i].id==id)return i;return -1;}
 MeshRadio::ChannelResult MeshRadio::addChannel(const String& name,const uint8_t secret[16],uint64_t* id){
@@ -394,8 +421,7 @@ MeshRadio::ChannelResult MeshRadio::createChannel(const String& name,uint64_t* i
  ChannelResult r=addChannel(name,key,id);memset(key,0,16);return r;
 }
 bool MeshRadio::removeChannel(uint64_t id){
- int i=channelIndex(id);if(i<=0||!core)return false;
- for(auto& wait:pending)if(wait.active&&wait.message.destination==id)return false;
+ int i=channelIndex(id);if(i<=0||!core||sending(id))return false;
  channels::Channel old=channelList[i];memmove(channelList+i,channelList+i+1,sizeof(channels::Channel)*(channelCount-i-1));channelCount--;channelList[channelCount]={};
  if(!saveChannels()){memmove(channelList+i+1,channelList+i,sizeof(channels::Channel)*(channelCount-i));channelList[i]=old;channelCount++;return false;}
  core->syncChannels();event="Channel removed: "+String(old.name);dirty=true;return true;

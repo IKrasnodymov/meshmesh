@@ -167,7 +167,20 @@ void threads(){conversationCount=0;for(unsigned i=0;i<meshRadio.channelCount;i++
 Peer* peerOf(uint64_t id){for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==id)return &meshRadio.peers[i];return nullptr;}
 String nameOf(uint64_t id){if(channels::isChannel(id)){const channels::Channel* c=meshRadio.channel(id);return c?String(c->name):t("Channel","Канал");}if(Peer* p=peerOf(id))return p->name;for(int i=meshRadio.historyCount-1;i>=0;i--)if(meshRadio.history[i].source==id)return meshRadio.history[i].name;return meshRadio.idText(id);}
 String readKey(uint64_t id){if(id==meshmesh::Broadcast)return "all";char b[15]={};unsigned n=0;do{b[n++]="0123456789abcdefghijklmnopqrstuvwxyz"[id%36];id/=36;}while(id);String key="r";while(n)key+=b[--n];return key;}
+// Read marks: one file in MeshMesh storage (NVS is small); a mark an older firmware left in NVS is read
+// once and removed when that chat is read again. Without the storage they stay in NVS.
+struct ReadFile{uint32_t version=1,count=0;ReadMark marks[65]={};uint32_t check=0;};
+uint32_t fnv(const uint8_t* p,size_t n){uint32_t h=2166136261u;while(n--)h=(h^*p++)*16777619u;return h;}
+bool marksLoaded=false;
+void loadMarks(){
+ marksLoaded=true;ReadFile* f=new ReadFile;
+ if(readStored("/meshmesh/read.bin","/meshmesh/read.tmp",f,sizeof(*f))){
+  if(f->version==1&&f->count<=65&&f->check==fnv((const uint8_t*)f,offsetof(ReadFile,check)))for(unsigned i=0;i<f->count&&markCount<65;i++)marks[markCount++]=f->marks[i];}
+ delete f;
+}
+bool saveMarks(){ReadFile* f=new ReadFile;f->count=markCount;for(unsigned i=0;i<markCount;i++)f->marks[i]=marks[i];f->check=fnv((const uint8_t*)f,offsetof(ReadFile,check));bool saved=writeStored("/meshmesh/read.bin","/meshmesh/read.tmp",f,sizeof(*f));delete f;return saved;}
 uint32_t readAt(uint64_t id){
+ if(!marksLoaded)loadMarks();
  for(unsigned i=0;i<markCount;i++)if(marks[i].id==id)return marks[i].at;
  uint32_t v=0;Preferences p;if(p.begin("meshmesh-ui",true)){v=p.getUInt(readKey(id).c_str(),0);p.end();}
  if(markCount<65)marks[markCount++]={id,v};return v; // cached: status bar needs unread totals every frame
@@ -176,8 +189,11 @@ unsigned unread(uint64_t id){uint32_t at=readAt(id);unsigned n=0;for(unsigned i=
 unsigned unreadTotal(){threads();unsigned n=0;for(unsigned i=0;i<conversationCount;i++)if(conversations[i])n+=unread(conversations[i]);return n;}
 void markRead(){
  uint32_t at=0;for(unsigned i=0;i<meshRadio.historyCount;i++){auto& m=meshRadio.history[i];if(belongs(m,recipient)&&!m.outgoing)at=max(at,m.timestamp);}
- if(at<=readAt(recipient))return;Preferences p;if(p.begin("meshmesh-ui",false)){p.putUInt(readKey(recipient).c_str(),at);p.end();}
+ if(at<=readAt(recipient))return;
  for(unsigned i=0;i<markCount;i++)if(marks[i].id==recipient)marks[i].at=at;
+ Preferences p;String key=readKey(recipient);
+ if(saveMarks()){if(p.begin("meshmesh-ui",false)){if(p.isKey(key.c_str()))p.remove(key.c_str());p.end();}}
+ else if(p.begin("meshmesh-ui",false)){p.putUInt(key.c_str(),at);p.end();}
 }
 void rememberComposer(){int chosen=-1;for(int i=0;i<16;i++)if(drafts[i].recipient==recipient){chosen=i;break;}if(chosen<0)for(int i=0;i<16;i++)if(!drafts[i].recipient){chosen=i;break;}if(chosen<0){chosen=0;for(int i=1;i<16;i++)if(drafts[i].touched<drafts[chosen].touched)chosen=i;}drafts[chosen].recipient=recipient;drafts[chosen].text=composer;drafts[chosen].touched=millis();}
 String restoredComposer(){for(auto& d:drafts)if(d.recipient==recipient)return d.text;return "";}
