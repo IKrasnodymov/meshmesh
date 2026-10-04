@@ -237,7 +237,7 @@ let route='home',param='',fetchedAt=Date.now(),clockBase={unix:0,at:0},refreshin
 // The site's chess page talks to a stock MeshCore companion instead of a board (web/chess-companion.js).
 let companion=null;
 let recipient='ALL',eventSeen=null,readInit=false,trackAt=0,deleteArmed='',wifiArmed=0,scopeRef=null,scopeManual=false,radarTimer=null,radarBusy=false;
-let chans=null,joinLink=null,chTab='tag',probeTimer=0;
+let chans=null,joinLink=null,chTab='tag',probeTimer=0,clockSynced=false;
 let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
 // Board family: 'compact' (128x64 screen, one button) or 'full' (320x240 screen and keyboard). Older firmware: board only.
@@ -263,6 +263,8 @@ function local(unix){if(!unix||unix<1700000000)return null;return new Date((unix
 const two=n=>String(n).padStart(2,'0');
 function clockText(){const d=local(deviceNow());return d?two(d.getUTCHours())+':'+two(d.getUTCMinutes()):'--:--'}
 function timeText(at){const d=local(at),now=local(deviceNow());if(!d)return'';return now&&d.toISOString().slice(0,10)!==now.toISOString().slice(0,10)?two(d.getUTCDate())+'.'+two(d.getUTCMonth()+1):two(d.getUTCHours())+':'+two(d.getUTCMinutes())}
+// In a bubble: the time of reception (of sending for our own), with the date when it is not today.
+function stampText(at){const d=local(at),now=local(deviceNow());if(!d)return'';const hm=two(d.getUTCHours())+':'+two(d.getUTCMinutes()),day=d.toISOString().slice(0,10);return !now||day===now.toISOString().slice(0,10)?hm:two(d.getUTCDate())+'.'+two(d.getUTCMonth()+1)+(day.slice(0,4)===now.toISOString().slice(0,4)?'':'.'+day.slice(2,4))+' '+hm}
 function ago(s){s=Math.max(0,s|0);return s<60?'сейчас':s<3600?(s/60|0)+' мин':s<86400?(s/3600|0)+' ч':(s/86400|0)+' д'}
 const age=p=>p.age_seconds+(Date.now()-fetchedAt)/1000;
 
@@ -384,7 +386,7 @@ function renderChat(){
  $('chatHint').textContent=isChan(recipient)?'':'✓✓ — доставлено';
  const rows=history.filter(m=>matches(m,recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length;
  if(box.dataset.fingerprint!==fingerprint){const near=document.documentElement.scrollHeight-window.scrollY-window.innerHeight<120,first=!box.dataset.fingerprint;box.dataset.fingerprint=fingerprint;
-  box.innerHTML=rows.length?rows.map(m=>{const named=!m.outgoing&&isChan(recipient),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):`<p>${esc(m.text)}</p>`}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${timeText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
+  box.innerHTML=rows.length?rows.map(m=>{const named=!m.outgoing&&isChan(recipient),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):`<p>${esc(m.text)}</p>`}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
   if(near||first)window.scrollTo(0,document.body.scrollHeight)}
  if(route==='chat')markRead();byteCount()}
 function byteCount(){const n=bytes($('text').value),l=messageLimit();$('byteCount').textContent=`${n} / ${l} байт`;$('byteCount').className='count '+(n>=l?'bad':n*10>=l*9?'warn':'');$('sendButton').disabled=!$('text').value.trim()||n>l;$('composeBox').classList.toggle('typing',n>0);return n}
@@ -776,6 +778,8 @@ async function roomPost(){const t=$('roomText').value.trim();if(!t)return;if(byt
 async function refresh(){if(refreshing||uploading||!auth||companion)return;refreshing=true;try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
+ // In the app the phone's clock sets an unset device clock once, so new messages get their reception time.
+ if(window.MeshNative&&!clockSynced&&!(status.unix_time>=1735689600)){clockSynced=true;const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
  await refreshChess(false,false);
  PAGES.server[0]=status.role==='room'?'Комната':'Репитер';
  if(route==='server')await loadServer(false);

@@ -34,6 +34,10 @@ WebView debugging is enabled (`chrome://inspect`).
 - `MeshService` — a foreground service: keeps the connection in the background; with the app minimized
   it reads `status` every 8 s and, when RX grows, the history; new incoming messages become
   notifications (tapping opens the chat); every 30 s it checks chess (“your move”).
+- The time in a chat is when the board received the message (sent, for your own), with the date
+  for earlier days. If the board clock is unset (Heltec and other boards without an RTC after a
+  restart), the app sets the phone's time once on connecting with the `clock` command; messages
+  received before that stay without a time.
 - `api/HttpApi` — Wi-Fi: the device's HTTP server (`src/Portal.cpp`) with Basic authentication.
 - `api/CommandApi` — USB and BLE: every page request becomes the command that
   the device's HTTP handler executes (`executeCommand`), with the same response codes.
