@@ -49,8 +49,8 @@ def main():
                 if url.path == '/':
                     self.reply(200, (ROOT / 'web/index.html').read_bytes(), 'text/html; charset=utf-8')
                 elif url.path == '/api/chess':
-                    game = parse_qs(url.query).get('id', [''])[0]
-                    self.reply(200, usb(f'chess show {game}') if game else usb('chess web'))
+                    query = parse_qs(url.query);game = query.get('id', [''])[0]
+                    self.reply(200, usb('chess rating') if 'rating' in query else usb(f'chess show {game}') if game else usb('chess web'))
                 elif url.path == '/api/connections':
                     self.reply(200, usb('connections'))
                 elif url.path == '/api/radar':

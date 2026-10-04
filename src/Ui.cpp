@@ -7,6 +7,7 @@
 #include "Internet.h"
 #include "Solitaire.h"
 #include "ChessNet.h"
+#include "ChessRating.h"
 #include "MeshServer.h"
 #include <Preferences.h>
 #include <Mm1Packet.h>
@@ -237,7 +238,7 @@ unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3
 String title(){
  if(locked)return config.name;
  switch(page){case Home:return "MeshMesh";case Threads:return t("Chats","Чаты");case Chat:return nameOf(recipient);case Map:return t("Map","Карта");case Nodes:return t("Nodes","Узлы");case Node:{Peer* p=focusedPeer();return p?String(p->name):t("Node","Узел");}
- case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Radar: signals","Радар: сигналы");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Radar: motion (CSI)","Радар: движение (CSI)");case NetList:return t("Internet over Wi-Fi","Интернет по Wi-Fi");case ChessList:return t("Chess","Шахматы");case ChessPick:return t("New chess game","Новая партия");case ChessBoard:return chessTitle();case RolePick:return t("Device mode","Режим работы");case ChannelAdd:return t("Add a channel","Добавить канал");case ChannelInfo:return nameOf(focusChannel);case ServerHome:return config.role==RoleRoom?t("Room server","Комната"):t("Repeater","Репитер");}return "";
+ case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Radar: signals","Радар: сигналы");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Radar: motion (CSI)","Радар: движение (CSI)");case NetList:return t("Internet over Wi-Fi","Интернет по Wi-Fi");case ChessList:return t("Chess","Шахматы")+" · ELO "+String(rating::book.myElo());case ChessPick:return t("New chess game","Новая партия");case ChessBoard:return chessTitle();case RolePick:return t("Device mode","Режим работы");case ChannelAdd:return t("Add a channel","Добавить канал");case ChannelInfo:return nameOf(focusChannel);case ServerHome:return config.role==RoleRoom?t("Room server","Комната"):t("Repeater","Репитер");}return "";
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;

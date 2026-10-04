@@ -1,4 +1,24 @@
 {
+ "39cb9385": {
+  "en": ": not confirmed, will resend",
+  "ru": ": не подтвердил, повторю автоматически",
+  "text": ": 未確認、自動で再送"
+ },
+ "37bc1d26": {
+  "en": ": signatures differ, the game is not rated",
+  "ru": ": подписи не сошлись, партия без рейтинга",
+  "text": "：署名不一致、レートなし"
+ },
+ "477dcb8c": {
+  "en": "Rating: ",
+  "ru": "Рейтинг: ",
+  "text": "レート: "
+ },
+ "227ccc52": {
+  "en": ", over the daily limit",
+  "ru": ", сверх дневного предела",
+  "text": "、1日の上限超え"
+ },
  "697bece7": {
   "en": ": challenge refused, no free board",
   "ru": ": вызов отклонён, нет свободной доски",
@@ -113,11 +133,6 @@
   "en": ": no confirmation for 24 h, R resends",
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": 24時間確認なし、Rで再送"
- },
- "39cb9385": {
-  "en": ": not confirmed, will resend",
-  "ru": ": не подтвердил, повторю автоматически",
-  "text": ": 未確認、自動で再送"
  },
  "576dfcbc": {
   "en": "Paused: access point on",
@@ -2428,16 +2443,6 @@
   "ru": "Ошибка шифрования",
   "text": "暗号テスト失敗"
  },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "オン"
- },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "オフ"
- },
  "47cf8db9": {
   "en": "New message from ",
   "ru": "Сообщение от ",
@@ -2467,6 +2472,16 @@
   "en": "Radio TX error",
   "ru": "Ошибка передачи по радио",
   "text": "無線送信エラー"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "オン"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "オフ"
  },
  "8baa6473": {
   "en": "Channel removed",
@@ -2527,6 +2542,11 @@
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "チャンネルは8個まで"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "連絡先"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -2743,6 +2763,26 @@
   "ru": "OK: вступить   BACK: отменить",
   "text": "OK: 参加   BACK: キャンセル"
  },
+ "7e847eaa": {
+  "en": "Games",
+  "ru": "Партии",
+  "text": "対局"
+ },
+ "55aaa48c": {
+  "en": "Rating",
+  "ru": "Рейтинг",
+  "text": "レート"
+ },
+ "bc812413": {
+  "en": "All boards busy: finish a game",
+  "ru": "Все доски заняты: завершите партию",
+  "text": "全盤使用中: 対局を終えて"
+ },
+ "5c2a0c3e": {
+  "en": "Challenge a chat contact",
+  "ru": "Вызвать чат-контакт",
+  "text": "チャット連絡先に申込"
+ },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
   "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
@@ -2752,6 +2792,60 @@
   "en": "Remove",
   "ru": "Удалить",
   "text": "削除"
+ },
+ "967075bd": {
+  "en": "Tabs",
+  "ru": "Разделы",
+  "text": "タブ"
+ },
+ "ae5eb2bd": {
+  "en": "Your rating",
+  "ru": "Ваш рейтинг",
+  "text": "あなたのレート"
+ },
+ "05fff3d6": {
+  "en": " in ",
+  "ru": " за ",
+  "text": " · "
+ },
+ "d4ee5f0f": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "партию",
+   "few": "партии",
+   "many": "партий"
+  },
+  "forms": {
+   "other": "{n}局"
+  }
+ },
+ "2c710473": {
+  "en": "No rated games yet",
+  "ru": "Партий на рейтинг пока нет",
+  "text": "レート対局はまだありません"
+ },
+ "62febccc": {
+  "en": "history after 2 games",
+  "ru": "история после 2 партий",
+  "text": "2局後に履歴表示"
+ },
+ "7e7e954a": {
+  "en": "Players",
+  "ru": "Игроки",
+  "text": "プレイヤー"
+ },
+ "10a029bd": {
+  "en": "your score",
+  "ru": "ваш счёт",
+  "text": "あなたの成績"
+ },
+ "997268e0": {
+  "en": "Rated games against contacts appear here",
+  "ru": "Здесь появятся соперники по партиям на рейтинг",
+  "text": "レート対局の相手がここに表示されます"
  },
  "d528eacc": {
   "en": "You play",
@@ -2773,6 +2867,31 @@
   "ru": "Случайно",
   "text": "ランダム"
  },
+ "96dcf5df": {
+  "en": "Game",
+  "ru": "Партия",
+  "text": "対局"
+ },
+ "155c2d96": {
+  "en": "ELO changes for both",
+  "ru": "ELO меняется у обоих",
+  "text": "双方のレートが変動"
+ },
+ "d25b4260": {
+  "en": "ELO stays",
+  "ru": "ELO не меняется",
+  "text": "レート変動なし"
+ },
+ "0ec65cbb": {
+  "en": "Rated",
+  "ru": "На рейтинг",
+  "text": "レート戦"
+ },
+ "2da2d675": {
+  "en": "Friendly",
+  "ru": "Товарищеская",
+  "text": "親善対局"
+ },
  "6ca6fac0": {
   "en": "No chat contacts yet",
   "ru": "Чат-контактов пока нет",
@@ -2788,11 +2907,6 @@
   "ru": "дождитесь объявления соперника",
   "text": "相手のアドバートを待ってください"
  },
- "7e847eaa": {
-  "en": "Games",
-  "ru": "Партии",
-  "text": "対局"
- },
  "c07ba764": {
   "en": "Challenge",
   "ru": "Вызвать",
@@ -2803,10 +2917,15 @@
   "ru": "Цвет",
   "text": "色"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "連絡先"
+ "256f90e4": {
+  "en": "Friendly",
+  "ru": "Товарищ.",
+  "text": "親善"
+ },
+ "7703bc73": {
+  "en": "Rated",
+  "ru": "Рейтинг",
+  "text": "レート"
  },
  "aa44e5b7": {
   "en": "Waiting for reply",
@@ -3268,6 +3387,46 @@
   "ru": "не доставлено, повтор через ",
   "text": "未配達、再送まで "
  },
+ "250419ab": {
+  "en": "Friendly game",
+  "ru": "Товарищеская",
+  "text": "親善対局"
+ },
+ "e1c84bdb": {
+  "en": "Rated game",
+  "ru": "На рейтинг",
+  "text": "レート戦"
+ },
+ "0e6d291b": {
+  "en": "Rated",
+  "ru": "В рейтинге",
+  "text": "レート反映"
+ },
+ "b5a8cab3": {
+  "en": "Over the daily limit",
+  "ru": "Сверх дневного предела",
+  "text": "1日の上限超え"
+ },
+ "0f2f2147": {
+  "en": "Not rated: signatures",
+  "ru": "Без рейтинга: подписи",
+  "text": "レートなし：署名"
+ },
+ "6ec28954": {
+  "en": "Not rated",
+  "ru": "Без рейтинга",
+  "text": "レートなし"
+ },
+ "26c29b90": {
+  "en": "Rating: checking",
+  "ru": "Рейтинг: проверка",
+  "text": "レート：確認中"
+ },
+ "aff64383": {
+  "en": "Rating: their signature",
+  "ru": "Рейтинг: ждём подпись",
+  "text": "レート：相手の署名待ち"
+ },
  "7aa40299": {
   "en": "With contacts",
   "ru": "С контактами",
@@ -3300,16 +3459,6 @@
   "forms": {
    "other": "{n}局"
   }
- },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "全盤使用中: 対局を終えて"
- },
- "5c2a0c3e": {
-  "en": "Challenge a chat contact",
-  "ru": "Вызвать чат-контакт",
-  "text": "チャット連絡先に申込"
  },
  "9b8ef234": {
   "en": "No games yet",

@@ -43,12 +43,12 @@ static void scenario(){
  {ChessMatch* g=chessNet.invite(peerId(0),chess::White);char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X yes",g->id);chessNet.receive(peerId(0),"Heltec V4",t);
   chessNet.events=0;for(int i=0;i<9;i++)tick();
   key(0x82);for(int i=0;i<3;i++)key(0xb6);touch('t',160,10);key(0x82);
-  for(int i=0;i<3;i++)key(0xb6);key(13);expect("chess list","\"page\":\"chess\"");touch('t',160,24+48+20);expect("game opens","\"page\":\"chess_board\"");
+  for(int i=0;i<3;i++)key(0xb6);key(13);expect("chess list","\"page\":\"chess\"");touch('t',160,46+44+20);expect("game opens","\"page\":\"chess_board\"");
   touch('t',4+4*24+12,25+6*24+12);expect("tap e2 takes the pawn","\"chess_held\":\"e2\"");touch('t',4+4*24+12,25+4*24+12);
   if(g->game.plies!=1){printf("FAIL e2-e4 by taps: %u plies\n",g->game.plies);exit(1);}shot("tdeck-chess");
   touch('t',160,10);touch('t',160,10);expect("chess list back to menu","\"page\":\"home\"");
-  key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);touch('t',160,30);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
-  touch('t',160,60+48+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
+  key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);touch('t',160,60);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
+  touch('t',160,88+44+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
  // Channels: "add a channel" row, the hashtag editor, a channel chat, its card from the footer "<" hint.
  key(0x82);key(0x81);expect("chats","\"page\":\"threads\"");touch('t',160,24+3*48+20);expect("add row","\"page\":\"channel_add\"");
  touch('t',160,24+20);expect("hashtag editor","\"editing\":true");touch('t',160,10);expect("editor cancelled","\"editing\":false");touch('t',160,10);expect("back to chats","\"page\":\"threads\"");
@@ -103,6 +103,19 @@ static void scenario(){
   // The game with the pawn on b7 opens with the cursor on c6: take b7, go to a8 and choose the piece.
   for(int i=1;i<=4;i++){openList(i);key(13);if(uiStatus().indexOf("\"chess_cursor\":\"c6\"")>=0){key(0xb4);key(0xb5);key(13);key(0xb4);key(0xb5);shot("chess-promo-target");key(13);key(0xb7);shot("chess-promotion");key(13);shot("chess-promoted");break;}}
   key(0x82);
+  // Rated results: my signature (made in ChessNet::tick), theirs as a message, the change on the board and
+  // the rating tab with two games.
+  {auto sayLong=[](int peer,const char* name,unsigned id,const char* body){char t[160];snprintf(t,sizeof t,"\xe2\x99\x9f%04X %s",id,body);chessNet.receive(peerId(peer),name,t);};
+   char sig[rating::SigTextSize+1],body[128];uint8_t raw[64];memset(raw,0x33,64);rating::sigText(raw,sig);
+   ChessMatch* d=chessNet.invite(peerId(3),chess::White);sayId(3,"Игорь T-Deck",d->id,"yes");play(3,"Игорь T-Deck",d,{"f2f3","e7e5","g2g4","d8h4"});
+   for(int i=0;i<2;i++){chessNet.tick();tick();}
+   snprintf(body,sizeof body,"sig 1791140000 %s",sig);sayLong(5,"Марат",b->id,body);snprintf(body,sizeof body,"sig 1791150000 %s",sig);sayLong(3,"Игорь T-Deck",d->id,body);
+   for(int i=0;i<2;i++){chessNet.tick();tick();}
+   if(b->sign!=ChessMatch::SignStored||d->sign!=ChessMatch::SignStored||rating::book.myElo()==rating::Start){printf("FAIL rated results: %d %d %d\n",b->sign,d->sign,rating::book.myElo());exit(1);}
+   openList(0);key(0xb7);shot("chess-rating");key(0xb4);
+   char want[32];snprintf(want,sizeof want,"\"chess_game\":\"%04X\"",b->id);
+   for(int i=1;i<=5;i++){openList(i);key(13);if(uiStatus().indexOf(want)>=0){shot("chess-rated-result");break;}}
+   key(0x82);key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);key(13);shot("chess-pick-rated");key(0x86);key(0x82);}
   // Locked: a challenge arrives; its card stands above the messages, without names when details are off,
   // and holding OK unlocks straight into the game.
   key(0x88);sayId(5,"Марат",0x5C3E,"new b · шахматы MeshMesh");tick();shot("locked-chess");

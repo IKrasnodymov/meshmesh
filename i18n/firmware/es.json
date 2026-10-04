@@ -1,4 +1,24 @@
 {
+ "39cb9385": {
+  "en": ": not confirmed, will resend",
+  "ru": ": не подтвердил, повторю автоматически",
+  "text": ": sin confirmar, se reenviará"
+ },
+ "37bc1d26": {
+  "en": ": signatures differ, the game is not rated",
+  "ru": ": подписи не сошлись, партия без рейтинга",
+  "text": ": las firmas no coinciden, partida sin ELO"
+ },
+ "477dcb8c": {
+  "en": "Rating: ",
+  "ru": "Рейтинг: ",
+  "text": "ELO: "
+ },
+ "227ccc52": {
+  "en": ", over the daily limit",
+  "ru": ", сверх дневного предела",
+  "text": ", fuera del límite diario"
+ },
  "697bece7": {
   "en": ": challenge refused, no free board",
   "ru": ": вызов отклонён, нет свободной доски",
@@ -113,11 +133,6 @@
   "en": ": no confirmation for 24 h, R resends",
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": sin confirmación en 24 h, R reenvía"
- },
- "39cb9385": {
-  "en": ": not confirmed, will resend",
-  "ru": ": не подтвердил, повторю автоматически",
-  "text": ": sin confirmar, se reenviará"
  },
  "576dfcbc": {
   "en": "Paused: access point on",
@@ -2439,16 +2454,6 @@
   "ru": "Ошибка шифрования",
   "text": "Prueba de cifrado fallida"
  },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "Sí"
- },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "No"
- },
  "47cf8db9": {
   "en": "New message from ",
   "ru": "Сообщение от ",
@@ -2478,6 +2483,16 @@
   "en": "Radio TX error",
   "ru": "Ошибка передачи по радио",
   "text": "Error de TX de radio"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "Sí"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "No"
  },
  "8baa6473": {
   "en": "Channel removed",
@@ -2538,6 +2553,11 @@
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "Máximo 8 canales"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "Contacto"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -2754,6 +2774,26 @@
   "ru": "OK: вступить   BACK: отменить",
   "text": "OK: unirse   BACK: cancelar"
  },
+ "7e847eaa": {
+  "en": "Games",
+  "ru": "Партии",
+  "text": "Partidas"
+ },
+ "55aaa48c": {
+  "en": "Rating",
+  "ru": "Рейтинг",
+  "text": "Clasificación"
+ },
+ "bc812413": {
+  "en": "All boards busy: finish a game",
+  "ru": "Все доски заняты: завершите партию",
+  "text": "Tableros ocupados: termina una partida"
+ },
+ "5c2a0c3e": {
+  "en": "Challenge a chat contact",
+  "ru": "Вызвать чат-контакт",
+  "text": "Retar a un contacto de chat"
+ },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
   "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
@@ -2763,6 +2803,61 @@
   "en": "Remove",
   "ru": "Удалить",
   "text": "Borrar"
+ },
+ "967075bd": {
+  "en": "Tabs",
+  "ru": "Разделы",
+  "text": "Pestañas"
+ },
+ "ae5eb2bd": {
+  "en": "Your rating",
+  "ru": "Ваш рейтинг",
+  "text": "Tu ELO"
+ },
+ "05fff3d6": {
+  "en": " in ",
+  "ru": " за ",
+  "text": " en "
+ },
+ "d4ee5f0f": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "партию",
+   "few": "партии",
+   "many": "партий"
+  },
+  "forms": {
+   "one": "{n} partida",
+   "other": "{n} partidas"
+  }
+ },
+ "2c710473": {
+  "en": "No rated games yet",
+  "ru": "Партий на рейтинг пока нет",
+  "text": "Aún no hay partidas con ELO"
+ },
+ "62febccc": {
+  "en": "history after 2 games",
+  "ru": "история после 2 партий",
+  "text": "historial tras 2 partidas"
+ },
+ "7e7e954a": {
+  "en": "Players",
+  "ru": "Игроки",
+  "text": "Jugadores"
+ },
+ "10a029bd": {
+  "en": "your score",
+  "ru": "ваш счёт",
+  "text": "tu marcador"
+ },
+ "997268e0": {
+  "en": "Rated games against contacts appear here",
+  "ru": "Здесь появятся соперники по партиям на рейтинг",
+  "text": "Aquí aparecerán los rivales de partidas con ELO"
  },
  "d528eacc": {
   "en": "You play",
@@ -2784,6 +2879,31 @@
   "ru": "Случайно",
   "text": "Al azar"
  },
+ "96dcf5df": {
+  "en": "Game",
+  "ru": "Партия",
+  "text": "Partida"
+ },
+ "155c2d96": {
+  "en": "ELO changes for both",
+  "ru": "ELO меняется у обоих",
+  "text": "ELO cambia para ambos"
+ },
+ "d25b4260": {
+  "en": "ELO stays",
+  "ru": "ELO не меняется",
+  "text": "ELO no cambia"
+ },
+ "0ec65cbb": {
+  "en": "Rated",
+  "ru": "На рейтинг",
+  "text": "Con ELO"
+ },
+ "2da2d675": {
+  "en": "Friendly",
+  "ru": "Товарищеская",
+  "text": "Amistosa"
+ },
  "6ca6fac0": {
   "en": "No chat contacts yet",
   "ru": "Чат-контактов пока нет",
@@ -2799,11 +2919,6 @@
   "ru": "дождитесь объявления соперника",
   "text": "el anuncio del otro jugador"
  },
- "7e847eaa": {
-  "en": "Games",
-  "ru": "Партии",
-  "text": "Partidas"
- },
  "c07ba764": {
   "en": "Challenge",
   "ru": "Вызвать",
@@ -2814,10 +2929,15 @@
   "ru": "Цвет",
   "text": "Color"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "Contacto"
+ "256f90e4": {
+  "en": "Friendly",
+  "ru": "Товарищ.",
+  "text": "Amist."
+ },
+ "7703bc73": {
+  "en": "Rated",
+  "ru": "Рейтинг",
+  "text": "Con ELO"
  },
  "aa44e5b7": {
   "en": "Waiting for reply",
@@ -3279,6 +3399,46 @@
   "ru": "не доставлено, повтор через ",
   "text": "no entregado, reintento en "
  },
+ "250419ab": {
+  "en": "Friendly game",
+  "ru": "Товарищеская",
+  "text": "Amistosa"
+ },
+ "e1c84bdb": {
+  "en": "Rated game",
+  "ru": "На рейтинг",
+  "text": "Con ELO"
+ },
+ "0e6d291b": {
+  "en": "Rated",
+  "ru": "В рейтинге",
+  "text": "En el ELO"
+ },
+ "b5a8cab3": {
+  "en": "Over the daily limit",
+  "ru": "Сверх дневного предела",
+  "text": "Fuera del límite diario"
+ },
+ "0f2f2147": {
+  "en": "Not rated: signatures",
+  "ru": "Без рейтинга: подписи",
+  "text": "Sin ELO: firmas"
+ },
+ "6ec28954": {
+  "en": "Not rated",
+  "ru": "Без рейтинга",
+  "text": "Sin ELO"
+ },
+ "26c29b90": {
+  "en": "Rating: checking",
+  "ru": "Рейтинг: проверка",
+  "text": "ELO: comprobando"
+ },
+ "aff64383": {
+  "en": "Rating: their signature",
+  "ru": "Рейтинг: ждём подпись",
+  "text": "ELO: falta su firma"
+ },
  "7aa40299": {
   "en": "With contacts",
   "ru": "С контактами",
@@ -3313,16 +3473,6 @@
    "one": "{n} partida",
    "other": "{n} partidas"
   }
- },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "Tableros ocupados: termina una partida"
- },
- "5c2a0c3e": {
-  "en": "Challenge a chat contact",
-  "ru": "Вызвать чат-контакт",
-  "text": "Retar a un contacto de chat"
  },
  "9b8ef234": {
   "en": "No games yet",

@@ -218,10 +218,10 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 
 <section class="page" id="p-game" hidden><div class="game" id="game"></div><div class="gstat" id="gameStat"></div><div class="btns"><button class="btn" id="gameUndo">Отмена</button><button class="btn" id="gameHint">Подсказка</button><button class="btn" id="gameCollect">Собрать в дома</button></div><div class="btns" style="margin-top:8px"><button class="btn" id="gameNew">Новая партия</button><button class="btn" id="gameDraw">Сдача по 1</button></div><p class="small faint" style="margin:10px 4px">Нажмите карту, затем стопку, куда её положить; повторное нажатие кладёт карту само. Партия идёт в этом браузере, отдельно от «Косынки» на экране M9.</p></section>
 
-<section class="page" id="p-chess" hidden><div class="list" id="chessList"></div>
-<h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="list" id="chessPeers"></div>
+<section class="page" id="p-chess" hidden><div class="tabs" id="chessView" hidden></div><div id="chessGames"><div class="list" id="chessList"></div>
+<h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="tabs" id="chessRatedPick" hidden></div><div class="list" id="chessPeers"></div>
 <div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button><button class="btn" id="chessAlerts" hidden></button></div>
-<p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></section>
+<p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div></section>
 
 <section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
 <div><div class="card cstate" id="cState"></div><div class="offer" id="cOffer" hidden></div><div class="btns" id="cActs"></div><div class="card mvlist" id="cMoves"></div></div></div></section>
@@ -803,6 +803,8 @@ async function buildMap(e){e.preventDefault();const b=$('buildButton');b.disable
 // Chess with contacts. The device keeps the rules, the games and the radio commands (src/ChessNet.cpp);
 // this page shows them, sends moves through /api/command and announces the other player's moves.
 let chess={games:[],events:0,event:'',waiting:0},chessLoaded=false,chessDetail=null,chessSel=null,chessPromo=null,chessArmed='',chessQuiet=false;
+// Rating (firmware with "chess rating"; the companion page has none): the tab, the rated choice for new games and the last answer of "chess rating".
+let chessTab=store('chess-tab')||'games',chessRated=store('chess-rated')??true,chessRating=null,chessRatingAt='';
 let chessColor=store('chess-color')??2,chessSound=store('chess-sound')||false,chessAudio=null;
 // System notifications while the tab is in the background: only on HTTPS (the site's chess page), not in the app (it notifies itself).
 const chessAlertsUsable=typeof Notification!=='undefined'&&typeof window!=='undefined'&&window.isSecureContext&&!window.MeshHost;let chessAlerts=chessAlertsUsable&&!!store('chess-alerts')&&Notification.permission==='granted';
@@ -833,6 +835,9 @@ function chessState(g,board){
 function chessTone(g){if(g.state==='over'){const won=g.result===g.color;return won?'ok':g.result&&g.result!=='draw'&&g.reason!=='declined'&&g.reason!=='cancelled'?'bad':'muted'}return needsMe(g)?'acc':'muted'}
 function deliveryText(g){if(g.out_status!==4)return {1:'отправляется…',2:'отправлено, ждём подтверждения',3:'доставлено'}[g.out_status]||'';
  if(g.auto_stopped)return'не доставлено за сутки — нажмите «Повторить отправку»';const s=g.retry_in;return s<0?'не доставлено, повторяю':s<60?'не доставлено, повтор сейчас':`не доставлено, повтор через ${Math.ceil(s/60)} мин`}
+function ratingText(g){if(g.rated===undefined)return'';if(!g.rated)return'Товарищеская';if(g.state!=='over')return'На рейтинг';
+ if(g.sign==='stored'){if(g.elo_before===undefined)return'В рейтинге';const d=g.elo_after-g.elo_before;return g.elo_counted?`ELO ${g.elo_before} → ${g.elo_after} (${d>=0?'+':''}${d})`:'Сверх дневного предела: не в рейтинге'}
+ if(g.sign==='bad')return'Без рейтинга: подписи не сошлись';if(g.sign==='none')return'Без рейтинга';return g.their_signed?'Рейтинг: проверка подписи':'Рейтинг: ждём подпись соперника'}
 function chessTileText(){const w=chess.waiting,n=chess.games.length;return w?plural(w,'ждёт хода','ждут хода','ждут хода'):n?plural(n,'партия','партии','партий'):'С контактами'}
 
 // News: compared with the previous list, so it does not depend on the device's menu language.
@@ -856,19 +861,38 @@ async function refreshChess(quiet,draw=true){
  let next;try{next=await request('/api/chess')}catch{return}
  if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}
   if(news.act&&chessAlerts&&document.hidden)try{const n=new Notification('Шахматы',{body:news.text,tag:'meshmesh-chess'});n.onclick=()=>{window.focus();if(news.game)go('board/'+news.game);n.close()}}catch{}}}
- chess=next;chessLoaded=true;if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
+ chess=next;chessLoaded=true;
+ const rk=chess.elo+'/'+chess.games.filter(g=>g.sign==='stored').length;if(chess.elo!==undefined&&route==='chess'&&(chessRatingAt!==rk||!chessRating)){chessRatingAt=rk;try{chessRating=await request('/api/chess?rating=1')}catch{}}if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
  if(route==='board'&&chessGame(param)){try{const d=await request('/api/chess?id='+param);chessDetail={...d,at:Date.now()}}catch{chessDetail=null}
   if(chessGame(param).unseen)command('chess seen '+param).catch(()=>{})}
  if(draw){if(route==='chess')renderChessList();else if(route==='board')renderBoard();else if(route==='home')renderHome();hud()}}
 
+// Expected change of my rating against a player (K: 32 for the first 20 counted games, then 20), as on the device.
+function eloChange(id){const r=chessRating;if(!r)return null;const o=(r.players||[]).find(p=>p.id===id),them=o?o.elo:1500,k=(r.games||0)<20?32:20,e=1/(1+Math.pow(10,(them-r.elo)/400));return {win:Math.round(k*(1-e)),loss:Math.round(-k*e),them}}
+function renderChessRating(){
+ const r=chessRating;if(!r){$('chessRatingView').innerHTML='<div class="empty" style="padding:28px 16px">Загрузка рейтинга…</div>';return}
+ const h=r.history||[],n=r.wins+r.draws+r.losses;let chart='';
+ if(h.length>=2){let lo=Math.min(...h),hi=Math.max(...h);if(hi-lo<10){lo-=5;hi+=5}const W=180,H=60,x=i=>4+i*(W-12)/(h.length-1),y=v=>6+(H-12)*(hi-v)/(hi-lo),pts=h.map((v,i)=>x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ');
+  chart=`<svg viewBox="0 0 ${W} ${H}" style="flex:1;min-width:0;height:64px" role="img" aria-label="Рейтинг за ${h.length} партий: от ${Math.min(...h)} до ${Math.max(...h)}"><line x1="0" y1="${H-6}" x2="${W}" y2="${H-6}" stroke="var(--line)"/><polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" points="${pts}"/><circle cx="${x(h.length-1)}" cy="${y(h[h.length-1])}" r="4" fill="var(--accent)"/></svg>`}
+ else chart='<small class="faint" style="flex:1;text-align:center">история — после двух партий на рейтинг</small>';
+ const diff=h.length>=2?h[h.length-1]-h[0]:0;
+ $('chessRatingView').innerHTML=`<div class="card pad" style="display:flex;gap:12px;align-items:center"><div><small class="muted">Ваш рейтинг</small><div style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">${r.elo}</div>${h.length>=2?`<small class="${diff>=0?'ok':'bad'}">${diff>=0?'+':''}${diff} за ${plural(h.length-1,'партию','партии','партий')}</small>`:''}</div>${chart}</div>
+<p class="small muted" style="margin:8px 4px">${n?`${plural(n,'партия','партии','партий')} на рейтинг: <span class="ok">+${r.wins}</span> =${r.draws} <span class="bad">−${r.losses}</span>`:'Партий на рейтинг пока нет'} · записей в журнале: ${r.records} из ${r.max_records}</p>
+<h3>Игроки</h3>${(r.players||[]).length?`<div class="list">${r.players.map((p,i)=>{const c=peer(p.id),name=c?c.name:p.name||p.id;return `<div class="row">${avatar(p.id,name,1)}<span class="main"><b>${i+1}. ${esc(name)}</b><small>${plural(p.games,'партия','партии','партий')} в рейтинге · ваш счёт +${p.wins} =${p.draws} −${p.losses}</small></span><span class="side"><b>${p.elo}</b></span></div>`}).join('')}</div>`:'<p class="small faint" style="margin:8px 4px">Здесь появятся соперники по партиям на рейтинг.</p>'}
+<p class="small faint" style="margin:10px 4px">Партия на рейтинг засчитывается, когда оба игрока подписали её результат ключом своего узла. Рейтинг ELO: начальный 1500, коэффициент 32 первые 20 партий, затем 20; с одним соперником в сутки засчитываются 3 партии.</p>`}
 function renderChessList(){
+ const rated=chess.elo!==undefined;$('chessView').hidden=!rated;$('chessRatedPick').hidden=!rated;
+ if(rated)$('chessView').innerHTML=[['games','Партии'+(chess.waiting?` (${chess.waiting})`:'')],['rating','Рейтинг · '+chess.elo]].map(([k,n])=>`<button data-chessview="${k}" class="${k===chessTab?'on':''}">${n}</button>`).join('');
+ const showRating=rated&&chessTab==='rating';$('chessGames').hidden=showRating;$('chessRatingView').hidden=!showRating;if(showRating){renderChessRating();return}
+ $('chessRatedPick').innerHTML=[[true,'На рейтинг'],[false,'Товарищеская']].map(([v,n])=>`<button data-chessrated="${v}" class="${v===chessRated?'on':''}">${n}</button>`).join('');
  const rank=g=>needsMe(g)?0:g.state==='over'?2:1,games=[...chess.games].sort((a,b)=>rank(a)-rank(b)||(b.updated||0)-(a.updated||0));
  $('chessList').innerHTML=games.length?games.map(g=>{const p=peer(g.peer),move=g.last_san&&g.state!=='invited'?' · '+ruSan(g.last_san):'',bad=g.out_status===4&&g.state!=='over';
-  return `<button class="row" data-go="board/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b><span class="disc ${g.color[0]}"></span>${esc(g.name)}</b><small class="${bad?'bad':chessTone(g)}">${esc(bad?deliveryText(g):chessState(g)+move)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${needsMe(g)?'<span class="pill">!</span>':''}</span></button>`}).join('')
+  const rt=g.sign==='stored'&&g.elo_counted?` · ${g.elo_after-g.elo_before>=0?'+':''}${g.elo_after-g.elo_before}`:'';
+  return `<button class="row" data-go="board/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b><span class="disc ${g.color[0]}"></span>${esc(g.name)}</b><small class="${bad?'bad':chessTone(g)}">${esc(bad?deliveryText(g):chessState(g)+move+rt)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${needsMe(g)?'<span class="pill">!</span>':''}</span></button>`}).join('')
   :`<div class="empty" style="padding:28px 16px">${ic('chess')}Партий пока нет<small>Выберите цвет и вызовите чат-контакт ниже.</small></div>`;
  $('chessColors').innerHTML=['Белыми','Чёрными','Случайно'].map((n,i)=>`<button data-chesscolor="${i}" class="${i===chessColor?'on':''}">${i<2?`<span class="disc ${'wb'[i]}"></span>`:''}${n}</button>`).join('');
  const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
- $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
+ $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${rated&&chessRated&&eloChange(p.id)?(c=>`ELO ${c.them} · <span class="ok">+${c.win}</span>/<span class="bad">${c.loss}</span> · `)(eloChange(p.id)):''}${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
   :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите ${companion?'себя кнопкой «Объявить» выше':'узел в разделе «Узлы»'} и дождитесь объявления соперника.</p>`;
  $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`;
  $('chessAlerts').hidden=!chessAlertsUsable;if(chessAlertsUsable)$('chessAlerts').innerHTML=`${ic('mail',chessAlerts?'acc':'faint')}Уведомления в фоне: ${Notification.permission==='denied'?'запрещены в браузере':chessAlerts?'вкл.':'выкл.'}`}
@@ -891,7 +915,8 @@ function renderBoard(){
  $('cTop').innerHTML=`<span class="disc ${mine?'b':'w'}"></span><b>${esc(g.name)}</b><small class="muted">${p&&p.heard?ago(age(p))+(age(p)<60?'':' назад'):''}</small>`;
  $('cBottom').innerHTML=`<span class="disc ${mine?'w':'b'}"></span><b>Вы</b>${diff?`<span class="adv ${diff>0?'ok':'bad'}">${diff>0?'+':''}${diff}</span>`:''}`;
  const heard=p&&p.heard?(age(p)<60?'соперник слышен сейчас':'соперник слышен '+ago(age(p))+' назад'):'соперник не слышен с запуска',sub=g.out_status===4?`<small class="bad">${deliveryText(g)}</small><small>${heard}</small>`:!g.my_turn&&g.state!=='over'&&g.out_status?`<small>${deliveryText(g)}</small>`:g.draw_offer==='mine'&&g.state==='playing'?'<small>Вы предложили ничью</small>':'';
- $('cState').innerHTML=`<b class="${chessTone(g)}">${esc(chessState(g,true))}</b>${sub}`;
+ const rline=ratingText(g);
+ $('cState').innerHTML=`<b class="${chessTone(g)}">${esc(chessState(g,true))}</b>${sub}${rline?`<small class="${g.sign==='bad'?'bad':g.sign==='stored'&&g.elo_counted?'acc':'muted'}">${esc(rline)}</small>`:''}`;
  $('cOffer').hidden=!(g.state==='playing'&&g.draw_offer==='theirs');$('cOffer').innerHTML=`<span>${esc(g.name)} предлагает ничью</span><button class="btn primary" data-chess="draw">Согласиться</button>`;
  const acts=[],armed=a=>chessArmed===a?' armed':'';
  if(g.out_status===4&&g.state!=='over')acts.push(['resend','Повторить отправку','primary']);
@@ -908,14 +933,16 @@ function renderBoard(){
 async function chessCommand(line,ok,tone='ok'){chessQuiet=true;try{const r=await command(line);if(ok)notify(ok,tone);return r}catch(e){notify(String(e.message).replace(/^ERR\s*/,'Не выполнено: '),'bad');return null}finally{await refreshChess(true);chessQuiet=false}}
 async function chessClick(d){
  if(d.chesscolor!==undefined){chessColor=+d.chesscolor;store('chess-color',chessColor);renderChessList();return}
- if(d.invite){const r=await chessCommand(`chess invite ${d.invite} ${'wbr'[chessColor]}`);if(r){notify(`Вызов отправлен: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
+ if(d.chessview){chessTab=d.chessview;store('chess-tab',chessTab);if(chessTab==='rating')chessRatingAt='';refreshChess(true);renderChessList();return}
+ if(d.chessrated!==undefined){chessRated=d.chessrated==='true';store('chess-rated',chessRated);renderChessList();return}
+ if(d.invite){const r=await chessCommand(`chess invite ${d.invite} ${'wbr'[chessColor]}${chess.elo!==undefined&&!chessRated?' friendly':''}`);if(r){notify(`Вызов отправлен: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
  const g=chessGame(param);if(!g)return;
  if(d.promo){const from=chessPromo;chessPromo=null;if(d.promo==='x'||!from){renderBoard();return}await chessMove(sqName(from.from)+sqName(from.to)+d.promo);return}
  if(d.sq!==undefined){await chessTap(+d.sq,g);return}
  const a=d.chess;
  if((a==='resign'||a==='remove')&&chessArmed!==a){chessArmed=a;renderBoard();setTimeout(()=>{if(chessArmed===a){chessArmed='';renderBoard()}},4000);return}
  chessArmed='';
- if(a==='rematch'){const r=await chessCommand(`chess invite ${g.peer} ${g.color==='white'?'b':'w'}`);if(r){notify(`Реванш: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
+ if(a==='rematch'){const r=await chessCommand(`chess invite ${g.peer} ${g.color==='white'?'b':'w'}${g.rated===false?' friendly':''}`);if(r){notify(`Реванш: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
  const said={accept:['Вызов принят','ok'],decline:[g.state==='invited'?'Вызов отклонён':'Вызов отменён','muted'],draw:[g.draw_offer==='theirs'?'Ничья принята':'Ничья предложена','ok'],resign:['Вы сдались','muted'],resend:['Отправлено повторно','ok'],remove:['Партия удалена','muted']}[a];
  if(!said)return;const r=await chessCommand(`chess ${a} ${g.id}`,said[0],said[1]);if(r&&a==='remove')go('chess')}
 async function chessTap(s,g){
@@ -934,9 +961,9 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
   if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy){chanClick(d);return}
-  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.promo){chessClick(d);return}
+  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
   else if(d.csi)radarAction({action:'csi',role:d.csi}).then(pollRadar)});

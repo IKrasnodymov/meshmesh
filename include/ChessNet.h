@@ -24,6 +24,12 @@ struct ChessMatch {
   bool moveOpen=false;uint8_t moveStatus=0;uint32_t moveId=0;
   // Automatic resending (not saved): next attempt, last attempt, start of the unconfirmed period.
   uint32_t retryAt=0,triedAt=0,openSince=0;uint8_t retries=0;bool autoStopped=false;
+  // Rated games (ChessRating.h): the challenge said "r"; at the end both players sign the same result.
+  enum Sign:uint8_t {SignNone,SignDue,SignSent,SignStored,SignBad};
+  bool rated=false;uint8_t peerKey[32]={};
+  uint8_t sign=SignNone;bool theirSigned=false;
+  uint32_t myTime=0,theirTime=0;uint8_t mySig[64]={},theirSig[64]={};
+  bool sigOpen=false;uint8_t sigStatus=0;uint32_t sigId=0; // my signature until its ACK
   bool active() const{return state==Inviting||state==Invited||state==Playing;}
   bool myTurn() const{return state==Playing&&game.pos.side==mine;}
   bool won() const{return (result==WhiteWon&&mine==chess::White)||(result==BlackWon&&mine==chess::Black);}
@@ -43,7 +49,7 @@ class ChessNet {
   // From MeshRadio: a direct message from a known contact. True when it was a chess command.
   bool receive(uint64_t from,const char* name,const char* text);
   void delivery(uint32_t id,uint8_t status);
-  ChessMatch* invite(uint64_t peer,int color);        // color: White, Black or 2 for random
+  ChessMatch* invite(uint64_t peer,int color,bool rated=true); // color: White, Black or 2 for random
   bool accept(ChessMatch& m);bool decline(ChessMatch& m);
   bool move(ChessMatch& m,chess::Move move);
   bool offerDraw(ChessMatch& m);bool acceptDraw(ChessMatch& m);bool resign(ChessMatch& m);
@@ -65,6 +71,7 @@ class ChessNet {
   bool sendMove(ChessMatch& m);
   String moveText(const ChessMatch& m) const;
   void retry(ChessMatch& m);
+  bool sendSig(ChessMatch& m);void signResult(ChessMatch& m);void storeResult(ChessMatch& m);bool core(const ChessMatch& m,uint8_t* out) const;
   void confirmed(ChessMatch& m);
   void received(ChessMatch& m,bool move);
   void finish(ChessMatch& m,ChessMatch::Result result,ChessMatch::Reason reason);

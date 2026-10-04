@@ -22,11 +22,12 @@ explanation for a human goes there.
 
 | Text | Meaning |
 |---|---|
-| `♟3F2A new w · шахматы MeshMesh: вы играете чёрными` | invitation; `w`/`b` — the sender's color (the trailing Russian text reads “MeshMesh chess: you play black”) |
+| `♟3F2A new w r · шахматы MeshMesh: вы играете чёрными` | invitation; `w`/`b` — the sender's color, `r` — rated (the trailing Russian text reads “MeshMesh chess: you play black”) |
 | `♟3F2A yes` / `♟3F2A no` | accept / decline (or cancel your own invitation before the first move) |
 | `♟3F2A 5 g1f3 3. Nf3` | move: half-move number, the move in UCI (`e7e8q` — promotion), notation for a human |
 | `♟3F2A draw?` / `♟3F2A draw` | offer a draw / accept the offered draw |
 | `♟3F2A resign` | resign |
+| `♟3F2A sig 1791140000 <base64>` | the signature of a rated game's result (see “ELO rating”) |
 
 Reception: commands are accepted only in direct messages from the contact of that game.
 A move counts if the half-move number is the next one, it is the opponent's turn and the move is legal
@@ -63,6 +64,53 @@ repetition, 50 moves without a capture or a pawn move, insufficient material, th
 A person with the stock MeshCore app can play by typing the commands manually
 (for example `♟3F2A 2 e7e5`) — this was tested with a board that shows these messages
 as an ordinary chat; there is no convenient interface for them.
+
+## ELO rating
+
+A game is rated (the default) or friendly: the choice is the “Game” row on the M9 challenge screen
+(the F key or a tap), a switch on the web page, `chess invite NODE w|b|r friendly` over USB.
+A rated challenge carries the `r` mark (`♟3F2A new w r · …`); by accepting it the opponent agrees to a rated game.
+Older versions and the companion page do not read the mark and play a friendly game.
+
+**Signing the result.** When a game is over (mate, stalemate, resignation, a draw and so on) and each side
+made at least one move, each side, in the main loop (not in the radio handler), builds the same record and
+signs it with its MeshCore node key (Ed25519):
+
+| Field | Bytes |
+|---|---|
+| `MMR1` | 4 |
+| White's key, Black's key | 32 + 32 |
+| game number, result (1 White, 2 Black, 3 draw), reason | 2 + 1 + 1 |
+| half-move count, the first 16 bytes of SHA-256 of the move list | 2 + 16 |
+| flags (bit 0 — rated) | 1 |
+
+These 91 bytes and the signer's clock (Unix time, 0 when the clock is not set) are signed. The signature
+goes out as `♟3F2A sig 1791140000 <88 base64 characters>` with an ACK and the same retries as a move;
+R resends it at once. The opponent's signature is checked with their key from the contact (remembered at the
+challenge); if the sides' records differ (a lost move, for example), the signature does not match and the game
+stays unrated. A record with both signatures checked is kept; a second copy of the same record does not count.
+
+**Calculation.** ELO is replayed from the kept records in one order (by the earlier of the two times,
+then by the moves digest), so the same records give the same numbers on every device. The starting
+rating is 1500; K = 32 for a player's first 20 counted games, then 20; the expected score is
+`1/(1+10^((Rb−Ra)/400))`. Three games with one opponent per UTC day count; the rest are kept and shown
+but do not change the rating (“over the daily limit”). The score against each opponent
+(+wins =draws −losses) covers all kept games.
+
+**Storage.** `/meshmesh/rating.bin` in LittleFS (`MMR1`, players, records, CRC-32; written through
+`rating.new`/`rating.old` like the games). Up to 128 records on ESP32 and 40 on GAT562; when full, the
+oldest record moves into the players' base and the ratings do not change. Up to 32 players.
+
+**Where it shows.** M9 and T-Deck: the title “Chess · ELO 1520”, the “Rating” tab (◂▸): the rating, the
+change over the latest games and a chart, players with their rating and your score; on the challenge
+screen — the opponent's ELO and what a win gives and a loss takes; on the board of a finished game —
+“ELO 1516 (+16)” or the signature state (“their signature”, “signatures”). Web page and app: the
+“Games / Rating” tabs, the “Rated / Friendly” switch, the forecast next to contacts, the rating line on the board
+(`GET /api/chess?rating=1`, USB `chess rating`; the `rated`, `sign`, `elo_before`, `elo_after` fields in the
+game list). The Heltec and GAT562 show the rating change in a pop-up.
+
+Signing does not rule out boosting a rating with a second device of your own: it proves that both keys
+accepted the result, not that different people hold them. The daily limit restricts it.
 
 ## M9 screen
 
@@ -154,9 +202,15 @@ to `chess.old`, then the new one to `chess.bin`; if the main file is corrupted w
 `chess.old` is used. On load the moves are replayed by the rules; a game with an
 illegal move is discarded. A command that had no ACK before the restart
 is considered undelivered and is retried automatically. The SD card and chat history are not touched.
+Version 3 added the rated mark, the opponent's key and both signatures to a game; version 1 and 2 files
+are read, while older firmware does not read a version 3 file (its games are lost after a downgrade). The rating
+is a separate file, `rating.bin` (see “ELO rating”).
 
 ## Checks
 
+- `tools/chess/rating_check.sh` — on a computer: signatures with the MeshCore Ed25519 code (another clock or
+  result breaks the signature), base64, ELO 1500 → 1516/1484, the expected change, the daily limit,
+  a repeated record, reading the file back and moving old records into the base.
 - `tools/chess/rules_check.sh` — on a computer: perft for six reference positions
   (including castling, en passant and promotions), FEN, the move record,
   checkmate, stalemate, repetition, insufficient material, rejection of an illegal move list.

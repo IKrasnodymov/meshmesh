@@ -240,6 +240,9 @@ int16_t MeshRadio::startReceiving(){constexpr uint32_t mask=(1UL<<RADIOLIB_IRQ_R
 #endif
 String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof(b),"%04lX%08lX",(unsigned long)(id>>32),(unsigned long)(id&0xffffffffu));return b;}
 static const mesh::LocalIdentity* selfIdentity(MeshCoreBackend* core){return core?&core->self_id:meshServer.identity();}
+const uint8_t* MeshRadio::nodeKey() const{auto* self=selfIdentity(core);return self?self->pub_key:nullptr;}
+bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t* data,size_t size) const{auto* self=selfIdentity(core);if(!self)return false;self->sign(sig,data,size);return true;}
+bool MeshRadio::nodeVerify(const uint8_t key[32],const uint8_t sig[64],const uint8_t* data,size_t size){mesh::Identity id(key);return id.verify(sig,data,size);}
 String MeshRadio::publicKeyText() const{auto* self=selfIdentity(core);if(!self)return "";char out[65];mesh::Utils::toHex(out,self->pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return channels::isChannel(destination)?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
 bool MeshRadio::resetPath(uint64_t id){Peer* p=contact(id);if(!p||!core||!core->resetPath(p->publicKey))return false;p->pathLength=255;dirty=true;return true;}

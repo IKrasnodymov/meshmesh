@@ -1,4 +1,24 @@
 {
+ "39cb9385": {
+  "en": ": not confirmed, will resend",
+  "ru": ": не подтвердил, повторю автоматически",
+  "text": ": belum dikonfirmasi, kirim ulang"
+ },
+ "37bc1d26": {
+  "en": ": signatures differ, the game is not rated",
+  "ru": ": подписи не сошлись, партия без рейтинга",
+  "text": ": tanda tangan beda, tanpa rating"
+ },
+ "477dcb8c": {
+  "en": "Rating: ",
+  "ru": "Рейтинг: ",
+  "text": "Rating: "
+ },
+ "227ccc52": {
+  "en": ", over the daily limit",
+  "ru": ", сверх дневного предела",
+  "text": ", lewat batas harian"
+ },
  "697bece7": {
   "en": ": challenge refused, no free board",
   "ru": ": вызов отклонён, нет свободной доски",
@@ -113,11 +133,6 @@
   "en": ": no confirmation for 24 h, R resends",
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": tak dikonfirmasi 24 j, R kirim ulang"
- },
- "39cb9385": {
-  "en": ": not confirmed, will resend",
-  "ru": ": не подтвердил, повторю автоматически",
-  "text": ": belum dikonfirmasi, kirim ulang"
  },
  "576dfcbc": {
   "en": "Paused: access point on",
@@ -2428,16 +2443,6 @@
   "ru": "Ошибка шифрования",
   "text": "Tes enkripsi gagal"
  },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "On"
- },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "Off"
- },
  "47cf8db9": {
   "en": "New message from ",
   "ru": "Сообщение от ",
@@ -2467,6 +2472,16 @@
   "en": "Radio TX error",
   "ru": "Ошибка передачи по радио",
   "text": "Galat TX radio"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "On"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Off"
  },
  "8baa6473": {
   "en": "Channel removed",
@@ -2527,6 +2542,11 @@
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "Maksimal 8 kanal"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "Kontak"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -2743,6 +2763,26 @@
   "ru": "OK: вступить   BACK: отменить",
   "text": "OK: gabung   BACK: batal"
  },
+ "7e847eaa": {
+  "en": "Games",
+  "ru": "Партии",
+  "text": "Game"
+ },
+ "55aaa48c": {
+  "en": "Rating",
+  "ru": "Рейтинг",
+  "text": "Rating"
+ },
+ "bc812413": {
+  "en": "All boards busy: finish a game",
+  "ru": "Все доски заняты: завершите партию",
+  "text": "Semua papan terpakai: selesaikan game"
+ },
+ "5c2a0c3e": {
+  "en": "Challenge a chat contact",
+  "ru": "Вызвать чат-контакт",
+  "text": "Tantang kontak chat"
+ },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
   "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Сопернику нужен MeshMesh M9 с шахматами.",
@@ -2752,6 +2792,60 @@
   "en": "Remove",
   "ru": "Удалить",
   "text": "Hapus"
+ },
+ "967075bd": {
+  "en": "Tabs",
+  "ru": "Разделы",
+  "text": "Tab"
+ },
+ "ae5eb2bd": {
+  "en": "Your rating",
+  "ru": "Ваш рейтинг",
+  "text": "Rating Anda"
+ },
+ "05fff3d6": {
+  "en": " in ",
+  "ru": " за ",
+  "text": " dalam "
+ },
+ "d4ee5f0f": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "партию",
+   "few": "партии",
+   "many": "партий"
+  },
+  "forms": {
+   "other": "{n} permainan"
+  }
+ },
+ "2c710473": {
+  "en": "No rated games yet",
+  "ru": "Партий на рейтинг пока нет",
+  "text": "Belum ada permainan rating"
+ },
+ "62febccc": {
+  "en": "history after 2 games",
+  "ru": "история после 2 партий",
+  "text": "riwayat setelah 2 permainan"
+ },
+ "7e7e954a": {
+  "en": "Players",
+  "ru": "Игроки",
+  "text": "Pemain"
+ },
+ "10a029bd": {
+  "en": "your score",
+  "ru": "ваш счёт",
+  "text": "skor Anda"
+ },
+ "997268e0": {
+  "en": "Rated games against contacts appear here",
+  "ru": "Здесь появятся соперники по партиям на рейтинг",
+  "text": "Lawan permainan rating muncul di sini"
  },
  "d528eacc": {
   "en": "You play",
@@ -2773,6 +2867,31 @@
   "ru": "Случайно",
   "text": "Acak"
  },
+ "96dcf5df": {
+  "en": "Game",
+  "ru": "Партия",
+  "text": "Permainan"
+ },
+ "155c2d96": {
+  "en": "ELO changes for both",
+  "ru": "ELO меняется у обоих",
+  "text": "ELO berubah untuk keduanya"
+ },
+ "d25b4260": {
+  "en": "ELO stays",
+  "ru": "ELO не меняется",
+  "text": "ELO tetap"
+ },
+ "0ec65cbb": {
+  "en": "Rated",
+  "ru": "На рейтинг",
+  "text": "Rating"
+ },
+ "2da2d675": {
+  "en": "Friendly",
+  "ru": "Товарищеская",
+  "text": "Persahabatan"
+ },
  "6ca6fac0": {
   "en": "No chat contacts yet",
   "ru": "Чат-контактов пока нет",
@@ -2788,11 +2907,6 @@
   "ru": "дождитесь объявления соперника",
   "text": "tunggu pengumuman pemain lain"
  },
- "7e847eaa": {
-  "en": "Games",
-  "ru": "Партии",
-  "text": "Game"
- },
  "c07ba764": {
   "en": "Challenge",
   "ru": "Вызвать",
@@ -2803,10 +2917,15 @@
   "ru": "Цвет",
   "text": "Warna"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "Kontak"
+ "256f90e4": {
+  "en": "Friendly",
+  "ru": "Товарищ.",
+  "text": "Ramah"
+ },
+ "7703bc73": {
+  "en": "Rated",
+  "ru": "Рейтинг",
+  "text": "Rating"
  },
  "aa44e5b7": {
   "en": "Waiting for reply",
@@ -3268,6 +3387,46 @@
   "ru": "не доставлено, повтор через ",
   "text": "tak terkirim, ulang dalam "
  },
+ "250419ab": {
+  "en": "Friendly game",
+  "ru": "Товарищеская",
+  "text": "Persahabatan"
+ },
+ "e1c84bdb": {
+  "en": "Rated game",
+  "ru": "На рейтинг",
+  "text": "Permainan rating"
+ },
+ "0e6d291b": {
+  "en": "Rated",
+  "ru": "В рейтинге",
+  "text": "Masuk rating"
+ },
+ "b5a8cab3": {
+  "en": "Over the daily limit",
+  "ru": "Сверх дневного предела",
+  "text": "Lewat batas harian"
+ },
+ "0f2f2147": {
+  "en": "Not rated: signatures",
+  "ru": "Без рейтинга: подписи",
+  "text": "Tanpa rating: tanda"
+ },
+ "6ec28954": {
+  "en": "Not rated",
+  "ru": "Без рейтинга",
+  "text": "Tanpa rating"
+ },
+ "26c29b90": {
+  "en": "Rating: checking",
+  "ru": "Рейтинг: проверка",
+  "text": "Rating: diperiksa"
+ },
+ "aff64383": {
+  "en": "Rating: their signature",
+  "ru": "Рейтинг: ждём подпись",
+  "text": "Rating: tunggu tanda"
+ },
  "7aa40299": {
   "en": "With contacts",
   "ru": "С контактами",
@@ -3300,16 +3459,6 @@
   "forms": {
    "other": "{n} game"
   }
- },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "Semua papan terpakai: selesaikan game"
- },
- "5c2a0c3e": {
-  "en": "Challenge a chat contact",
-  "ru": "Вызвать чат-контакт",
-  "text": "Tantang kontak chat"
  },
  "9b8ef234": {
   "en": "No games yet",

@@ -72,6 +72,9 @@ class MeshRadio {
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();
   bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;
+  // The node key signs rated chess results (ChessRating.h): nullptr / false before the identity is loaded.
+  const uint8_t* nodeKey() const;bool nodeSign(uint8_t sig[64],const uint8_t* data,size_t size) const;
+  static bool nodeVerify(const uint8_t key[32],const uint8_t sig[64],const uint8_t* data,size_t size);
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
   String routeText(const ChatMessage& m,bool brief=false) const; // e.g. "via 2 rpt · 2/3"; empty when unknown
  private:

@@ -244,7 +244,7 @@ footer a{color:var(--dim)}
     <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="cta.apk"></span></a>
     <a class="btn cta-more" href="#features"><span data-i18n="cta.more"></span></a>
    </div>
-   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h15M4 15h15M10 3 8 21M16 3l-2 18"/></svg></b><span data-i18n="news.channels"></span><i>→</i></a>
+   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 18h6l1-6H8zM10 12V9l-2-2 2-1V3h4v3l2 1-2 2v3"/></svg></b><span data-i18n="news.rating"></span><i>→</i></a>
    <div class="facts">
     <div><b>14</b><span data-i18n="facts.boards"></span></div>
     <div><b>MeshCore</b><span data-i18n="facts.radio"></span></div>
@@ -458,6 +458,7 @@ const ICONS={
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless phone: true); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'rating',ic:'chess',c:'#e9b13b',shots:['m9-chess-rating','m9-chess-pick-rated','m9-chess-rated-result']},
  {id:'channels',ic:'hash',c:'#1fc2ae',shots:['m9-threads-channels','m9-channel-private','m9-channel-add','m9-chat-invite','heltec-invite-menu']},
  {id:'chessCompanion',ic:'chess',c:'#4cc26b',phone:true,shots:['web-chess-companion-board','web-chess-companion-list','web-chess-companion-connect']},
  {id:'gat562',ic:'oled',c:'#e4e9ee',oled:true,shots:['gat562-home','gat562-keyboard','gat562-chess','gat562-chess-list','gat562-radar','gat562-node-menu']},
