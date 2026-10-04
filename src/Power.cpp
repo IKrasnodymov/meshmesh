@@ -10,6 +10,8 @@ uint32_t powerSlowMs(){return 0;}
 #include <esp_sleep.h>
 #include <driver/gpio.h>
 #include <driver/uart.h>
+#include <esp_bt.h>
+#include <WiFi.h>
 #include "App.h"
 #include "Config.h"
 #include "BoardPins.h"
@@ -38,8 +40,12 @@ void clock(uint32_t mhz){
 #endif
 }
 // Something needs the full clock or the Wi-Fi radio; the board neither slows down nor sleeps.
+// The clock never changes under a running Wi-Fi driver or Bluetooth controller (which, once started,
+// stays up until reboot, see Portal.cpp): without this rule a CSI check followed by a map upload over
+// the access point ended in a panic on the M9 three times out of three; with it the same run passes.
+bool radiosUp(){return WiFi.getMode()!=WIFI_OFF||esp_bt_controller_get_status()!=ESP_BT_CONTROLLER_STATUS_IDLE;}
 bool inUse(){
-  return !uiScreenOff()||portalActive()||radar.active||radar.csi!=Radar::CsiOff||wifiProbeActive()||bleProbeActive()
+  return !uiScreenOff()||radiosUp()||portalActive()||radar.active||radar.csi!=Radar::CsiOff||wifiProbeActive()||bleProbeActive()
 #if !defined(MM_COMPACT)
     ||internet.state!=Internet::Off
 #endif

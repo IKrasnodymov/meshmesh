@@ -100,6 +100,10 @@ Code:
 
 On ESP32 boards (`src/Power.cpp`, in every mode) the CPU runs at 80 MHz while the screen is dark and
 Wi-Fi, the radar and the CSI sensor are off; a key, a USB or a BLE command brings 240 MHz back at once.
+The clock does not change while the Wi-Fi driver or the Bluetooth controller runs (once BLE has been on,
+the controller runs until reboot): a change after a CSI check with the Wi-Fi driver still up ended in an
+M9 panic. So with BLE on there is no clock saving and no sleep. BLE is on by default in the normal mode
+and off in repeater and room modes until the user turns it on.
 In repeater and room modes the board also enters light sleep between packets (as stock MeshCore does):
 60 s after boot, with the screen dark, BLE, Wi-Fi and the radar off, an empty transmit queue and 30 s
 after the last command or key. The transceiver IRQ line (a received packet), the button, bytes over
@@ -108,6 +112,12 @@ wake a board over a USB-UART bridge (M9, Heltec V3 and others) are lost, so `too
 app first send a few CR (the board skips them) and wait 50 ms. With native USB (Heltec V4 and others)
 the board does not sleep while USB is connected to a computer. Bluetooth turned on prevents sleep.
 `status` shows `cpu_mhz`, `slow_ms` (time at 80 MHz), `sleeps` and `sleep_ms`.
+
+Deaf receiver guard (in every mode): after 10 minutes without a received packet the transceiver is set
+up again as at boot (reset, calibration, settings) and the message queue is kept; at most once in
+10 minutes and never in the middle of a packet. In server modes the stock `agc.reset.interval`
+(seconds, a multiple of 4; 0 is off) does the same. The USB command `recalibrate` does it at once,
+and `status` counts it in `radio_recal`.
 
 ## Testing against stock MeshCore
 

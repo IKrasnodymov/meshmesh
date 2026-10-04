@@ -62,6 +62,9 @@ class MeshRadio {
   String event="Ready";bool dirty=true;
   MeshRadio():radio(new Module(pins::radioCs,pins::radioIrq,pins::radioReset,pins::radioBusy,SPI)) {}
   void begin();void tick();bool applyConfig();
+  // Deaf receiver guard: the transceiver is set up again as at boot (reset, calibration, settings)
+  // after 10 min without a packet, or by the server's agc.reset.interval; the queue is kept.
+  bool recalibrate();uint32_t recalibrations=0;
   bool sendMessage(const String& text,uint64_t destination=meshmesh::Broadcast);
   uint32_t sendGame(const String& text,uint64_t destination); // message ID for delivery, 0 when refused
   bool sendHello();bool sendPosition();bool selfTest();
@@ -79,7 +82,7 @@ class MeshRadio {
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);
-  int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
+  bool startRadio(bool quiet);int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
   void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false);void persist(const ChatMessage& m);
   Peer* contact(uint64_t id);
   struct Sample {uint8_t length=0,data[184]={};} samples[6];unsigned nextSample=0; // packets of unjoined channels

@@ -237,7 +237,8 @@ void run(Act a){
 // HUD: title on the left; unread, GPS, links, signal and battery on the right.
 void header(const String& title){
  auto& c=*hardware.canvas;int x=127;unsigned mv=hardware.batteryMv;
- if(config.batteryVolts&&mv){String v=String(mv/1000.f,2)+"V";sayRight(x+1,7,v);x-=width(v,small)+3;}
+ // Measured battery: volts or the charge estimate as text; the icon stays for no battery and for USB power.
+ if(mv&&(config.batteryVolts||mv<=4250)){String v=config.batteryVolts?String(mv/1000.f,2)+"V":String(mv<=3300?0:mv>=4200?100:(mv-3300)/9)+"%";sayRight(x+1,7,v);x-=width(v,small)+3;}
  else{unsigned pct=mv<=3300?0:mv>=4200?100:(mv-3300)/9;c.drawRect(x-12,1,12,7,1);c.drawFastVLine(x,3,3,1);if(mv>4250){c.drawLine(x-8,2,x-6,4,1);c.drawLine(x-6,4,x-4,4,1);c.drawLine(x-4,4,x-2,6,1);}else if(mv)c.fillRect(x-10,3,max(1u,8*pct/100),3,1);x-=16;}
  bool fresh=meshRadio.lastRxAt&&millis()-meshRadio.lastRxAt<600000;unsigned level=!meshRadio.ready||!fresh?0:meshRadio.lastSnr>=5?4:meshRadio.lastSnr>=0?3:meshRadio.lastSnr>=-5?2:1;
  for(unsigned k=0;k<4;k++){int h=2+k*2;if(k<level)c.fillRect(x-14+k*4,8-h,3,h,1);else c.drawPixel(x-13+k*4,7,1);}if(!meshRadio.ready)c.drawLine(x-15,0,x-1,8,1);x-=18;

@@ -19,7 +19,7 @@ struct Config {
   uint32_t bootCounter=0;
   uint8_t role=RoleNormal;
   uint32_t blePin=0; // pairing PIN, made once: a restart (e.g. a USB-UART reset) keeps it
-  bool bleOn=false;  // Bluetooth was on: it comes back after a restart
+  bool bleOn=false;  // Bluetooth on after boot: the last choice, else on in the normal role
   void load();
   void save();
   bool valid() const;

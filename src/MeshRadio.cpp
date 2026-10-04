@@ -59,6 +59,7 @@ class MeshCoreRadioAdapter:public mesh::Radio {
  void onSendFinished() override{owner.radioError=owner.radio.finishTransmit();owner.transmitting=false;radioIrq=false;owner.startReceiving();}
  bool isInRecvMode() const override{return owner.ready&&!owner.transmitting;}
  bool isReceiving() override{return !owner.transmitting&&(owner.radio.getIrqFlags()&irqPreamble);}
+ void resetAGC() override{owner.recalibrate();} // the server's agc.reset.interval
  float getLastRSSI() const override{return owner.lastRssi;}
  float getLastSNR() const override{return owner.lastSnr;}
 };
@@ -257,8 +258,15 @@ void MeshRadio::begin(){
 }
 bool MeshRadio::busy() const{return transmitting||corePool.getOutboundTotal()>0;}
 void MeshRadio::cancelPending(){for(auto& p:pending)if(p.active){status(p.message.id,ChatMessage::Failed);p.active=false;}while(corePool.getOutboundTotal()){auto* packet=corePool.removeOutboundByIdx(0);corePool.free(packet);}}
+namespace {uint32_t recalAt=0;bool recalFailed=false;}
 bool MeshRadio::applyConfig(){
- if(transmitting)return false;cancelPending();
+ if(transmitting)return false;cancelPending();return startRadio(false);
+}
+bool MeshRadio::recalibrate(){
+ if(transmitting||radioIrq||(ready&&(radio.getIrqFlags()&(irqPreamble|irqRxDone))))return false; // not in the middle of a packet
+ recalAt=millis();recalibrations++;recalFailed=!startRadio(true);return !recalFailed;
+}
+bool MeshRadio::startRadio(bool quiet){
  uint16_t preamble=config.sf<=8?32:16;
 #if defined(MM_RADIO_SX1276)
  radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);
@@ -283,7 +291,7 @@ bool MeshRadio::applyConfig(){
  radio.setRxBoostedGainMode(true);
 #endif
  radio.setPacketReceivedAction(onRadioIrq);radioIrq=false;radioError=startReceiving();ready=radioError==0;
- }event=ready?"MeshCore radio ready":"Radio error "+String(radioError);dirty=true;return ready;
+ }if(!quiet||!ready){event=ready?"MeshCore radio ready":"Radio error "+String(radioError);dirty=true;}return ready;
 }
 bool MeshRadio::sendHello(){return ready&&(core?core->advertise():meshServer.advertise());}
 bool MeshRadio::sendPosition(){if(!config.gps||!hardware.gpsFix()){event="GPS: waiting for fix";dirty=true;return false;}return sendHello();}
@@ -353,7 +361,10 @@ void MeshRadio::restoreHistory() {
 }
 // After the last failed attempt a known path is reset: the next message floods and learns a new one.
 void MeshRadio::tick(){
- if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();uint32_t now=millis();
+ uint32_t now=millis();
+ if(recalFailed){if(now-recalAt>=5000)recalibrate();return;} // retried until the transceiver answers again
+ if(ready&&!busy()&&now-lastRxAt>=600000&&now-recalAt>=600000)recalibrate();
+ if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();now=millis();
  for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.attempts>=3||channels::isChannel(p.message.destination)){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(!channels::isChannel(p.message.destination)){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
 }

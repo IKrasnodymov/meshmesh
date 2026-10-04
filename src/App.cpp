@@ -29,7 +29,7 @@ String statusJson() {
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
   char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["channels"]=meshRadio.channelCount;d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();d["cpu_mhz"]=powerMhz();d["sleeps"]=powerSleeps();d["sleep_ms"]=powerSleptMs();d["slow_ms"]=powerSlowMs();
-  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;d["contacts_saved"]=meshRadio.contactsSaved;
+  d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["radio_recal"]=meshRadio.recalibrations;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;d["contacts_saved"]=meshRadio.contactsSaved;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
   d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
   d["compass"]=hardware.compassOk;d["compass_sample"]=hardware.compassSample;d["imu"]=hardware.imuOk;d["imu_sample"]=hardware.imuSample;
@@ -184,10 +184,14 @@ String executeCommand(const String& input) {
     for(unsigned i=0;i<hex.length()/2;i++) {String part=hex.substring(i*2,i*2+2);char* end;unsigned long v=strtoul(part.c_str(),&end,16);if(*end || !isxdigit(part[0]) || !isxdigit(part[1]))return "ERR hex";bytes[i]=v;}
     return meshRadio.diagnosticIngest(bytes,hex.length()/2)?"OK diagnostic frame accepted (USB, not RF)":"ERR diagnostic frame rejected";
   }
+  if(line=="recalibrate")return meshRadio.recalibrate()?"OK radio set up again":"ERR radio busy with a packet";
   if(line=="selftest")return meshRadio.selfTest()?"OK crypto/UTF-8/tamper selftest":"ERR selftest";
   if(line=="wifi") {portalToggle();return portalActive()?"OK Wi-Fi portal on; credentials on device":"OK Wi-Fi off";}
   if(line=="ble") {bleToggle();return bleActive()?"OK BLE on":"OK BLE off";}
   if(line=="restart"){restartAt=millis()+1000;return "OK restarting";} // e.g. after fsformat: the settings are read at boot
+#if !defined(MM_NRF52)
+  if(line=="flashstatus"){char s[96];snprintf(s,sizeof(s),"OK flash status %04x (SR2<<8 | SR1; SR1 bits 2-6 protect blocks)",unsigned(flashStatus(false)));return s;}
+#endif
   if(line=="fsformat") {
     if(hardware.fsOk)return "ERR filesystem already mounted; no format";
     if(meshRadio.busy())return "ERR radio busy";
@@ -216,5 +220,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, fsformat, restart";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, recalibrate, fsformat, restart";
 }

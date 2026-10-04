@@ -28,7 +28,10 @@ void Config::load() {
   role=p.getUChar("role",RoleNormal);if(role>=RoleCount)role=RoleNormal;
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
   else {bootloader_random_enable();esp_fill_random(key,32);bootloader_random_disable();p.putBytes("key",key,32);}
-  blePin=p.getUInt("ble_pin",0);bleOn=p.getBool("ble_on",false);
+  blePin=p.getUInt("ble_pin",0);
+  // Bluetooth is on unless switched off, as in other mesh firmware: the board stays reachable from a phone.
+  // A repeater or room starts with it off (light sleep needs it off) until the user turns it on.
+  bleOn=p.isKey("ble_on")?p.getBool("ble_on",false):role==RoleNormal;
   if(blePin<100000||blePin>999999){uint8_t e[3];bootloader_random_enable();esp_fill_random(e,3);bootloader_random_disable();blePin=100000+(uint32_t(e[0])<<16|uint32_t(e[1])<<8|e[2])%900000;p.putUInt("ble_pin",blePin);}
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}

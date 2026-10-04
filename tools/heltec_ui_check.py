@@ -46,9 +46,9 @@ def main():
      time.sleep(.25)
     else:raise TimeoutError('Heltec menu OK reply not delivered over physical LoRa')
    if name=='settings':
-    # Walk the whole menu to "Close" without changing a setting.
+    # Walk the whole menu (language, battery, screen, contrast, mode) to "Close" without changing a setting.
     key(heltec,0xa3);assert read(heltec,'ui')['menu']
-    for _ in range(4):key(heltec,13)
+    for _ in range(5):key(heltec,13)
     key(heltec,0xa3);assert not read(heltec,'ui')['menu']
    if name in ('wifi','ble'):
     flag=name

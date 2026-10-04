@@ -76,8 +76,13 @@ boards with “Create storage...” in the menu of the home or Modules page (hol
 T-Deck with OK on the “Module health” page and OK again.
 Before formatting, `fsformat` erases the first two blocks of the partition and checks that the flash
 takes an erase and a write; on failure the reply names the step (erase, test write, format or
-mount). Formatting over another firmware's data was checked in QEMU; on a user's Heltec V3 the
-previous command answered `ERR filesystem`, and the new one has not run there yet.
+mount). On a user's Heltec V3 the erase went through but the write did not stay
+(`ERR flash at 0x610000 does not keep a write`): the LittleFS partition lies in the top quarter of the
+flash, which the block-protect bits of the chip's status register can lock. Since 0.3.9 `fsformat` then
+reads the register and, if protection bits are set, clears them (as ESP-IDF 4.x did before writing) and
+tests again; the reply shows the register values. The USB command `flashstatus` only reads the register.
+Formatting over another firmware's data was checked in QEMU; clearing the protection on the V3 is not
+verified yet.
 
 ## What has been verified (1 October 2026)
 
