@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.Build
@@ -29,6 +30,8 @@ import org.meshmesh.app.api.CommandApi
 import org.meshmesh.app.api.DeviceApi
 import org.meshmesh.app.api.HttpApi
 import org.meshmesh.app.api.TileStore
+import org.meshmesh.app.flash.FirmwareUpdate
+import org.meshmesh.app.flash.FlashPort
 import org.meshmesh.app.link.BleLink
 import org.meshmesh.app.link.LineTransport
 import org.meshmesh.app.link.TcpLink
@@ -95,6 +98,7 @@ class MeshService : Service() {
 
     fun connectUsb(device: UsbDevice) = start("usb", device.deviceName) { stage ->
         stage("Подключение по USB…")
+        flashPort = FlashPort.Usb(device)
         val link = UsbLink.open(this, device)
         val transport = LineTransport(link)
         if (!link.native) fastUsb(transport, link)
@@ -113,6 +117,7 @@ class MeshService : Service() {
 
     fun connectTcp(host: String, port: Int) = start("tcp", "$host:$port") { stage ->
         stage("Подключение к мосту $host:$port…")
+        flashPort = FlashPort.Tcp(host, port)
         val transport = LineTransport(TcpLink.open(host, port))
         CommandApi(transport, "tcp", "USB через компьютер ($host)", tiles) to transport
     }
@@ -143,6 +148,7 @@ class MeshService : Service() {
 
     private fun start(kind: String, id: String, open: suspend (stage: (String) -> Unit) -> Pair<DeviceApi, LineTransport?>) {
         disconnect(null)
+        flashPort = null
         connecting = scope.launch {
             val stage: (String) -> Unit = { publish("connecting", kind, it) }
             var opened: DeviceApi? = null
@@ -213,6 +219,47 @@ class MeshService : Service() {
         stopLink()
         publish("lost", which.kind, reason)
         if (!uiVisible) notify(ID_LOST, "Связь с устройством потеряна", reason, "")
+    }
+
+    // Firmware from the site over the USB link (flash/FirmwareUpdate): the ROM loader takes the port,
+    // then the app connects again. A failed write can be repeated: the board stays in its loader.
+    private var flashPort: FlashPort? = null
+    private var flashEnv: String? = null
+    private var flashing: Job? = null
+
+    fun flashFirmware(retry: Boolean) {
+        if (flashing?.isActive == true) return
+        val port = flashPort ?: return publish("failed", null, "Прошивка ставится только при подключении по USB")
+        flashing = scope.launch {
+            val env = if (retry) flashEnv else api?.let { a ->
+                runCatching { FirmwareUpdate.envFor(JSONObject(a.request("GET", "/api/status", null).body)) }.getOrNull()
+            }
+            if (env.isNullOrEmpty()) return@launch publish("failed", port.kind, "Не удалось определить плату")
+            flashEnv = env
+            disconnect(null)
+            flashPort = port
+            try {
+                val target = FirmwareUpdate(this@MeshService, port, env) { s -> state = s; onState(s.toString()) }.run()
+                flashEnv = null
+                publish("flashing", port.kind, "MeshMesh ${target.version} записана. Подключение…")
+                delay(5000)
+                when (port) {
+                    is FlashPort.Tcp -> connectTcp(port.host, port.port)
+                    is FlashPort.Usb -> {
+                        // The native USB board may have come back as a new device after its restart.
+                        val d = UsbLink.serialDevices(this@MeshService).firstOrNull { it.vendorId == port.device.vendorId && it.productId == port.device.productId }
+                        if (d != null && getSystemService(UsbManager::class.java).hasPermission(d)) connectUsb(d)
+                        else publish("idle", "usb", "MeshMesh ${target.version} установлена. Подключите плату снова")
+                    }
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                state = JSONObject().put("state", "failed").put("kind", port.kind).put("flash", true)
+                    .put("message", (e.message ?: e.javaClass.simpleName) + ". Ключ, настройки и история не затронуты; повторите обновление")
+                onState(state.toString())
+            }
+        }
     }
 
     fun disconnect(reason: String?) {

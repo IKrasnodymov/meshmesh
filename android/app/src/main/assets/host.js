@@ -24,6 +24,7 @@ window.MeshHost={
  devices(kind,list,done){H.devices[kind]=list||[];H.scanning[kind]=!done;if(done)H.done[kind]=true;if(H.tab===kind)renderPanel()},
  state(s){const before=H.state;H.state=s||{state:'idle'};
   if(s.state==='connected')enterApp();
+  else if(s.state==='flashing'){if(H.inApp)leaveApp(null);else renderPanel()}
   else if(s.state==='lost'||s.state==='idle'){if(H.inApp)leaveApp(s.message||'Связь с устройством потеряна',s.state==='lost'?'bad':'muted');else renderPanel()}
   else if(s.state==='failed'){renderPanel();notify(s.message||'Не удалось подключиться','bad')}
   else renderPanel();
@@ -55,7 +56,7 @@ function rssiBars(r){return r==null?'':bars(r>-60?4:r>-70?3:r>-80?2:1,'var(--acc
 function row(attrs,icon,cls,name,detail,side,sel){return `<button class="hrow${sel?' sel':''}" ${attrs}><span class="icbox">${ic(icon,cls)}</span><span class="main"><b>${esc(name)}</b><small>${esc(detail)}</small></span><span class="side">${side||''}</span></button>`}
 function scanButton(kind,text){const busy=H.scanning[kind];return `<button class="btn save" data-hscan="${kind}"${busy?' disabled':''}>${busy?'Поиск…':text}</button>`}
 function renderPanel(){
- const tab=H.tab,s=H.state,busy=s.state==='connecting';
+ const tab=H.tab,s=H.state,flashing=s.state==='flashing',busy=s.state==='connecting'||flashing;
  let h=`<div class="tabs">${['wifi','ble','usb'].map(k=>`<button data-htab="${k}" class="${k===tab?'on':''}">${ic(KIND[k][0])}${KIND[k][1]}</button>`).join('')}</div><div class="card hbody">`;
  if(tab==='wifi'){const list=H.devices.wifi,pass=H.prefs.passwords||{};
   h+=`<div class="hlink">${ic('wifi','info')}<span>Включите точку доступа на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</span></div>`;
@@ -75,8 +76,9 @@ function renderPanel(){
   const [host,port]=(H.prefs.bridge||'10.0.2.2:8771').split(':');
   h+=`<details class="more" style="background:var(--bg)"><summary>USB через компьютер</summary><p class="small muted">Плата подключена к компьютеру, на нём запущен <span class="mono">tools/usb_tcp_bridge.py</span>; 10.0.2.2 — компьютер для эмулятора Android.</p><div class="two"><label class="field">Адрес<input id="hHost" value="${esc(host)}"></label><label class="field">Порт<input id="hPort" type="number" value="${esc(port||8771)}"></label></div><button class="btn save" data-hgo="tcp"${busy?' disabled':''}>Подключиться к мосту</button></details>`}
  h+='</div>';
- if(busy)h+=`<div class="card hstate"><span class="spin"></span><div style="flex:1">${esc(s.message||'Подключение…')}</div><button class="btn" data-hstop>Отмена</button></div>`;
- else if(s.state==='failed')h+=`<div class="card hstate">${ic('failed','bad')}<div class="bad" style="flex:1">${esc(s.message||'Не удалось подключиться')}</div></div>`;
+ if(flashing)h=`<div class="card conn"><div class="top"><span class="icbox"><span class="spin"></span></span><div><b>Обновление прошивки</b><small>${esc(s.message||'')}</small></div></div>${s.progress!=null?`<progress value="${s.progress/100}" style="width:100%;margin-top:10px"></progress>`:''}<p class="small muted" style="margin:8px 0 0">Не отключайте кабель и не закрывайте приложение. Ключ, настройки, контакты и история сохранятся.</p></div>`+h;
+ else if(busy)h+=`<div class="card hstate"><span class="spin"></span><div style="flex:1">${esc(s.message||'Подключение…')}</div><button class="btn" data-hstop>Отмена</button></div>`;
+ else if(s.state==='failed')h+=`<div class="card hstate">${ic('failed','bad')}<div class="bad" style="flex:1">${esc(s.message||'Не удалось подключиться')}</div>${s.flash?'<button class="btn primary" data-hflash="retry">Повторить</button>':''}</div>`;
  const last=H.prefs.last;
  if(last&&last.kind&&!busy)h+=`<h3>Последнее устройство</h3><div class="card">${row('data-hlast','radio','acc',last.label||'MeshMesh',KIND[last.kind]?.[1]+' · подключиться снова','',false)}</div>`;
  panel.innerHTML=updateCard(false)+h}
@@ -87,6 +89,18 @@ function updateCard(always){const u=H.upd,st=u.state,mb=u.size?` · ${(u.size/10
  const text=st==='available'?`Доступна версия ${esc(u.name)}${mb}`:st==='downloading'?`Загрузка ${esc(u.name)}: ${u.progress|0}%`:st==='ready'?'Загружено: подтвердите установку в окне Android':st==='checking'?'Проверка…':`Версия ${esc(N.version())}`;
  const btn=st==='available'?'<button class="btn primary" data-hupd="install">Обновить</button>':st==='ready'?'<button class="btn primary" data-hupd="install">Установить</button>':st==='downloading'||st==='checking'?'':'<button class="btn soft" data-hupd="check">Проверить обновления</button>';
  return `<div class="card conn"><div class="top"><span class="icbox">${ic('down',st==='available'||st==='ready'?'acc':'info')}</span><div><b>Приложение MeshMesh</b><small>${text}</small></div></div>${st==='downloading'?`<progress value="${(u.progress|0)/100}" style="width:100%"></progress>`:''}${btn?`<div class="extra"><div class="btns">${btn}</div></div>`:''}</div>`}
+// Firmware of the site over the USB link (MeshService.flashFirmware → flash/FirmwareUpdate): ESP32 boards.
+let fwSite=null;
+function loadFwSite(){if(fwSite)return;fwSite={};netFetch('https://ikrasnodymov.github.io/meshmesh/firmware/boards.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{fwSite=j}).catch(()=>{fwSite={error:true}}).finally(()=>{if(H.inApp&&route==='connect')renderConnect()})}
+function newerVersion(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false}
+function firmwareCard(){const s=H.state;if(!H.inApp||!['usb','tcp'].includes(s.kind))return'';loadFwSite();
+ const env=status.board==='heltec_v4'&&status.psram>3e6?'heltec_v4_r8':status.board,b=fwSite.boards?.find(x=>x.env===env),cur=String(status.firmware||'').replace(/^MeshMesh\s*/,''),esp=b&&b.install!=='uf2',newer=esp&&newerVersion(fwSite.version,cur);
+ const text=fwSite.error?'Сайт недоступен: для обновления нужен интернет':!fwSite.boards?'Проверка версии на сайте…':!b?'На сайте нет прошивки для этой платы':!esp?`На сайте ${fwSite.version}: эта плата обновляется с сайта или компьютера`:`Установлена ${esc(cur)} · на сайте ${esc(fwSite.version)}`;
+ return `<div class="card conn"><div class="top"><span class="icbox">${ic('bolt',newer?'acc':'info')}</span><div><b>Прошивка платы</b><small>${text}</small></div></div>${esp?`<div class="extra"><div class="btns"><button class="btn ${newer?'primary':'soft'}" data-hflash="go">${newer?'Обновить прошивку':'Переустановить'}</button></div><small class="muted">По USB с сайта, ${esc(b.name)}; данные платы сохраняются</small></div>`:''}</div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-hflash]');if(!t)return;
+ if(t.dataset.hflash==='retry'){N.flashFirmware(true);return}
+ if(Date.now()-H.armed>6000){H.armed=Date.now();notify('Нажмите ещё раз: плата перезапустится в загрузчик, запись займёт 1–3 минуты. Ключ, настройки, контакты и история сохранятся','warn');return}
+ H.armed=0;N.flashFirmware(false)});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-hupd]');if(!t)return;
  if(t.dataset.hupd==='check'){H.manual=true;N.checkUpdate()}else N.installUpdate()});
 // The connection screen's header: the page's hud() would keep the last page's title and BACK.
@@ -121,7 +135,7 @@ function leaveApp(message,tone){
 const pageRenderConnect=window.renderConnect;
 window.renderConnect=function(){pageRenderConnect();const s=H.state;if(!H.inApp||!KIND[s.kind])return;const c=conn||{};
  const toWifi=s.kind==='ble'&&status.wifi&&c.ssid&&c.password?`<button class="btn soft" data-hconn="wifi">Перейти на Wi-Fi</button>`:'';
- $('connList').insertAdjacentHTML('afterbegin',`<div class="card conn"><div class="top"><span class="icbox">${ic(KIND[s.kind][0],'acc')}</span><div><b>Приложение · ${KIND[s.kind][1]}</b><small>${esc(s.label||'')}</small></div></div><div class="extra"><div class="btns">${toWifi}<button class="btn danger" data-hconn="off">Отключиться</button></div>${toWifi?'<small class="muted">Wi-Fi быстрее Bluetooth для карт и радара</small>':''}</div></div>`+updateCard(true))};
+ $('connList').insertAdjacentHTML('afterbegin',`<div class="card conn"><div class="top"><span class="icbox">${ic(KIND[s.kind][0],'acc')}</span><div><b>Приложение · ${KIND[s.kind][1]}</b><small>${esc(s.label||'')}</small></div></div><div class="extra"><div class="btns">${toWifi}<button class="btn danger" data-hconn="off">Отключиться</button></div>${toWifi?'<small class="muted">Wi-Fi быстрее Bluetooth для карт и радара</small>':''}</div></div>`+firmwareCard()+updateCard(true))};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-hconn]');if(!t)return;
  if(t.dataset.hconn==='off'){N.disconnect();return}
  const c=conn||{};N.disconnect();setTimeout(()=>connect({kind:'wifi',ssid:c.ssid,password:c.password,address:'192.168.4.1'}),300)});

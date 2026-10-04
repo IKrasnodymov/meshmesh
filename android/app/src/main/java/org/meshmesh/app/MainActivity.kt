@@ -452,6 +452,7 @@ class MainActivity : ComponentActivity() {
         @android.webkit.JavascriptInterface fun updateInfo(): String = updateInfo.toString()
         @android.webkit.JavascriptInterface fun checkUpdate() = runOnUiThread { this@MainActivity.checkUpdate(true) }
         @android.webkit.JavascriptInterface fun installUpdate() = runOnUiThread { this@MainActivity.installUpdate() }
+        @android.webkit.JavascriptInterface fun flashFirmware(retry: Boolean) = runOnUiThread { service?.flashFirmware(retry) }
     }
 
     companion object {

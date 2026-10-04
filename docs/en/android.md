@@ -46,6 +46,16 @@ WebView debugging is enabled (`chrome://inspect`).
   downloaded to the cache, checked by size and SHA-256 and handed to the Android installer, which asks
   once to allow installs from MeshMesh and checks the signature itself. Updates are enabled only in a
   build signed with the project key.
+- `flash/` — firmware of an ESP32 board over USB from the website: «Connections → Board firmware» while
+  connected over USB (or through the bridge on a computer). `FirmwareUpdate` takes `firmware/boards.json`
+  and the board's `manifest.json` — the same four files and offsets the browser installer writes
+  (without a language mark) — and checks them (DIO bootloader, partition table, application).
+  `EspLoader` speaks to the ROM loader as esptool 5.4 does without its stub: entry by DTR/RTS (the USB
+  Serial/JTAG sequence on Heltec), a chip check, RTC watchdogs off over USB Serial/JTAG, 460800 baud on
+  USB-UART, compressed writes in 1 KB blocks, an MD5 of every region, exit by the watchdog (Heltec) or EN.
+  NVS (key, settings, contacts), LittleFS (history) and the language stay. The app then connects again.
+  A break in the middle of a write leaves the board in the ROM loader: «Retry» writes it again. Heltec V4
+  and V4 R8 report the same board — the PSRAM size picks the revision. GAT562 (nRF52) is not updated this way yet.
 - `api/HttpApi` — Wi-Fi: the device's HTTP server (`src/Portal.cpp`) with Basic authentication.
 - `api/CommandApi` — USB and BLE: every page request becomes the command that
   the device's HTTP handler executes (`executeCommand`), with the same response codes.
@@ -128,7 +138,9 @@ for the connection; a link that launched the app is not repeated when Android re
 
 In the emulator the computer is visible as 10.0.2.2: “USB → USB via computer” tests the command
 layer (the same code as for USB and BLE on the phone) with a real board, “Wi-Fi → Other address”
-tests the HTTP client. The USB bridge stays at 115200 baud and refuses to change the baud rate.
+tests the HTTP client. The USB bridge stays at 115200 baud and refuses to change the baud rate. For
+firmware the client starts with the line `MMRAW1`: the bridge passes bytes as they are, drives DTR/RTS
+and the baud rate, and reopens the port when a native USB board leaves the bus after its restart.
 
 Unit tests (`./gradlew testDebugUnitTest`) cover what breaks silently:
 UTF-8 split across notifications, log lines among responses, a JSON response broken by a
@@ -148,6 +160,9 @@ channel commands (the page's JSON on one line, the `probe` answer, older firmwar
 - The ESP32 driver line `wifi:timeout when WiFi un-init` sometimes ends up inside a USB response
   (after closing the radar); the app detects the truncated JSON and repeats the command.
 - One board at a time; to switch — “Connections → Disconnect”.
+- Firmware over USB was checked on Heltec V4 from the emulator through the bridge (write, MD5, restart,
+  reconnection; key, settings, history and NVS kept; a break in the middle of a write and «Retry»). The
+  USB-UART path (M9, CH340: EN/IO0 reset, 460800 baud) and USB OTG on a phone are not checked.
 - The QR scanner and `meshcore://` links were checked in the emulator (camera prompt, refusal, the
   scanner opening, a link before and after the page loads); reading a real QR code with a phone
   camera has not been checked.
