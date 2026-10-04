@@ -447,6 +447,7 @@ String uiStatus(){StaticJsonDocument<448>d;d["action"]=millis()-actionAt<3500?ac
  if(composing){d["compose"]=true;d["draft"]=draft;d["keyboard"]=layoutNames[kbLayout];d["key_row"]=kbRow;d["key_col"]=kbCol;}
 #endif
 if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}String s;serializeJson(d,s);return s;}
+bool uiScreenOff(){return screenOff;}
 void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.

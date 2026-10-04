@@ -96,6 +96,19 @@ Code:
   `PATCHES.md`);
 - `lib/CayenneLPP` (telemetry encoder).
 
+## Power saving
+
+On ESP32 boards (`src/Power.cpp`, in every mode) the CPU runs at 80 MHz while the screen is dark and
+Wi-Fi, the radar and the CSI sensor are off; a key, a USB or a BLE command brings 240 MHz back at once.
+In repeater and room modes the board also enters light sleep between packets (as stock MeshCore does):
+60 s after boot, with the screen dark, BLE, Wi-Fi and the radar off, an empty transmit queue and 30 s
+after the last command or key. The transceiver IRQ line (a received packet), the button, bytes over
+the USB-UART and a 0.5 s timer wake it (the M9 keyboard is polled after each wake). The bytes that
+wake a board over a USB-UART bridge (M9, Heltec V3 and others) are lost, so `tools/device.py` and the
+app first send a few CR (the board skips them) and wait 50 ms. With native USB (Heltec V4 and others)
+the board does not sleep while USB is connected to a computer. Bluetooth turned on prevents sleep.
+`status` shows `cpu_mhz`, `slow_ms` (time at 80 MHz), `sleeps` and `sleep_ms`.
+
 ## Testing against stock MeshCore
 
 `tools/repeater_check.py` and `tools/room_check.py` test the M9 in the corresponding mode from the side of

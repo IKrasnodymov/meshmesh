@@ -11,6 +11,7 @@ import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
@@ -21,6 +22,7 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
     override val maxCommand = 1000 // src/main.cpp drops lines of 1024 characters
     private val io: SerialInputOutputManager
     @Volatile private var open = true
+    @Volatile private var lastWrite = 0L
     @Volatile var baud = 115200
         private set
 
@@ -38,6 +40,10 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
     override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
         if (!open) throw LinkClosedException("USB закрыт")
         try {
+            // USB-UART boards in repeater/room mode sleep between packets; CR wakes them and is
+            // ignored, the waking bytes are lost (src/Power.cpp).
+            if (!native && System.currentTimeMillis() - lastWrite > 20000) { port.write(WAKE, 1000); delay(50) }
+            lastWrite = System.currentTimeMillis()
             port.write(data, 3000)
         } catch (e: IOException) {
             close(); onClosed("USB: ошибка записи"); throw LinkClosedException("USB: ошибка записи")
@@ -63,6 +69,7 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
         const val ESP_NATIVE_PID = 0x1001
         const val NRF_VID = 0x239A // Adafruit nRF52 core (GAT562): TinyUSB CDC, sends nothing without DTR
         const val NRF_APP_PID = 0x8029
+        private val WAKE = "\r\r\r\r".toByteArray()
 
         private val prober by lazy {
             val table = ProbeTable()

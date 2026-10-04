@@ -15,8 +15,12 @@ def connect(port):
     s.port=port;s.dtr=native;s.rts=False;s.meshmesh_native=native;s.open()
     return s
 
+def wake(s):
+    # USB-UART boards in light sleep (repeater/room): CR wakes them and is ignored; the waking bytes are lost.
+    if not getattr(s,'meshmesh_native',False):s.write(b'\r\r\r\r');s.flush();time.sleep(.05)
+
 def command(s,text,timeout=8):
-    s.reset_input_buffer();s.write((text+'\n').encode());s.flush()
+    wake(s);s.reset_input_buffer();s.write((text+'\n').encode());s.flush()
     deadline=time.monotonic()+timeout
     pending=bytearray()
     last_line=''
@@ -47,7 +51,7 @@ def command(s,text,timeout=8):
                        f'({len(pending)} buffered bytes; last line {last_line[:3]!r})')
 
 def screenshot(s,target):
-    s.reset_input_buffer();s.write(b'screenshot\n');s.flush()
+    wake(s);s.reset_input_buffer();s.write(b'screenshot\n');s.flush()
     deadline=time.monotonic()+8
     while time.monotonic()<deadline:
         line=s.readline()

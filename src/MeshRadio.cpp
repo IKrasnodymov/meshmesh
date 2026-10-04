@@ -34,6 +34,7 @@ constexpr uint32_t irqTxDone=RADIOLIB_LR11X0_IRQ_TX_DONE,irqPreamble=RADIOLIB_LR
 #endif
 static volatile bool radioIrq=false;
 static void IRAM_ATTR onRadioIrq(){radioIrq=true;}
+void radioIrqPending(){radioIrq=true;}
 static uint64_t aliasOf(const uint8_t* key){uint64_t n=0;for(unsigned i=0;i<8;i++)n=(n<<8)|key[i];return n;}
 static void copyUtf8(char* dest,const char* src,size_t cap){size_t n=strnlen(src,cap);if(n>=cap){n=cap-1;while(n&&(uint8_t(src[n])&0xc0)==0x80)n--;}memcpy(dest,src,n);dest[n]=0;}
 class MeshCoreRadioAdapter:public mesh::Radio {

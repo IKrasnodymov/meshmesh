@@ -87,6 +87,7 @@ class MeshRadio {
   void loadChannels();bool saveChannels();void noteChannel(const uint8_t* payload,size_t length,uint32_t packetHash);
 };
 extern MeshRadio meshRadio;
+void radioIrqPending(); // light sleep: the IRQ line rose while interrupts were held
 // A small file replaced whole through a temporary copy (MeshMesh storage); false without that storage.
 bool readStored(const char* path,const char* temp,void* out,size_t size);
 bool writeStored(const char* path,const char* temp,const void* data,size_t size);

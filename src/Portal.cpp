@@ -3,6 +3,7 @@
 #include "BleDiagnostics.h"
 #include "Maps.h"
 #include "Hardware.h"
+#include "Power.h"
 #include "Navigation.h"
 #include "PortalPage.h"
 #include "WifiDiagnostics.h"
@@ -154,7 +155,7 @@ void portalTick() {
   if(commands && !bleResponse.length()) {
     BleCommand cmd;
     if(xQueueReceive(commands,&cmd,0)==pdTRUE) {
-      String response=executeCommand(cmd.text);
+      powerWake();String response=executeCommand(cmd.text);
       if(bleTx) {bleResponse=response+'\n';bleOffset=0;nextNotification=millis();}
     }
   }

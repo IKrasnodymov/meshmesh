@@ -12,6 +12,7 @@
 #include "Internet.h"
 #include "ChessNet.h"
 #include "Board.h"
+#include "Power.h"
 #include <Wire.h>
 #include <esp_system.h>
 #if defined(MM_NATIVE_USB)
@@ -98,12 +99,13 @@ void appLoop() {
   internet.tick();
 #endif
   maps.tick();navigation.tick();radar.tick();
-  int key=hardware.readKey();if(key)uiKey(key);
+  int key=hardware.readKey();if(key){powerWake();uiKey(key);}
 #if defined(MM_BOARD_TDECK)
-  {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch)uiTouch(touch,x,y);}
+  {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch){powerWake();uiTouch(touch,x,y);}}
 #endif
   static String command;
   unsigned budget=256;
+  if(!usbBytes&&Serial.available())powerWake();
   while(!usbBytes && Serial.available() && budget--) {
     char c=Serial.read();baudExpires=millis()+10000;
     if(c=='\n') {
@@ -157,6 +159,11 @@ void appLoop() {
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif
   delay(2);
+#if defined(MM_NATIVE_USB) || defined(MM_NRF52)
+  powerTick(!usbBytes);
+#else
+  powerTick(!usbBytes&&!pendingBaud&&usbBaud==115200);
+#endif
 }
 #if defined(MM_NRF52)
 // The core's loop task has a 4 KB stack; the JSON replies need more. The application runs in

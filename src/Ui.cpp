@@ -777,6 +777,7 @@ void runNodeAction(){
 }
 static bool realErase=false; // DEL tapped in the footer: a real delete, also on the T-Deck
 bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
+bool uiScreenOff(){return wakeOnly;}
 void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==ChannelInfo)d["channel"]=meshRadio.idText(focusChannel);if(page==ChannelAdd)d["add_step"]=int(addStep);d["channels"]=meshRadio.channelCount;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold)locked=false;return;}if(asleep)return;
@@ -877,4 +878,5 @@ void uiTick(){uint32_t now=millis();
  bool animate=!locked&&((page==Game&&gameAnimating())||page==Scope||page==Homing||page==Motion); // the sweep beam moves every frame
  // The network list refreshes itself while open; a scan briefly pauses traffic.
  if(page==NetList&&!locked&&internet.enabled&&(!internet.scannedAt||now-internet.scannedAt>20000)&&now-netScanAt>20000){netScanAt=now;internet.rescan();}
- bool update=dirty||meshRadio.dirty||maps.dirty||internet.dirty||animate||now-lastDraw>=1000;if(update&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;internet.dirty=false;}}
+ // A dark screen is not drawn: a key lights it and redraws (and light sleep stays short).
+ bool update=dirty||meshRadio.dirty||maps.dirty||internet.dirty||animate||now-lastDraw>=1000;if(update&&!wakeOnly&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;internet.dirty=false;}}
