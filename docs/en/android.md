@@ -54,7 +54,8 @@ the phone is already connected to.
 Service `7a9e0001-…`: a command is written to RX with acknowledgement (up to 255 bytes), the response arrives
 as TX notifications and ends with a newline. Both characteristics require
 authenticated pairing: on the first connection Android asks for the PIN from the device
-screen. If the phone remembers a pairing that the board no longer has (its flash was replaced),
+screen. The PIN is made once and kept in the board settings, and Bluetooth that was on stays on after a restart
+(except a restart after a crash). If the phone remembers a pairing that the board no longer has (its flash was replaced),
 the app removes the old bond and asks for the PIN again. BLE is slower than the other channels, so
 lists (history, nodes, chess, settings) are re-read only when `status` changes or
 every 20 s, and the page refreshes every 4 s.

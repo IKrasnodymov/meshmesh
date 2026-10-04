@@ -80,7 +80,7 @@ String connectionCredentials() {
 void portalBegin() {
   uint8_t entropy[12];bootloader_random_enable();esp_fill_random(entropy,sizeof(entropy));bootloader_random_disable();
   const char alphabet[]="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  for(int i=0;i<12;i++) password+=alphabet[entropy[i]%32];pinCode=100000+(uint32_t(entropy[0])<<16|uint32_t(entropy[1])<<8|entropy[2])%900000;
+  for(int i=0;i<12;i++) password+=alphabet[entropy[i]%32];pinCode=config.blePin;
   server.on("/",HTTP_GET,[]{server.send_P(200,"text/html; charset=utf-8",portalPage);});
   server.on("/api/clock",HTTP_GET,[]{if(authorized())answer(hardware.clockInfo());});
   server.on("/api/status",HTTP_GET,[]{if(authorized())answer(statusJson());});
@@ -143,7 +143,7 @@ void bleToggle() {
     }
     b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
-  meshRadio.dirty=true;
+  config.saveBle(bluetoothOn);meshRadio.dirty=true;
 }
 void portalTick() {
   bool serve=wifiOn||internet.online();

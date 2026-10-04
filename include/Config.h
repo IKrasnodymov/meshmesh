@@ -18,11 +18,14 @@ struct Config {
   uint8_t key[32]={};
   uint32_t bootCounter=0;
   uint8_t role=RoleNormal;
+  uint32_t blePin=0; // pairing PIN, made once: a restart (e.g. a USB-UART reset) keeps it
+  bool bleOn=false;  // Bluetooth was on: it comes back after a restart
   void load();
   void save();
   bool valid() const;
   String keyHex() const;
   bool setKey(const String& text);
   bool saveRole(uint8_t next); // stored for the next boot; role stays the running one
+  void saveBle(bool on);
 };
 extern Config config;

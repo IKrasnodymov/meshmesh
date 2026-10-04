@@ -28,6 +28,8 @@ void Config::load() {
   role=p.getUChar("role",RoleNormal);if(role>=RoleCount)role=RoleNormal;
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
   else {bootloader_random_enable();esp_fill_random(key,32);bootloader_random_disable();p.putBytes("key",key,32);}
+  blePin=p.getUInt("ble_pin",0);bleOn=p.getBool("ble_on",false);
+  if(blePin<100000||blePin>999999){uint8_t e[3];bootloader_random_enable();esp_fill_random(e,3);bootloader_random_disable();blePin=100000+(uint32_t(e[0])<<16|uint32_t(e[1])<<8|e[2])%900000;p.putUInt("ble_pin",blePin);}
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}
   p.end();
@@ -41,6 +43,7 @@ void Config::save() {
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }
 bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role
+void Config::saveBle(bool on){if(bleOn==on)return;bleOn=on;Preferences p;if(p.begin("meshmesh",false)){p.putBool("ble_on",on);p.end();}}
 String Config::keyHex() const {String s; s.reserve(64);char b[3];for(auto v:key) {snprintf(b,3,"%02x",v);s+=b;}return s;}
 bool Config::setKey(const String& text) {
   if(text.length()!=64) return false;

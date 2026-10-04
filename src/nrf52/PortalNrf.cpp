@@ -70,7 +70,7 @@ String connectionCredentials(){
   if(bluetoothOn){uint8_t a[6];Bluefruit.getAddr(a);char s[18];snprintf(s,sizeof(s),"%02x:%02x:%02x:%02x:%02x:%02x",a[5],a[4],a[3],a[2],a[1],a[0]);d["ble_address"]=s;}
   String out;serializeJson(d,out);return out;
 }
-void portalBegin(){uint8_t entropy[3];esp_fill_random(entropy,sizeof(entropy));pinCode=100000+(uint32_t(entropy[0])<<16|uint32_t(entropy[1])<<8|entropy[2])%900000;}
+void portalBegin(){pinCode=config.blePin;}
 void portalToggle(){meshRadio.event="No Wi-Fi on this board";meshRadio.dirty=true;}
 // The SoftDevice starts once (the radar may have started it); "off" means no advertising and no connection.
 bool bleStack(){if(!started)start();return started;}
@@ -83,7 +83,7 @@ void bleToggle(){
   } else {
     Bluefruit.Advertising.restartOnDisconnect(true);Bluefruit.Advertising.start(0);bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
-  meshRadio.dirty=true;
+  config.saveBle(bluetoothOn);meshRadio.dirty=true;
 }
 void portalTick(){
   if(webRadar&&millis()-webRadarAt>10000)webRadarRelease();

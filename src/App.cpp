@@ -14,6 +14,7 @@
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
 #include <nvs.h>
+#include "Storage.h"
 #endif
 #include <time.h>
 String statusJson() {
@@ -189,8 +190,12 @@ String executeCommand(const String& input) {
   if(line=="fsformat") {
     if(hardware.fsOk)return "ERR filesystem already mounted; no format";
     if(meshRadio.busy())return "ERR radio busy";
+#if defined(MM_NRF52)
     hardware.fsOk=LittleFS.format() && LittleFS.begin(false,"/littlefs",10,"littlefs");
     return hardware.fsOk?"OK MeshMesh filesystem initialized":"ERR filesystem";
+#else
+    String reply=formatStorage();hardware.fsOk=reply.startsWith("OK");return reply;
+#endif
   }
   if(line.startsWith("resetpath ")||line.startsWith("forget ")) { // node card actions, as on the M9 screen
     bool reset=line.startsWith("resetpath ");String hex=line.substring(reset?10:7);char* end=nullptr;uint64_t id=strtoull(hex.c_str(),&end,16);

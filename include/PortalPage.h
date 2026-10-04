@@ -625,7 +625,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},
  ...absent(5)?[]:[{k:'gps',n:extGps()?'Внешний GPS':'Приёмник GPS',h:'Питание приёмника',t:'sw'}],
  {k:'utc_offset',n:'Смещение UTC',h:'Местное время, шаг 15 минут',t:'sel',o:utcOptions()},
- {k:'battery_volts',n:'Батарея в строке',h:'Оценка заряда или измеренное напряжение',t:'sel',o:[[false,'Проценты'],[true,'Вольты']]}]}
+ {k:'battery_volts',n:'Батарея в строке',h:`Заряд батареи узла: на экране ${heltec()?'платы (проценты — значком)':'платы'} и в строке этой страницы`,t:'sel',o:[[false,'Проценты'],[true,'Вольты']]}]}
 let draft={};
 const same=(k,a,b)=>k==='frequency'?Math.abs(a-b)<.0005:a===b;
 function buildEditor(page){draft={...config};const form=$(page+'Form');
