@@ -20,7 +20,8 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 
 The build copies `web/index.html` into the app's resources, so the app's interface always
 matches the firmware web page of the same revision. The app version is the firmware version from
-`include/Version.h` with a suffix (`0.3.2-app1`). The local `release` package is signed with the debug
+`include/Version.h` with the GitHub Actions build number (`0.3.9-app36`, also the `versionCode`, from
+`MM_VERSION_CODE`); a local build has `-app-local` and `versionCode` 8. The local `release` package is signed with the debug
 key and installs directly. The APK on the website is built by GitHub Actions and signed with the
 project key (`MM_KEYSTORE`, `MM_KEYSTORE_PASSWORD` from the secrets), so that new versions install over old ones. In the debug build
 WebView debugging is enabled (`chrome://inspect`).
@@ -38,6 +39,13 @@ WebView debugging is enabled (`chrome://inspect`).
   for earlier days. If the board clock is unset (Heltec and other boards without an RTC after a
   restart), the app sets the phone's time once on connecting with the `clock` command; messages
   received before that stay without a time.
+- `Updater` — updates of the app itself from the website. The site publishes `app/version.json`
+  (number, name, size and SHA-256 of the APK; `tools/app_release.py`) and a copy `app/meshmesh-<number>.apk`.
+  On start the app reads the description; if the number is higher than its own, an «Update» card
+  appears on the connection screen and in «Connections» (also «Check for updates» there). The APK is
+  downloaded to the cache, checked by size and SHA-256 and handed to the Android installer, which asks
+  once to allow installs from MeshMesh and checks the signature itself. Updates are enabled only in a
+  build signed with the project key.
 - `api/HttpApi` — Wi-Fi: the device's HTTP server (`src/Portal.cpp`) with Basic authentication.
 - `api/CommandApi` — USB and BLE: every page request becomes the command that
   the device's HTTP handler executes (`executeCommand`), with the same response codes.

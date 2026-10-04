@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelUuid
+import android.provider.Settings
 import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -50,6 +51,7 @@ import org.json.JSONObject
 import org.meshmesh.app.link.BleLink
 import org.meshmesh.app.link.UsbLink
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.util.Base64
 
 /**
@@ -102,6 +104,17 @@ class MainActivity : ComponentActivity() {
             .onSuccess { toast("Файл сохранён", "ok") }.onFailure { toast("Файл не сохранён: ${it.message}", "bad") }
     }
     private val qrScanner = registerForActivityResult(ScanContract()) { r -> r.contents?.let(::channelLink) }
+    private val unknownSources = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (packageManager.canRequestPackageInstalls()) installUpdate() else updateState("ready", "Разрешите установку приложений из MeshMesh, чтобы обновить")
+    }
+
+    // Updates of the app from the site (Updater): checked once per start, installed on request.
+    private val updater by lazy { Updater(this) }
+    private var release: Updater.Release? = null
+    private var updateApk: File? = null
+    private var updating = false
+    private var updateChecked = false
+    private var updateInfo = JSONObject().put("state", "idle")
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +154,7 @@ class MainActivity : ComponentActivity() {
                 pageReady = true
                 service?.let { js("MeshHost.state(${it.stateJson()})") }
                 pendingLink?.let { pendingLink = null; channelLink(it) }
+                if (!updateChecked && BuildConfig.UPDATES) { updateChecked = true; checkUpdate(false) }
             }
         }
         web.webChromeClient = object : WebChromeClient() {
@@ -162,6 +176,7 @@ class MainActivity : ComponentActivity() {
         // A link is opened once: not again when Android recreates the activity or reopens it from recents.
         if (savedInstanceState != null || intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) intent.data = null
         handleIntent(intent)
+        if (savedInstanceState == null) lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { File(cacheDir, "updates").deleteRecursively() }
     }
 
     /** web/index.html with host.css and host.js added. */
@@ -316,6 +331,50 @@ class MainActivity : ComponentActivity() {
         @Suppress("DEPRECATION") if (!wm.startScan()) { push(true); runCatching { unregisterReceiver(receiver) }; wifiReceiver = null }
     }, "Без разрешения список сетей недоступен: подключитесь через запрос Android")
 
+    // Updates.
+
+    private fun updateState(state: String, message: String = "", progress: Int = 0) {
+        val r = release
+        updateInfo = JSONObject().put("state", state).put("message", message).put("progress", progress)
+            .put("current", BuildConfig.VERSION_NAME).put("name", r?.name ?: JSONObject.NULL).put("size", r?.size ?: 0)
+        js("MeshHost.update($updateInfo)")
+    }
+
+    private fun checkUpdate(manual: Boolean) {
+        if (!BuildConfig.UPDATES) { if (manual) updateState("off", "Эта сборка установлена не с сайта: обновлять её нужно вручную"); return }
+        if (updating) return
+        if (updateApk?.exists() == true) { updateState("ready"); return }
+        if (manual) updateState("checking")
+        lifecycleScope.launch {
+            runCatching { updater.check() }
+                .onSuccess { r -> release = r; updateState(if (r == null) "none" else "available") }
+                .onFailure { if (manual) updateState("error", "Не удалось проверить: ${it.message ?: "нет интернета"}") }
+        }
+    }
+
+    private fun installUpdate() {
+        val r = release ?: return checkUpdate(true)
+        val apk = updateApk
+        if (apk != null && apk.exists()) {
+            if (!packageManager.canRequestPackageInstalls()) {
+                unknownSources.launch(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName")))
+                return
+            }
+            runCatching { startActivity(updater.installIntent(apk)) }.onFailure { updateState("error", "Установщик не открылся: ${it.message}") }
+            return
+        }
+        if (updating) return
+        updating = true
+        updateState("downloading")
+        lifecycleScope.launch {
+            var shown = 0
+            runCatching {
+                updater.download(r) { n -> val p = (n * 100 / r.size).toInt(); if (p >= shown + 5) { shown = p; updateState("downloading", progress = p) } }
+            }.onSuccess { updateApk = it; updating = false; updateState("ready"); installUpdate() }
+                .onFailure { updating = false; updateState("error", "Загрузка не удалась: ${it.message ?: "нет связи"}") }
+        }
+    }
+
     // Connecting.
 
     private fun connectUsb(device: UsbDevice) {
@@ -390,6 +449,9 @@ class MainActivity : ComponentActivity() {
         }
         @android.webkit.JavascriptInterface fun scanQr() = runOnUiThread { this@MainActivity.scanQr() }
         @android.webkit.JavascriptInterface fun version(): String = BuildConfig.VERSION_NAME
+        @android.webkit.JavascriptInterface fun updateInfo(): String = updateInfo.toString()
+        @android.webkit.JavascriptInterface fun checkUpdate() = runOnUiThread { this@MainActivity.checkUpdate(true) }
+        @android.webkit.JavascriptInterface fun installUpdate() = runOnUiThread { this@MainActivity.installUpdate() }
     }
 
     companion object {

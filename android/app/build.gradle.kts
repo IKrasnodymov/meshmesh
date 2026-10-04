@@ -8,6 +8,8 @@ plugins {
 val repo = rootProject.projectDir.parentFile
 val firmwareVersion = Regex("MESHMM_VERSION \"([^\"]+)\"")
     .find(repo.resolve("include/Version.h").readText())!!.groupValues[1]
+// CI numbers each published build (pages.yml: MM_VERSION_CODE) so that the app can update itself from the site.
+val buildNumber = System.getenv("MM_VERSION_CODE")?.toIntOrNull()
 val webAssets = layout.buildDirectory.dir("generated/webAssets")
 val copyWeb by tasks.registering(Copy::class) {
     from(repo.resolve("web/index.html"))
@@ -22,9 +24,11 @@ android {
         applicationId = "org.meshmesh.app"
         minSdk = 29
         targetSdk = 35
-        versionCode = 8
-        versionName = "$firmwareVersion-app2"
+        versionCode = buildNumber ?: 8
+        versionName = "$firmwareVersion-app${buildNumber ?: "-local"}"
         buildConfigField("String", "FIRMWARE", "\"$firmwareVersion\"")
+        // Updates from the site install only over a build signed with the same project key.
+        buildConfigField("boolean", "UPDATES", (System.getenv("MM_KEYSTORE") != null).toString())
     }
     buildFeatures { buildConfig = true }
     sourceSets["main"].assets.srcDir(webAssets)

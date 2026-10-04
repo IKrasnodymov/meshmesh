@@ -3,7 +3,7 @@
 // Uses the page's globals: auth, timer, route, config, status, conn, request, command, refresh, show…
 (()=>{'use strict';
 const N=window.MeshNative;if(!N)return;
-const H={tab:null,devices:{wifi:[],ble:[],usb:[]},scanning:{},done:{},state:{state:'idle'},prefs:{},sel:'',inApp:false,armed:0};
+const H={tab:null,devices:{wifi:[],ble:[],usb:[]},scanning:{},done:{},state:{state:'idle'},prefs:{},sel:'',inApp:false,armed:0,upd:{state:'idle'},manual:false};
 const KIND={wifi:['wifi','Wi-Fi'],ble:['ble','Bluetooth'],usb:['bolt','USB'],tcp:['bolt','USB через компьютер']};
 
 // fetch('/api/…') → the app; everything else (OpenStreetMap for map preparation) → the network.
@@ -34,6 +34,13 @@ window.MeshHost={
   if(!/^meshcore:\/\/channel\/add\?/i.test(text)){notify('Это не ссылка на канал MeshCore','warn');return}
   H.link=text;if(H.inApp)openLink();else notify('Подключитесь к устройству, чтобы добавить канал','accent')},
  go(target){if(H.inApp)go(target)},
+ // Updates of the app (MainActivity → Updater): a card on the connection screen and on «Подключения».
+ update(u){const was=H.upd.state;H.upd=u||{state:'idle'};const st=H.upd.state;
+  if(st==='available'&&was!=='available'&&H.inApp&&!H.manual)notify('Вышла новая версия приложения: «Подключения» → «Обновить»','accent');
+  if(H.manual&&['none','error','off'].includes(st)){H.manual=false;notify(st==='none'?'Установлена последняя версия приложения':H.upd.message,st==='none'?'ok':st==='off'?'warn':'bad')}
+  else if(st==='error')notify(H.upd.message,'bad');
+  if(st!=='checking'&&st!=='downloading')H.manual=false;
+  if(!H.inApp)renderPanel();else if(route==='connect')renderConnect()},
  back(){
   if(typeof standaloneMode!=='undefined'&&standaloneMode){standaloneMode=false;$('app').hidden=true;$('login').hidden=false;loginHud();return true}
   if(H.inApp&&!$('back').hidden){$('back').click();return true}
@@ -72,9 +79,16 @@ function renderPanel(){
  else if(s.state==='failed')h+=`<div class="card hstate">${ic('failed','bad')}<div class="bad" style="flex:1">${esc(s.message||'Не удалось подключиться')}</div></div>`;
  const last=H.prefs.last;
  if(last&&last.kind&&!busy)h+=`<h3>Последнее устройство</h3><div class="card">${row('data-hlast','radio','acc',last.label||'MeshMesh',KIND[last.kind]?.[1]+' · подключиться снова','',false)}</div>`;
- panel.innerHTML=h}
+ panel.innerHTML=updateCard(false)+h}
 
 function connect(spec){N.connect(JSON.stringify(spec))}
+function updateCard(always){const u=H.upd,st=u.state,mb=u.size?` · ${(u.size/1048576).toFixed(1)} МБ`:'';
+ if(!always&&!['available','downloading','ready'].includes(st))return'';
+ const text=st==='available'?`Доступна версия ${esc(u.name)}${mb}`:st==='downloading'?`Загрузка ${esc(u.name)}: ${u.progress|0}%`:st==='ready'?'Загружено: подтвердите установку в окне Android':st==='checking'?'Проверка…':`Версия ${esc(N.version())}`;
+ const btn=st==='available'?'<button class="btn primary" data-hupd="install">Обновить</button>':st==='ready'?'<button class="btn primary" data-hupd="install">Установить</button>':st==='downloading'||st==='checking'?'':'<button class="btn soft" data-hupd="check">Проверить обновления</button>';
+ return `<div class="card conn"><div class="top"><span class="icbox">${ic('down',st==='available'||st==='ready'?'acc':'info')}</span><div><b>Приложение MeshMesh</b><small>${text}</small></div></div>${st==='downloading'?`<progress value="${(u.progress|0)/100}" style="width:100%"></progress>`:''}${btn?`<div class="extra"><div class="btns">${btn}</div></div>`:''}</div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-hupd]');if(!t)return;
+ if(t.dataset.hupd==='check'){H.manual=true;N.checkUpdate()}else N.installUpdate()});
 // The connection screen's header: the page's hud() would keep the last page's title and BACK.
 function loginHud(){hud();$('title').textContent='MeshMesh';$('title').className='home';$('back').hidden=true;$('icons').innerHTML=''}
 panel.addEventListener('click',e=>{const t=e.target.closest('[data-htab],[data-hscan],[data-hwifi],[data-hble],[data-husb],[data-hgo],[data-hstop],[data-hlast]');if(!t)return;const d=t.dataset;
@@ -107,7 +121,7 @@ function leaveApp(message,tone){
 const pageRenderConnect=window.renderConnect;
 window.renderConnect=function(){pageRenderConnect();const s=H.state;if(!H.inApp||!KIND[s.kind])return;const c=conn||{};
  const toWifi=s.kind==='ble'&&status.wifi&&c.ssid&&c.password?`<button class="btn soft" data-hconn="wifi">Перейти на Wi-Fi</button>`:'';
- $('connList').insertAdjacentHTML('afterbegin',`<div class="card conn"><div class="top"><span class="icbox">${ic(KIND[s.kind][0],'acc')}</span><div><b>Приложение · ${KIND[s.kind][1]}</b><small>${esc(s.label||'')}</small></div></div><div class="extra"><div class="btns">${toWifi}<button class="btn danger" data-hconn="off">Отключиться</button></div>${toWifi?'<small class="muted">Wi-Fi быстрее Bluetooth для карт и радара</small>':''}</div></div>`)};
+ $('connList').insertAdjacentHTML('afterbegin',`<div class="card conn"><div class="top"><span class="icbox">${ic(KIND[s.kind][0],'acc')}</span><div><b>Приложение · ${KIND[s.kind][1]}</b><small>${esc(s.label||'')}</small></div></div><div class="extra"><div class="btns">${toWifi}<button class="btn danger" data-hconn="off">Отключиться</button></div>${toWifi?'<small class="muted">Wi-Fi быстрее Bluetooth для карт и радара</small>':''}</div></div>`+updateCard(true))};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-hconn]');if(!t)return;
  if(t.dataset.hconn==='off'){N.disconnect();return}
  const c=conn||{};N.disconnect();setTimeout(()=>connect({kind:'wifi',ssid:c.ssid,password:c.password,address:'192.168.4.1'}),300)});
@@ -134,6 +148,7 @@ $('uploadMap').onclick=window.uploadMap;
 $('saveBuilder').hidden=true; // the app itself prepares maps: no need to save the page
 $('uploader').querySelector('p').textContent='Выберите файл .mmmap. Он передаётся по текущему подключению; интернет для этого не нужен.';
 
+H.upd=JSON.parse(N.updateInfo());
 H.prefs=JSON.parse(N.prefs());const last=H.prefs.last;
 H.tab=last&&KIND[last.kind]&&last.kind!=='tcp'?last.kind:'usb';
 loginHud();renderPanel();N.scan('usb');if(H.tab!=='usb'&&H.tab==='ble'&&last)H.done.ble=false;

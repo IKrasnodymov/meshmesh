@@ -57,6 +57,7 @@ jobs:
         env:
           MM_KEYSTORE_BASE64: ${{ secrets.MM_KEYSTORE_BASE64 }}
           MM_KEYSTORE_PASSWORD: ${{ secrets.MM_KEYSTORE_PASSWORD }}
+          MM_VERSION_CODE: ${{ github.run_number }}
         run: |
           if [ -n "$MM_KEYSTORE_BASE64" ]; then
             echo "$MM_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
@@ -89,6 +90,8 @@ jobs:
       - run: |
           python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
           mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk
+          # The app checks app/version.json and downloads the numbered copy (a fresh name, no stale CDN cache).
+          python tools/app_release.py _site/app ${{ github.run_number }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
