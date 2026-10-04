@@ -121,6 +121,7 @@
  "f.chess.d": "العب مع جهات اتصالك عبر الراديو: كل نقلة رسالة مؤكدة الاستلام.",
  "shot.m9-chess-italian": "مباراة مع Heltec V4",
  "shot.m9-chess-promotion": "ترقية البيدق",
+ "shot.m9-locked-chess": "شاشة القفل: دعوة للعب، الضغط المطول على OK يفتح المباراة",
  "f.solitaire.t": "سوليتير",
  "f.solitaire.d": "لعبة Klondike الكلاسيكية على M9 — بينما تنتظر الرد.",
  "shot.m9-solitaire-played": "لعبة مع تلميح",

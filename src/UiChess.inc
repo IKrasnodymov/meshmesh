@@ -287,9 +287,29 @@ bool chessKey(int key){
  }
  return false;
 }
+// Locked screen: the game with the latest unseen news if it needs the player or has ended, else the
+// newest game waiting for the player. Without details it names neither the opponent nor the move.
+bool lockNeeds(const ChessMatch& m){return m.state==ChessMatch::Invited||m.myTurn()||(m.state==ChessMatch::Playing&&m.drawOffer==ChessMatch::OfferedToMe);}
+const ChessMatch* lockChess(){
+ const ChessMatch* e=chessNet.eventMatch;if(e&&e->state!=ChessMatch::Free&&e->unseen&&(lockNeeds(*e)||e->state==ChessMatch::Over))return e;
+ const ChessMatch* best=nullptr;for(auto& m:chessNet.matches)if(m.state!=ChessMatch::Free&&lockNeeds(m)&&(!best||int32_t(m.changedAt-best->changedAt)>0))best=&m;
+ return best;
+}
+void drawLockChess(int y){
+ const ChessMatch& m=*lockChess();unsigned waiting=chessNet.waiting();String head,sub;
+ panel(40,y,240,40,card,8);ring(40,y,240,40,8,rgb(0x14524b));icon(IcChess,62,y+20,9,accent,card);
+ if(config.lockDetails){bool theirs=m.game.plies&&(m.myTurn()||m.state==ChessMatch::Over);head=String(m.name)+(theirs?": "+lastSan(m):String());
+  sub=chessState(m);}
+ else{head=t("Chess","Шахматы");sub=waiting?chessTileDetail():t("News in a game","Новости в партии");}
+ // Other games waiting, on the right of the first line.
+ String more=config.lockDetails&&waiting>(lockNeeds(m)?1u:0u)?t("more: ","ещё ")+String(waiting-(lockNeeds(m)?1:0)):String();int mw=more.length()?measure(more,small)+8:0;
+ if(mw)textRight(272,y+15,more,faint,small);text(80,y+16,fit(head,192-mw,bold),ink,bold);text(80,y+32,fit(sub,192,small),chessStateColor(m),small);
+}
 void chessTick(){
  if(chessNet.events!=chessEventsSeen){
   chessEventsSeen=chessNet.events;
+  // News the player has to act on, or a result, lights a dark screen; the locked screen shows it.
+  const ChessMatch* e=chessNet.eventMatch;if(e&&(lockNeeds(*e)||e->state==ChessMatch::Over)){lastInput=millis();if(wakeOnly){wakeOnly=false;hardware.brightness(config.brightness);}}
   // On the open game the news is on the board; elsewhere it is a toast.
   bool here=page==ChessBoard&&chessOpen==chessNet.eventMatch;if(here&&chessOpen)chessNet.viewed(*chessOpen);
   if(!locked&&chessNet.event.length())notice(chessNet.event,here?info:accent);

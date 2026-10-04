@@ -221,7 +221,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 
 <section class="page" id="p-chess" hidden><div class="list" id="chessList"></div>
 <h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="list" id="chessPeers"></div>
-<div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button></div>
+<div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button><button class="btn" id="chessAlerts" hidden></button></div>
 <p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></section>
 
 <section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
@@ -625,6 +625,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
  ...h?[]:[{k:'sound',n:'Звуки',h:'Сигнал о сообщениях и подтверждениях',t:'sw'},{k:'auto_lock',n:'Автоблокировка, с',h:'0 = выкл, 30–600 с',t:'num',min:0,max:600,step:30}],
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},
+ ...h||config.lock_details===undefined?[]:[{k:'lock_details',n:'Экран блокировки',h:'Соперник и ход в шахматах, отправитель сообщения',t:'sel',o:[[true,'Подробно'],[false,'Скрыто']]}],
  ...absent(5)?[]:[{k:'gps',n:extGps()?'Внешний GPS':'Приёмник GPS',h:'Питание приёмника',t:'sw'}],
  {k:'utc_offset',n:'Смещение UTC',h:'Местное время, шаг 15 минут',t:'sel',o:utcOptions()},
  {k:'battery_volts',n:'Батарея в строке',h:'Заряд батареи узла: на экране платы и в строке этой страницы',t:'sel',o:[[false,'Проценты'],[true,'Вольты']]}]}
@@ -804,6 +805,8 @@ async function buildMap(e){e.preventDefault();const b=$('buildButton');b.disable
 // this page shows them, sends moves through /api/command and announces the other player's moves.
 let chess={games:[],events:0,event:'',waiting:0},chessLoaded=false,chessDetail=null,chessSel=null,chessPromo=null,chessArmed='',chessQuiet=false;
 let chessColor=store('chess-color')??2,chessSound=store('chess-sound')||false,chessAudio=null;
+// System notifications while the tab is in the background: only on HTTPS (the site's chess page), not in the app (it notifies itself).
+const chessAlertsUsable=typeof Notification!=='undefined'&&typeof window!=='undefined'&&window.isSecureContext&&!window.MeshHost;let chessAlerts=chessAlertsUsable&&!!store('chess-alerts')&&Notification.permission==='granted';
 const CHESS_ART=['..................|..................|..................|........##........|.......####.......|......######......|......######......|.......####.......|......######......|.......####.......|.......####.......|......######......|.....########.....|....##########....|...############...|...############...','........#.#.......|.......#####......|......########....|.....##+#######...|....############..|...#############..|..###############.|.#######..#######.|.#####....#######.|..###....#######..|........#######...|.......#######....|......########....|....#++++++++#....|...############...|..##############..','........##........|........##........|.......####.......|......###+##......|.....###+####.....|.....##+#####.....|.....########.....|......######......|.......####.......|......#++++#......|.....########.....|......######......|.....########.....|....##########....|..##############..|..##############..','..................|..##...####...##..|..##...####...##..|..##############..|..##############..|...#++++++++++#...|....##########....|....##########....|....##########....|....##########....|....##########....|...#++++++++++#...|..##############..|..##############..|.################.|.################.','.#......##......#.|.##....####....##.|.###..######..###.|.####.######.####.|.################.|..##############..|...############...|....##########....|.....########.....|.....########.....|....#++++++++#....|....##########....|.....########.....|...############...|..##############..|..##############..','........##........|......######......|........##........|....###.##.###....|..######++######..|.#######++#######.|.################.|.################.|..##############..|...############...|....#++++++++#....|....##########....|.....########.....|...############...|..##############..|..##############..'].map(a=>a.split('|')); // P N B R Q K, as src/UiChess.inc
 const pieceCache={};
 function pieceSvg(letter){ // a FEN letter: upper case is White
@@ -835,22 +838,25 @@ function chessTileText(){const w=chess.waiting,n=chess.games.length;return w?plu
 
 // News: compared with the previous list, so it does not depend on the device's menu language.
 function chessNews(before,after){
- const out=[];let act=false;
+ const out=[];let act=false,game='';
  for(const g of after){const o=before.find(x=>x.id===g.id),n=g.name;
-  if(!o){if(g.state==='invited'){out.push(`${n} вызывает вас на партию`);act=true}continue}
+  const was=out.length;
+  if(!o){if(g.state==='invited'){out.push(`${n} вызывает вас на партию`);act=true;game=game||g.id}continue}
   if(g.plies>o.plies&&lastByThem(g)){out.push(`${n}: ${ruSan(g.last_san)}`+(g.state==='over'?' — '+chessState(g).toLowerCase():g.check?' — шах, ваш ход':' — ваш ход'));act=true}
   else if(o.state!=='over'&&g.state==='over')out.push(`${n}: ${chessState(g).toLowerCase()}`);
   if(o.state==='inviting'&&g.state==='playing'&&!(g.plies>o.plies)){out.push(`${n} принял вызов`+(g.my_turn?' — ваш ход':''));act=act||g.my_turn}
   if(o.draw_offer!=='theirs'&&g.draw_offer==='theirs'&&g.state==='playing'){out.push(`${n} предлагает ничью`);act=true}
-  if(o.out_status!==4&&g.out_status===4&&!g.retries)out.push(`${n}: не подтвердил, повторю автоматически`)}
- return {text:out.join(' · '),act}}
+  if(o.out_status!==4&&g.out_status===4&&!g.retries)out.push(`${n}: не подтвердил, повторю автоматически`);
+  if(out.length>was&&needsMe(g))game=game||g.id}
+ return {text:out.join(' · '),act,game}}
 function chessBeep(test){
  try{if(!chessAudio)chessAudio=new (window.AudioContext||window.webkitAudioContext)();if(chessAudio.state==='suspended')chessAudio.resume();
   [[880,0],[1175,.16]].forEach(([f,t])=>{const o=chessAudio.createOscillator(),g=chessAudio.createGain();o.frequency.value=f;g.gain.setValueAtTime(.18,chessAudio.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,chessAudio.currentTime+t+.14);o.connect(g).connect(chessAudio.destination);o.start(chessAudio.currentTime+t);o.stop(chessAudio.currentTime+t+.15)})}
  catch{if(test)notify('Звук в этом браузере недоступен','warn')}}
 async function refreshChess(quiet,draw=true){
  let next;try{next=await request('/api/chess')}catch{return}
- if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}}}
+ if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}
+  if(news.act&&chessAlerts&&document.hidden)try{const n=new Notification('Шахматы',{body:news.text,tag:'meshmesh-chess'});n.onclick=()=>{window.focus();if(news.game)go('board/'+news.game);n.close()}}catch{}}}
  chess=next;chessLoaded=true;if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
  if(route==='board'&&chessGame(param)){try{const d=await request('/api/chess?id='+param);chessDetail={...d,at:Date.now()}}catch{chessDetail=null}
   if(chessGame(param).unseen)command('chess seen '+param).catch(()=>{})}
@@ -865,7 +871,8 @@ function renderChessList(){
  const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
  $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
   :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите ${companion?'себя кнопкой «Объявить» выше':'узел в разделе «Узлы»'} и дождитесь объявления соперника.</p>`;
- $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`}
+ $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`;
+ $('chessAlerts').hidden=!chessAlertsUsable;if(chessAlertsUsable)$('chessAlerts').innerHTML=`${ic('mail',chessAlerts?'acc':'faint')}Уведомления в фоне: ${Notification.permission==='denied'?'запрещены в браузере':chessAlerts?'вкл.':'выкл.'}`}
 
 function enterBoard(){chessSel=null;chessPromo=null;chessArmed='';chessDetail=null;refreshChess(true)}
 function renderBoard(){
@@ -966,6 +973,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('uploadMap').onclick=uploadMap;$('buildForm').onsubmit=buildMap;$('saveBuilder').onclick=()=>download(originalHtml,'meshmesh-maps.html','text/html');
  $('standalone').onclick=()=>{standaloneMode=true;$('login').hidden=true;$('app').hidden=false;$('builder').open=true;$('uploader').hidden=true;go('map')};
  $('chessSound').onclick=()=>{chessSound=!chessSound;store('chess-sound',chessSound);if(chessSound)chessBeep(true);renderChessList()};
+ $('chessAlerts').onclick=async()=>{if(chessAlerts){chessAlerts=false}else{let p=Notification.permission;if(p==='default')try{p=await Notification.requestPermission()}catch{}chessAlerts=p==='granted';if(!chessAlerts)notify('Браузер не разрешил уведомления: разрешите их в настройках сайта','warn')}store('chess-alerts',chessAlerts);renderChessList()};
  $('game').onclick=e=>gameClick(e.target.closest('[data-pile]'),false);
  $('gameUndo').onclick=()=>{if(collecting)return;if(undoMove(game)){pick=null;saveGame();renderGame()}else notify('Нечего отменять','warn')};
  $('gameHint').onclick=()=>{const h=hint(game);if(!h){notify('Полезных ходов нет: отмените или начните заново','warn');return}if(h[0]===0)notify(game.pile[0].length?'Подсказка: сдайте из колоды':'Подсказка: переверните колоду');hintMove=h;renderGame();setTimeout(()=>{hintMove=null;renderGame()},1600)};

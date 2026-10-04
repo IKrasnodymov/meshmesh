@@ -306,36 +306,38 @@ class MeshService : Service() {
         }
     }
 
-    // Background: the page is not polling, so the service does (every 8 s; chess every 30 s).
-    // A change of the RX counter rereads the history; incoming messages after the last one seen
-    // become notifications.
+    // Background: the page is not polling, so the service does (every 8 s). A change of the RX counter
+    // rereads the history and the chess games (else chess every 32 s); incoming messages after the last
+    // one seen and chess news (ChessNews) become notifications.
     private var lastRx = -1
     private var lastSeen: String? = null
-    private var chessWaiting = -1
+    private var chessGames: JSONArray? = null
 
     private fun schedulePolling() {
         background?.cancel(); background = null
-        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessWaiting = -1; return }
+        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessGames = null; return }
         background = scope.launch {
             var round = 0
             while (isActive) {
                 val api = api ?: break
-                runCatching { pollStatus(api) }
-                if (round++ % 4 == 0) runCatching { pollChess(api) }
+                val heard = runCatching { pollStatus(api) }.getOrDefault(false)
+                if (heard || round % 4 == 0) runCatching { pollChess(api) }
+                round++
                 delay(8000)
             }
         }
     }
 
-    private suspend fun pollStatus(api: DeviceApi) {
+    /** True when the board received something since the last poll. */
+    private suspend fun pollStatus(api: DeviceApi): Boolean {
         val reply = api.request("GET", "/api/status", null)
-        if (reply.status != 200) return
+        if (reply.status != 200) return false
         val status = JSONObject(reply.body)
         val rx = status.optInt("rx", -1)
-        if (rx == lastRx) return
+        if (rx == lastRx) return false
         val first = lastRx < 0
         val messages = api.request("GET", "/api/messages", null)
-        if (messages.status != 200) return
+        if (messages.status != 200) return false
         lastRx = rx
         val incoming = ArrayList<JSONObject>()
         val a = JSONArray(messages.body)
@@ -343,7 +345,7 @@ class MeshService : Service() {
         val key = { m: JSONObject -> "${m.optLong("time")}|${m.optString("source")}|${m.optInt("id")}|${m.optString("text").hashCode()}" }
         val previous = lastSeen
         lastSeen = incoming.lastOrNull()?.let(key) ?: previous
-        if (first || incoming.isEmpty() || lastSeen == previous) return
+        if (first || incoming.isEmpty() || lastSeen == previous) return !first
         val start = incoming.indexOfLast { key(it) == previous } + 1
         val fresh = incoming.subList(start.coerceAtLeast(0), incoming.size).takeLast(5)
         val node = status.optString("node")
@@ -353,14 +355,19 @@ class MeshService : Service() {
             val route = if (public) "chat/ALL" else "chat/" + m.optString("source")
             notify(ID_MESSAGE + (key(m).hashCode() and 0xFFFF), if (public) "Public · $from" else from, m.optString("text"), route)
         }
+        return true
     }
 
     private suspend fun pollChess(api: DeviceApi) {
         val reply = api.request("GET", "/api/chess", null)
         if (reply.status != 200) return
-        val waiting = JSONObject(reply.body).optInt("waiting")
-        if (chessWaiting in 0 until waiting) notify(ID_CHESS, "Шахматы", "Ваш ход: партий ждут — $waiting", "chess")
-        chessWaiting = waiting
+        val games = JSONObject(reply.body).optJSONArray("games") ?: return
+        // One notification per game, replaced by its next news; a tap opens the board.
+        chessGames?.let { before ->
+            for (n in ChessNews.between(before, games))
+                notify(ID_CHESS + (n.game.toIntOrNull(16) ?: 0), "Шахматы · ${n.title}", n.text, "board/${n.game}")
+        }
+        chessGames = games
     }
 
     private fun notify(id: Int, title: String, text: String, route: String) {
@@ -379,7 +386,7 @@ class MeshService : Service() {
         const val CHANNEL_MESSAGES = "messages"
         const val ID_LINK = 1
         const val ID_MESSAGE = 1000 // + a hash of the message: one notification each
-        const val ID_CHESS = 3
+        const val ID_CHESS = 100000 // + the game number: one notification per game
         const val ID_LOST = 4
         val KIND_TEXT = mapOf("wifi" to "Wi-Fi", "ble" to "Bluetooth", "usb" to "USB", "tcp" to "USB через компьютер")
     }

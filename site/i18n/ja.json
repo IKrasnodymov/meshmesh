@@ -121,6 +121,7 @@
  "f.chess.d": "連絡先と無線で対局。一手ごとに確認応答付きのメッセージで届きます。",
  "shot.m9-chess-italian": "Heltec V4 との対局",
  "shot.m9-chess-promotion": "ポーンの昇格",
+ "shot.m9-locked-chess": "ロック画面：対局の申し込み、OK 長押しで対局を開く",
  "f.solitaire.t": "ソリティア",
  "f.solitaire.d": "M9 で遊べる定番のクロンダイク。返信を待つ間にどうぞ。",
  "shot.m9-solitaire-played": "ヒント付きのゲーム",

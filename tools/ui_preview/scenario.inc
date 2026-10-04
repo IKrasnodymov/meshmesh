@@ -103,6 +103,11 @@ static void scenario(){
   // The game with the pawn on b7 opens with the cursor on c6: take b7, go to a8 and choose the piece.
   for(int i=1;i<=4;i++){openList(i);key(13);if(uiStatus().indexOf("\"chess_cursor\":\"c6\"")>=0){key(0xb4);key(0xb5);key(13);key(0xb4);key(0xb5);shot("chess-promo-target");key(13);key(0xb7);shot("chess-promotion");key(13);shot("chess-promoted");break;}}
   key(0x82);
+  // Locked: a challenge arrives; its card stands above the messages, without names when details are off,
+  // and holding OK unlocks straight into the game.
+  key(0x88);sayId(5,"Марат",0x5C3E,"new b · шахматы MeshMesh");tick();shot("locked-chess");
+  config.lockDetails=false;tick();shot("locked-chess-hidden");config.lockDetails=true;
+  key(0xa3);if(uiStatus().indexOf("\"chess_game\":\"5C3E\"")<0||uiStatus().indexOf("\"locked\":false")<0){printf("FAIL hold on the locked chess card: %s\n",uiStatus().c_str());exit(1);}key(0x86);key(0x82);
  }
 #endif
  // Device modes: the repeater and room pages, the mode choice from Settings.

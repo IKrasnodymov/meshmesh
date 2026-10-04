@@ -1594,6 +1594,11 @@
   "ru": "Батарея в строке",
   "text": "Batteria mostra"
  },
+ "647141dd": {
+  "en": "Lock screen",
+  "ru": "Экран блокировки",
+  "text": "Schermo bloccato"
+ },
  "f53b39c9": {
   "en": " MHz",
   "ru": " МГц",
@@ -1613,6 +1618,16 @@
   "en": "Percent",
   "ru": "Проценты",
   "text": "Percento"
+ },
+ "685cc410": {
+  "en": "Details",
+  "ru": "Подробно",
+  "text": "Dettagli"
+ },
+ "26fc5e07": {
+  "en": "Hidden",
+  "ru": "Скрыто",
+  "text": "Nascosto"
  },
  "e1f39c44": {
   "en": "1 kHz steps; must match every node",
@@ -1693,6 +1708,11 @@
   "en": "Status bar: charge estimate or measured voltage",
   "ru": "Строка состояния: оценка заряда или измеренное напряжение",
   "text": "Barra di stato: carica stimata o tensione misurata"
+ },
+ "a0c76dbe": {
+  "en": "Chess moves and message senders while locked",
+  "ru": "Ходы шахмат и отправители при блокировке",
+  "text": "Mosse di scacchi e mittenti a schermo bloccato"
  },
  "327bd270": {
   "en": "Stored in device memory",
@@ -2114,11 +2134,6 @@
   "ru": "Русская раскладка",
   "text": "Layout russo"
  },
- "12ff5cad": {
-  "en": "Last from ",
-  "ru": "Последнее от ",
-  "text": "Ultimo da "
- },
  "08d56a77": {
   "en": {
    "one": "new message",
@@ -2133,6 +2148,16 @@
    "one": "{n} nuovo messaggio",
    "other": "{n} nuovi messaggi"
   }
+ },
+ "127b4873": {
+  "en": "Unlock to read",
+  "ru": "Разблокируйте, чтобы прочитать",
+  "text": "Sblocca per leggere"
+ },
+ "12ff5cad": {
+  "en": "Last from ",
+  "ru": "Последнее от ",
+  "text": "Ultimo da "
  },
  "7a531229": {
   "en": "The repeater keeps relaying",
@@ -2153,6 +2178,11 @@
   "en": "Radio error",
   "ru": "Ошибка радио",
   "text": "Errore radio"
+ },
+ "bce105ed": {
+  "en": "Hold: open the game",
+  "ru": "Удерживайте: откроется партия",
+  "text": "Tieni: apri la partita"
  },
  "7ca7875d": {
   "en": "Hold to unlock",
@@ -2409,6 +2439,16 @@
   "ru": "Ошибка шифрования",
   "text": "Test cifratura fallito"
  },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "On"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Off"
+ },
  "47cf8db9": {
   "en": "New message from ",
   "ru": "Сообщение от ",
@@ -2438,16 +2478,6 @@
   "en": "Radio TX error",
   "ru": "Ошибка передачи по радио",
   "text": "Errore trasmissione radio"
- },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "On"
- },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "Off"
  },
  "8baa6473": {
   "en": "Channel removed",
@@ -3083,6 +3113,16 @@
   "en": "Resign with X",
   "ru": "Сдаться — клавиша X",
   "text": "Abbandona con X"
+ },
+ "20b60f04": {
+  "en": "News in a game",
+  "ru": "Новости в партии",
+  "text": "Novità in una partita"
+ },
+ "fe07ee74": {
+  "en": "more: ",
+  "ru": "ещё ",
+  "text": "altre: "
  },
  "47db78a2": {
   "en": "White",

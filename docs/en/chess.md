@@ -120,9 +120,15 @@ on MeshMesh (M9, Heltec, GAT562) or on the same page.
 
 ## Notifications
 
-- M9: a pop-up message “Heltec V4: Nf3, your move” (on any page except
-  the lock screen), a sound, a “waiting for move” badge on the tile. While the screen
-  is locked, the sound and the badge announce the move.
+- M9 and T-Deck: a pop-up message “Heltec V4: Nf3, your move” (on any page except
+  the lock screen), a sound, a “waiting for move” badge on the tile. News that needs a move
+  or an answer (the opponent's move, a challenge, a draw offer) and the end of a game light a dark screen.
+- Lock screen: a game card above the messages card — the opponent, their move and the state
+  (“Challenges you: you play Black”), with “more: N” on the right when other games wait for a move.
+  It shows the game with the latest unseen news, otherwise the newest game waiting for a move.
+  Holding OK unlocks and opens that game at once. The “Lock screen” setting (`lock_details`,
+  “Screen & device”, web page): “Hidden” leaves “Chess · N games wait” and “Unlock to read”
+  without names, moves and senders.
 - Heltec: a “Chess” window on the OLED with the same text, three LED flashes, the screen
   wakes up; a click closes the window.
 - Web page: a pop-up message about the opponent's move, an invitation, a draw offer,
@@ -130,7 +136,14 @@ on MeshMesh (M9, Heltec, GAT562) or on the same page.
   tab title and on the tile; optionally a sound (a button on the “Chess” page) and vibration
   where the browser supports it. System browser notifications (Notification API)
   are not available at `http://192.168.4.1`: browsers allow them only over HTTPS.
-  The page reports a move while it is open.
+  The page reports a move while it is open. On the site's `chess/` page (HTTPS) the
+  “Background notifications” button turns on system notifications while the tab is in the
+  background; a click opens the game.
+- Android app in the background: one notification per game (the opponent's move, a challenge,
+  an accepted challenge, a draw offer, the result), replaced by the next news of that game; a tap
+  opens the board. The text is built from the game list (`/api/chess`), not from the board's message,
+  so it is Russian whatever the screen language. Games are checked as soon as the board receives
+  something, and at least every 32 s.
 
 ## Storage
 

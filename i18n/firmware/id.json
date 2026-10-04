@@ -1584,6 +1584,11 @@
   "ru": "Батарея в строке",
   "text": "Tampilan baterai"
  },
+ "647141dd": {
+  "en": "Lock screen",
+  "ru": "Экран блокировки",
+  "text": "Layar kunci"
+ },
  "f53b39c9": {
   "en": " MHz",
   "ru": " МГц",
@@ -1603,6 +1608,16 @@
   "en": "Percent",
   "ru": "Проценты",
   "text": "Persen"
+ },
+ "685cc410": {
+  "en": "Details",
+  "ru": "Подробно",
+  "text": "Rinci"
+ },
+ "26fc5e07": {
+  "en": "Hidden",
+  "ru": "Скрыто",
+  "text": "Tersembunyi"
  },
  "e1f39c44": {
   "en": "1 kHz steps; must match every node",
@@ -1683,6 +1698,11 @@
   "en": "Status bar: charge estimate or measured voltage",
   "ru": "Строка состояния: оценка заряда или измеренное напряжение",
   "text": "Bilah status: perkiraan daya atau tegangan terukur"
+ },
+ "a0c76dbe": {
+  "en": "Chess moves and message senders while locked",
+  "ru": "Ходы шахмат и отправители при блокировке",
+  "text": "Langkah catur dan pengirim saat terkunci"
  },
  "327bd270": {
   "en": "Stored in device memory",
@@ -2104,11 +2124,6 @@
   "ru": "Русская раскладка",
   "text": "Tata letak Rusia"
  },
- "12ff5cad": {
-  "en": "Last from ",
-  "ru": "Последнее от ",
-  "text": "Terakhir dari "
- },
  "08d56a77": {
   "en": {
    "one": "new message",
@@ -2122,6 +2137,16 @@
   "forms": {
    "other": "{n} pesan baru"
   }
+ },
+ "127b4873": {
+  "en": "Unlock to read",
+  "ru": "Разблокируйте, чтобы прочитать",
+  "text": "Buka kunci untuk membaca"
+ },
+ "12ff5cad": {
+  "en": "Last from ",
+  "ru": "Последнее от ",
+  "text": "Terakhir dari "
  },
  "7a531229": {
   "en": "The repeater keeps relaying",
@@ -2142,6 +2167,11 @@
   "en": "Radio error",
   "ru": "Ошибка радио",
   "text": "Galat radio"
+ },
+ "bce105ed": {
+  "en": "Hold: open the game",
+  "ru": "Удерживайте: откроется партия",
+  "text": "Tahan: buka permainan"
  },
  "7ca7875d": {
   "en": "Hold to unlock",
@@ -2398,6 +2428,16 @@
   "ru": "Ошибка шифрования",
   "text": "Tes enkripsi gagal"
  },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "On"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Off"
+ },
  "47cf8db9": {
   "en": "New message from ",
   "ru": "Сообщение от ",
@@ -2427,16 +2467,6 @@
   "en": "Radio TX error",
   "ru": "Ошибка передачи по радио",
   "text": "Galat TX radio"
- },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "On"
- },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "Off"
  },
  "8baa6473": {
   "en": "Channel removed",
@@ -3072,6 +3102,16 @@
   "en": "Resign with X",
   "ru": "Сдаться — клавиша X",
   "text": "Menyerah dengan X"
+ },
+ "20b60f04": {
+  "en": "News in a game",
+  "ru": "Новости в партии",
+  "text": "Kabar dalam permainan"
+ },
+ "fe07ee74": {
+  "en": "more: ",
+  "ru": "ещё ",
+  "text": "lagi: "
  },
  "47db78a2": {
   "en": "White",
