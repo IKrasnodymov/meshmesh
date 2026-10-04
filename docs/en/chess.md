@@ -112,6 +112,54 @@ game list). The Heltec and GAT562 show the rating change in a pop-up.
 Signing does not rule out boosting a rating with a second device of your own: it proves that both keys
 accepted the result, not that different people hold them. The daily limit restricts it.
 
+## Tournament (Swiss system)
+
+The organiser is any M9, T-Deck, Heltec or other ESP32 board with MeshMesh (tournaments do not fit the
+GAT562 flash: it declines an invitation and tells why; it still plays rated games outside tournaments).
+A tournament is created on the M9 (“Chess” → the “Tournaments” tab → “Create a tournament”: name,
+players from the chat contacts, the number of rounds and the time a move), on the web page or over USB
+`tour create ROUNDS HOURS ID,ID,... NAME`. Up to 10 players with the organiser, up to 9 rounds; up to
+three tournaments are kept at once. Every tournament game is rated.
+
+**How it goes.** The organiser sends invitations; the tournament starts by itself when everyone has
+answered and at least two agreed (S on the tournament page starts at once with those who agreed). The
+organiser's device pairs: round 1 by lot (seeded by the tournament number), later the players are
+ordered by score, then by rating, and inside a score group the top half plays the bottom half; nobody
+meets twice while it can be avoided (a search with backtracking); White goes to the player with fewer
+Whites, then to the one who had Black last round. With an odd number of players the lowest player
+without a bye gets a point without a game. Each player gets their pairing: colour, game number, the
+opponent's key and name (the opponent becomes a contact even if their advert is not heard; messages go
+by flood until a path is found). The game starts at once, without a challenge; when every board is busy it
+takes the place of the oldest finished game whose rating and report are done (the Heltec has no chess
+screen, so nobody opens such games), and if there is none it is created on a later attempt, every 30 s. When a game is over, each
+player's device reports the result to the organiser by itself; two matching reports give the result,
+differing ones a “dispute” that the organiser settles (W/B/D on the M9 pairings screen, buttons on the web
+page, USB `tour result TOUR GAME w|b|d`). When every game of the round is decided, the organiser sends the
+standings (points and the Buchholz score — the sum of the opponents' points) and the next round's pairings;
+after the last one — the result. Starting and closing a round run in the main loop, not in the radio handler:
+the pairing search and sending did not fit its stack (an M9 panic on the hardware showed it).
+
+| Text (`♞` — U+265E, tournament number) | Meaning |
+|---|---|
+| `♞7C01 inv 5 24 7 Кубок двора` | invitation: rounds, hours a move, players, name |
+| `♞7C01 yes` / `♞7C01 no` | a player's answer |
+| `♞7C01 pl 7A8544:Name,C99339:Name` | the players (first 6 ID digits and a name up to 12 bytes), in parts |
+| `♞7C01 r2 w 3F2A <base64 key> Name` / `♞7C01 r2 bye` | the round's pairing: colour, game number, the opponent's key and name / a bye |
+| `♞7C01 res 3F2A w` | a player's result: `w`, `b`, `d` |
+| `♞7C01 st 2 7A8544:3:5,…` | the standings after a round: ID, points×2, Buchholz×2 |
+| `♞7C01 end 5 7A8544:7:21,…` / `♞7C01 cancel` | finished (with the final standings, so the place is right whichever message arrives first) / cancelled |
+
+Tournament commands go as direct messages with ACK; unconfirmed ones are resent after 2, 5, 10 and every
+15 minutes for a day (a queue of up to 40 messages is saved with the tournaments in `/meshmesh/tour.bin`;
+after a restart resending starts in a minute). The time a move is a guide for now: there is no loss on
+time. If the organiser disappears, the tournament stops — organising is not handed over.
+
+**Where it shows.** M9 and T-Deck: the “Tournaments” tab (the list, an invitation, gathering players, the
+tournament page with your game of the round, the standings and the games — ◂▸, OK — to the game), the
+tournament strip on the board, pop-ups and a lit screen for a round's pairing and the result. Heltec — a
+pop-up with the news; playing and answering are on the web page. Web page and app: the “Tournaments” tab
+with the same actions and a creation form (`GET /api/tour`, USB `tour`).
+
 ## M9 screen
 
 Main menu → “Chess”: the list of games (first those where your move or reply is needed),
@@ -208,6 +256,12 @@ is a separate file, `rating.bin` (see “ELO rating”).
 
 ## Checks
 
+- `tools/ui_preview/build.sh m9 DIR` — besides the screens, a whole tournament on the organiser's side: the
+  wizard with six contacts, the automatic start after every answer (not in the radio handler), four rounds with
+  both players' reports, a dispute settled by the organiser; the checks: one game per pair and one bye per round,
+  no repeated games, at most one bye per player, alternating colours, the total of points and the standings
+  order; the player's side — an invitation, the player list, a pairing with the opponent's key starts the game,
+  the standings.
 - `tools/chess/rating_check.sh` — on a computer: signatures with the MeshCore Ed25519 code (another clock or
   result breaks the signature), base64, ELO 1500 → 1516/1484, the expected change, the daily limit,
   a repeated record, reading the file back and moving old records into the base.

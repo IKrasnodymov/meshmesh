@@ -22,6 +22,7 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include <time.h>
 #include <SHA256.h>
 #include "ChessNet.h"
+#include "ChessTour.h"
 #include "MeshServer.h"
 MeshRadio meshRadio;
 #if defined(MM_RADIO_SX1262)
@@ -105,7 +106,7 @@ class MeshCoreBackend:public BaseChatMesh {
  bool duplicate(uint64_t source,uint32_t stamp,const char* text){uint32_t hash;mesh::Utils::sha256((uint8_t*)&hash,4,(const uint8_t*)text,strlen(text));for(const auto& r:received)if(r.source==source&&r.stamp==stamp&&r.hash==hash)return true;received[nextReceived]={source,stamp,hash};nextReceived=(nextReceived+1)%128;return false;}
  void receiveMessage(uint64_t source,uint64_t dest,uint32_t stamp,const char* name,const char* text,const mesh::Packet* packet,uint8_t hops){size_t n=strnlen(text,MAX_TEXT_LEN+1);if(!n||n>MAX_TEXT_LEN||!meshmesh::validUtf8((const uint8_t*)text,n)){owner.rejected++;return;}if(duplicate(source,stamp,text))return;for(unsigned i=0;i<owner.historyCount;i++){const auto& old=owner.history[i];if(old.protocol==2&&!old.outgoing&&old.source==source&&old.session==stamp&&!strcmp(old.text,text))return;}
   // Chess commands come only from direct messages of keyed contacts, never from the channel.
-  if(!channels::isChannel(dest)&&chessNet.receive(source,name,text))return;
+  if(!channels::isChannel(dest)&&(chessNet.receive(source,name,text)||tour::net.receive(source,name,text)))return;
  ChatMessage m;m.source=source;m.destination=dest;m.timestamp=uint32_t(time(nullptr));m.session=stamp;m.route=packet->isRouteFlood()?ChatMessage::RouteFlood:ChatMessage::RouteDirect;m.hops=hops;mesh::Utils::sha256((uint8_t*)&m.id,4,(const uint8_t*)text,n);copyUtf8(m.name,name,sizeof(m.name));copyUtf8(m.text,text,sizeof(m.text));owner.addMessage(m);hardware.beep();owner.event="New message from "+String(m.name);}
  void updateContact(const ContactInfo& c,bool heard,uint8_t hops=255){ // hops 255: not known, kept
   if(!meshmesh::validUtf8((const uint8_t*)c.name,strnlen(c.name,sizeof(c.name)))){owner.rejected++;return;}
@@ -131,6 +132,12 @@ class MeshCoreBackend:public BaseChatMesh {
   Peer* p=owner.contact(aliasOf(key));if(p){unsigned i=p-owner.peers;memmove(owner.peers+i,owner.peers+i+1,sizeof(Peer)*(owner.peerCount-i-1));owner.peerCount--;owner.peers[owner.peerCount]={};}
   owner.replaced++;contactsDue=millis()+2000;owner.dirty=true;
  }
+ public:
+ // A contact known only by its key (no advert heard yet): messages to it go by flood until a path is found.
+ bool learn(const uint8_t key[32],const char* name){
+  uint64_t id=aliasOf(key);if(owner.contact(id))return true;ContactInfo c={};c.id=mesh::Identity(key);copyUtf8(c.name,name,sizeof(c.name));c.type=ADV_TYPE_CHAT;c.out_path_len=OUT_PATH_UNKNOWN;c.lastmod=uint32_t(time(nullptr));
+  if(!addContact(c))return false;updateContact(c,false);contactsDue=millis()+2000;return true;}
+ protected:
  void onDiscoveredContact(ContactInfo& c,bool,uint8_t pathLen,const uint8_t*) override{updateContact(c,true,pathLen&63);contactsDue=millis()+2000;}
  ContactInfo* processAck(const uint8_t* data) override{
   uint32_t ack;memcpy(&ack,data,4);
@@ -243,6 +250,7 @@ static const mesh::LocalIdentity* selfIdentity(MeshCoreBackend* core){return cor
 const uint8_t* MeshRadio::nodeKey() const{auto* self=selfIdentity(core);return self?self->pub_key:nullptr;}
 bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t* data,size_t size) const{auto* self=selfIdentity(core);if(!self)return false;self->sign(sig,data,size);return true;}
 bool MeshRadio::nodeVerify(const uint8_t key[32],const uint8_t sig[64],const uint8_t* data,size_t size){mesh::Identity id(key);return id.verify(sig,data,size);}
+bool MeshRadio::learnContact(const uint8_t key[32],const char* name){return core&&core->learn(key,name);}
 String MeshRadio::publicKeyText() const{auto* self=selfIdentity(core);if(!self)return "";char out[65];mesh::Utils::toHex(out,self->pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return channels::isChannel(destination)?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
 bool MeshRadio::resetPath(uint64_t id){Peer* p=contact(id);if(!p||!core||!core->resetPath(p->publicKey))return false;p->pathLength=255;dirty=true;return true;}
@@ -307,7 +315,7 @@ uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game){
  Pending* slot=nullptr;for(auto& wait:pending)if(!wait.active){slot=&wait;break;}if(!slot){event="Waiting for ACKs";dirty=true;return false;}
  auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
-void MeshRadio::status(uint32_t id,ChatMessage::Status value){for(auto& p:pending)if(p.message.game&&p.message.id==id){chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered)return;history[i].status=value;persist(history[i]);dirty=true;break;}}
+void MeshRadio::status(uint32_t id,ChatMessage::Status value){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(!tour::net.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered)return;history[i].status=value;persist(history[i]);dirty=true;break;}}
 // Route of an outgoing message: the current attempt, or the one that got the ACK. Saved with the next status.
 void MeshRadio::track(const Pending& wait,unsigned attempt,bool delivered){
  if(wait.message.game||attempt>2)return;

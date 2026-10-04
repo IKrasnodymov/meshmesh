@@ -3,6 +3,7 @@
 #include "MeshRadio.h"
 #include "Radar.h"
 #include "ChessNet.h"
+#include "ChessTour.h"
 #include "MeshServer.h"
 #include <math.h>
 #include <time.h>
@@ -24,7 +25,7 @@ const char* pageNames[]={"home","messages","nodes","radar","gps","wifi","ble","s
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
-uint32_t chessPopupAt=0,chessSeen=0; // chess news: Heltec has no board, the game is played on the Wi-Fi page
+uint32_t chessPopupAt=0,chessSeen=0,tourSeen=0;String chessPopupText; // chess and tournament news: Heltec has no board, the game is played on the Wi-Fi page
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
@@ -281,7 +282,7 @@ void drawPopup(const ChatMessage& m){
 void drawChessPopup(){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
  c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1); // a pawn
- say(18,11,t("Chess","Шахматы"),bold);textLines(chessNet.event,25,3);
+ say(18,11,t("Chess","Шахматы"),bold);textLines(chessPopupText,25,3);
 #if defined(MM_NO_WIFI)
  sayRight(126,62,t("play in the app (BLE)","играть: приложение (BLE)"),small);
 #else
@@ -453,7 +454,8 @@ void uiTick(){
  uint32_t now=millis();
  // New incoming message: popup, wake the panel and blink the LED three times.
  if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
- if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+ if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+ if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){chessPopupText=chessNet.event;chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;led(false);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;

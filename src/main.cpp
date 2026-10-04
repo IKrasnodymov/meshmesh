@@ -11,6 +11,7 @@
 #include "WifiDiagnostics.h"
 #include "Internet.h"
 #include "ChessNet.h"
+#include "ChessTour.h"
 #include "Board.h"
 #include "Power.h"
 #include <Wire.h>
@@ -82,7 +83,7 @@ void appSetup() {
 #endif
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   BOOT("config");config.load();BOOT("clock");hardware.beginClock();BOOT("hardware");hardware.begin();
-  BOOT("chess");chessNet.begin();BOOT("radio");meshRadio.begin();BOOT("maps");maps.begin();
+  BOOT("chess");chessNet.begin();tour::net.begin();BOOT("radio");meshRadio.begin();BOOT("maps");maps.begin();
 #if !defined(MM_COMPACT)
   if(config.role==RoleNormal)internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
@@ -96,7 +97,7 @@ void appSetup() {
   Serial.println("READY: USB commands are available; type help");
 }
 void appLoop() {
-  hardware.tick();meshRadio.tick();if(config.role==RoleNormal)chessNet.tick(); // games wait for the normal mode
+  hardware.tick();meshRadio.tick();if(config.role==RoleNormal){chessNet.tick();tour::net.tick();} // games wait for the normal mode
 #if !defined(MM_COMPACT)
   internet.tick();
 #endif

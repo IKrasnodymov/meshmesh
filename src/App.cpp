@@ -10,6 +10,7 @@
 #include "Radar.h"
 #include "Internet.h"
 #include "ChessNet.h"
+#include "ChessTour.h"
 #include "MeshServer.h"
 #include "Power.h"
 #include <LittleFS.h>
@@ -152,6 +153,7 @@ String executeCommand(const String& input) {
   if(line=="internet"||line.startsWith("internet "))return internet.command(line);
 #endif
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
+  if(line=="tour"||line.startsWith("tour "))return tour::net.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
   if(line=="radar")return radar.json();

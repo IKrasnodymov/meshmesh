@@ -134,6 +134,106 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": 24 小时未确认,按 R 重发"
  },
+ "bbc41d9b": {
+  "en": "Tournament: nobody has agreed yet",
+  "ru": "Турнир: пока никто не согласился",
+  "text": "比赛:还没有人同意"
+ },
+ "fe21cd58": {
+  "en": ": a bye for you (+1)",
+  "ru": ": вы свободны от игры (+1)",
+  "text": ":你轮空 (+1)"
+ },
+ "954a4260": {
+  "en": "round ",
+  "ru": "тур ",
+  "text": "轮次 "
+ },
+ "9172832f": {
+  "en": ", you play White",
+  "ru": ", вы белыми",
+  "text": ",你执白"
+ },
+ "24a182c8": {
+  "en": ", you play Black",
+  "ru": ", вы чёрными",
+  "text": ",你执黑"
+ },
+ "4a098655": {
+  "en": "Tournament: no free chess board",
+  "ru": "Турнир: нет свободной доски",
+  "text": "比赛:没有空闲棋盘"
+ },
+ "93d7f45b": {
+  "en": "results differ in game ",
+  "ru": "результаты расходятся в партии ",
+  "text": "对局结果不一致 "
+ },
+ "35657d57": {
+  "en": ": finished, your place ",
+  "ru": ": турнир окончен, ваше место ",
+  "text": ":已结束,你的名次 "
+ },
+ "c0f5f34b": {
+  "en": ": tournament invitation, no free place",
+  "ru": ": приглашение в турнир, нет места",
+  "text": ":比赛邀请,没有空位"
+ },
+ "1b6b5746": {
+  "en": " invites you to the tournament \"",
+  "ru": " приглашает в турнир «",
+  "text": " 邀请你参加比赛“"
+ },
+ "c781758d": {
+  "en": "\"",
+  "ru": "»",
+  "text": "”"
+ },
+ "12f420df": {
+  "en": " joins \"",
+  "ru": " участвует в «",
+  "text": " 参加“"
+ },
+ "baaea3e0": {
+  "en": " declines \"",
+  "ru": " отказался от «",
+  "text": " 拒绝“"
+ },
+ "9c7176fd": {
+  "en": ": cancelled by the organiser",
+  "ru": ": отменён организатором",
+  "text": ":组织者已取消"
+ },
+ "49d02c04": {
+  "en": "Tournament: cannot save",
+  "ru": "Турнир: не удалось сохранить",
+  "text": "比赛:无法保存"
+ },
+ "b00dafff": {
+  "en": ": tournaments do not fit this board",
+  "ru": ": турниры не помещаются в эту плату",
+  "text": ":此设备不支持比赛"
+ },
+ "7a76bf2e": {
+  "en": "Tournament: message queue full",
+  "ru": "Турнир: очередь сообщений переполнена",
+  "text": "比赛:消息队列已满"
+ },
+ "6a7780cf": {
+  "en": "Tournament: 2-10 players, 1-9 rounds",
+  "ru": "Турнир: 2-10 игроков, 1-9 туров",
+  "text": "比赛:2-10 人,1-9 轮"
+ },
+ "e5bc090c": {
+  "en": "Tournament: no free place",
+  "ru": "Турнир: нет свободного места",
+  "text": "比赛:没有空位"
+ },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "比赛:请选择聊天联系人"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -502,6 +602,11 @@
   "en": "New chess game",
   "ru": "Новая партия",
   "text": "新对局"
+ },
+ "74549647": {
+  "en": "New tournament",
+  "ru": "Новый турнир",
+  "text": "新比赛"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2198,6 +2303,11 @@
   "ru": "Ключ сети · 64 hex",
   "text": "网络密钥 · 64 hex"
  },
+ "5bb9392e": {
+  "en": "Tournament name",
+  "ru": "Название турнира",
+  "text": "比赛名称"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2227,6 +2337,11 @@
   "en": "OK: save   BACK: cancel",
   "ru": "OK: сохранить   BACK: отменить",
   "text": "OK: 保存   BACK: 取消"
+ },
+ "70e3f7ea": {
+  "en": "Tournament",
+  "ru": "Турнир",
+  "text": "比赛"
  },
  "5542d75b": {
   "en": "Chess · ",
@@ -2768,6 +2883,11 @@
   "ru": "Партии",
   "text": "对局"
  },
+ "7b962df1": {
+  "en": "Tournaments",
+  "ru": "Турниры",
+  "text": "比赛"
+ },
  "55aaa48c": {
   "en": "Rating",
   "ru": "Рейтинг",
@@ -2782,6 +2902,11 @@
   "en": "Challenge a chat contact",
   "ru": "Вызвать чат-контакт",
   "text": "向聊天联系人发起挑战"
+ },
+ "f6f5f20d": {
+  "en": "R",
+  "ru": "т",
+  "text": "轮"
  },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
@@ -3520,16 +3645,6 @@
   "ru": "ваш ход, шах!",
   "text": "轮到你,将军!"
  },
- "d4637825": {
-  "en": "your move",
-  "ru": "ваш ход",
-  "text": "轮到你"
- },
- "509eb141": {
-  "en": "their move",
-  "ru": "ход соперника",
-  "text": "对方走棋"
- },
  "8054c24f": {
   "en": "you won",
   "ru": "вы победили",
@@ -3539,11 +3654,6 @@
   "en": "you lost",
   "ru": "вы проиграли",
   "text": "你输了"
- },
- "25003996": {
-  "en": "draw",
-  "ru": "ничья",
-  "text": "和棋"
  },
  "df7afec4": {
   "en": "ended",
@@ -4977,5 +5087,522 @@
   "en": "Take",
   "ru": "Взять",
   "text": "拿起"
+ },
+ "5e550939": {
+  "en": "Player",
+  "ru": "Игрок",
+  "text": "棋手"
+ },
+ "30374633": {
+  "en": "Pts",
+  "ru": "Очки",
+  "text": "积分"
+ },
+ "d26cc5ee": {
+  "en": "Buch.",
+  "ru": "Бухг.",
+  "text": "布赫"
+ },
+ "5c61e756": {
+  "en": " games",
+  "ru": " · пары",
+  "text": " 对局"
+ },
+ "fad010ec": {
+  "en": "dispute",
+  "ru": "спор",
+  "text": "争议"
+ },
+ "4734758c": {
+  "en": "Your games",
+  "ru": "Ваши партии",
+  "text": "我的对局"
+ },
+ "ecf210b8": {
+  "en": "R",
+  "ru": "Т",
+  "text": "轮"
+ },
+ "bf9822cd": {
+  "en": "bye (+1)",
+  "ru": "без игры (+1)",
+  "text": "轮空 (+1)"
+ },
+ "69412de5": {
+  "en": "win",
+  "ru": "победа",
+  "text": "胜"
+ },
+ "38624b7c": {
+  "en": "loss",
+  "ru": "поражение",
+  "text": "负"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "和棋"
+ },
+ "e2c0f7eb": {
+  "en": "playing",
+  "ru": "идёт",
+  "text": "进行中"
+ },
+ "3919be94": {
+  "en": "1-0",
+  "ru": "1-0",
+  "text": "1-0"
+ },
+ "7ba60019": {
+  "en": "To the game",
+  "ru": "К партии",
+  "text": "去对局"
+ },
+ "4af576cc": {
+  "en": "Standings",
+  "ru": "Таблица",
+  "text": "排名"
+ },
+ "a7e20029": {
+  "en": "You joined: wait for the pairing",
+  "ru": "Вы участвуете: ждите пару",
+  "text": "已参加:请等待配对"
+ },
+ "ec7f8c84": {
+  "en": "Invitation declined",
+  "ru": "Приглашение отклонено",
+  "text": "已拒绝邀请"
+ },
+ "6e500ba0": {
+  "en": "Tournament started: round 1 sent",
+  "ru": "Турнир начат: пары первого тура отправлены",
+  "text": "比赛开始:第 1 轮配对已发送"
+ },
+ "353e2d7d": {
+  "en": "Tournament cancelled",
+  "ru": "Турнир отменён",
+  "text": "比赛已取消"
+ },
+ "dcfc96fc": {
+  "en": "Result set",
+  "ru": "Результат записан",
+  "text": "结果已记录"
+ },
+ "ba0bb842": {
+  "en": "No game for you now",
+  "ru": "Сейчас у вас нет партии",
+  "text": "你现在没有对局"
+ },
+ "c2a96af6": {
+  "en": "Tournament removed",
+  "ru": "Турнир удалён",
+  "text": "比赛已删除"
+ },
+ "d8b27ae3": {
+  "en": "Name",
+  "ru": "Название",
+  "text": "名称"
+ },
+ "6c80148e": {
+  "en": "Rules",
+  "ru": "Правила",
+  "text": "规则"
+ },
+ "a6868080": {
+  "en": "Check",
+  "ru": "Проверка",
+  "text": "确认"
+ },
+ "3371e999": {
+  "en": "Players see it in the invitation and the standings. OK changes it, > goes on.",
+  "ru": "Его увидят игроки в приглашении и таблице. OK — изменить, > — дальше.",
+  "text": "棋手会在邀请和排名中看到它。OK 修改,> 继续。"
+ },
+ "055dae05": {
+  "en": "Edit",
+  "ru": "Изменить",
+  "text": "修改"
+ },
+ "e7bfbbfb": {
+  "en": "Next",
+  "ru": "Дальше",
+  "text": "下一步"
+ },
+ "c229145c": {
+  "en": "not heard since the start",
+  "ru": "не слышен с запуска",
+  "text": "启动后未收到"
+ },
+ "0b300371": {
+  "en": "Chosen ",
+  "ru": "Выбрано ",
+  "text": "已选 "
+ },
+ "b0430fb1": {
+  "en": " with you",
+  "ru": " с вами",
+  "text": " 人含你"
+ },
+ "26113478": {
+  "en": " (the most)",
+  "ru": " (больше нельзя)",
+  "text": " (已满)"
+ },
+ "6039740e": {
+  "en": "Choose",
+  "ru": "Отметить",
+  "text": "选择"
+ },
+ "7ede8288": {
+  "en": "Next",
+  "ru": "Далее",
+  "text": "继续"
+ },
+ "975cd7a6": {
+  "en": "Rounds",
+  "ru": "Туры",
+  "text": "轮数"
+ },
+ "009ed481": {
+  "en": "suggested for ",
+  "ru": "для ",
+  "text": "推荐 "
+ },
+ "ec0c2450": {
+  "en": "a LoRa move takes up to a few minutes",
+  "ru": "по LoRa ход идёт до нескольких минут",
+  "text": "LoRa 走一步需几分钟"
+ },
+ "5bd51e34": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрока",
+   "few": "игроков",
+   "many": "игроков"
+  },
+  "forms": {
+   "other": "{n} 人"
+  }
+ },
+ "9423a046": {
+  "en": "Every game is rated. Pairings are automatic: round 1 by lot, then by score without repeated games.",
+  "ru": "Все партии — на рейтинг. Пары составляются сами: первый тур по жребию, дальше по очкам без повторных встреч.",
+  "text": "每局都计分。自动配对:第 1 轮抽签,之后按积分配对且不重复对阵。"
+ },
+ "42dc0a3a": {
+  "en": "Value",
+  "ru": "Значение",
+  "text": "数值"
+ },
+ "29b67420": {
+  "en": "Item",
+  "ru": "Пункт",
+  "text": "项目"
+ },
+ "1a466259": {
+  "en": "Swiss · ",
+  "ru": "Швейцарка · ",
+  "text": "瑞士制 · "
+ },
+ "284223cb": {
+  "en": "Invitations go as direct messages. Round 1 starts when everyone answers, or when you press S on the tournament page; those who did not answer stay out.",
+  "ru": "Приглашения уйдут личными сообщениями. Первый тур начнётся, когда ответят все, или по S на странице турнира; кто не ответил, в турнир не попадёт.",
+  "text": "邀请以私信发送。所有人回复后,或在比赛页按 S 时开始第 1 轮;未回复者不参加。"
+ },
+ "cdcc234f": {
+  "en": "Send invitations",
+  "ru": "Разослать приглашения",
+  "text": "发送邀请"
+ },
+ "53a3d9cf": {
+  "en": "Name: 1-32 UTF-8 bytes",
+  "ru": "Название: 1-32 байта UTF-8",
+  "text": "名称：1-32 字节 UTF-8"
+ },
+ "1778710d": {
+  "en": "At most 10 players",
+  "ru": "Не больше 10 игроков",
+  "text": "最多 10 人"
+ },
+ "c164cb75": {
+  "en": "Choose at least one contact",
+  "ru": "Отметьте хотя бы один контакт",
+  "text": "至少选择一个联系人"
+ },
+ "daf0f315": {
+  "en": "Invitations sent: ",
+  "ru": "Приглашения отправлены: ",
+  "text": "邀请已发送: "
+ },
+ "6a22520b": {
+  "en": "From ",
+  "ru": "От ",
+  "text": "来自 "
+ },
+ "b56e13a9": {
+  "en": " h a move",
+  "ru": " ч на ход",
+  "text": " 小时/步"
+ },
+ "dd25c646": {
+  "en": {
+   "one": "round",
+   "other": "rounds"
+  },
+  "ru": {
+   "one": "тур",
+   "few": "тура",
+   "many": "туров"
+  },
+  "forms": {
+   "other": "{n} 轮"
+  }
+ },
+ "7c3e6a67": {
+  "en": "Agreed: ",
+  "ru": "Согласились: ",
+  "text": "已同意: "
+ },
+ "283bff63": {
+  "en": "You declined",
+  "ru": "Вы отказались",
+  "text": "你已拒绝"
+ },
+ "3b724921": {
+  "en": "Cancelled",
+  "ru": "Отменён",
+  "text": "已取消"
+ },
+ "cef3039d": {
+  "en": " place of ",
+  "ru": "-е место из ",
+  "text": " 名 / "
+ },
+ "8b622ca9": {
+  "en": " pts",
+  "ru": " оч.",
+  "text": " 分"
+ },
+ "c9940455": {
+  "en": "Finished",
+  "ru": "Окончен",
+  "text": "已结束"
+ },
+ "3f7b7e3d": {
+  "en": "Waiting for the start",
+  "ru": "Ждём начала",
+  "text": "等待开始"
+ },
+ "89b9fcd7": {
+  "en": "Round ",
+  "ru": "Тур ",
+  "text": "轮次 "
+ },
+ "602a97dd": {
+  "en": " place, ",
+  "ru": "-й, ",
+  "text": " 名, "
+ },
+ "2ecaee40": {
+  "en": " · a bye",
+  "ru": " · без игры",
+  "text": " · 轮空"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "轮到你"
+ },
+ "579004bc": {
+  "en": "game over",
+  "ru": "партия окончена",
+  "text": "对局结束"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "对方走棋"
+ },
+ "3d6e0984": {
+  "en": "on",
+  "ru": "идёт",
+  "text": "进行"
+ },
+ "30d13241": {
+  "en": "starting",
+  "ru": "старт",
+  "text": "开始"
+ },
+ "5168aed9": {
+  "en": "invitation",
+  "ru": "приглашение",
+  "text": "邀请"
+ },
+ "92f5f740": {
+  "en": "gathering",
+  "ru": "набор",
+  "text": "招募"
+ },
+ "c4a85995": {
+  "en": "finished",
+  "ru": "окончен",
+  "text": "已结束"
+ },
+ "da699208": {
+  "en": "off",
+  "ru": "нет",
+  "text": "无"
+ },
+ "a63561b4": {
+  "en": "Create a tournament",
+  "ru": "Создать турнир",
+  "text": "创建比赛"
+ },
+ "9bff558c": {
+  "en": "Swiss system, you organise and play",
+  "ru": "Швейцарская система, вы организуете и играете",
+  "text": "瑞士制,你组织并参赛"
+ },
+ "603b77d0": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрок",
+   "few": "игрока",
+   "many": "игроков"
+  },
+  "forms": {
+   "other": "{n} 人"
+  }
+ },
+ "ee7a5116": {
+  "en": "Players get their pairings, games and standings as MeshCore messages. Pairings are automatic: round 1 by lot, then by score.",
+  "ru": "Пары, партии и таблица приходят игрокам сообщениями MeshCore. Пары составляются сами: первый тур по жребию, дальше по очкам.",
+  "text": "棋手通过 MeshCore 消息收到配对、对局和排名。自动配对:第 1 轮抽签,之后按积分。"
+ },
+ "e3a856ac": {
+  "en": "Create",
+  "ru": "Создать",
+  "text": "创建"
+ },
+ "624e042e": {
+  "en": "Tournament invitation",
+  "ru": "Приглашение в турнир",
+  "text": "比赛邀请"
+ },
+ "14321e1a": {
+  "en": "Organiser",
+  "ru": "Организатор",
+  "text": "组织者"
+ },
+ "5f4593c3": {
+  "en": "Format",
+  "ru": "Формат",
+  "text": "赛制"
+ },
+ "69025748": {
+  "en": "Time a move",
+  "ru": "Время на ход",
+  "text": "每步时间"
+ },
+ "4038e79e": {
+  "en": "Swiss, ",
+  "ru": "швейцарка, ",
+  "text": "瑞士制, "
+ },
+ "bd1530b1": {
+  "en": "ELO counts",
+  "ru": "ELO учитывается",
+  "text": "计入 ELO"
+ },
+ "f29830d4": {
+  "en": "Pairings come automatically; each game is an ordinary rated game.",
+  "ru": "Пары придут сами; каждая партия — обычная партия на рейтинг.",
+  "text": "配对自动发送;每局都是普通计分对局。"
+ },
+ "540d1e4a": {
+  "en": "Join",
+  "ru": "Участвовать",
+  "text": "参加"
+ },
+ "1313fd04": {
+  "en": "Decline",
+  "ru": "Отказаться",
+  "text": "拒绝"
+ },
+ "dc18b5d9": {
+  "en": "Later",
+  "ru": "Позже",
+  "text": "稍后"
+ },
+ "b88250d5": {
+  "en": "Invitations sent",
+  "ru": "Приглашения отправлены",
+  "text": "邀请已发送"
+ },
+ "fb3cf99a": {
+  "en": "organiser",
+  "ru": "организатор",
+  "text": "组织者"
+ },
+ "8fd46b18": {
+  "en": "joins",
+  "ru": "участвует",
+  "text": "参加"
+ },
+ "e7cba8ad": {
+  "en": "declined",
+  "ru": "отказался",
+  "text": "已拒绝"
+ },
+ "e800e802": {
+  "en": "no answer yet",
+  "ru": "ждём ответа",
+  "text": "尚未回复"
+ },
+ "66338a84": {
+  "en": "Starts by itself when everyone answers; S starts with those who agreed.",
+  "ru": "Начнётся сам, когда ответят все; S — начать с согласившимися.",
+  "text": "所有人回复后自动开始;按 S 与已同意者开始。"
+ },
+ "f759eaa5": {
+  "en": "Start",
+  "ru": "Начать",
+  "text": "开始"
+ },
+ "2ce13876": {
+  "en": "The tournament was removed",
+  "ru": "Турнир удалён",
+  "text": "比赛已删除"
+ },
+ "c8db74a1": {
+  "en": "cancelled",
+  "ru": "отменён",
+  "text": "已取消"
+ },
+ "37e1d0e8": {
+  "en": "A bye this round",
+  "ru": "В этом туре без игры",
+  "text": "本轮轮空"
+ },
+ "33712d5b": {
+  "en": "One point without a game: odd number of players",
+  "ru": "Очко без игры: нечётное число игроков",
+  "text": "无对局得 1 分:棋手人数为奇数"
+ },
+ "3b0ee2bf": {
+  "en": "no board free",
+  "ru": "нет свободной доски",
+  "text": "没有空闲棋盘"
+ },
+ "4058de21": {
+  "en": "Waiting for the next round's pairing",
+  "ru": "Ждём пару следующего тура",
+  "text": "等待下一轮配对"
  }
 }

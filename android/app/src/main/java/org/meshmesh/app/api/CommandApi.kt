@@ -71,6 +71,7 @@ class CommandApi(
     private suspend fun get(route: String, query: Map<String, String>): ApiReply {
         val command = when (route) {
             "/api/maps/tile" -> return tile(query)
+            "/api/tour" -> "tour"
             "/api/chess" -> if (query.containsKey("rating")) "chess rating" else query["id"]?.let { "chess show $it" } ?: "chess web"
             "/api/radar" -> "radar web"
             else -> GETS[route] ?: return ApiReply(404, "Not found")
@@ -184,7 +185,7 @@ class CommandApi(
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
         private val APP_COMMANDS = listOf("radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")
-        private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "map areas", "channels")
+        private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "tour", "map areas", "channels")
         private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy", "channels")
     }
 }

@@ -51,6 +51,8 @@ def main():
                 elif url.path == '/api/chess':
                     query = parse_qs(url.query);game = query.get('id', [''])[0]
                     self.reply(200, usb('chess rating') if 'rating' in query else usb(f'chess show {game}') if game else usb('chess web'))
+                elif url.path == '/api/tour':
+                    self.reply(200, usb('tour'))
                 elif url.path == '/api/connections':
                     self.reply(200, usb('connections'))
                 elif url.path == '/api/radar':

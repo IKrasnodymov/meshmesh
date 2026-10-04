@@ -134,6 +134,106 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": sem confirmação em 24 h, R reenvia"
  },
+ "bbc41d9b": {
+  "en": "Tournament: nobody has agreed yet",
+  "ru": "Турнир: пока никто не согласился",
+  "text": "Torneio: ninguém aceitou ainda"
+ },
+ "fe21cd58": {
+  "en": ": a bye for you (+1)",
+  "ru": ": вы свободны от игры (+1)",
+  "text": ": folga para você (+1)"
+ },
+ "954a4260": {
+  "en": "round ",
+  "ru": "тур ",
+  "text": "rodada "
+ },
+ "9172832f": {
+  "en": ", you play White",
+  "ru": ", вы белыми",
+  "text": ", você de brancas"
+ },
+ "24a182c8": {
+  "en": ", you play Black",
+  "ru": ", вы чёрными",
+  "text": ", você de pretas"
+ },
+ "4a098655": {
+  "en": "Tournament: no free chess board",
+  "ru": "Турнир: нет свободной доски",
+  "text": "Torneio: sem tabuleiro livre"
+ },
+ "93d7f45b": {
+  "en": "results differ in game ",
+  "ru": "результаты расходятся в партии ",
+  "text": "resultados divergem na partida "
+ },
+ "35657d57": {
+  "en": ": finished, your place ",
+  "ru": ": турнир окончен, ваше место ",
+  "text": ": encerrado, sua posição "
+ },
+ "c0f5f34b": {
+  "en": ": tournament invitation, no free place",
+  "ru": ": приглашение в турнир, нет места",
+  "text": ": convite p/ torneio, sem vaga"
+ },
+ "1b6b5746": {
+  "en": " invites you to the tournament \"",
+  "ru": " приглашает в турнир «",
+  "text": " convida você ao torneio \""
+ },
+ "c781758d": {
+  "en": "\"",
+  "ru": "»",
+  "text": "\""
+ },
+ "12f420df": {
+  "en": " joins \"",
+  "ru": " участвует в «",
+  "text": " participa de \""
+ },
+ "baaea3e0": {
+  "en": " declines \"",
+  "ru": " отказался от «",
+  "text": " recusou \""
+ },
+ "9c7176fd": {
+  "en": ": cancelled by the organiser",
+  "ru": ": отменён организатором",
+  "text": ": cancelado pelo organizador"
+ },
+ "49d02c04": {
+  "en": "Tournament: cannot save",
+  "ru": "Турнир: не удалось сохранить",
+  "text": "Torneio: falha ao salvar"
+ },
+ "b00dafff": {
+  "en": ": tournaments do not fit this board",
+  "ru": ": турниры не помещаются в эту плату",
+  "text": ": torneios não cabem nesta placa"
+ },
+ "7a76bf2e": {
+  "en": "Tournament: message queue full",
+  "ru": "Турнир: очередь сообщений переполнена",
+  "text": "Torneio: fila de mensagens cheia"
+ },
+ "6a7780cf": {
+  "en": "Tournament: 2-10 players, 1-9 rounds",
+  "ru": "Турнир: 2-10 игроков, 1-9 туров",
+  "text": "Torneio: 2-10 jogadores, 1-9 rodadas"
+ },
+ "e5bc090c": {
+  "en": "Tournament: no free place",
+  "ru": "Турнир: нет свободного места",
+  "text": "Torneio: sem vaga livre"
+ },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "Torneio: escolha contatos de chat"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -503,6 +603,11 @@
   "en": "New chess game",
   "ru": "Новая партия",
   "text": "Nova partida"
+ },
+ "74549647": {
+  "en": "New tournament",
+  "ru": "Новый турнир",
+  "text": "Novo torneio"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2209,6 +2314,11 @@
   "ru": "Ключ сети · 64 hex",
   "text": "Chave da rede · 64 hex"
  },
+ "5bb9392e": {
+  "en": "Tournament name",
+  "ru": "Название турнира",
+  "text": "Nome do torneio"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2238,6 +2348,11 @@
   "en": "OK: save   BACK: cancel",
   "ru": "OK: сохранить   BACK: отменить",
   "text": "OK: salvar   BACK: cancelar"
+ },
+ "70e3f7ea": {
+  "en": "Tournament",
+  "ru": "Турнир",
+  "text": "Torneio"
  },
  "5542d75b": {
   "en": "Chess · ",
@@ -2779,6 +2894,11 @@
   "ru": "Партии",
   "text": "Partidas"
  },
+ "7b962df1": {
+  "en": "Tournaments",
+  "ru": "Турниры",
+  "text": "Torneios"
+ },
  "55aaa48c": {
   "en": "Rating",
   "ru": "Рейтинг",
@@ -2793,6 +2913,11 @@
   "en": "Challenge a chat contact",
   "ru": "Вызвать чат-контакт",
   "text": "Desafiar um contato de chat"
+ },
+ "f6f5f20d": {
+  "en": "R",
+  "ru": "т",
+  "text": "R"
  },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
@@ -3534,16 +3659,6 @@
   "ru": "ваш ход, шах!",
   "text": "sua vez, xeque!"
  },
- "d4637825": {
-  "en": "your move",
-  "ru": "ваш ход",
-  "text": "sua vez"
- },
- "509eb141": {
-  "en": "their move",
-  "ru": "ход соперника",
-  "text": "vez do oponente"
- },
  "8054c24f": {
   "en": "you won",
   "ru": "вы победили",
@@ -3553,11 +3668,6 @@
   "en": "you lost",
   "ru": "вы проиграли",
   "text": "você perdeu"
- },
- "25003996": {
-  "en": "draw",
-  "ru": "ничья",
-  "text": "empate"
  },
  "df7afec4": {
   "en": "ended",
@@ -4993,5 +5103,525 @@
   "en": "Take",
   "ru": "Взять",
   "text": "Pegar"
+ },
+ "5e550939": {
+  "en": "Player",
+  "ru": "Игрок",
+  "text": "Jogador"
+ },
+ "30374633": {
+  "en": "Pts",
+  "ru": "Очки",
+  "text": "Pts"
+ },
+ "d26cc5ee": {
+  "en": "Buch.",
+  "ru": "Бухг.",
+  "text": "Buch."
+ },
+ "5c61e756": {
+  "en": " games",
+  "ru": " · пары",
+  "text": " partidas"
+ },
+ "fad010ec": {
+  "en": "dispute",
+  "ru": "спор",
+  "text": "disputa"
+ },
+ "4734758c": {
+  "en": "Your games",
+  "ru": "Ваши партии",
+  "text": "Suas partidas"
+ },
+ "ecf210b8": {
+  "en": "R",
+  "ru": "Т",
+  "text": "R"
+ },
+ "bf9822cd": {
+  "en": "bye (+1)",
+  "ru": "без игры (+1)",
+  "text": "folga (+1)"
+ },
+ "69412de5": {
+  "en": "win",
+  "ru": "победа",
+  "text": "vitória"
+ },
+ "38624b7c": {
+  "en": "loss",
+  "ru": "поражение",
+  "text": "derrota"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "empate"
+ },
+ "e2c0f7eb": {
+  "en": "playing",
+  "ru": "идёт",
+  "text": "em jogo"
+ },
+ "3919be94": {
+  "en": "1-0",
+  "ru": "1-0",
+  "text": "1-0"
+ },
+ "7ba60019": {
+  "en": "To the game",
+  "ru": "К партии",
+  "text": "À partida"
+ },
+ "4af576cc": {
+  "en": "Standings",
+  "ru": "Таблица",
+  "text": "Tabela"
+ },
+ "a7e20029": {
+  "en": "You joined: wait for the pairing",
+  "ru": "Вы участвуете: ждите пару",
+  "text": "Você entrou: aguarde o pareamento"
+ },
+ "ec7f8c84": {
+  "en": "Invitation declined",
+  "ru": "Приглашение отклонено",
+  "text": "Convite recusado"
+ },
+ "6e500ba0": {
+  "en": "Tournament started: round 1 sent",
+  "ru": "Турнир начат: пары первого тура отправлены",
+  "text": "Torneio iniciado: rodada 1 enviada"
+ },
+ "353e2d7d": {
+  "en": "Tournament cancelled",
+  "ru": "Турнир отменён",
+  "text": "Torneio cancelado"
+ },
+ "dcfc96fc": {
+  "en": "Result set",
+  "ru": "Результат записан",
+  "text": "Resultado definido"
+ },
+ "ba0bb842": {
+  "en": "No game for you now",
+  "ru": "Сейчас у вас нет партии",
+  "text": "Agora você não tem partida"
+ },
+ "c2a96af6": {
+  "en": "Tournament removed",
+  "ru": "Турнир удалён",
+  "text": "Torneio removido"
+ },
+ "d8b27ae3": {
+  "en": "Name",
+  "ru": "Название",
+  "text": "Nome"
+ },
+ "6c80148e": {
+  "en": "Rules",
+  "ru": "Правила",
+  "text": "Regras"
+ },
+ "a6868080": {
+  "en": "Check",
+  "ru": "Проверка",
+  "text": "Revisar"
+ },
+ "3371e999": {
+  "en": "Players see it in the invitation and the standings. OK changes it, > goes on.",
+  "ru": "Его увидят игроки в приглашении и таблице. OK — изменить, > — дальше.",
+  "text": "Os jogadores o veem no convite e na tabela. OK altera, > avança."
+ },
+ "055dae05": {
+  "en": "Edit",
+  "ru": "Изменить",
+  "text": "Editar"
+ },
+ "e7bfbbfb": {
+  "en": "Next",
+  "ru": "Дальше",
+  "text": "Avançar"
+ },
+ "c229145c": {
+  "en": "not heard since the start",
+  "ru": "не слышен с запуска",
+  "text": "sem sinal desde o início"
+ },
+ "0b300371": {
+  "en": "Chosen ",
+  "ru": "Выбрано ",
+  "text": "Marcados "
+ },
+ "b0430fb1": {
+  "en": " with you",
+  "ru": " с вами",
+  "text": " com você"
+ },
+ "26113478": {
+  "en": " (the most)",
+  "ru": " (больше нельзя)",
+  "text": " (o máximo)"
+ },
+ "6039740e": {
+  "en": "Choose",
+  "ru": "Отметить",
+  "text": "Escolher"
+ },
+ "7ede8288": {
+  "en": "Next",
+  "ru": "Далее",
+  "text": "Próx."
+ },
+ "975cd7a6": {
+  "en": "Rounds",
+  "ru": "Туры",
+  "text": "Rodadas"
+ },
+ "009ed481": {
+  "en": "suggested for ",
+  "ru": "для ",
+  "text": "sugerido para "
+ },
+ "ec0c2450": {
+  "en": "a LoRa move takes up to a few minutes",
+  "ru": "по LoRa ход идёт до нескольких минут",
+  "text": "por LoRa um lance leva alguns minutos"
+ },
+ "5bd51e34": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрока",
+   "few": "игроков",
+   "many": "игроков"
+  },
+  "forms": {
+   "one": "{n} jogador",
+   "other": "{n} jogadores"
+  }
+ },
+ "9423a046": {
+  "en": "Every game is rated. Pairings are automatic: round 1 by lot, then by score without repeated games.",
+  "ru": "Все партии — на рейтинг. Пары составляются сами: первый тур по жребию, дальше по очкам без повторных встреч.",
+  "text": "Todas as partidas valem ELO. Pareamento automático: rodada 1 por sorteio, depois por pontos sem repetir adversários."
+ },
+ "42dc0a3a": {
+  "en": "Value",
+  "ru": "Значение",
+  "text": "Valor"
+ },
+ "29b67420": {
+  "en": "Item",
+  "ru": "Пункт",
+  "text": "Item"
+ },
+ "1a466259": {
+  "en": "Swiss · ",
+  "ru": "Швейцарка · ",
+  "text": "Suíço · "
+ },
+ "284223cb": {
+  "en": "Invitations go as direct messages. Round 1 starts when everyone answers, or when you press S on the tournament page; those who did not answer stay out.",
+  "ru": "Приглашения уйдут личными сообщениями. Первый тур начнётся, когда ответят все, или по S на странице турнира; кто не ответил, в турнир не попадёт.",
+  "text": "Os convites vão como mensagens diretas. A rodada 1 começa quando todos responderem ou ao apertar S na página do torneio; quem não responder fica de fora."
+ },
+ "cdcc234f": {
+  "en": "Send invitations",
+  "ru": "Разослать приглашения",
+  "text": "Enviar convites"
+ },
+ "53a3d9cf": {
+  "en": "Name: 1-32 UTF-8 bytes",
+  "ru": "Название: 1-32 байта UTF-8",
+  "text": "Nome: 1-32 bytes UTF-8"
+ },
+ "1778710d": {
+  "en": "At most 10 players",
+  "ru": "Не больше 10 игроков",
+  "text": "No máximo 10 jogadores"
+ },
+ "c164cb75": {
+  "en": "Choose at least one contact",
+  "ru": "Отметьте хотя бы один контакт",
+  "text": "Escolha ao menos um contato"
+ },
+ "daf0f315": {
+  "en": "Invitations sent: ",
+  "ru": "Приглашения отправлены: ",
+  "text": "Convites enviados: "
+ },
+ "6a22520b": {
+  "en": "From ",
+  "ru": "От ",
+  "text": "De "
+ },
+ "b56e13a9": {
+  "en": " h a move",
+  "ru": " ч на ход",
+  "text": " h/lance"
+ },
+ "dd25c646": {
+  "en": {
+   "one": "round",
+   "other": "rounds"
+  },
+  "ru": {
+   "one": "тур",
+   "few": "тура",
+   "many": "туров"
+  },
+  "forms": {
+   "one": "{n} rodada",
+   "other": "{n} rodadas"
+  }
+ },
+ "7c3e6a67": {
+  "en": "Agreed: ",
+  "ru": "Согласились: ",
+  "text": "Aceitaram: "
+ },
+ "283bff63": {
+  "en": "You declined",
+  "ru": "Вы отказались",
+  "text": "Você recusou"
+ },
+ "3b724921": {
+  "en": "Cancelled",
+  "ru": "Отменён",
+  "text": "Cancelado"
+ },
+ "cef3039d": {
+  "en": " place of ",
+  "ru": "-е место из ",
+  "text": " lugar de "
+ },
+ "8b622ca9": {
+  "en": " pts",
+  "ru": " оч.",
+  "text": " pts"
+ },
+ "c9940455": {
+  "en": "Finished",
+  "ru": "Окончен",
+  "text": "Encerrado"
+ },
+ "3f7b7e3d": {
+  "en": "Waiting for the start",
+  "ru": "Ждём начала",
+  "text": "Aguardando o início"
+ },
+ "89b9fcd7": {
+  "en": "Round ",
+  "ru": "Тур ",
+  "text": "Rodada "
+ },
+ "602a97dd": {
+  "en": " place, ",
+  "ru": "-й, ",
+  "text": " lugar, "
+ },
+ "2ecaee40": {
+  "en": " · a bye",
+  "ru": " · без игры",
+  "text": " · folga"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "sua vez"
+ },
+ "579004bc": {
+  "en": "game over",
+  "ru": "партия окончена",
+  "text": "partida encerrada"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "vez do oponente"
+ },
+ "3d6e0984": {
+  "en": "on",
+  "ru": "идёт",
+  "text": "ativo"
+ },
+ "30d13241": {
+  "en": "starting",
+  "ru": "старт",
+  "text": "início"
+ },
+ "5168aed9": {
+  "en": "invitation",
+  "ru": "приглашение",
+  "text": "convite"
+ },
+ "92f5f740": {
+  "en": "gathering",
+  "ru": "набор",
+  "text": "inscrições"
+ },
+ "c4a85995": {
+  "en": "finished",
+  "ru": "окончен",
+  "text": "encerrado"
+ },
+ "da699208": {
+  "en": "off",
+  "ru": "нет",
+  "text": "não"
+ },
+ "a63561b4": {
+  "en": "Create a tournament",
+  "ru": "Создать турнир",
+  "text": "Criar um torneio"
+ },
+ "9bff558c": {
+  "en": "Swiss system, you organise and play",
+  "ru": "Швейцарская система, вы организуете и играете",
+  "text": "Sistema suíço, você organiza e joga"
+ },
+ "603b77d0": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрок",
+   "few": "игрока",
+   "many": "игроков"
+  },
+  "forms": {
+   "one": "{n} jogador",
+   "other": "{n} jogadores"
+  }
+ },
+ "ee7a5116": {
+  "en": "Players get their pairings, games and standings as MeshCore messages. Pairings are automatic: round 1 by lot, then by score.",
+  "ru": "Пары, партии и таблица приходят игрокам сообщениями MeshCore. Пары составляются сами: первый тур по жребию, дальше по очкам.",
+  "text": "Os jogadores recebem pareamentos, partidas e tabela como mensagens MeshCore. Pareamento automático: rodada 1 por sorteio, depois por pontos."
+ },
+ "e3a856ac": {
+  "en": "Create",
+  "ru": "Создать",
+  "text": "Criar"
+ },
+ "624e042e": {
+  "en": "Tournament invitation",
+  "ru": "Приглашение в турнир",
+  "text": "Convite para torneio"
+ },
+ "14321e1a": {
+  "en": "Organiser",
+  "ru": "Организатор",
+  "text": "Organizador"
+ },
+ "5f4593c3": {
+  "en": "Format",
+  "ru": "Формат",
+  "text": "Formato"
+ },
+ "69025748": {
+  "en": "Time a move",
+  "ru": "Время на ход",
+  "text": "Tempo/lance"
+ },
+ "4038e79e": {
+  "en": "Swiss, ",
+  "ru": "швейцарка, ",
+  "text": "suíço, "
+ },
+ "bd1530b1": {
+  "en": "ELO counts",
+  "ru": "ELO учитывается",
+  "text": "Vale ELO"
+ },
+ "f29830d4": {
+  "en": "Pairings come automatically; each game is an ordinary rated game.",
+  "ru": "Пары придут сами; каждая партия — обычная партия на рейтинг.",
+  "text": "Os pareamentos chegam sozinhos; cada partida é uma partida comum com ELO."
+ },
+ "540d1e4a": {
+  "en": "Join",
+  "ru": "Участвовать",
+  "text": "Participar"
+ },
+ "1313fd04": {
+  "en": "Decline",
+  "ru": "Отказаться",
+  "text": "Recusar"
+ },
+ "dc18b5d9": {
+  "en": "Later",
+  "ru": "Позже",
+  "text": "Depois"
+ },
+ "b88250d5": {
+  "en": "Invitations sent",
+  "ru": "Приглашения отправлены",
+  "text": "Convites enviados"
+ },
+ "fb3cf99a": {
+  "en": "organiser",
+  "ru": "организатор",
+  "text": "organizador"
+ },
+ "8fd46b18": {
+  "en": "joins",
+  "ru": "участвует",
+  "text": "participa"
+ },
+ "e7cba8ad": {
+  "en": "declined",
+  "ru": "отказался",
+  "text": "recusou"
+ },
+ "e800e802": {
+  "en": "no answer yet",
+  "ru": "ждём ответа",
+  "text": "sem resposta"
+ },
+ "66338a84": {
+  "en": "Starts by itself when everyone answers; S starts with those who agreed.",
+  "ru": "Начнётся сам, когда ответят все; S — начать с согласившимися.",
+  "text": "Começa sozinho quando todos responderem; S começa com quem aceitou."
+ },
+ "f759eaa5": {
+  "en": "Start",
+  "ru": "Начать",
+  "text": "Iniciar"
+ },
+ "2ce13876": {
+  "en": "The tournament was removed",
+  "ru": "Турнир удалён",
+  "text": "O torneio foi removido"
+ },
+ "c8db74a1": {
+  "en": "cancelled",
+  "ru": "отменён",
+  "text": "cancelado"
+ },
+ "37e1d0e8": {
+  "en": "A bye this round",
+  "ru": "В этом туре без игры",
+  "text": "Folga nesta rodada"
+ },
+ "33712d5b": {
+  "en": "One point without a game: odd number of players",
+  "ru": "Очко без игры: нечётное число игроков",
+  "text": "Um ponto sem jogar: número ímpar de jogadores"
+ },
+ "3b0ee2bf": {
+  "en": "no board free",
+  "ru": "нет свободной доски",
+  "text": "sem tabuleiro livre"
+ },
+ "4058de21": {
+  "en": "Waiting for the next round's pairing",
+  "ru": "Ждём пару следующего тура",
+  "text": "Aguardando o pareamento da rodada"
  }
 }

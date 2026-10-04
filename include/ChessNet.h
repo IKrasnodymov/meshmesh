@@ -30,6 +30,7 @@ struct ChessMatch {
   uint8_t sign=SignNone;bool theirSigned=false;
   uint32_t myTime=0,theirTime=0;uint8_t mySig[64]={},theirSig[64]={};
   bool sigOpen=false;uint8_t sigStatus=0;uint32_t sigId=0; // my signature until its ACK
+  uint16_t tour=0;uint8_t round=0;bool tourReported=false; // a tournament game (ChessTour.h)
   bool active() const{return state==Inviting||state==Invited||state==Playing;}
   bool myTurn() const{return state==Playing&&game.pos.side==mine;}
   bool won() const{return (result==WhiteWon&&mine==chess::White)||(result==BlackWon&&mine==chess::Black);}
@@ -50,6 +51,8 @@ class ChessNet {
   bool receive(uint64_t from,const char* name,const char* text);
   void delivery(uint32_t id,uint8_t status);
   ChessMatch* invite(uint64_t peer,int color,bool rated=true); // color: White, Black or 2 for random
+  // A tournament pairing: the game starts at once (no challenge); the opponent becomes a contact if needed.
+  ChessMatch* tourGame(uint64_t peer,const uint8_t key[32],const char* name,uint16_t id,int color,uint16_t tour,uint8_t round);
   bool accept(ChessMatch& m);bool decline(ChessMatch& m);
   bool move(ChessMatch& m,chess::Move move);
   bool offerDraw(ChessMatch& m);bool acceptDraw(ChessMatch& m);bool resign(ChessMatch& m);
@@ -65,7 +68,7 @@ class ChessNet {
   String web() const;                       // the list for the web page, with the latest news
  private:
   bool saveDue=false;uint32_t saveAt=0;
-  ChessMatch* slot();
+  ChessMatch* slot(bool force=false);
   ChessMatch* find(uint64_t peer,uint16_t id);
   bool send(ChessMatch& m,const String& text);
   bool sendMove(ChessMatch& m);

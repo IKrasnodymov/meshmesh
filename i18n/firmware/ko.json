@@ -134,6 +134,106 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": 24시간 확인 없음, R: 재전송"
  },
+ "bbc41d9b": {
+  "en": "Tournament: nobody has agreed yet",
+  "ru": "Турнир: пока никто не согласился",
+  "text": "대회: 아직 아무도 동의 안 함"
+ },
+ "fe21cd58": {
+  "en": ": a bye for you (+1)",
+  "ru": ": вы свободны от игры (+1)",
+  "text": ": 부전승 (+1)"
+ },
+ "954a4260": {
+  "en": "round ",
+  "ru": "тур ",
+  "text": "라운드 "
+ },
+ "9172832f": {
+  "en": ", you play White",
+  "ru": ", вы белыми",
+  "text": ", 당신은 백"
+ },
+ "24a182c8": {
+  "en": ", you play Black",
+  "ru": ", вы чёрными",
+  "text": ", 당신은 흑"
+ },
+ "4a098655": {
+  "en": "Tournament: no free chess board",
+  "ru": "Турнир: нет свободной доски",
+  "text": "대회: 빈 체스판 없음"
+ },
+ "93d7f45b": {
+  "en": "results differ in game ",
+  "ru": "результаты расходятся в партии ",
+  "text": "결과 불일치 대국 "
+ },
+ "35657d57": {
+  "en": ": finished, your place ",
+  "ru": ": турнир окончен, ваше место ",
+  "text": ": 종료, 내 순위 "
+ },
+ "c0f5f34b": {
+  "en": ": tournament invitation, no free place",
+  "ru": ": приглашение в турнир, нет места",
+  "text": ": 대회 초대, 빈자리 없음"
+ },
+ "1b6b5746": {
+  "en": " invites you to the tournament \"",
+  "ru": " приглашает в турнир «",
+  "text": " 님의 대회 초대 \""
+ },
+ "c781758d": {
+  "en": "\"",
+  "ru": "»",
+  "text": "\""
+ },
+ "12f420df": {
+  "en": " joins \"",
+  "ru": " участвует в «",
+  "text": " 참가 \""
+ },
+ "baaea3e0": {
+  "en": " declines \"",
+  "ru": " отказался от «",
+  "text": " 거절 \""
+ },
+ "9c7176fd": {
+  "en": ": cancelled by the organiser",
+  "ru": ": отменён организатором",
+  "text": ": 주최자가 취소함"
+ },
+ "49d02c04": {
+  "en": "Tournament: cannot save",
+  "ru": "Турнир: не удалось сохранить",
+  "text": "대회: 저장할 수 없음"
+ },
+ "b00dafff": {
+  "en": ": tournaments do not fit this board",
+  "ru": ": турниры не помещаются в эту плату",
+  "text": ": 이 보드는 대회 미지원"
+ },
+ "7a76bf2e": {
+  "en": "Tournament: message queue full",
+  "ru": "Турнир: очередь сообщений переполнена",
+  "text": "대회: 메시지 대기열 가득"
+ },
+ "6a7780cf": {
+  "en": "Tournament: 2-10 players, 1-9 rounds",
+  "ru": "Турнир: 2-10 игроков, 1-9 туров",
+  "text": "대회: 2-10명, 1-9라운드"
+ },
+ "e5bc090c": {
+  "en": "Tournament: no free place",
+  "ru": "Турнир: нет свободного места",
+  "text": "대회: 빈자리 없음"
+ },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "대회: 채팅 연락처 선택"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -502,6 +602,11 @@
   "en": "New chess game",
   "ru": "Новая партия",
   "text": "새 체스 대국"
+ },
+ "74549647": {
+  "en": "New tournament",
+  "ru": "Новый турнир",
+  "text": "새 대회"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2198,6 +2303,11 @@
   "ru": "Ключ сети · 64 hex",
   "text": "네트워크 키 · 64 hex"
  },
+ "5bb9392e": {
+  "en": "Tournament name",
+  "ru": "Название турнира",
+  "text": "대회 이름"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2227,6 +2337,11 @@
   "en": "OK: save   BACK: cancel",
   "ru": "OK: сохранить   BACK: отменить",
   "text": "OK: 저장   BACK: 취소"
+ },
+ "70e3f7ea": {
+  "en": "Tournament",
+  "ru": "Турнир",
+  "text": "대회"
  },
  "5542d75b": {
   "en": "Chess · ",
@@ -2768,6 +2883,11 @@
   "ru": "Партии",
   "text": "대국"
  },
+ "7b962df1": {
+  "en": "Tournaments",
+  "ru": "Турниры",
+  "text": "대회"
+ },
  "55aaa48c": {
   "en": "Rating",
   "ru": "Рейтинг",
@@ -2782,6 +2902,11 @@
   "en": "Challenge a chat contact",
   "ru": "Вызвать чат-контакт",
   "text": "채팅 연락처에게 대국 신청"
+ },
+ "f6f5f20d": {
+  "en": "R",
+  "ru": "т",
+  "text": "R"
  },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
@@ -3520,16 +3645,6 @@
   "ru": "ваш ход, шах!",
   "text": "내 차례, 체크!"
  },
- "d4637825": {
-  "en": "your move",
-  "ru": "ваш ход",
-  "text": "내 차례"
- },
- "509eb141": {
-  "en": "their move",
-  "ru": "ход соперника",
-  "text": "상대 차례"
- },
  "8054c24f": {
   "en": "you won",
   "ru": "вы победили",
@@ -3539,11 +3654,6 @@
   "en": "you lost",
   "ru": "вы проиграли",
   "text": "패배"
- },
- "25003996": {
-  "en": "draw",
-  "ru": "ничья",
-  "text": "무승부"
  },
  "df7afec4": {
   "en": "ended",
@@ -4977,5 +5087,522 @@
   "en": "Take",
   "ru": "Взять",
   "text": "들기"
+ },
+ "5e550939": {
+  "en": "Player",
+  "ru": "Игрок",
+  "text": "선수"
+ },
+ "30374633": {
+  "en": "Pts",
+  "ru": "Очки",
+  "text": "점수"
+ },
+ "d26cc5ee": {
+  "en": "Buch.",
+  "ru": "Бухг.",
+  "text": "부흐"
+ },
+ "5c61e756": {
+  "en": " games",
+  "ru": " · пары",
+  "text": " 대국"
+ },
+ "fad010ec": {
+  "en": "dispute",
+  "ru": "спор",
+  "text": "불일치"
+ },
+ "4734758c": {
+  "en": "Your games",
+  "ru": "Ваши партии",
+  "text": "내 대국"
+ },
+ "ecf210b8": {
+  "en": "R",
+  "ru": "Т",
+  "text": "R"
+ },
+ "bf9822cd": {
+  "en": "bye (+1)",
+  "ru": "без игры (+1)",
+  "text": "부전승 (+1)"
+ },
+ "69412de5": {
+  "en": "win",
+  "ru": "победа",
+  "text": "승"
+ },
+ "38624b7c": {
+  "en": "loss",
+  "ru": "поражение",
+  "text": "패"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "무승부"
+ },
+ "e2c0f7eb": {
+  "en": "playing",
+  "ru": "идёт",
+  "text": "진행 중"
+ },
+ "3919be94": {
+  "en": "1-0",
+  "ru": "1-0",
+  "text": "1-0"
+ },
+ "7ba60019": {
+  "en": "To the game",
+  "ru": "К партии",
+  "text": "대국으로"
+ },
+ "4af576cc": {
+  "en": "Standings",
+  "ru": "Таблица",
+  "text": "순위표"
+ },
+ "a7e20029": {
+  "en": "You joined: wait for the pairing",
+  "ru": "Вы участвуете: ждите пару",
+  "text": "참가함: 대진 대기 중"
+ },
+ "ec7f8c84": {
+  "en": "Invitation declined",
+  "ru": "Приглашение отклонено",
+  "text": "초대를 거절함"
+ },
+ "6e500ba0": {
+  "en": "Tournament started: round 1 sent",
+  "ru": "Турнир начат: пары первого тура отправлены",
+  "text": "대회 시작: 1라운드 대진 전송"
+ },
+ "353e2d7d": {
+  "en": "Tournament cancelled",
+  "ru": "Турнир отменён",
+  "text": "대회 취소됨"
+ },
+ "dcfc96fc": {
+  "en": "Result set",
+  "ru": "Результат записан",
+  "text": "결과 기록됨"
+ },
+ "ba0bb842": {
+  "en": "No game for you now",
+  "ru": "Сейчас у вас нет партии",
+  "text": "지금은 대국 없음"
+ },
+ "c2a96af6": {
+  "en": "Tournament removed",
+  "ru": "Турнир удалён",
+  "text": "대회 삭제됨"
+ },
+ "d8b27ae3": {
+  "en": "Name",
+  "ru": "Название",
+  "text": "이름"
+ },
+ "6c80148e": {
+  "en": "Rules",
+  "ru": "Правила",
+  "text": "규칙"
+ },
+ "a6868080": {
+  "en": "Check",
+  "ru": "Проверка",
+  "text": "확인"
+ },
+ "3371e999": {
+  "en": "Players see it in the invitation and the standings. OK changes it, > goes on.",
+  "ru": "Его увидят игроки в приглашении и таблице. OK — изменить, > — дальше.",
+  "text": "초대장과 순위표에 표시됩니다. OK 변경, > 다음."
+ },
+ "055dae05": {
+  "en": "Edit",
+  "ru": "Изменить",
+  "text": "변경"
+ },
+ "e7bfbbfb": {
+  "en": "Next",
+  "ru": "Дальше",
+  "text": "다음"
+ },
+ "c229145c": {
+  "en": "not heard since the start",
+  "ru": "не слышен с запуска",
+  "text": "시작 후 수신 없음"
+ },
+ "0b300371": {
+  "en": "Chosen ",
+  "ru": "Выбрано ",
+  "text": "선택 "
+ },
+ "b0430fb1": {
+  "en": " with you",
+  "ru": " с вами",
+  "text": " 명(나 포함)"
+ },
+ "26113478": {
+  "en": " (the most)",
+  "ru": " (больше нельзя)",
+  "text": " (최대)"
+ },
+ "6039740e": {
+  "en": "Choose",
+  "ru": "Отметить",
+  "text": "선택"
+ },
+ "7ede8288": {
+  "en": "Next",
+  "ru": "Далее",
+  "text": "다음"
+ },
+ "975cd7a6": {
+  "en": "Rounds",
+  "ru": "Туры",
+  "text": "라운드"
+ },
+ "009ed481": {
+  "en": "suggested for ",
+  "ru": "для ",
+  "text": "추천 "
+ },
+ "ec0c2450": {
+  "en": "a LoRa move takes up to a few minutes",
+  "ru": "по LoRa ход идёт до нескольких минут",
+  "text": "LoRa로 한 수에 최대 몇 분"
+ },
+ "5bd51e34": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрока",
+   "few": "игроков",
+   "many": "игроков"
+  },
+  "forms": {
+   "other": "{n}명"
+  }
+ },
+ "9423a046": {
+  "en": "Every game is rated. Pairings are automatic: round 1 by lot, then by score without repeated games.",
+  "ru": "Все партии — на рейтинг. Пары составляются сами: первый тур по жребию, дальше по очкам без повторных встреч.",
+  "text": "모든 대국은 레이팅전입니다. 대진은 자동: 1라운드는 추첨, 이후 점수순으로 재대결 없이."
+ },
+ "42dc0a3a": {
+  "en": "Value",
+  "ru": "Значение",
+  "text": "값"
+ },
+ "29b67420": {
+  "en": "Item",
+  "ru": "Пункт",
+  "text": "항목"
+ },
+ "1a466259": {
+  "en": "Swiss · ",
+  "ru": "Швейцарка · ",
+  "text": "스위스 · "
+ },
+ "284223cb": {
+  "en": "Invitations go as direct messages. Round 1 starts when everyone answers, or when you press S on the tournament page; those who did not answer stay out.",
+  "ru": "Приглашения уйдут личными сообщениями. Первый тур начнётся, когда ответят все, или по S на странице турнира; кто не ответил, в турнир не попадёт.",
+  "text": "초대는 개인 메시지로 전송됩니다. 모두 응답하거나 대회 화면에서 S를 누르면 1라운드 시작; 미응답자는 제외."
+ },
+ "cdcc234f": {
+  "en": "Send invitations",
+  "ru": "Разослать приглашения",
+  "text": "초대 보내기"
+ },
+ "53a3d9cf": {
+  "en": "Name: 1-32 UTF-8 bytes",
+  "ru": "Название: 1-32 байта UTF-8",
+  "text": "이름: 1-32바이트 UTF-8"
+ },
+ "1778710d": {
+  "en": "At most 10 players",
+  "ru": "Не больше 10 игроков",
+  "text": "최대 10명"
+ },
+ "c164cb75": {
+  "en": "Choose at least one contact",
+  "ru": "Отметьте хотя бы один контакт",
+  "text": "연락처를 하나 이상 선택"
+ },
+ "daf0f315": {
+  "en": "Invitations sent: ",
+  "ru": "Приглашения отправлены: ",
+  "text": "초대 전송: "
+ },
+ "6a22520b": {
+  "en": "From ",
+  "ru": "От ",
+  "text": "주최 "
+ },
+ "b56e13a9": {
+  "en": " h a move",
+  "ru": " ч на ход",
+  "text": " 시간/수"
+ },
+ "dd25c646": {
+  "en": {
+   "one": "round",
+   "other": "rounds"
+  },
+  "ru": {
+   "one": "тур",
+   "few": "тура",
+   "many": "туров"
+  },
+  "forms": {
+   "other": "{n}라운드"
+  }
+ },
+ "7c3e6a67": {
+  "en": "Agreed: ",
+  "ru": "Согласились: ",
+  "text": "동의: "
+ },
+ "283bff63": {
+  "en": "You declined",
+  "ru": "Вы отказались",
+  "text": "거절함"
+ },
+ "3b724921": {
+  "en": "Cancelled",
+  "ru": "Отменён",
+  "text": "취소됨"
+ },
+ "cef3039d": {
+  "en": " place of ",
+  "ru": "-е место из ",
+  "text": " 위 / "
+ },
+ "8b622ca9": {
+  "en": " pts",
+  "ru": " оч.",
+  "text": " 점"
+ },
+ "c9940455": {
+  "en": "Finished",
+  "ru": "Окончен",
+  "text": "종료"
+ },
+ "3f7b7e3d": {
+  "en": "Waiting for the start",
+  "ru": "Ждём начала",
+  "text": "시작 대기 중"
+ },
+ "89b9fcd7": {
+  "en": "Round ",
+  "ru": "Тур ",
+  "text": "라운드 "
+ },
+ "602a97dd": {
+  "en": " place, ",
+  "ru": "-й, ",
+  "text": " 위, "
+ },
+ "2ecaee40": {
+  "en": " · a bye",
+  "ru": " · без игры",
+  "text": " · 부전승"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "내 차례"
+ },
+ "579004bc": {
+  "en": "game over",
+  "ru": "партия окончена",
+  "text": "대국 종료"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "상대 차례"
+ },
+ "3d6e0984": {
+  "en": "on",
+  "ru": "идёт",
+  "text": "진행"
+ },
+ "30d13241": {
+  "en": "starting",
+  "ru": "старт",
+  "text": "시작"
+ },
+ "5168aed9": {
+  "en": "invitation",
+  "ru": "приглашение",
+  "text": "초대"
+ },
+ "92f5f740": {
+  "en": "gathering",
+  "ru": "набор",
+  "text": "모집"
+ },
+ "c4a85995": {
+  "en": "finished",
+  "ru": "окончен",
+  "text": "종료"
+ },
+ "da699208": {
+  "en": "off",
+  "ru": "нет",
+  "text": "없음"
+ },
+ "a63561b4": {
+  "en": "Create a tournament",
+  "ru": "Создать турнир",
+  "text": "대회 만들기"
+ },
+ "9bff558c": {
+  "en": "Swiss system, you organise and play",
+  "ru": "Швейцарская система, вы организуете и играете",
+  "text": "스위스식, 주최하며 직접 참가"
+ },
+ "603b77d0": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрок",
+   "few": "игрока",
+   "many": "игроков"
+  },
+  "forms": {
+   "other": "{n}명"
+  }
+ },
+ "ee7a5116": {
+  "en": "Players get their pairings, games and standings as MeshCore messages. Pairings are automatic: round 1 by lot, then by score.",
+  "ru": "Пары, партии и таблица приходят игрокам сообщениями MeshCore. Пары составляются сами: первый тур по жребию, дальше по очкам.",
+  "text": "대진, 대국, 순위표는 MeshCore 메시지로 전달됩니다. 대진은 자동: 1라운드는 추첨, 이후 점수순."
+ },
+ "e3a856ac": {
+  "en": "Create",
+  "ru": "Создать",
+  "text": "만들기"
+ },
+ "624e042e": {
+  "en": "Tournament invitation",
+  "ru": "Приглашение в турнир",
+  "text": "대회 초대"
+ },
+ "14321e1a": {
+  "en": "Organiser",
+  "ru": "Организатор",
+  "text": "주최자"
+ },
+ "5f4593c3": {
+  "en": "Format",
+  "ru": "Формат",
+  "text": "방식"
+ },
+ "69025748": {
+  "en": "Time a move",
+  "ru": "Время на ход",
+  "text": "수당 시간"
+ },
+ "4038e79e": {
+  "en": "Swiss, ",
+  "ru": "швейцарка, ",
+  "text": "스위스식, "
+ },
+ "bd1530b1": {
+  "en": "ELO counts",
+  "ru": "ELO учитывается",
+  "text": "ELO 반영"
+ },
+ "f29830d4": {
+  "en": "Pairings come automatically; each game is an ordinary rated game.",
+  "ru": "Пары придут сами; каждая партия — обычная партия на рейтинг.",
+  "text": "대진은 자동으로 옵니다. 각 대국은 일반 레이팅전입니다."
+ },
+ "540d1e4a": {
+  "en": "Join",
+  "ru": "Участвовать",
+  "text": "참가"
+ },
+ "1313fd04": {
+  "en": "Decline",
+  "ru": "Отказаться",
+  "text": "거절"
+ },
+ "dc18b5d9": {
+  "en": "Later",
+  "ru": "Позже",
+  "text": "나중에"
+ },
+ "b88250d5": {
+  "en": "Invitations sent",
+  "ru": "Приглашения отправлены",
+  "text": "초대 전송됨"
+ },
+ "fb3cf99a": {
+  "en": "organiser",
+  "ru": "организатор",
+  "text": "주최자"
+ },
+ "8fd46b18": {
+  "en": "joins",
+  "ru": "участвует",
+  "text": "참가"
+ },
+ "e7cba8ad": {
+  "en": "declined",
+  "ru": "отказался",
+  "text": "거절"
+ },
+ "e800e802": {
+  "en": "no answer yet",
+  "ru": "ждём ответа",
+  "text": "응답 대기"
+ },
+ "66338a84": {
+  "en": "Starts by itself when everyone answers; S starts with those who agreed.",
+  "ru": "Начнётся сам, когда ответят все; S — начать с согласившимися.",
+  "text": "모두 응답하면 자동 시작; S는 동의한 사람과 시작."
+ },
+ "f759eaa5": {
+  "en": "Start",
+  "ru": "Начать",
+  "text": "시작"
+ },
+ "2ce13876": {
+  "en": "The tournament was removed",
+  "ru": "Турнир удалён",
+  "text": "대회가 삭제됨"
+ },
+ "c8db74a1": {
+  "en": "cancelled",
+  "ru": "отменён",
+  "text": "취소됨"
+ },
+ "37e1d0e8": {
+  "en": "A bye this round",
+  "ru": "В этом туре без игры",
+  "text": "이번 라운드 부전승"
+ },
+ "33712d5b": {
+  "en": "One point without a game: odd number of players",
+  "ru": "Очко без игры: нечётное число игроков",
+  "text": "대국 없이 1점: 선수 수가 홀수"
+ },
+ "3b0ee2bf": {
+  "en": "no board free",
+  "ru": "нет свободной доски",
+  "text": "빈 체스판 없음"
+ },
+ "4058de21": {
+  "en": "Waiting for the next round's pairing",
+  "ru": "Ждём пару следующего тура",
+  "text": "다음 라운드 대진 대기 중"
  }
 }

@@ -22,7 +22,7 @@ static void scenario(){
  auto footerRight=[&](const char* page){for(int x=316;x>150&&uiStatus().indexOf(page)>=0;x-=4){uiTouch('t',x,230);tick();}};
  shot("tdeck-role");touch('t',160,10);expect("title bar leaves the boot choice","\"page\":\"home\"");
  touch('t',260,100);expect("Nodes tile","\"page\":\"nodes\"");shot("tdeck-nodes");
- touch('t',160,90);expect("second node row","\"page\":\"node\"");expect("second node","\"selected_node\":\"A1B2C3D41111\"");
+ touch('t',160,90);expect("second node row","\"page\":\"node\"");expect("second node","\"selected_node\":\"4A00B2C3D4E5F711\"");
  touch('t',160,10);expect("title bar back","\"page\":\"nodes\"");key(0x83);footerRight("\"page\":\"diagnostics\"");expect("footer BACK","\"page\":\"settings\"");key(0x82);
  touch('d',0,0);expect("swipe down","\"selected\":3");touch('u',0,0);touch('l',0,0);expect("swipe left","\"selected\":2");
  key(0x90);touch('t',160,24+32+10);expect("Settings row","\"page\":\"display\"");
@@ -121,6 +121,59 @@ static void scenario(){
   key(0x88);sayId(5,"Марат",0x5C3E,"new b · шахматы MeshMesh");tick();shot("locked-chess");
   config.lockDetails=false;tick();shot("locked-chess-hidden");config.lockDetails=true;
   key(0xa3);if(uiStatus().indexOf("\"chess_game\":\"5C3E\"")<0||uiStatus().indexOf("\"locked\":false")<0){printf("FAIL hold on the locked chess card: %s\n",uiStatus().c_str());exit(1);}key(0x86);key(0x82);
+  // Swiss tournament, organiser side: the wizard with six contacts, everyone joins, the start comes by
+  // itself; four rounds with the reports of both players, then the checks of the pairings and standings.
+  {for(auto& m:chessNet.matches)m=ChessMatch(); // free boards for the tournament games
+   const char* extra[]={"Лиля","Ринат","Тимур"};for(int i=0;i<3;i++){auto& p=meshRadio.peers[meshRadio.peerCount++];p=Peer();p.id=peerId(6+i);strcpy(p.name,extra[i]);p.type=1;p.heard=true;p.seen=fakeMillis-60000*(i+1);for(int k=0;k<8;k++)p.publicKey[k]=uint8_t(p.id>>(56-8*k));p.publicKey[8]=0x70+i;}
+   auto fail=[](const char* what){printf("FAIL tournament: %s\n",what);exit(1);};
+   key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);key('2');shot("tour-empty");
+   key(13);shot("tour-new-name");key(0xb7);for(int i=0;i<6;i++){key(' ');key(0xb6);}shot("tour-new-players");key(13);shot("tour-new-rules");key(13);shot("tour-new-check");
+   previewSent.clear();key(13);if(uiStatus().indexOf("\"page\":\"chess_tour\"")<0)fail("the wizard did not open the tournament");shot("tour-gathering");
+   tour::Tour* T=nullptr;for(auto& x:tour::net.tours)if(x.state==tour::Inviting)T=&x;if(!T||T->playerCount!=7)fail("seven players asked");
+   unsigned invites=0;for(auto& m:previewSent)invites+=m.text.find(" inv ")!=std::string::npos;if(invites!=6)fail("six invitations");
+   auto openTour=[&](uint16_t id){char want[24];snprintf(want,sizeof want,"\"tour\":\"%04X\"",id);for(int row=1;row<=3;row++){key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);key('2');for(int k=0;k<row;k++)key(0xb6);key(13);if(uiStatus().indexOf(want)>=0)return;}fail("tournament page");};
+   char cmd[200];auto say=[&](int peer,const char* name,const char* body){snprintf(cmd,sizeof cmd,"\xe2\x99\x9e%04X %s",T->id,body);tour::net.receive(peerId(peer),name,cmd);};
+   const char* names[]={"Heltec V4","","","Игорь T-Deck","","Марат","Лиля","Ринат","Тимур"};int who[]={0,3,5,6,7,8};
+   for(int i=0;i<5;i++)say(who[i],names[who[i]],"yes");tour::net.tick();if(T->state!=tour::Inviting)fail("started before everyone answered");
+   say(who[5],names[who[5]],"yes");if(T->state!=tour::Inviting)fail("started inside the radio callback");tour::net.tick();if(T->state!=tour::Running||T->round!=1)fail("automatic start");
+   auto playerPeer=[&](uint8_t idx)->int{for(int w:who)if(T->players[idx].id==peerId(w))return w;return -1;};
+   bool met[tour::MaxPlayers][tour::MaxPlayers]={};unsigned byes[tour::MaxPlayers]={},whites[tour::MaxPlayers]={},blacks[tour::MaxPlayers]={};
+   for(unsigned round=1;round<=T->rounds;round++){
+    if(T->round!=round)fail("round order");unsigned r=round-1,bye=0;
+    for(unsigned k=0;k<T->pairCount[r];k++){const tour::Pair& p=T->pairs[r][k];
+     if(p.black==tour::NoPlayer){bye++;byes[p.white]++;continue;}
+     if(met[p.white][p.black]){printf("round %u: %s and %s again\n",round,T->players[p.white].name,T->players[p.black].name);fail("a repeated pairing");}
+     met[p.white][p.black]=met[p.black][p.white]=true;whites[p.white]++;blacks[p.black]++;}
+    if(bye!=1||T->pairCount[r]!=4)fail("three games and one bye a round");
+    if(round==1){chessNet.tick();for(int i=0;i<2;i++)tick();shot("tour-round1");}
+    // Results: White wins the first game, Black the second, a draw in the third; my own game ends by resigning.
+    for(unsigned k=0;k<T->pairCount[r];k++){tour::Pair p=T->pairs[r][k];if(p.black==tour::NoPlayer)continue;const char* res=k%3==0?"w":k%3==1?"b":"d";
+     if(T->players[p.white].id==meshRadio.nodeId||T->players[p.black].id==meshRadio.nodeId){ChessMatch* m=nullptr;for(auto& x:chessNet.matches)if(x.state==ChessMatch::Playing&&x.tour==T->id&&x.id==p.game)m=&x;if(!m)fail("my tournament game");
+      bool white=T->players[p.white].id==meshRadio.nodeId;chessNet.resign(*m);chessNet.tick();
+      char body[40];snprintf(body,sizeof body,"res %04X %s",p.game,white?"b":"w");int op=playerPeer(white?p.black:p.white);say(op,names[op],body);continue;}
+     char body[40];snprintf(body,sizeof body,"res %04X %s",p.game,res);int pw=playerPeer(p.white),pb=playerPeer(p.black);say(pw,names[pw],body);if(round==2&&k==2)snprintf(body,sizeof body,"res %04X w",p.game); // a dispute
+     say(pb,names[pb],body);}
+    tour::net.tick();
+    if(round==2&&T->round==2){openTour(T->id);key(0xb7);for(unsigned k=0;k<T->pairCount[1];k++)if(T->pairs[1][k].result==tour::Disputed){for(unsigned j=0;j<k;j++)key(0xb6);shot("tour-dispute");key('d');tour::net.tick();break;}
+     if(T->round!=3)fail("the dispute settled by the organiser");key(0xb4);}
+   }
+   if(T->state!=tour::Over)fail("finished after the last round");
+   for(unsigned i=0;i<T->playerCount;i++){if(byes[i]>1)fail("two byes for one player");if(abs(int(whites[i])-int(blacks[i]))>2)fail("colours not alternated");}
+   tour::Row rows[tour::MaxPlayers];unsigned n=tour::net.standings(*T,rows),total=0;for(unsigned i=0;i<n;i++)total+=rows[i].half;if(n!=7||total!=2*4*4)fail("standings: 4 points a round");
+   for(unsigned i=1;i<n;i++)if(rows[i].half>rows[i-1].half)fail("standings order");
+   openTour(T->id);for(int i=0;i<3;i++)tick();shot("tour-final");key(0xb7);shot("tour-final-games");key(0x86);
+   // Player side: an invitation from Игорь, the player list, a pairing with Марат's key, the standings.
+   uint16_t pid=0xA7C1;auto org=[&](const char* body){snprintf(cmd,sizeof cmd,"\xe2\x99\x9e%04X %s",pid,body);tour::net.receive(peerId(3),"Игорь T-Deck",cmd);};
+   org("inv 5 24 6 Осенняя швейцарка");tour::Tour* P=tour::net.find(pid);if(!P||P->state!=tour::Invited)fail("invitation received");
+   openTour(pid);for(int i=0;i<2;i++)tick();shot("tour-invite");previewSent.clear();key(13);if(P->state!=tour::Running||previewSent.empty()||previewSent.back().text.find(" yes")==std::string::npos)fail("joined");
+   char list[160];snprintf(list,sizeof list,"pl %06lX:Игорь,%06lX:M9,%06lX:Марат,%06lX:Лиля",(unsigned long)(peerId(3)>>40),(unsigned long)(meshRadio.nodeId>>40),(unsigned long)(peerId(5)>>40),(unsigned long)(peerId(6)>>40));org(list);
+   const Peer* marat=nullptr;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==peerId(5))marat=&meshRadio.peers[i];
+   const char* b64="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";std::string key64;
+   for(int i=0;i<32;i+=3){uint32_t v=uint32_t(marat->publicKey[i])<<16|(i+1<32?marat->publicKey[i+1]<<8:0)|(i+2<32?marat->publicKey[i+2]:0);key64+=b64[v>>18&63];key64+=b64[v>>12&63];key64+=i+1<32?b64[v>>6&63]:'=';key64+=i+2<32?b64[v&63]:'=';}
+   snprintf(list,sizeof list,"r1 w 6D21 %s Марат",key64.c_str());org(list);
+   ChessMatch* g=chessNet.find(0x6D21);if(!g||g->tour!=pid||g->mine!=chess::White||g->state!=ChessMatch::Playing||g->peer!=peerId(5))fail("the pairing starts my game");
+   snprintf(list,sizeof list,"st 1 %06lX:2:3,%06lX:1:4,%06lX:1:2,%06lX:0:3",(unsigned long)(peerId(6)>>40),(unsigned long)(meshRadio.nodeId>>40),(unsigned long)(peerId(3)>>40),(unsigned long)(peerId(5)>>40));org(list);
+   for(int i=0;i<2;i++)tick();shot("tour-player");key(0x86);key('1');key(0x82);}
  }
 #endif
  // Device modes: the repeater and room pages, the mode choice from Settings.

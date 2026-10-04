@@ -134,6 +134,106 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": 24 sa onay yok, R ile yeniden gönder"
  },
+ "bbc41d9b": {
+  "en": "Tournament: nobody has agreed yet",
+  "ru": "Турнир: пока никто не согласился",
+  "text": "Turnuva: henüz kimse kabul etmedi"
+ },
+ "fe21cd58": {
+  "en": ": a bye for you (+1)",
+  "ru": ": вы свободны от игры (+1)",
+  "text": ": bay geçiyorsunuz (+1)"
+ },
+ "954a4260": {
+  "en": "round ",
+  "ru": "тур ",
+  "text": "tur "
+ },
+ "9172832f": {
+  "en": ", you play White",
+  "ru": ", вы белыми",
+  "text": ", siz beyazsınız"
+ },
+ "24a182c8": {
+  "en": ", you play Black",
+  "ru": ", вы чёрными",
+  "text": ", siz siyahsınız"
+ },
+ "4a098655": {
+  "en": "Tournament: no free chess board",
+  "ru": "Турнир: нет свободной доски",
+  "text": "Turnuva: boş satranç tahtası yok"
+ },
+ "93d7f45b": {
+  "en": "results differ in game ",
+  "ru": "результаты расходятся в партии ",
+  "text": "sonuçlar farklı, oyun "
+ },
+ "35657d57": {
+  "en": ": finished, your place ",
+  "ru": ": турнир окончен, ваше место ",
+  "text": ": bitti, yeriniz "
+ },
+ "c0f5f34b": {
+  "en": ": tournament invitation, no free place",
+  "ru": ": приглашение в турнир, нет места",
+  "text": ": turnuva daveti, boş yer yok"
+ },
+ "1b6b5746": {
+  "en": " invites you to the tournament \"",
+  "ru": " приглашает в турнир «",
+  "text": " sizi turnuvaya davet etti: \""
+ },
+ "c781758d": {
+  "en": "\"",
+  "ru": "»",
+  "text": "\""
+ },
+ "12f420df": {
+  "en": " joins \"",
+  "ru": " участвует в «",
+  "text": " katılıyor: \""
+ },
+ "baaea3e0": {
+  "en": " declines \"",
+  "ru": " отказался от «",
+  "text": " reddetti: \""
+ },
+ "9c7176fd": {
+  "en": ": cancelled by the organiser",
+  "ru": ": отменён организатором",
+  "text": ": düzenleyen iptal etti"
+ },
+ "49d02c04": {
+  "en": "Tournament: cannot save",
+  "ru": "Турнир: не удалось сохранить",
+  "text": "Turnuva: kaydedilemedi"
+ },
+ "b00dafff": {
+  "en": ": tournaments do not fit this board",
+  "ru": ": турниры не помещаются в эту плату",
+  "text": ": turnuvalar bu cihaza sığmıyor"
+ },
+ "7a76bf2e": {
+  "en": "Tournament: message queue full",
+  "ru": "Турнир: очередь сообщений переполнена",
+  "text": "Turnuva: mesaj kuyruğu dolu"
+ },
+ "6a7780cf": {
+  "en": "Tournament: 2-10 players, 1-9 rounds",
+  "ru": "Турнир: 2-10 игроков, 1-9 туров",
+  "text": "Turnuva: 2-10 oyuncu, 1-9 tur"
+ },
+ "e5bc090c": {
+  "en": "Tournament: no free place",
+  "ru": "Турнир: нет свободного места",
+  "text": "Turnuva: boş yer yok"
+ },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "Turnuva: sohbet kişilerini seçin"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -503,6 +603,11 @@
   "en": "New chess game",
   "ru": "Новая партия",
   "text": "Yeni satranç oyunu"
+ },
+ "74549647": {
+  "en": "New tournament",
+  "ru": "Новый турнир",
+  "text": "Yeni turnuva"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2209,6 +2314,11 @@
   "ru": "Ключ сети · 64 hex",
   "text": "Ağ anahtarı · 64 hex"
  },
+ "5bb9392e": {
+  "en": "Tournament name",
+  "ru": "Название турнира",
+  "text": "Turnuva adı"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2238,6 +2348,11 @@
   "en": "OK: save   BACK: cancel",
   "ru": "OK: сохранить   BACK: отменить",
   "text": "OK: kaydet   BACK: iptal"
+ },
+ "70e3f7ea": {
+  "en": "Tournament",
+  "ru": "Турнир",
+  "text": "Turnuva"
  },
  "5542d75b": {
   "en": "Chess · ",
@@ -2779,6 +2894,11 @@
   "ru": "Партии",
   "text": "Oyunlar"
  },
+ "7b962df1": {
+  "en": "Tournaments",
+  "ru": "Турниры",
+  "text": "Turnuvalar"
+ },
  "55aaa48c": {
   "en": "Rating",
   "ru": "Рейтинг",
@@ -2793,6 +2913,11 @@
   "en": "Challenge a chat contact",
   "ru": "Вызвать чат-контакт",
   "text": "Bir sohbet kişisini davet et"
+ },
+ "f6f5f20d": {
+  "en": "R",
+  "ru": "т",
+  "text": "T"
  },
  "4d885d93": {
   "en": "Moves travel as direct MeshCore messages with delivery confirmation. Both players need a MeshMesh M9 with chess.",
@@ -3534,16 +3659,6 @@
   "ru": "ваш ход, шах!",
   "text": "sıra sizde, şah!"
  },
- "d4637825": {
-  "en": "your move",
-  "ru": "ваш ход",
-  "text": "sıra sizde"
- },
- "509eb141": {
-  "en": "their move",
-  "ru": "ход соперника",
-  "text": "rakibin sırası"
- },
  "8054c24f": {
   "en": "you won",
   "ru": "вы победили",
@@ -3553,11 +3668,6 @@
   "en": "you lost",
   "ru": "вы проиграли",
   "text": "kaybettiniz"
- },
- "25003996": {
-  "en": "draw",
-  "ru": "ничья",
-  "text": "berabere"
  },
  "df7afec4": {
   "en": "ended",
@@ -4993,5 +5103,525 @@
   "en": "Take",
   "ru": "Взять",
   "text": "Al"
+ },
+ "5e550939": {
+  "en": "Player",
+  "ru": "Игрок",
+  "text": "Oyuncu"
+ },
+ "30374633": {
+  "en": "Pts",
+  "ru": "Очки",
+  "text": "Puan"
+ },
+ "d26cc5ee": {
+  "en": "Buch.",
+  "ru": "Бухг.",
+  "text": "Buch."
+ },
+ "5c61e756": {
+  "en": " games",
+  "ru": " · пары",
+  "text": " eşleşme"
+ },
+ "fad010ec": {
+  "en": "dispute",
+  "ru": "спор",
+  "text": "itiraz"
+ },
+ "4734758c": {
+  "en": "Your games",
+  "ru": "Ваши партии",
+  "text": "Oyunlarınız"
+ },
+ "ecf210b8": {
+  "en": "R",
+  "ru": "Т",
+  "text": "T"
+ },
+ "bf9822cd": {
+  "en": "bye (+1)",
+  "ru": "без игры (+1)",
+  "text": "bay (+1)"
+ },
+ "69412de5": {
+  "en": "win",
+  "ru": "победа",
+  "text": "galip"
+ },
+ "38624b7c": {
+  "en": "loss",
+  "ru": "поражение",
+  "text": "mağlup"
+ },
+ "25003996": {
+  "en": "draw",
+  "ru": "ничья",
+  "text": "berabere"
+ },
+ "e2c0f7eb": {
+  "en": "playing",
+  "ru": "идёт",
+  "text": "sürüyor"
+ },
+ "3919be94": {
+  "en": "1-0",
+  "ru": "1-0",
+  "text": "1-0"
+ },
+ "7ba60019": {
+  "en": "To the game",
+  "ru": "К партии",
+  "text": "Oyuna git"
+ },
+ "4af576cc": {
+  "en": "Standings",
+  "ru": "Таблица",
+  "text": "Sıralama"
+ },
+ "a7e20029": {
+  "en": "You joined: wait for the pairing",
+  "ru": "Вы участвуете: ждите пару",
+  "text": "Katıldınız: eşleşmeyi bekleyin"
+ },
+ "ec7f8c84": {
+  "en": "Invitation declined",
+  "ru": "Приглашение отклонено",
+  "text": "Davet reddedildi"
+ },
+ "6e500ba0": {
+  "en": "Tournament started: round 1 sent",
+  "ru": "Турнир начат: пары первого тура отправлены",
+  "text": "Turnuva başladı: 1. tur eşleşmeleri gönderildi"
+ },
+ "353e2d7d": {
+  "en": "Tournament cancelled",
+  "ru": "Турнир отменён",
+  "text": "Turnuva iptal edildi"
+ },
+ "dcfc96fc": {
+  "en": "Result set",
+  "ru": "Результат записан",
+  "text": "Sonuç kaydedildi"
+ },
+ "ba0bb842": {
+  "en": "No game for you now",
+  "ru": "Сейчас у вас нет партии",
+  "text": "Şu an oyununuz yok"
+ },
+ "c2a96af6": {
+  "en": "Tournament removed",
+  "ru": "Турнир удалён",
+  "text": "Turnuva silindi"
+ },
+ "d8b27ae3": {
+  "en": "Name",
+  "ru": "Название",
+  "text": "Ad"
+ },
+ "6c80148e": {
+  "en": "Rules",
+  "ru": "Правила",
+  "text": "Kurallar"
+ },
+ "a6868080": {
+  "en": "Check",
+  "ru": "Проверка",
+  "text": "Kontrol"
+ },
+ "3371e999": {
+  "en": "Players see it in the invitation and the standings. OK changes it, > goes on.",
+  "ru": "Его увидят игроки в приглашении и таблице. OK — изменить, > — дальше.",
+  "text": "Oyuncular bunu davette ve sıralamada görür. OK değiştirir, > devam eder."
+ },
+ "055dae05": {
+  "en": "Edit",
+  "ru": "Изменить",
+  "text": "Düzenle"
+ },
+ "e7bfbbfb": {
+  "en": "Next",
+  "ru": "Дальше",
+  "text": "İleri"
+ },
+ "c229145c": {
+  "en": "not heard since the start",
+  "ru": "не слышен с запуска",
+  "text": "başlangıçtan beri duyulmadı"
+ },
+ "0b300371": {
+  "en": "Chosen ",
+  "ru": "Выбрано ",
+  "text": "Seçilen: "
+ },
+ "b0430fb1": {
+  "en": " with you",
+  "ru": " с вами",
+  "text": " siz dahil"
+ },
+ "26113478": {
+  "en": " (the most)",
+  "ru": " (больше нельзя)",
+  "text": " (en fazla)"
+ },
+ "6039740e": {
+  "en": "Choose",
+  "ru": "Отметить",
+  "text": "Seç"
+ },
+ "7ede8288": {
+  "en": "Next",
+  "ru": "Далее",
+  "text": "İleri"
+ },
+ "975cd7a6": {
+  "en": "Rounds",
+  "ru": "Туры",
+  "text": "Turlar"
+ },
+ "009ed481": {
+  "en": "suggested for ",
+  "ru": "для ",
+  "text": "önerilen, "
+ },
+ "ec0c2450": {
+  "en": "a LoRa move takes up to a few minutes",
+  "ru": "по LoRa ход идёт до нескольких минут",
+  "text": "LoRa ile hamle birkaç dakika sürebilir"
+ },
+ "5bd51e34": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрока",
+   "few": "игроков",
+   "many": "игроков"
+  },
+  "forms": {
+   "one": "{n} oyuncu için",
+   "other": "{n} oyuncu için"
+  }
+ },
+ "9423a046": {
+  "en": "Every game is rated. Pairings are automatic: round 1 by lot, then by score without repeated games.",
+  "ru": "Все партии — на рейтинг. Пары составляются сами: первый тур по жребию, дальше по очкам без повторных встреч.",
+  "text": "Her oyun derecelidir. Eşleşmeler otomatik: 1. tur kurayla, sonra puana göre, tekrar eşleşme olmadan."
+ },
+ "42dc0a3a": {
+  "en": "Value",
+  "ru": "Значение",
+  "text": "Değer"
+ },
+ "29b67420": {
+  "en": "Item",
+  "ru": "Пункт",
+  "text": "Öğe"
+ },
+ "1a466259": {
+  "en": "Swiss · ",
+  "ru": "Швейцарка · ",
+  "text": "İsviçre · "
+ },
+ "284223cb": {
+  "en": "Invitations go as direct messages. Round 1 starts when everyone answers, or when you press S on the tournament page; those who did not answer stay out.",
+  "ru": "Приглашения уйдут личными сообщениями. Первый тур начнётся, когда ответят все, или по S на странице турнира; кто не ответил, в турнир не попадёт.",
+  "text": "Davetler özel mesaj olarak gider. 1. tur herkes yanıt verince veya turnuva sayfasında S'ye basınca başlar; yanıt vermeyenler dışarıda kalır."
+ },
+ "cdcc234f": {
+  "en": "Send invitations",
+  "ru": "Разослать приглашения",
+  "text": "Davetleri gönder"
+ },
+ "53a3d9cf": {
+  "en": "Name: 1-32 UTF-8 bytes",
+  "ru": "Название: 1-32 байта UTF-8",
+  "text": "Ad: 1-32 bayt UTF-8"
+ },
+ "1778710d": {
+  "en": "At most 10 players",
+  "ru": "Не больше 10 игроков",
+  "text": "En fazla 10 oyuncu"
+ },
+ "c164cb75": {
+  "en": "Choose at least one contact",
+  "ru": "Отметьте хотя бы один контакт",
+  "text": "En az bir kişi seçin"
+ },
+ "daf0f315": {
+  "en": "Invitations sent: ",
+  "ru": "Приглашения отправлены: ",
+  "text": "Davetler gönderildi: "
+ },
+ "6a22520b": {
+  "en": "From ",
+  "ru": "От ",
+  "text": "Kimden "
+ },
+ "b56e13a9": {
+  "en": " h a move",
+  "ru": " ч на ход",
+  "text": " sa/hamle"
+ },
+ "dd25c646": {
+  "en": {
+   "one": "round",
+   "other": "rounds"
+  },
+  "ru": {
+   "one": "тур",
+   "few": "тура",
+   "many": "туров"
+  },
+  "forms": {
+   "one": "{n} tur",
+   "other": "{n} tur"
+  }
+ },
+ "7c3e6a67": {
+  "en": "Agreed: ",
+  "ru": "Согласились: ",
+  "text": "Kabul eden: "
+ },
+ "283bff63": {
+  "en": "You declined",
+  "ru": "Вы отказались",
+  "text": "Reddettiniz"
+ },
+ "3b724921": {
+  "en": "Cancelled",
+  "ru": "Отменён",
+  "text": "İptal"
+ },
+ "cef3039d": {
+  "en": " place of ",
+  "ru": "-е место из ",
+  "text": " sıra / "
+ },
+ "8b622ca9": {
+  "en": " pts",
+  "ru": " оч.",
+  "text": " puan"
+ },
+ "c9940455": {
+  "en": "Finished",
+  "ru": "Окончен",
+  "text": "Bitti"
+ },
+ "3f7b7e3d": {
+  "en": "Waiting for the start",
+  "ru": "Ждём начала",
+  "text": "Başlangıç bekleniyor"
+ },
+ "89b9fcd7": {
+  "en": "Round ",
+  "ru": "Тур ",
+  "text": "Tur "
+ },
+ "602a97dd": {
+  "en": " place, ",
+  "ru": "-й, ",
+  "text": " sıra, "
+ },
+ "2ecaee40": {
+  "en": " · a bye",
+  "ru": " · без игры",
+  "text": " · bay"
+ },
+ "d4637825": {
+  "en": "your move",
+  "ru": "ваш ход",
+  "text": "sıra sizde"
+ },
+ "579004bc": {
+  "en": "game over",
+  "ru": "партия окончена",
+  "text": "oyun bitti"
+ },
+ "509eb141": {
+  "en": "their move",
+  "ru": "ход соперника",
+  "text": "rakibin sırası"
+ },
+ "3d6e0984": {
+  "en": "on",
+  "ru": "идёт",
+  "text": "aktif"
+ },
+ "30d13241": {
+  "en": "starting",
+  "ru": "старт",
+  "text": "başlıyor"
+ },
+ "5168aed9": {
+  "en": "invitation",
+  "ru": "приглашение",
+  "text": "davet"
+ },
+ "92f5f740": {
+  "en": "gathering",
+  "ru": "набор",
+  "text": "kayıt"
+ },
+ "c4a85995": {
+  "en": "finished",
+  "ru": "окончен",
+  "text": "bitti"
+ },
+ "da699208": {
+  "en": "off",
+  "ru": "нет",
+  "text": "yok"
+ },
+ "a63561b4": {
+  "en": "Create a tournament",
+  "ru": "Создать турнир",
+  "text": "Turnuva oluştur"
+ },
+ "9bff558c": {
+  "en": "Swiss system, you organise and play",
+  "ru": "Швейцарская система, вы организуете и играете",
+  "text": "İsviçre sistemi, düzenleyip oynarsınız"
+ },
+ "603b77d0": {
+  "en": {
+   "one": "player",
+   "other": "players"
+  },
+  "ru": {
+   "one": "игрок",
+   "few": "игрока",
+   "many": "игроков"
+  },
+  "forms": {
+   "one": "{n} oyuncu",
+   "other": "{n} oyuncu"
+  }
+ },
+ "ee7a5116": {
+  "en": "Players get their pairings, games and standings as MeshCore messages. Pairings are automatic: round 1 by lot, then by score.",
+  "ru": "Пары, партии и таблица приходят игрокам сообщениями MeshCore. Пары составляются сами: первый тур по жребию, дальше по очкам.",
+  "text": "Oyuncular eşleşmeleri, oyunları ve sıralamayı MeshCore mesajı olarak alır. Eşleşmeler otomatik: 1. tur kurayla, sonra puana göre."
+ },
+ "e3a856ac": {
+  "en": "Create",
+  "ru": "Создать",
+  "text": "Oluştur"
+ },
+ "624e042e": {
+  "en": "Tournament invitation",
+  "ru": "Приглашение в турнир",
+  "text": "Turnuva daveti"
+ },
+ "14321e1a": {
+  "en": "Organiser",
+  "ru": "Организатор",
+  "text": "Düzenleyen"
+ },
+ "5f4593c3": {
+  "en": "Format",
+  "ru": "Формат",
+  "text": "Biçim"
+ },
+ "69025748": {
+  "en": "Time a move",
+  "ru": "Время на ход",
+  "text": "Hamle süresi"
+ },
+ "4038e79e": {
+  "en": "Swiss, ",
+  "ru": "швейцарка, ",
+  "text": "İsviçre, "
+ },
+ "bd1530b1": {
+  "en": "ELO counts",
+  "ru": "ELO учитывается",
+  "text": "ELO sayılır"
+ },
+ "f29830d4": {
+  "en": "Pairings come automatically; each game is an ordinary rated game.",
+  "ru": "Пары придут сами; каждая партия — обычная партия на рейтинг.",
+  "text": "Eşleşmeler otomatik gelir; her oyun sıradan bir dereceli oyundur."
+ },
+ "540d1e4a": {
+  "en": "Join",
+  "ru": "Участвовать",
+  "text": "Katıl"
+ },
+ "1313fd04": {
+  "en": "Decline",
+  "ru": "Отказаться",
+  "text": "Reddet"
+ },
+ "dc18b5d9": {
+  "en": "Later",
+  "ru": "Позже",
+  "text": "Sonra"
+ },
+ "b88250d5": {
+  "en": "Invitations sent",
+  "ru": "Приглашения отправлены",
+  "text": "Davetler gönderildi"
+ },
+ "fb3cf99a": {
+  "en": "organiser",
+  "ru": "организатор",
+  "text": "düzenleyen"
+ },
+ "8fd46b18": {
+  "en": "joins",
+  "ru": "участвует",
+  "text": "katılıyor"
+ },
+ "e7cba8ad": {
+  "en": "declined",
+  "ru": "отказался",
+  "text": "reddetti"
+ },
+ "e800e802": {
+  "en": "no answer yet",
+  "ru": "ждём ответа",
+  "text": "yanıt yok"
+ },
+ "66338a84": {
+  "en": "Starts by itself when everyone answers; S starts with those who agreed.",
+  "ru": "Начнётся сам, когда ответят все; S — начать с согласившимися.",
+  "text": "Herkes yanıt verince kendiliğinden başlar; S kabul edenlerle başlatır."
+ },
+ "f759eaa5": {
+  "en": "Start",
+  "ru": "Начать",
+  "text": "Başlat"
+ },
+ "2ce13876": {
+  "en": "The tournament was removed",
+  "ru": "Турнир удалён",
+  "text": "Turnuva silindi"
+ },
+ "c8db74a1": {
+  "en": "cancelled",
+  "ru": "отменён",
+  "text": "iptal"
+ },
+ "37e1d0e8": {
+  "en": "A bye this round",
+  "ru": "В этом туре без игры",
+  "text": "Bu tur bay"
+ },
+ "33712d5b": {
+  "en": "One point without a game: odd number of players",
+  "ru": "Очко без игры: нечётное число игроков",
+  "text": "Oyunsuz bir puan: oyuncu sayısı tek"
+ },
+ "3b0ee2bf": {
+  "en": "no board free",
+  "ru": "нет свободной доски",
+  "text": "boş tahta yok"
+ },
+ "4058de21": {
+  "en": "Waiting for the next round's pairing",
+  "ru": "Ждём пару следующего тура",
+  "text": "Sonraki turun eşleşmesi bekleniyor"
  }
 }

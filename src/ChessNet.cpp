@@ -1,5 +1,6 @@
 #include "ChessNet.h"
 #include "ChessRating.h"
+#include "ChessTour.h"
 #include "Config.h"
 #include "MeshRadio.h"
 #include "Hardware.h"
@@ -12,8 +13,8 @@ const char Tag[]="\xe2\x99\x9f"; // ♟
 constexpr uint8_t Queued=ChatMessage::Queued,Delivered=ChatMessage::Delivered,Failed=ChatMessage::Failed;
 uint32_t unixNow(){time_t t=time(nullptr);return t>1700000000?uint32_t(t):0;}
 // Saved form: "MMC1", version, count, then per game a fixed header and its moves; CRC-32 at the end.
-constexpr uint8_t SaveVersion=3;          // 2: the open-move flag; 3: the rated result; older files are still read
-constexpr size_t RecordHeader=8+2+25+7+8+1+80+2,RatingBlock=4+32+8+64+64;
+constexpr uint8_t SaveVersion=4;          // 2: the open-move flag; 3: the rated result; 4: the tournament; older files are still read
+constexpr size_t RecordHeader=8+2+25+7+8+1+80+2,RatingBlock=4+32+8+64+64,TourBlock=4;
 // Automatic resending: after 2, 5 and 10 minutes, then every 15; at once when the other player is
 // heard again (at most every 2 min, so a one-way link does not fill the air); stops after 24 h without confirmation (R still resends).
 constexpr uint32_t RetryDelays[]={120000,300000,600000,900000},RetryWindow=86400000,HeardGap=120000;
@@ -40,6 +41,7 @@ void ChessNet::tick(){
     if(m.sign==ChessMatch::SignDue)signResult(m);
     if(m.sign==ChessMatch::SignSent&&m.theirSigned)storeResult(m);
   }
+  for(auto& m:matches)if(m.state==ChessMatch::Over&&m.tour&&!m.tourReported){m.tourReported=true;tour::net.gameOver(m);changed(m);}
   for(auto& m:matches){
     if(m.state==ChessMatch::Free||!m.pending()||m.sending()||m.autoStopped)continue;
     if(!m.openSince)m.openSince=now;
@@ -66,10 +68,14 @@ ChessMatch* ChessNet::find(uint64_t peer,uint16_t id){for(auto& m:matches)if(m.s
 ChessMatch* ChessNet::find(uint16_t id){for(auto& m:matches)if(m.state!=ChessMatch::Free&&m.id==id)return &m;return nullptr;}
 unsigned ChessNet::count() const{unsigned n=0;for(auto& m:matches)n+=m.state!=ChessMatch::Free;return n;}
 unsigned ChessNet::waiting() const{unsigned n=0;for(auto& m:matches)n+=m.state==ChessMatch::Invited||m.myTurn()||m.unseen;return n;}
-// A free slot, or the finished game that changed longest ago.
-ChessMatch* ChessNet::slot(){
+// A free slot, or the finished game that changed longest ago. A tournament pairing (force) may also take a
+// finished game nobody opened (a board without a chess screen never opens them) once its rating and report are done.
+ChessMatch* ChessNet::slot(bool force){
   ChessMatch* oldest=nullptr;
   for(auto& m:matches){if(m.state==ChessMatch::Free)return &m;if(m.state==ChessMatch::Over&&!m.unseen&&(!oldest||int32_t(m.changedAt-oldest->changedAt)<0))oldest=&m;}
+  if(oldest||!force)return oldest;
+  for(auto& m:matches){bool done=m.state==ChessMatch::Over&&!m.sigOpen&&m.sign!=ChessMatch::SignDue&&!(m.sign==ChessMatch::SignSent&&!m.theirSigned)&&(!m.tour||m.tourReported);
+    if(done&&(!oldest||int32_t(m.changedAt-oldest->changedAt)<0))oldest=&m;}
   return oldest;
 }
 void ChessNet::changed(ChessMatch& m,bool now){m.changedAt=millis();m.updated=unixNow();dirty=true;if(now)save();else if(!saveDue){saveDue=true;saveAt=millis()+3000;}}
@@ -210,6 +216,13 @@ ChessMatch* ChessNet::invite(uint64_t peer,int color,bool rated){
   send(*m,String(head)+(m->mine==White?tr(" · MeshMesh chess: you play Black"," · шахматы MeshMesh: вы играете чёрными"):tr(" · MeshMesh chess: you play White"," · шахматы MeshMesh: вы играете белыми")));
   changed(*m);return m;
 }
+ChessMatch* ChessNet::tourGame(uint64_t peer,const uint8_t key[32],const char* name,uint16_t id,int color,uint16_t tourId,uint8_t round){
+  if(ChessMatch* old=find(peer,id))return old;
+  meshRadio.learnContact(key,name);ChessMatch* m=slot(true);if(!m)return nullptr;
+  *m=ChessMatch();m->peer=peer;m->id=id;strlcpy(m->name,name,sizeof m->name);m->mine=color&1;m->state=ChessMatch::Playing;m->started=unixNow();m->game.reset();
+  m->rated=true;memcpy(m->peerKey,key,32);m->tour=tourId;m->round=round;m->unseen=m->mine==White;
+  changed(*m);return m;
+}
 bool ChessNet::accept(ChessMatch& m){
   if(m.state!=ChessMatch::Invited)return false;m.state=ChessMatch::Playing;m.unseen=false;
   char t[16];snprintf(t,sizeof t,"%s%04X yes",Tag,m.id);send(m,t);changed(m);return true;
@@ -241,20 +254,21 @@ bool ChessNet::resend(ChessMatch& m){if(m.link()!=Failed||m.sending())return fal
 bool ChessNet::remove(ChessMatch& m){if(m.active())return false;m=ChessMatch();dirty=true;save();return true;}
 
 void ChessNet::save(){
-  saveDue=false;size_t cap=8+MaxMatches*(RecordHeader+2*MaxPlies+RatingBlock)+4;uint8_t* buf=(uint8_t*)malloc(cap);if(!buf)return;
+  saveDue=false;size_t cap=8+MaxMatches*(RecordHeader+2*MaxPlies+RatingBlock+TourBlock)+4;uint8_t* buf=(uint8_t*)malloc(cap);if(!buf)return;
   uint8_t* w=buf;put(w,"MMC1",4);*w++=SaveVersion;uint8_t* countAt=w++;*w++=0;*w++=0;uint8_t n=0;
   for(auto& m:matches){
     if(m.state==ChessMatch::Free)continue;n++;
     put(w,&m.peer,8);put(w,&m.id,2);put(w,m.name,25);uint8_t f[7]={m.mine,m.state,m.result,m.reason,m.drawOffer,m.unseen,m.moveOpen};put(w,f,7);
     put(w,&m.started,4);put(w,&m.updated,4);put(w,&m.outStatus,1);put(w,m.out,80);put(w,&m.game.plies,2);put(w,m.game.moves,2*m.game.plies);
     uint8_t r[4]={m.rated,m.sign,m.theirSigned,m.sigOpen};put(w,r,4);put(w,m.peerKey,32);put(w,&m.myTime,4);put(w,&m.theirTime,4);put(w,m.mySig,64);put(w,m.theirSig,64);
+    put(w,&m.tour,2);put(w,&m.round,1);put(w,&m.tourReported,1);
   }
   *countAt=n;uint32_t crc=crc32(buf,w-buf);put(w,&crc,4);
   if(!chessStoreWrite(buf,w-buf)){event=tr("Chess: cannot save games","Шахматы: не удалось сохранить партии");events++;}
   free(buf);
 }
 void ChessNet::load(){
-  size_t cap=8+MaxMatches*(RecordHeader+2*MaxPlies+RatingBlock)+4;uint8_t* buf=(uint8_t*)malloc(cap);if(!buf)return;
+  size_t cap=8+MaxMatches*(RecordHeader+2*MaxPlies+RatingBlock+TourBlock)+4;uint8_t* buf=(uint8_t*)malloc(cap);if(!buf)return;
   size_t size=chessStoreRead(buf,cap);uint32_t crc;
   if(size<12||memcmp(buf,"MMC1",4)||buf[4]<1||buf[4]>SaveVersion||(memcpy(&crc,buf+size-4,4),crc!=crc32(buf,size-4))){free(buf);return;}
   const uint8_t* r=buf+8;const uint8_t* end=buf+size-4;unsigned count=buf[5],slot=0,dropped=0,flags=buf[4]==1?6:7;
@@ -264,6 +278,7 @@ void ChessNet::load(){
     if(plies>MaxPlies||r+2*plies>end)break;Move moves[MaxPlies];get(r,moves,2*plies);
     if(buf[4]>=3){if(r+RatingBlock>end)break;uint8_t q[4];get(r,q,4);m.rated=q[0];m.sign=q[1]<=ChessMatch::SignBad?q[1]:ChessMatch::SignNone;m.theirSigned=q[2];m.sigOpen=q[3];
       get(r,m.peerKey,32);get(r,&m.myTime,4);get(r,&m.theirTime,4);get(r,m.mySig,64);get(r,m.theirSig,64);}
+    if(buf[4]>=4){if(r+TourBlock>end)break;get(r,&m.tour,2);get(r,&m.round,1);get(r,&m.tourReported,1);}
     m.mine=f[0]&1;m.state=ChessMatch::State(f[1]);m.result=ChessMatch::Result(f[2]);m.reason=ChessMatch::Reason(f[3]);m.drawOffer=ChessMatch::Offer(f[4]);m.unseen=f[5];
     // Replaying checks every move; a damaged game is dropped rather than shown wrong.
     if(m.state==ChessMatch::Free||m.state>ChessMatch::Over||!m.game.load(moves,plies)){m=ChessMatch();dropped++;continue;}
@@ -289,7 +304,11 @@ String chessLocalSan(const char* san){
   }
   return out;
 }
-String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();String s;serializeJson(d,s);s.remove(s.length()-1);return s+",\"games\":"+json()+"}";}
+String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();
+#if !defined(MM_NRF52)
+  d["tours"]=tour::net.waiting(); // the page shows the Tournaments tab where they exist
+#endif
+String s;serializeJson(d,s);s.remove(s.length()-1);return s+",\"games\":"+json()+"}";}
 String ChessNet::detail(const ChessMatch& m) const{
   DynamicJsonDocument d(12288);char id[5];snprintf(id,sizeof id,"%04X",m.id);d["id"]=id;
   // Standard notation of every move, replayed from the start (the saved form is the move list).
@@ -311,6 +330,7 @@ String ChessNet::json() const{
     o["my_turn"]=m.myTurn();o["result"]=results[m.result];o["reason"]=reasons[m.reason];o["draw_offer"]=m.drawOffer==ChessMatch::OfferedByMe?"mine":m.drawOffer==ChessMatch::OfferedToMe?"theirs":"";
     o["unseen"]=m.unseen;o["out_status"]=m.link();o["updated"]=m.updated;o["check"]=m.game.pos.inCheck();
     o["move_open"]=m.moveOpen;o["retry_in"]=retryIn(m);o["retries"]=m.retries;o["auto_stopped"]=m.autoStopped;
+    if(m.tour){char tid[5];snprintf(tid,sizeof tid,"%04X",m.tour);o["tour"]=tid;o["round"]=m.round;if(const tour::Tour* t=tour::net.find(m.tour))o["tour_name"]=t->name;}
     static const char* signs[]={"none","due","sent","stored","bad"};o["rated"]=m.rated;if(m.rated){o["sign"]=signs[m.sign];o["their_signed"]=m.theirSigned;}
     if(const rating::Delta* r=m.sign==ChessMatch::SignStored?rating::book.delta(m.peer,m.id):nullptr){o["elo_before"]=r->before;o["elo_after"]=r->after;o["elo_counted"]=r->counted;}
   }

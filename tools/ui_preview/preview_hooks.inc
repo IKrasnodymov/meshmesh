@@ -36,7 +36,8 @@ void Radar::untrack(){tracking=false;reset();}
 static std::vector<uint8_t> chessSaved;
 bool chessStoreWrite(const uint8_t* d,size_t n){chessSaved.assign(d,d+n);return true;}
 size_t chessStoreRead(uint8_t* d,size_t cap){if(chessSaved.size()>cap)return 0;memcpy(d,chessSaved.data(),chessSaved.size());return chessSaved.size();}
-uint32_t MeshRadio::sendGame(const String&,uint64_t){return ++nextId;}
+struct PreviewSent{uint32_t id;uint64_t peer;std::string text;};static std::vector<PreviewSent> previewSent; // game and tournament commands sent
+uint32_t MeshRadio::sendGame(const String& text,uint64_t peer){previewSent.push_back({++nextId,peer,text.c_str()});return nextId;}
 // Rated results: the real src/ChessRating.cpp with its file in memory; the node "signs" with a fixed pattern.
 #include "ChessRating.h"
 static std::vector<uint8_t> ratingSaved;
@@ -45,6 +46,12 @@ size_t rating::storeRead(uint8_t* d,size_t cap){if(ratingSaved.size()>cap)return
 const uint8_t* MeshRadio::nodeKey() const{static const uint8_t key[32]={0x5A,0x1F,0x0C,0x9E,0x77,0xD2};return key;}
 bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t*,size_t) const{memset(sig,0x5A,64);return true;}
 bool MeshRadio::nodeVerify(const uint8_t*,const uint8_t*,const uint8_t*,size_t){return true;}
+bool MeshRadio::learnContact(const uint8_t*,const char*){return true;}
+// Tournaments: the real src/ChessTour.cpp with its file in memory.
+#include "ChessTour.h"
+static std::vector<uint8_t> tourSaved;
+bool tour::storeWrite(const uint8_t* d,size_t n){tourSaved.assign(d,d+n);return true;}
+size_t tour::storeRead(uint8_t* d,size_t cap){if(tourSaved.size()!=cap)return 0;memcpy(d,tourSaved.data(),cap);return cap;}
 // Internet over Wi-Fi and the web radar holder: switched off in the preview.
 #include "Internet.h"
 Internet internet;

@@ -71,6 +71,7 @@ progress{width:100%;height:10px;accent-color:var(--accent)}.two{display:grid;gri
 .layout{display:flex;flex-direction:column;gap:5px;align-items:center;padding:12px 4px}.layout div{display:flex;gap:4px}.layout span{width:30px;height:38px;border-radius:5px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim)}.layout span b{font-size:15px;color:var(--ink)}.layout .x span{background:var(--deep)}
 .navgrid{display:grid;grid-template-columns:minmax(150px,210px) 1fr;gap:14px;align-items:center}.navgrid svg{width:100%;height:auto}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.act{background:var(--card);border:0;border-radius:10px;padding:12px;text-align:left}.act b{display:block}.act small{color:var(--dim);font-size:12px}.act:hover,.act:focus-visible{background:var(--hi);box-shadow:inset 0 0 0 2px var(--accent);outline:0}
+.tt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;margin:6px 0}.tt th{font-size:11px;font-weight:600;color:var(--faint);text-align:right;padding:4px 6px}.tt th:nth-child(2),.tt td:nth-child(2){text-align:left}.tt td{padding:6px;text-align:right;border-top:1px solid var(--line)}.tt td:first-child{color:var(--faint);width:22px}.tt tr.me td{background:var(--hi)}
 .tabs{display:flex;gap:6px;margin:4px 0 10px}.tabs button{flex:1;border:0;border-radius:8px;background:var(--card);padding:9px;font-weight:600;color:var(--dim)}.tabs button.on{background:var(--hi);color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent)}
 .scope{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:12px;align-items:start}.scope canvas{width:100%;aspect-ratio:1;display:block}
 .sig{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;border:0;background:none;width:100%;text-align:left;color:var(--dim)}.sig i{width:8px;height:8px;border-radius:50%;flex:none}.sig span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sig b{font-variant-numeric:tabular-nums}
@@ -222,7 +223,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <section class="page" id="p-chess" hidden><div class="tabs" id="chessView" hidden></div><div id="chessGames"><div class="list" id="chessList"></div>
 <h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="tabs" id="chessRatedPick" hidden></div><div class="list" id="chessPeers"></div>
 <div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button><button class="btn" id="chessAlerts" hidden></button></div>
-<p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div></section>
+<p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div><div id="chessToursView" hidden></div></section>
 
 <section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
 <div><div class="card cstate" id="cState"></div><div class="offer" id="cOffer" hidden></div><div class="btns" id="cActs"></div><div class="card mvlist" id="cMoves"></div></div></div></section>
@@ -806,6 +807,7 @@ async function buildMap(e){e.preventDefault();const b=$('buildButton');b.disable
 let chess={games:[],events:0,event:'',waiting:0},chessLoaded=false,chessDetail=null,chessSel=null,chessPromo=null,chessArmed='',chessQuiet=false;
 // Rating (firmware with "chess rating"; the companion page has none): the tab, the rated choice for new games and the last answer of "chess rating".
 let chessTab=store('chess-tab')||'games',chessRated=store('chess-rated')??true,chessRating=null,chessRatingAt='';
+let tours=null,tourForm=null,tourArmed=''; // tournaments (firmware with "tour"): the list, the creation form, a confirmation
 let chessColor=store('chess-color')??2,chessSound=store('chess-sound')||false,chessAudio=null;
 // System notifications while the tab is in the background: only on HTTPS (the site's chess page), not in the app (it notifies itself).
 const chessAlertsUsable=typeof Notification!=='undefined'&&typeof window!=='undefined'&&window.isSecureContext&&!window.MeshHost;let chessAlerts=chessAlertsUsable&&!!store('chess-alerts')&&Notification.permission==='granted';
@@ -863,6 +865,7 @@ async function refreshChess(quiet,draw=true){
  if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}
   if(news.act&&chessAlerts&&document.hidden)try{const n=new Notification('Шахматы',{body:news.text,tag:'meshmesh-chess'});n.onclick=()=>{window.focus();if(news.game)go('board/'+news.game);n.close()}}catch{}}}
  chess=next;chessLoaded=true;
+ if(chess.tours!==undefined&&route==='chess'&&(chessTab==='tours'||!tours)){try{tours=await request('/api/tour')}catch{}}
  const rk=chess.elo+'/'+chess.games.filter(g=>g.sign==='stored').length;if(chess.elo!==undefined&&route==='chess'&&(chessRatingAt!==rk||!chessRating)){chessRatingAt=rk;try{chessRating=await request('/api/chess?rating=1')}catch{}}if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
  if(route==='board'&&chessGame(param)){try{const d=await request('/api/chess?id='+param);chessDetail={...d,at:Date.now()}}catch{chessDetail=null}
   if(chessGame(param).unseen)command('chess seen '+param).catch(()=>{})}
@@ -881,10 +884,42 @@ function renderChessRating(){
 <p class="small muted" style="margin:8px 4px">${n?`${plural(n,'партия','партии','партий')} на рейтинг: <span class="ok">+${r.wins}</span> =${r.draws} <span class="bad">−${r.losses}</span>`:'Партий на рейтинг пока нет'} · записей в журнале: ${r.records} из ${r.max_records}</p>
 <h3>Игроки</h3>${(r.players||[]).length?`<div class="list">${r.players.map((p,i)=>{const c=peer(p.id),name=c?c.name:p.name||p.id;return `<div class="row">${avatar(p.id,name,1)}<span class="main"><b>${i+1}. ${esc(name)}</b><small>${plural(p.games,'партия','партии','партий')} в рейтинге · ваш счёт +${p.wins} =${p.draws} −${p.losses}</small></span><span class="side"><b>${p.elo}</b></span></div>`}).join('')}</div>`:'<p class="small faint" style="margin:8px 4px">Здесь появятся соперники по партиям на рейтинг.</p>'}
 <p class="small faint" style="margin:10px 4px">Партия на рейтинг засчитывается, когда оба игрока подписали её результат ключом своего узла. Рейтинг ELO: начальный 1500, коэффициент 32 первые 20 партий, затем 20; с одним соперником в сутки засчитываются 3 партии.</p>`}
+// Tournaments: the list with each one's standings and games; the organiser's actions; the creation form.
+const TOUR_STATE={inviting:['набор','warn'],invited:['приглашение','acc'],declined:['вы отказались','muted'],running:['идёт','ok'],over:['окончен','muted'],cancelled:['отменён','muted']};
+const pts=v=>String(v).replace('.',',');
+function tourCard(t){
+ const [sn,st]=TOUR_STATE[t.state]||['',''],me=(t.standings||[]).findIndex(r=>r.me),acts=[];
+ if(t.state==='invited')acts.push(`<button class="btn primary" data-tour="accept ${t.id}">Участвовать</button>`,`<button class="btn danger" data-tour="decline ${t.id}">Отказаться</button>`);
+ if(t.state==='inviting'&&t.mine)acts.push(`<button class="btn primary" data-tour="start ${t.id}">Начать с согласившимися</button>`,`<button class="btn danger${tourArmed==='cancel '+t.id?' armed':''}" data-tour="cancel ${t.id}">${tourArmed==='cancel '+t.id?'Отменить турнир?':'Отменить'}</button>`);
+ if(['over','cancelled','declined'].includes(t.state))acts.push(`<button class="btn danger${tourArmed==='remove '+t.id?' armed':''}" data-tour="remove ${t.id}">${tourArmed==='remove '+t.id?'Удалить?':'Удалить'}</button>`);
+ let info=t.state==='cancelled'?'Турнир отменён организатором':t.state==='declined'?'Вы отказались от участия':t.state==='invited'?`От ${esc(t.organizer_name)} · ${plural(t.rounds,'тур','тура','туров')} · ${t.hours} ч на ход · партии на рейтинг`
+  :t.state==='inviting'?`Согласились ${t.players.filter(p=>p.state==='joined').length} из ${t.players.length}; турнир начнётся сам, когда ответят все`
+  :t.round?`Тур ${t.round} из ${t.rounds} · ${t.hours} ч на ход${me>=0?` · вы ${me+1}-й, ${pts(t.standings[me].points)} оч.`:''}`:'Ждём начала';
+ let body='';
+ if(t.state==='inviting'&&t.players)body+=`<div class="list">${t.players.map((p,i)=>`<div class="row">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b></span><span class="side ${p.state==='joined'?'ok':p.state==='refused'?'bad':'faint'}">${i===0?'организатор':p.state==='joined'?'участвует':p.state==='refused'?'отказался':'ждём ответа'}</span></div>`).join('')}</div>`;
+ const games=t.my_games||[],cur=games.find(g=>g.round===t.round);
+ if(t.state==='running'&&cur){const g=cur.game&&chessGame(cur.game);body+=cur.color==='bye'?`<p class="small acc" style="margin:8px 4px">Тур ${t.round}: без игры, +1 очко</p>`:`<button class="row" data-go="board/${cur.game}" style="box-shadow:inset 0 0 0 2px var(--accent)">${avatar(cur.game,cur.opponent,1)}<span class="main"><b><span class="disc ${cur.color[0]}"></span>Тур ${t.round}: ${esc(cur.opponent)}</b><small class="${g?chessTone(g):'muted'}">${g?esc(chessState(g)):'партия создаётся…'}</small></span><span class="side acc">К партии ${ic('next')}</span></button>`}
+ if((t.standings||[]).length&&['running','over'].includes(t.state))body+=`<table class="tt"><thead><tr><th>#</th><th>Игрок</th><th>Очки</th><th>Бухг.</th></tr></thead><tbody>${t.standings.map((r,i)=>`<tr class="${r.me?'me':''}"><td>${i+1}</td><td>${r.me?'<b>Вы</b>':esc(r.name)}</td><td><b>${pts(r.points)}</b></td><td>${pts(r.buchholz)}</td></tr>`).join('')}</tbody></table>`;
+ if(t.mine&&t.pairs&&t.state==='running')body+=`<h3>Тур ${t.round}: пары</h3><div class="list">${t.pairs.map(p=>`<div class="row"><span class="main"><b><span class="disc w"></span>${esc(p.white)}${p.black?` — <span class="disc b"></span>${esc(p.black)}`:''}</b><small class="${p.result==='disputed'?'bad':'muted'}">${p.result==='disputed'?'результаты игроков расходятся — выберите итог':!p.black?'без игры (+1)':p.result?{white:'1–0',black:'0–1',draw:'½–½'}[p.result]:'идёт'}</small></span>${p.result==='disputed'?`<span class="side"><button class="btn" data-tour="result ${t.id} ${p.game} w">1–0</button> <button class="btn" data-tour="result ${t.id} ${p.game} d">½</button> <button class="btn" data-tour="result ${t.id} ${p.game} b">0–1</button></span>`:''}</div>`).join('')}</div>`;
+ if(games.length&&t.state!=='invited')body+=`<details style="margin:6px 4px"><summary class="small muted">Ваши партии</summary>${games.map(g=>`<p class="small" style="margin:4px 0">Тур ${g.round}: ${g.color==='bye'?'без игры (+1)':`${g.color==='white'?'белыми':'чёрными'} против ${esc(g.opponent)} — ${{white:g.color==='white'?'победа':'поражение',black:g.color==='black'?'победа':'поражение',draw:'ничья'}[g.result]||'идёт'}`}</p>`).join('')}</details>`;
+ return `<div class="card pad" style="margin-bottom:10px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="font-size:16px">${esc(t.name)}</b><span class="pill ${st}" style="font-size:11px">${sn}</span>${t.unseen?'<span class="pill">!</span>':''}</div><p class="small muted" style="margin:4px 0 8px">${info}</p>${body}${acts.length?`<div class="btns" style="margin-top:8px">${acts.join('')}</div>`:''}</div>`}
+function renderTours(){
+ const list=tours||[],contacts=peers.filter(p=>p.type===1);
+ let h=list.length?list.map(tourCard).join(''):'<div class="empty" style="padding:24px 16px">Турниров пока нет<small>Создайте турнир ниже: пары составятся сами — первый тур по жребию, дальше по очкам.</small></div>';
+ const f=tourForm||(tourForm={name:'Турнир '+new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'}),picked:[],rounds:0,hours:24});
+ const n=f.picked.length+1,suggest=Math.min(9,Math.max(1,Math.ceil(Math.log2(Math.max(2,n)))+1));
+ h+=`<h3>Новый турнир</h3><div class="card pad"><label class="small muted" for="tourName">Название</label><input id="tourName" maxlength="32" value="${esc(f.name)}" style="width:100%;margin:4px 0 10px;padding:9px;border-radius:8px;border:1px solid var(--line);background:var(--bg)">
+<p class="small muted" style="margin:0 0 4px">Игроки (до 9, вы участвуете тоже)</p><div class="list">${contacts.length?contacts.map(p=>`<label class="row" style="cursor:pointer"><input type="checkbox" data-tourpick="${p.id}" ${f.picked.includes(p.id)?'checked':''} style="width:20px;height:20px;accent-color:var(--accent)">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?'слышен сейчас':'слышен '+ago(age(p))+' назад'):'не слышен с запуска'}</small></span></label>`).join(''):'<p class="small faint">Чат-контактов пока нет.</p>'}</div>
+<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap"><label class="small muted">Туры <select id="tourRounds">${[1,2,3,4,5,6,7,8,9].map(v=>`<option ${v===(f.rounds||suggest)?'selected':''}>${v}</option>`).join('')}</select></label><label class="small muted">Время на ход <select id="tourHours">${[6,12,24,48,72].map(v=>`<option value="${v}" ${v===f.hours?'selected':''}>${v} ч</option>`).join('')}</select></label></div>
+<p class="small faint" style="margin:8px 0">Для ${plural(n,'игрока','игроков','игроков')} советуем ${plural(suggest,'тур','тура','туров')}. Все партии — на рейтинг. Первый тур начнётся, когда ответят все приглашённые.</p>
+<button class="btn primary" data-tour="create" ${f.picked.length?'':'disabled'}>Разослать приглашения</button></div>`;
+ $('chessToursView').innerHTML=h}
 function renderChessList(){
- const rated=chess.elo!==undefined;$('chessView').hidden=!rated;$('chessRatedPick').hidden=!rated;
- if(rated)$('chessView').innerHTML=[['games','Партии'+(chess.waiting?` (${chess.waiting})`:'')],['rating','Рейтинг · '+chess.elo]].map(([k,n])=>`<button data-chessview="${k}" class="${k===chessTab?'on':''}">${n}</button>`).join('');
- const showRating=rated&&chessTab==='rating';$('chessGames').hidden=showRating;$('chessRatingView').hidden=!showRating;if(showRating){renderChessRating();return}
+ const rated=chess.elo!==undefined,hasTours=chess.tours!==undefined;$('chessView').hidden=!rated;$('chessRatedPick').hidden=!rated;
+ if(rated)$('chessView').innerHTML=[['games','Партии'+(chess.waiting?` (${chess.waiting})`:'')],...(hasTours?[['tours','Турниры'+(chess.tours?` (${chess.tours})`:'')]]:[]),['rating','Рейтинг · '+chess.elo]].map(([k,n])=>`<button data-chessview="${k}" class="${k===chessTab?'on':''}">${n}</button>`).join('');
+ const showRating=rated&&chessTab==='rating',showTours=hasTours&&chessTab==='tours';$('chessGames').hidden=showRating||showTours;$('chessRatingView').hidden=!showRating;$('chessToursView').hidden=!showTours;
+ if(showTours){const a=document.activeElement;if(!(a&&$('chessToursView').contains(a)&&['INPUT','SELECT'].includes(a.tagName)&&a.type!=='checkbox'))renderTours();return} // typing is not interrupted
+ if(showRating){renderChessRating();return}
  $('chessRatedPick').innerHTML=[[true,'На рейтинг'],[false,'Товарищеская']].map(([v,n])=>`<button data-chessrated="${v}" class="${v===chessRated?'on':''}">${n}</button>`).join('');
  const rank=g=>needsMe(g)?0:g.state==='over'?2:1,games=[...chess.games].sort((a,b)=>rank(a)-rank(b)||(b.updated||0)-(a.updated||0));
  $('chessList').innerHTML=games.length?games.map(g=>{const p=peer(g.peer),move=g.last_san&&g.state!=='invited'?' · '+ruSan(g.last_san):'',bad=g.out_status===4&&g.state!=='over';
@@ -935,6 +970,11 @@ async function chessCommand(line,ok,tone='ok'){chessQuiet=true;try{const r=await
 async function chessClick(d){
  if(d.chesscolor!==undefined){chessColor=+d.chesscolor;store('chess-color',chessColor);renderChessList();return}
  if(d.chessview){chessTab=d.chessview;store('chess-tab',chessTab);if(chessTab==='rating')chessRatingAt='';refreshChess(true);renderChessList();return}
+ if(d.tour!==undefined){
+  if(d.tour==='create'){const f=tourForm,name=($('tourName').value||'').trim();if(!name){notify('Введите название','warn');return}
+   const r=await chessCommand(`tour create ${+$('tourRounds').value} ${+$('tourHours').value} ${f.picked.join(',')} ${name}`,'Приглашения отправлены');if(r){tourForm=null;tours=null;refreshChess(true)}return}
+  const verb=d.tour.split(' ')[0];if((verb==='cancel'||verb==='remove')&&tourArmed!==d.tour){tourArmed=d.tour;renderTours();return}tourArmed='';
+  await chessCommand('tour '+d.tour,{accept:'Вы участвуете: ждите пару',decline:'Приглашение отклонено',start:'Турнир начат',cancel:'Турнир отменён',remove:'Турнир удалён',result:'Результат записан'}[verb]);tours=null;refreshChess(true);return}
  if(d.chessrated!==undefined){chessRated=d.chessrated==='true';store('chess-rated',chessRated);renderChessList();return}
  if(d.invite){const r=await chessCommand(`chess invite ${d.invite} ${'wbr'[chessColor]}${chess.elo!==undefined&&!chessRated?' friendly':''}`);if(r){notify(`Вызов отправлен: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
  const g=chessGame(param);if(!g)return;
@@ -962,9 +1002,9 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
   if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy){chanClick(d);return}
-  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.promo){chessClick(d);return}
+  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
   else if(d.csi)radarAction({action:'csi',role:d.csi}).then(pollRadar)});
@@ -984,6 +1024,11 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('calibrate').onclick=()=>run(navInfo.calibrating?'calibrate finish':'calibrate start',navInfo.calibrating?'Калибровка сохранена':'Вращайте устройство во все стороны');
  $('syncClock').onclick=()=>run('clock '+JSON.stringify({unix:Math.floor(Date.now()/1000)}),'Время устройства установлено');
  $('downloadKey').onclick=async()=>{try{download(JSON.stringify(await request('/api/key'),null,2),'meshmesh-private-config.json','application/json')}catch(e){notify(e.message,'bad')}};
+ // The tournament form keeps what was typed and chosen across the page's refreshes.
+ $('chessToursView').addEventListener('change',e=>{const f=tourForm;if(!f)return;const el=e.target;
+  if(el.dataset.tourpick){const id=el.dataset.tourpick;if(el.checked){if(f.picked.length>=9){el.checked=false;notify('Не больше 9 соперников','warn');return}f.picked.push(id)}else f.picked=f.picked.filter(x=>x!==id);renderTours()}
+  else if(el.id==='tourRounds')f.rounds=+el.value;else if(el.id==='tourHours')f.hours=+el.value});
+ $('chessToursView').addEventListener('input',e=>{if(e.target.id==='tourName'&&tourForm)tourForm.name=e.target.value});
  for(const page of ['radio','device']){$(page+'Form').addEventListener('input',e=>{const el=e.target.closest('[data-k]');if(!el)return;draft[el.dataset.k]=editorValue(el);if(el.type==='range')$(el.id+'-v').textContent=el.value;editorState(page)});
   $(page+'Form').addEventListener('click',e=>{const el=e.target.closest('.sw[data-k]');if(!el)return;const k=el.dataset.k;draft[k]=!draft[k];el.classList.toggle('on',draft[k]);el.setAttribute('aria-checked',draft[k]);editorState(page)});$(page+'Save').onclick=()=>saveEditor(page)}
  $('roleList').onclick=e=>{const t=e.target.closest('[data-role]');if(t){roleChoice=t.dataset.role;renderRole()}};$('roleApply').onclick=applyRole;
