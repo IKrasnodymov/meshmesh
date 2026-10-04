@@ -53,7 +53,7 @@ class UsbSerialIo(context: Context, device: UsbDevice) : SerialIo {
 /**
  * The same through tools/usb_tcp_bridge.py on a computer (the emulator): after the line "MMRAW1"
  * and its answer the bridge passes bytes and takes frames [type, length u16 LE, payload]: 0 data, 1 DTR and RTS,
- * 2 baud rate u32 LE.
+ * 2 baud rate u32 LE, 3 nRF52 bootloader (answered "MMBOOT ok" or "MMBOOT fail <why>").
  */
 class TcpSerialIo(host: String, port: Int) : SerialIo {
     private val socket = Socket()
@@ -76,6 +76,19 @@ class TcpSerialIo(host: String, port: Int) : SerialIo {
         }
         if (!answer.startsWith("MMRAW1 ")) throw IOException("Мост USB не поддерживает прошивку: обновите tools/usb_tcp_bridge.py")
         native = answer.toString().trim().endsWith("native")
+    }
+
+    /** nRF52 through the bridge: it makes the 1200-baud touch and moves to the bootloader's port. */
+    fun nrfBootloader() {
+        frame(3, ByteArray(0))
+        val text = StringBuilder()
+        val end = System.currentTimeMillis() + 30_000
+        while (System.currentTimeMillis() < end) {
+            text.append(String(read(200), Charsets.ISO_8859_1))
+            if ("MMBOOT ok\n" in text) return
+            Regex("MMBOOT fail ([^\n]*)\n").find(text)?.let { throw IOException("Мост: ${it.groupValues[1]}") }
+        }
+        throw IOException("Плата не вошла в загрузчик: дважды быстро нажмите на ней RESET и повторите")
     }
 
     private fun frame(type: Int, payload: ByteArray) {

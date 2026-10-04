@@ -9,7 +9,9 @@ tools/chess_companion_check.py). Usage: usb_tcp_bridge.py [--port PORT] [--liste
 
 Firmware over USB (android flash/SerialIo.kt): a client that starts with the line "MMRAW1" gets
 "MMRAW1 native" or "MMRAW1 uart", then raw bytes from the board, and sends frames
-[type, length u16 LE, payload]: 0 data, 1 DTR and RTS (one byte each), 2 baud rate u32 LE.
+[type, length u16 LE, payload]: 0 data, 1 DTR and RTS (one byte each), 2 baud rate u32 LE,
+3 nRF52 bootloader: the 1200-baud touch, then the bridge moves to the bootloader's port and answers
+"MMBOOT ok" (or "MMBOOT fail <why>"); when the client leaves, it returns to the application's port.
 The ESP32 ROM loader then has the port as esptool would; when the client leaves, the bridge
 returns to 115200 and the no-reset control lines. A port that disappears (native USB after a
 reset) is opened again.
@@ -20,8 +22,15 @@ import struct
 import threading
 import time
 import serial
+from serial.tools.list_ports import comports
 from device import connect
 from ports import M9_PORT
+
+NRF_VID = 0x239A  # Adafruit nRF52: the application's product ID has 0x8000, the bootloader's has not
+
+
+def nrf_ports(bootloader):
+    return [p.device for p in comports() if p.vid == NRF_VID and bool(p.pid & 0x8000) != bootloader and p.device.startswith('/dev/cu.')]
 
 
 class Port:
@@ -30,6 +39,7 @@ class Port:
     def __init__(self, name):
         self.name = name
         self.lock = threading.Lock()
+        self.switching = False
         self.device = self.open()
 
     def open(self):
@@ -54,11 +64,19 @@ class Port:
             self.device = self.open()
 
     def read(self):
+        if self.switching:
+            time.sleep(0.1)
+            return b''
         try:
             return self.device.read(4096)
         except (serial.SerialException, OSError, TypeError, AttributeError):
             time.sleep(0.2)
-            self.reopen()
+            if self.switching or getattr(self, 'nrf', False):
+                return b''  # the nRF52 bootloader left the bus: the session end moves to the application
+            try:
+                self.reopen()
+            except (serial.SerialException, OSError):
+                pass
             return b''
 
     def write(self, data):
@@ -67,6 +85,45 @@ class Port:
         except (serial.SerialException, OSError):
             self.reopen()
             self.device.write(data)
+
+    def move(self, find, seconds, what):
+        """Waits for a port that find() returns and opens it instead of the current one."""
+        end = time.monotonic() + seconds
+        while time.monotonic() < end:
+            found = find()
+            if found:
+                with self.lock:
+                    self.name = found[0]
+                    self.device = self.open()
+                print('moved to', self.name, flush=True)
+                return
+            time.sleep(0.3)
+        raise OSError(f'no {what} port')
+
+    def nrf_bootloader(self):
+        self.switching = True
+        try:
+            if not nrf_ports(True):  # not already there after a failed update
+                d = self.device
+                d.baudrate = 1200
+                d.dtr = True
+                time.sleep(0.1)
+                d.dtr = False
+                time.sleep(0.1)
+                try:
+                    d.close()
+                except Exception:
+                    pass
+            self.move(lambda: nrf_ports(True), 20, 'bootloader')
+        finally:
+            self.switching = False
+
+    def nrf_application(self):
+        self.switching = True
+        try:
+            self.move(lambda: nrf_ports(False), 20, 'application')
+        finally:
+            self.switching = False
 
     def default_lines(self):
         """115200 and the lines of tools/device.py: native USB DTR on, RTS off; no reset."""
@@ -102,6 +159,13 @@ def raw_session(port, client, alive):
                     port.device.rts = lines['rts'] = rts
             elif kind == 2:
                 port.device.baudrate = struct.unpack('<I', payload)[0]
+            elif kind == 3:
+                try:
+                    port.nrf_bootloader()
+                    port.nrf = True
+                    client.sendall(b'MMBOOT ok\n')
+                except OSError as e:
+                    client.sendall(f'MMBOOT fail {e}\n'.encode())
 
 
 def main():
@@ -171,6 +235,12 @@ def main():
         client.close()
         if pending is None:
             time.sleep(0.5)
+            if getattr(port, 'nrf', False):  # the bootloader starts the new application
+                port.nrf = False
+                try:
+                    port.nrf_application()
+                except OSError as e:
+                    print(e, flush=True)
             port.default_lines()
         print('client closed', flush=True)
 

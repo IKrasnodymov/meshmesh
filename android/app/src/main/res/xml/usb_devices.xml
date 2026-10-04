@@ -5,4 +5,6 @@
     <usb-device vendor-id="6790" product-id="29987" />
     <usb-device vendor-id="12346" product-id="4097" />
     <usb-device vendor-id="9114" product-id="32809" />
+    <!-- GAT562 serial DFU bootloader (firmware over USB): any Adafruit product ID -->
+    <usb-device vendor-id="9114" />
 </resources>

@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
             service = s
             s.uiVisible = lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)
             s.onState = { json -> js("MeshHost.state($json)") }
+            s.askUsb = { device -> usbAccess(device) }
             if (pageReady) js("MeshHost.state(${s.stateJson()})")
             pendingIntent?.let { pendingIntent = null; handleIntent(it) }
         }
@@ -192,6 +193,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         stopBleScan()
+        service?.askUsb = null
         runCatching { unbindService(connection) }
         web.destroy()
         super.onDestroy()
@@ -211,7 +213,8 @@ class MainActivity : ComponentActivity() {
             val device: UsbDevice? = if (Build.VERSION.SDK_INT >= 33) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
                 else @Suppress("DEPRECATION") intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
             // Plugged in while nothing else is connected: connect to it (Android granted access with this intent).
-            if (device != null && service?.api == null) connectUsb(device)
+            // Not during a firmware update (the board comes and goes) and not to the nRF52 bootloader.
+            if (device != null && service?.api == null && service?.flashingNow != true && !UsbLink.isNrfBootloader(device)) connectUsb(device)
             else js("MeshHost.devices('usb',${usbList()})")
         }
     }
@@ -391,6 +394,25 @@ class MainActivity : ComponentActivity() {
         else registerReceiver(receiver, IntentFilter(action))
         val flags = if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0
         usb.requestPermission(device, PendingIntent.getBroadcast(this, 0, Intent(action).setPackage(packageName), flags))
+    }
+
+    /** Android's access question for a device that appears during a firmware update (the nRF52 bootloader, a restarted board). */
+    private suspend fun usbAccess(device: UsbDevice): Boolean = kotlinx.coroutines.suspendCancellableCoroutine { done ->
+        runOnUiThread {
+            if (usb.hasPermission(device)) { done.resume(true) {}; return@runOnUiThread }
+            val action = "$packageName.USB_UPDATE_PERMISSION"
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(c: Context, i: Intent) {
+                    runCatching { unregisterReceiver(this) }
+                    if (done.isActive) done.resume(i.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false) || usb.hasPermission(device)) {}
+                }
+            }
+            if (Build.VERSION.SDK_INT >= 33) registerReceiver(receiver, IntentFilter(action), RECEIVER_NOT_EXPORTED)
+            else registerReceiver(receiver, IntentFilter(action))
+            done.invokeOnCancellation { runCatching { unregisterReceiver(receiver) } }
+            val flags = if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0
+            usb.requestPermission(device, PendingIntent.getBroadcast(this, 1, Intent(action).setPackage(packageName), flags))
+        }
     }
 
     @SuppressLint("MissingPermission")

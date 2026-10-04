@@ -82,12 +82,17 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
 
         fun driverFor(device: UsbDevice): UsbSerialDriver? =
             prober.probeDevice(device) ?: UsbSerialProber.getDefaultProber().probeDevice(device)
+                ?: if (device.vendorId == NRF_VID) CdcAcmSerialDriver(device) else null // its serial DFU bootloader
+
+        /** The Adafruit nRF52 bootloader: product IDs without the application's 0x8000 bit. */
+        fun isNrfBootloader(device: UsbDevice) = device.vendorId == NRF_VID && device.productId and 0x8000 == 0
 
         fun isNative(device: UsbDevice) = device.vendorId == ESP_VID && device.productId == ESP_NATIVE_PID
 
         fun describe(device: UsbDevice): String = when {
             device.vendorId == M9_VID -> "ThinkNode M9 (CH340)"
             isNative(device) -> "Heltec V4 (USB ESP32-S3)"
+            isNrfBootloader(device) -> "Загрузчик nRF52 (DFU)"
             device.vendorId == NRF_VID -> "GAT562 (USB nRF52840)"
             else -> device.productName ?: "USB-устройство ${"%04X:%04X".format(device.vendorId, device.productId)}"
         }

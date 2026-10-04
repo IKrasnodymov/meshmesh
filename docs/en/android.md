@@ -34,7 +34,9 @@ WebView debugging is enabled (`chrome://inspect`).
   with the system dialog; “download” saves a file through the Android dialog.
 - `MeshService` — a foreground service: keeps the connection in the background; with the app minimized
   it reads `status` every 8 s and, when RX grows, the history; new incoming messages become
-  notifications (tapping opens the chat); every 30 s it checks chess (“your move”).
+  notifications (tapping opens the chat); one notification per chess game (the opponent's move, a
+  challenge, a draw, the result; tapping opens the board), chess is checked right after the board
+  receives something and at least every 32 s.
 - The time in a chat is when the board received the message (sent, for your own), with the date
   for earlier days. If the board clock is unset (Heltec and other boards without an RTC after a
   restart), the app sets the phone's time once on connecting with the `clock` command; messages
@@ -55,7 +57,11 @@ WebView debugging is enabled (`chrome://inspect`).
   USB-UART, compressed writes in 1 KB blocks, an MD5 of every region, exit by the watchdog (Heltec) or EN.
   NVS (key, settings, contacts), LittleFS (history) and the language stay. The app then connects again.
   A break in the middle of a write leaves the board in the ROM loader: «Retry» writes it again. Heltec V4
-  and V4 R8 report the same board — the PSRAM size picks the revision. GAT562 (nRF52) is not updated this way yet.
+  and V4 R8 report the same board — the PSRAM size picks the revision. GAT562 (nRF52): `NrfDfu` — a
+  1200-baud touch, the bootloader appears as a separate USB device (Android asks for access to it during
+  the update), then the serial DFU as `site/nrf52dfu.js` does (the packets match byte for byte,
+  `NrfDfuTest`): only the application is written, the board's storage and the `--` language mark stay.
+  While the update runs, the app does not connect by itself to devices that appear.
 - `api/HttpApi` — Wi-Fi: the device's HTTP server (`src/Portal.cpp`) with Basic authentication.
 - `api/CommandApi` — USB and BLE: every page request becomes the command that
   the device's HTTP handler executes (`executeCommand`), with the same response codes.
@@ -140,7 +146,8 @@ In the emulator the computer is visible as 10.0.2.2: “USB → USB via computer
 layer (the same code as for USB and BLE on the phone) with a real board, “Wi-Fi → Other address”
 tests the HTTP client. The USB bridge stays at 115200 baud and refuses to change the baud rate. For
 firmware the client starts with the line `MMRAW1`: the bridge passes bytes as they are, drives DTR/RTS
-and the baud rate, and reopens the port when a native USB board leaves the bus after its restart.
+and the baud rate, and reopens the port when a native USB board leaves the bus after its restart; for
+nRF52 it makes the 1200-baud touch itself and moves to the bootloader's port, and back after the update.
 
 Unit tests (`./gradlew testDebugUnitTest`) cover what breaks silently:
 UTF-8 split across notifications, log lines among responses, a JSON response broken by a
@@ -160,9 +167,11 @@ channel commands (the page's JSON on one line, the `probe` answer, older firmwar
 - The ESP32 driver line `wifi:timeout when WiFi un-init` sometimes ends up inside a USB response
   (after closing the radar); the app detects the truncated JSON and repeats the command.
 - One board at a time; to switch — “Connections → Disconnect”.
-- Firmware over USB was checked on Heltec V4 from the emulator through the bridge (write, MD5, restart,
-  reconnection; key, settings, history and NVS kept; a break in the middle of a write and «Retry»). The
-  USB-UART path (M9, CH340: EN/IO0 reset, 460800 baud) and USB OTG on a phone are not checked.
+- Firmware over USB was checked from the emulator through the bridge on Heltec V4 (USB Serial/JTAG; a
+  break in the middle of a write and «Retry») and M9 (USB-UART CH340, 460800 baud): write, MD5, restart,
+  reconnection; key, settings, history, NVS, SD and the map kept. GAT562 (nRF52) is not checked on the
+  board. USB OTG on a phone (including the access question for a device that appears after a restart)
+  and classic ESP32 are not checked.
 - The QR scanner and `meshcore://` links were checked in the emulator (camera prompt, refusal, the
   scanner opening, a link before and after the page loads); reading a real QR code with a phone
   camera has not been checked.

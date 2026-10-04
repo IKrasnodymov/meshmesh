@@ -226,6 +226,11 @@ class MeshService : Service() {
     private var flashPort: FlashPort? = null
     private var flashEnv: String? = null
     private var flashing: Job? = null
+    val flashingNow get() = flashing?.isActive == true
+    /** Set by the activity: Android's access question for a USB device that appears during an update. */
+    var askUsb: (suspend (UsbDevice) -> Boolean)? = null
+
+    private suspend fun usbAccess(d: UsbDevice) = getSystemService(UsbManager::class.java).hasPermission(d) || askUsb?.invoke(d) == true
 
     fun flashFirmware(retry: Boolean) {
         if (flashing?.isActive == true) return
@@ -239,16 +244,17 @@ class MeshService : Service() {
             disconnect(null)
             flashPort = port
             try {
-                val target = FirmwareUpdate(this@MeshService, port, env) { s -> state = s; onState(s.toString()) }.run()
+                val target = FirmwareUpdate(this@MeshService, port, env, ::usbAccess) { s -> state = s; onState(s.toString()) }.run()
                 flashEnv = null
                 publish("flashing", port.kind, "MeshMesh ${target.version} записана. Подключение…")
                 delay(5000)
                 when (port) {
                     is FlashPort.Tcp -> connectTcp(port.host, port.port)
                     is FlashPort.Usb -> {
-                        // The native USB board may have come back as a new device after its restart.
-                        val d = UsbLink.serialDevices(this@MeshService).firstOrNull { it.vendorId == port.device.vendorId && it.productId == port.device.productId }
-                        if (d != null && getSystemService(UsbManager::class.java).hasPermission(d)) connectUsb(d)
+                        // Native USB and nRF52 boards come back as a new USB device after their restart.
+                        var d: UsbDevice? = null
+                        for (i in 0 until 15) { d = port.appDevice(this@MeshService); if (d != null) break; delay(1000) }
+                        if (d != null && usbAccess(d)) connectUsb(d)
                         else publish("idle", "usb", "MeshMesh ${target.version} установлена. Подключите плату снова")
                     }
                 }
