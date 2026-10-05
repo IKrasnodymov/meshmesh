@@ -45,6 +45,7 @@ nodi MeshCore.
 | Elecrow ThinkNode M9 (tastiera, schermo 320×240) | provata sull'hardware |
 | Heltec WiFi LoRa 32 V4 (OLED, un pulsante) | provata sull'hardware |
 | GAT562 30S Mesh Kit (nRF52840, OLED, joystick; niente Wi-Fi) | provata sull'hardware (sul nostro esemplare il modulo GPS non è montato) — [docs/en/gat562.md](docs/en/gat562.md) |
+| Heltec Mesh Node T114 (nRF52840, TFT a colori 240×135, un pulsante; niente Wi-Fi) | provata sull'hardware — [docs/en/t114.md](docs/en/t114.md) |
 | Heltec V4-R8, Heltec V3, Heltec Wireless Tracker, LilyGO T-Deck, T-Beam, T-Beam Supreme, T3-S3, T-LoRa V2.1-1.6, Seeed XIAO ESP32S3 + Wio-SX1262, B&Q Station G2, Elecrow ThinkNode M2 | solo build, non ancora provate sull'hardware — segnalazioni benvenute |
 
 Le schede ESP32 hanno tutte le funzioni. Il GAT562 (nRF52840) non ha Wi-Fi: niente punto di accesso, radar Wi-Fi,

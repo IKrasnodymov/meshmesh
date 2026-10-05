@@ -102,6 +102,18 @@ constexpr int keyUp=28, keyDown=4, keyLeft=30, keyRight=31, keyPress=26, keyBack
 constexpr int battery=5, adcEnable=-1, gpsRx=15, gpsTx=16, gpsEnable=-1, gpsOn=HIGH, gpsReset=-1, gpsPower=34, buzzer=33;
 constexpr float batteryScale=1.f;
 constexpr int led=36, ledOn=HIGH, txLed=35;
+#elif defined(MM_BOARD_T114)
+// Heltec Mesh Node T114 V2: nRF52840 GPIO numbers (P1.xx = 32+xx), from MeshCore's heltec_t114 and
+// Meshtastic's heltec_mesh_node_t114 variants. LoRa on SPI, the ST7789 TFT on SPI1 (32 MHz SPIM3).
+// tftPower (VTFT_CTRL) and tftLight (LEDA) are active LOW. vext (P0.21) powers the GPS and the
+// I2C connector; L76K: TX -> P1.05, RX <- P1.07, RESET P1.06 active LOW, STANDBY P1.02 HIGH = awake.
+constexpr int spiClock=19, spiMiso=23, spiMosi=22, radioCs=24, radioIrq=20, radioReset=25, radioBusy=17, radioRxEn=-1;
+constexpr float radioTcxo=1.8f;
+constexpr int sda=26, scl=27, oledReset=-1, button=42, vext=21, vextOn=HIGH;
+constexpr int tftClock=40, tftData=41, tftMiso=43, tftDc=12, tftReset=2, tftCs=11, tftLight=15, tftPower=3;
+constexpr int battery=4, adcEnable=6, gpsRx=37, gpsTx=39, gpsEnable=21, gpsOn=HIGH, gpsReset=38, gpsStandby=34, buzzer=-1;
+constexpr float batteryScale=4.9f;
+constexpr int led=35, ledOn=LOW;
 #endif
 #elif defined(MM_BOARD_TDECK)
 // LilyGO T-Deck / T-Deck Plus: display, LoRa and SD share one SPI bus, as on the M9.

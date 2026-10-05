@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include "Board.h"
 #include "BoardPins.h"
 #if defined(MM_HELTEC_V4)
 #include <Adafruit_SSD1306.h>
@@ -7,6 +8,9 @@
 #include <Adafruit_GFX.h>
 #else
 #include <Adafruit_ST7789.h>
+#endif
+#if defined(MM_HIRES)
+#include "HiresCanvas.h"
 #endif
 #include <U8g2_for_Adafruit_GFX.h>
 #include <TinyGPSPlus.h>
@@ -21,7 +25,11 @@ class Hardware {
 #else
   Adafruit_ST7789 display;
 #endif
+#if defined(MM_HIRES)
+  HiresCanvas* canvas=nullptr; // 128x64 layout coordinates on the 240x135 TFT
+#else
   GFXcanvas16* canvas=nullptr;
+#endif
   U8G2_FOR_ADAFRUIT_GFX font;
   TinyGPSPlus gps;
   RTC_PCF8563 rtc;

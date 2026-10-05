@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""nRF52 boards (GAT562 30S): package, back up and install through the Adafruit UF2 bootloader.
+"""nRF52 boards (GAT562 30S, Heltec T114): package, back up and install through the Adafruit UF2 bootloader.
 
   package ENV        firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
                      English and Russian, and in lang/<code>/ the image with one more screen language
                      (1 MB flash: one image does not hold every language; tools/pio_lang.py)
-  backup             copy CURRENT.UF2 and INFO_UF2.TXT from the mounted bootloader drive (0600)
+  backup             copy CURRENT.UF2 and INFO_UF2.TXT from the mounted bootloader drive (0600) into
+                     backups/<board>/ (the board from the drive's Board-ID)
   flash PACKAGE [--lang CODE]  require a backup, enter the bootloader and write the package: a mounted UF2 drive
                      (RESET pressed twice) takes firmware.uf2; the 1200-baud touch of a running
                      MeshMesh opens the serial DFU bootloader, which takes firmware-dfu.zip
@@ -30,11 +31,13 @@ import serial
 from serial.tools.list_ports import comports
 
 ROOT = Path(__file__).resolve().parents[1]
-BOARDS = {'gat562_30s': ('gat562-30s', 'GAT562 30S Mesh Kit')}
+BOARDS = {'gat562_30s': ('gat562-30s', 'GAT562 30S Mesh Kit'), 'heltec_t114': ('heltec-t114', 'Heltec Mesh Node T114')}
 APP_START, APP_END = 0x26000, 0xD4000
 FAMILY = 0xADA52840
 VID = 0x239A
-BACKUPS = ROOT / 'backups' / 'gat562'
+# Backups per board: the bootloader drive's Board-ID, the package target.
+BACKUPS = {'gat562_30s': ROOT / 'backups' / 'gat562', 'heltec_t114': ROOT / 'backups' / 't114'}
+BOARD_IDS = {'HT-n5262': 'heltec_t114'}  # any other Adafruit-style bootloader: the GAT562 (RAK4631 id)
 
 
 def uf2(data, base):
@@ -150,7 +153,7 @@ def package(env):
     (target / 'INSTALL.txt').write_text(f"""MeshMesh {version()} для {title}
 
 Установка через загрузчик UF2 (Adafruit nRF52):
-  1. Дважды быстро нажмите RESET: появится диск (обычно RAK4631 / FTHR840BOOT).
+  1. Дважды быстро нажмите RESET: появится диск (GAT562-BOOT, у T114 — HT-n5262).
      Плата с MeshMesh входит в загрузчик и сама: python tools/nrf52.py flash <пакет>.
   2. Перед первой установкой сохраните CURRENT.UF2 с этого диска: это копия прежней прошивки.
   3. Скопируйте firmware.uf2 на диск. Плата перезапустится с MeshMesh.
@@ -237,21 +240,27 @@ def check_bootloader(volume):
     return info
 
 
+def drive_board(info):
+    found = re.search(r'Board-ID: *(\S+)', info)
+    return BOARD_IDS.get(found[1] if found else '', 'gat562_30s')
+
+
 def backup():
     volume = enter_bootloader()
     info = check_bootloader(volume)
-    BACKUPS.mkdir(parents=True, exist_ok=True)
+    folder = BACKUPS[drive_board(info)]
+    folder.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime('%Y%m%d-%H%M%S')
     data = (volume / 'CURRENT.UF2').read_bytes()
     image = unuf2(data)
     span = (min(image), max(image) + len(image[max(image)]))
-    current = BACKUPS / f'{stamp}-CURRENT.UF2'
+    current = folder / f'{stamp}-CURRENT.UF2'
     current.write_bytes(data)
-    (BACKUPS / f'{stamp}-INFO_UF2.TXT').write_text(info)
+    (folder / f'{stamp}-INFO_UF2.TXT').write_text(info)
     meta = {'captured': stamp, 'volume': str(volume), 'info': info, 'uf2_sha256': hashlib.sha256(data).hexdigest(),
             'bytes': len(data), 'blocks': len(image), 'range': [hex(span[0]), hex(span[1])]}
-    (BACKUPS / f'{stamp}-backup.json').write_text(json.dumps(meta, indent=2) + '\n')
-    for path in BACKUPS.glob(f'{stamp}-*'):
+    (folder / f'{stamp}-backup.json').write_text(json.dumps(meta, indent=2) + '\n')
+    for path in folder.glob(f'{stamp}-*'):
         os.chmod(path, 0o600)
     # A second read must match: the drive serves the flash as it is now.
     again = (volume / 'CURRENT.UF2').read_bytes()
@@ -290,11 +299,16 @@ def flash(path, lang=None):
             raise SystemExit(f'No image with language {lang} in {target}')
         expected = manifest['languages'][lang]['sha256']
         target = target / 'lang' / lang
-    if not list(BACKUPS.glob('*-CURRENT.UF2')):
-        raise SystemExit('No backup of the board in backups/gat562: run "backup" first')
+    board = manifest['target']
+    if not list(BACKUPS[board].glob('*-CURRENT.UF2')):
+        raise SystemExit(f'No backup of the board in {BACKUPS[board].relative_to(ROOT)}: run "backup" first')
+    running = app_port()
+    if running and not drive() and status(running.device).get('board') != board:
+        raise SystemExit(f'The board on {running.device} is not a {BOARDS[board][1]}')
     where = enter_bootloader(serial_ok=True)
     if isinstance(where, Path):
-        check_bootloader(where)
+        if drive_board(check_bootloader(where)) != board:
+            raise SystemExit(f'The bootloader drive {where} is not a {BOARDS[board][1]}')
         print('Copying', target / 'firmware.uf2', 'to', where)
         try:
             shutil.copyfile(target / 'firmware.uf2', where / 'firmware.uf2')

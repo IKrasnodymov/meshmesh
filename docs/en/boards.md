@@ -7,11 +7,11 @@ for ten popular MeshCore/Meshtastic boards. We do not have devices of these mode
 **the firmware is verified only on a computer** (build, emulator, web page).
 Operation on the board is confirmed by owners; reports are added to this file.
 
-In addition, there is a port to the nRF52840 — the GAT562 30S Mesh Kit, tested on the device:
-[gat562.md](gat562.md). The nRF52 has no Wi-Fi, so it has no web page over Wi-Fi, Wi-Fi radar,
+In addition, there are nRF52840 ports tested on the devices: the GAT562 30S Mesh Kit
+([gat562.md](gat562.md)) and the Heltec Mesh Node T114 with a colour screen ([t114.md](t114.md)). The nRF52 has no Wi-Fi, so it has no web page over Wi-Fi, Wi-Fi radar,
 CSI sensor or internet client; the phone connects through the app over BLE or USB.
 The shared nRF52 layer (`src/nrf52/`: storage, `Preferences`, BLE, BLE/LoRa radar) also suits
-other boards with a RAK4631-like layout (RAK4631, ThinkNode M1, Heltec T114, etc.),
+other boards with a RAK4631-like layout (RAK4631, ThinkNode M1, etc.),
 but their targets have not been added.
 
 ## Boards

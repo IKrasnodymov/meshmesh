@@ -3,6 +3,7 @@
 // layout can be reviewed without a device. It is not a hardware check.
 #include "App.h"
 #include "Hardware.h"
+#include "Palette.h"
 #include "MeshRadio.h"
 #include "Maps.h"
 #include "Navigation.h"
@@ -64,6 +65,11 @@ void Maps::draw(int x,int y,int w,int h){
 }
 void Navigation::begin(){}void Navigation::tick(){}void Navigation::start(){calibrating=true;}bool Navigation::finish(){calibrating=false;return true;}String Navigation::info(){return "{}";}
 static void save(const std::string& path){
+#if defined(MM_HIRES)
+ {const uint8_t* px=hardware.canvas->getBuffer();FILE* f=fopen(path.c_str(),"wb");fprintf(f,"P6 %d %d 255\n",HiresCanvas::Width,HiresCanvas::Height);
+  for(int i=0;i<HiresCanvas::Width*HiresCanvas::Height;i++){uint16_t p=palette565[px[i]<ColCount?px[i]:ColInk];uint8_t rgb[3]={uint8_t((p>>11&31)*255/31),uint8_t((p>>5&63)*255/63),uint8_t((p&31)*255/31)};fwrite(rgb,1,3,f);}
+  fclose(f);}
+#else
  auto& c=*hardware.canvas;FILE* f=fopen(path.c_str(),"wb");fprintf(f,"P6 %d %d 255\n",c.width(),c.height());
  for(int y=0;y<c.height();y++)for(int x=0;x<c.width();x++){uint16_t p=c.getPixel(x,y);
 #if defined(MM_HELTEC_V4)
@@ -73,17 +79,24 @@ static void save(const std::string& path){
 #endif
   fwrite(rgb,1,3,f);}
  fclose(f);
+#endif
 }
 static std::string outDir;
 static void tick(){fakeMillis+=1000;radar.tick();uiTick();}
 static void key(int k){uiKey(k);tick();}
-static void shot(const char* name){tick();save(outDir+"/"+name+".ppm");printf("%s\n",name);}
+static void shot(const char* name){tick();std::string n=name;
+#if defined(MM_HIRES)
+ if(n.rfind("heltec-",0)==0)n="t114-"+n.substr(7); // the one-button scenario of the Heltec, on the T114 TFT
+#endif
+ save(outDir+"/"+n+".ppm");printf("%s\n",n.c_str());}
 static uint64_t peerId(int i){return (uint64_t(0x1F+i*0x2B)<<56)|0xB2C3D4E5F600ULL|uint64_t(i*0x1111);} // 8-byte IDs as MeshCore keys give
 static void scenario();
 int main(int argc,char** argv){
  outDir=argc>1?argv[1]:".";
  config.lang=argc>2?max(0,langFromCode(argv[2])):LangRu; // a language code, Russian by default
-#if defined(MM_HELTEC_V4)
+#if defined(MM_HIRES)
+ hardware.canvas=new HiresCanvas();strcpy(config.name,"T114");
+#elif defined(MM_HELTEC_V4)
  hardware.canvas=new GFXcanvas16(128,64);strcpy(config.name,"Heltec V4");
 #if defined(MM_JOYSTICK)
  strcpy(config.name,"GAT562");

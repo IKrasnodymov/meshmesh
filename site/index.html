@@ -458,6 +458,7 @@ const ICONS={
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless phone: true); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'t114',ic:'oled',c:'#4f9df7',oled:true,shots:['t114-home','t114-chess-targets','t114-chess-list','t114-radar','t114-popup','t114-nodes']},
  {id:'chessButton',ic:'chess',c:'#4cc26b',oled:true,shots:['heltec-chess-piece','heltec-chess-move','heltec-chess-gamemenu','heltec-chess-list']},
  {id:'tour',ic:'chess',c:'#a78bfa',shots:['m9-tour-final','m9-tour-new-players','m9-tour-invite']},
  {id:'rating',ic:'chess',c:'#e9b13b',shots:['m9-chess-rating','m9-chess-pick-rated','m9-chess-rated-result']},
@@ -482,7 +483,7 @@ const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motio
 const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
 const GAT=['gat562-home','gat562-keyboard','gat562-chess','gat562-radar','gat562-chess-list','gat562-node-menu'];
 // Documents: the overview in every language; the details in Russian, translated to English (docs/en).
-const DOCS=[['README.md','doc.readme'],['docs/channels.md','doc.channels'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/android.md','doc.android'],['docs/repeater.md','doc.repeater'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
+const DOCS=[['README.md','doc.readme'],['docs/channels.md','doc.channels'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/t114.md','doc.t114'],['docs/android.md','doc.android'],['docs/repeater.md','doc.repeater'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
 function docPath(path){
  if(path==='README.md')return lang==='en'?path:`README.${lang}.md`;
  return lang==='ru'?path:path.replace('docs/','docs/en/');
@@ -565,7 +566,7 @@ document.getElementById('lb').addEventListener('touchstart',e=>touchX=e.touches[
 document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>50)lbStep(dx<0?1:-1);touchX=null});
 // Boards and installer
 let BOARDS=[],board='m9';
-const SUB=['gat562_30s','m9','heltec_v4','heltec_v4_r8','tdeck'];
+const SUB=['heltec_t114','gat562_30s','m9','heltec_v4','heltec_v4_r8','tdeck'];
 // The device language: the site's unless the visitor picked another; ESP32 boards get the partition table
 // with it (firmware/<env>/manifest-<code>.json), nRF52 boards the image with that language, patched (nrf52 module below).
 let fwLangPicked=false;
@@ -601,7 +602,7 @@ setLang(pickLang(),false).then(heroStart);
 setTimeout(()=>document.documentElement.classList.remove('loading'),2500); // never stay hidden
 </script>
 <script type="module">
-// nRF52 boards (GAT562): install over Web Serial with the bootloader's serial DFU (site/nrf52dfu.js).
+// nRF52 boards (GAT562, T114): install over Web Serial with the bootloader's serial DFU (site/nrf52dfu.js).
 import {dfuFlash,touch1200,webSerialIo,isBootloader,withLanguage,uf2WithLanguage} from './nrf52dfu.js';
 const el=id=>document.getElementById(id),T=k=>L(k);
 let continuing=false;

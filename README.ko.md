@@ -45,6 +45,7 @@ MeshCore 노드와 통신합니다.
 | Elecrow ThinkNode M9 (키보드, 320×240 화면) | 하드웨어에서 검증됨 |
 | Heltec WiFi LoRa 32 V4 (OLED, 버튼 하나) | 하드웨어에서 검증됨 |
 | GAT562 30S Mesh Kit (nRF52840, OLED, 조이스틱; Wi-Fi 없음) | 하드웨어에서 검증됨(우리 기기에는 GPS 모듈이 장착되어 있지 않음) — [docs/en/gat562.md](docs/en/gat562.md) |
+| Heltec Mesh Node T114 (nRF52840, 240×135 컬러 TFT, 버튼 하나; Wi-Fi 없음) | 하드웨어에서 검증됨 — [docs/en/t114.md](docs/en/t114.md) |
 | Heltec V4-R8, Heltec V3, Heltec Wireless Tracker, LilyGO T-Deck, T-Beam, T-Beam Supreme, T3-S3, T-LoRa V2.1-1.6, Seeed XIAO ESP32S3 + Wio-SX1262, B&Q Station G2, Elecrow ThinkNode M2 | 빌드만 확인, 아직 하드웨어에서 실행해 보지 않음 — 사용 후기 환영 |
 
 ESP32 보드에서는 모든 기능을 쓸 수 있습니다. GAT562(nRF52840)에는 Wi-Fi가 없어 액세스 포인트, Wi-Fi 레이더,

@@ -67,8 +67,9 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
         const val M9_VID = 0x1A86
         const val ESP_VID = 0x303A
         const val ESP_NATIVE_PID = 0x1001
-        const val NRF_VID = 0x239A // Adafruit nRF52 core (GAT562): TinyUSB CDC, sends nothing without DTR
+        const val NRF_VID = 0x239A // Adafruit nRF52 core (GAT562, T114): TinyUSB CDC, sends nothing without DTR
         const val NRF_APP_PID = 0x8029
+        const val T114_APP_PID = 0x8071 // Heltec T114: its bootloader is 0x0071
         private val WAKE = "\r\r\r\r".toByteArray()
 
         private val prober by lazy {
@@ -77,6 +78,7 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
             table.addProduct(M9_VID, 0x7523, Ch34xSerialDriver::class.java)
             table.addProduct(ESP_VID, ESP_NATIVE_PID, CdcAcmSerialDriver::class.java)
             table.addProduct(NRF_VID, NRF_APP_PID, CdcAcmSerialDriver::class.java)
+            table.addProduct(NRF_VID, T114_APP_PID, CdcAcmSerialDriver::class.java)
             UsbSerialProber(table)
         }
 
@@ -93,6 +95,7 @@ class UsbLink private constructor(private val port: UsbSerialPort, val native: B
             device.vendorId == M9_VID -> "ThinkNode M9 (CH340)"
             isNative(device) -> "Heltec V4 (USB ESP32-S3)"
             isNrfBootloader(device) -> "Загрузчик nRF52 (DFU)"
+            device.vendorId == NRF_VID && device.productId == T114_APP_PID -> "Heltec T114 (USB nRF52840)"
             device.vendorId == NRF_VID -> "GAT562 (USB nRF52840)"
             else -> device.productName ?: "USB-устройство ${"%04X:%04X".format(device.vendorId, device.productId)}"
         }

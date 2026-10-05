@@ -90,7 +90,7 @@ function updateCard(always){const u=H.upd,st=u.state,mb=u.size?` · ${(u.size/10
  const btn=st==='available'?'<button class="btn primary" data-hupd="install">Обновить</button>':st==='ready'?'<button class="btn primary" data-hupd="install">Установить</button>':st==='downloading'||st==='checking'?'':'<button class="btn soft" data-hupd="check">Проверить обновления</button>';
  return `<div class="card conn"><div class="top"><span class="icbox">${ic('down',st==='available'||st==='ready'?'acc':'info')}</span><div><b>Приложение MeshMesh</b><small>${text}</small></div></div>${st==='downloading'?`<progress value="${(u.progress|0)/100}" style="width:100%"></progress>`:''}${btn?`<div class="extra"><div class="btns">${btn}</div></div>`:''}</div>`}
 // Firmware of the site over the USB link (MeshService.flashFirmware → flash/FirmwareUpdate): ESP32 boards
-// by their ROM loader, nRF52 (GAT562) by its serial DFU bootloader.
+// by their ROM loader, nRF52 (GAT562, T114) by its serial DFU bootloader.
 let fwSite=null;
 function loadFwSite(){if(fwSite)return;fwSite={};netFetch('https://ikrasnodymov.github.io/meshmesh/firmware/boards.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{fwSite=j}).catch(()=>{fwSite={error:true}}).finally(()=>{if(H.inApp&&route==='connect')renderConnect()})}
 function newerVersion(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false}
@@ -100,7 +100,7 @@ function firmwareCard(){const s=H.state;if(!H.inApp||!['usb','tcp'].includes(s.k
  return `<div class="card conn"><div class="top"><span class="icbox">${ic('bolt',newer?'acc':'info')}</span><div><b>Прошивка платы</b><small>${text}</small></div></div>${esp?`<div class="extra"><div class="btns"><button class="btn ${newer?'primary':'soft'}" data-hflash="go">${newer?'Обновить прошивку':'Переустановить'}</button></div><small class="muted">По USB с сайта, ${esc(b.name)}; данные платы сохраняются</small></div>`:''}</div>`}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-hflash]');if(!t)return;
  if(t.dataset.hflash==='retry'){N.flashFirmware(true);return}
- if(Date.now()-H.armed>6000){H.armed=Date.now();notify('Нажмите ещё раз: плата перезапустится в загрузчик, запись займёт 1–3 минуты'+(status.board==='gat562_30s'?' (Android может спросить доступ к USB загрузчика — разрешите)':'')+'. Ключ, настройки, контакты и история сохранятся','warn');return}
+ if(Date.now()-H.armed>6000){H.armed=Date.now();notify('Нажмите ещё раз: плата перезапустится в загрузчик, запись займёт 1–3 минуты'+(status.wifi_radio===false?' (Android может спросить доступ к USB загрузчика — разрешите)':'')+'. Ключ, настройки, контакты и история сохранятся','warn');return}
  H.armed=0;N.flashFirmware(false)});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-hupd]');if(!t)return;
  if(t.dataset.hupd==='check'){H.manual=true;N.checkUpdate()}else N.installUpdate()});

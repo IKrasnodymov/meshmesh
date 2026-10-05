@@ -35,7 +35,7 @@ def lang_field(code):
 
 
 # Boards whose packages are installed and checked on real hardware (docs/verification.md).
-VERIFIED = {'m9', 'heltec_v4', 'gat562_30s'}
+VERIFIED = {'m9', 'heltec_v4', 'gat562_30s', 'heltec_t114'}
 README = """MeshMesh {version} — {board}
 
 Update (keeps key, settings, contacts and history):

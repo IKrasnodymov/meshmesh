@@ -5,6 +5,7 @@
 #include "ChessNet.h"
 #include "ChessTour.h"
 #include "MeshServer.h"
+#include "Palette.h"
 #include <math.h>
 #include <time.h>
 #if defined(MM_NRF52)
@@ -26,6 +27,14 @@ unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newes
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
 String t(const char* en,const char* ru){return tr(en,ru);}
+// Colour screens (MM_HIRES) use the palette; monochrome panels get lit (1) or dark (0).
+#if defined(MM_HIRES)
+constexpr bool colour=true;
+#else
+constexpr bool colour=false;
+#endif
+constexpr uint16_t col(UiColor c){return colour?c:c!=ColBack;}
+constexpr uint16_t focusBack=colour?ColAccent:1,focusText=colour?ColInk:0; // the chosen menu row
 // Lengths in 6 px columns: CJK glyphs take two.
 unsigned chars(const String& value){unsigned n=0;for(unsigned i=0;i<value.length();)n+=glyphCells(utf8Next(value,i));return n;}
 String clipped(const String& value,unsigned count){unsigned i=0,n=0,cut=0;while(i<value.length()){unsigned at=i,w=glyphCells(utf8Next(value,i));if(n+w>count){i=at;break;}if(n+w+2<=count)cut=i;n+=w;}return i<value.length()&&count>2?value.substring(0,cut)+"..":value.substring(0,i);}
@@ -38,8 +47,33 @@ int glyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
  if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;}
  if(!use)return 0;useFont(use);if(!paint)return u8g2_GetGlyphWidth(&hardware.font.u8g2,cp);hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);
 }
+#if defined(MM_HIRES)
+// TFT: each layout font has a larger one of the same column width at 240x135 (HiresCanvas.h), drawn
+// on the screen itself; x is in screen pixels, y the layout baseline. Bold: the glyph twice, 1 px apart.
+struct HiFont{const uint8_t* main;const uint8_t* latin;bool bold;};
+HiFont hiFont(const uint8_t* f){
+ if(f==small)return{u8g2_font_9x15_t_cyrillic,u8g2_font_9x15_tf,false};
+ if(f==u8g2_font_4x6_t_cyrillic)return{u8g2_font_7x13_t_cyrillic,u8g2_font_7x13_tf,false};
+ if(f==u8g2_font_10x20_t_cyrillic)return{u8g2_font_inr24_t_cyrillic,nullptr,false};
+ return{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf,f==bold};
+}
+int hiGlyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
+ HiresCanvas& c=*hardware.canvas;HiFont h=hiFont(f);
+ const uint8_t* use=cp>0xffff?nullptr:fontHasGlyph(h.main,cp)?h.main:h.latin&&fontHasGlyph(h.latin,cp)?h.latin:nullptr;
+ if(use){hardware.font.begin(c.screen);useFont(use);int w=u8g2_GetGlyphWidth(&hardware.font.u8g2,cp)+h.bold;
+  if(paint){hardware.font.setForegroundColor(color);hardware.font.drawGlyph(x,HiresCanvas::Y(y),cp);if(h.bold)hardware.font.drawGlyph(x+1,HiresCanvas::Y(y),cp);}
+  return w;}
+ // What the large fonts lack (CJK, Arabic, extended Latin): the layout font's glyph in blocks.
+ int lx=(x*8)/15;hardware.font.begin(c);c.blocks=true;int w=glyph(lx,y,cp,f,color,paint);c.blocks=false;
+ return w?HiresCanvas::X(lx+w)-x:0;
+}
+// Layout units, rounded up, so right-aligned text and clipping keep working.
+int width(const String& value,const uint8_t* f){String s=visualText(value);int w=0;for(unsigned i=0;i<s.length();)w+=hiGlyph(0,0,utf8Next(s,i),f,0,false);return (w*8+14)/15;}
+void say(int x,int y,const String& value,const uint8_t* f=body,uint16_t color=1){String s=visualText(value);int px=HiresCanvas::X(x);for(unsigned i=0;i<s.length();)px+=hiGlyph(px,y,utf8Next(s,i),f,color,true);}
+#else
 int width(const String& value,const uint8_t* f){String s=visualText(value);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(0,0,utf8Next(s,i),f,0,false);return w;}
 void say(int x,int y,const String& value,const uint8_t* f=body,uint16_t color=1){String s=visualText(value);for(unsigned i=0;i<s.length();)x+=glyph(x,y,utf8Next(s,i),f,color,true);}
+#endif
 void sayRight(int x,int y,const String& value,const uint8_t* f=small,uint16_t color=1){say(x-width(value,f),y,value,f,color);}
 // Up to `maximum` 21-column rows, wrapped at spaces; longer text pages every four seconds.
 void textLines(const String& value,int y,unsigned maximum){
@@ -241,16 +275,18 @@ void run(Act a){
 // HUD: title on the left; unread, GPS, links, signal and battery on the right.
 void header(const String& title){
  auto& c=*hardware.canvas;int x=127;unsigned mv=hardware.batteryMv;
+ if(colour)c.fillRect(0,0,128,10,ColBar);
+ uint16_t charge=col(mv>4250||mv>=3660?ColGood:mv>=3480?ColWarn:ColBad);
  // Measured battery: volts or the charge estimate as text; the icon stays for no battery and for USB power.
- if(mv&&(config.batteryVolts||mv<=4250)){String v=config.batteryVolts?String(mv/1000.f,2)+"V":String(mv<=3300?0:mv>=4200?100:(mv-3300)/9)+"%";sayRight(x+1,7,v);x-=width(v,small)+3;}
- else{unsigned pct=mv<=3300?0:mv>=4200?100:(mv-3300)/9;c.drawRect(x-12,1,12,7,1);c.drawFastVLine(x,3,3,1);if(mv>4250){c.drawLine(x-8,2,x-6,4,1);c.drawLine(x-6,4,x-4,4,1);c.drawLine(x-4,4,x-2,6,1);}else if(mv)c.fillRect(x-10,3,max(1u,8*pct/100),3,1);x-=16;}
+ if(mv&&(config.batteryVolts||mv<=4250)){String v=config.batteryVolts?String(mv/1000.f,2)+"V":String(mv<=3300?0:mv>=4200?100:(mv-3300)/9)+"%";sayRight(x+1,7,v,small,charge);x-=width(v,small)+3;}
+ else{unsigned pct=mv<=3300?0:mv>=4200?100:(mv-3300)/9;c.drawRect(x-12,1,12,7,1);c.drawFastVLine(x,3,3,1);if(mv>4250){c.drawLine(x-8,2,x-6,4,charge);c.drawLine(x-6,4,x-4,4,charge);c.drawLine(x-4,4,x-2,6,charge);}else if(mv)c.fillRect(x-10,3,max(1u,8*pct/100),3,charge);x-=16;}
  bool fresh=meshRadio.lastRxAt&&millis()-meshRadio.lastRxAt<600000;unsigned level=!meshRadio.ready||!fresh?0:meshRadio.lastSnr>=5?4:meshRadio.lastSnr>=0?3:meshRadio.lastSnr>=-5?2:1;
- for(unsigned k=0;k<4;k++){int h=2+k*2;if(k<level)c.fillRect(x-14+k*4,8-h,3,h,1);else c.drawPixel(x-13+k*4,7,1);}if(!meshRadio.ready)c.drawLine(x-15,0,x-1,8,1);x-=18;
- if(config.gps){c.drawCircle(x-3,3,2,1);if(hardware.gpsFix())c.fillCircle(x-3,3,2,1);c.drawLine(x-5,4,x-3,8,1);c.drawLine(x-1,4,x-3,8,1);x-=8;}
+ for(unsigned k=0;k<4;k++){int h=2+k*2;if(k<level)c.fillRect(x-14+k*4,8-h,3,h,col(ColGood));else c.drawPixel(x-13+k*4,7,col(ColDim));}if(!meshRadio.ready)c.drawLine(x-15,0,x-1,8,col(ColBad));x-=18;
+ if(config.gps){uint16_t g=col(hardware.gpsFix()?ColGood:ColDim);c.drawCircle(x-3,3,2,g);if(hardware.gpsFix())c.fillCircle(x-3,3,2,g);c.drawLine(x-5,4,x-3,8,g);c.drawLine(x-1,4,x-3,8,g);x-=8;}
  if(portalActive()){for(int r:{2,4,6})for(int a=-45;a<=45;a+=15)c.drawPixel(x-4+roundf(r*sinf(a*M_PI/180)),8-roundf(r*cosf(a*M_PI/180)),1);x-=10;}
- if(bleActive()){c.drawLine(x-3,0,x-3,8,1);c.drawLine(x-3,0,x-1,2,1);c.drawLine(x-1,2,x-5,6,1);c.drawLine(x-3,8,x-1,6,1);c.drawLine(x-1,6,x-5,2,1);x-=8;}
- if(unreadCount){String n=String(unreadCount);sayRight(x,7,n);x-=width(n,small)+1;c.drawRect(x-9,1,9,7,1);c.drawLine(x-9,1,x-5,5,1);c.drawLine(x-1,1,x-5,5,1);x-=12;}
- say(0,7,clipped(title,max(3,(x-2)/5)),small);c.drawFastHLine(0,10,128,1);
+ if(bleActive()){uint16_t b=col(ColCursor);c.drawLine(x-3,0,x-3,8,b);c.drawLine(x-3,0,x-1,2,b);c.drawLine(x-1,2,x-5,6,b);c.drawLine(x-3,8,x-1,6,b);c.drawLine(x-1,6,x-5,2,b);x-=8;}
+ if(unreadCount){uint16_t u=col(ColWarn);String n=String(unreadCount);sayRight(x,7,n,small,u);x-=width(n,small)+1;c.drawRect(x-9,1,9,7,u);c.drawLine(x-9,1,x-5,5,u);c.drawLine(x-1,1,x-5,5,u);x-=12;}
+ say(0,7,clipped(title,max(3,(x-2)/5)),small);c.drawFastHLine(0,10,128,col(ColAccent));
 }
 // The longest start of value that fits px with "..", measured in the font (fallback glyphs are wider than a column).
 String fitted(const String& value,int px,const uint8_t* f){
@@ -259,8 +295,8 @@ String fitted(const String& value,int px,const uint8_t* f){
  return value.substring(0,cut)+"..";
 }
 void footer(const String& hint){
- auto& c=*hardware.canvas;int x=1;for(int i=0;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
- if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small));
+ auto& c=*hardware.canvas;int x=1;for(int i=0;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,col(ColAccent));else c.drawPixel(x,61,col(ColDim));x+=3;}
+ if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small),small,col(ColDim));
 }
 #if defined(MM_JOYSTICK)
 String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return "<  >";return n==1?t("OK: ","OK: ")+actName(acts[0]):t("OK: menu  < >","OK: меню  < >");}
@@ -269,8 +305,8 @@ String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return "";return n==1?t
 #endif
 void drawMenu(){
  auto& c=*hardware.canvas;Act acts[8];unsigned n=actions(acts);if(!n){menuOpen=false;return;}menuIndex%=n;int first=max(0,min(menuIndex-1,int(n)-3));
- c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,1);
- for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=14+(i-first)*14;bool focus=int(i)==menuIndex;if(focus)c.fillRect(2,y,124,13,1);say(5,y+10,clipped(actName(acts[i]),20),body,focus?0:1);}
+ c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,col(ColAccent));
+ for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=14+(i-first)*14;bool focus=int(i)==menuIndex;if(focus)c.fillRect(2,y,124,13,focusBack);say(5,y+10,clipped(actName(acts[i]),20),body,focus?focusText:1);}
  c.fillRect(0,57,128,7,0);
 #if defined(MM_JOYSTICK)
  footer(t("up/down, OK, back","выбор, OK, назад"));
@@ -279,12 +315,12 @@ void drawMenu(){
 #endif
 }
 void drawPopup(const ChatMessage& m){
- auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
+ auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,col(ColAccent));uint16_t e=col(ColWarn);c.drawRect(3,3,11,8,e);c.drawLine(3,3,8,7,e);c.drawLine(13,3,8,7,e);
  say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t("click: close","клик: закрыть"));
 }
 void drawChessPopup(){
- auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
- c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1); // a pawn
+ auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,col(ColAccent));
+ uint16_t e=col(ColBoardLight);c.fillCircle(8,5,2,e);c.fillTriangle(8,5,5,10,11,10,e);c.fillRect(4,10,9,2,e); // a pawn
  say(18,11,t("Chess","Шахматы"),bold);textLines(chessPopupText,25,3);
 #if defined(MM_JOYSTICK)
  if(config.role==RoleNormal)sayRight(126,62,t("OK: open the game","OK: открыть партию"),small);
@@ -294,7 +330,7 @@ void drawChessPopup(){
 }
 void drawRolePick(){
  auto& c=*hardware.canvas;c.fillScreen(0);
- for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,roleShort(r),body,!focus);if(r==config.role)sayRight(125,y,t("now","сейчас"),small,!focus);}
+ for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,focusBack);say(3,y,roleShort(r),body,focus?focusText:1);if(r==config.role)sayRight(125,y,t("now","сейчас"),small,focus?focusText:col(ColGood));}
  uint32_t gone=millis()-rolePickAt;unsigned left=gone>=5000?0:(5000-gone+999)/1000;
  header(t("Device mode","Режим работы"));
  sayRight(128,63,rolePickBoot?t("as now in ","как сейчас через ")+String(left)+t("s","с"):
@@ -304,7 +340,7 @@ void drawRolePick(){
  t("click-next hold-choose","клик-далее держ-выбор")
 #endif
  ,small);
- if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
+ if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,col(ColWarn));say(3,50,clipped(action,20));}
  hardware.flush();
 }
 // Server home: role, radio, traffic and the passwords an owner needs for the MeshCore app.
@@ -327,7 +363,7 @@ void draw(){
  chessPopupAt=0;String title;
  switch(page){
  case Home:{title=config.name;if(config.role!=RoleNormal){drawServerHome();break;}say(0,31,clockText(time(nullptr)),u8g2_font_10x20_t_cyrillic);
-  if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(" MHz"," МГц"));sayRight(128,30,"SF"+String(config.sf)+" BW"+String(config.bandwidth,1));}else sayRight(128,24,t("Radio error ","Ошибка радио ")+String(meshRadio.radioError));
+  if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(" MHz"," МГц"));sayRight(128,30,"SF"+String(config.sf)+" BW"+String(config.bandwidth,1));}else sayRight(128,24,t("Radio error ","Ошибка радио ")+String(meshRadio.radioError),small,col(ColBad));
   unsigned near=0;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
   say(0,43,"RX "+String(meshRadio.rxCount)+"  TX "+String(meshRadio.txCount)+t("  near "," рядом ")+String(near),small);
   unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t("USB power","Питание USB"):String(mv/1000.f,2)+"V")+(config.relay?t("  relay on","  ретрансляция"):""),small);break;}
@@ -375,7 +411,7 @@ void draw(){
    ,small);}
    else{unsigned rows=st.length()?3:4; // a status line takes the 4th row, clear of the bottom hint
     int first=max(0,min(sel-1,int(radar.count)-int(rows)));for(int i=first;i<int(radar.count)&&i<first+int(rows);i++){const RadarTarget& r=radar.targets[i];int y=19+(i-first)*10;
-     if(i==sel)c.fillRect(0,y-8,128,10,1);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i!=sel);sayRight(127,y,String(int(r.rssi)),small,i!=sel);}
+     if(i==sel)c.fillRect(0,y-8,128,10,focusBack);say(1,y,String(kindLetter(r))+clipped(signalName(r),17),small,i==sel?focusText:1);sayRight(127,y,String(int(r.rssi)),small,i==sel?focusText:1);}
     if(st.length())say(0,49,clipped(st,25),small);}}
   break;}
  case Gps:{title="GPS";bool fix=hardware.gpsFix();
@@ -395,7 +431,7 @@ void draw(){
  }
  header(title);
  if(menuOpen)drawMenu();else footer(hint());
- if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
+ if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,col(ColWarn));say(3,50,clipped(action,20));}
  hardware.flush();
 }
 }

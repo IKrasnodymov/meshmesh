@@ -6,6 +6,7 @@
 #include "Config.h"
 #include "GpsProbe.h"
 #include "OledLevel.h"
+#include "Palette.h"
 #include "Storage.h"
 #include <LittleFS.h>
 #include <SPI.h>
@@ -186,7 +187,10 @@ void Hardware::flush() {
 #if defined(MM_PANEL_SSD1306) || defined(MM_PANEL_SH1106)
   if(!panel)return;oled.clearDisplay();for(int y=0;y<64;y++)for(int x=0;x<128;x++)if(canvas->getPixel(x,y))oled.drawPixel(x,y,1);oled.display();
 #elif defined(MM_PANEL_ST7735)
-  tft.drawRGBBitmap(16,8,canvas->getBuffer(),128,64);
+  // The interface draws with 0 and 1 (Palette.h): 1 is white, not RGB565 0x0001.
+  static uint16_t row[128];const uint16_t* px=canvas->getBuffer();tft.startWrite();tft.setAddrWindow(16,8,128,64);
+  for(int y=0;y<64;y++,px+=128){for(int x=0;x<128;x++)row[x]=px[x]<ColCount?palette565[px[x]]:px[x];tft.writePixels(row,128);}
+  tft.endWrite();
 #endif
 }
 void Hardware::text(int x,int y,const String& value,uint16_t color) {font.setForegroundColor(color);font.setCursor(x,y);font.print(value);}

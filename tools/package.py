@@ -27,7 +27,7 @@ COMMUNITY = {
 }
 TARGETS.update({env: name for env, (name, _, _) in COMMUNITY.items()})
 # nRF52 boards (tools/nrf52.py): UF2 and DFU packages instead of ESP images.
-NRF52 = {'gat562_30s': 'gat562-30s'}
+NRF52 = {'gat562_30s': 'gat562-30s', 'heltec_t114': 'heltec-t114'}
 TARGETS.update(NRF52)
 
 INSTALL = """MeshMesh {version} для {board}

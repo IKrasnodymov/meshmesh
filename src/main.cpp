@@ -3,6 +3,7 @@
 #include "App.h"
 #include "Config.h"
 #include "Hardware.h"
+#include "Palette.h"
 #include "MeshRadio.h"
 #include "BleDiagnostics.h"
 #include "Maps.h"
@@ -33,12 +34,31 @@ void usbLine(const String& value) {
   if(!usbBytes) {usbSize=0;Serial.println("ERR USB output allocation");return;}
   memcpy(usbBytes,value.c_str(),value.length());usbBytes[usbSize-1]='\n';
 }
+#if defined(MM_HIRES)
+// Screenshot of the TFT: usbBytes holds the header and the palette indices (32 KB; RGB565 would
+// take 64 KB, more than one free block), usbTick() sends them as RGB565.
+size_t usbHead=0;
+#endif
 void usbScreenshot() {
+#if defined(MM_HIRES)
+  // The TFT canvas holds palette indices: the screenshot is the screen in RGB565.
+  unsigned width=HiresCanvas::Width,height=HiresCanvas::Height,size=width*height*2;
+#else
   unsigned width=hardware.canvas->width(),height=hardware.canvas->height(),size=width*height*2;
+#endif
   char header[64];unsigned length=snprintf(header,sizeof(header),"RGB565 %u %u %u\n",width,height,size);
+#if defined(MM_HIRES)
+  usbSize=length+size+1;usbOffset=0;usbBytes=(uint8_t*)malloc(length+width*height); // a copy of the palette indices
+#else
   usbSize=length+size+1;usbOffset=0;usbBytes=(uint8_t*)malloc(usbSize);
+#endif
   if(!usbBytes) {usbSize=0;Serial.println("ERR screenshot allocation");return;}
-  memcpy(usbBytes,header,length);memcpy(usbBytes+length,hardware.canvas->getBuffer(),size);usbBytes[usbSize-1]='\n';
+  memcpy(usbBytes,header,length);
+#if defined(MM_HIRES)
+  memcpy(usbBytes+length,hardware.canvas->getBuffer(),width*height);usbHead=length; // usbTick() converts and ends the line
+#else
+  memcpy(usbBytes+length,hardware.canvas->getBuffer(),size);usbBytes[usbSize-1]='\n';
+#endif
 }
 void usbTick() {
 #if defined(MM_NATIVE_USB)
@@ -49,6 +69,17 @@ void usbTick() {
   if(!usbBytes)return;
   int available=Serial.availableForWrite();if(available<=0)return;
   size_t count=min(size_t(available),min(size_t(256),usbSize-usbOffset));
+#if defined(MM_HIRES)
+  if(usbHead) {
+    uint8_t chunk[256];
+    for(size_t n=0;n<count;n++){size_t at=usbOffset+n;
+      if(at<usbHead)chunk[n]=usbBytes[at];else if(at==usbSize-1)chunk[n]='\n';
+      else{uint8_t i=usbBytes[usbHead+(at-usbHead)/2];uint16_t c=palette565[i<ColCount?i:ColInk];chunk[n]=(at-usbHead)%2?c>>8:c;}}
+    usbOffset+=Serial.write(chunk,count);
+    if(usbOffset==usbSize){free(usbBytes);usbBytes=nullptr;usbSize=usbOffset=usbHead=0;}
+    return;
+  }
+#endif
   usbOffset+=Serial.write(usbBytes+usbOffset,count);
   if(usbOffset==usbSize) {free(usbBytes);usbBytes=nullptr;usbSize=usbOffset=0;}
 }

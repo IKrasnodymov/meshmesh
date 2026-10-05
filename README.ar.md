@@ -51,6 +51,7 @@ MeshCore القياسية.
 | Elecrow ThinkNode M9 (لوحة مفاتيح، شاشة 320×240) | مختبرة على الجهاز |
 | Heltec WiFi LoRa 32 V4 ‏(OLED، زر واحد) | مختبرة على الجهاز |
 | GAT562 30S Mesh Kit ‏(nRF52840، OLED، عصا تحكم؛ دون Wi-Fi) | مختبرة على الجهاز (لا توجد وحدة GPS في نسختنا) — [docs/en/gat562.md](docs/en/gat562.md) |
+| Heltec Mesh Node T114 ‏(nRF52840، شاشة TFT ملونة 240×135، زر واحد؛ دون Wi-Fi) | مختبرة على الجهاز — [docs/en/t114.md](docs/en/t114.md) |
 | Heltec V4-R8, Heltec V3, Heltec Wireless Tracker, LilyGO T-Deck, T-Beam, T-Beam Supreme, T3-S3, T-LoRa V2.1-1.6, Seeed XIAO ESP32S3 + Wio-SX1262, B&Q Station G2, Elecrow ThinkNode M2 | تبنى فقط ولم تشغل بعد على الجهاز — نرحب بالتقارير |
 
 لوحات ESP32 تدعم كل الميزات. أما GAT562 ‏(nRF52840) فلا تحتوي على Wi-Fi: لا نقطة وصول ولا رادار Wi-Fi

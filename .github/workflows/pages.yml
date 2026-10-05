@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        env: [m9, heltec_v4, heltec_v4_r8, heltec_v3, heltec_tracker, tdeck, tbeam, tbeam_supreme, t3s3, tlora_v2_1_6, xiao_s3_wio, station_g2, thinknode_m2, gat562_30s]
+        env: [m9, heltec_v4, heltec_v4_r8, heltec_v3, heltec_tracker, tdeck, tbeam, tbeam_supreme, t3s3, tlora_v2_1_6, xiao_s3_wio, station_g2, thinknode_m2, gat562_30s, heltec_t114]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -88,7 +88,7 @@ jobs:
           path: apk
       - run: python tools/i18n.py check
       - run: |
-          python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
+          python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_t114 heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
           mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk
           # The app checks app/version.json and downloads the numbered copy (a fresh name, no stale CDN cache).
           python tools/app_release.py _site/app ${{ github.run_number }}

@@ -86,6 +86,14 @@
 #define MM_NODE_NAME "GAT562"
 #define MM_GPS_DEFAULT true
 #define MM_ABSENT 1,2,4,6,7,
+#elif defined(MM_BOARD_T114)
+// nRF52840 + SX1262, 1.14" 240x135 colour TFT, one button; the L76K GPS is an option of the kit.
+#define MM_BOARD_ID "heltec_t114"
+#define MM_BOARD_NAME "Heltec Mesh Node T114"
+#define MM_BUTTON "USER"
+#define MM_NODE_NAME "T114"
+#define MM_GPS_DEFAULT true
+#define MM_ABSENT 1,2,4,6,7,
 #else
 #define MM_BOARD_ID "m9"
 #define MM_BOARD_NAME "ThinkNode M9"
@@ -113,6 +121,10 @@
 // Five-way joystick and a back button instead of the single button of the compact boards.
 #if defined(MM_BOARD_GAT562)
 #define MM_JOYSTICK 1
+#endif
+// Colour TFT at its own resolution under the 128x64 compact layout (HiresCanvas.h, Palette.h).
+#if defined(MM_BOARD_T114)
+#define MM_HIRES 1
 #endif
 // No Wi-Fi radio (nRF52): no access point, Wi-Fi radar or CSI; the app reaches it over BLE or USB.
 #if defined(MM_NRF52)

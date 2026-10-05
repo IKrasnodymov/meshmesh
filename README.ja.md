@@ -45,6 +45,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
 | Elecrow ThinkNode M9 (キーボード、320×240 画面) | 実機で検証済み |
 | Heltec WiFi LoRa 32 V4 (OLED、ボタン 1 つ) | 実機で検証済み |
 | GAT562 30S Mesh Kit (nRF52840、OLED、ジョイスティック、Wi-Fi なし) | 実機で検証済み (手元の個体には GPS モジュールが未搭載) — [docs/en/gat562.md](docs/en/gat562.md) |
+| Heltec Mesh Node T114 (nRF52840、240×135 カラー TFT、ボタン 1 つ、Wi-Fi なし) | 実機で検証済み — [docs/en/t114.md](docs/en/t114.md) |
 | Heltec V4-R8, Heltec V3, Heltec Wireless Tracker, LilyGO T-Deck, T-Beam, T-Beam Supreme, T3-S3, T-LoRa V2.1-1.6, Seeed XIAO ESP32S3 + Wio-SX1262, B&Q Station G2, Elecrow ThinkNode M2 | ビルドのみ確認、実機では未動作 — 報告を歓迎します |
 
 ESP32 ボードではすべての機能が使えます。GAT562 (nRF52840) には Wi-Fi がないため、アクセスポイント、Wi-Fi レーダー、

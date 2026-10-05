@@ -2,7 +2,7 @@
 
 ## Назначение и коммуникация
 
-Проект — прошивка для Elecrow ThinkNode M9, Heltec V4 и GAT562 30S (nRF52840): автономный интерфейс,
+Проект — прошивка для Elecrow ThinkNode M9, Heltec V4, GAT562 30S и Heltec T114 (nRF52840): автономный интерфейс,
 чаты и каналы MeshCore (хештег, ссылка/QR, ключ, приглашения; `docs/channels.md`, `src/Channels.cpp`), LoRa, офлайн-карты, Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
 шахматы с контактами (экран M9 и веб обеих плат, личные сообщения MeshCore,
 партии на рейтинг ELO с результатом, подписанным ключами обоих узлов, — `src/ChessRating.cpp`, турниры по швейцарской системе — `src/ChessTour.cpp`; `docs/chess.md`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
@@ -44,6 +44,12 @@ Wi-Fi-пароли, BLE PIN, реальные адреса узлов и коо�
   сама входит в последовательный DFU по касанию 1200 бод, штатная MeshCore — только по двойному
   RESET (диск `GAT562-BOOT`). Полная копия исходной flash — `backups/gat562/` (`CURRENT.UF2`
   покрывает 0x1000–0xEA000, остальное — сырой дамп 0xD4000–0xF4000).
+- Heltec Mesh Node T114 V2 (`docs/t114.md`): nRF52840, SX1262, цветной TFT 240×135 (ST7789), кнопка USER,
+  GPS L76K (у нашего экземпляра есть). Цель `heltec_t114`, аппаратный слой — `src/nrf52/HardwareT114.cpp`,
+  общий слой nRF52 как у GAT562. Однокнопочный интерфейс Heltec рисуется в родном разрешении и в цвете
+  (`MM_HIRES`, `include/HiresCanvas.h`, `include/Palette.h`); предпросмотр — `tools/ui_preview/build.sh t114`.
+  USB: прошивка 239a:8071, загрузчик 239a:0071, диск `HT-n5262` по двойному RESET. Копия исходной flash
+  (Meshtastic 2.7.15, владелец разрешил её не сохранять) — `backups/t114/`.
 - Платы сообщества (`docs/boards.md`): `heltec_v3`, `heltec_tracker`, `tdeck`,
   `tbeam`, `tbeam_supreme`, `t3s3`, `tlora_v2_1_6`, `xiao_s3_wio`, `station_g2`,
   `thinknode_m2`. Устройств нет: проверены сборка, эмулятор и веб-страница; работу
@@ -53,7 +59,7 @@ Wi-Fi-пароли, BLE PIN, реальные адреса узлов и коо�
   семейство (`MM_COMPACT`), трансивер (`MM_RADIO_*`) и native USB (`MM_NATIVE_USB`),
   а не конкретные платы.
 - Последние известные порты: M9 `/dev/cu.wchusbserial110`,
-  Heltec `/dev/cu.usbmodem101`, GAT562 `/dev/cu.usbmodem1101` (VID 239a); `tools/ports.py`
+  Heltec `/dev/cu.usbmodem101`, GAT562 и T114 `/dev/cu.usbmodem1101` (VID 239a); `tools/ports.py`
   находит их по USB-мосту.
   Проверять наличие и идентичность устройств; имена портов меняются после
   переподключения.
