@@ -104,10 +104,10 @@
   "ru": "Шахматы: выберите чат-контакт",
   "text": "Catur: pilih kontak chat"
  },
- "8d623b26": {
-  "en": "Chess: all boards busy, finish a game",
-  "ru": "Шахматы: все доски заняты, завершите партию",
-  "text": "Catur: semua papan terpakai, selesaikan game"
+ "c7768961": {
+  "en": "Chess: six games in progress, finish one",
+  "ru": "Шахматы: идут шесть партий, завершите одну",
+  "text": "Catur: enam permainan berjalan, selesaikan satu"
  },
  "2c55656b": {
   "en": " · MeshMesh chess: you play Black",
@@ -2893,10 +2893,10 @@
   "ru": "Рейтинг",
   "text": "Rating"
  },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "Semua papan terpakai: selesaikan game"
+ "d23a6b60": {
+  "en": "Six games in progress: finish one",
+  "ru": "Идут шесть партий: завершите одну",
+  "text": "Enam permainan berjalan: selesaikan satu"
  },
  "5c2a0c3e": {
   "en": "Challenge a chat contact",
@@ -3830,6 +3830,61 @@
   "ru": "Кому: ",
   "text": "Ke "
  },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "ponsel"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "arloji"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "headphone"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "ponsel/arloji"
+ },
+ "a71d0499": {
+  "en": "hidden network",
+  "ru": "скрытая сеть",
+  "text": "Wi-Fi tersembunyi"
+ },
+ "e1d6680b": {
+  "en": "Wi-Fi: access point",
+  "ru": "Wi-Fi: точка доступа",
+  "text": "Wi-Fi: titik akses"
+ },
+ "b100920c": {
+  "en": "Wi-Fi busy",
+  "ru": "Wi-Fi занят",
+  "text": "Wi-Fi sibuk"
+ },
+ "dba65692": {
+  "en": "scanning...",
+  "ru": "сканирую...",
+  "text": "memindai..."
+ },
+ "b5065a2e": {
+  "en": "BLE busy",
+  "ru": "BLE занят",
+  "text": "BLE sibuk"
+ },
+ "9159010a": {
+  "en": "BLE error",
+  "ru": "Ошибка BLE",
+  "text": "Galat BLE"
+ },
+ "6b18c42e": {
+  "en": "Normal",
+  "ru": "Обычный",
+  "text": "Normal"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4589,61 +4644,6 @@
   "en": "chat",
   "ru": "чат",
   "text": "chat"
- },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "ponsel"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "arloji"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "headphone"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "ponsel/arloji"
- },
- "a71d0499": {
-  "en": "hidden network",
-  "ru": "скрытая сеть",
-  "text": "Wi-Fi tersembunyi"
- },
- "e1d6680b": {
-  "en": "Wi-Fi: access point",
-  "ru": "Wi-Fi: точка доступа",
-  "text": "Wi-Fi: titik akses"
- },
- "b100920c": {
-  "en": "Wi-Fi busy",
-  "ru": "Wi-Fi занят",
-  "text": "Wi-Fi sibuk"
- },
- "dba65692": {
-  "en": "scanning...",
-  "ru": "сканирую...",
-  "text": "memindai..."
- },
- "b5065a2e": {
-  "en": "BLE busy",
-  "ru": "BLE занят",
-  "text": "BLE sibuk"
- },
- "9159010a": {
-  "en": "BLE error",
-  "ru": "Ошибка BLE",
-  "text": "Galat BLE"
- },
- "6b18c42e": {
-  "en": "Normal",
-  "ru": "Обычный",
-  "text": "Normal"
  },
  "a851b542": {
   "en": "Announced to the network",

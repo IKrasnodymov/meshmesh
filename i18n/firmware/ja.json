@@ -104,10 +104,10 @@
   "ru": "Шахматы: выберите чат-контакт",
   "text": "チェス: チャットの連絡先を選択"
  },
- "8d623b26": {
-  "en": "Chess: all boards busy, finish a game",
-  "ru": "Шахматы: все доски заняты, завершите партию",
-  "text": "チェス: 空き盤なし、対局を終えてください"
+ "c7768961": {
+  "en": "Chess: six games in progress, finish one",
+  "ru": "Шахматы: идут шесть партий, завершите одну",
+  "text": "チェス：6局進行中、1局終えてください"
  },
  "2c55656b": {
   "en": " · MeshMesh chess: you play Black",
@@ -2893,10 +2893,10 @@
   "ru": "Рейтинг",
   "text": "レート"
  },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "全盤使用中: 対局を終えて"
+ "d23a6b60": {
+  "en": "Six games in progress: finish one",
+  "ru": "Идут шесть партий: завершите одну",
+  "text": "6局進行中：1局終えてください"
  },
  "5c2a0c3e": {
   "en": "Challenge a chat contact",
@@ -3830,6 +3830,61 @@
   "ru": "Кому: ",
   "text": "宛先: "
  },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "スマホ"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "ウォッチ"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "ヘッドホン"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "スマホ/ウォッチ"
+ },
+ "a71d0499": {
+  "en": "hidden network",
+  "ru": "скрытая сеть",
+  "text": "隠しネットワーク"
+ },
+ "e1d6680b": {
+  "en": "Wi-Fi: access point",
+  "ru": "Wi-Fi: точка доступа",
+  "text": "Wi-Fi: AP使用中"
+ },
+ "b100920c": {
+  "en": "Wi-Fi busy",
+  "ru": "Wi-Fi занят",
+  "text": "Wi-Fi使用中"
+ },
+ "dba65692": {
+  "en": "scanning...",
+  "ru": "сканирую...",
+  "text": "スキャン中..."
+ },
+ "b5065a2e": {
+  "en": "BLE busy",
+  "ru": "BLE занят",
+  "text": "BLE使用中"
+ },
+ "9159010a": {
+  "en": "BLE error",
+  "ru": "Ошибка BLE",
+  "text": "BLEエラー"
+ },
+ "6b18c42e": {
+  "en": "Normal",
+  "ru": "Обычный",
+  "text": "通常"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4589,61 +4644,6 @@
   "en": "chat",
   "ru": "чат",
   "text": "チャット"
- },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "スマホ"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "ウォッチ"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "ヘッドホン"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "スマホ/ウォッチ"
- },
- "a71d0499": {
-  "en": "hidden network",
-  "ru": "скрытая сеть",
-  "text": "隠しネットワーク"
- },
- "e1d6680b": {
-  "en": "Wi-Fi: access point",
-  "ru": "Wi-Fi: точка доступа",
-  "text": "Wi-Fi: AP使用中"
- },
- "b100920c": {
-  "en": "Wi-Fi busy",
-  "ru": "Wi-Fi занят",
-  "text": "Wi-Fi使用中"
- },
- "dba65692": {
-  "en": "scanning...",
-  "ru": "сканирую...",
-  "text": "スキャン中..."
- },
- "b5065a2e": {
-  "en": "BLE busy",
-  "ru": "BLE занят",
-  "text": "BLE使用中"
- },
- "9159010a": {
-  "en": "BLE error",
-  "ru": "Ошибка BLE",
-  "text": "BLEエラー"
- },
- "6b18c42e": {
-  "en": "Normal",
-  "ru": "Обычный",
-  "text": "通常"
  },
  "a851b542": {
   "en": "Announced to the network",

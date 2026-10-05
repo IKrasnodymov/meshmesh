@@ -32,6 +32,7 @@ struct ChessMatch {
   bool sigOpen=false;uint8_t sigStatus=0;uint32_t sigId=0; // my signature until its ACK
   uint16_t tour=0;uint8_t round=0;bool tourReported=false; // a tournament game (ChessTour.h)
   bool active() const{return state==Inviting||state==Invited||state==Playing;}
+  bool settled() const;                   // finished, its rating signature and tournament report done
   bool myTurn() const{return state==Playing&&game.pos.side==mine;}
   bool won() const{return (result==WhiteWon&&mine==chess::White)||(result==BlackWon&&mine==chess::Black);}
   bool lost() const{return (result==WhiteWon&&mine==chess::Black)||(result==BlackWon&&mine==chess::White);}
@@ -58,6 +59,7 @@ class ChessNet {
   bool offerDraw(ChessMatch& m);bool acceptDraw(ChessMatch& m);bool resign(ChessMatch& m);
   bool resend(ChessMatch& m);bool remove(ChessMatch& m);
   ChessMatch* find(uint16_t id);
+  bool room();                            // a new game fits (a free board or a settled finished game)
   void viewed(ChessMatch& m);            // the player opened the game
   unsigned waiting() const;               // games where the player has to act
   unsigned count() const;
@@ -68,7 +70,7 @@ class ChessNet {
   String web() const;                       // the list for the web page, with the latest news
  private:
   bool saveDue=false;uint32_t saveAt=0;
-  ChessMatch* slot(bool force=false);
+  ChessMatch* slot();
   ChessMatch* find(uint64_t peer,uint16_t id);
   bool send(ChessMatch& m,const String& text);
   bool sendMove(ChessMatch& m);

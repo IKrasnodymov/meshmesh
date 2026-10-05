@@ -104,10 +104,10 @@
   "ru": "Шахматы: выберите чат-контакт",
   "text": "国际象棋: 请选择聊天联系人"
  },
- "8d623b26": {
-  "en": "Chess: all boards busy, finish a game",
-  "ru": "Шахматы: все доски заняты, завершите партию",
-  "text": "国际象棋: 棋盘已满,请先结束一局"
+ "c7768961": {
+  "en": "Chess: six games in progress, finish one",
+  "ru": "Шахматы: идут шесть партий, завершите одну",
+  "text": "国际象棋：六局进行中，先结束一局"
  },
  "2c55656b": {
   "en": " · MeshMesh chess: you play Black",
@@ -2893,10 +2893,10 @@
   "ru": "Рейтинг",
   "text": "等级分"
  },
- "bc812413": {
-  "en": "All boards busy: finish a game",
-  "ru": "Все доски заняты: завершите партию",
-  "text": "棋盘已满: 请先结束一局"
+ "d23a6b60": {
+  "en": "Six games in progress: finish one",
+  "ru": "Идут шесть партий: завершите одну",
+  "text": "六局进行中：先结束一局"
  },
  "5c2a0c3e": {
   "en": "Challenge a chat contact",
@@ -3830,6 +3830,61 @@
   "ru": "Кому: ",
   "text": "发给 "
  },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "手机"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "手表"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "耳机"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "手机/手表"
+ },
+ "a71d0499": {
+  "en": "hidden network",
+  "ru": "скрытая сеть",
+  "text": "隐藏网络"
+ },
+ "e1d6680b": {
+  "en": "Wi-Fi: access point",
+  "ru": "Wi-Fi: точка доступа",
+  "text": "Wi-Fi: 热点"
+ },
+ "b100920c": {
+  "en": "Wi-Fi busy",
+  "ru": "Wi-Fi занят",
+  "text": "Wi-Fi 忙"
+ },
+ "dba65692": {
+  "en": "scanning...",
+  "ru": "сканирую...",
+  "text": "扫描中..."
+ },
+ "b5065a2e": {
+  "en": "BLE busy",
+  "ru": "BLE занят",
+  "text": "BLE 忙"
+ },
+ "9159010a": {
+  "en": "BLE error",
+  "ru": "Ошибка BLE",
+  "text": "BLE 错误"
+ },
+ "6b18c42e": {
+  "en": "Normal",
+  "ru": "Обычный",
+  "text": "普通"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4589,61 +4644,6 @@
   "en": "chat",
   "ru": "чат",
   "text": "聊天"
- },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "手机"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "手表"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "耳机"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "手机/手表"
- },
- "a71d0499": {
-  "en": "hidden network",
-  "ru": "скрытая сеть",
-  "text": "隐藏网络"
- },
- "e1d6680b": {
-  "en": "Wi-Fi: access point",
-  "ru": "Wi-Fi: точка доступа",
-  "text": "Wi-Fi: 热点"
- },
- "b100920c": {
-  "en": "Wi-Fi busy",
-  "ru": "Wi-Fi занят",
-  "text": "Wi-Fi 忙"
- },
- "dba65692": {
-  "en": "scanning...",
-  "ru": "сканирую...",
-  "text": "扫描中..."
- },
- "b5065a2e": {
-  "en": "BLE busy",
-  "ru": "BLE занят",
-  "text": "BLE 忙"
- },
- "9159010a": {
-  "en": "BLE error",
-  "ru": "Ошибка BLE",
-  "text": "BLE 错误"
- },
- "6b18c42e": {
-  "en": "Normal",
-  "ru": "Обычный",
-  "text": "普通"
  },
  "a851b542": {
   "en": "Announced to the network",

@@ -69,16 +69,17 @@ ChessMatch* ChessNet::find(uint64_t peer,uint16_t id){for(auto& m:matches)if(m.s
 ChessMatch* ChessNet::find(uint16_t id){for(auto& m:matches)if(m.state!=ChessMatch::Free&&m.id==id)return &m;return nullptr;}
 unsigned ChessNet::count() const{unsigned n=0;for(auto& m:matches)n+=m.state!=ChessMatch::Free;return n;}
 unsigned ChessNet::waiting() const{unsigned n=0;for(auto& m:matches)n+=m.state==ChessMatch::Invited||m.myTurn()||m.unseen;return n;}
-// A free slot, or the finished game that changed longest ago. A tournament pairing (force) may also take a
-// finished game nobody opened (a board without a chess screen never opens them) once its rating and report are done.
-ChessMatch* ChessNet::slot(bool force){
-  ChessMatch* oldest=nullptr;
-  for(auto& m:matches){if(m.state==ChessMatch::Free)return &m;if(m.state==ChessMatch::Over&&!m.unseen&&(!oldest||int32_t(m.changedAt-oldest->changedAt)<0))oldest=&m;}
-  if(oldest||!force)return oldest;
-  for(auto& m:matches){bool done=m.state==ChessMatch::Over&&!m.sigOpen&&m.sign!=ChessMatch::SignDue&&!(m.sign==ChessMatch::SignSent&&!m.theirSigned)&&(!m.tour||m.tourReported);
-    if(done&&(!oldest||int32_t(m.changedAt-oldest->changedAt)<0))oldest=&m;}
-  return oldest;
+// A free board, or the place of the finished game that changed longest ago: one already opened first, then
+// one nobody opened (a board without a chess screen never opens them). A finished game stays while its
+// rating signature or tournament report is still on the way; games in progress and challenges always stay.
+bool ChessMatch::settled() const{return state==Over&&!sigOpen&&sign!=SignDue&&!(sign==SignSent&&!theirSigned)&&(!tour||tourReported);}
+ChessMatch* ChessNet::slot(){
+  ChessMatch* seen=nullptr;ChessMatch* any=nullptr;
+  for(auto& m:matches){if(m.state==ChessMatch::Free)return &m;if(!m.settled())continue;
+    if(!m.unseen&&(!seen||int32_t(m.changedAt-seen->changedAt)<0))seen=&m;if(!any||int32_t(m.changedAt-any->changedAt)<0)any=&m;}
+  return seen?seen:any;
 }
+bool ChessNet::room(){return slot()!=nullptr;}
 void ChessNet::changed(ChessMatch& m,bool now){m.changedAt=millis();m.updated=unixNow();dirty=true;if(now)save();else if(!saveDue){saveDue=true;saveAt=millis()+3000;}}
 void ChessNet::news(ChessMatch& m,const String& text){event=text;events++;eventMatch=&m;m.unseen=true;dirty=true;}
 void ChessNet::viewed(ChessMatch& m){if(m.unseen){m.unseen=false;changed(m,false);}}
@@ -209,7 +210,7 @@ bool ChessNet::receive(uint64_t from,const char* name,const char* text){
 ChessMatch* ChessNet::invite(uint64_t peer,int color,bool rated){
   Peer* p=nullptr;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==peer)p=&meshRadio.peers[i];
   if(!p||p->type!=1){event=tr("Chess: choose a chat contact","Шахматы: выберите чат-контакт");events++;dirty=true;return nullptr;}
-  ChessMatch* m=slot();if(!m){event=tr("Chess: all boards busy, finish a game","Шахматы: все доски заняты, завершите партию");events++;dirty=true;return nullptr;}
+  ChessMatch* m=slot();if(!m){event=tr("Chess: six games in progress, finish one","Шахматы: идут шесть партий, завершите одну");events++;dirty=true;return nullptr;}
   uint16_t id;do id=1+random(0xffff);while(find(id));
   *m=ChessMatch();m->peer=peer;m->id=id;strlcpy(m->name,p->name,sizeof m->name);m->mine=color==2?random(2):color&1;m->state=ChessMatch::Inviting;m->started=unixNow();m->game.reset();
   m->rated=rated;memcpy(m->peerKey,p->publicKey,32);
@@ -219,7 +220,7 @@ ChessMatch* ChessNet::invite(uint64_t peer,int color,bool rated){
 }
 ChessMatch* ChessNet::tourGame(uint64_t peer,const uint8_t key[32],const char* name,uint16_t id,int color,uint16_t tourId,uint8_t round){
   if(ChessMatch* old=find(peer,id))return old;
-  meshRadio.learnContact(key,name);ChessMatch* m=slot(true);if(!m)return nullptr;
+  meshRadio.learnContact(key,name);ChessMatch* m=slot();if(!m)return nullptr;
   *m=ChessMatch();m->peer=peer;m->id=id;strlcpy(m->name,name,sizeof m->name);m->mine=color&1;m->state=ChessMatch::Playing;m->started=unixNow();m->game.reset();
   m->rated=true;memcpy(m->peerKey,key,32);m->tour=tourId;m->round=round;m->unseen=m->mine==White;
   changed(*m);return m;

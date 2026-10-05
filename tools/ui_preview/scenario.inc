@@ -151,6 +151,21 @@ static void scenario(){
   key(0xa3);if(uiStatus().indexOf("\"chess_game\":\"5C3E\"")<0||uiStatus().indexOf("\"locked\":false")<0){printf("FAIL hold on the locked chess card: %s\n",uiStatus().c_str());exit(1);}key(0x86);key(0x82);
   // Swiss tournament, organiser side: the wizard with six contacts, everyone joins, the start comes by
   // itself; four rounds with the reports of both players, then the checks of the pairings and standings.
+  // Boards: finished games nobody opened give their place to a new game, the oldest settled first; a finished
+  // game still waiting for its rating signature stays, and six games in progress refuse a seventh.
+  {auto fail=[](const char* what){printf("FAIL boards: %s\n",what);exit(1);};
+   auto game=[&](int peer,const char* name,bool rated){ChessMatch* g=chessNet.invite(peerId(peer),chess::White,rated);if(!g)fail("a free board");char t[48];snprintf(t,sizeof t,"\xe2\x99\x9f%04X yes",g->id);chessNet.receive(peerId(peer),name,t);return g;};
+   for(auto& m:chessNet.matches)m=ChessMatch();
+   ChessMatch* old[6];for(int i=0;i<6;i++){old[i]=game(0,"Heltec V4",false);chessNet.resign(*old[i]);old[i]->unseen=true;old[i]->changedAt=1000+i;}
+   old[0]->rated=true;old[0]->sign=ChessMatch::SignSent;old[0]->theirSigned=false; // the oldest waits for a signature
+   uint16_t pendingId=old[0]->id,evicted=old[1]->id;
+   ChessMatch* fresh=chessNet.invite(peerId(3),chess::White,false);if(!fresh)fail("a finished game gives its board");
+   if(!chessNet.find(pendingId))fail("the game waiting for a signature stays");if(chessNet.find(evicted)&&chessNet.find(evicted)!=fresh)fail("the oldest settled game gives its board");
+   for(auto& m:chessNet.matches)m=ChessMatch();
+   for(int i=0;i<6;i++)game(i%2?3:0,i%2?"Игорь T-Deck":"Heltec V4",false);
+   if(chessNet.room()||chessNet.invite(peerId(5),chess::White,false))fail("six games in progress refuse a seventh");
+   previewSent.clear();char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f" "7777 new w r · шахматы MeshMesh");chessNet.receive(peerId(5),"Марат",t);
+   if(chessNet.find(0x7777)||previewSent.empty()||previewSent.back().text.find("7777 no")==std::string::npos)fail("a challenge to a full device is declined");}
   {for(auto& m:chessNet.matches)m=ChessMatch(); // free boards for the tournament games
    const char* extra[]={"Лиля","Ринат","Тимур"};for(int i=0;i<3;i++){auto& p=meshRadio.peers[meshRadio.peerCount++];p=Peer();p.id=peerId(6+i);strcpy(p.name,extra[i]);p.type=1;p.heard=true;p.seen=fakeMillis-60000*(i+1);for(int k=0;k<8;k++)p.publicKey[k]=uint8_t(p.id>>(56-8*k));p.publicKey[8]=0x70+i;}
    auto fail=[](const char* what){printf("FAIL tournament: %s\n",what);exit(1);};

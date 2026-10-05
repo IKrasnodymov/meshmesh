@@ -132,7 +132,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:115: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
+   "src/UiHeltec.cpp:149: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
   ]
  },
  "03070e67": {
@@ -297,7 +297,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:222: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
+   "src/UiHeltec.cpp:256: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
   ]
  },
  "07dbc6c1": {
@@ -308,7 +308,7 @@
   ],
   "where": [
    "src/Ui.cpp:455: row(t(\"Clock\",\"Часы\"),(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource==\"manual\"?t(\"manual\",\"вручную\"):hardware.clockSource)+(hardware.clockTrusted?t(\" · trusted\",\" · доверено\"):String()),ink)",
-   "src/UiHeltec.cpp:385: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}"
+   "src/UiHeltec.cpp:421: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}"
   ]
  },
  "07fd4beb": {
@@ -373,7 +373,7 @@
   ],
   "where": [
    "src/Ui.cpp:288: {IcRadar,accent,t(\"Radar\",\"Радар\"),\"Wi-Fi, BLE, LoRa\",0},",
-   "src/UiHeltec.cpp:363: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
+   "src/UiHeltec.cpp:399: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
   ]
  },
  "08e64970": {
@@ -382,7 +382,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:115: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
+   "src/UiHeltec.cpp:149: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
   ]
  },
  "08e7b429": {
@@ -455,7 +455,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:174: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
+   "src/UiHeltec.cpp:208: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
   ]
  },
  "0cf557e9": {
@@ -473,7 +473,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:278: footer(t(\"click-next hold-run\",\"клик-далее держ-ОК\"));"
+   "src/UiHeltec.cpp:314: footer(t(\"click-next hold-run\",\"клик-далее держ-ОК\"));"
   ]
  },
  "0d1c950e": {
@@ -509,7 +509,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:179: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:213: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "0da32845": {
@@ -518,7 +518,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:156: say(0,49,t(\"or accept a challenge\",\"или примите вызов\"),small);return;}"
+   "src/UiChessCompact.inc:194: say(0,49,t(\"or accept a challenge\",\"или примите вызов\"),small);return;}"
   ]
  },
  "0e1a8928": {
@@ -554,7 +554,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:127: say(68,8,clipped(m.name,11),small);say(68,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
+   "src/UiChessCompact.inc:165: say(PanelX,8,clipped(m.name,11),small);say(PanelX,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
   ]
  },
  "0eb32dbe": {
@@ -581,7 +581,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:177: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:211: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "0f0e7f9f": {
@@ -626,7 +626,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:190: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:224: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "10322163": {
@@ -654,7 +654,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:177: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:211: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "10f55374": {
@@ -663,7 +663,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:178: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:212: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "1106f73b": {
@@ -672,7 +672,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:175: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:209: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "11ec7a8e": {
@@ -681,7 +681,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:369: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
+   "src/UiHeltec.cpp:405: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
  "125b8379": {
@@ -810,7 +810,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:54: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
+   "src/UiHeltec.cpp:88: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
   ]
  },
  "1556138f": {
@@ -846,7 +846,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:393: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \""
+   "src/UiHeltec.cpp:429: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \""
   ]
  },
  "15e3d9e0": {
@@ -866,7 +866,7 @@
   ],
   "where": [
    "src/Ui.cpp:314: String preview=last?(last->outgoing?t(\"You: \",\"Вы: \"):c?String(last->name)+\": \":String())+bubbleText(*last):!c?t(\"No messages yet\",\"Сообщений ещё нет\"):channels::isPublic(c->secret)?t(\"Open MeshCore channel\",\"Открытый ка",
-   "src/UiHeltec.cpp:337: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}"
+   "src/UiHeltec.cpp:373: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}"
   ]
  },
  "163326b9": {
@@ -912,7 +912,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:133: say(68,63,t(\"hold OK: menu\",\"держ.OK: меню\"),u8g2_font_4x6_t_cyrillic);"
+   "src/UiChessCompact.inc:171: say(PanelX,63,t(\"hold OK: menu\",\"держ.OK: меню\"),u8g2_font_4x6_t_cyrillic);"
   ]
  },
  "17781681": {
@@ -939,7 +939,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "1809e055": {
@@ -950,7 +950,7 @@
   ],
   "where": [
    "src/Ui.cpp:243: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
-   "src/UiHeltec.cpp:92: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
+   "src/UiHeltec.cpp:126: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
   ]
  },
  "1853c6ab": {
@@ -959,7 +959,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:268: if(!chessStoreWrite(buf,w-buf)){event=tr(\"Chess: cannot save games\",\"Шахматы: не удалось сохранить партии\");events++;}"
+   "src/ChessNet.cpp:269: if(!chessStoreWrite(buf,w-buf)){event=tr(\"Chess: cannot save games\",\"Шахматы: не удалось сохранить партии\");events++;}"
   ]
  },
  "18631a5c": {
@@ -995,7 +995,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:217: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
+   "src/ChessNet.cpp:218: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
   ]
  },
  "18aacd32": {
@@ -1042,7 +1042,7 @@
   ],
   "where": [
    "src/Ui.cpp:837: else if(page==Sensors){if(selected==0){bool sent=meshRadio.sendPosition();notice(sent?t(\"Position shared\",\"Позиция передана\"):t(\"Waiting for GPS fix\",\"Ожидание GPS-позиции\"),sent?ok:warn);}else if(navigation.calibrating)",
-   "src/UiHeltec.cpp:224: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
+   "src/UiHeltec.cpp:258: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
   ]
  },
  "1a03858e": {
@@ -1051,7 +1051,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:335: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:371: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "1a193c76": {
@@ -1078,7 +1078,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:266: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
+   "src/UiHeltec.cpp:302: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
   ]
  },
  "1b6b5746": {
@@ -1096,7 +1096,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:171: case ActChess:return t(\"Chess: invite\",\"Шахматы: вызвать\");"
+   "src/UiHeltec.cpp:205: case ActChess:return t(\"Chess: invite\",\"Шахматы: вызвать\");"
   ]
  },
  "1bc1b700": {
@@ -1105,7 +1105,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:174: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
+   "src/UiHeltec.cpp:208: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
   ]
  },
  "1bd6e4b7": {
@@ -1123,7 +1123,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:268: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}"
+   "src/UiHeltec.cpp:304: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}"
   ]
  },
  "1d4452cb": {
@@ -1178,7 +1178,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:394: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);"
+   "src/UiHeltec.cpp:430: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);"
   ]
  },
  "1e6b0825": {
@@ -1208,7 +1208,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:202: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
+   "src/ChessNet.cpp:203: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
   ]
  },
  "1f607748": {
@@ -1217,7 +1217,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:356: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
+   "src/UiHeltec.cpp:392: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
   ]
  },
  "1f7edb03": {
@@ -1244,7 +1244,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:186: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "1ff3c7f9": {
@@ -1264,7 +1264,7 @@
   ],
   "where": [
    "src/Ui.cpp:243: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
-   "src/UiHeltec.cpp:352: else if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t(\"Homing\",\"Пеленг\");"
+   "src/UiHeltec.cpp:388: else if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t(\"Homing\",\"Пеленг\");"
   ]
  },
  "20190c0b": {
@@ -1282,7 +1282,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:178: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:212: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "203c0966": {
@@ -1291,7 +1291,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:190: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:224: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "20676a92": {
@@ -1309,7 +1309,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:290: if(config.role==RoleNormal)sayRight(126,62,t(\"OK: open the game\",\"OK: открыть партию\"),small);"
+   "src/UiHeltec.cpp:326: if(config.role==RoleNormal)sayRight(126,62,t(\"OK: open the game\",\"OK: открыть партию\"),small);"
   ]
  },
  "20b1a066": {
@@ -1394,7 +1394,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:147: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
+   "src/ChessNet.cpp:148: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
   ]
  },
  "234a4c4f": {
@@ -1412,7 +1412,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:283: say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t(\"click: close\",\"клик: закрыть\"));"
+   "src/UiHeltec.cpp:319: say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t(\"click: close\",\"клик: закрыть\"));"
   ]
  },
  "236f8008": {
@@ -1448,7 +1448,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:54: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
+   "src/UiHeltec.cpp:88: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
   ]
  },
  "248514f4": {
@@ -1559,7 +1559,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:179: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:213: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "269729a5": {
@@ -1568,7 +1568,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:167: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
+   "src/UiHeltec.cpp:201: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
   ]
  },
  "26c29b90": {
@@ -1709,7 +1709,7 @@
   ],
   "where": [
    "src/Ui.cpp:457: String actions[]={t(\"Share position\",\"Передать позицию\"),navigation.calibrating?t(\"Finish calibration\",\"Завершить калибровку\"):t(\"Calibrate compass\",\"Калибровать компас\")};",
-   "src/UiHeltec.cpp:178: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:212: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "29b67420": {
@@ -1745,7 +1745,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:173: case ActChessNext:return t(\"Next game\",\"Следующая партия\");"
+   "src/UiHeltec.cpp:207: case ActChessNext:return t(\"Next game\",\"Следующая партия\");"
   ]
  },
  "2a21ea97": {
@@ -1754,7 +1754,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:182: if(ply!=g.plies+1u||g.pos.side!=theirs||!g.pos.parseUci(b,mv)){event=String(m->name)+tr(\": move not accepted (\",\": ход не принят (\")+b+\")\";events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:183: if(ply!=g.plies+1u||g.pos.side!=theirs||!g.pos.parseUci(b,mv)){event=String(m->name)+tr(\": move not accepted (\",\": ход не принят (\")+b+\")\";events++;dirty=true;return true;}"
   ]
  },
  "2a76df25": {
@@ -1872,7 +1872,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:217: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
+   "src/ChessNet.cpp:218: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
   ]
  },
  "2c710473": {
@@ -1935,7 +1935,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:154: say(0,40,t(\"Node menu: Chess invite\",\"Меню узла: вызвать\"),small);"
+   "src/UiChessCompact.inc:192: say(0,40,t(\"Node menu: Chess invite\",\"Меню узла: вызвать\"),small);"
   ]
  },
  "2d4631d0": {
@@ -2008,7 +2008,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:382: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
+   "src/UiHeltec.cpp:418: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
   ]
  },
  "2fbe4497": {
@@ -2044,7 +2044,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:171: news(*m,String(name)+tr(\" challenges you to chess\",\" вызывает на партию в шахматы\"));hardware.ping(1320,120);changed(*m);return true;"
+   "src/ChessNet.cpp:172: news(*m,String(name)+tr(\" challenges you to chess\",\" вызывает на партию в шахматы\"));hardware.ping(1320,120);changed(*m);return true;"
   ]
  },
  "30b1f47d": {
@@ -2091,7 +2091,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:172: case ActChessOpen:return t(\"Open game\",\"Открыть\");"
+   "src/UiHeltec.cpp:206: case ActChessOpen:return t(\"Open game\",\"Открыть\");"
   ]
  },
  "3132d9df": {
@@ -2100,7 +2100,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:332: say(0,43,\"RX \"+String(meshRadio.rxCount)+\"  TX \"+String(meshRadio.txCount)+t(\"  near \",\" рядом \")+String(near),small);"
+   "src/UiHeltec.cpp:368: say(0,43,\"RX \"+String(meshRadio.rxCount)+\"  TX \"+String(meshRadio.txCount)+t(\"  near \",\" рядом \")+String(near),small);"
   ]
  },
  "313721f1": {
@@ -2109,7 +2109,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:385: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}"
+   "src/UiHeltec.cpp:421: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}"
   ]
  },
  "315b16c1": {
@@ -2191,7 +2191,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:222: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
+   "src/UiHeltec.cpp:256: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
   ]
  },
  "33712d5b": {
@@ -2236,7 +2236,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:382: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
+   "src/UiHeltec.cpp:418: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
   ]
  },
  "34e93b9a": {
@@ -2302,7 +2302,7 @@
   ],
   "where": [
    "src/Ui.cpp:472: String deviceText(const RadarTarget& r){switch(r.device){case RadarTarget::Phone:return t(\"Phone\",\"Телефон\");case RadarTarget::Watch:return t(\"Watch\",\"Часы\");case RadarTarget::Audio:return t(\"Headphones\",\"Наушники\");case",
-   "src/UiHeltec.cpp:70: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
+   "src/UiHeltec.cpp:104: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
   ]
  },
  "369317f0": {
@@ -2350,7 +2350,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:142: if(!MeshRadio::nodeVerify(m.peerKey,m.theirSig,bytes,sizeof bytes)){m.sign=ChessMatch::SignBad;news(m,String(m.name)+tr(\": signatures differ, the game is not rated\",\": подписи не сошлись, партия без рейтинга\"));changed(m"
+   "src/ChessNet.cpp:143: if(!MeshRadio::nodeVerify(m.peerKey,m.theirSig,bytes,sizeof bytes)){m.sign=ChessMatch::SignBad;news(m,String(m.name)+tr(\": signatures differ, the game is not rated\",\": подписи не сошлись, партия без рейтинга\"));changed(m"
   ]
  },
  "37e1d0e8": {
@@ -2413,7 +2413,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:108: if(status==Failed&&!m.retries){event=String(m.name)+tr(\": not confirmed, will resend\",\": не подтвердил, повторю автоматически\");events++;eventMatch=&m;}"
+   "src/ChessNet.cpp:109: if(status==Failed&&!m.retries){event=String(m.name)+tr(\": not confirmed, will resend\",\": не подтвердил, повторю автоматически\");events++;eventMatch=&m;}"
   ]
  },
  "3a92cf46": {
@@ -2450,7 +2450,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:387: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,\"MeshMesh \"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t"
+   "src/UiHeltec.cpp:423: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,\"MeshMesh \"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t"
   ]
  },
  "3b0ee2bf": {
@@ -2504,8 +2504,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:205: else if(page==Messages&&shownMessage()&&channels::isChannel(shownMessage()->destination)){const ChatMessage* m=shownMessage();const channels::Channel* c=meshRadio.channel(m->destination);if(c)openCompose(c->id,c->name);e",
-   "src/UiHeltec.cpp:207: else openCompose(meshmesh::Broadcast,t(\"Public channel\",\"Общий канал\"));"
+   "src/UiHeltec.cpp:239: else if(page==Messages&&shownMessage()&&channels::isChannel(shownMessage()->destination)){const ChatMessage* m=shownMessage();const channels::Channel* c=meshRadio.channel(m->destination);if(c)openCompose(c->id,c->name);e",
+   "src/UiHeltec.cpp:241: else openCompose(meshmesh::Broadcast,t(\"Public channel\",\"Общий канал\"));"
   ]
  },
  "3d6e0984": {
@@ -2541,7 +2541,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:184: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
+   "src/UiHeltec.cpp:218: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
   ]
  },
  "3e33cd0f": {
@@ -2559,7 +2559,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:335: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:371: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "3efed7d9": {
@@ -2616,7 +2616,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:314: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
+   "src/UiHeltec.cpp:350: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
   ]
  },
  "4014819e": {
@@ -2661,7 +2661,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:211: if(!p||p->type!=1){event=tr(\"Chess: choose a chat contact\",\"Шахматы: выберите чат-контакт\");events++;dirty=true;return nullptr;}"
+   "src/ChessNet.cpp:212: if(!p||p->type!=1){event=tr(\"Chess: choose a chat contact\",\"Шахматы: выберите чат-контакт\");events++;dirty=true;return nullptr;}"
   ]
  },
  "4153f73f": {
@@ -2697,7 +2697,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:230: case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t(\"Homing started\",\"Пеленг начат\"));}break;}"
+   "src/UiHeltec.cpp:264: case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t(\"Homing started\",\"Пеленг начат\"));}break;}"
   ]
  },
  "42dc0a3a": {
@@ -2733,7 +2733,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:219: case ActReplyOk:reply(\"OK\");break;case ActReplyAck:reply(t(\"Got it\",\"Принято\"));break;"
+   "src/UiHeltec.cpp:253: case ActReplyOk:reply(\"OK\");break;case ActReplyAck:reply(t(\"Got it\",\"Принято\"));break;"
   ]
  },
  "43db0ff4": {
@@ -2760,7 +2760,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:343: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}"
+   "src/UiHeltec.cpp:379: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}"
   ]
  },
  "447f2127": {
@@ -2796,7 +2796,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "4625c5c3": {
@@ -2860,7 +2860,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:335: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:371: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "4734758c": {
@@ -2878,7 +2878,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:147: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
+   "src/ChessNet.cpp:148: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
   ]
  },
  "478d1b4e": {
@@ -2905,7 +2905,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:314: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
+   "src/UiHeltec.cpp:350: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
   ]
  },
  "47db5665": {
@@ -2932,7 +2932,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:176: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:210: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "48b6d938": {
@@ -2943,7 +2943,7 @@
   ],
   "where": [
    "src/UiChess.inc:55: case ChessMatch::Inviting:return t(\"Challenge sent\",\"Вызов отправлен\");",
-   "src/UiHeltec.cpp:212: uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t(\"Challenge sent\",\"Вызов отправлен\"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=ch"
+   "src/UiHeltec.cpp:246: uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t(\"Challenge sent\",\"Вызов отправлен\"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=ch"
   ]
  },
  "48d6ff09": {
@@ -2997,7 +2997,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:138: say(68,55,t(\"click: next\",\"клик: далее\"),u8g2_font_4x6_t_cyrillic);"
+   "src/UiChessCompact.inc:176: say(PanelX,55,t(\"click: next\",\"клик: далее\"),u8g2_font_4x6_t_cyrillic);"
   ]
  },
  "49d02c04": {
@@ -3083,7 +3083,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:53: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}"
+   "src/UiHeltec.cpp:87: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}"
   ]
  },
  "4b09b69e": {
@@ -3140,7 +3140,7 @@
   ],
   "where": [
    "src/Ui.cpp:228: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path unknown\",\"путь неизвестен\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return count(p.pathLength&63,\"hop\",\"hops\",\"хоп\",\"хопа\",\"хопов\");}",
-   "src/UiHeltec.cpp:53: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}",
+   "src/UiHeltec.cpp:87: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}",
    "src/MeshRadio.cpp:331: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
@@ -3213,7 +3213,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:223: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
+   "src/UiHeltec.cpp:257: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
   ]
  },
  "4ed0ad26": {
@@ -3240,7 +3240,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:52: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
+   "src/UiHeltec.cpp:86: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
   ]
  },
  "4f63d746": {
@@ -3251,7 +3251,7 @@
   ],
   "where": [
    "src/Ui.cpp:243: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
-   "src/UiHeltec.cpp:92: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
+   "src/UiHeltec.cpp:126: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
   ]
  },
  "4f84febf": {
@@ -3278,7 +3278,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:180: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
+   "src/UiHeltec.cpp:214: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
   ]
  },
  "5030ef5f": {
@@ -3388,7 +3388,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "526fbff4": {
@@ -3406,7 +3406,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:237: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
+   "src/UiHeltec.cpp:271: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
   ]
  },
  "533f225b": {
@@ -3525,7 +3525,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:356: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
+   "src/UiHeltec.cpp:392: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
   ]
  },
  "576dfcbc": {
@@ -3570,7 +3570,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:185: case ActCalibrate:return t(\"Calibrate (10 s still)\",\"Калибровка (10 с тихо)\");"
+   "src/UiHeltec.cpp:219: case ActCalibrate:return t(\"Calibrate (10 s still)\",\"Калибровка (10 с тихо)\");"
   ]
  },
  "58702a65": {
@@ -3579,7 +3579,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:197: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"Hold again: erase\",\"Удерж. ещё: стереть\"));break;}"
+   "src/UiHeltec.cpp:231: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"Hold again: erase\",\"Удерж. ещё: стереть\"));break;}"
   ]
  },
  "588b49c2": {
@@ -3624,7 +3624,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:224: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
+   "src/UiHeltec.cpp:258: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
   ]
  },
  "5b31b3e0": {
@@ -3733,7 +3733,7 @@
    "full"
   ],
   "where": [
-   "src/UiChess.inc:117: if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t(\"New game\",\"Новая партия\"),ink,bold);text(56,y+32,fit(chessNet.count()>=ChessNet::MaxMa"
+   "src/UiChess.inc:117: if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t(\"New game\",\"Новая партия\"),ink,bold);text(56,y+32,fit(!chessNet.room()?t(\"Six games in "
   ]
  },
  "5c61e756": {
@@ -3751,7 +3751,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:53: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}"
+   "src/UiHeltec.cpp:87: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}"
   ]
  },
  "5d0d5182": {
@@ -3760,7 +3760,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:176: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:210: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "5d22309c": {
@@ -3816,7 +3816,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:139: say(68,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
+   "src/UiChessCompact.inc:177: say(PanelX,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
   ]
  },
  "5f4593c3": {
@@ -3834,7 +3834,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:70: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
+   "src/UiHeltec.cpp:104: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
   ]
  },
  "5fdc2c68": {
@@ -3907,7 +3907,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:386: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа "
+   "src/UiHeltec.cpp:422: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа "
   ]
  },
  "60ca84b7": {
@@ -3988,7 +3988,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:127: say(68,8,clipped(m.name,11),small);say(68,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
+   "src/UiChessCompact.inc:165: say(PanelX,8,clipped(m.name,11),small);say(PanelX,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
   ]
  },
  "624e042e": {
@@ -4061,7 +4061,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:335: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:371: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "64ca9615": {
@@ -4162,7 +4162,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:296: free(buf);if(dropped){event=tr(\"Chess: a damaged game was dropped\",\"Шахматы: повреждённая партия удалена\");events++;}dirty=true;"
+   "src/ChessNet.cpp:297: free(buf);if(dropped){event=tr(\"Chess: a damaged game was dropped\",\"Шахматы: повреждённая партия удалена\");events++;}dirty=true;"
   ]
  },
  "6859f362": {
@@ -4200,7 +4200,7 @@
   ],
   "where": [
    "src/Ui.cpp:286: {IcCompass,warn,t(\"Navigation\",\"Навигация\"),hardware.gpsFix()?\"GPS: \"+count(hardware.gps.satellites.value(),\"sat\",\"sats\",\"спутник\",\"спутника\",\"спутников\"):config.gps?t(\"GPS: searching\",\"GPS: поиск\"):t(\"GPS off\",\"GPS выкл",
-   "src/UiHeltec.cpp:382: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
+   "src/UiHeltec.cpp:418: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
   ]
  },
  "68dd789c": {
@@ -4209,7 +4209,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:181: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);"
+   "src/UiHeltec.cpp:215: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);"
   ]
  },
  "68f1d0cd": {
@@ -4246,7 +4246,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:168: if(!m){meshRadio.sendGame(String(Tag)+String(c).substring(0,4)+\" no\",from);event=String(name)+tr(\": challenge refused, no free board\",\": вызов отклонён, нет свободной доски\");events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:169: if(!m){meshRadio.sendGame(String(Tag)+String(c).substring(0,4)+\" no\",from);event=String(name)+tr(\": challenge refused, no free board\",\": вызов отклонён, нет свободной доски\");events++;dirty=true;return true;}"
   ]
  },
  "69cf6474": {
@@ -4300,7 +4300,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:92: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
+   "src/UiHeltec.cpp:126: String roleShort(int r){return r==RoleRepeater?t(\"Repeater\",\"Репитер\"):r==RoleRoom?t(\"Room server\",\"Комната\"):t(\"Normal\",\"Обычный\");}"
   ]
  },
  "6b3a84bd": {
@@ -4479,9 +4479,9 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:268: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
-   "src/UiChessCompact.inc:139: say(68,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}",
-   "src/UiChessCompact.inc:140: else{say(68,55,clipped(chessLink(m),11),small);say(68,63,t(\"hold: menu\",\"держ: меню\"),u8g2_font_4x6_t_cyrillic);}"
+   "src/UiHeltec.cpp:304: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
+   "src/UiChessCompact.inc:177: say(PanelX,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}",
+   "src/UiChessCompact.inc:178: else{say(PanelX,55,clipped(chessLink(m),11),small);say(PanelX,63,t(\"hold: menu\",\"держ: меню\"),u8g2_font_4x6_t_cyrillic);}"
   ]
  },
  "6f973fc6": {
@@ -4519,7 +4519,7 @@
   ],
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "704528a8": {
@@ -4531,7 +4531,7 @@
   "where": [
    "src/Ui.cpp:277: text(44,56,fit(meshRadio.ready?String(config.frequency,3)+t(\" MHz · SF\",\" МГц · SF\")+String(config.sf)+\" · BW \"+String(config.bandwidth,1)+\" · CR 4/\"+String(config.cr):t(\"Radio error \",\"Ошибка радио \")+String(meshRadio.r",
    "src/UiServer.inc:66: text(50,54,fit(meshRadio.ready?String(config.frequency,3)+t(\" MHz · SF\",\" МГц · SF\")+String(config.sf)+\" · \"+String(config.power)+\" dBm\":t(\"Radio error \",\"Ошибка радио \")+String(meshRadio.radioError),170,small),meshRadio",
-   "src/UiHeltec.cpp:330: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
+   "src/UiHeltec.cpp:366: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
   ]
  },
  "70772e45": {
@@ -4699,7 +4699,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:197: if(m->state==ChessMatch::Inviting){finish(*m,ChessMatch::Undecided,ChessMatch::Declined);news(*m,String(m->name)+tr(\" declined the game\",\" отказался от партии\"));}"
+   "src/ChessNet.cpp:198: if(m->state==ChessMatch::Inviting){finish(*m,ChessMatch::Undecided,ChessMatch::Declined);news(*m,String(m->name)+tr(\" declined the game\",\" отказался от партии\"));}"
   ]
  },
  "74cfe069": {
@@ -4744,7 +4744,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:177: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:211: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "75f6ec15": {
@@ -4773,7 +4773,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:180: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
+   "src/UiHeltec.cpp:214: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
   ]
  },
  "77001ca0": {
@@ -4809,7 +4809,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:221: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
+   "src/UiHeltec.cpp:255: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
   ]
  },
  "77943e26": {
@@ -4836,8 +4836,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:52: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}",
-   "src/UiHeltec.cpp:300: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):"
+   "src/UiHeltec.cpp:86: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}",
+   "src/UiHeltec.cpp:336: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):"
   ]
  },
  "789beead": {
@@ -4857,7 +4857,7 @@
   ],
   "where": [
    "src/Ui.cpp:845: armed=0;String r=executeCommand(\"fsformat\");bool done=r.startsWith(\"OK\");if(done)executeCommand(\"restart\");notice(done?t(\"Storage created, restart\",\"Создано, перезапуск\"):r,done?ok:bad);}",
-   "src/UiHeltec.cpp:199: armed=0;String r=executeCommand(\"fsformat\");if(r.startsWith(\"OK\"))executeCommand(\"restart\");notice(r.startsWith(\"OK\")?t(\"Storage created, restart\",\"Создано, перезапуск\"):r);break;}"
+   "src/UiHeltec.cpp:233: armed=0;String r=executeCommand(\"fsformat\");if(r.startsWith(\"OK\"))executeCommand(\"restart\");notice(r.startsWith(\"OK\")?t(\"Storage created, restart\",\"Создано, перезапуск\"):r);break;}"
   ]
  },
  "78fe2f73": {
@@ -4875,7 +4875,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "7a061014": {
@@ -4884,7 +4884,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:173: if(!m){event=tr(\"Chess: move for an unknown game\",\"Шахматы: ход в неизвестной партии\");events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:174: if(!m){event=tr(\"Chess: move for an unknown game\",\"Шахматы: ход в неизвестной партии\");events++;dirty=true;return true;}"
   ]
  },
  "7a0b46f9": {
@@ -4967,7 +4967,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:52: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
+   "src/UiHeltec.cpp:86: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
   ]
  },
  "7b798327": {
@@ -5013,7 +5013,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:340: say(0,42,p->heard?String(int(p->rssi))+\" dBm SNR \"+String(p->snr,1)+\", \"+ago(millis()-p->seen):t(\"saved, not heard\",\"сохранён, не слышен\"),small);"
+   "src/UiHeltec.cpp:376: say(0,42,p->heard?String(int(p->rssi))+\" dBm SNR \"+String(p->snr,1)+\", \"+ago(millis()-p->seen):t(\"saved, not heard\",\"сохранён, не слышен\"),small);"
   ]
  },
  "7c140ddc": {
@@ -5051,7 +5051,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:221: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
+   "src/UiHeltec.cpp:255: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
   ]
  },
  "7ca7875d": {
@@ -5100,7 +5100,7 @@
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:442: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "7dd55181": {
@@ -5118,7 +5118,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:382: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
+   "src/UiHeltec.cpp:418: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
   ]
  },
  "7e7e954a": {
@@ -5249,7 +5249,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:139: say(68,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
+   "src/UiChessCompact.inc:177: say(PanelX,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
   ]
  },
  "81b9b550": {
@@ -5349,7 +5349,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:387: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,\"MeshMesh \"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t"
+   "src/UiHeltec.cpp:423: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,\"MeshMesh \"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t"
   ]
  },
  "857a3f77": {
@@ -5358,7 +5358,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:159: if(focus)c.fillRect(0,y,128,15,1);say(2,y+7,clipped(String(m.unseen?\"* \":\"\")+m.name,14),small,!focus);sayRight(126,y+7,m.game.plies?String((m.game.plies+1)/2)+t(\" mv\",\" ход\"):String(\"\"),small,!focus);"
+   "src/UiChessCompact.inc:197: if(focus)c.fillRect(0,y,128,15,focusBack);uint16_t ink=focus?focusText:1;say(2,y+7,clipped(String(m.unseen?\"* \":\"\")+m.name,14),small,ink);sayRight(126,y+7,m.game.plies?String((m.game.plies+1)/2)+t(\" mv\",\" ход\"):String(\"\""
   ]
  },
  "858db4c1": {
@@ -5376,7 +5376,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:190: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:224: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "85b905aa": {
@@ -5397,7 +5397,7 @@
   "where": [
    "src/UiChess.inc:231: panel(x,176,w,42,card,6);colorDisc(x+10,188,m.mine);text(x+20,192,t(\"You\",\"Вы\"),ink,bold);if(diff)textRight(x+w-6,191,(diff>0?\"+\":\"\")+String(diff),diff>0?ok:bad,small);",
    "src/UiTour.inc:105: text(16,ry+11,String(i+1),r.me?ink:dim,small);text(32,ry+11,fit(r.me?String(t(\"You\",\"Вы\")):String(r.name),160,r.me?bold:body),ink,r.me?bold:body);",
-   "src/UiHeltec.cpp:335: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:371: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "85d45442": {
@@ -5415,7 +5415,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:393: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \""
+   "src/UiHeltec.cpp:429: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \""
   ]
  },
  "85f7f65a": {
@@ -5424,7 +5424,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:183: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
+   "src/UiHeltec.cpp:217: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
   ]
  },
  "8628e989": {
@@ -5433,7 +5433,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:316: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
+   "src/UiHeltec.cpp:352: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
   ]
  },
  "86655252": {
@@ -5544,8 +5544,8 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:188: else notice(t(\"Move not sent\",\"Ход не отправлен\"));",
-   "src/UiChessCompact.inc:210: else notice(t(\"Move not sent\",\"Ход не отправлен\"));"
+   "src/UiChessCompact.inc:226: else notice(t(\"Move not sent\",\"Ход не отправлен\"));",
+   "src/UiChessCompact.inc:248: else notice(t(\"Move not sent\",\"Ход не отправлен\"));"
   ]
  },
  "8a7102a8": {
@@ -5556,7 +5556,7 @@
   ],
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "8b1ba9b1": {
@@ -5613,7 +5613,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:334: case Messages:{const ChatMessage* m=shownMessage();title=t(\"Messages\",\"Сообщения\")+(m?\" \"+String(meshRadio.historyCount-messageOffset)+\"/\"+String(meshRadio.historyCount):\"\");"
+   "src/UiHeltec.cpp:370: case Messages:{const ChatMessage* m=shownMessage();title=t(\"Messages\",\"Сообщения\")+(m?\" \"+String(meshRadio.historyCount-messageOffset)+\"/\"+String(meshRadio.historyCount):\"\");"
   ]
  },
  "8be6cc03": {
@@ -5631,7 +5631,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:54: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
+   "src/UiHeltec.cpp:88: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
   ]
  },
  "8c5e57f9": {
@@ -5640,7 +5640,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:388: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
+   "src/UiHeltec.cpp:424: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
   ]
  },
  "8c6e79c7": {
@@ -5649,7 +5649,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:182: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
+   "src/UiHeltec.cpp:216: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
   ]
  },
  "8d1fda3e": {
@@ -5661,22 +5661,13 @@
    "src/UiChess.inc:65: case ChessMatch::DeadPosition:return r+t(\": no mating material\",\": мало фигур\");case ChessMatch::TooLong:return r+t(\": move limit\",\": предел ходов\");case ChessMatch::Agreed:return r+t(\" by agreement\",\" по соглашению\");de"
   ]
  },
- "8d623b26": {
-  "cells": 43,
-  "families": [
-   "shared"
-  ],
-  "where": [
-   "src/ChessNet.cpp:212: ChessMatch* m=slot();if(!m){event=tr(\"Chess: all boards busy, finish a game\",\"Шахматы: все доски заняты, завершите партию\");events++;dirty=true;return nullptr;}"
-  ]
- },
  "8dc24eb8": {
   "cells": 13,
   "families": [
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:186: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "8e2a5ac7": {
@@ -5687,7 +5678,7 @@
   ],
   "where": [
    "src/Ui.cpp:548: else if(radar.moving){state=t(\"MOTION\",\"ДВИЖЕНИЕ\");color=bad;}",
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "8e5d78e6": {
@@ -5696,7 +5687,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:383: say(0,33,t(\"Satellites \",\"Спутники \")+String(hardware.gps.satellites.value())+\"  NMEA \"+String(hardware.gps.passedChecksum()),small);"
+   "src/UiHeltec.cpp:419: say(0,33,t(\"Satellites \",\"Спутники \")+String(hardware.gps.satellites.value())+\"  NMEA \"+String(hardware.gps.passedChecksum()),small);"
   ]
  },
  "8e999555": {
@@ -5777,7 +5768,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:386: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа "
+   "src/UiHeltec.cpp:422: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа "
   ]
  },
  "914eb578": {
@@ -5795,7 +5786,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:80: String bleState(){return radar.ble==Radar::BleBusy?t(\"BLE busy\",\"BLE занят\"):radar.ble==Radar::BleFailed?t(\"BLE error\",\"Ошибка BLE\"):\"\";}"
+   "src/UiHeltec.cpp:114: String bleState(){return radar.ble==Radar::BleBusy?t(\"BLE busy\",\"BLE занят\"):radar.ble==Radar::BleFailed?t(\"BLE error\",\"Ошибка BLE\"):\"\";}"
   ]
  },
  "9161fba7": {
@@ -5850,7 +5841,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "925d5b3e": {
@@ -5868,8 +5859,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:180: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");",
-   "src/UiHeltec.cpp:388: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
+   "src/UiHeltec.cpp:214: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");",
+   "src/UiHeltec.cpp:424: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
   ]
  },
  "92baa128": {
@@ -5896,7 +5887,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:166: case ActWrite:return page==Nodes?t(\"Write message...\",\"Написать...\")"
+   "src/UiHeltec.cpp:200: case ActWrite:return page==Nodes?t(\"Write message...\",\"Написать...\")"
   ]
  },
  "93d7f45b": {
@@ -6026,7 +6017,7 @@
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:442: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "96dcf5df": {
@@ -6090,7 +6081,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:184: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
+   "src/UiHeltec.cpp:218: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
   ]
  },
  "98cbe749": {
@@ -6128,7 +6119,7 @@
   ],
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "997268e0": {
@@ -6166,7 +6157,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:195: if(!strcmp(a,\"yes\")){if(m->state!=ChessMatch::Inviting)return true;m->state=ChessMatch::Playing;received(*m,false);news(*m,String(m->name)+tr(\" accepted: game on\",\" принял вызов: играем\"));hardware.ping(1320,120);changed"
+   "src/ChessNet.cpp:196: if(!strcmp(a,\"yes\")){if(m->state!=ChessMatch::Inviting)return true;m->state=ChessMatch::Playing;received(*m,false);news(*m,String(m->name)+tr(\" accepted: game on\",\" принял вызов: играем\"));hardware.ping(1320,120);changed"
   ]
  },
  "9a8267a9": {
@@ -6185,7 +6176,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:170: case ActJoinHeard:{const HeardChannel* h=heardTag();return t(\"Join heard \",\"Вступить: \")+(h?h->name:\"\");}"
+   "src/UiHeltec.cpp:204: case ActJoinHeard:{const HeardChannel* h=heardTag();return t(\"Join heard \",\"Вступить: \")+(h?h->name:\"\");}"
   ]
  },
  "9ac6a634": {
@@ -6194,7 +6185,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:186: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
+   "src/UiHeltec.cpp:220: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
   ]
  },
  "9ac84c77": {
@@ -6239,7 +6230,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:150: if(!n){say(0,28,t(\"No games yet\",\"Партий пока нет\"));"
+   "src/UiChessCompact.inc:188: if(!n){say(0,28,t(\"No games yet\",\"Партий пока нет\"));"
   ]
  },
  "9bf07c85": {
@@ -6266,7 +6257,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:186: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
+   "src/UiHeltec.cpp:220: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
   ]
  },
  "9c1eb940": {
@@ -6362,7 +6353,7 @@
   "where": [
    "src/Ui.cpp:478: String wifiState(){switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi busy: access point\",\"Wi-Fi занят точкой доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy: probe\",\"Wi-Fi занят проверкой\");case Radar::WifiFa",
    "src/Ui.cpp:539: String blocked=radar.wifi==Radar::WifiBusy?t(\"Wi-Fi busy: probe\",\"Wi-Fi занят проверкой\"):radar.wifi==Radar::WifiFailed?t(\"Wi-Fi error\",\"Ошибка Wi-Fi\"):(!beacon&&radar.wifi==Radar::WifiPortal)?t(\"Turn the access point of",
-   "src/UiHeltec.cpp:79: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
+   "src/UiHeltec.cpp:113: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
   ]
  },
  "9e763213": {
@@ -6380,7 +6371,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:218: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
+   "src/UiHeltec.cpp:252: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
   ]
  },
  "9eccd626": {
@@ -6398,7 +6389,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:382: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
+   "src/UiHeltec.cpp:418: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da"
   ]
  },
  "9fb377cf": {
@@ -6416,7 +6407,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:302: t(\"up/down, OK\",\"вверх/вниз, OK\")"
+   "src/UiHeltec.cpp:338: t(\"up/down, OK\",\"вверх/вниз, OK\")"
   ]
  },
  "a01f083e": {
@@ -6443,7 +6434,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:223: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
+   "src/UiHeltec.cpp:257: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
   ]
  },
  "a0b97800": {
@@ -6497,7 +6488,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "a1841168": {
@@ -6506,7 +6497,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:392: default:title=t(\"Modules\",\"Модули\");say(0,21,\"LoRa \"+String(meshRadio.ready?\"OK\":\"ERR\")+\"  FS \"+String(hardware.fsOk?\"OK\":\"ERR\")+\"  GPS \"+String(!config.gps?\"-\":hardware.gps.passedChecksum()?\"OK\":\"?\"),small);"
+   "src/UiHeltec.cpp:428: default:title=t(\"Modules\",\"Модули\");say(0,21,\"LoRa \"+String(meshRadio.ready?\"OK\":\"ERR\")+\"  FS \"+String(hardware.fsOk?\"OK\":\"ERR\")+\"  GPS \"+String(!config.gps?\"-\":hardware.gps.passedChecksum()?\"OK\":\"?\"),small);"
   ]
  },
  "a1b512d9": {
@@ -6533,7 +6524,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:187: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
+   "src/UiHeltec.cpp:221: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
   ]
  },
  "a1d3f60b": {
@@ -6562,7 +6553,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:127: say(68,8,clipped(m.name,11),small);say(68,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
+   "src/UiChessCompact.inc:165: say(PanelX,8,clipped(m.name,11),small);say(PanelX,17,t(\"you: \",\"вы: \")+(m.mine==chess::White?t(\"white\",\"белые\"):t(\"black\",\"чёрные\")),small);"
   ]
  },
  "a23ea557": {
@@ -6631,7 +6622,7 @@
   ],
   "where": [
    "src/Ui.cpp:824: if(page==Homing&&(key==KeyLeft||key==KeyRight)){radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"),dim);return;}",
-   "src/UiHeltec.cpp:232: case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"));break;"
+   "src/UiHeltec.cpp:266: case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"));break;"
   ]
  },
  "a4ae14df": {
@@ -6649,7 +6640,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:300: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):"
+   "src/UiHeltec.cpp:336: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):"
   ]
  },
  "a514c5d1": {
@@ -6704,8 +6695,8 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:187: if(chessNet.move(m,mv)){chessHeld=-1;hardware.ping(1400,15);if(m.link()==ChatMessage::Failed)notice(t(\"Not sent: will resend\",\"Не отправлено: повторю\"));}",
-   "src/UiChessCompact.inc:209: if(chessNet.move(m,mv)){chessHeld=-1;hardware.ping(1400,15);if(m.link()==ChatMessage::Failed)notice(t(\"Not sent: will resend\",\"Не отправлено: повторю\"));}"
+   "src/UiChessCompact.inc:225: if(chessNet.move(m,mv)){chessHeld=-1;hardware.ping(1400,15);if(m.link()==ChatMessage::Failed)notice(t(\"Not sent: will resend\",\"Не отправлено: повторю\"));}",
+   "src/UiChessCompact.inc:247: if(chessNet.move(m,mv)){chessHeld=-1;hardware.ping(1400,15);if(m.link()==ChatMessage::Failed)notice(t(\"Not sent: will resend\",\"Не отправлено: повторю\"));}"
   ]
  },
  "a66a5c3b": {
@@ -6714,7 +6705,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:276: footer(t(\"up/down, OK, back\",\"выбор, OK, назад\"));"
+   "src/UiHeltec.cpp:312: footer(t(\"up/down, OK, back\",\"выбор, OK, назад\"));"
   ]
  },
  "a67b669f": {
@@ -6745,7 +6736,7 @@
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:442: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "a6f0f217": {
@@ -6765,7 +6756,7 @@
   ],
   "where": [
    "src/UiChess.inc:58: return m.myTurn()?(m.game.pos.inCheck()?t(\"Your move: check!\",\"Ваш ход: шах!\"):t(\"Your move\",\"Ваш ход\")):t(\"Their move\",\"Ход соперника\");",
-   "src/UiChessCompact.inc:183: if(!m.myTurn()){notice(t(\"Their move\",\"Ход соперника\"));return true;}"
+   "src/UiChessCompact.inc:221: if(!m.myTurn()){notice(t(\"Their move\",\"Ход соперника\"));return true;}"
   ]
  },
  "a71d0499": {
@@ -6774,7 +6765,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:71: return r.kind==RadarTarget::Wifi?t(\"hidden network\",\"скрытая сеть\"):meshRadio.idText(r.id);}"
+   "src/UiHeltec.cpp:105: return r.kind==RadarTarget::Wifi?t(\"hidden network\",\"скрытая сеть\"):meshRadio.idText(r.id);}"
   ]
  },
  "a7c7b3a4": {
@@ -6805,7 +6796,7 @@
   ],
   "where": [
    "src/UiServer.inc:43: switch(r){case RowForward:return flag(v.forwarding);case RowAdmin:return v.password;case RowGuest:return v.guest.length()?v.guest:t(\"none\",\"нет\");case RowReadOnly:return flag(v.readOnlyLogin);",
-   "src/UiHeltec.cpp:316: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
+   "src/UiHeltec.cpp:352: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
   ]
  },
  "a851b542": {
@@ -6823,7 +6814,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:356: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
+   "src/UiHeltec.cpp:392: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
   ]
  },
  "a9849595": {
@@ -6887,7 +6878,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:187: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
+   "src/ChessNet.cpp:188: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
   ]
  },
  "aa62f4a9": {
@@ -7051,7 +7042,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:337: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}"
+   "src/UiHeltec.cpp:373: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}"
   ]
  },
  "ae88f6be": {
@@ -7133,7 +7124,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:79: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
+   "src/UiHeltec.cpp:113: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
   ]
  },
  "b16132ba": {
@@ -7142,7 +7133,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:175: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:209: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "b162cbba": {
@@ -7178,7 +7169,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:316: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
+   "src/UiHeltec.cpp:352: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
   ]
  },
  "b477e636": {
@@ -7207,7 +7198,7 @@
   ],
   "where": [
    "src/UiChannels.inc:12: case MeshRadio::ChannelFull:return t(\"8 channels at most\",\"Не больше 8 каналов\");",
-   "src/UiHeltec.cpp:115: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
+   "src/UiHeltec.cpp:149: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
   ]
  },
  "b5065a2e": {
@@ -7216,7 +7207,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:80: String bleState(){return radar.ble==Radar::BleBusy?t(\"BLE busy\",\"BLE занят\"):radar.ble==Radar::BleFailed?t(\"BLE error\",\"Ошибка BLE\"):\"\";}"
+   "src/UiHeltec.cpp:114: String bleState(){return radar.ble==Radar::BleBusy?t(\"BLE busy\",\"BLE занят\"):radar.ble==Radar::BleFailed?t(\"BLE error\",\"Ошибка BLE\"):\"\";}"
   ]
  },
  "b56e13a9": {
@@ -7254,7 +7245,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:169: case ActJoin:{String name;uint8_t key[16];channels::parseLink(m?m->text:\"\",name,key);return t(\"Join \",\"Вступить: \")+name;}"
+   "src/UiHeltec.cpp:203: case ActJoin:{String name;uint8_t key[16];channels::parseLink(m?m->text:\"\",name,key);return t(\"Join \",\"Вступить: \")+name;}"
   ]
  },
  "b6a5c449": {
@@ -7285,7 +7276,7 @@
   ],
   "where": [
    "src/Ui.cpp:707: else if(!chess)textCenter(160,166,meshRadio.ready?(config.role==RoleRepeater?t(\"The repeater keeps relaying\",\"Репитер продолжает пересылку\"):config.role==RoleRoom?t(\"The room keeps serving members\",\"Комната продолжает ра",
-   "src/UiHeltec.cpp:313: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,t(\"Radio error\",\"Ошибка радио\"));"
+   "src/UiHeltec.cpp:349: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,t(\"Radio error\",\"Ошибка радио\"));"
   ]
  },
  "b784e416": {
@@ -7314,7 +7305,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:185: if(chessHeld<0||mine){if(mine)chessHeld=chessCursor;else notice(t(\"Pick your piece\",\"Выберите свою фигуру\"));return true;}"
+   "src/UiChessCompact.inc:223: if(chessHeld<0||mine){if(mine)chessHeld=chessCursor;else notice(t(\"Pick your piece\",\"Выберите свою фигуру\"));return true;}"
   ]
  },
  "b86cfa5d": {
@@ -7445,7 +7436,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:314: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
+   "src/UiHeltec.cpp:350: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);"
   ]
  },
  "bc285d2c": {
@@ -7466,16 +7457,7 @@
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:442: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
-  ]
- },
- "bc812413": {
-  "cells": 34,
-  "families": [
-   "full"
-  ],
-  "where": [
-   "src/UiChess.inc:117: if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t(\"New game\",\"Новая партия\"),ink,bold);text(56,y+32,fit(chessNet.count()>=ChessNet::MaxMa"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "bca41134": {
@@ -7576,7 +7558,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:183: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
+   "src/UiHeltec.cpp:217: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
   ]
  },
  "bef7960c": {
@@ -7639,7 +7621,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:167: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
+   "src/UiHeltec.cpp:201: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
   ]
  },
  "c0f5f34b": {
@@ -7721,7 +7703,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:70: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
+   "src/UiHeltec.cpp:104: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
   ]
  },
  "c1f2703b": {
@@ -7748,7 +7730,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:345: if(radar.csi==Radar::CsiSensor){title=t(\"Motion CSI\",\"Движение CSI\");bool heard=radar.beaconHeard();"
+   "src/UiHeltec.cpp:381: if(radar.csi==Radar::CsiSensor){title=t(\"Motion CSI\",\"Движение CSI\");bool heard=radar.beaconHeard();"
   ]
  },
  "c277d5da": {
@@ -7839,7 +7821,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:114: String messageText(const ChatMessage& m){String name;uint8_t key[16];return channels::parseLink(m.text,name,key)?t(\"Invitation to channel \",\"Приглашение в канал \")+name:String(m.text);}"
+   "src/UiHeltec.cpp:148: String messageText(const ChatMessage& m){String name;uint8_t key[16];return channels::parseLink(m.text,name,key)?t(\"Invitation to channel \",\"Приглашение в канал \")+name:String(m.text);}"
   ]
  },
  "c5158996": {
@@ -7848,7 +7830,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:343: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}"
+   "src/UiHeltec.cpp:379: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}"
   ]
  },
  "c5a8f128": {
@@ -7916,6 +7898,15 @@
    "src/Ui.cpp:396: footer({{\"<>\",t(\"Pan\",\"Сдвиг\")},{\"+/-\",t(\"Zoom\",\"Масштаб\")},{\"OK\",maps.follow?t(\"Following\",\"Следую\"):t(\"To GPS\",\"К GPS\")},{\"L\",t(\"Maps\",\"Карты\")}});"
   ]
  },
+ "c7768961": {
+  "cells": 42,
+  "families": [
+   "shared"
+  ],
+  "where": [
+   "src/ChessNet.cpp:213: ChessMatch* m=slot();if(!m){event=tr(\"Chess: six games in progress, finish one\",\"Шахматы: идут шесть партий, завершите одну\");events++;dirty=true;return nullptr;}"
+  ]
+ },
  "c781758d": {
   "cells": 1,
   "families": [
@@ -7950,7 +7941,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:187: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
+   "src/ChessNet.cpp:188: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
   ]
  },
  "c88589f0": {
@@ -7959,7 +7950,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:179: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:213: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "c8bcc2e2": {
@@ -7986,7 +7977,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:54: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
+   "src/UiHeltec.cpp:88: String typeText(uint8_t type){switch(type){case 2:return t(\"repeater\",\"ретранслятор\");case 3:return t(\"room\",\"комната\");case 4:return t(\"sensor\",\"датчик\");}return t(\"chat\",\"чат\");}"
   ]
  },
  "c8fc3ceb": {
@@ -8050,7 +8041,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:177: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:211: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "cb27d627": {
@@ -8077,7 +8068,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:315: say(0,40,t(\"admin \",\"админ \")+v.password,small);"
+   "src/UiHeltec.cpp:351: say(0,40,t(\"admin \",\"админ \")+v.password,small);"
   ]
  },
  "cb3d85dc": {
@@ -8113,7 +8104,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:139: say(68,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
+   "src/UiChessCompact.inc:177: say(PanelX,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
   ]
  },
  "cbdba42f": {
@@ -8131,7 +8122,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:186: chess::Move mv;if(!targetOf(m,chessHeld,chessCursor,&mv)){notice(t(\"Not a legal move\",\"Так ходить нельзя\"));return true;}"
+   "src/UiChessCompact.inc:224: chess::Move mv;if(!targetOf(m,chessHeld,chessCursor,&mv)){notice(t(\"Not a legal move\",\"Так ходить нельзя\"));return true;}"
   ]
  },
  "cc4a6a69": {
@@ -8158,7 +8149,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:373: t(\"Wi-Fi and LoRa\",\"Wi-Fi и LoRa\")"
+   "src/UiHeltec.cpp:409: t(\"Wi-Fi and LoRa\",\"Wi-Fi и LoRa\")"
   ]
  },
  "cd02f62c": {
@@ -8167,7 +8158,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:217: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
+   "src/UiHeltec.cpp:251: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
   ]
  },
  "cd4e738f": {
@@ -8185,7 +8176,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:203: if(!strcmp(a,\"draw\")){if(m->state!=ChessMatch::Playing||m->drawOffer!=ChessMatch::OfferedByMe)return true;received(*m,false);finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,String(m->name)+tr(\" accepted the draw\""
+   "src/ChessNet.cpp:204: if(!strcmp(a,\"draw\")){if(m->state!=ChessMatch::Playing||m->drawOffer!=ChessMatch::OfferedByMe)return true;received(*m,false);finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,String(m->name)+tr(\" accepted the draw\""
   ]
  },
  "cdb0b1c7": {
@@ -8250,7 +8241,7 @@
   ],
   "where": [
    "src/Ui.cpp:804: if(key==KeyHome){change(homePage());return;}if(config.role!=RoleNormal&&(key==KeyMsg||key==KeyMap)){notice(t(\"Not in this mode: Settings > Device mode\",\"Недоступно в этом режиме: Настройки > Режим работы\"),warn);return;}",
-   "src/UiHeltec.cpp:218: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
+   "src/UiHeltec.cpp:252: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
   ]
  },
  "ceb1d0b2": {
@@ -8259,7 +8250,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:187: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
+   "src/UiHeltec.cpp:221: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
   ]
  },
  "ced2141d": {
@@ -8304,7 +8295,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:356: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
+   "src/UiHeltec.cpp:392: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
   ]
  },
  "cf97e7ca": {
@@ -8331,7 +8322,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:177: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:211: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "d019e1e4": {
@@ -8340,7 +8331,7 @@
    "compact"
   ],
   "where": [
-   "src/UiChessCompact.inc:152: say(0,40,t(\"Nodes: OK - Chess invite\",\"Узлы: OK - вызвать\"),small);"
+   "src/UiChessCompact.inc:190: say(0,40,t(\"Nodes: OK - Chess invite\",\"Узлы: OK - вызвать\"),small);"
   ]
  },
  "d04d1711": {
@@ -8368,7 +8359,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:198: else if(m->state==ChessMatch::Invited||(m->state==ChessMatch::Playing&&!g.plies)){finish(*m,ChessMatch::Undecided,ChessMatch::Cancelled);news(*m,String(m->name)+tr(\" cancelled the game\",\" отменил партию\"));}"
+   "src/ChessNet.cpp:199: else if(m->state==ChessMatch::Invited||(m->state==ChessMatch::Playing&&!g.plies)){finish(*m,ChessMatch::Undecided,ChessMatch::Cancelled);news(*m,String(m->name)+tr(\" cancelled the game\",\" отменил партию\"));}"
   ]
  },
  "d0ba0a93": {
@@ -8395,7 +8386,17 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:333: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
+   "src/UiHeltec.cpp:369: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
+  ]
+ },
+ "d23a6b60": {
+  "cells": 33,
+  "families": [
+   "full"
+  ],
+  "where": [
+   "src/UiChess.inc:117: if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t(\"New game\",\"Новая партия\"),ink,bold);text(56,y+32,fit(!chessNet.room()?t(\"Six games in ",
+   "src/UiChess.inc:315: if(key==Enter||key==KeyHold){chessSortRows();if(!selected){if(!chessNet.room()){notice(t(\"Six games in progress: finish one\",\"Идут шесть партий: завершите одну\"),warn);return true;}change(ChessPick);}else chessEnter(ches"
   ]
  },
  "d25b4260": {
@@ -8440,7 +8441,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:316: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
+   "src/UiHeltec.cpp:352: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
   ]
  },
  "d2e88551": {
@@ -8467,7 +8468,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:369: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
+   "src/UiHeltec.cpp:405: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
  "d3394ad3": {
@@ -8581,7 +8582,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:235: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
+   "src/UiHeltec.cpp:269: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
   ]
  },
  "d4ee5f0f": {
@@ -8617,7 +8618,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:333: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
+   "src/UiHeltec.cpp:369: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
   ]
  },
  "d5ea5328": {
@@ -8626,7 +8627,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:217: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
+   "src/UiHeltec.cpp:251: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
   ]
  },
  "d609b7de": {
@@ -8644,9 +8645,9 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:351: say(30,62,String(radar.csiRate)+t(\"/s\",\"/с\"),small);}",
-   "src/UiHeltec.cpp:360: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
-   "src/UiHeltec.cpp:363: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
+   "src/UiHeltec.cpp:387: say(30,62,String(radar.csiRate)+t(\"/s\",\"/с\"),small);}",
+   "src/UiHeltec.cpp:396: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
+   "src/UiHeltec.cpp:399: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
   ]
  },
  "d6404c3c": {
@@ -8739,7 +8740,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:186: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "d9601486": {
@@ -8775,7 +8776,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:70: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
+   "src/UiHeltec.cpp:104: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
   ]
  },
  "da699208": {
@@ -8802,7 +8803,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:266: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
+   "src/UiHeltec.cpp:302: String hint(){Act acts[8];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
   ]
  },
  "daa68450": {
@@ -8811,8 +8812,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:181: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
-   "src/UiHeltec.cpp:389: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
+   "src/UiHeltec.cpp:215: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
+   "src/UiHeltec.cpp:425: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
   ]
  },
  "daf0f315": {
@@ -8839,7 +8840,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:79: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
+   "src/UiHeltec.cpp:113: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
   ]
  },
  "dbd2bbf3": {
@@ -8848,7 +8849,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:388: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
+   "src/UiHeltec.cpp:424: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
   ]
  },
  "dbdadd08": {
@@ -8857,7 +8858,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:363: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
+   "src/UiHeltec.cpp:399: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
   ]
  },
  "dbdfa26c": {
@@ -8866,7 +8867,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:292: if(config.role==RoleNormal)sayRight(126,62,t(\"hold: open the game\",\"держ: открыть партию\"),small);"
+   "src/UiHeltec.cpp:328: if(config.role==RoleNormal)sayRight(126,62,t(\"hold: open the game\",\"держ: открыть партию\"),small);"
   ]
  },
  "dbef9d2d": {
@@ -8884,7 +8885,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:360: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}"
+   "src/UiHeltec.cpp:396: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}"
   ]
  },
  "dc18b5d9": {
@@ -8902,7 +8903,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:115: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
+   "src/UiHeltec.cpp:149: void joinedNotice(MeshRadio::ChannelResult r,const String& name){notice(r==MeshRadio::ChannelAdded?t(\"Joined \",\"Вступили: \")+name:r==MeshRadio::ChannelExists?t(\"Already in \",\"Уже в канале \")+name:r==MeshRadio::ChannelFul"
   ]
  },
  "dc6208b5": {
@@ -8911,7 +8912,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:304: t(\"click-next hold-choose\",\"клик-далее держ-выбор\")"
+   "src/UiHeltec.cpp:340: t(\"click-next hold-choose\",\"клик-далее держ-выбор\")"
   ]
  },
  "dca15068": {
@@ -8994,7 +8995,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:176: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:210: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "df449de6": {
@@ -9012,7 +9013,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:394: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);"
+   "src/UiHeltec.cpp:430: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);"
   ]
  },
  "df643044": {
@@ -9021,7 +9022,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:52: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
+   "src/UiHeltec.cpp:86: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}"
   ]
  },
  "df759f29": {
@@ -9123,7 +9124,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:204: if(!strcmp(a,\"resign\")){if(m->state!=ChessMatch::Playing)return true;finish(*m,m->mine==White?ChessMatch::WhiteWon:ChessMatch::BlackWon,ChessMatch::Resigned);news(*m,String(m->name)+tr(\" resigned: you won\",\" сдался: вы п"
+   "src/ChessNet.cpp:205: if(!strcmp(a,\"resign\")){if(m->state!=ChessMatch::Playing)return true;finish(*m,m->mine==White?ChessMatch::WhiteWon:ChessMatch::BlackWon,ChessMatch::Resigned);news(*m,String(m->name)+tr(\" resigned: you won\",\" сдался: вы п"
   ]
  },
  "e1d6680b": {
@@ -9132,7 +9133,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:79: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
+   "src/UiHeltec.cpp:113: switch(radar.wifi){case Radar::WifiPortal:return t(\"Wi-Fi: access point\",\"Wi-Fi: точка доступа\");case Radar::WifiBusy:return t(\"Wi-Fi busy\",\"Wi-Fi занят\");case Radar::WifiFailed:return t(\"Wi-Fi error\",\"Ошибка Wi-Fi\");def"
   ]
  },
  "e1ecaa5a": {
@@ -9177,7 +9178,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:350: say(0,52,String(radar.activity*1000,1)+t(\" / thr \",\" / порог \")+String(threshold*1000,1)+(radar.baseline>0?\"\":\"*\"),small);"
+   "src/UiHeltec.cpp:386: say(0,52,String(radar.activity*1000,1)+t(\" / thr \",\" / порог \")+String(threshold*1000,1)+(radar.baseline>0?\"\":\"*\"),small);"
   ]
  },
  "e3077ca9": {
@@ -9197,7 +9198,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:223: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
+   "src/UiHeltec.cpp:257: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
   ]
  },
  "e3a856ac": {
@@ -9233,7 +9234,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:175: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:209: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "e4fe0cf0": {
@@ -9271,7 +9272,7 @@
   ],
   "where": [
    "src/Ui.cpp:500: if(!radar.count)textCenter(252,110,state.length()?state:t(\"No signals yet\",\"Сигналов пока нет\"),radar.wifi==Radar::WifiReady?dim:warn,small);",
-   "src/UiHeltec.cpp:369: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
+   "src/UiHeltec.cpp:405: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
  "e6b593c8": {
@@ -9353,7 +9354,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:202: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
+   "src/ChessNet.cpp:203: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
   ]
  },
  "e8ddba89": {
@@ -9362,7 +9363,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:388: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
+   "src/UiHeltec.cpp:424: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen"
   ]
  },
  "e8ecae43": {
@@ -9380,7 +9381,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:70: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
+   "src/UiHeltec.cpp:104: if(r.kind==RadarTarget::Ble)switch(r.device){case RadarTarget::Phone:return t(\"phone\",\"телефон\");case RadarTarget::Watch:return t(\"watch\",\"часы\");case RadarTarget::Audio:return t(\"headphones\",\"наушники\");case RadarTarget"
   ]
  },
  "e96df6ee": {
@@ -9409,8 +9410,8 @@
   ],
   "where": [
    "src/UiServer.inc:36: String reply=setRole(selected);bool done=reply.startsWith(\"OK\");notice(done?t(\"Restarting: \",\"Перезапуск: \")+roleTitle(selected):reply,done?ok:bad);return true;",
-   "src/UiHeltec.cpp:414: if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;return;}",
-   "src/UiHeltec.cpp:436: if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;}return;}"
+   "src/UiHeltec.cpp:450: if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;return;}",
+   "src/UiHeltec.cpp:472: if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;}return;}"
   ]
  },
  "ea17de99": {
@@ -9475,7 +9476,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:182: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
+   "src/UiHeltec.cpp:216: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
   ]
  },
  "ec0794a8": {
@@ -9486,7 +9487,7 @@
   ],
   "where": [
    "src/Ui.cpp:227: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return t(\"now\",\"сейчас\");if(s<3600)return String(s/60)+t(\" min\",\" мин\");if(s<86400)return String(s/3600)+t(\" h\",\" ч\");return String(s/86400)+t(\" d\",\" д\");}",
-   "src/UiHeltec.cpp:297: for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,roleShort(r),body,!focus);if(r==config.role)sayRight(125,y,t(\"now\",\"сейчас\"),small,!focus);}"
+   "src/UiHeltec.cpp:333: for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,focusBack);say(3,y,roleShort(r),body,focus?focusText:1);if(r==config.role)sayRight(125,y,t(\"now\",\"сейчас\"),small,focus?fo"
   ]
  },
  "ec0c2450": {
@@ -9504,7 +9505,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:179: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:213: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "ec7f8c84": {
@@ -9623,7 +9624,7 @@
   ],
   "where": [
    "src/Ui.cpp:521: text(14,142,\"-100\",faint,small);textRight(306,142,\"-35 dBm\",faint,small);textCenter(160,142,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak)))+\" dBm (\"+String(radar.fast-radar.peak,0)+\")\":String(\"-\")),dim,",
-   "src/UiHeltec.cpp:358: sayRight(128,41,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak))):String(\"-\")),small);"
+   "src/UiHeltec.cpp:394: sayRight(128,41,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak))):String(\"-\")),small);"
   ]
  },
  "f0619d14": {
@@ -9750,7 +9751,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:389: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
+   "src/UiHeltec.cpp:425: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
   ]
  },
  "f3b78c07": {
@@ -9768,7 +9769,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:237: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
+   "src/UiHeltec.cpp:271: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
   ]
  },
  "f5175dd0": {
@@ -9788,8 +9789,8 @@
   ],
   "where": [
    "src/Ui.cpp:586: if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(\" MHz\",\" МГц\");case 1:return String(c.bandwidth,1)+t(\" kHz\",\" кГц\");case 2:return \"SF\"+String(c.sf);case 3:return \"4/\"+String(c.cr);case 4:return String(c.p",
-   "src/UiHeltec.cpp:313: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,t(\"Radio error\",\"Ошибка радио\"));",
-   "src/UiHeltec.cpp:330: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
+   "src/UiHeltec.cpp:349: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,t(\"Radio error\",\"Ошибка радио\"));",
+   "src/UiHeltec.cpp:366: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
   ]
  },
  "f639bb47": {
@@ -9856,7 +9857,7 @@
   ],
   "where": [
    "src/Ui.cpp:683: footer({{\"OK\",hardware.fsOk?t(\"Crypto test + sound\",\"Тест шифрования и звука\"):t(\"Create storage...\",\"Создать хранилище...\")},{\"BACK\",t(\"Back\",\"Назад\")}});",
-   "src/UiHeltec.cpp:168: case ActFormat:return t(\"Create storage...\",\"Создать хранилище...\");"
+   "src/UiHeltec.cpp:202: case ActFormat:return t(\"Create storage...\",\"Создать хранилище...\");"
   ]
  },
  "f7ade58d": {
@@ -9865,7 +9866,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:356: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
+   "src/UiHeltec.cpp:392: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady"
   ]
  },
  "f7b306da": {
@@ -9930,8 +9931,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:181: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
-   "src/UiHeltec.cpp:389: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
+   "src/UiHeltec.cpp:215: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
+   "src/UiHeltec.cpp:425: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);"
   ]
  },
  "fa43649a": {
@@ -9960,7 +9961,7 @@
   ],
   "where": [
    "src/Ui.cpp:236: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:341: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:377: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "fa65940f": {
@@ -10026,7 +10027,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:235: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
+   "src/UiHeltec.cpp:269: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
   ]
  },
  "fcc3ce37": {
@@ -10035,7 +10036,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:371: t(\"BLE and LoRa\",\"BLE и LoRa\")"
+   "src/UiHeltec.cpp:407: t(\"BLE and LoRa\",\"BLE и LoRa\")"
   ]
  },
  "fd249ae3": {
@@ -10081,7 +10082,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:346: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
+   "src/UiHeltec.cpp:382: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
  "fe802820": {
@@ -10146,7 +10147,7 @@
   ],
   "where": [
    "src/Ui.cpp:844: static uint32_t armed=0;if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"),warn);return;}",
-   "src/UiHeltec.cpp:195: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"));break;}"
+   "src/UiHeltec.cpp:229: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"));break;}"
   ]
  },
  "ffad6b6e": {
@@ -10164,7 +10165,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:342: else if(p->position)say(0,51,t(\"has GPS position\",\"есть GPS-позиция\"),small);}"
+   "src/UiHeltec.cpp:378: else if(p->position)say(0,51,t(\"has GPS position\",\"есть GPS-позиция\"),small);}"
   ]
  }
 }

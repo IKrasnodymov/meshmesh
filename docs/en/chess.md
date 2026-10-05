@@ -221,9 +221,12 @@ R — resend an undelivered command immediately (otherwise the retry is automati
 cancel an invitation or delete a finished game, H — help. Moves are written in
 Russian notation (Кр, Ф, Л, С, К) if the Russian interface is selected.
 
-Up to 6 games are stored at a time; a new one takes a free slot or the oldest
-viewed finished game. An invitation for which there is no room is declined
-automatically.
+Up to 6 games are stored at a time (on every board). A new game — your challenge, someone else's, or a
+tournament pairing — takes a free slot or the place of the oldest finished game: an opened one first, then
+also one nobody opened (on boards without a chess screen nobody opens finished games). A finished game stays
+until the opponent's rating signature has arrived and the tournament report has gone; its result is in the
+rating ledger by then. Games in progress and challenges are never pushed out: with six games in progress a new
+challenge is declined automatically, and your own gets “Six games in progress: finish one”.
 
 ## Web page
 

@@ -114,7 +114,7 @@ void drawChessList(){
  chessSortRows();int total=1+chessRowCount;if(selected>=total)selected=total-1;int first=max(0,selected-3);
  for(int i=first;i<total&&i<first+4;i++){
   int y=46+(i-first)*44;bool focus=selected==i;listRow(y,42,focus);target(8,y,304,42,i);
-  if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t("New game","Новая партия"),ink,bold);text(56,y+32,fit(chessNet.count()>=ChessNet::MaxMatches?t("All boards busy: finish a game","Все доски заняты: завершите партию"):t("Challenge a chat contact","Вызвать чат-контакт"),240,small),dim,small);continue;}
+  if(i==0){g().fillCircle(32,y+21,14,rgb(0x14524b));g().fillRect(31,y+13,3,17,accent);g().fillRect(24,y+20,17,3,accent);text(56,y+17,t("New game","Новая партия"),ink,bold);text(56,y+32,fit(!chessNet.room()?t("Six games in progress: finish one","Идут шесть партий: завершите одну"):t("Challenge a chat contact","Вызвать чат-контакт"),240,small),dim,small);continue;}
   const ChessMatch& m=*chessRows[i-1];Peer* p=peerOf(m.peer);avatar(32,y+21,14,m.peer,m.name,p?p->type:-1);colorDisc(44,y+32,m.mine);
   String right=m.game.plies?moveCount(m):String();if(m.updated)right=timeText(m.updated);if(m.tour)right=t("R","т")+String(m.round)+" · "+right;int rw=measure(right,small);
   text(56,y+17,fit(m.name,232-rw,bold),ink,bold);textRight(304,y+16,right,faint,small);
@@ -312,7 +312,7 @@ bool chessKey(int key){
    return key==Enter||key==KeyHold||key==Erase;
   }
   if(key==KeyUp||key==KeyDown){chessSortRows();int total=1+chessRowCount;selected=(selected+(key==KeyUp?-1:1)+total)%total;return true;}
-  if(key==Enter||key==KeyHold){chessSortRows();if(!selected){if(chessNet.count()>=ChessNet::MaxMatches&&!chessRowCount)return true;change(ChessPick);}else chessEnter(chessRows[selected-1]);return true;}
+  if(key==Enter||key==KeyHold){chessSortRows();if(!selected){if(!chessNet.room()){notice(t("Six games in progress: finish one","Идут шесть партий: завершите одну"),warn);return true;}change(ChessPick);}else chessEnter(chessRows[selected-1]);return true;}
   if(key==Erase&&selected){chessSortRows();ChessMatch& m=*chessRows[selected-1];if(m.state!=ChessMatch::Over){notice(t("Only finished games can be removed","Удалить можно только оконченную партию"),dim);return true;}
    if(!chessRemoveArmed){chessRemoveArmed=true;notice(t("DEL again removes the game","DEL ещё раз удалит партию"),warn);return true;}chessRemoveArmed=false;chessNet.remove(m);notice(t("Game removed","Партия удалена"),ok);return true;}
   if(key==KeyBack){change(Home);return true;}
