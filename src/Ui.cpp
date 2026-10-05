@@ -9,6 +9,7 @@
 #include "ChessNet.h"
 #include "ChessRating.h"
 #include "ChessTour.h"
+#include "ChessSync.h"
 #include "MeshServer.h"
 #include <Preferences.h>
 #include <Mm1Packet.h>

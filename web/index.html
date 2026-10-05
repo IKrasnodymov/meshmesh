@@ -881,6 +881,7 @@ function renderChessRating(){
  const diff=h.length>=2?h[h.length-1]-h[0]:0;
  $('chessRatingView').innerHTML=`<div class="card pad" style="display:flex;gap:12px;align-items:center"><div><small class="muted">Ваш рейтинг</small><div style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">${r.elo}</div>${h.length>=2?`<small class="${diff>=0?'ok':'bad'}">${diff>=0?'+':''}${diff} за ${plural(h.length-1,'партию','партии','партий')}</small>`:''}</div>${chart}</div>
 <p class="small muted" style="margin:8px 4px">${n?`${plural(n,'партия','партии','партий')} на рейтинг: <span class="ok">+${r.wins}</span> =${r.draws} <span class="bad">−${r.losses}</span>`:'Партий на рейтинг пока нет'} · записей в журнале: ${r.records} из ${r.max_records}</p>
+${r.ledger?`<div class="card pad" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><span class="small muted" style="flex:1;min-width:0">Журнал сверен с ${plural(r.ledger.synced,'узлом','узлами','узлами')}${r.ledger.received?` · получено записей: ${r.ledger.received}`:''}${r.ledger.queue?` · в очереди сообщений: ${r.ledger.queue}`:''}. Записи чужих партий проверяются по подписям обоих игроков.</span><button class="btn" data-ledger="1">Сверить журнал сейчас</button></div>`:''}
 <h3>Игроки</h3>${(r.players||[]).length?`<div class="list">${r.players.map((p,i)=>{const c=peer(p.id),name=c?c.name:p.name||p.id;return `<div class="row">${avatar(p.id,name,1)}<span class="main"><b>${i+1}. ${esc(name)}</b><small>${plural(p.games,'партия','партии','партий')} в рейтинге · ваш счёт +${p.wins} =${p.draws} −${p.losses}</small></span><span class="side"><b>${p.elo}</b></span></div>`}).join('')}</div>`:'<p class="small faint" style="margin:8px 4px">Здесь появятся соперники по партиям на рейтинг.</p>'}
 <p class="small faint" style="margin:10px 4px">Партия на рейтинг засчитывается, когда оба игрока подписали её результат ключом своего узла. Рейтинг ELO: начальный 1500, коэффициент 32 первые 20 партий, затем 20; с одним соперником в сутки засчитываются 3 партии.</p>`}
 // Tournaments: the list with each one's standings and games; the organiser's actions; the creation form.
@@ -969,6 +970,7 @@ async function chessCommand(line,ok,tone='ok'){chessQuiet=true;try{const r=await
 async function chessClick(d){
  if(d.chesscolor!==undefined){chessColor=+d.chesscolor;store('chess-color',chessColor);renderChessList();return}
  if(d.chessview){chessTab=d.chessview;store('chess-tab',chessTab);if(chessTab==='rating')chessRatingAt='';refreshChess(true);renderChessList();return}
+ if(d.ledger){const r=await chessCommand('chess sync');if(r)notify(r.replace(/^OK sync with (\d+) nodes$/,(m,n)=>+n?`Сверка журнала с узлами: ${n}`:'За сутки не слышно игроков с рейтингом'),'ok');chessRatingAt='';return}
  if(d.tour!==undefined){
   if(d.tour==='create'){const f=tourForm,name=($('tourName').value||'').trim();if(!name){notify('Введите название','warn');return}
    const r=await chessCommand(`tour create ${+$('tourRounds').value} ${+$('tourHours').value} ${f.picked.join(',')} ${name}`,'Приглашения отправлены');if(r){tourForm=null;tours=null;refreshChess(true)}return}
@@ -1001,9 +1003,9 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
   if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy){chanClick(d);return}
-  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.promo){chessClick(d);return}
+  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.ledger||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
   else if(d.csi)radarAction({action:'csi',role:d.csi}).then(pollRadar)});

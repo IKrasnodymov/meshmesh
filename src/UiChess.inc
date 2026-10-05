@@ -143,8 +143,10 @@ void drawChessRating(){
   for(int k=0;k<3;k++)for(int px=gx;px<gx+gw;px+=4)g().drawPixel(px,gy+k*gh/3,line);
   auto py=[&](int v){return gy+gh-(v-lo)*gh/(hi-lo);};
   for(unsigned i=1;i<h;i++)thickLine(gx+(i-1)*gw/(h-1),py(rating::book.history[i-1]),gx+i*gw/(h-1),py(rating::book.history[i]),accent);
-  g().fillCircle(gx+gw,py(rating::book.history[h-1]),3,accent);textRight(gx+gw,gy+gh+10,count(h,"game","games","партия","партии","партий"),faint,small);}
+  g().fillCircle(gx+gw,py(rating::book.history[h-1]),3,accent);}
  else textCenter(gx+gw/2,gy+gh/2+4,t("history after 2 games","история после 2 партий"),faint,small);
+ // The ledger: records kept here and nodes compared with (S compares now).
+ textRight(gx+gw,gy+gh+10,t("ledger ","журнал ")+String(rating::book.records)+" · "+t("synced ","сверен ")+String(ledger::exchange.synced()),faint,small);
  // Players: everyone in the book except me, the highest rating first.
  unsigned order[rating::MaxPlayers],n=0;for(unsigned i=1;i<rating::book.playerCount;i++){const rating::Player& p=rating::book.players[i];if(p.games||p.wins+p.draws+p.losses)order[n++]=i;}
  for(unsigned i=1;i<n;i++)for(unsigned j=i;j>0&&rating::book.players[order[j]].elo>rating::book.players[order[j-1]].elo;j--)std::swap(order[j],order[j-1]);
@@ -156,7 +158,7 @@ void drawChessRating(){
   text(18,ry+16,String(i+1),faint,small);avatar(40,ry+12,9,id,name,1);text(56,ry+17,fit(name,130,bold),ink,bold);textRight(222,ry+17,String(int(lroundf(p.elo))),ink,bold);
   textRight(304,ry+16,"+"+String(p.wins)+" ="+String(p.draws)+" -"+String(p.losses),dim,small);}
  scrollbar(first,3,n,138,78);
- footer({{"<>",t("Tabs","Разделы")},{"^v",t("Players","Игроки")},{"BACK",t("Menu","Меню")}});
+ footer({{"<>",t("Tabs","Разделы")},{"^v",t("Players","Игроки")},{"S",t("Sync","Сверить")},{"BACK",t("Menu","Меню")}});
 }
 void drawChessPick(){
  chessSortPeers();panel(8,24,304,30,card,7);text(18,43,t("You play","Вы играете"),dim);
@@ -305,6 +307,7 @@ bool chessKey(int key){
   if(chessTab==1)return tourListKey(key);
   if(chessTab==2){ // rating: up/down go through the players
    if(key==KeyUp||key==KeyDown){chessRatingSel=max(0,chessRatingSel+(key==KeyUp?-1:1));return true;}
+   if(key=='s'){unsigned n=ledger::exchange.startAll();notice(n?t("Comparing ledgers with ","Сверка журнала с узлами: ")+String(n):String(t("No rated players heard in a day","За сутки не слышно игроков с рейтингом")),n?ok:dim);return true;}
    if(key==KeyBack){change(Home);return true;}
    return key==Enter||key==KeyHold||key==Erase;
   }

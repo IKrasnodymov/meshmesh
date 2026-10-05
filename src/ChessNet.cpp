@@ -1,6 +1,7 @@
 #include "ChessNet.h"
 #include "ChessRating.h"
 #include "ChessTour.h"
+#include "ChessSync.h"
 #include "Config.h"
 #include "MeshRadio.h"
 #include "Hardware.h"
@@ -304,10 +305,7 @@ String chessLocalSan(const char* san){
   }
   return out;
 }
-String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();
-#if !defined(MM_NRF52)
-  d["tours"]=tour::net.waiting(); // the page shows the Tournaments tab where they exist
-#endif
+String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();d["tours"]=tour::net.waiting(); // the page shows the Tournaments tab
 String s;serializeJson(d,s);s.remove(s.length()-1);return s+",\"games\":"+json()+"}";}
 String ChessNet::detail(const ChessMatch& m) const{
   DynamicJsonDocument d(12288);char id[5];snprintf(id,sizeof id,"%04X",m.id);d["id"]=id;
@@ -339,7 +337,11 @@ String ChessNet::json() const{
 String ChessNet::command(const String& line){
   if(line=="chess")return json();
   if(line=="chess web")return web();
-  if(line=="chess rating")return rating::book.json();
+  if(line=="chess rating"){String s=rating::book.json();s.remove(s.length()-1);return s+",\"ledger\":"+ledger::exchange.json()+"}";}
+  // chess sync [NODE_ID]: compare ledgers now with one node, or with every rated player heard in a day.
+  if(line=="chess sync"){unsigned n=ledger::exchange.startAll();return "OK sync with "+String(n)+" nodes";}
+  if(line.startsWith("chess sync ")){char* e=nullptr;uint64_t id=strtoull(line.c_str()+11,&e,16);return id&&e&&!*e&&ledger::exchange.start(id)?String("OK sync started"):String("ERR chess sync [NODE_ID]");}
+  if(line=="chess rating clear")return rating::book.clear()?"OK rating cleared":"ERR rating not ready";
   String rest=line.substring(6);rest.trim();int sp=rest.indexOf(' ');String verb=sp<0?rest:rest.substring(0,sp),arg=sp<0?String():rest.substring(sp+1);arg.trim();
   if(verb=="invite"){
     // chess invite NODE_ID [w|b|r] [friendly]: rated unless "friendly"

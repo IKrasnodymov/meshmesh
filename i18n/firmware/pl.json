@@ -134,6 +134,11 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": brak potwierdzenia 24 h, R ponawia"
  },
+ "c8bcc2e2": {
+  "en": "Rating ledger: records received ",
+  "ru": "Журнал рейтинга: получено записей ",
+  "text": "Rejestr rankingu: odebrane wpisy "
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -208,11 +213,6 @@
   "en": "Tournament: cannot save",
   "ru": "Турнир: не удалось сохранить",
   "text": "Turniej: nie można zapisać"
- },
- "b00dafff": {
-  "en": ": tournaments do not fit this board",
-  "ru": ": турниры не помещаются в эту плату",
-  "text": ": turnieje nie mieszczą się na tej płytce"
  },
  "7a76bf2e": {
   "en": "Tournament: message queue full",
@@ -2981,6 +2981,16 @@
   "ru": "история после 2 партий",
   "text": "historia po 2 partiach"
  },
+ "492d5978": {
+  "en": "ledger ",
+  "ru": "журнал ",
+  "text": "rejestr "
+ },
+ "87b75f3c": {
+  "en": "synced ",
+  "ru": "сверен ",
+  "text": "zsynchr. "
+ },
  "7e7e954a": {
   "en": "Players",
   "ru": "Игроки",
@@ -2995,6 +3005,11 @@
   "en": "Rated games against contacts appear here",
   "ru": "Здесь появятся соперники по партиям на рейтинг",
   "text": "Tu pojawią się rywale z partii rankingowych"
+ },
+ "3a92cf46": {
+  "en": "Sync",
+  "ru": "Сверить",
+  "text": "Synchr."
  },
  "d528eacc": {
   "en": "You play",
@@ -3275,6 +3290,16 @@
   "en": "Not allowed: the king is in check",
   "ru": "Нельзя: королю шах",
   "text": "Nie wolno: król jest szachowany"
+ },
+ "3fcdce20": {
+  "en": "Comparing ledgers with ",
+  "ru": "Сверка журнала с узлами: ",
+  "text": "Porównanie rejestru z węzłami: "
+ },
+ "a46ee9f8": {
+  "en": "No rated players heard in a day",
+  "ru": "За сутки не слышно игроков с рейтингом",
+  "text": "Przez dobę brak graczy z rankingiem"
  },
  "07fd4beb": {
   "en": "Only finished games can be removed",

@@ -23,6 +23,7 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include <SHA256.h>
 #include "ChessNet.h"
 #include "ChessTour.h"
+#include "ChessSync.h"
 #include "MeshServer.h"
 MeshRadio meshRadio;
 #if defined(MM_RADIO_SX1262)
@@ -106,7 +107,7 @@ class MeshCoreBackend:public BaseChatMesh {
  bool duplicate(uint64_t source,uint32_t stamp,const char* text){uint32_t hash;mesh::Utils::sha256((uint8_t*)&hash,4,(const uint8_t*)text,strlen(text));for(const auto& r:received)if(r.source==source&&r.stamp==stamp&&r.hash==hash)return true;received[nextReceived]={source,stamp,hash};nextReceived=(nextReceived+1)%128;return false;}
  void receiveMessage(uint64_t source,uint64_t dest,uint32_t stamp,const char* name,const char* text,const mesh::Packet* packet,uint8_t hops){size_t n=strnlen(text,MAX_TEXT_LEN+1);if(!n||n>MAX_TEXT_LEN||!meshmesh::validUtf8((const uint8_t*)text,n)){owner.rejected++;return;}if(duplicate(source,stamp,text))return;for(unsigned i=0;i<owner.historyCount;i++){const auto& old=owner.history[i];if(old.protocol==2&&!old.outgoing&&old.source==source&&old.session==stamp&&!strcmp(old.text,text))return;}
   // Chess commands come only from direct messages of keyed contacts, never from the channel.
-  if(!channels::isChannel(dest)&&(chessNet.receive(source,name,text)||tour::net.receive(source,name,text)))return;
+  if(!channels::isChannel(dest)&&(chessNet.receive(source,name,text)||tour::net.receive(source,name,text)||ledger::exchange.receive(source,name,text)))return;
  ChatMessage m;m.source=source;m.destination=dest;m.timestamp=uint32_t(time(nullptr));m.session=stamp;m.route=packet->isRouteFlood()?ChatMessage::RouteFlood:ChatMessage::RouteDirect;m.hops=hops;mesh::Utils::sha256((uint8_t*)&m.id,4,(const uint8_t*)text,n);copyUtf8(m.name,name,sizeof(m.name));copyUtf8(m.text,text,sizeof(m.text));owner.addMessage(m);hardware.beep();owner.event="New message from "+String(m.name);}
  void updateContact(const ContactInfo& c,bool heard,uint8_t hops=255){ // hops 255: not known, kept
   if(!meshmesh::validUtf8((const uint8_t*)c.name,strnlen(c.name,sizeof(c.name)))){owner.rejected++;return;}

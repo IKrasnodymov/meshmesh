@@ -114,8 +114,8 @@ accepted the result, not that different people hold them. The daily limit restri
 
 ## Tournament (Swiss system)
 
-The organiser is any M9, T-Deck, Heltec or other ESP32 board with MeshMesh (tournaments do not fit the
-GAT562 flash: it declines an invitation and tells why; it still plays rated games outside tournaments).
+The organiser is any board with MeshMesh: M9, T-Deck, Heltec, GAT562 and the community boards (on the GAT562
+the tournament fitted once the images were split by language).
 A tournament is created on the M9 (“Chess” → the “Tournaments” tab → “Create a tournament”: name,
 players from the chat contacts, the number of rounds and the time a move), on the web page or over USB
 `tour create ROUNDS HOURS ID,ID,... NAME`. Up to 10 players with the organiser, up to 9 rounds; up to
@@ -156,9 +156,34 @@ time. If the organiser disappears, the tournament stops — organising is not ha
 
 **Where it shows.** M9 and T-Deck: the “Tournaments” tab (the list, an invitation, gathering players, the
 tournament page with your game of the round, the standings and the games — ◂▸, OK — to the game), the
-tournament strip on the board, pop-ups and a lit screen for a round's pairing and the result. Heltec — a
-pop-up with the news; playing and answering are on the web page. Web page and app: the “Tournaments” tab
+tournament strip on the board, pop-ups and a lit screen for a round's pairing and the result. Heltec and GAT562 — a
+pop-up with the news; answering an invitation and the standings are on the web page or in the app, and the
+GAT562 can play on its screen too. Web page and app: the “Tournaments” tab
 with the same actions and a creation form (`GET /api/tour`, USB `tour`).
+
+## Ledger exchange
+
+Records with both signatures spread between nodes, so everyone who has them shows the same ratings — also
+for games a node did not see. A record carries both players' keys and signatures, so a node checks it by itself
+and accepts it from any contact; a forged or changed record is dropped.
+
+| Text (`♜` — U+265C) | Meaning |
+|---|---|
+| `♜sum 12 A1B2C3D4` | the number of newest records (up to 64) and a digest of their numbers |
+| `♜ok` | the ledgers match |
+| `♜inv 1/2 1A2B3C4D,5E6F7A8B,…` | the newest record numbers (a number is the first 4 bytes of the record's SHA-256), 15 a message |
+| `♜want 1A2B3C4D,…` | missing records (at most 10 a session) |
+| `♜rec 1A2B3C4D 2/3 <base64>` | a record in three parts: without `MMR1` and the flags, both times, both signatures (222 bytes) |
+
+A session: one node sends `sum`; if they differ the other sends its list, the first asks for what it lacks and
+sends its own list, the second asks for what it lacks. Messages go at most every 6 s and only when the radio is
+free; incoming ones are handled in the main loop. A sync starts by itself when a node is heard that played rated
+games or has synced before — at most every 6 hours per node; by hand — S on the M9 “Rating” tab, the “Sync the
+ledger now” button on the web page, USB `chess sync` (every such node heard in a day) or `chess sync NODE_ID`.
+When the ledger is full, a record older than the oldest kept one is not accepted: it may already be in the
+players' base and would count twice. Nodes with ledgers of different size (128 records on ESP32, 40 on GAT562)
+may differ slightly in ratings after old records move into the base. `chess rating clear` over USB empties the
+ledger (for example before restoring it by syncing with the neighbours).
 
 ## M9 screen
 

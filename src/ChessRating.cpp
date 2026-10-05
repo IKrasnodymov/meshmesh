@@ -108,6 +108,8 @@ bool Book::add(const Record& rec,const char* opponentName){
   if(!ready)return false;Record* all=(Record*)malloc(sizeof(Record)*(MaxRecords+1));if(!all)return false;
   unsigned n=load(all);
   for(unsigned i=0;i<n;i++)if(!memcmp(all[i].core,rec.core,CoreSize)){free(all);return false;}
+  // Full: a record older than every kept one may be one already folded into the base; it would count twice.
+  if(n>=MaxRecords){bool older=true;for(unsigned i=0;i<n&&older;i++)older=before(rec,all[i]);if(older){free(all);return false;}}
   all[n++]=rec;
   if(n>MaxRecords){ // the oldest goes into the players' base
     unsigned oldest=0;for(unsigned i=1;i<n;i++)if(before(all[i],all[oldest]))oldest=i;
@@ -118,6 +120,25 @@ bool Book::add(const Record& rec,const char* opponentName){
   replay(all,n);
   for(const uint8_t* key:{rec.core+OffWhite,rec.core+OffBlack}){int k=index(key);if(k>0&&opponentName&&opponentName[0])strlcpy(players[k].name,opponentName,sizeof players[k].name);}
   bool ok=save(all,n);free(all);return ok;
+}
+uint32_t Book::idOfRecord(const Record& r){SHA256 h;h.reset();h.update(r.core,CoreSize);uint8_t d[32];h.finalize(d,32);return uint32_t(d[0])<<24|uint32_t(d[1])<<16|uint32_t(d[2])<<8|d[3];}
+unsigned Book::newest(uint32_t* ids,unsigned cap){
+  Record* all=(Record*)malloc(sizeof(Record)*MaxRecords);if(!all)return 0;unsigned n=load(all);
+  for(unsigned i=1;i<n;i++)for(unsigned j=i;j>0&&before(all[j-1],all[j]);j--)std::swap(all[j],all[j-1]); // newest first
+  unsigned k=0;for(;k<n&&k<cap;k++)ids[k]=idOfRecord(all[k]);free(all);return k;
+}
+bool Book::get(uint32_t id,Record& out){
+  Record* all=(Record*)malloc(sizeof(Record)*MaxRecords);if(!all)return false;unsigned n=load(all);bool found=false;
+  for(unsigned i=0;i<n&&!found;i++)if(idOfRecord(all[i])==id){out=all[i];found=true;}free(all);return found;
+}
+uint32_t Book::digest(unsigned& count,unsigned cap){
+  uint32_t ids[MaxRecords];count=newest(ids,min(cap,MaxRecords));
+  for(unsigned i=1;i<count;i++)for(unsigned j=i;j>0&&ids[j]<ids[j-1];j--)std::swap(ids[j],ids[j-1]); // order-free
+  SHA256 h;h.reset();h.update(ids,count*4);uint8_t d[32];h.finalize(d,32);return uint32_t(d[0])<<24|uint32_t(d[1])<<16|uint32_t(d[2])<<8|d[3];
+}
+bool Book::clear(){
+  if(!ready)return false;uint8_t self[32];memcpy(self,players[0].key,32);char name[25];memcpy(name,players[0].name,25);
+  playerCount=0;index(self);memcpy(players[0].name,name,25);replay(nullptr,0);return save(nullptr,0);
 }
 String Book::json() const{
   DynamicJsonDocument d(6144);const Player& me=players[0];

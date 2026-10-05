@@ -12,6 +12,7 @@
 #include "Internet.h"
 #include "ChessNet.h"
 #include "ChessTour.h"
+#include "ChessSync.h"
 #include "Board.h"
 #include "Power.h"
 #include <Wire.h>
@@ -97,7 +98,7 @@ void appSetup() {
   Serial.println("READY: USB commands are available; type help");
 }
 void appLoop() {
-  hardware.tick();meshRadio.tick();if(config.role==RoleNormal){chessNet.tick();tour::net.tick();} // games wait for the normal mode
+  hardware.tick();meshRadio.tick();if(config.role==RoleNormal){chessNet.tick();tour::net.tick();ledger::exchange.tick();} // games wait for the normal mode
 #if !defined(MM_COMPACT)
   internet.tick();
 #endif

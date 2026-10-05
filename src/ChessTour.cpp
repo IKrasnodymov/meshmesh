@@ -4,7 +4,6 @@
 #include "MeshRadio.h"
 #include "Config.h"
 #include <ArduinoJson.h>
-#if !defined(MM_NRF52)
 namespace tour {
 Net net;
 namespace {
@@ -362,30 +361,7 @@ void Net::load(){
 }
 }
 
-#else
-// GAT562 (nRF52): the flash has no room for tournaments. Invitations are answered "no" and the
-// player is told; rated games outside tournaments work as usual.
-namespace tour {
-Net net;
-bool Tour::organising() const{return false;}
-int Tour::index(uint64_t) const{return -1;}
-const char* Tour::nameOf(uint64_t) const{return "";}
-void Net::begin(){}void Net::tick(){}
-bool Net::delivery(uint32_t,uint8_t){return false;}
-void Net::gameOver(ChessMatch&){}
-Tour* Net::find(uint16_t){return nullptr;}
-unsigned Net::waiting() const{return 0;}
-bool Net::receive(uint64_t from,const char* name,const char* text){
-  if(strncmp(text,"\xe2\x99\x9e",3))return false;
-  if(strlen(text)>12&&!strncmp(text+7," inv ",5)){char no[16];snprintf(no,sizeof no,"\xe2\x99\x9e%.4s no",text+3);meshRadio.sendGame(no,from);
-    event=String(name)+tr(": tournaments do not fit this board",": турниры не помещаются в эту плату");events++;dirty=true;}
-  return true;
-}
-String Net::command(const String&){return "ERR tournaments are not available on this board";}
-String Net::json() const{return "[]";}
-}
-#endif
-#if !defined(MM_UI_PREVIEW) && !defined(MM_NRF52)
+#if !defined(MM_UI_PREVIEW)
 #include <LittleFS.h>
 #include "Hardware.h"
 namespace tour {

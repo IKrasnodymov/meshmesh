@@ -134,6 +134,11 @@
   "ru": ": нет подтверждения 24 ч, R — повторить",
   "text": ": 24 sa onay yok, R ile yeniden gönder"
  },
+ "c8bcc2e2": {
+  "en": "Rating ledger: records received ",
+  "ru": "Журнал рейтинга: получено записей ",
+  "text": "Derece kaydı: alınan kayıtlar "
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -208,11 +213,6 @@
   "en": "Tournament: cannot save",
   "ru": "Турнир: не удалось сохранить",
   "text": "Turnuva: kaydedilemedi"
- },
- "b00dafff": {
-  "en": ": tournaments do not fit this board",
-  "ru": ": турниры не помещаются в эту плату",
-  "text": ": turnuvalar bu cihaza sığmıyor"
  },
  "7a76bf2e": {
   "en": "Tournament: message queue full",
@@ -2969,6 +2969,16 @@
   "ru": "история после 2 партий",
   "text": "geçmiş 2 oyundan sonra"
  },
+ "492d5978": {
+  "en": "ledger ",
+  "ru": "журнал ",
+  "text": "kayıt "
+ },
+ "87b75f3c": {
+  "en": "synced ",
+  "ru": "сверен ",
+  "text": "eşleşti "
+ },
  "7e7e954a": {
   "en": "Players",
   "ru": "Игроки",
@@ -2983,6 +2993,11 @@
   "en": "Rated games against contacts appear here",
   "ru": "Здесь появятся соперники по партиям на рейтинг",
   "text": "Dereceli oyun rakipleri burada görünür"
+ },
+ "3a92cf46": {
+  "en": "Sync",
+  "ru": "Сверить",
+  "text": "Eşle"
  },
  "d528eacc": {
   "en": "You play",
@@ -3263,6 +3278,16 @@
   "en": "Not allowed: the king is in check",
   "ru": "Нельзя: королю шах",
   "text": "Geçersiz: şahınız tehdit altında"
+ },
+ "3fcdce20": {
+  "en": "Comparing ledgers with ",
+  "ru": "Сверка журнала с узлами: ",
+  "text": "Kayıt eşleme, düğüm: "
+ },
+ "a46ee9f8": {
+  "en": "No rated players heard in a day",
+  "ru": "За сутки не слышно игроков с рейтингом",
+  "text": "Bir gündür dereceli oyuncu duyulmadı"
  },
  "07fd4beb": {
   "en": "Only finished games can be removed",

@@ -46,6 +46,12 @@ class Book {
   void begin(const uint8_t selfKey[32],const char* selfName);
   // A record with both signatures checked. False when it is there already or cannot be stored.
   bool add(const Record& r,const char* opponentName);
+  // Ledger exchange (ChessSync.h): records by number, the newest ones, a digest of them, clearing.
+  static uint32_t idOfRecord(const Record& r);   // the first 4 bytes of SHA-256 over the core
+  unsigned newest(uint32_t* ids,unsigned cap);    // newest first
+  bool get(uint32_t id,Record& out);
+  uint32_t digest(unsigned& count,unsigned cap);  // over the newest `cap` record numbers, in order
+  bool clear();                                   // forget every record and player (USB, repair)
   int myElo() const{return ready?int(lroundf(players[0].elo)):Start;}
   int elo(uint64_t id) const;                 // Start for players without counted games
   unsigned games(uint64_t id) const;
