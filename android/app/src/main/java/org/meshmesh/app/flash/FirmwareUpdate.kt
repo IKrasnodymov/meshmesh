@@ -61,7 +61,7 @@ sealed class FlashPort {
  * partition table, boot_app0 and the application at their offsets. NVS (key, settings, contacts)
  * and LittleFS (history) stay; the language stays too (the plain partitions.bin, no language mark).
  */
-class FirmwareUpdate(private val context: Context, private val port: FlashPort, private val env: String,
+class FirmwareUpdate(private val context: Context, private val port: FlashPort, private val env: String, private val lang: String?,
                      private val access: suspend (UsbDevice) -> Boolean, private val onState: (JSONObject) -> Unit) {
     /** ESP32: [parts] with their offsets; nRF52: [dfu], the application and its init packet (site paths). */
     class Target(val env: String, val name: String, val chip: String, val flashSize: Int, val version: String,
@@ -76,7 +76,7 @@ class FirmwareUpdate(private val context: Context, private val port: FlashPort, 
         lock.acquire(15 * 60_000L)
         try {
             state("Загрузка прошивки с сайта…")
-            val target = target(env)
+            val target = target(env, lang)
             target.dfu?.let { (bin, dat) -> nrf(get(ROOT + bin), get(ROOT + dat)); return@withContext target }
             val parts = target.parts.mapIndexed { i, (path, offset) ->
                 state("Загрузка ${path} (${i + 1}/${target.parts.size})…")
@@ -99,7 +99,7 @@ class FirmwareUpdate(private val context: Context, private val port: FlashPort, 
         }
     }
 
-    /** nRF52: the application only, by the bootloader's serial DFU; the language field stays "--" (kept). */
+    /** nRF52: the application only, by the bootloader's serial DFU; the language field stays "--" (the setting is kept). */
     private suspend fun nrf(image: ByteArray, init: ByteArray) {
         if (!NrfDfu.initMatches(image, init) || image.size < 100_000 || image.size > 0xC0000)
             throw IOException("Файлы прошивки с сайта не сходятся: обновление отменено")
@@ -133,12 +133,23 @@ class FirmwareUpdate(private val context: Context, private val port: FlashPort, 
             return if (board == "heltec_v4" && status.optLong("psram") > 3_000_000) "heltec_v4_r8" else board
         }
 
-        fun target(env: String): Target {
+        /**
+         * The screen language whose nRF52 image to install: the one the running image carries besides
+         * English and Russian (status "langs"), or for firmware before per-language images its setting.
+         */
+        suspend fun langFor(status: JSONObject, config: suspend () -> JSONObject): String? {
+            if (status.has("langs")) return status.optString("langs").split(' ').firstOrNull { it.isNotEmpty() && it != "en" && it != "ru" }
+            return try { config().optString("lang").takeIf { it.isNotEmpty() } } catch (e: Exception) { if (e is kotlinx.coroutines.CancellationException) throw e; null }
+        }
+
+        /** [lang]: an nRF52 board gets the image with that screen language (lang_images; en and ru are in every one). */
+        fun target(env: String, lang: String? = null): Target {
             val boards = JSONObject(String(get(SITE + "boards.json")))
             val list = boards.getJSONArray("boards")
             val b = (0 until list.length()).map { list.getJSONObject(it) }.firstOrNull { it.optString("env") == env }
                 ?: throw IOException("На сайте нет прошивки для этой платы ($env)")
-            b.optJSONObject("dfu")?.let { d ->
+            b.optJSONObject("dfu")?.let { base ->
+                val d = lang?.let { b.optJSONObject("lang_images")?.optJSONObject(it) } ?: base
                 return Target(env, b.optString("name"), b.optString("chip"), 0, boards.optString("version"), emptyList(), d.getString("bin") to d.getString("dat"))
             }
             val manifest = JSONObject(String(get(SITE + "$env/manifest.json")))

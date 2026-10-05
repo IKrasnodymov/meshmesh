@@ -9,7 +9,9 @@ chooses to erase the device.
 
 Device language: manifest-<lang>.json writes partitions-<lang>.bin, the partition table with
 "MMLANG:<lang>" in the unused tail of its sector (0x8C00); the firmware applies it once
-(src/I18n.cpp, Config::load). nRF52 images carry a "MMLANG:--" field that the page fills in.
+(src/I18n.cpp, Config::load). nRF52 images carry a "MMLANG:--" field that the page fills in; their
+1 MB flash holds English, Russian and one more language, so each language has its own image
+(lang_images in boards.json, firmware/<env>/lang/<code>/).
 Screenshots in every language come from tools/site_shots.py (artifacts/site-shots).
 """
 import json
@@ -73,13 +75,29 @@ def main():
             shutil.copyfile(package/'firmware.bin', target/'firmware.bin')
             if (package/'firmware.bin').read_bytes().count(lang_field('--')) != 1:
                 raise SystemExit(f'{env}: firmware.bin needs exactly one language field')
+            # 1 MB flash: the root image has English and Russian, lang/<code>/ one more language each (tools/nrf52.py).
+            lang_images = {}
+            for code in CODES[2:]:
+                src, dst = package/'lang'/code, target/'lang'/code
+                dst.mkdir(parents=True)
+                with zipfile.ZipFile(src/'firmware-dfu.zip') as dfu:
+                    if dfu.read('firmware.bin') != (src/'firmware.bin').read_bytes():
+                        raise SystemExit(f'{env} {code}: DFU package and firmware.bin differ')
+                    (dst/'firmware.dat').write_bytes(dfu.read('firmware.dat'))
+                if (src/'firmware.bin').read_bytes().count(lang_field('--')) != 1:
+                    raise SystemExit(f'{env} {code}: firmware.bin needs exactly one language field')
+                for f in ('firmware.bin', 'firmware.uf2'):
+                    shutil.copyfile(src/f, dst/f)
+                lang_images[code] = {n: f'firmware/{env}/lang/{code}/firmware.{n}' for n in ('bin', 'dat', 'uf2')}
             archive = out/'firmware'/f'meshmesh-{TARGETS[env]}-{version}.zip'
             with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
-                for f in sorted(package.iterdir()):
-                    z.write(f, f'{package.name}/{f.name}')
+                # the language images as UF2 files only (copy to the bootloader drive): the archive stays small
+                for f in sorted(package.rglob('*')):
+                    if f.is_file() and (f.parent == package or f.name == 'firmware.uf2'):
+                        z.write(f, f'{package.name}/{f.relative_to(package)}')
             boards.append({'env': env, 'name': board_json['name'].removeprefix('MeshMesh / '), 'chip': 'nRF52840', 'flash': '1MB',
                            'verified': env in VERIFIED, 'community': False, 'install': 'uf2', 'uf2': f'firmware/{env}/firmware.uf2', 'langs': True,
-                           'dfu': {'bin': f'firmware/{env}/firmware.bin', 'dat': f'firmware/{env}/firmware.dat'},
+                           'dfu': {'bin': f'firmware/{env}/firmware.bin', 'dat': f'firmware/{env}/firmware.dat'}, 'lang_images': lang_images,
                            'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
             continue
         chip = COMMUNITY[env][1] if env in COMMUNITY else 'esp32s3'

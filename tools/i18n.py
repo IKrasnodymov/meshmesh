@@ -287,8 +287,13 @@ def table(entries, family, tour=True):
             blob += value.encode() + b'\0'
         if len(blob) >= 1 << 16:
             raise SystemExit(f'{code}: {len(blob)} bytes do not fit 16-bit offsets')
+        # MM_LANG_IN (src/I18n.cpp): an nRF52 image keeps only the language it is built for.
+        out.append(f'#if MM_LANG_IN({CODES.index(code)})')
         out.append(f'const uint16_t {code}Offsets[count]={{' + ','.join(map(str, offsets)) + '};')
         out.append(f'const char {code}Text[{len(blob)}]=' + c_literal(blob.decode()[:-1]) + ';')
+        out.append('#else')
+        out.append(f'constexpr const uint16_t* {code}Offsets=nullptr;constexpr const char* {code}Text=nullptr;')
+        out.append('#endif')
     out.append('const uint16_t* const offsets[]={' + ','.join(f'{c}Offsets' for c in TRANSLATED) + '};')
     out.append('const char* const texts[]={' + ','.join(f'{c}Text' for c in TRANSLATED) + '};')
     return out

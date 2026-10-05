@@ -8,6 +8,11 @@ enum Lang:uint8_t {LangEn,LangRu,LangUk,LangEs,LangPt,LangFr,LangDe,LangIt,LangP
 extern const char* const langCodes[LangCount]; // "en", "ru", ...
 extern const char* const langNames[LangCount]; // each in its own language
 int langFromCode(const String& code); // -1 when unknown
+// Whether this image has the language. ESP32 images have all; an nRF52 image (1 MB flash) has English,
+// Russian and the one language it is built for (MM_LANG_EXTRA, its number; tools/pio_lang.py, the site
+// installs the image of the chosen language).
+bool langAvailable(uint8_t l);
+uint8_t langStep(uint8_t l,int dir); // the next (dir>0) or previous available language
 // The text in the interface language; a string without a translation shows English.
 const char* tr(const char* en,const char* ru);
 // "5 games": the number and the noun form its language needs. English and Russian are the arguments

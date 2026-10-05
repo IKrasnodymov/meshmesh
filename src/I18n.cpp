@@ -1,6 +1,14 @@
 #include "I18n.h"
 #include "Config.h"
 #include <U8g2_for_Adafruit_GFX.h>
+#if defined(MM_NRF52)
+#if !defined(MM_LANG_EXTRA)
+#define MM_LANG_EXTRA 0
+#endif
+#define MM_LANG_IN(l) ((l)<2||(l)==MM_LANG_EXTRA)
+#else
+#define MM_LANG_IN(l) 1
+#endif
 #include "I18nTable.h"
 #include "I18nFonts.h"
 #include <algorithm>
@@ -13,6 +21,8 @@
 const char* const langCodes[LangCount]={"en","ru","uk","es","pt","fr","de","it","pl","tr","zh","ja","ko","ar","id"};
 const char* const langNames[LangCount]={"English","Русский","Українська","Español","Português","Français","Deutsch","Italiano","Polski","Türkçe","中文","日本語","한국어","العربية","Bahasa Indonesia"};
 int langFromCode(const String& code){for(int i=0;i<LangCount;i++)if(code==langCodes[i])return i;return -1;}
+bool langAvailable(uint8_t l){return l<LangCount&&MM_LANG_IN(l);}
+uint8_t langStep(uint8_t l,int dir){for(int i=0;i<LangCount;i++){l=(l+LangCount+(dir<0?-1:1))%LangCount;if(langAvailable(l))break;}return l;}
 
 namespace {
 uint8_t lang(){return config.lang<LangCount?config.lang:LangEn;}
@@ -28,6 +38,7 @@ const char* lookup(uint32_t key){
  unsigned lo=0,hi=i18nTable::count;
  while(lo<hi){unsigned mid=(lo+hi)/2;if(i18nTable::keys[mid]<key)lo=mid+1;else hi=mid;}
  if(lo>=i18nTable::count||i18nTable::keys[lo]!=key)return nullptr;
+ if(!i18nTable::texts[l-2])return nullptr;
  const char* s=i18nTable::texts[l-2]+i18nTable::offsets[l-2][lo];return *s?s:nullptr;
 }
 // CLDR plural categories: 0 zero, 1 one, 2 two, 3 few, 4 many, 5 other.
@@ -151,7 +162,7 @@ uint8_t glyphCells(uint32_t cp){
 
 const uint8_t* const* fallbackFonts(const uint8_t* font){
  static const uint8_t* list[8];unsigned n=0;
- bool small=font==u8g2_font_5x8_t_cyrillic||font==u8g2_font_4x6_t_cyrillic;
+ [[maybe_unused]] bool small=font==u8g2_font_5x8_t_cyrillic||font==u8g2_font_4x6_t_cyrillic;
  if(font==u8g2_font_6x13_t_cyrillic){list[n++]=u8g2_font_6x13_tf;list[n++]=mmFontExt13;}
  else if(font==u8g2_font_6x13B_t_cyrillic){list[n++]=u8g2_font_6x13B_tf;list[n++]=mmFontExt13B;}
  else if(font==u8g2_font_5x8_t_cyrillic){list[n++]=u8g2_font_5x8_tf;list[n++]=mmFontExt8;}
@@ -159,9 +170,22 @@ const uint8_t* const* fallbackFonts(const uint8_t* font){
  else if(font==u8g2_font_10x20_t_cyrillic){list[n++]=u8g2_font_10x20_tf;list[n++]=mmFontExt20;}
  else if(font==u8g2_font_6x12_t_cyrillic){list[n++]=u8g2_font_6x12_tf;list[n++]=mmFontExt12;}
  // CJK and Arabic: the interface language's own script first, so shared Han characters take its forms.
- const uint8_t* zh=small?mmFontZh8:mmFontZh12,*ja=small?mmFontJa8:mmFontJa12,*ko=small?mmFontKo8:mmFontKo12;
- uint8_t l=lang();
- if(l==LangJa){list[n++]=ja;list[n++]=zh;}else{list[n++]=zh;list[n++]=ja;}
- list[n++]=ko;list[n++]=mmFontAr12;list[n]=nullptr;
+ // An image without a language leaves its fonts out (the linker drops them).
+ const uint8_t* zh=nullptr,*ja=nullptr,*ko=nullptr,*ar=nullptr;
+#if MM_LANG_IN(10) // LangZh: the preprocessor sees numbers, not the enum
+ zh=small?mmFontZh8:mmFontZh12;
+#endif
+#if MM_LANG_IN(11)
+ ja=small?mmFontJa8:mmFontJa12;
+#endif
+#if MM_LANG_IN(12)
+ ko=small?mmFontKo8:mmFontKo12;
+#endif
+#if MM_LANG_IN(13)
+ ar=mmFontAr12;
+#endif
+ if(lang()==LangJa)std::swap(zh,ja);
+ for(const uint8_t* f:{zh,ja,ko,ar})if(f)list[n++]=f;
+ list[n]=nullptr;
  return list;
 }

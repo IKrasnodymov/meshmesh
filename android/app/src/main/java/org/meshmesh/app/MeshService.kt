@@ -225,6 +225,7 @@ class MeshService : Service() {
     // then the app connects again. A failed write can be repeated: the board stays in its loader.
     private var flashPort: FlashPort? = null
     private var flashEnv: String? = null
+    private var flashLang: String? = null
     private var flashing: Job? = null
     val flashingNow get() = flashing?.isActive == true
     /** Set by the activity: Android's access question for a USB device that appears during an update. */
@@ -236,15 +237,20 @@ class MeshService : Service() {
         if (flashing?.isActive == true) return
         val port = flashPort ?: return publish("failed", null, "Прошивка ставится только при подключении по USB")
         flashing = scope.launch {
-            val env = if (retry) flashEnv else api?.let { a ->
-                runCatching { FirmwareUpdate.envFor(JSONObject(a.request("GET", "/api/status", null).body)) }.getOrNull()
+            if (!retry) { flashEnv = null; flashLang = null }
+            if (!retry) api?.let { a ->
+                runCatching {
+                    val status = JSONObject(a.request("GET", "/api/status", null).body)
+                    flashEnv = FirmwareUpdate.envFor(status)
+                    flashLang = FirmwareUpdate.langFor(status) { JSONObject(a.request("GET", "/api/config", null).body) }
+                }
             }
+            val env = flashEnv
             if (env.isNullOrEmpty()) return@launch publish("failed", port.kind, "Не удалось определить плату")
-            flashEnv = env
             disconnect(null)
             flashPort = port
             try {
-                val target = FirmwareUpdate(this@MeshService, port, env, ::usbAccess) { s -> state = s; onState(s.toString()) }.run()
+                val target = FirmwareUpdate(this@MeshService, port, env, flashLang, ::usbAccess) { s -> state = s; onState(s.toString()) }.run()
                 flashEnv = null
                 publish("flashing", port.kind, "MeshMesh ${target.version} записана. Подключение…")
                 delay(5000)

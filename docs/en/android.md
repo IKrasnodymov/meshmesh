@@ -60,7 +60,8 @@ WebView debugging is enabled (`chrome://inspect`).
   and V4 R8 report the same board — the PSRAM size picks the revision. GAT562 (nRF52): `NrfDfu` — a
   1200-baud touch, the bootloader appears as a separate USB device (Android asks for access to it during
   the update), then the serial DFU as `site/nrf52dfu.js` does (the packets match byte for byte,
-  `NrfDfuTest`): only the application is written, the board's storage and the `--` language mark stay.
+  `NrfDfuTest`): only the application is written — the image with the screen language the board already
+  has (`langs` in the status, the site's `lang_images`) — the board's storage and the `--` language mark stay.
   While the update runs, the app does not connect by itself to devices that appear.
 - `api/HttpApi` — Wi-Fi: the device's HTTP server (`src/Portal.cpp`) with Basic authentication.
 - `api/CommandApi` — USB and BLE: every page request becomes the command that

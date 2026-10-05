@@ -621,7 +621,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'hops',n:'Предел наших пересылок',h:'Только пакеты, пересылаемые этим узлом',t:'num',min:0,max:7,step:1},
  {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'}]:[
  {k:'name',n:'Имя',h:'1–24 байта UTF-8',t:'text'},
- config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:SCREEN_LANGS},
+ config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:status.langs?'Язык меню устройства; другие языки — прошивка с этим языком с сайта':'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:status.langs?SCREEN_LANGS.filter(x=>status.langs.split(' ').includes(x[0])):SCREEN_LANGS},
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
  ...h?[]:[{k:'sound',n:'Звуки',h:'Сигнал о сообщениях и подтверждениях',t:'sw'},{k:'auto_lock',n:'Автоблокировка, с',h:'0 = выкл, 30–600 с',t:'num',min:0,max:600,step:30}],
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},

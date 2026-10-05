@@ -566,7 +566,7 @@ document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)re
 let BOARDS=[],board='m9';
 const SUB=['gat562_30s','m9','heltec_v4','heltec_v4_r8','tdeck'];
 // The device language: the site's unless the visitor picked another; ESP32 boards get the partition table
-// with it (firmware/<env>/manifest-<code>.json), nRF52 boards a patched image (nrf52 module below).
+// with it (firmware/<env>/manifest-<code>.json), nRF52 boards the image with that language, patched (nrf52 module below).
 let fwLangPicked=false;
 const fwLang=()=>document.getElementById('fwLang').value;
 function fwLangDefault(){if(!fwLangPicked)document.getElementById('fwLang').value=lang;}
@@ -607,7 +607,9 @@ let continuing=false;
 function label(next){continuing=next;el('nrfLabel').innerHTML='<span>'+T(next?'nrf.continue':'btn.install')+'</span>';}
 function say(text,cls='',progress=null){const s=el('nrfStatus');s.hidden=false;s.className='note '+cls;el('nrfText').textContent=text;const p=el('nrfProgress');p.hidden=progress===null;if(progress!==null)p.value=progress;}
 window.nrfReset=()=>{el('nrfStatus').hidden=true;label(false);};
-async function files(b){const get=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.arrayBuffer()}).then(a=>new Uint8Array(a));return Promise.all([get(b.dfu.bin),get(b.dfu.dat)]);}
+// 1 MB flash: English and Russian in every image, each other language in its own (lang_images).
+const image=(b,code)=>b.lang_images&&b.lang_images[code]||{bin:b.dfu&&b.dfu.bin,dat:b.dfu&&b.dfu.dat,uf2:b.uf2};
+async function files(b){const get=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.arrayBuffer()}).then(a=>new Uint8Array(a));const i=image(b,fwLang());return Promise.all([get(i.bin),get(i.dat)]);}
 el('nrfInstall').addEventListener('click',async()=>{
  const b=BOARDS.find(x=>x.env===board)||BOARDS[0],btn=el('nrfInstall');
  if(!b||!b.dfu)return;
@@ -630,7 +632,7 @@ el('nrfInstall').addEventListener('click',async()=>{
 el('uf2').addEventListener('click',async e=>{
  const b=BOARDS.find(x=>x.env===board);if(!b||!b.uf2||e.currentTarget.dataset.ready)return;
  e.preventDefault();const a=e.currentTarget;
- try{const raw=new Uint8Array(await (await fetch(b.uf2)).arrayBuffer());
+ try{const r=await fetch(image(b,fwLang()).uf2);if(!r.ok)throw new Error(r.url+' '+r.status);const raw=new Uint8Array(await r.arrayBuffer());
   const url=URL.createObjectURL(new Blob([uf2WithLanguage(raw,fwLang())],{type:'application/octet-stream'}));
   a.href=url;a.dataset.ready=1;a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.href=b.uf2;delete a.dataset.ready},4000);
  }catch(err){say(T('nrf.error')+err.message,'warn');}

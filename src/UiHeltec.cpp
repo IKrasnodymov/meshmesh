@@ -221,7 +221,7 @@ void run(Act a){
  case ActPosition:notice(meshRadio.sendPosition()?t("Position shared","Позиция передана"):t("Needs a GPS fix","Нужна позиция GPS"));break;
  case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
  case ActSound:applyOne("sound",!config.sound);hardware.beep();break;
- case ActLanguage:applyOne("lang",langCodes[(config.lang+1)%LangCount]);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
+ case ActLanguage:applyOne("lang",langCodes[langStep(config.lang,1)]);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
  case ActContrast:{const uint8_t steps[]={10,60,150,255};int i=0;while(i<3&&steps[i]<config.brightness)i++;applyOne("brightness",steps[(i+1)%4]);break;}
  case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t("Homing started","Пеленг начат"));}break;}

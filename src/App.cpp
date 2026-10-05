@@ -44,6 +44,7 @@ String statusJson() {
   d["event"]=meshRadio.event;d["wifi"]=portalActive();
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
+  {String l;for(int i=0;i<LangCount;i++)if(langAvailable(i))l+=String(l.length()?" ":"")+langCodes[i];d["langs"]=l;} // the screen languages of this image
 #endif
   d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
@@ -126,7 +127,7 @@ String applySettings(JsonObjectConst v) {
       if(name=="auto_lock")next.autoLock=n;else next.dimAfter=n;
     } else if(name=="lang") {
       int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
-      if(l<0){String all;for(int i=0;i<LangCount;i++)all+=String(i?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;
+      if(l<0||!langAvailable(l)){String all;for(int i=0;i<LangCount;i++)if(langAvailable(i))all+=String(all.length()?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;
     } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian"||name=="battery_volts"||name=="lock_details") {
       if(!value.is<bool>())return "ERR boolean required";bool n=value.as<bool>();
       if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="battery_volts")next.batteryVolts=n;if(name=="lock_details")next.lockDetails=n;

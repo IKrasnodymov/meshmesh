@@ -22,9 +22,10 @@ void Config::load() {
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);lockDetails=p.getBool("lock_txt",true);
   utcOffset=p.getShort("utc_offset",180);
   // Language: "lang" since 0.3.7; older versions kept only "russian".
-  lang=p.isKey("lang")?p.getUChar("lang",LangEn):p.getBool("russian",false)?LangRu:LangEn;if(lang>=LangCount)lang=LangEn;
+  lang=p.isKey("lang")?p.getUChar("lang",LangEn):p.getBool("russian",false)?LangRu:LangEn;
+  if(!langAvailable(lang))lang=LangEn; // not in this image (nRF52): English until an image with it is installed
   // The site installer's choice applies once per installation; afterwards Settings decide.
-  String chosen=installLanguage();if(chosen.length()&&p.getString("inst_lang","")!=chosen){lang=langFromCode(chosen);p.putUChar("lang",lang);p.putString("inst_lang",chosen);}
+  String chosen=installLanguage();if(chosen.length()&&langAvailable(langFromCode(chosen))&&p.getString("inst_lang","")!=chosen){lang=langFromCode(chosen);p.putUChar("lang",lang);p.putString("inst_lang",chosen);}
   role=p.getUChar("role",RoleNormal);if(role>=RoleCount)role=RoleNormal;
   if(p.getBytesLength("key")==32) p.getBytes("key",key,32);
   else {bootloader_random_enable();esp_fill_random(key,32);bootloader_random_disable();p.putBytes("key",key,32);}
