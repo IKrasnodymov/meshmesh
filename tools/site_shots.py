@@ -19,7 +19,7 @@ from i18n import CODES  # noqa: E402
 M9 = ['threads-channels', 'channel-private', 'channel-add', 'chat-invite', 'role-boot', 'repeater', 'room', 'room-post', 'threads', 'chat', 'chat-public', 'map', 'library', 'nodes', 'node', 'radar',
       'homing', 'motion', 'chess-italian', 'chess-promotion', 'locked-chess', 'chess-rating', 'chess-pick-rated', 'chess-rated-result', 'tour-final', 'tour-new-players', 'tour-invite', 'solitaire-played', 'sensors', 'home', 'layout', 'locked', 'settings',
       'radio', 'diagnostics']
-HELTEC = ['invite-menu', 'role', 'repeater', 'room', 'messages', 'popup', 'nodes', 'radar', 'homing', 'gps', 'settings', 'home', 'messages-menu', 'wifi-on']
+HELTEC = ['invite-menu', 'role', 'repeater', 'room', 'messages', 'popup', 'nodes', 'radar', 'homing', 'gps', 'settings', 'home', 'messages-menu', 'wifi-on', 'chess-piece', 'chess-move', 'chess-gamemenu', 'chess-list']
 GAT562 = ['home', 'keyboard', 'chess', 'chess-list', 'radar', 'node-menu']
 
 

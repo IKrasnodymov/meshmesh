@@ -5,6 +5,8 @@ Heltec challenges M9, M9 accepts on its production screen (USB key events), the 
 a short game to checkmate and must agree on every position. A repeated and an illegal move sent
 as plain text must be ignored, and no chess command may appear in either chat history.
 The test game is removed from both boards afterwards; other games are left untouched.
+With --heltec-screen the Heltec plays its moves on its OLED with the one button (USB key events:
+click = next choice, hold = take it), as a person would; otherwise by the USB command.
 """
 import argparse
 import json
@@ -14,6 +16,8 @@ from device import connect, command
 from ports import M9_PORT, HELTEC_PORT
 
 TAG = '♟'
+CHESS_LIST = 7  # "Game list" in the game menu: ChessAct in src/UiChessCompact.inc
+CLICK, HOLD = 13, 0xa3
 MOVES = ['e2e4', 'e7e5', 'f1c4', 'b8c6', 'd1h5', 'g8f6', 'h5f7']  # White (Heltec) mates on move 4
 
 
@@ -68,10 +72,57 @@ def accept_on_screen(m9, gid):
     ok(m9, 'uikey 13')
 
 
+def square(name):
+    return (ord(name[0]) - ord('a')) + 8 * (int(name[1]) - 1)
+
+
+def open_on_screen(heltec, gid):
+    """Bring the Heltec to the board of gid: through the screens, the game list and its menu."""
+    advance = False  # the game list opened another game: step to the next one
+    for _ in range(60):
+        ui = read(heltec, 'ui')
+        if ui.get('screen_off') or ui['popup'] or ui['chess_popup']:
+            ok(heltec, f'uikey {CLICK}')
+        elif ui['page'] != 'chess':
+            if ui['menu']:
+                time.sleep(10.5)  # a screen menu closes by itself
+            else:
+                ok(heltec, f'uikey {CLICK}')
+        elif ui.get('chess_game') == gid:
+            return
+        elif 'chess_game' in ui:  # another board: its menu, "Game list"
+            advance = True
+            ok(heltec, f'uikey {HOLD if not ui["chess_menu"] or ui.get("chess_act") == CHESS_LIST else CLICK}')
+        elif ui['menu']:  # several games: Open, Next game, Close
+            if advance:
+                ok(heltec, f'uikey {HOLD if ui["menu_index"] == 1 else CLICK}')
+                advance = ui['menu_index'] != 1
+            else:
+                ok(heltec, f'uikey {HOLD if ui["menu_index"] == 0 else CLICK}')
+        else:
+            ok(heltec, f'uikey {HOLD}')  # one game opens, several open the menu
+    raise AssertionError(f'{gid} did not open on the Heltec screen')
+
+
+def move_on_screen(heltec, gid, move):
+    """Click to the piece, hold, click to the square, hold."""
+    open_on_screen(heltec, gid)
+    for target, held in ((square(move[:2]), -1), (square(move[2:4]), square(move[:2]))):
+        for _ in range(40):
+            ui = read(heltec, 'ui')
+            if ui['chess_cursor'] == target and ui['chess_held'] == held:
+                break
+            ok(heltec, f'uikey {CLICK}')
+        else:
+            raise AssertionError(f'{move}: the cursor never reached square {target}: {ui}')
+        ok(heltec, f'uikey {HOLD}')
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--m9', default=M9_PORT)
     p.add_argument('--heltec', default=HELTEC_PORT)
+    p.add_argument('--heltec-screen', action='store_true', help='the Heltec moves with its button (USB key events)')
     p.add_argument('--output', type=Path, default=Path('artifacts/chess-check.json'))
     a = p.parse_args()
     with connect(a.m9) as m9, connect(a.heltec) as heltec:
@@ -88,7 +139,11 @@ def main():
         positions = []
         for ply, move in enumerate(MOVES, 1):
             sender, receiver = (heltec, m9) if ply % 2 else (m9, heltec)
-            ok(sender, f'chess move {gid} {move}')
+            if sender is heltec and a.heltec_screen:
+                move_on_screen(heltec, gid, move)
+                wait(f'{move} played on the Heltec screen', lambda: game(heltec, gid)['plies'] == ply, 10)
+            else:
+                ok(sender, f'chess move {gid} {move}')
             delivered(sender, gid)
             wait(f'ply {ply} arrived', lambda: game(receiver, gid)['plies'] == ply)
             a_fen, b_fen = game(m9, gid)['fen'], game(heltec, gid)['fen']
@@ -114,12 +169,13 @@ def main():
             assert c['rx'] > b['rx'] and c['tx'] > b['tx'], 'no radio traffic counted'
         report = {'result': 'passed', 'game': gid, 'moves': MOVES, 'positions': positions,
                   'result_on_both': 'white mates', 'ignored': ['repeat of ply 1', 'illegal e1e3'],
-                  'accepted_on_m9_screen': True, 'chat_copies': 0,
+                  'accepted_on_m9_screen': True, 'heltec_moves_on_screen': a.heltec_screen, 'chat_copies': 0,
                   'before': [{'node': s['node'], 'boot': s['boot'], 'rx': s['rx'], 'tx': s['tx']} for s in before],
                   'after': [{'node': s['node'], 'boot': s['boot'], 'rx': s['rx'], 'tx': s['tx']} for s in after]}
     a.output.parent.mkdir(exist_ok=True)
     a.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
-    print(f'PASS chess {gid}: challenge, screen accept, {len(MOVES)} plies to mate, repeat/illegal ignored')
+    how = ', Heltec moves with its button' if a.heltec_screen else ''
+    print(f'PASS chess {gid}: challenge, screen accept, {len(MOVES)} plies to mate{how}, repeat/illegal ignored')
 
 
 if __name__ == '__main__':

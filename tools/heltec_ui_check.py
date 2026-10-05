@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Verify the production nine-page OLED UI, its one-button menus and a physical-radio quick reply."""
+"""Verify the production ten-page OLED UI, its one-button menus and a physical-radio quick reply."""
 import json,time
 from pathlib import Path
 from contextlib import ExitStack
 from device import connect,command,screenshot
 from radio_check import delivery
 from ports import M9_PORT, HELTEC_PORT
+
+CHESS_LIST=7 # "Game list" in the game menu: ChessAct in src/UiChessCompact.inc
 
 def read(d,c):return json.loads(command(d,c))
 def key(d,c):
@@ -27,8 +29,15 @@ def main():
    if read(heltec,'ui')['page']=='home':break
    key(heltec,13)
   snapshots=[]
-  for name in ('home','messages','nodes','radar','gps','wifi','ble','settings','modules'):
+  for name in ('home','messages','nodes','chess','radar','gps','wifi','ble','settings','modules'):
    ui=read(heltec,'ui');assert ui['page']==name and not ui['menu']
+   if name=='chess' and 'chess_game' in ui:
+    # An open board keeps the click for its choices: its menu goes back to the list.
+    key(heltec,0xa3)
+    for _ in range(8):
+     if read(heltec,'ui').get('chess_act')==CHESS_LIST:break
+     key(heltec,13)
+    key(heltec,0xa3);assert 'chess_game' not in read(heltec,'ui')
    if name not in ('wifi','ble'):
     screenshot(heltec,f'artifacts/heltec-{name}-0.3.ppm');snapshots.append(name)
    if name=='messages':
@@ -60,6 +69,6 @@ def main():
   assert read(heltec,'ui')['page']=='home'
   after=[read(d,'status') for d in (m9,heltec)]
   for a,b in zip(before,after):assert a['boot']==b['boot'] and a['diagnostic_rx']==b['diagnostic_rx']
-  p=Path('artifacts/heltec-ui-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps({'input':'simulated USB key events through production OLED UI; not physical-button automation','checks':['nine pages','hold opens menu; menu reply: physical LoRa delivery + ACK','settings menu closes unchanged','Wi-Fi/BLE controls','encryption action feedback'],'snapshots':snapshots,'before':before,'after':after},ensure_ascii=False,indent=2)+'\n')
-  print('PASS nine OLED pages, menu quick reply with physical LoRa ACK, Wi-Fi/BLE controls and encryption feedback')
+  p=Path('artifacts/heltec-ui-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps({'input':'simulated USB key events through production OLED UI; not physical-button automation','checks':['ten pages','hold opens menu; menu reply: physical LoRa delivery + ACK','settings menu closes unchanged','Wi-Fi/BLE controls','encryption action feedback'],'snapshots':snapshots,'before':before,'after':after},ensure_ascii=False,indent=2)+'\n')
+  print('PASS ten OLED pages, menu quick reply with physical LoRa ACK, Wi-Fi/BLE controls and encryption feedback')
 if __name__=='__main__':main()

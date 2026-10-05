@@ -62,9 +62,33 @@ static void scenario(){
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
  printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
+ auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
  shot("heltec-role");for(int i=0;i<5;i++)tick(); // the boot choice times out
- for(const char* n:{"home","messages","nodes","radar","gps","wifi","ble","settings","modules"}){shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}
+ // Each screen is reached by name: an open menu times out first, then clicks step through the screens.
+ auto go=[&](const char* n){std::string want=std::string("\"page\":\"")+n+"\"";for(int i=0;i<11&&uiStatus().indexOf("\"menu\":true")>=0;i++)tick();
+  for(int i=0;i<12&&uiStatus().indexOf(want.c_str())<0;i++)key(13);expect(n,want.c_str());};
+ for(const char* n:{"home","messages","nodes","chess","radar","gps","wifi","ble","settings","modules"}){go(n);shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}
  {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;}shot("heltec-popup");
+ // Chess with one button: hold on the list opens the game; click steps through the pieces that can move,
+ // hold picks one, click steps through its squares (then "Cancel"), hold plays. Each step checks the UI state.
+ {auto sayId=[](unsigned id,const char* body){char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X %s",id,body);chessNet.receive(peerId(0),"Heltec V4",t);};
+  auto clickTo=[&](const char* what,int sq){char want[32];snprintf(want,sizeof want,"\"chess_cursor\":%d,",sq);for(int i=0;i<40&&uiStatus().indexOf(want)<0;i++)key(13);expect(what,want);};
+  key(13); // closes the message popup
+  ChessMatch* g=chessNet.invite(peerId(0),chess::White);sayId(g->id,"yes");
+  for(const char* u:{"e2e4","e7e5","g1f3","b8c6"}){if(g->myTurn()){chess::Move mv;if(g->game.pos.parseUci(u,mv))chessNet.move(*g,mv);}else{char b[16];snprintf(b,sizeof b,"%u %s",g->game.plies+1,u);sayId(g->id,b);}}
+  chessNet.events=0;for(int i=0;i<9;i++)tick();if(uiStatus().indexOf("\"chess_popup\":true")>=0)key(13);
+  go("chess");shot("heltec-chess-list");
+  key(0xa3);expect("hold opens the only game","\"chess_game\"");shot("heltec-chess-board");
+  clickTo("f1 bishop",5);shot("heltec-chess-piece");key(0xa3);expect("bishop picked","\"chess_held\":5,");shot("heltec-chess-targets");
+  clickTo("Cancel after the squares",-1);shot("heltec-chess-cancel");key(0xa3);expect("put back","\"chess_held\":-1,");expect("cursor back on f1","\"chess_cursor\":5,");
+  key(0xa3);clickTo("c4",26);shot("heltec-chess-move");key(0xa3);
+  if(g->game.plies!=5){printf("FAIL Bc4 by the button: %u plies\n",g->game.plies);exit(1);}
+  sayId(g->id,"6 g8f6");tick();expect("their move updates the board, no popup","\"chess_popup\":false");
+  for(int i=0;i<40&&uiStatus().indexOf("\"chess_cursor\":-1,")<0;i++)key(13);expect("Game menu after the pieces","\"chess_cursor\":-1,");shot("heltec-chess-gamemenu");
+  key(0xa3);expect("game menu","\"chess_menu\":true");shot("heltec-chess-menu");
+  key(13);key(13);key(0xa3);expect("Game list","\"page\":\"chess\"");if(uiStatus().indexOf("chess_game")>=0){printf("FAIL game list: %s\n",uiStatus().c_str());exit(1);}
+  key(13);expect("click leaves the list","\"page\":\"radar\"");
+  chessNet.remove(*g);}
 #else
  shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);
  // Channels: the list, a hashtag channel's card, a private channel and its card, adding one, an invitation.

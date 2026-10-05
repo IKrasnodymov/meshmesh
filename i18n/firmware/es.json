@@ -3624,6 +3624,46 @@
    "other": "{n} partidas"
   }
  },
+ "0ea5571b": {
+  "en": "you: ",
+  "ru": "вы: ",
+  "text": "tú: "
+ },
+ "62430fa5": {
+  "en": "white",
+  "ru": "белые",
+  "text": "blancas"
+ },
+ "a2296596": {
+  "en": "black",
+  "ru": "чёрные",
+  "text": "negras"
+ },
+ "1761fab5": {
+  "en": "hold OK: menu",
+  "ru": "держ.OK: меню",
+  "text": "mant. OK: menú"
+ },
+ "49748af7": {
+  "en": "click: next",
+  "ru": "клик: далее",
+  "text": "clic: sig."
+ },
+ "cbd8b642": {
+  "en": "hold: cancel",
+  "ru": "держ: отмена",
+  "text": "mant: cancel."
+ },
+ "81762a63": {
+  "en": "hold: pick",
+  "ru": "держ: взять",
+  "text": "mant: tomar"
+ },
+ "5f25e382": {
+  "en": "hold: move",
+  "ru": "держ: сходить",
+  "text": "mant: mover"
+ },
  "9b8ef234": {
   "en": "No games yet",
   "ru": "Партий пока нет",
@@ -3633,6 +3673,11 @@
   "en": "Nodes: OK - Chess invite",
   "ru": "Узлы: OK - вызвать",
   "text": "Nodos: OK - retar"
+ },
+ "2d2cada8": {
+  "en": "Node menu: Chess invite",
+  "ru": "Меню узла: вызвать",
+  "text": "Menú nodo: retar"
  },
  "0da32845": {
   "en": "or accept a challenge",
@@ -3749,6 +3794,11 @@
   "ru": "Удалить партию",
   "text": "Borrar partida"
  },
+ "cb8bc48a": {
+  "en": "Game list",
+  "ru": "Список партий",
+  "text": "Lista de partidas"
+ },
  "6eb84c73": {
   "en": "< Back to board",
   "ru": "< К доске",
@@ -3759,25 +3809,10 @@
   "ru": "Сейчас нельзя",
   "text": "Ahora no se puede"
  },
- "0ea5571b": {
-  "en": "you: ",
-  "ru": "вы: ",
-  "text": "tú: "
- },
- "62430fa5": {
-  "en": "white",
-  "ru": "белые",
-  "text": "blancas"
- },
- "a2296596": {
-  "en": "black",
-  "ru": "чёрные",
-  "text": "negras"
- },
- "1761fab5": {
-  "en": "hold OK: menu",
-  "ru": "держ.OK: меню",
-  "text": "mant. OK: menú"
+ "4f84febf": {
+  "en": "Game menu",
+  "ru": "Меню партии",
+  "text": "Menú partida"
  },
  "8be6cc03": {
   "en": "Nothing to send",
@@ -3858,6 +3893,16 @@
   "en": "Chess: invite",
   "ru": "Шахматы: вызвать",
   "text": "Ajedrez: retar"
+ },
+ "30efb856": {
+  "en": "Open game",
+  "ru": "Открыть",
+  "text": "Abrir"
+ },
+ "2a1c483a": {
+  "en": "Next game",
+  "ru": "Следующая партия",
+  "text": "Siguiente partida"
  },
  "1bc1b700": {
   "en": "Sound: on",
@@ -4184,20 +4229,15 @@
   "ru": "клик: закрыть",
   "text": "clic: cerrar"
  },
- "ee662895": {
-  "en": "play in the app (BLE)",
-  "ru": "играть: приложение (BLE)",
-  "text": "jugar en la app (BLE)"
+ "2084d86f": {
+  "en": "OK: open the game",
+  "ru": "OK: открыть партию",
+  "text": "OK: abrir partida"
  },
- "515e76ac": {
-  "en": "play on the Wi-Fi page",
-  "ru": "играть: Wi-Fi-страница",
-  "text": "jugar en la web Wi-Fi"
- },
- "abe87456": {
-  "en": "Wi-Fi page to play",
-  "ru": "играть: включите Wi-Fi",
-  "text": "jugar: activa Wi-Fi"
+ "dbdfa26c": {
+  "en": "hold: open the game",
+  "ru": "держ: открыть партию",
+  "text": "mant: abrir partida"
  },
  "a4e55627": {
   "en": "as now in ",

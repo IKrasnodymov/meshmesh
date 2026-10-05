@@ -10,9 +10,35 @@ text. The public channel (Public) is not used for moves: its sender is not
 authenticated by a key.
 
 Code: `src/Chess.cpp` (rules), `src/ChessNet.cpp` (games, commands, storage),
-`src/UiChess.inc` (M9 screen), the “Chess” section of the web page (`web/index.html`).
-On the M9 you play on the screen or on the web page, on the Heltec — on the web page of its access
-point (the Heltec has no chess screen); the USB commands `chess ...` exist on both boards.
+`src/UiChess.inc` (M9 screen), `src/UiChessCompact.inc` (128×64 OLED), the “Chess” section of the web page
+(`web/index.html`). You play on the screen of any board that has one, or on the web page and in the app;
+the USB commands `chess ...` exist on every board.
+
+## The 128×64 screen: one button and the joystick
+
+The Heltec, the GAT562 and the community boards with an OLED show a “Chess” screen after “Nodes”: the list
+of games, a 64×64 board on the left (your side at the bottom) and, on the right, the opponent, your colour,
+the state, the last move and the delivery. A challenge comes from a node card (“Chess: invite” in its menu),
+acceptance from the game menu.
+
+One button (Heltec V4/V3, Wireless Tracker, T-Beam and the other one-button boards): a click shows the
+next choice, hold takes it.
+- In the list, hold opens the game; with several games, a menu: “Open game”, “Next game”.
+- On your move a click steps through your pieces that can move — row by row from the bottom, left to
+  right; the right side names the piece (“Ng1”), and after the last piece comes “Game menu”. Hold picks
+  the piece.
+- Then a click steps through the squares it can reach (marked with dots), the right side shows the whole
+  move (“Ng1-f3”, “e7-e8=Q”), and after the last square comes “Cancel”. Hold plays the move; a pawn
+  promotes to a queen.
+- Off your move a click goes to the next screen (the board stays open), hold opens the game menu: draw,
+  resign, resend an undelivered move, “Game list”.
+
+Stepping through legal moves only is quicker on one button than moving a cursor: at the start White
+has 10 pieces that can move, and a piece reaches up to 27 squares. The Heltec has no compass or gyroscope,
+and the M9 (accelerometer and magnetometer) has a keyboard, so pieces are not chosen by tilting.
+
+Joystick (GAT562): the cursor moves over the board, OK picks a piece and plays the move, Back drops the
+piece or returns to the list, holding OK opens the game menu.
 
 ## Commands
 
@@ -130,8 +156,7 @@ Whites, then to the one who had Black last round. With an odd number of players 
 without a bye gets a point without a game. Each player gets their pairing: colour, game number, the
 opponent's key and name (the opponent becomes a contact even if their advert is not heard; messages go
 by flood until a path is found). The game starts at once, without a challenge; when every board is busy it
-takes the place of the oldest finished game whose rating and report are done (the Heltec has no chess
-screen, so nobody opens such games), and if there is none it is created on a later attempt, every 30 s. When a game is over, each
+takes the place of the oldest finished game whose rating and report are done, and if there is none it is created on a later attempt, every 30 s. When a game is over, each
 player's device reports the result to the organiser by itself; two matching reports give the result,
 differing ones a “dispute” that the organiser settles (W/B/D on the M9 pairings screen, buttons on the web
 page, USB `tour result TOUR GAME w|b|d`). When every game of the round is decided, the organiser sends the
@@ -158,7 +183,7 @@ time. If the organiser disappears, the tournament stops — organising is not ha
 tournament page with your game of the round, the standings and the games — ◂▸, OK — to the game), the
 tournament strip on the board, pop-ups and a lit screen for a round's pairing and the result. Heltec and GAT562 — a
 pop-up with the news; answering an invitation and the standings are on the web page or in the app, and the
-GAT562 can play on its screen too. Web page and app: the “Tournaments” tab
+game can be played on the screen too. Web page and app: the “Tournaments” tab
 with the same actions and a creation form (`GET /api/tour`, USB `tour`).
 
 ## Ledger exchange
@@ -250,8 +275,9 @@ on MeshMesh (M9, Heltec, GAT562) or on the same page.
   Holding OK unlocks and opens that game at once. The “Lock screen” setting (`lock_details`,
   “Screen & device”, web page): “Hidden” leaves “Chess · N games wait” and “Unlock to read”
   without names, moves and senders.
-- Heltec: a “Chess” window on the OLED with the same text, three LED flashes, the screen
-  wakes up; a click closes the window.
+- Heltec and the other OLED boards: a “Chess” window with the same text, three LED flashes, the screen
+  wakes up; a click closes the window, hold (OK on the GAT562) opens the game. When that game is already
+  open on the screen there is no window: the board is updated.
 - Web page: a pop-up message about the opponent's move, an invitation, a draw offer,
   the result and an undelivered command; the number of games waiting for a move in the
   tab title and on the tile; optionally a sound (a button on the “Chess” page) and vibration
@@ -295,6 +321,8 @@ is a separate file, `rating.bin` (see “ELO rating”).
   checkmate, stalemate, repetition, insufficient material, rejection of an illegal move list.
 - `tools/ui_preview/build.sh m9 DIR` — the chess screens (list, selection, board, a piece with
   its moves, promotion, an undelivered move, a draw offer, help).
+- `tools/ui_preview/build.sh heltec DIR` — one button: the list, a piece, its squares, “Cancel” puts the
+  piece back, the move Bf1-c4, the opponent's reply without a pop-up, “Game menu” and “Game list”.
 - `tools/web_usb_bridge.py --port PORT` — the web page in a computer browser with the board's
   answers over USB (actions really go out over the radio); for visual checking
   without connecting to the device's Wi-Fi. Real HTTP over Wi-Fi, including
@@ -302,7 +330,9 @@ is a separate file, `rating.bin` (see “ELO rating”).
 - `tools/chess_check.py` — over the radio between the M9 and the Heltec: an invitation from the Heltec, acceptance on
   the M9 screen, a game to checkmate with matching positions after every half-move, a repeat and
   an illegal move as text are ignored, commands do not get into the chat history,
-  no restarts. Part of `finish_on_hardware.py` after the radio check.
+  no restarts. Part of `finish_on_hardware.py` after the radio check. With `--heltec-screen` the
+  Heltec plays its moves on its screen with the one button (USB click and hold events; this does not
+  check the physical button).
 - `node tools/chess/companion_check.cjs` — on a computer, for the companion page: perft, the move
   record and the browser rules' game endings, 300 random games checked half-move by half-move against
   `src/Chess.cpp` (`tools/chess/replay.cpp`); a game between two instances with a lost ACK, a retry,
