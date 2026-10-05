@@ -51,8 +51,9 @@ def delivered(device, gid):
     return wait(f'{gid}: ACK', lambda: (g := game(device, gid)) and g['out_status'] == 3 and g)
 
 
-def chess_texts(device):
-    return sum(TAG in m['text'] for m in read(device, 'messages'))
+def chess_texts(device, gid):
+    # This game only: a full history drops its oldest messages, so a total count would drift.
+    return sorted(m['text'] for m in read(device, 'messages') if m['text'].startswith(TAG + gid))
 
 
 def accept_on_screen(m9, gid):
@@ -128,7 +129,6 @@ def main():
     with connect(a.m9) as m9, connect(a.heltec) as heltec:
         before = [read(d, 'status') for d in (m9, heltec)]
         m9_id, heltec_id = before[0]['node'], before[1]['node']
-        texts = [chess_texts(d) for d in (m9, heltec)]
         gid = ok(heltec, f'chess invite {m9_id} w').split()[2]
         delivered(heltec, gid)
         wait('M9 received the challenge', lambda: (g := game(m9, gid)) and g['state'] == 'invited')
@@ -136,7 +136,7 @@ def main():
         assert game(m9, gid)['state'] == 'playing'
         wait('Heltec saw the acceptance', lambda: game(heltec, gid)['state'] == 'playing')
         delivered(m9, gid)
-        positions = []
+        positions, probes = [], []
         for ply, move in enumerate(MOVES, 1):
             sender, receiver = (heltec, m9) if ply % 2 else (m9, heltec)
             if sender is heltec and a.heltec_screen:
@@ -153,14 +153,15 @@ def main():
                 # Typed as plain text: a repeat of ply 1 (as after a lost ACK), then an illegal ply 3.
                 text = f'{TAG}{gid} 1 e2e4' if ply == 1 else f'{TAG}{gid} 3 e1e3'
                 ok(heltec, f'send {m9_id} {text}')
+                probes.append(text)
                 wait(f'{text}: ACK', lambda: [m for m in read(heltec, 'messages') if m['outgoing'] and m['text'] == text and m['status'] == 3])
                 assert game(m9, gid)['plies'] == ply and game(m9, gid)['fen'] == positions[-1], 'M9 took a repeated or illegal move'
         ends = [game(d, gid) for d in (m9, heltec)]
         for g in ends:
             assert g['state'] == 'over' and g['result'] == 'white' and g['reason'] == 'mate', g
         # The two plain-text probes are Heltec's own chat messages; chess commands never are.
-        assert chess_texts(m9) == texts[0], 'chess commands reached the M9 chat'
-        assert chess_texts(heltec) == texts[1] + 2, 'chess commands reached the Heltec chat'
+        assert chess_texts(m9, gid) == [], 'chess commands reached the M9 chat'
+        assert chess_texts(heltec, gid) == sorted(probes), 'chess commands reached the Heltec chat'
         for d in (m9, heltec):
             ok(d, f'chess remove {gid}')
         after = [read(d, 'status') for d in (m9, heltec)]
