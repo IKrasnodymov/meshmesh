@@ -1,8 +1,8 @@
 #pragma once
-// Heltec T114: the compact interface lays out a 128x64 screen; this canvas takes those coordinates
-// and draws at the 240x135 TFT's own resolution (x 1.875, y 2.11). Rectangles and dots become
-// blocks, lines and circles stay one pixel wide; UiHeltec.cpp draws text in larger fonts straight
-// on `screen`. Pixels are palette indices (Palette.h): 32 KB instead of 64 for RGB565.
+// Heltec T114: the 240x135 TFT's frame buffer, `screen`, with palette indices (Palette.h): 32 KB instead
+// of 64 for RGB565. The T114 pages draw on it directly (UiHires.inc). Drawing in the compact interface's
+// 128x64 coordinates (the boot splash) goes through this canvas, scaled x 1.875, y 2.11: rectangles and
+// dots become blocks, lines and circles stay one pixel wide.
 #include <Adafruit_GFX.h>
 class HiresCanvas:public Adafruit_GFX {
  public:

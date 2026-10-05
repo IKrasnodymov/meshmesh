@@ -46,8 +46,9 @@ Wi-Fi-пароли, BLE PIN, реальные адреса узлов и коо�
   покрывает 0x1000–0xEA000, остальное — сырой дамп 0xD4000–0xF4000).
 - Heltec Mesh Node T114 V2 (`docs/t114.md`): nRF52840, SX1262, цветной TFT 240×135 (ST7789), кнопка USER,
   GPS L76K (у нашего экземпляра есть). Цель `heltec_t114`, аппаратный слой — `src/nrf52/HardwareT114.cpp`,
-  общий слой nRF52 как у GAT562. Однокнопочный интерфейс Heltec рисуется в родном разрешении и в цвете
-  (`MM_HIRES`, `include/HiresCanvas.h`, `include/Palette.h`); предпросмотр — `tools/ui_preview/build.sh t114`.
+  общий слой nRF52 как у GAT562. Логика однокнопочного интерфейса Heltec, рисование — свой слой в стиле M9
+  в родном разрешении (`MM_HIRES`, `src/UiHires.inc`, иконки M9 — `include/UiIcons.h`, цвета — `include/Palette.h`);
+  предпросмотр — `tools/ui_preview/build.sh t114`.
   USB: прошивка 239a:8071, загрузчик 239a:0071, диск `HT-n5262` по двойному RESET. Копия исходной flash
   (Meshtastic 2.7.15, владелец разрешил её не сохранять) — `backups/t114/`.
 - Платы сообщества (`docs/boards.md`): `heltec_v3`, `heltec_tracker`, `tdeck`,

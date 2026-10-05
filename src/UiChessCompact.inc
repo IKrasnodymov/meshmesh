@@ -104,8 +104,6 @@ String chessChoiceText(const ChessMatch& m){
 #if defined(MM_HIRES)
 // TFT: the board at its own resolution, 16-pixel squares in the left 128x128 of the screen; 12x13
 // silhouettes, bit 11 = left column: white pieces filled white with a dark outline, black pieces solid.
-// The text panel starts right of the board.
-constexpr int PanelX=71;
 const uint16_t bigGlyphs[7][13]={{0},
  {0x000,0x060,0x0f0,0x0f0,0x060,0x0f0,0x060,0x060,0x0f0,0x1f8,0x3fc,0x3fc,0x000}, // pawn
  {0x000,0x050,0x0f8,0x1fc,0x37c,0x7fc,0x7bc,0x03c,0x078,0x0f8,0x1fc,0x3fc,0x000}, // knight
@@ -132,8 +130,6 @@ void drawHiresBoard(const ChessMatch& m,bool cursor,const chess::Move* list,unsi
  }
  if(cursor){int x,y;squareXY(m,chessCursor,x,y);x*=2;y=y*2+Top;for(int k=0;k<3;k++)s.drawRect(x+k,y+k,S-2*k,S-2*k,k==1?ColPieceDark:ColCursor);}
 }
-#else
-constexpr int PanelX=68;
 #endif
 void drawChessBoard(const ChessMatch& m){
  auto& c=*hardware.canvas;c.fillScreen(0);
@@ -144,9 +140,6 @@ void drawChessBoard(const ChessMatch& m){
  chessSettle(m);bool picking=chessPicking(m),cursor=picking&&chessCursor>=0&&(chessHeld>=0||(millis()/400)%3);
 #endif
  chess::Move list[chess::MaxMoves];unsigned n=chessHeld>=0&&m.myTurn()?m.game.pos.legal(list):0;
-#if defined(MM_HIRES)
- drawHiresBoard(m,cursor,list,n);
-#else
  for(int sq=0;sq<64;sq++){int x,y;squareXY(m,sq,x,y);bool dark=(chess::fileOf(sq)+chess::rankOf(sq))%2==0;
   if(dark)for(int yy=0;yy<8;yy+=2)for(int xx=0;xx<8;xx+=2)c.drawPixel(x+xx,y+yy,1);
   int8_t p=m.game.pos.board[sq];
@@ -161,25 +154,24 @@ void drawChessBoard(const ChessMatch& m){
  if(chessHeld>=0&&(millis()/300)%2){int x,y;squareXY(m,chessHeld,x,y);c.drawRect(x,y,8,8,1);c.drawRect(x+1,y+1,6,6,0);}
  if(cursor){int x,y;squareXY(m,chessCursor,x,y);c.drawRect(x,y,8,8,1);c.drawRect(x+1,y+1,6,6,1);}
  c.drawFastVLine(65,0,64,1);
-#endif
- say(PanelX,8,clipped(m.name,11),small);say(PanelX,17,t("you: ","вы: ")+(m.mine==chess::White?t("white","белые"):t("black","чёрные")),small);
- textLinesAt(chessStateText(m),PanelX,27,picking?1:2,11);
+ say(68,8,clipped(m.name,11),small);say(68,17,t("you: ","вы: ")+(m.mine==chess::White?t("white","белые"):t("black","чёрные")),small);
+ textLinesAt(chessStateText(m),68,27,picking?1:2,11);
  if(m.game.plies){chess::Position before=m.game.at(m.game.plies-1);char san[16];before.san(m.game.moves[m.game.plies-1],san,sizeof san);
-  say(PanelX,46,String((m.game.plies+1)/2)+(m.game.plies%2?". ":"... ")+chessLocalSan(san),small);}
+  say(68,46,String((m.game.plies+1)/2)+(m.game.plies%2?". ":"... ")+chessLocalSan(san),small);}
 #if defined(MM_JOYSTICK)
- say(PanelX,55,clipped(chessLink(m),11),small);
- say(PanelX,63,t("hold OK: menu","держ.OK: меню"),u8g2_font_4x6_t_cyrillic);
+ say(68,55,clipped(chessLink(m),11),small);
+ say(68,63,t("hold OK: menu","держ.OK: меню"),u8g2_font_4x6_t_cyrillic);
 #else
  if(picking){
   // The current choice, lit when it is "Game menu" or "Cancel"; the move sent last is acknowledged by the reply.
-  if(chessCursor<0)c.fillRect(PanelX-1,29,129-PanelX,9,focusBack);say(PanelX,36,clipped(chessChoiceText(m),11),small,chessCursor<0?focusText:col(ColTarget));
-  say(PanelX,55,t("click: next","клик: далее"),u8g2_font_4x6_t_cyrillic);
-  say(PanelX,63,chessCursor<0?(chessHeld<0?t("hold: menu","держ: меню"):t("hold: cancel","держ: отмена")):chessHeld<0?t("hold: pick","держ: взять"):t("hold: move","держ: сходить"),u8g2_font_4x6_t_cyrillic);}
- else{say(PanelX,55,clipped(chessLink(m),11),small);say(PanelX,63,t("hold: menu","держ: меню"),u8g2_font_4x6_t_cyrillic);}
+  if(chessCursor<0)c.fillRect(67,29,61,9,1);say(68,36,clipped(chessChoiceText(m),11),small,chessCursor>=0);
+  say(68,55,t("click: next","клик: далее"),u8g2_font_4x6_t_cyrillic);
+  say(68,63,chessCursor<0?(chessHeld<0?t("hold: menu","держ: меню"):t("hold: cancel","держ: отмена")):chessHeld<0?t("hold: pick","держ: взять"):t("hold: move","держ: сходить"),u8g2_font_4x6_t_cyrillic);}
+ else{say(68,55,clipped(chessLink(m),11),small);say(68,63,t("hold: menu","держ: меню"),u8g2_font_4x6_t_cyrillic);}
 #endif
  if(chessMenu){ChessAct acts[8];unsigned k=chessActions(m,acts);chessMenuIndex%=k;int first=max(0,min(chessMenuIndex-1,int(k)-3));
-  c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,col(ColAccent));
-  for(unsigned i=first;i<k&&i<unsigned(first+3);i++){int y=14+(i-first)*14;bool focus=int(i)==chessMenuIndex;if(focus)c.fillRect(2,y,124,13,focusBack);say(5,y+10,clipped(chessActName(acts[i]),20),body,focus?focusText:1);}}
+  c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,1);
+  for(unsigned i=first;i<k&&i<unsigned(first+3);i++){int y=14+(i-first)*14;bool focus=int(i)==chessMenuIndex;if(focus)c.fillRect(2,y,124,13,1);say(5,y+10,clipped(chessActName(acts[i]),20),body,focus?0:1);}}
  if(action.length()&&millis()-actionAt<3000){c.fillRect(0,22,128,20,0);c.drawRect(0,22,128,20,1);say(3,36,clipped(action,20));}
  hardware.flush();
 }
@@ -194,8 +186,8 @@ void drawChessList(String& title){
   say(0,49,t("or accept a challenge","или примите вызов"),small);return;}
  chessSel%=n;int first=max(0,min(chessSel-1,int(n)-3));
  for(unsigned i=first;i<n&&i<unsigned(first+3);i++){const ChessMatch& m=*games[i];int y=13+(i-first)*15;bool focus=int(i)==chessSel;
-  if(focus)c.fillRect(0,y,128,15,focusBack);uint16_t ink=focus?focusText:1;say(2,y+7,clipped(String(m.unseen?"* ":"")+m.name,14),small,ink);sayRight(126,y+7,m.game.plies?String((m.game.plies+1)/2)+t(" mv"," ход"):String(""),small,ink);
-  say(2,y+14,clipped(chessStateText(m),24),small,focus?focusText:col(ColDim));}
+  if(focus)c.fillRect(0,y,128,15,1);say(2,y+7,clipped(String(m.unseen?"* ":"")+m.name,14),small,!focus);sayRight(126,y+7,m.game.plies?String((m.game.plies+1)/2)+t(" mv"," ход"):String(""),small,!focus);
+  say(2,y+14,clipped(chessStateText(m),24),small,!focus);}
 }
 #if defined(MM_JOYSTICK)
 // Keys while the Chess page is shown; false lets the page switch handle them (list view only).
