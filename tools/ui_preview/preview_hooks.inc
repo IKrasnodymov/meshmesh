@@ -47,6 +47,11 @@ const uint8_t* MeshRadio::nodeKey() const{static const uint8_t key[32]={0x5A,0x1
 bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t*,size_t) const{memset(sig,0x5A,64);return true;}
 bool MeshRadio::nodeVerify(const uint8_t*,const uint8_t*,const uint8_t*,size_t){return true;}
 bool MeshRadio::learnContact(const uint8_t*,const char*){return true;}
+// The SD archive of finished games: names in memory.
+static std::vector<std::pair<std::string,std::string>> previewArchive;
+bool chessArchiveWrite(const String& name,const String& text){for(auto& a:previewArchive)if(a.first==name.c_str()){a.second=text.c_str();return true;}previewArchive.push_back({name.c_str(),text.c_str()});return true;}
+String chessArchiveList(){String s="{\"games\":[";for(size_t i=0;i<previewArchive.size();i++)s+=String(i?",":"")+"\""+previewArchive[i].first.c_str()+"\"";return s+"],\"sd\":true}";}
+String chessArchiveRead(const String& name){for(auto& a:previewArchive)if(a.first==name.c_str())return a.second.c_str();return "";}
 // Tournaments: the real src/ChessTour.cpp with its file in memory.
 #include "ChessTour.h"
 static std::vector<uint8_t> tourSaved;

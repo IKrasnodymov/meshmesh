@@ -7,6 +7,7 @@
 #include "Hardware.h"
 #include <ArduinoJson.h>
 #include <time.h>
+#include <vector>
 ChessNet chessNet;
 using namespace chess;
 namespace {
@@ -43,6 +44,10 @@ void ChessNet::tick(){
     if(m.sign==ChessMatch::SignSent&&m.theirSigned)storeResult(m);
   }
   for(auto& m:matches)if(m.state==ChessMatch::Over&&m.tour&&!m.tourReported){m.tourReported=true;tour::net.gameOver(m);changed(m);}
+  // Finished games with moves go to the SD archive once; a board without a card has none.
+  for(auto& m:matches)if(m.state==ChessMatch::Over&&!m.archived){m.archived=true;if(!m.game.plies)continue;
+    char name[24];time_t at=m.started?time_t(m.started):time(nullptr);tm v;gmtime_r(&at,&v);snprintf(name,sizeof name,"%04d%02d%02d-%04X.pgn",v.tm_year+1900,v.tm_mon+1,v.tm_mday,m.id);
+    chessArchiveWrite(name,pgn(m));}
   for(auto& m:matches){
     if(m.state==ChessMatch::Free||!m.pending()||m.sending()||m.autoStopped)continue;
     if(!m.openSince)m.openSince=now;
@@ -143,7 +148,7 @@ void ChessNet::storeResult(ChessMatch& m){
   if(!MeshRadio::nodeVerify(m.peerKey,m.theirSig,bytes,sizeof bytes)){m.sign=ChessMatch::SignBad;news(m,String(m.name)+tr(": signatures differ, the game is not rated",": подписи не сошлись, партия без рейтинга"));changed(m);return;}
   rating::Record r;memcpy(r.core,c,sizeof c);bool white=m.mine==White;
   r.timeW=white?m.myTime:m.theirTime;r.timeB=white?m.theirTime:m.myTime;memcpy(r.sigW,white?m.mySig:m.theirSig,64);memcpy(r.sigB,white?m.theirSig:m.mySig,64);
-  rating::book.add(r,m.name);m.sign=ChessMatch::SignStored; // a record already there (a second copy of the game) counts once
+  rating::book.add(r,m.name);m.sign=ChessMatch::SignStored;m.archived=false; // the archive copy gets the ratings // a record already there (a second copy of the game) counts once
   if(const rating::Delta* d=rating::book.delta(m.peer,m.id)){int diff=d->after-d->before;
     news(m,tr("Rating: ","Рейтинг: ")+String(d->before)+" > "+String(d->after)+" ("+(diff>=0?"+":"")+String(diff)+")"+(d->counted?String():String(tr(", over the daily limit",", сверх дневного предела"))));}
   changed(m);
@@ -306,7 +311,23 @@ String chessLocalSan(const char* san){
   }
   return out;
 }
-String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();d["tours"]=tour::net.waiting(); // the page shows the Tournaments tab
+// PGN: the Seven Tag Roster plus the termination as a comment; times are the device's own (UTC date).
+String ChessNet::pgn(const ChessMatch& m) const{
+  auto tag=[](const char* k,const String& v){String s=v;s.replace("\\","");s.replace("\"","'");return String("[")+k+" \""+s+"\"]\n";};
+  const char* result=m.result==ChessMatch::WhiteWon?"1-0":m.result==ChessMatch::BlackWon?"0-1":m.result==ChessMatch::Drawn?"1/2-1/2":"*";
+  char date[12]="????.??.??";if(m.started){time_t at=m.started;tm v;gmtime_r(&at,&v);snprintf(date,sizeof date,"%04d.%02d.%02d",v.tm_year+1900,v.tm_mon+1,v.tm_mday);}
+  const tour::Tour* t=m.tour?tour::net.find(m.tour):nullptr;String me=config.name,them=m.name;
+  String s=tag("Event",t?String(t->name):String(m.rated?"MeshMesh rated game":"MeshMesh friendly game"))+tag("Site","MeshCore LoRa")+tag("Date",date)+tag("Round",m.round?String(m.round):String("-"))
+    +tag("White",m.mine==White?me:them)+tag("Black",m.mine==White?them:me)+tag("Result",result);
+  if(m.rated&&m.sign==ChessMatch::SignStored){const rating::Delta* d=rating::book.delta(m.peer,m.id);if(d){int theirs=rating::book.elo(m.peer);s+=tag(m.mine==White?"WhiteElo":"BlackElo",String(d->before))+tag(m.mine==White?"BlackElo":"WhiteElo",String(theirs));}}
+  static const char* why[]={"","checkmate","resignation","stalemate","threefold repetition","fifty-move rule","insufficient material","move limit","draw by agreement","declined","cancelled"};
+  s+="\n";String line;Position p;p.start();char san[12];
+  for(unsigned i=0;i<m.game.plies;i++){String w=(i%2==0?String(i/2+1)+". ":String());p.san(m.game.moves[i],san,sizeof san);w+=san;p.apply(m.game.moves[i]);
+    if(line.length()+w.length()+1>78){s+=line+"\n";line="";}line+=(line.length()?" ":"")+w;}
+  String end=(m.state==ChessMatch::Over&&m.reason<sizeof why/sizeof *why&&why[m.reason][0]?String("{")+why[m.reason]+"} ":String())+result;
+  if(line.length()+end.length()+1>78){s+=line+"\n";line="";}line+=(line.length()?" ":"")+end;return s+line+"\n";
+}
+String ChessNet::web() const{StaticJsonDocument<256> d;d["events"]=events;d["event"]=event;d["waiting"]=waiting();d["elo"]=rating::book.myElo();d["tours"]=tour::net.waiting();d["sd"]=hardware.sdOk; // the page shows the Tournaments tab
 String s;serializeJson(d,s);s.remove(s.length()-1);return s+",\"games\":"+json()+"}";}
 String ChessNet::detail(const ChessMatch& m) const{
   DynamicJsonDocument d(12288);char id[5];snprintf(id,sizeof id,"%04X",m.id);d["id"]=id;
@@ -342,6 +363,10 @@ String ChessNet::command(const String& line){
   // chess sync [NODE_ID]: compare ledgers now with one node, or with every rated player heard in a day.
   if(line=="chess sync"){unsigned n=ledger::exchange.startAll();return "OK sync with "+String(n)+" nodes";}
   if(line.startsWith("chess sync ")){char* e=nullptr;uint64_t id=strtoull(line.c_str()+11,&e,16);return id&&e&&!*e&&ledger::exchange.start(id)?String("OK sync started"):String("ERR chess sync [NODE_ID]");}
+  if(line=="chess archive")return chessArchiveList();
+  // PGN goes out as one JSON line: USB and the app read a reply as one line.
+  if(line.startsWith("chess archive ")){String name=line.substring(14),text=chessArchiveRead(name);if(!text.length())return "ERR no such game in the archive";
+    DynamicJsonDocument d(text.length()+256);d["name"]=name;d["pgn"]=text;String s;serializeJson(d,s);return s;}
   if(line=="chess rating clear")return rating::book.clear()?"OK rating cleared":"ERR rating not ready";
   String rest=line.substring(6);rest.trim();int sp=rest.indexOf(' ');String verb=sp<0?rest:rest.substring(0,sp),arg=sp<0?String():rest.substring(sp+1);arg.trim();
   if(verb=="invite"){
@@ -363,10 +388,39 @@ String ChessNet::command(const String& line){
   else if(verb=="resend")done=resend(*m);
   else if(verb=="remove")done=remove(*m);
   else if(verb=="show")return detail(*m);
+  else if(verb=="pgn"){String text=pgn(*m);DynamicJsonDocument d(text.length()+128);d["id"]=gid;d["pgn"]=text;String s;serializeJson(d,s);return s;}
   else if(verb=="seen"){viewed(*m);return "OK seen";}
   else return "ERR unknown chess command";
   return done?"OK "+verb:"ERR "+verb+" not possible now";
 }
+
+#if !defined(MM_UI_PREVIEW) && !defined(MM_NRF52)
+#include <SD.h>
+bool chessArchiveWrite(const String& name,const String& text){
+  if(!hardware.sdOk)return false;SD.mkdir("/meshmesh");SD.mkdir("/meshmesh/chess");
+  File f=SD.open("/meshmesh/chess/"+name,FILE_WRITE);if(!f)return false;bool ok=f.print(text)==text.length();f.close();return ok;
+}
+// A name from the list only: digits, A-F, "-" and ".pgn".
+static bool archiveName(const String& n){if(n.length()<6||n.length()>20||!n.endsWith(".pgn"))return false;for(unsigned i=0;i+4<n.length();i++){char c=n[i];if(!isdigit(c)&&!(c>='A'&&c<='F')&&c!='-')return false;}return true;}
+// The list and the names live on the heap: the SD driver needs the loop task's stack (a panic showed it).
+String chessArchiveList(){
+  DynamicJsonDocument d(3072);JsonArray list=d.createNestedArray("games");d["sd"]=hardware.sdOk;
+  if(hardware.sdOk){File dir=SD.open("/meshmesh/chess");std::vector<String> names;names.reserve(60);unsigned n=0;
+    if(dir)for(File f=dir.openNextFile();f;f=dir.openNextFile()){String name=f.name();int slash=name.lastIndexOf('/');if(slash>=0)name=name.substring(slash+1);f.close();if(!archiveName(name))continue;
+      if(n<60){names.push_back(name);n++;}else{unsigned low=0;for(unsigned i=1;i<n;i++)if(names[i]<names[low])low=i;if(name>names[low])names[low]=name;}}
+    for(unsigned i=1;i<n;i++)for(unsigned j=i;j>0&&names[j]>names[j-1];j--)std::swap(names[j],names[j-1]);
+    for(unsigned i=0;i<n;i++)list.add(names[i]);}
+  String s;serializeJson(d,s);return s;
+}
+String chessArchiveRead(const String& name){
+  if(!hardware.sdOk||!archiveName(name))return "";File f=SD.open("/meshmesh/chess/"+name);if(!f)return "";String s;s.reserve(f.size()+1);
+  while(f.available()&&s.length()<12000)s+=char(f.read());f.close();return s;
+}
+#elif defined(MM_NRF52)
+bool chessArchiveWrite(const String&,const String&){return false;}
+String chessArchiveList(){return "{\"games\":[],\"sd\":false}";}
+String chessArchiveRead(const String&){return "";}
+#endif
 
 #if !defined(MM_UI_PREVIEW)
 #include <LittleFS.h>

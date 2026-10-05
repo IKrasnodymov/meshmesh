@@ -31,6 +31,7 @@ struct ChessMatch {
   uint32_t myTime=0,theirTime=0;uint8_t mySig[64]={},theirSig[64]={};
   bool sigOpen=false;uint8_t sigStatus=0;uint32_t sigId=0; // my signature until its ACK
   uint16_t tour=0;uint8_t round=0;bool tourReported=false; // a tournament game (ChessTour.h)
+  bool archived=false;                    // written to the SD archive (not saved: a restart writes it again)
   bool active() const{return state==Inviting||state==Invited||state==Playing;}
   bool settled() const;                   // finished, its rating signature and tournament report done
   bool myTurn() const{return state==Playing&&game.pos.side==mine;}
@@ -67,6 +68,7 @@ class ChessNet {
   String command(const String& line);     // USB: chess ...
   String json() const;
   String detail(const ChessMatch& m) const;  // one game for the web page: notation and legal moves
+  String pgn(const ChessMatch& m) const;     // the game in PGN, standard English notation
   String web() const;                       // the list for the web page, with the latest news
  private:
   bool saveDue=false;uint32_t saveAt=0;
@@ -90,4 +92,8 @@ extern ChessNet chessNet;
 // Notation in the interface language: K Q R B N, or Кр Ф Л С К in Russian.
 String chessLocalSan(const char* san);
 bool chessStoreWrite(const uint8_t* data,size_t size);
+// The archive of finished games on the SD card (M9, T-Deck, boards with a card): /meshmesh/chess/*.pgn.
+bool chessArchiveWrite(const String& name,const String& text);
+String chessArchiveList();                   // JSON: newest first
+String chessArchiveRead(const String& name); // empty when missing
 size_t chessStoreRead(uint8_t* data,size_t cap);

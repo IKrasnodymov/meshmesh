@@ -140,6 +140,11 @@ static void scenario(){
    snprintf(body,sizeof body,"sig 1791140000 %s",sig);sayLong(5,"Марат",b->id,body);snprintf(body,sizeof body,"sig 1791150000 %s",sig);sayLong(3,"Игорь T-Deck",d->id,body);
    for(int i=0;i<2;i++){chessNet.tick();tick();}
    if(b->sign!=ChessMatch::SignStored||d->sign!=ChessMatch::SignStored||rating::book.myElo()==rating::Start){printf("FAIL rated results: %d %d %d\n",b->sign,d->sign,rating::book.myElo());exit(1);}
+   // PGN of the won game, and the archive on the SD card.
+   {std::string pg=chessNet.pgn(*b).c_str();if(pg.find("1. e4 e5 2. Qh5 Nc6 3. Bc4 Nf6 4. Qxf7# {checkmate} 1-0")==std::string::npos||pg.find("[White \"M9\"]")==std::string::npos||pg.find("[Black \"Марат\"]")==std::string::npos||pg.find("[Result \"1-0\"]")==std::string::npos){printf("FAIL pgn:\n%s\n",pg.c_str());exit(1);}
+    chessNet.tick();String list=chessArchiveList();char want[16];snprintf(want,sizeof want,"-%04X.pgn",b->id);int at=list.indexOf(want);
+    if(at<0){printf("FAIL archive: %s\n",list.c_str());exit(1);}int from=at;while(from>0&&list[from-1]!='"')from--;String name=list.substring(from,at+9);
+    StaticJsonDocument<4096> d;deserializeJson(d,chessNet.command("chess archive "+name));if(chessNet.pgn(*b)!=(d["pgn"]|"")){printf("FAIL archive read %s\n",name.c_str());exit(1);}}
    openList(0);key(0xb7);shot("chess-rating");key(0xb4);
    char want[32];snprintf(want,sizeof want,"\"chess_game\":\"%04X\"",b->id);
    for(int i=1;i<=5;i++){openList(i);key(13);if(uiStatus().indexOf(want)>=0){shot("chess-rated-result");break;}}

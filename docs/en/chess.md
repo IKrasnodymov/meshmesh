@@ -210,6 +210,19 @@ players' base and would count twice. Nodes with ledgers of different size (128 r
 may differ slightly in ratings after old records move into the base. `chess rating clear` over USB empties the
 ledger (for example before restoring it by syncing with the neighbours).
 
+## Game archive (PGN)
+
+Every finished game with moves is written to the SD card — `/meshmesh/chess/YYYYMMDD-NUMBER.pgn` (the UTC start
+date, the game number) — on the M9, T-Deck and other boards with a card; when the opponent's rating signature
+arrives the file is written again with the `WhiteElo`/`BlackElo` tags. So a game survives after a new one takes its
+board. The PGN is standard: the seven required tags, moves in English notation (`Qxf7#`), the end of the game as a
+comment (`{checkmate}`), the event — the tournament name or “MeshMesh rated/friendly game”. Web page and app: the
+“PGN” button of a game (on any board; the PGN is built from the game on the device) and the “Game archive on the SD
+card” section on the “Games” tab; the text can be copied or saved as a file (in the app — copied). USB:
+`chess pgn NUMBER`, `chess archive` (the list, newest first, up to 60) and `chess archive NAME` — the reply is one
+JSON line (`{"pgn":"…"}`) so USB clients and the app read it. The list is built on the heap: with arrays on the stack
+the SD driver overflowed the main task's stack (an M9 panic on the hardware).
+
 ## M9 screen
 
 Main menu → “Chess”: the list of games (first those where your move or reply is needed),

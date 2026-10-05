@@ -221,6 +221,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 
 <section class="page" id="p-chess" hidden><div class="tabs" id="chessView" hidden></div><div id="chessGames"><div class="list" id="chessList"></div>
 <h3>Новая партия</h3><div class="tabs" id="chessColors"></div><div class="tabs" id="chessRatedPick" hidden></div><div class="list" id="chessPeers"></div>
+<details id="chessArchive" hidden style="margin:12px 4px 0"><summary class="small muted">Архив партий на SD-карте (PGN)</summary><div class="list" id="archList" style="margin-top:6px"></div></details>
 <div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button><button class="btn" id="chessAlerts" hidden></button></div>
 <p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div><div id="chessToursView" hidden></div></section>
 
@@ -930,9 +931,22 @@ function renderChessList(){
  const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
  $('chessPeers').innerHTML=contacts.length?contacts.map(p=>`<button class="row" data-invite="${p.id}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${rated&&chessRated&&eloChange(p.id)?(c=>`ELO ${c.them} · <span class="ok">+${c.win}</span>/<span class="bad">${c.loss}</span> · `)(eloChange(p.id)):''}${p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад')+' · ':''}${pathText(p)}</small></span><span class="side acc">Вызвать ${ic('next')}</span></button>`).join('')
   :`<p class="small muted" style="margin:8px 4px">Чат-контактов пока нет: объявите ${companion?'себя кнопкой «Объявить» выше':'узел в разделе «Узлы»'} и дождитесь объявления соперника.</p>`;
+ $('chessArchive').hidden=!chess.sd;
  $('chessSound').innerHTML=`${ic('pulse',chessSound?'acc':'faint')}Звук хода соперника: ${chessSound?'вкл.':'выкл.'}`;
  $('chessAlerts').hidden=!chessAlertsUsable;if(chessAlertsUsable)$('chessAlerts').innerHTML=`${ic('mail',chessAlerts?'acc':'faint')}Уведомления в фоне: ${Notification.permission==='denied'?'запрещены в браузере':chessAlerts?'вкл.':'выкл.'}`}
 
+// PGN in a panel over the page: copy it or save a file (where the browser allows downloads).
+function showPgn(text,name){
+ let box=$('pgnBox');if(!box){box=document.createElement('div');box.id='pgnBox';box.style.cssText='position:fixed;inset:0;background:#000a;z-index:50;display:grid;place-items:center;padding:16px';document.body.appendChild(box)}
+ box.innerHTML=`<div class="card pad" style="width:min(560px,100%);max-height:90vh;display:flex;flex-direction:column;gap:8px"><b>${esc(name)}</b><textarea readonly style="min-height:240px;flex:1;font:12px ui-monospace,Menlo,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px">${esc(String(text))}</textarea><div class="btns"><button class="btn primary" data-pgn="copy">Скопировать</button><button class="btn" data-pgn="save">Сохранить файл</button><button class="btn" data-pgn="close">Закрыть</button></div></div>`;
+ box.hidden=false;box.onclick=async e=>{const a=e.target.dataset&&e.target.dataset.pgn;if(e.target===box||a==='close'){box.hidden=true;return}
+  if(a==='copy'){try{await navigator.clipboard.writeText(String(text));notify('PGN скопирован','ok')}catch{box.querySelector('textarea').select();notify('Выделено: скопируйте вручную','warn')}}
+  if(a==='save'){const u=URL.createObjectURL(new Blob([String(text)],{type:'application/x-chess-pgn'})),l=document.createElement('a');l.href=u;l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}}}
+async function loadArchive(){
+ $('archList').innerHTML='<p class="small faint">Загрузка…</p>';
+ try{const r=await command('chess archive');const games=(r&&r.games)||[];
+  $('archList').innerHTML=games.length?games.map(n=>`<button class="row" data-arch="${esc(n)}"><span class="main"><b>${esc(n.slice(6,8)+'.'+n.slice(4,6)+'.'+n.slice(0,4))} · партия ${esc(n.slice(9,13))}</b><small>${esc(n)}</small></span><span class="side acc">PGN ${ic('next')}</span></button>`).join(''):'<p class="small faint">Оконченных партий на карте пока нет.</p>'}
+ catch(e){$('archList').innerHTML=`<p class="small bad">${esc(e.message)}</p>`}}
 function enterBoard(){chessSel=null;chessPromo=null;chessArmed='';chessDetail=null;refreshChess(true)}
 function renderBoard(){
  const g=chessGame(param);
@@ -960,6 +974,7 @@ function renderBoard(){
  if(g.state==='inviting')acts.push(['decline','Отменить вызов','danger']);
  if(g.state==='playing'){if(g.draw_offer!=='theirs')acts.push(['draw',g.draw_offer==='mine'?'Ничья предложена':'Предложить ничью','']);acts.push(['resign',chessArmed==='resign'?'Точно сдаться?':'Сдаться','danger'+armed('resign')])}
  if(g.state==='over'){if(g.out_status===4)acts.push(['resend','Повторить отправку','']);acts.push(['rematch','Реванш (цвета меняются)','primary'],['remove',chessArmed==='remove'?'Точно удалить?':'Удалить партию','danger'+armed('remove')])}
+ if(g.plies&&chess.elo!==undefined)acts.push(['pgn','PGN','']); // the game as text (firmware with "chess pgn")
  $('cActs').innerHTML=acts.map(([a,t,c])=>`<button class="btn ${c}" data-chess="${a}"${a==='draw'&&g.draw_offer==='mine'?' disabled':''}>${t}</button>`).join('');
  const san=d?d.san:[];let m='';for(let i=0;i<san.length;i+=2)m+=`<i>${i/2+1}.</i><span class="${i===san.length-1?'now':''}">${esc(ruSan(san[i]))}</span><span class="${i+1===san.length-1?'now':''}">${esc(ruSan(san[i+1]||''))}</span>`;
  $('cMoves').innerHTML=m||`<span class="muted small" style="grid-column:1/-1">${g.state==='invited'?'Примите вызов, чтобы начать':'Ходов ещё нет'}</span>`;
@@ -970,6 +985,7 @@ async function chessCommand(line,ok,tone='ok'){chessQuiet=true;try{const r=await
 async function chessClick(d){
  if(d.chesscolor!==undefined){chessColor=+d.chesscolor;store('chess-color',chessColor);renderChessList();return}
  if(d.chessview){chessTab=d.chessview;store('chess-tab',chessTab);if(chessTab==='rating')chessRatingAt='';refreshChess(true);renderChessList();return}
+ if(d.arch){try{showPgn((await command('chess archive '+d.arch)).pgn,d.arch)}catch(e){notify(e.message,'bad')}return}
  if(d.ledger){const r=await chessCommand('chess sync');if(r)notify(r.replace(/^OK sync with (\d+) nodes$/,(m,n)=>+n?`Сверка журнала с узлами: ${n}`:'За сутки не слышно игроков с рейтингом'),'ok');chessRatingAt='';return}
  if(d.tour!==undefined){
   if(d.tour==='create'){const f=tourForm,name=($('tourName').value||'').trim();if(!name){notify('Введите название','warn');return}
@@ -984,6 +1000,7 @@ async function chessClick(d){
  const a=d.chess;
  if((a==='resign'||a==='remove')&&chessArmed!==a){chessArmed=a;renderBoard();setTimeout(()=>{if(chessArmed===a){chessArmed='';renderBoard()}},4000);return}
  chessArmed='';
+ if(a==='pgn'){try{showPgn((await command(`chess pgn ${g.id}`)).pgn,`meshmesh-${g.id}.pgn`)}catch(e){notify('PGN недоступен: '+e.message,'bad')}return}
  if(a==='rematch'){const r=await chessCommand(`chess invite ${g.peer} ${g.color==='white'?'b':'w'}${g.rated===false?' friendly':''}`);if(r){notify(`Реванш: вы играете ${r.endsWith('white')?'белыми':'чёрными'}`,'ok');go('board/'+r.split(' ')[2])}return}
  const said={accept:['Вызов принят','ok'],decline:[g.state==='invited'?'Вызов отклонён':'Вызов отменён','muted'],draw:[g.draw_offer==='theirs'?'Ничья принята':'Ничья предложена','ok'],resign:['Вы сдались','muted'],resend:['Отправлено повторно','ok'],remove:['Партия удалена','muted']}[a];
  if(!said)return;const r=await chessCommand(`chess ${a} ${g.id}`,said[0],said[1]);if(r&&a==='remove')go('chess')}
@@ -1003,9 +1020,9 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-arch],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
   if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy){chanClick(d);return}
-  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.ledger||d.promo){chessClick(d);return}
+  if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.ledger||d.arch||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
   else if(d.csi)radarAction({action:'csi',role:d.csi}).then(pollRadar)});
@@ -1029,6 +1046,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('chessToursView').addEventListener('change',e=>{const f=tourForm;if(!f)return;const el=e.target;
   if(el.dataset.tourpick){const id=el.dataset.tourpick;if(el.checked){if(f.picked.length>=9){el.checked=false;notify('Не больше 9 соперников','warn');return}f.picked.push(id)}else f.picked=f.picked.filter(x=>x!==id);renderTours()}
   else if(el.id==='tourRounds')f.rounds=+el.value;else if(el.id==='tourHours')f.hours=+el.value});
+ $('chessArchive').addEventListener('toggle',()=>{if($('chessArchive').open)loadArchive()});
  $('chessToursView').addEventListener('input',e=>{if(e.target.id==='tourName'&&tourForm)tourForm.name=e.target.value});
  for(const page of ['radio','device']){$(page+'Form').addEventListener('input',e=>{const el=e.target.closest('[data-k]');if(!el)return;draft[el.dataset.k]=editorValue(el);if(el.type==='range')$(el.id+'-v').textContent=el.value;editorState(page)});
   $(page+'Form').addEventListener('click',e=>{const el=e.target.closest('.sw[data-k]');if(!el)return;const k=el.dataset.k;draft[k]=!draft[k];el.classList.toggle('on',draft[k]);el.setAttribute('aria-checked',draft[k]);editorState(page)});$(page+'Save').onclick=()=>saveEditor(page)}

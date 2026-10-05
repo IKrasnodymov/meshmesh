@@ -959,7 +959,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:269: if(!chessStoreWrite(buf,w-buf)){event=tr(\"Chess: cannot save games\",\"Шахматы: не удалось сохранить партии\");events++;}"
+   "src/ChessNet.cpp:274: if(!chessStoreWrite(buf,w-buf)){event=tr(\"Chess: cannot save games\",\"Шахматы: не удалось сохранить партии\");events++;}"
   ]
  },
  "18631a5c": {
@@ -995,7 +995,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:218: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
+   "src/ChessNet.cpp:223: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
   ]
  },
  "18aacd32": {
@@ -1208,7 +1208,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:203: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
+   "src/ChessNet.cpp:208: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
   ]
  },
  "1f607748": {
@@ -1244,7 +1244,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:192: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "1ff3c7f9": {
@@ -1394,7 +1394,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:148: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
+   "src/ChessNet.cpp:153: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
   ]
  },
  "234a4c4f": {
@@ -1754,7 +1754,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:183: if(ply!=g.plies+1u||g.pos.side!=theirs||!g.pos.parseUci(b,mv)){event=String(m->name)+tr(\": move not accepted (\",\": ход не принят (\")+b+\")\";events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:188: if(ply!=g.plies+1u||g.pos.side!=theirs||!g.pos.parseUci(b,mv)){event=String(m->name)+tr(\": move not accepted (\",\": ход не принят (\")+b+\")\";events++;dirty=true;return true;}"
   ]
  },
  "2a76df25": {
@@ -1872,7 +1872,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:218: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
+   "src/ChessNet.cpp:223: send(*m,String(head)+(m->mine==White?tr(\" · MeshMesh chess: you play Black\",\" · шахматы MeshMesh: вы играете чёрными\"):tr(\" · MeshMesh chess: you play White\",\" · шахматы MeshMesh: вы играете белыми\")));"
   ]
  },
  "2c710473": {
@@ -2044,7 +2044,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:172: news(*m,String(name)+tr(\" challenges you to chess\",\" вызывает на партию в шахматы\"));hardware.ping(1320,120);changed(*m);return true;"
+   "src/ChessNet.cpp:177: news(*m,String(name)+tr(\" challenges you to chess\",\" вызывает на партию в шахматы\"));hardware.ping(1320,120);changed(*m);return true;"
   ]
  },
  "30b1f47d": {
@@ -2350,7 +2350,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:143: if(!MeshRadio::nodeVerify(m.peerKey,m.theirSig,bytes,sizeof bytes)){m.sign=ChessMatch::SignBad;news(m,String(m.name)+tr(\": signatures differ, the game is not rated\",\": подписи не сошлись, партия без рейтинга\"));changed(m"
+   "src/ChessNet.cpp:148: if(!MeshRadio::nodeVerify(m.peerKey,m.theirSig,bytes,sizeof bytes)){m.sign=ChessMatch::SignBad;news(m,String(m.name)+tr(\": signatures differ, the game is not rated\",\": подписи не сошлись, партия без рейтинга\"));changed(m"
   ]
  },
  "37e1d0e8": {
@@ -2413,7 +2413,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:109: if(status==Failed&&!m.retries){event=String(m.name)+tr(\": not confirmed, will resend\",\": не подтвердил, повторю автоматически\");events++;eventMatch=&m;}"
+   "src/ChessNet.cpp:114: if(status==Failed&&!m.retries){event=String(m.name)+tr(\": not confirmed, will resend\",\": не подтвердил, повторю автоматически\");events++;eventMatch=&m;}"
   ]
  },
  "3a92cf46": {
@@ -2661,7 +2661,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:212: if(!p||p->type!=1){event=tr(\"Chess: choose a chat contact\",\"Шахматы: выберите чат-контакт\");events++;dirty=true;return nullptr;}"
+   "src/ChessNet.cpp:217: if(!p||p->type!=1){event=tr(\"Chess: choose a chat contact\",\"Шахматы: выберите чат-контакт\");events++;dirty=true;return nullptr;}"
   ]
  },
  "4153f73f": {
@@ -2878,7 +2878,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:148: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
+   "src/ChessNet.cpp:153: news(m,tr(\"Rating: \",\"Рейтинг: \")+String(d->before)+\" > \"+String(d->after)+\" (\"+(diff>=0?\"+\":\"\")+String(diff)+\")\"+(d->counted?String():String(tr(\", over the daily limit\",\", сверх дневного предела\"))));}"
   ]
  },
  "478d1b4e": {
@@ -2914,7 +2914,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:49: if(now-m.openSince>RetryWindow){m.autoStopped=true;m.retryAt=0;event=String(m.name)+tr(\": no confirmation for 24 h, R resends\",\": нет подтверждения 24 ч, R — повторить\");events++;eventMatch=&m;dirty=true;continue;}"
+   "src/ChessNet.cpp:54: if(now-m.openSince>RetryWindow){m.autoStopped=true;m.retryAt=0;event=String(m.name)+tr(\": no confirmation for 24 h, R resends\",\": нет подтверждения 24 ч, R — повторить\");events++;eventMatch=&m;dirty=true;continue;}"
   ]
  },
  "47db78a2": {
@@ -4162,7 +4162,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:297: free(buf);if(dropped){event=tr(\"Chess: a damaged game was dropped\",\"Шахматы: повреждённая партия удалена\");events++;}dirty=true;"
+   "src/ChessNet.cpp:302: free(buf);if(dropped){event=tr(\"Chess: a damaged game was dropped\",\"Шахматы: повреждённая партия удалена\");events++;}dirty=true;"
   ]
  },
  "6859f362": {
@@ -4246,7 +4246,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:169: if(!m){meshRadio.sendGame(String(Tag)+String(c).substring(0,4)+\" no\",from);event=String(name)+tr(\": challenge refused, no free board\",\": вызов отклонён, нет свободной доски\");events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:174: if(!m){meshRadio.sendGame(String(Tag)+String(c).substring(0,4)+\" no\",from);event=String(name)+tr(\": challenge refused, no free board\",\": вызов отклонён, нет свободной доски\");events++;dirty=true;return true;}"
   ]
  },
  "69cf6474": {
@@ -4699,7 +4699,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:198: if(m->state==ChessMatch::Inviting){finish(*m,ChessMatch::Undecided,ChessMatch::Declined);news(*m,String(m->name)+tr(\" declined the game\",\" отказался от партии\"));}"
+   "src/ChessNet.cpp:203: if(m->state==ChessMatch::Inviting){finish(*m,ChessMatch::Undecided,ChessMatch::Declined);news(*m,String(m->name)+tr(\" declined the game\",\" отказался от партии\"));}"
   ]
  },
  "74cfe069": {
@@ -4884,7 +4884,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:174: if(!m){event=tr(\"Chess: move for an unknown game\",\"Шахматы: ход в неизвестной партии\");events++;dirty=true;return true;}"
+   "src/ChessNet.cpp:179: if(!m){event=tr(\"Chess: move for an unknown game\",\"Шахматы: ход в неизвестной партии\");events++;dirty=true;return true;}"
   ]
  },
  "7a0b46f9": {
@@ -5667,7 +5667,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:192: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "8e2a5ac7": {
@@ -6157,7 +6157,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:196: if(!strcmp(a,\"yes\")){if(m->state!=ChessMatch::Inviting)return true;m->state=ChessMatch::Playing;received(*m,false);news(*m,String(m->name)+tr(\" accepted: game on\",\" принял вызов: играем\"));hardware.ping(1320,120);changed"
+   "src/ChessNet.cpp:201: if(!strcmp(a,\"yes\")){if(m->state!=ChessMatch::Inviting)return true;m->state=ChessMatch::Playing;received(*m,false);news(*m,String(m->name)+tr(\" accepted: game on\",\" принял вызов: играем\"));hardware.ping(1320,120);changed"
   ]
  },
  "9a8267a9": {
@@ -6878,7 +6878,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:188: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
+   "src/ChessNet.cpp:193: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
   ]
  },
  "aa62f4a9": {
@@ -7904,7 +7904,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:213: ChessMatch* m=slot();if(!m){event=tr(\"Chess: six games in progress, finish one\",\"Шахматы: идут шесть партий, завершите одну\");events++;dirty=true;return nullptr;}"
+   "src/ChessNet.cpp:218: ChessMatch* m=slot();if(!m){event=tr(\"Chess: six games in progress, finish one\",\"Шахматы: идут шесть партий, завершите одну\");events++;dirty=true;return nullptr;}"
   ]
  },
  "c781758d": {
@@ -7941,7 +7941,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:188: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
+   "src/ChessNet.cpp:193: else what+=g.pos.inCheck()?tr(\" · check, your move\",\", шах, ваш ход\"):tr(\" · your move\",\", ваш ход\");"
   ]
  },
  "c88589f0": {
@@ -8176,7 +8176,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:204: if(!strcmp(a,\"draw\")){if(m->state!=ChessMatch::Playing||m->drawOffer!=ChessMatch::OfferedByMe)return true;received(*m,false);finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,String(m->name)+tr(\" accepted the draw\""
+   "src/ChessNet.cpp:209: if(!strcmp(a,\"draw\")){if(m->state!=ChessMatch::Playing||m->drawOffer!=ChessMatch::OfferedByMe)return true;received(*m,false);finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,String(m->name)+tr(\" accepted the draw\""
   ]
  },
  "cdb0b1c7": {
@@ -8359,7 +8359,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:199: else if(m->state==ChessMatch::Invited||(m->state==ChessMatch::Playing&&!g.plies)){finish(*m,ChessMatch::Undecided,ChessMatch::Cancelled);news(*m,String(m->name)+tr(\" cancelled the game\",\" отменил партию\"));}"
+   "src/ChessNet.cpp:204: else if(m->state==ChessMatch::Invited||(m->state==ChessMatch::Playing&&!g.plies)){finish(*m,ChessMatch::Undecided,ChessMatch::Cancelled);news(*m,String(m->name)+tr(\" cancelled the game\",\" отменил партию\"));}"
   ]
  },
  "d0ba0a93": {
@@ -8740,7 +8740,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:187: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
+   "src/ChessNet.cpp:192: if(m->state==ChessMatch::Over)what+=m->won()?tr(\" · you won\",\", вы победили\"):m->lost()?tr(\" · you lost\",\", вы проиграли\"):tr(\" · draw\",\", ничья\");"
   ]
  },
  "d9601486": {
@@ -9124,7 +9124,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:205: if(!strcmp(a,\"resign\")){if(m->state!=ChessMatch::Playing)return true;finish(*m,m->mine==White?ChessMatch::WhiteWon:ChessMatch::BlackWon,ChessMatch::Resigned);news(*m,String(m->name)+tr(\" resigned: you won\",\" сдался: вы п"
+   "src/ChessNet.cpp:210: if(!strcmp(a,\"resign\")){if(m->state!=ChessMatch::Playing)return true;finish(*m,m->mine==White?ChessMatch::WhiteWon:ChessMatch::BlackWon,ChessMatch::Resigned);news(*m,String(m->name)+tr(\" resigned: you won\",\" сдался: вы п"
   ]
  },
  "e1d6680b": {
@@ -9354,7 +9354,7 @@
    "shared"
   ],
   "where": [
-   "src/ChessNet.cpp:203: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
+   "src/ChessNet.cpp:208: if(!strcmp(a,\"draw?\")){if(m->state!=ChessMatch::Playing||m->drawOffer==ChessMatch::OfferedToMe)return true;if(m->drawOffer==ChessMatch::OfferedByMe){finish(*m,ChessMatch::Drawn,ChessMatch::Agreed);news(*m,tr(\"Draw agreed"
   ]
  },
  "e8ddba89": {
