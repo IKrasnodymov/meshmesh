@@ -366,7 +366,8 @@ void MeshRadio::restoreHistory() {
     while(f.available()) {
       String row=f.readStringUntil('\n');StaticJsonDocument<768> d;if(deserializeJson(d,row))continue;
       ChatMessage m;m.protocol=d["protocol"]|1;m.source=strtoull(d["source"]|"0",nullptr,16);const char* dest=d["destination"]|"ALL";m.destination=strcmp(dest,"ALL")==0?meshmesh::Broadcast:strtoull(dest,nullptr,16);
-      m.session=d["session"]|0;m.id=d["id"]|0;m.timestamp=d["time"]|0;m.outgoing=d["outgoing"]|false;m.status=ChatMessage::Status(constrain(d["status"]|0,0,4));
+      m.session=d["session"]|0u;m.id=d["id"]|0u;m.timestamp=d["time"]|0u; // unsigned: "|0" reads an id above 2^31 as 0
+      m.outgoing=d["outgoing"]|false;m.status=ChatMessage::Status(constrain(d["status"]|0,0,4));
       m.route=ChatMessage::Route(constrain(d["route"]|0,0,2));m.hops=d["hops"]|255;m.tries=d["tries"]|0;
       strlcpy(m.name,d["name"]|"?",sizeof(m.name));strlcpy(m.text,d["text"]|"",sizeof(m.text));
       bool found=false;for(unsigned i=0;i<historyCount;i++) if(history[i].protocol==m.protocol && history[i].source==m.source && history[i].session==m.session && history[i].id==m.id) {history[i].status=m.status;if(m.route){history[i].route=m.route;history[i].hops=m.hops;history[i].tries=m.tries;}if(m.timestamp>=1735689600)history[i].timestamp=m.timestamp;found=true;break;}

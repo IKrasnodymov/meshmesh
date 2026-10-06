@@ -21,7 +21,9 @@
 > each, RX/TX growing, the M9 without restarts. The V4 restarted once before these exchanges (boot 159,
 > `reset_reason` 0; cause not found) and was stable afterwards. The M9's RTC was 11 s fast; both clocks
 > were set from the computer. An old history-restore bug was found: an `id` above 2³¹ reads back as 0
-> after a restart (`d["id"]|0`); text, time and status are kept. The published 0.4.2 package (build
+> after a restart (`d["id"]|0`); text, time and status are kept. Fixed in `MeshRadio::restoreHistory` (not released yet):
+> a local build on the V4 (`D3ED79D3…`, boot 160) restored all 64 records with no id 0 (14 ids above
+> 2³¹), other fields unchanged. The published 0.4.2 package (build
 > `e11cfaf`, same code; `9A32B2E4…`, boot 57) was installed on the T114 with `tools/nrf52.py`: repeater
 > role, settings and 44 history records kept; the T114 receives the V4's packets (RX grows), the V4 hears
 > the T114's advert, no restarts.
