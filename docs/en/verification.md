@@ -1,5 +1,19 @@
 # MeshMesh verification
 
+> **Mesh pet, branch `feature/pet`** (6 October 2026, commit `9ffbbbf`, version number unchanged — 0.4.3;
+> the full run was not done). All 15 boards build; the nRF52 language images fit (the largest, Chinese:
+> GAT562 35 KB free, T114 8 KB). Screen emulator (m9, tdeck, heltec, gat562, t114): shots of the egg, a happy,
+> a hungry and an ill pet and the grave; death at zero health, a new egg with the old pet remembered, hatching
+> after 15 min, no death with death off. This commit was installed with `tools/flash.py` on the M9 (boot 216,
+> ELF `002F361C…`) and the Heltec V4 (boot 165, ELF `BCD57A4F…`): settings and 64 history records kept. Over
+> LoRa, direct messages M9 → Heltec and Heltec → M9 were delivered with ACK: the sender's `acks` and snacks
+> grow, the receiver's `messages`, both `packets`; "friends" are the two nodes each heard (the other board and
+> the repeater KZN-PRV-901), not counted again after a restart and an advert. The pet's name and progress
+> survived a Heltec restart and reflashing both boards. The pet screen and "Pet" were checked with USB keys and
+> screenshots (M9 page with a speech bubble, Heltec hold menu); physical buttons, the T114, the GAT562 and the
+> community boards were not checked on hardware; growing up to adult and death only with time skipped
+> (`pet skip`), not real days.
+
 > **0.4.3: storage in the free OTA slot** (6 October 2026). A user's Heltec V3 erases the LittleFS partition
 > (`0x610000`) but does not keep a write, status register `0000`. `fsformat` now puts LittleFS into the free
 > OTA slot in that case and keeps the place in NVS; `flashstatus` (JEDEC ID, size, SR1–SR3, storage place)
