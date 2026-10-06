@@ -13,7 +13,15 @@
 > wrong are not corrected. An incoming message before the clock is set and the unread count on the
 > board's screen were not checked (the T114 was a repeater). Built m9, heltec_v4, heltec_v3, tdeck,
 > gat562_30s, heltec_t114; Android unit tests and build passed, checked in the emulator with the V4
-> over the bridge.
+> over the bridge. Then the published 0.4.2 package was installed on the V4 (`119869e`, ELF
+> `E883862A…`, boot 158): settings and 64 history records kept, the phone time survived the restart,
+> a direct message to the M9 was delivered with an ACK, one copy, with the right time. The published
+> 0.4.2 was installed on the M9 over 0.3.9 (ELF `6E1A4585…`, boot 213): settings and 64 history records
+> kept, clock from the RTC. Two pairs of direct messages M9 ↔ V4 were delivered with ACKs, one copy
+> each, RX/TX growing, the M9 without restarts. The V4 restarted once before these exchanges (boot 159,
+> `reset_reason` 0; cause not found) and was stable afterwards. The M9's RTC was 11 s fast; both clocks
+> were set from the computer. An old history-restore bug was found: an `id` above 2³¹ reads back as 0
+> after a restart (`d["id"]|0`); text, time and status are kept.
 
 > **0.4.1: bounded history-export memory** (6 October 2026).
 > On published 0.4.0, switching T114 from repeater to normal mode reproduced an empty history
