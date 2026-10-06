@@ -2,6 +2,16 @@
 
 > Translated from the Russian original [docs/verification.md](../verification.md); when they differ, the original is current.
 
+> **Heltec T114: the M9-style interface** (5–6 October 2026, build `606703b`, package `EDBC33C5…` through
+> `tools/nrf52.py flash`, settings kept). The compact interface's one-button logic is drawn on the T114 by its own
+> layer, `src/UiHires.inc`, at 240×135: M9 colours and icons (`include/UiIcons.h`, code shared with the M9), cards,
+> avatars, a status bar with clock and battery, key chips, a full-screen chess board; CJK and Arabic at their own
+> size. **On hardware**: every page captured over USB (`device.py --screenshot`), ~78 KB RAM free, no restarts; the
+> owner looked at the screen and confirmed it. The largest image (Chinese) is 674 KB of 712. **On the computer**:
+> the one-button scenario with chess in `tools/ui_preview` (t114) passed; M9, Heltec and GAT562 frames match the
+> previous ones except clock digits; M9, Heltec V4, Tracker, GAT562 and T114 build. Not checked: one-button chess on
+> the T114 screen in a radio game, phone pairing.
+
 > **0.3.8 — MeshCore channels, contacts in LittleFS** (3 October 2026; `docs/channels.md`). **On hardware**
 > (`flash.py`): M9 0.3.8 — boots 137–139, ELF hash `A75EEFEC…`; Heltec 0.3.8 — `E92F48CE…`, boot 92. Both
 > boards' settings matched the snapshots taken before, 64 messages kept. Radio check MeshMesh ↔ MeshMesh
