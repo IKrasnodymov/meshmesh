@@ -80,9 +80,31 @@ mount). On a user's Heltec V3 the erase went through but the write did not stay
 (`ERR flash at 0x610000 does not keep a write`): the LittleFS partition lies in the top quarter of the
 flash, which the block-protect bits of the chip's status register can lock. Since 0.3.9 `fsformat` then
 reads the register and, if protection bits are set, clears them (as ESP-IDF 4.x did before writing) and
-tests again; the reply shows the register values. The USB command `flashstatus` only reads the register.
-Formatting over another firmware's data was checked in QEMU; clearing the protection on the V3 is not
-verified yet.
+tests again; the reply shows the register values. The same user's next reply (0.3.9 or later): register `0000`, no protection bits, and the write still
+does not stay; writes to NVS (`0x9000`) work. The cause is not found.
+
+Since 0.4.3 `fsformat` (and the “Create storage…” item) then puts the storage into the free OTA slot: on
+8 MB that is `0x310000`–`0x610000`, which the firmware does not use (there is no over-the-air update). The
+slot is tested with a one-sector write every 64 KB from its start; the storage takes the tested part, no
+more than the usual partition (1984 KB on 8 MB) and no less than 256 KB. The place is kept in NVS
+(`meshmesh-fs`); at boot the partition record in memory is pointed there, the partition table is not
+changed. The `fsformat` reply names the address, the size and the reason. If the partition works, the
+storage stays there and the remembered place is cleared. A USB update with the four files leaves the slot
+alone; the factory image erases the whole flash with the storage, then `fsformat` is needed again. Boards
+with 4 MB have no second slot and no move.
+
+USB commands help to narrow it down. `flashstatus` gives the chip's JEDEC ID, its size by the ID and by the
+image header, registers SR1–SR3 (on Winbond chips the WPS bit in SR3 turns on per-block locks that SR1 does
+not show) and where the storage is. `flashprobe` erases and writes one sector at the start, at the end and
+at every megabyte boundary of the free OTA slot and of the usual LittleFS partition — each only while it
+holds no data — which shows from which address the flash stops keeping writes. On the Heltec V4 (ID
+`684018`, 16 MB) every address of the slot is `ok`. Formatting over another firmware's data and the move were checked in QEMU (ESP32, 8 MB, a partition
+made to lose the write): the storage was created at `0x310000` and mounted from there after a restart. Not
+verified on the V3.
+
+The ESPFlash (Android) error `Firmware overlap: boot_app0.bin` means a wrong address: `boot_app0.bin` goes
+to `0xe000`, not `0xe0000` — with the extra zero it lands inside `firmware.bin` (`0x10000`, about 2 MB).
+It is simpler to write the single `…-factory.bin` at `0x0` (first install; erases the previous firmware's data).
 
 ## What has been verified (1 October 2026)
 

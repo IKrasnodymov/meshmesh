@@ -201,7 +201,8 @@ String executeCommand(const String& input) {
   if(line=="ble") {bleToggle();return bleActive()?"OK BLE on":"OK BLE off";}
   if(line=="restart"){restartAt=millis()+1000;return "OK restarting";} // e.g. after fsformat: the settings are read at boot
 #if !defined(MM_NRF52)
-  if(line=="flashstatus"){char s[96];snprintf(s,sizeof(s),"OK flash status %04x (SR2<<8 | SR1; SR1 bits 2-6 protect blocks)",unsigned(flashStatus(false)));return s;}
+  if(line=="flashstatus")return flashInfo();
+  if(line=="flashprobe"){if(meshRadio.busy())return "ERR radio busy";return flashProbe(hardware.fsOk);}
 #endif
   if(line=="fsformat") {
     if(hardware.fsOk)return "ERR filesystem already mounted; no format";

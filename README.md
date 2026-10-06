@@ -107,4 +107,6 @@ Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent f
 
 Firmware 0.4.1 reduces history-export memory use and reports allocation failures explicitly; Android remains 0.4.0.
 
+Firmware 0.4.3: when the LittleFS partition does not keep writes (as on a user's Heltec V3), `fsformat` puts the storage into the free OTA slot; the USB commands `flashstatus` and `flashprobe` show the flash chip and where writes stop staying.
+
 Firmware 0.4.2: messages recorded before the clock is set get their exact time once it is set; a spoofed GPS date earlier than the firmware build, or one contradicting the phone/NTP time, is rejected. Android 0.4.1 does not repeat message notifications after that.

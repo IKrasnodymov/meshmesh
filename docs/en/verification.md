@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.4.3: storage in the free OTA slot** (6 October 2026). A user's Heltec V3 erases the LittleFS partition
+> (`0x610000`) but does not keep a write, status register `0000`. `fsformat` now puts LittleFS into the free
+> OTA slot in that case and keeps the place in NVS; `flashstatus` (JEDEC ID, size, SR1–SR3, storage place)
+> and `flashprobe` were added. Checked: the diagnostic build on the Heltec V4 (boot 159) — ID `684018`,
+> 16 MB, every slot address `ok`, settings and 64 history records kept; in QEMU (ESP32 T-LoRa with the 8 MB
+> layout, a build that fakes the lost write, `MM_TEST_STORAGE_MOVE`) the storage was created at `0x310000`
+> (1984 KB) and mounted from there after a restart, `flashprobe` skips the occupied slot. In QEMU an image
+> without these changes also restarts by watchdog ~33 s after the second boot — an emulator limit, not
+> the move. Not verified on the V3; the full run was not done.
+
 > **0.4.2: message times and a clock without a source** (6 October 2026, local Heltec V4 image `B33C9817…` built before the version bump,
 > boot 157; the full run was not done). The app shows the reception time in bubbles and the chat list,
 > but some V4 stamps were false: the V4's GPS module reports a fix of 10 satellites dated 8 July 2026
@@ -18,8 +28,8 @@
 > a direct message to the M9 was delivered with an ACK, one copy, with the right time. The published
 > 0.4.2 was installed on the M9 over 0.3.9 (ELF `6E1A4585…`, boot 213): settings and 64 history records
 > kept, clock from the RTC. Two pairs of direct messages M9 ↔ V4 were delivered with ACKs, one copy
-> each, RX/TX growing, the M9 without restarts. The V4 restarted once before these exchanges (boot 159,
-> `reset_reason` 0; cause not found) and was stable afterwards. The M9's RTC was 11 s fast; both clocks
+> each, RX/TX growing, the M9 without restarts. V4 boot 159 before these exchanges was the install of a flash
+> diagnostic build from a parallel session (`flashstatus`/`flashprobe`), not a fault. The M9's RTC was 11 s fast; both clocks
 > were set from the computer. An old history-restore bug was found: an `id` above 2³¹ reads back as 0
 > after a restart (`d["id"]|0`); text, time and status are kept. Fixed in `MeshRadio::restoreHistory` (not released yet):
 > a local build on the V4 (`D3ED79D3…`, boot 160) restored all 64 records with no id 0 (14 ids above
