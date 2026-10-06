@@ -104,3 +104,5 @@ third repeater. Not implemented: voice, route planning, OTA updates.
 the RSSI tracker and radar HUDs by [Stevee87](https://github.com/Stevee87).
 
 Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent firmware/Android versions and publishing](docs/en/releases.md). Battery-life gains have not been measured.
+
+Firmware 0.4.1 reduces history-export memory use and reports allocation failures explicitly; Android remains 0.4.0.

@@ -61,10 +61,15 @@ def main():
             report['before'] = [summary(s) for s in before]
             for device in devices:
                 assert command(device, 'hello').startswith('OK')
-            deadline = time.monotonic() + 30
-            while not all(any(n.get('public_key') == before[1-i]['public_key'] for n in read(d, 'nodes')) for i, d in enumerate(devices)):
+            deadline = time.monotonic() + 60
+            next_advert, advertiser = time.monotonic() + 5, 0
+            while not all(any(n.get('public_key') == before[1-i]['public_key'] and n.get('type') == 1 for n in read(d, 'nodes')) for i, d in enumerate(devices)):
                 if time.monotonic() >= deadline:
-                    raise RuntimeError('Mutual contact discovery missing')
+                    raise RuntimeError('Mutual chat-node discovery missing after role change')
+                if time.monotonic() >= next_advert:
+                    assert command(devices[advertiser], 'hello').startswith('OK')
+                    advertiser = 1 - advertiser
+                    next_advert = time.monotonic() + 5
                 time.sleep(1)
             stamp = time.time_ns()
             for cycle in range(3):
@@ -73,16 +78,21 @@ def main():
                     old = read(receiver, 'status')
                     time.sleep(15)  # screen timeout and input grace expire; no receiver USB polling
                     text = f'Power check {stamp}-{cycle}-{receiver_index}'
-                    assert command(sender, 'send ' + before[receiver_index]['node'] + ' ' + text).startswith('OK')
+                    result = command(sender, 'send ' + before[receiver_index]['node'] + ' ' + text)
+                    if not result.startswith('OK'):
+                        raise RuntimeError('Message queue rejected: ' + result)
                     deadline = time.monotonic() + 100
                     while not any(m['outgoing'] and m['text'] == text and m['status'] == 3 for m in read(sender, 'messages')):
                         if time.monotonic() >= deadline:
                             raise RuntimeError('No ACK within the normal radio-check timeout')
                         time.sleep(.5)
-                    received = [m for m in read(receiver, 'messages') if not m['outgoing'] and m['text'] == text
+                    history = read(receiver, 'messages')
+                    received = [m for m in history if not m['outgoing'] and m['text'] == text
                                 and m['source'] == before[1-receiver_index]['node']]
                     new = read(receiver, 'status')
                     assert len(received) == 1 and received[0]['destination'] == before[receiver_index]['node']
+                    if 'history_count' in new:
+                        assert len(history) == new['history_count'], 'Incomplete history response'
                     assert new['idle_waits'] > old['idle_waits'] and new['idle_radio_events'] > old['idle_radio_events']
                     assert new['rx'] > old['rx'] and new['tx'] > old['tx']
                     report['checks'].append({'receiver': new['board'], 'before': summary(old), 'after': summary(new), 'copies': 1, 'ack': True})

@@ -1,5 +1,21 @@
 # MeshMesh verification
 
+> **0.4.1: bounded history-export memory** (6 October 2026).
+> On published 0.4.0, switching T114 from repeater to normal mode reproduced an empty history
+> response after sender ACK. A potential silent-failure path was removed: the additional 32 KB
+> JSON pool. Records are now serialized individually, output length measured first, and memory
+> or incomplete-output failures reported explicitly; `status.history_count` checks completeness.
+> The role-change test now waits for a CHAT advert, not merely a cached repeater contact.
+> **Local images**: T114 `BFD1E2A4…`, boot 46; V4 `AF2E53BD…`, boot 150. The first run passed
+> six idle-reception messages with ACK and one copy, BLE enabled, complete history matching
+> `history_count`, no resets/injection (`artifacts/power-041-pair.json`). Settings and roles were
+> restored (T114 repeater). All 64 V4 history entries were checked. Three further T114 role-change
+> cycles returned all 38 records each (`artifacts/history-041-role-cycles.json`), then restored
+> the repeater role. All 15 targets built; Android
+> unit tests and build passed. Independent versions: firmware 0.4.1, Android 0.4.0 with a new CI code.
+> Current, phone, physical-button and other-board limitations remain. These hashes identify local
+> images, not subsequent CI images.
+
 > **0.4.0: event waits on every board and a consistent release** (6 October 2026).
 > All 15 targets built and packaged, including every language variant for both nRF52 boards.
 > Android `0.4.0+local` and the site built; Android unit tests, version/package checks and translation
