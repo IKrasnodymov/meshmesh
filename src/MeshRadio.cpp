@@ -25,6 +25,7 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include "ChessTour.h"
 #include "ChessSync.h"
 #include "MeshServer.h"
+#include "Power.h"
 MeshRadio meshRadio;
 #if defined(MM_RADIO_SX1262)
 constexpr uint32_t irqTxDone=RADIOLIB_SX126X_IRQ_TX_DONE,irqPreamble=RADIOLIB_SX126X_IRQ_PREAMBLE_DETECTED,irqRxDone=RADIOLIB_SX126X_IRQ_RX_DONE;
@@ -35,7 +36,7 @@ constexpr uint32_t irqTxDone=RADIOLIB_SX127X_CLEAR_IRQ_FLAG_TX_DONE,irqPreamble=
 constexpr uint32_t irqTxDone=RADIOLIB_LR11X0_IRQ_TX_DONE,irqPreamble=RADIOLIB_LR11X0_IRQ_PREAMBLE_DETECTED,irqRxDone=RADIOLIB_LR11X0_IRQ_RX_DONE;
 #endif
 static volatile bool radioIrq=false;
-static void IRAM_ATTR onRadioIrq(){radioIrq=true;}
+static void IRAM_ATTR onRadioIrq(){radioIrq=true;powerRadioIrq();}
 void radioIrqPending(){radioIrq=true;}
 static uint64_t aliasOf(const uint8_t* key){uint64_t n=0;for(unsigned i=0;i<8;i++)n=(n<<8)|key[i];return n;}
 static void copyUtf8(char* dest,const char* src,size_t cap){size_t n=strnlen(src,cap);if(n>=cap){n=cap-1;while(n&&(uint8_t(src[n])&0xc0)==0x80)n--;}memcpy(dest,src,n);dest[n]=0;}

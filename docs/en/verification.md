@@ -1,6 +1,51 @@
-# MeshMesh 0.3.0 verification
+# MeshMesh verification
+
+> **0.4.0: event waits on every board and a consistent release** (6 October 2026).
+> All 15 targets built and packaged, including every language variant for both nRF52 boards.
+> Android `0.4.0+local` and the site built; Android unit tests, version/package checks and translation
+> checks passed; 975 UI frames generated. Versions come from `versions.properties`; see `docs/en/releases.md`.
+> **Local images on hardware**: T114 `2A555B2E…` (boot 36), Heltec V4 `33823E84…` (boot 148),
+> BLE enabled on both. `tools/power_pair_check.py` passed six messages: three each way after
+> screen-off, with no receiver USB polling until ACK; one copy, ACK, increasing RX/TX and LoRa
+> notifications, no resets or USB injection. Report: `artifacts/power-040-pair.json`. Original
+> settings and identities preserved; existing T114 history records compared. The original
+> T114 repeater (boot 37) and V4 normal roles were restored. Repeater `power_check.py` passed:
+> advert reception from V4 during idle, USB and simulated UI wake-up
+> (`artifacts/power-040-t114-repeater.json`).
+> **Preliminary runs did not pass**: the first returned empty T114 history despite sender ACK;
+> records became readable again after a restart. In the second, a packet arrived but the sender
+> received no ACK within 100 seconds. Neither cause is established. Separate reports:
+> `power-040-pair-first-attempt.json` and `power-040-pair-second-attempt.json`. The subsequent full
+> run on the same images passed without those failures; this does not establish long-term stability.
+> CI images have their own hashes and revision: these local results do not verify future published
+> files. Current, battery life, phone BLE connections and physical buttons were not measured/tested
+> for this release. M9, GAT562 and community boards are build-verified, without new hardware tests.
+> The full hardware suite was not run.
 
 > Translated from the Russian original [docs/verification.md](../verification.md); when they differ, the original is current.
+
+> **T114: event waits in the nRF52 application loop** (6 October 2026, package `EE52F8C1…`).
+> Installed with `tools/nrf52.py flash` after two matching reads of flash 0x1000–0x100000;
+> settings, role and node identity matched afterwards. With the screen off, the task waits for
+> a LoRa IRQ for up to 20 ms instead of polling every 2 ms, in every role; reception is continuous.
+> **Repeater, boot 26**: `tools/nrf52_power_check.py` confirmed idle waits, USB responses and UI wake
+> through a simulated USB key. Once Heltec V4 (`D60369E2…`, boot 145) was connected, its adverts
+> and LoRa notifications during idle were checked (`artifacts/nrf52-power-peer-check.json`).
+> **Normal mode, boot 31**: T114 → V4 delivered with ACK, followed by three consecutive V4 → T114
+> messages received from idle, each with a LoRa notification, one copy and ACK. Until ACK, only
+> the sender was polled; no USB commands reached T114. RX/TX increased, with no unexpected resets
+> or USB injection. T114 was restored to repeater mode (boot 32); settings, node identities, roles
+> and BLE states of both boards matched their original snapshots.
+> Final report: `artifacts/nrf52-power-pair-check.json`. Two preliminary runs were not accepted:
+> a 30 s timeout and requiring a lit screen after it could have timed out. Their reports remain as
+> `nrf52-power-pair-first-attempt.json` and `nrf52-power-pair-second-attempt.json`.
+> BLE was enabled during testing. Host BLE scanning was cancelled because CoreBluetooth did not
+> become ready; a phone BLE connection is not confirmed on this package. M9, Heltec V4, GAT562
+> and T114 built; both nRF52 packages include all language variants. Heltec V4 served as the peer
+> and was not reflashed: the idle-loop change applies to nRF52.
+> **Not checked**: the physical button on this package, current, battery life or long-term stability.
+> Task-wait counters do not measure CPU sleep/current. RXPS and scheduled GPS power cycling are
+> not implemented yet. The full hardware suite was not run.
 
 > **Heltec T114: the M9-style interface** (5–6 October 2026, build `606703b`, package `EDBC33C5…` through
 > `tools/nrf52.py flash`, settings kept). The compact interface's one-button logic is drawn on the T114 by its own

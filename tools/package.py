@@ -8,6 +8,7 @@ import subprocess
 import sys
 import re
 from pathlib import Path
+from version import VERSION, check
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = {'m9': 'm9', 'heltec_v4': 'heltec-v4', 'heltec_v4_r8': 'heltec-v4-r8'}
@@ -55,7 +56,8 @@ def main():
         import nrf52
         nrf52.package(args.environment)
         return
-    version = re.search(r'MESHMM_VERSION "([^"]+)"', (ROOT/'include/Version.h').read_text())[1]
+    check()
+    version = VERSION
     build = ROOT / '.pio/build' / args.environment
     package = ROOT / 'artifacts' / f'meshmesh-{TARGETS[args.environment]}-{version}'
     framework = Path.home() / '.platformio/packages/framework-arduinoespressif32'
@@ -69,7 +71,10 @@ def main():
     if any(p.stat().st_mtime > files['firmware.bin'].stat().st_mtime for p in sources):
         raise SystemExit('Firmware is older than project sources; run a successful build before packaging')
     package.mkdir(parents=True, exist_ok=True)
-    manifest = {'target': args.environment, 'version': version}
+    release = json.loads((build / 'release.json').read_text())
+    if release['version'] != version:
+        raise SystemExit('Build version is stale')
+    manifest = {'target': args.environment, **release}
     for name, source in files.items():
         shutil.copyfile(source, package / name)
         data = (package / name).read_bytes()

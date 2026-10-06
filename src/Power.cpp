@@ -1,8 +1,57 @@
 #include "Power.h"
+#include "App.h"
+#include "BoardPins.h"
+#include "MeshRadio.h"
+#include "Radar.h"
+#include "BleDiagnostics.h"
+#include "WifiDiagnostics.h"
+#if !defined(MM_NRF52)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#endif
+namespace {
+TaskHandle_t volatile idleTask=nullptr;
+uint32_t inputAt=0,idleWaits=0,idleMs=0,radioEvents=0;
+constexpr uint32_t IdlePollMs=20; // below the 30 ms button debounce; also drains GPS/USB regularly
+}
 #if defined(MM_NRF52)
-void powerWake(){}
-void powerTick(bool){}
+void powerRadioIrq(){
+#else
+void IRAM_ATTR powerRadioIrq(){
+#endif
+  // Called only from the RadioLib GPIO ISR. A pending notification also closes the race
+  // between checking the radio IRQ and blocking the task. The RTOS controls sleep
+  // (together with the SoftDevice on nRF52); other tasks can still run during this wait.
+  if(!idleTask)return;
+  BaseType_t woken=pdFALSE;vTaskNotifyGiveFromISR(idleTask,&woken);
+#if defined(MM_NRF52)
+  portYIELD_FROM_ISR(woken);
+#else
+  if(woken)portYIELD_FROM_ISR();
+#endif
+}
+namespace {
+void waitForRadio(bool usbIdle){
+  if(!idleTask)idleTask=xTaskGetCurrentTaskHandle();
+  if(!usbIdle||!uiScreenOff()||radar.active||radar.csi!=Radar::CsiOff||wifiProbeActive()||bleProbeActive()||!meshRadio.ready||meshRadio.busy()||
+     millis()-inputAt<1000||digitalRead(pins::radioIrq)==HIGH){
+    ulTaskNotifyTake(pdTRUE,0);delay(2);return;
+  }
+  // Block the task, rather than putting the CPU to sleep from application context.
+  // BLE and USB tasks remain runnable; RX/TX IRQs release this wait immediately.
+  uint32_t start=millis();
+  if(ulTaskNotifyTake(pdTRUE,pdMS_TO_TICKS(IdlePollMs)))radioEvents++;
+  idleWaits++;idleMs+=millis()-start;
+}
+}
+uint32_t powerIdleWaits(){return idleWaits;}
+uint32_t powerIdleMs(){return idleMs;}
+uint32_t powerRadioEvents(){return radioEvents;}
+#if defined(MM_NRF52)
+void powerWake(){inputAt=millis();}
+void powerTick(bool usbIdle){waitForRadio(usbIdle);}
 uint8_t powerMhz(){return 64;}
+// Application wait time is not measured CPU sleep time: keep these ESP32 counters separate.
 uint32_t powerSleeps(){return 0;}
 uint32_t powerSleptMs(){return 0;}
 uint32_t powerSlowMs(){return 0;}
@@ -30,7 +79,7 @@ constexpr uint32_t Fast=240,Slow=80;
 constexpr uint32_t AwakeAfterInput=30000; // no light sleep this long after a key, USB or BLE command
 constexpr uint32_t FirstSleep=60000;      // after boot: time for the role choice, the advert and USB checks
 constexpr uint32_t SleepMs=500;           // timer wake: keys, room pushes and adverts run at least this often
-uint32_t inputAt=0,sleeps=0,slowAt=0;uint64_t sleptUs=0,slowMs=0;
+uint32_t sleeps=0,slowAt=0;uint64_t sleptUs=0,slowMs=0;
 void clock(uint32_t mhz){
   if(getCpuFrequencyMhz()==mhz)return;
   if(mhz==Slow)slowAt=millis();else slowMs+=millis()-slowAt;
@@ -97,7 +146,8 @@ void lightSleep(){
 void powerWake(){inputAt=millis();clock(Fast);}
 void powerTick(bool usbIdle){
   bool busy=inUse();clock(busy?Fast:Slow);
-  if(!busy&&maySleep(usbIdle))lightSleep();
+  if(!busy&&maySleep(usbIdle)){delay(2);lightSleep();}
+  else waitForRadio(usbIdle);
 }
 uint8_t powerMhz(){return getCpuFrequencyMhz();}
 uint32_t powerSleeps(){return sleeps;}

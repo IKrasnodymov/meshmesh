@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,10 +8,12 @@ plugins {
 // The app shows the device's own web interface (web/index.html, the source of include/PortalPage.h)
 // and carries the firmware version it was built with.
 val repo = rootProject.projectDir.parentFile
-val firmwareVersion = Regex("MESHMM_VERSION \"([^\"]+)\"")
-    .find(repo.resolve("include/Version.h").readText())!!.groupValues[1]
+val versions = Properties().apply { repo.resolve("versions.properties").inputStream().use { load(it) } }
+val firmwareVersion = versions.getProperty("firmware")
+val androidVersion = versions.getProperty("android")
+require(listOf(firmwareVersion, androidVersion).all { it.matches(Regex("(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)")) })
 // CI numbers each published build (pages.yml: MM_VERSION_CODE) so that the app can update itself from the site.
-val buildNumber = System.getenv("MM_VERSION_CODE")?.toIntOrNull()
+val buildNumber = System.getenv("MM_VERSION_CODE")?.let { it.toInt().also { code -> require(code in 1..2100000000) } }
 val webAssets = layout.buildDirectory.dir("generated/webAssets")
 val copyWeb by tasks.registering(Copy::class) {
     from(repo.resolve("web/index.html"))
@@ -24,8 +28,8 @@ android {
         applicationId = "org.meshmesh.app"
         minSdk = 29
         targetSdk = 35
-        versionCode = buildNumber ?: 8
-        versionName = "$firmwareVersion-app${buildNumber ?: "-local"}"
+        versionCode = buildNumber ?: 1000000
+        versionName = "$androidVersion+${buildNumber ?: "local"}"
         buildConfigField("String", "FIRMWARE", "\"$firmwareVersion\"")
         // Updates from the site install only over a build signed with the same project key.
         buildConfigField("boolean", "UPDATES", (System.getenv("MM_KEYSTORE") != null).toString())

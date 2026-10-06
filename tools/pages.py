@@ -15,6 +15,7 @@ Device language: manifest-<lang>.json writes partitions-<lang>.bin, the partitio
 Screenshots in every language come from tools/site_shots.py (artifacts/site-shots).
 """
 import json
+import hashlib
 import re
 import shutil
 import sys
@@ -26,6 +27,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 from package import COMMUNITY, NRF52, TARGETS  # noqa: E402
 from chess_site import build as build_chess  # noqa: E402
 from i18n import CODES  # noqa: E402
+from version import VERSION, ANDROID_VERSION, check  # noqa: E402
 
 LANG_AT = 0xc00  # in the partition table sector; the table itself ends before it
 
@@ -48,7 +50,8 @@ Or in Chrome/Edge: https://ikrasnodymov.github.io/meshmesh/#install
 
 def main():
     out, envs = Path(sys.argv[1]), sys.argv[2:]
-    version = re.search(r'MESHMM_VERSION "([^"]+)"', (ROOT/'include/Version.h').read_text())[1]
+    check()
+    version = VERSION
     if out.exists():
         shutil.rmtree(out)
     shutil.copytree(ROOT/'site', out)
@@ -58,9 +61,22 @@ def main():
         for f in shots.glob('*.png'):
             shutil.copyfile(f, out/'img'/f.name)
     boards = []
+    releases = {}
     for env in envs:
         package = ROOT/'artifacts'/f'meshmesh-{TARGETS[env]}-{version}'
         meta = json.loads((package/'manifest.json').read_text())
+        if meta['target'] != env:
+            raise SystemExit(f'{env}: wrong board package')
+        for filename, component in meta.items():
+            path = package / filename
+            if isinstance(component, dict) and 'sha256' in component and path.is_file():
+                if hashlib.sha256(path.read_bytes()).hexdigest() != component['sha256']:
+                    raise SystemExit(f'{env}: checksum mismatch for {filename}')
+        if meta['version'] != version or not meta.get('revision'):
+            raise SystemExit(f'{env}: stale package or missing source revision')
+        releases[env] = {'version': version, 'revision': meta['revision'], 'sha256': meta['firmware.bin']['sha256']}
+        if len({r['revision'] for r in releases.values()}) != 1:
+            raise SystemExit('Packages from different source revisions cannot be published together')
         board_json = json.loads((ROOT/f'boards/meshmesh_{env}.json').read_text())
         if env in NRF52:
             # nRF52: no Web Serial installer; the UF2 file goes to the bootloader drive.
@@ -138,6 +154,8 @@ def main():
                        'verified': env in VERIFIED, 'community': env in COMMUNITY, 'langs': True,
                        'bytes': meta['firmware.bin']['bytes'], 'zip': f'firmware/{archive.name}'})
     (out/'firmware/boards.json').write_text(json.dumps({'version': version, 'boards': boards}, ensure_ascii=False, indent=2) + '\n')
+    (out/'release.json').write_text(json.dumps({'firmware': version, 'android': ANDROID_VERSION,
+        'revision': next(iter(releases.values()))['revision'], 'boards': releases}, indent=2) + '\n')
     print(out, len(boards), 'boards')
 
 

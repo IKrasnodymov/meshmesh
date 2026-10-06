@@ -19,9 +19,11 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
 The build copies `web/index.html` into the app's resources, so the app's interface always
-matches the firmware web page of the same revision. The app version is the firmware version from
-`include/Version.h` with the GitHub Actions build number (`0.3.9-app36`, also the `versionCode`, from
-`MM_VERSION_CODE`); a local build has `-app-local` and `versionCode` 8. The local `release` package is signed with the debug
+matches the firmware web page of the same revision. Android's public version is independent of
+firmware and lives in `versions.properties`. Release 0.4.0 is named `0.4.0+<versionCode>`, with CI
+code `1000000 + run_number * 100 + run_attempt`, passed to Gradle as `MM_VERSION_CODE`.
+Local builds use `0.4.0+local`, code 1000000. See [versions and publishing](releases.md).
+Without the project key, the local `release` package is signed with the debug
 key and installs directly. The APK on the website is built by GitHub Actions and signed with the
 project key (`MM_KEYSTORE`, `MM_KEYSTORE_PASSWORD` from the secrets), so that new versions install over old ones. In the debug build
 WebView debugging is enabled (`chrome://inspect`).

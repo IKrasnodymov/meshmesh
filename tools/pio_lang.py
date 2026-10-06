@@ -14,7 +14,7 @@ if code and code not in CODES:
 
 
 def language(env, node):
-    if node.name != 'I18n.cpp' or code in ('', 'en', 'ru'):
+    if not hasattr(node, 'name') or node.name != 'I18n.cpp' or code in ('', 'en', 'ru'):
         return node
     return env.Object(node, CPPDEFINES=list(env['CPPDEFINES']) + [('MM_LANG_EXTRA', CODES.index(code))])
 

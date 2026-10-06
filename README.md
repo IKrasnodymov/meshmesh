@@ -102,3 +102,5 @@ third repeater. Not implemented: voice, route planning, OTA updates.
 [MIT](LICENSE). Bundled MeshCore (`lib/MeshCore`) keeps its own MIT license. Map data ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors. The radar idea follows
 the RSSI tracker and radar HUDs by [Stevee87](https://github.com/Stevee87).
+
+Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent firmware/Android versions and publishing](docs/en/releases.md). Battery-life gains have not been measured.

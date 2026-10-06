@@ -193,7 +193,6 @@ void appLoop() {
 #if !defined(MM_NATIVE_USB) && !defined(MM_NRF52)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif
-  delay(2);
 #if defined(MM_NATIVE_USB) || defined(MM_NRF52)
   powerTick(!usbBytes);
 #else

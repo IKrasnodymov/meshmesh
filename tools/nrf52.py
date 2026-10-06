@@ -29,6 +29,7 @@ from pathlib import Path
 
 import serial
 from serial.tools.list_ports import comports
+from version import VERSION, check
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARDS = {'gat562_30s': ('gat562-30s', 'GAT562 30S Mesh Kit'), 'heltec_t114': ('heltec-t114', 'Heltec Mesh Node T114')}
@@ -128,7 +129,8 @@ def languages(env, objcopy, target, base):
 
 
 def version():
-    return re.search(r'MESHMM_VERSION "([^"]+)"', (ROOT / 'include/Version.h').read_text())[1]
+    check()
+    return VERSION
 
 
 def package(env):
@@ -174,6 +176,10 @@ SHA-256 firmware.bin: {digest}
     manifest = {'target': env, 'board': env, 'version': version(), 'chip': 'nrf52840', 'firmware_sha256': digest, 'size': len(data),
                 'uf2_sha256': uf2_digest, 'firmware.bin': {'bytes': len(data), 'sha256': digest},
                 'firmware.uf2': {'family': hex(FAMILY), 'base': hex(APP_START), 'sha256': uf2_digest}, 'languages': langs}
+    release = json.loads((build_dir / 'release.json').read_text())
+    if release['version'] != version():
+        raise SystemExit('Build version is stale')
+    manifest.update(release)
     (target / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(target, len(data), digest)
 

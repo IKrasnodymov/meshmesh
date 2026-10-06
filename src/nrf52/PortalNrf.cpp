@@ -4,6 +4,7 @@
 #include "App.h"
 #include "MeshRadio.h"
 #include "Radar.h"
+#include "Power.h"
 #include <bluefruit.h>
 #include <esp_system.h>
 
@@ -88,7 +89,7 @@ void bleToggle(){
 void portalTick(){
   if(webRadar&&millis()-webRadarAt>10000)webRadarRelease();
   if(!started)return;
-  if(commands&&!bleResponse.length()){BleCommand c;if(xQueueReceive(commands,&c,0)==pdTRUE){bleResponse=executeCommand(c.text)+'\n';bleOffset=0;nextNotification=millis();}}
+  if(commands&&!bleResponse.length()){BleCommand c;if(xQueueReceive(commands,&c,0)==pdTRUE){powerWake();bleResponse=executeCommand(c.text)+'\n';bleOffset=0;nextNotification=millis();}}
   if(bleResponse.length()&&int32_t(millis()-nextNotification)>=0){
     BLEConnection* link=client!=BLE_CONN_HANDLE_INVALID?Bluefruit.Connection(client):nullptr;
     if(!link||!tx.notifyEnabled(client)){bleResponse="";bleOffset=0;return;}

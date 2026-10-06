@@ -16,7 +16,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python tools/version.py --check
+          python tools/version_check.py
+          python tools/i18n.py check
+          python tools/web_header.py
+          git diff --exit-code -- include/PortalPage.h
+
   firmware:
+    needs: validate
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -31,13 +46,13 @@ jobs:
         with:
           path: ~/.platformio
           key: pio-${{ hashFiles('platformio.ini') }}
+          restore-keys: pio-
       - run: pip install platformio esptool
       - run: pio run -e ${{ matrix.env }}
       - run: python tools/package.py ${{ matrix.env }}
       # The screens in every interface language for the site (host build of the UI; needs the m9 libraries).
-      # Without them the site falls back to the committed English and Russian screenshots.
+      # Required: do not silently publish old screenshots when generation fails.
       - if: matrix.env == 'm9'
-        continue-on-error: true
         run: pip install pillow && python tools/site_shots.py artifacts/site-shots
       - uses: actions/upload-artifact@v4
         with:
@@ -45,6 +60,7 @@ jobs:
           path: artifacts/
 
   android:
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,22 +68,27 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Build
         working-directory: android
         env:
           MM_KEYSTORE_BASE64: ${{ secrets.MM_KEYSTORE_BASE64 }}
           MM_KEYSTORE_PASSWORD: ${{ secrets.MM_KEYSTORE_PASSWORD }}
-          MM_VERSION_CODE: ${{ github.run_number }}
         run: |
-          if [ -n "$MM_KEYSTORE_BASE64" ]; then
-            echo "$MM_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
-            export MM_KEYSTORE="$RUNNER_TEMP/release.jks"
-          fi
+          test -n "$MM_KEYSTORE_BASE64" && test -n "$MM_KEYSTORE_PASSWORD"
+          umask 077
+          echo "$MM_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export MM_KEYSTORE="$RUNNER_TEMP/release.jks"
+          export MM_VERSION_CODE=$(python ../tools/version.py --android-code)
           ./gradlew --no-daemon testDebugUnitTest assembleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: |
+            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/apk/release/output-metadata.json
 
   site:
     needs: [firmware, android]
@@ -91,7 +112,8 @@ jobs:
           python tools/pages.py _site m9 heltec_v4 gat562_30s heltec_t114 heltec_v4_r8 heltec_v3 heltec_tracker tdeck tbeam tbeam_supreme t3s3 tlora_v2_1_6 xiao_s3_wio station_g2 thinknode_m2
           mkdir -p _site/app && cp apk/app-release.apk _site/app/meshmesh.apk
           # The app checks app/version.json and downloads the numbered copy (a fresh name, no stale CDN cache).
-          python tools/app_release.py _site/app ${{ github.run_number }}
+          python tools/app_release.py _site/app apk/output-metadata.json
+          python tools/publish_check.py _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
@@ -103,5 +125,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Publish only the current main revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$GITHUB_REF" = refs/heads/main
+          test "$(gh api repos/$GITHUB_REPOSITORY/branches/main --jq .commit.sha)" = "$GITHUB_SHA"
       - id: deployment
         uses: actions/deploy-pages@v4
