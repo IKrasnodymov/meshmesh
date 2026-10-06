@@ -289,6 +289,261 @@
   "ru": " · попытка ",
   "text": " · essai "
  },
+ "8de3cbb9": {
+  "en": " is gone",
+  "ru": " больше нет",
+  "text": " est parti"
+ },
+ "8638388a": {
+  "en": "A message, how tasty",
+  "ru": "Сообщение! Вкусно",
+  "text": "Un message, miam"
+ },
+ "4692b473": {
+  "en": "Delivered, a snack for me",
+  "ru": "Доставлено! Мне вкусняшка",
+  "text": "Livré, friandise pour moi"
+ },
+ "fde903f8": {
+  "en": "We won at chess",
+  "ru": "Мы выиграли в шахматы",
+  "text": "On a gagné aux échecs"
+ },
+ "90839634": {
+  "en": "New friend: ",
+  "ru": "Новый друг: ",
+  "text": "Nouvel ami : "
+ },
+ "cee3cb3e": {
+  "en": "A walk, wheee",
+  "ru": "Гуляем! Ура",
+  "text": "Balade, youpi"
+ },
+ "7b7fe295": {
+  "en": "Packets are tasty today",
+  "ru": "Пакеты сегодня вкусные",
+  "text": "Les paquets sont bons"
+ },
+ "0872084c": {
+  "en": "I love this mesh",
+  "ru": "Обожаю эту сеть",
+  "text": "J'adore ce réseau"
+ },
+ "91106b04": {
+  "en": "Beep-boop",
+  "ru": "Бип-буп",
+  "text": "Bip-boup"
+ },
+ "bedfd24f": {
+  "en": "Listening to the air...",
+  "ru": "Слушаю эфир...",
+  "text": "J'écoute les ondes..."
+ },
+ "b468fe02": {
+  "en": "Pet me?",
+  "ru": "Погладишь?",
+  "text": "Un câlin ?"
+ },
+ "5b98ebce": {
+  "en": "Hungry: the air is empty",
+  "ru": "Голодно: эфир пуст",
+  "text": "Faim : ondes vides"
+ },
+ "ff0009ab": {
+  "en": "A snack?",
+  "ru": "Вкусняшку?",
+  "text": "Friandise ?"
+ },
+ "7cbcaad7": {
+  "en": "Write to someone?",
+  "ru": "Напиши кому-нибудь?",
+  "text": "Écris à quelqu'un ?"
+ },
+ "246a12b9": {
+  "en": "It's lonely here",
+  "ru": "Мне одиноко",
+  "text": "Je me sens seul"
+ },
+ "426f68b9": {
+  "en": "I feel bad... heal me",
+  "ru": "Мне плохо... полечи",
+  "text": "J'ai mal... soigne-moi"
+ },
+ "df18626f": {
+  "en": "*tap tap*",
+  "ru": "*тук-тук*",
+  "text": "*toc toc*"
+ },
+ "886c9dde": {
+  "en": "It is gone",
+  "ru": "Питомца нет",
+  "text": "Il n'est plus"
+ },
+ "0ac79633": {
+  "en": "Enough for now",
+  "ru": "Хватит пока",
+  "text": "Ça suffit"
+ },
+ "671b5608": {
+  "en": "Zzz... purr",
+  "ru": "Хрр... мурр",
+  "text": "Zzz... ronron"
+ },
+ "1340b4ef": {
+  "en": "Purr",
+  "ru": "Мурр",
+  "text": "Ronron"
+ },
+ "501ae7fd": {
+  "en": "Eggs do not eat",
+  "ru": "Яйца не едят",
+  "text": "Un œuf ne mange pas"
+ },
+ "b95e1594": {
+  "en": "No snacks: traffic brings them",
+  "ru": "Нет вкусняшек: их приносит эфир",
+  "text": "Pas de friandise : trafic requis"
+ },
+ "f8c2e2b0": {
+  "en": "I'm full",
+  "ru": "Я сыт",
+  "text": "Plus faim"
+ },
+ "a10cd239": {
+  "en": "Eggs do not get ill",
+  "ru": "Яйца не болеют",
+  "text": "Un œuf n'est pas malade"
+ },
+ "9732014f": {
+  "en": "I'm healthy",
+  "ru": "Я здоров",
+  "text": "Je vais bien"
+ },
+ "18d1255d": {
+  "en": "Medicine works slowly",
+  "ru": "Лекарство действует не сразу",
+  "text": "Le remède agit lentement"
+ },
+ "e8f1af35": {
+  "en": "Medicine costs a snack",
+  "ru": "Лекарство стоит вкусняшку",
+  "text": "Remède : une friandise"
+ },
+ "8c716d4b": {
+  "en": "Better now",
+  "ru": "Уже лучше",
+  "text": "Ça va mieux"
+ },
+ "2e3ab72f": {
+  "en": "Your pet is alive",
+  "ru": "Питомец жив",
+  "text": "L'animal est vivant"
+ },
+ "f31b24e4": {
+  "en": "A new egg",
+  "ru": "Новое яйцо",
+  "text": "Nouvel œuf"
+ },
+ "7a6f342c": {
+  "en": "Egg",
+  "ru": "Яйцо",
+  "text": "Œuf"
+ },
+ "1110da4e": {
+  "en": "Baby",
+  "ru": "Малыш",
+  "text": "Bébé"
+ },
+ "b2715af0": {
+  "en": "Kid",
+  "ru": "Детёныш",
+  "text": "Petit"
+ },
+ "3b5c3b3f": {
+  "en": "Teen",
+  "ru": "Подросток",
+  "text": "Ado"
+ },
+ "4d14e8f8": {
+  "en": "Adult",
+  "ru": "Взрослый",
+  "text": "Adulte"
+ },
+ "daa2d256": {
+  "en": "happy",
+  "ru": "счастлив",
+  "text": "heureux"
+ },
+ "7c27dd56": {
+  "en": "calm",
+  "ru": "спокоен",
+  "text": "calme"
+ },
+ "46680c35": {
+  "en": "hungry",
+  "ru": "голоден",
+  "text": "affamé"
+ },
+ "86312d8b": {
+  "en": "lonely",
+  "ru": "скучает",
+  "text": "seul"
+ },
+ "4b2bc280": {
+  "en": "asleep",
+  "ru": "спит",
+  "text": "dort"
+ },
+ "a8450dca": {
+  "en": "ill",
+  "ru": "болеет",
+  "text": "malade"
+ },
+ "7b2ac85a": {
+  "en": "eating",
+  "ru": "ест",
+  "text": "mange"
+ },
+ "7077504d": {
+  "en": "gone",
+  "ru": "умер",
+  "text": "mort"
+ },
+ "836e3cf3": {
+  "en": "of hunger",
+  "ru": "от голода",
+  "text": "de faim"
+ },
+ "16ce1dff": {
+  "en": "of loneliness",
+  "ru": "от одиночества",
+  "text": "de solitude"
+ },
+ "3718a17b": {
+  "en": "Level ",
+  "ru": "Уровень ",
+  "text": "Niveau "
+ },
+ "2d7b1554": {
+  "en": "I grew up: ",
+  "ru": "Я подрос: ",
+  "text": "J'ai grandi : "
+ },
+ "c892063e": {
+  "en": "Hello! I am ",
+  "ru": "Привет! Я ",
+  "text": "Salut, je suis "
+ },
+ "83fa412c": {
+  "en": "Found a crumb in the air",
+  "ru": "Нашёл крошку в эфире",
+  "text": "Une miette dans les ondes"
+ },
+ "4d3f2400": {
+  "en": "Yum",
+  "ru": "Ням",
+  "text": "Miam"
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -608,6 +863,11 @@
   "en": "New tournament",
   "ru": "Новый турнир",
   "text": "Nouveau tournoi"
+ },
+ "fa63d9cb": {
+  "en": "Pet",
+  "ru": "Питомец",
+  "text": "Animal"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2319,6 +2579,11 @@
   "ru": "Название турнира",
   "text": "Nom du tournoi"
  },
+ "4257ae5d": {
+  "en": "Pet name",
+  "ru": "Имя питомца",
+  "text": "Nom (animal)"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2413,6 +2678,16 @@
   "en": "Cannot remove while sending",
   "ru": "Нельзя удалить во время отправки",
   "text": "Suppression impossible pendant l'envoi"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "Nom enregistré"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "Nom : 1-15 octets UTF-8"
  },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
@@ -3844,26 +4119,6 @@
   "ru": "Кому: ",
   "text": "À : "
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "téléphone"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "montre"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "écouteurs"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "tél./montre"
- },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4128,6 +4383,11 @@
   "en": "Reset peak",
   "ru": "Сбросить пик",
   "text": "RAZ pic"
+ },
+ "d26aa233": {
+  "en": "Feed a snack: ",
+  "ru": "Кормить, вкусн.: ",
+  "text": "Donner friand. : "
  },
  "a1d384e9": {
   "en": "Encryption test",
@@ -4658,6 +4918,181 @@
   "en": "chat",
   "ru": "чат",
   "text": "chat"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "téléphone"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "montre"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "écouteurs"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "tél./montre"
+ },
+ "ba84ede8": {
+  "en": "Gone",
+  "ru": "Умер",
+  "text": "Mort"
+ },
+ "a31cd116": {
+  "en": "Egg · ",
+  "ru": "Яйцо · ",
+  "text": "Œuf · "
+ },
+ "810e0ff0": {
+  "en": " · Lv ",
+  "ru": " · Ур. ",
+  "text": " · Nv "
+ },
+ "ce0ce922": {
+  "en": "Hatches in ",
+  "ru": "Вылупится через ",
+  "text": "Éclosion dans "
+ },
+ "2a8e9f84": {
+  "en": "It will feed on the radio: packets, messages and ACKs. Pet it, feed it snacks, keep it company.",
+  "ru": "Будет кормиться эфиром: пакеты, сообщения, подтверждения. Гладьте, кормите вкусняшками, не оставляйте одного.",
+  "text": "Il se nourrit des ondes : paquets, messages et ACK. Caressez-le, donnez-lui des friandises, tenez-lui compagnie."
+ },
+ "91a7dcb8": {
+  "en": "Knock",
+  "ru": "Постучать",
+  "text": "Frapper"
+ },
+ "0616fc6b": {
+  "en": "Lived ",
+  "ru": "Прожил ",
+  "text": "A vécu "
+ },
+ "f3e64761": {
+  "en": "In memory",
+  "ru": "Память",
+  "text": "Souvenirs"
+ },
+ "6c284654": {
+  "en": "Lv ",
+  "ru": "Ур. ",
+  "text": "Nv "
+ },
+ "05d720a7": {
+  "en": "New egg",
+  "ru": "Новое яйцо",
+  "text": "Nouvel œuf"
+ },
+ "4ff125b3": {
+  "en": "Death: on",
+  "ru": "Смерть: вкл.",
+  "text": "Mort : oui"
+ },
+ "877d6155": {
+  "en": "Death: off",
+  "ru": "Смерть: выкл.",
+  "text": "Mort : non"
+ },
+ "af7ebae0": {
+  "en": "Food",
+  "ru": "Сытость",
+  "text": "Satiété"
+ },
+ "1b6fca38": {
+  "en": "Joy",
+  "ru": "Радость",
+  "text": "Joie"
+ },
+ "bbd248b0": {
+  "en": "Health",
+  "ru": "Здоровье",
+  "text": "Santé"
+ },
+ "b4b0095b": {
+  "en": "Snacks ",
+  "ru": "Вкусняшки ",
+  "text": "Friandises "
+ },
+ "edbb065e": {
+  "en": {
+   "one": "friend",
+   "other": "friends"
+  },
+  "ru": {
+   "one": "друг",
+   "few": "друга",
+   "many": "друзей"
+  },
+  "forms": {
+   "one": "{n} ami",
+   "other": "{n} amis"
+  }
+ },
+ "78941dac": {
+  "en": "Age ",
+  "ru": "Возраст ",
+  "text": "Âge "
+ },
+ "f0dcf1dc": {
+  "en": "D: death on",
+  "ru": "D: смерть вкл.",
+  "text": "D: mort activée"
+ },
+ "fcd119ce": {
+  "en": "D: death off",
+  "ru": "D: смерть выкл.",
+  "text": "D: mort désact."
+ },
+ "f4fe8e62": {
+  "en": "Pet",
+  "ru": "Погладить",
+  "text": "Caresser"
+ },
+ "fe77b785": {
+  "en": "Feed",
+  "ru": "Кормить",
+  "text": "Nourrir"
+ },
+ "5002dec8": {
+  "en": "Heal",
+  "ru": "Лечить",
+  "text": "Soigner"
+ },
+ "55b2846a": {
+  "en": "Lv",
+  "ru": "Ур.",
+  "text": "Nv"
+ },
+ "d8751fe2": {
+  "en": "hatches in",
+  "ru": "до вылупления",
+  "text": "éclosion dans"
+ },
+ "40deacab": {
+  "en": "lived ",
+  "ru": "прожил ",
+  "text": "a vécu "
+ },
+ "60629a34": {
+  "en": "death: on",
+  "ru": "смерть: вкл.",
+  "text": "mort : oui"
+ },
+ "9bfaa9de": {
+  "en": "death: off",
+  "ru": "смерть: выкл.",
+  "text": "mort : non"
+ },
+ "1a26c2cc": {
+  "en": "snacks ",
+  "ru": "вкусн. ",
+  "text": "friand. "
  },
  "a851b542": {
   "en": "Announced to the network",

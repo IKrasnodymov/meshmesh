@@ -25,6 +25,7 @@ MeshCore 노드와 통신합니다.
 - **신호 레이더** — 주변의 Wi-Fi, Bluetooth, LoRa를 보여 주고 “가까워짐 / 멀어짐” 방식으로 추적합니다.
 - **움직임 센서** — 두 보드가 그 사이를 지나가는 사람을 감지합니다(Wi-Fi CSI).
 - 메시를 통해 연락처와 두는 **체스**, M9에서 즐기는 클론다이크 솔리테어.
+- **메시 펫**: 모든 보드에 사는 다마고치 같은 픽셀 생물. 무선 트래픽을 먹고 자라며, 배고픔이나 외로움으로 죽을 수도 있습니다. [docs/en/pet.md](docs/en/pet.md)
 - **장치에 MeshMesh가 없어도 체스**: [체스 페이지](https://ikrasnodymov.github.io/meshmesh/chess/)가
   공식 MeshCore Companion 펌웨어를 실행하는 보드를 통해 USB(Web Serial) 또는 Bluetooth(Web Bluetooth)로 대국합니다. Chrome 또는 Edge에서 작동합니다.
 - **리피터 모드와 룸 서버 모드** — 부팅할 때(M9 화면, Heltec 버튼) 또는 설정, 웹 페이지, USB에서

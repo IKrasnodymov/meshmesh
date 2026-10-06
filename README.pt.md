@@ -25,6 +25,7 @@ MeshCore padrão.
 - **Radar de sinais** — Wi-Fi, Bluetooth e LoRa ao seu redor, com rastreio “quente / frio”.
 - **Sensor de movimento** — duas placas detectam uma pessoa andando entre elas (Wi-Fi CSI).
 - **Xadrez** com seus contatos pela malha, e paciência Klondike no M9.
+- **Bichinho da rede** — uma criatura de pixels no estilo Tamagotchi em todas as placas: se alimenta do tráfego de rádio, cresce e pode morrer de fome ou de solidão. [docs/en/pet.md](docs/en/pet.md)
 - **Xadrez sem MeshMesh no seu aparelho**: [a página de xadrez](https://ikrasnodymov.github.io/meshmesh/chess/) joga por meio de
   uma placa com o firmware oficial MeshCore Companion, via USB (Web Serial) ou Bluetooth (Web Bluetooth), no Chrome ou Edge.
 - **Modos repetidor e servidor de sala** — escolhidos ao ligar (tela do M9, botão do Heltec) ou em Configurações,

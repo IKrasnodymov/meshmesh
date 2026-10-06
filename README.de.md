@@ -25,6 +25,7 @@ MeshCore-Knoten.
 - **Signalradar** — Wi-Fi, Bluetooth und LoRa in der Umgebung, mit Peilung nach „wärmer / kälter“.
 - **Bewegungssensor** — zwei Boards erkennen eine Person, die zwischen ihnen hindurchgeht (Wi-Fi CSI).
 - **Schach** mit Ihren Kontakten über das Mesh und Klondike-Solitär auf dem M9.
+- **Mesh-Haustier** — ein pixeliges Wesen im Tamagotchi-Stil auf jeder Platine: Es ernährt sich vom Funkverkehr, wächst und kann an Hunger oder Einsamkeit sterben. [docs/en/pet.md](docs/en/pet.md)
 - **Schach ohne MeshMesh auf dem Gerät**: [Die Schachseite](https://ikrasnodymov.github.io/meshmesh/chess/) spielt über ein
   Board mit der offiziellen MeshCore-Companion-Firmware, per USB (Web Serial) oder Bluetooth (Web Bluetooth), in Chrome oder Edge.
 - **Repeater- und Raumserver-Modus** — gewählt beim Start (Bildschirm des M9, Taste des Heltec) oder in den Einstellungen,

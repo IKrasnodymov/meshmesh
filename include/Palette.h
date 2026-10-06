@@ -7,7 +7,8 @@
 enum UiColor:uint8_t {ColBack,ColInk,ColAccent,ColDim,ColGood,ColWarn,ColBad,ColBar,
   ColBoardLight,ColBoardDark,ColTarget,ColCursor,ColPieceDark,ColLastMove,
   ColCard,ColCardHi,ColLine,ColFaint,ColInfo,ColViolet,ColPink,ColOutBubble,ColInBubble,ColHashBack,ColLockBack,
-  ColHue0,ColHue1,ColHue2,ColHue3,ColHue4,ColHue5,ColHue6,ColHue7,ColCount};
+  ColHue0,ColHue1,ColHue2,ColHue3,ColHue4,ColHue5,ColHue6,ColHue7,
+  ColPet0,ColPet1,ColPet2,ColPet3,ColPet4,ColPet5,ColPet6,ColPet7,ColPetLight,ColPetEye,ColPetSick,ColPetStone,ColPetStoneLight,ColCount};
 constexpr uint16_t rgb565(uint32_t v){return ((v>>8)&0xf800)|((v>>5)&0x07e0)|((v>>3)&0x1f);}
 constexpr uint16_t palette565[ColCount]={
   rgb565(0x080c11), // background
@@ -37,4 +38,10 @@ constexpr uint16_t palette565[ColCount]={
   rgb565(0x2e2450), // private channel avatar
   rgb565(0x2f7d6f),rgb565(0x3f6fb5),rgb565(0x8a5cc2),rgb565(0xb5693f), // node avatars, by ID
   rgb565(0x4f8a3a),rgb565(0xa8466a),rgb565(0x3a8aa0),rgb565(0x8f7a2e),
+  rgb565(0x5fd3b0),rgb565(0x6fb2ff),rgb565(0xb48cff),rgb565(0xffa36c), // the pet's body, by species (Pet.h hues)
+  rgb565(0x9ad35a),rgb565(0xff7aa8),rgb565(0x52c8e0),rgb565(0xf2c94c),
+  rgb565(0xfff4dc), // the pet's belly and spots
+  rgb565(0x101418), // its eyes and mouth
+  rgb565(0x9fb08a), // its body when ill
+  rgb565(0x8d99a6),rgb565(0xc5ccd3), // the grave stone and its cross
 };

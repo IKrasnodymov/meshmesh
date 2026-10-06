@@ -12,6 +12,7 @@
 #include "ChessNet.h"
 #include "ChessTour.h"
 #include "MeshServer.h"
+#include "Pet.h"
 #include "Power.h"
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
@@ -162,6 +163,7 @@ String executeCommand(const String& input) {
   if(line=="internet"||line.startsWith("internet "))return internet.command(line);
 #endif
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
+  if(line=="pet"||line.startsWith("pet "))return creature.command(line);
   if(line=="tour"||line.startsWith("tour "))return tour::net.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
@@ -232,5 +234,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, recalibrate, fsformat, restart";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet cuddle|feed|heal|egg|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, recalibrate, fsformat, restart";
 }

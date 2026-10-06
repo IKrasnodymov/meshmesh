@@ -289,6 +289,261 @@
   "ru": " · попытка ",
   "text": " · deneme "
  },
+ "8de3cbb9": {
+  "en": " is gone",
+  "ru": " больше нет",
+  "text": " artık yok"
+ },
+ "8638388a": {
+  "en": "A message, how tasty",
+  "ru": "Сообщение! Вкусно",
+  "text": "Mesaj geldi, nefis"
+ },
+ "4692b473": {
+  "en": "Delivered, a snack for me",
+  "ru": "Доставлено! Мне вкусняшка",
+  "text": "İletildi, bana çerez"
+ },
+ "fde903f8": {
+  "en": "We won at chess",
+  "ru": "Мы выиграли в шахматы",
+  "text": "Satrançta kazandık"
+ },
+ "90839634": {
+  "en": "New friend: ",
+  "ru": "Новый друг: ",
+  "text": "Yeni arkadaş: "
+ },
+ "cee3cb3e": {
+  "en": "A walk, wheee",
+  "ru": "Гуляем! Ура",
+  "text": "Yürüyüş, yaşasın"
+ },
+ "7b7fe295": {
+  "en": "Packets are tasty today",
+  "ru": "Пакеты сегодня вкусные",
+  "text": "Paketler bugün lezzetli"
+ },
+ "0872084c": {
+  "en": "I love this mesh",
+  "ru": "Обожаю эту сеть",
+  "text": "Bu ağı seviyorum"
+ },
+ "91106b04": {
+  "en": "Beep-boop",
+  "ru": "Бип-буп",
+  "text": "Bip-bup"
+ },
+ "bedfd24f": {
+  "en": "Listening to the air...",
+  "ru": "Слушаю эфир...",
+  "text": "Havayı dinliyorum..."
+ },
+ "b468fe02": {
+  "en": "Pet me?",
+  "ru": "Погладишь?",
+  "text": "Sever misin?"
+ },
+ "5b98ebce": {
+  "en": "Hungry: the air is empty",
+  "ru": "Голодно: эфир пуст",
+  "text": "Açım: hava boş"
+ },
+ "ff0009ab": {
+  "en": "A snack?",
+  "ru": "Вкусняшку?",
+  "text": "Çerez?"
+ },
+ "7cbcaad7": {
+  "en": "Write to someone?",
+  "ru": "Напиши кому-нибудь?",
+  "text": "Birine yazsana?"
+ },
+ "246a12b9": {
+  "en": "It's lonely here",
+  "ru": "Мне одиноко",
+  "text": "Yalnızım"
+ },
+ "426f68b9": {
+  "en": "I feel bad... heal me",
+  "ru": "Мне плохо... полечи",
+  "text": "Kötüyüm... iyileştir"
+ },
+ "df18626f": {
+  "en": "*tap tap*",
+  "ru": "*тук-тук*",
+  "text": "*tık tık*"
+ },
+ "886c9dde": {
+  "en": "It is gone",
+  "ru": "Питомца нет",
+  "text": "Artık yok"
+ },
+ "0ac79633": {
+  "en": "Enough for now",
+  "ru": "Хватит пока",
+  "text": "Şimdilik yeter"
+ },
+ "671b5608": {
+  "en": "Zzz... purr",
+  "ru": "Хрр... мурр",
+  "text": "Zzz... mırr"
+ },
+ "1340b4ef": {
+  "en": "Purr",
+  "ru": "Мурр",
+  "text": "Mırr"
+ },
+ "501ae7fd": {
+  "en": "Eggs do not eat",
+  "ru": "Яйца не едят",
+  "text": "Yumurta yemez"
+ },
+ "b95e1594": {
+  "en": "No snacks: traffic brings them",
+  "ru": "Нет вкусняшек: их приносит эфир",
+  "text": "Çerez yok: trafik getirir"
+ },
+ "f8c2e2b0": {
+  "en": "I'm full",
+  "ru": "Я сыт",
+  "text": "Tokum"
+ },
+ "a10cd239": {
+  "en": "Eggs do not get ill",
+  "ru": "Яйца не болеют",
+  "text": "Yumurta hastalanmaz"
+ },
+ "9732014f": {
+  "en": "I'm healthy",
+  "ru": "Я здоров",
+  "text": "Sağlıklıyım"
+ },
+ "18d1255d": {
+  "en": "Medicine works slowly",
+  "ru": "Лекарство действует не сразу",
+  "text": "İlaç yavaş etki eder"
+ },
+ "e8f1af35": {
+  "en": "Medicine costs a snack",
+  "ru": "Лекарство стоит вкусняшку",
+  "text": "İlaç bir çerez eder"
+ },
+ "8c716d4b": {
+  "en": "Better now",
+  "ru": "Уже лучше",
+  "text": "Daha iyiyim"
+ },
+ "2e3ab72f": {
+  "en": "Your pet is alive",
+  "ru": "Питомец жив",
+  "text": "Hayvanın yaşıyor"
+ },
+ "f31b24e4": {
+  "en": "A new egg",
+  "ru": "Новое яйцо",
+  "text": "Yeni yumurta"
+ },
+ "7a6f342c": {
+  "en": "Egg",
+  "ru": "Яйцо",
+  "text": "Yumurta"
+ },
+ "1110da4e": {
+  "en": "Baby",
+  "ru": "Малыш",
+  "text": "Bebek"
+ },
+ "b2715af0": {
+  "en": "Kid",
+  "ru": "Детёныш",
+  "text": "Yavru"
+ },
+ "3b5c3b3f": {
+  "en": "Teen",
+  "ru": "Подросток",
+  "text": "Genç"
+ },
+ "4d14e8f8": {
+  "en": "Adult",
+  "ru": "Взрослый",
+  "text": "Yetişkin"
+ },
+ "daa2d256": {
+  "en": "happy",
+  "ru": "счастлив",
+  "text": "mutlu"
+ },
+ "7c27dd56": {
+  "en": "calm",
+  "ru": "спокоен",
+  "text": "sakin"
+ },
+ "46680c35": {
+  "en": "hungry",
+  "ru": "голоден",
+  "text": "aç"
+ },
+ "86312d8b": {
+  "en": "lonely",
+  "ru": "скучает",
+  "text": "yalnız"
+ },
+ "4b2bc280": {
+  "en": "asleep",
+  "ru": "спит",
+  "text": "uyuyor"
+ },
+ "a8450dca": {
+  "en": "ill",
+  "ru": "болеет",
+  "text": "hasta"
+ },
+ "7b2ac85a": {
+  "en": "eating",
+  "ru": "ест",
+  "text": "yiyor"
+ },
+ "7077504d": {
+  "en": "gone",
+  "ru": "умер",
+  "text": "öldü"
+ },
+ "836e3cf3": {
+  "en": "of hunger",
+  "ru": "от голода",
+  "text": "açlıktan"
+ },
+ "16ce1dff": {
+  "en": "of loneliness",
+  "ru": "от одиночества",
+  "text": "yalnızlıktan"
+ },
+ "3718a17b": {
+  "en": "Level ",
+  "ru": "Уровень ",
+  "text": "Seviye "
+ },
+ "2d7b1554": {
+  "en": "I grew up: ",
+  "ru": "Я подрос: ",
+  "text": "Büyüdüm: "
+ },
+ "c892063e": {
+  "en": "Hello! I am ",
+  "ru": "Привет! Я ",
+  "text": "Merhaba! Ben "
+ },
+ "83fa412c": {
+  "en": "Found a crumb in the air",
+  "ru": "Нашёл крошку в эфире",
+  "text": "Havada kırıntı buldum"
+ },
+ "4d3f2400": {
+  "en": "Yum",
+  "ru": "Ням",
+  "text": "Hamm"
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -608,6 +863,11 @@
   "en": "New tournament",
   "ru": "Новый турнир",
   "text": "Yeni turnuva"
+ },
+ "fa63d9cb": {
+  "en": "Pet",
+  "ru": "Питомец",
+  "text": "Hayvan"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2319,6 +2579,11 @@
   "ru": "Название турнира",
   "text": "Turnuva adı"
  },
+ "4257ae5d": {
+  "en": "Pet name",
+  "ru": "Имя питомца",
+  "text": "Hayvanın adı"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2413,6 +2678,16 @@
   "en": "Cannot remove while sending",
   "ru": "Нельзя удалить во время отправки",
   "text": "Gönderim sırasında silinemez"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "Ad kaydedildi"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "Ad: 1-15 bayt UTF-8"
  },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
@@ -3844,26 +4119,6 @@
   "ru": "Кому: ",
   "text": "Kime: "
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "telefon"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "saat"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "kulaklık"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "telefon/saat"
- },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4128,6 +4383,11 @@
   "en": "Reset peak",
   "ru": "Сбросить пик",
   "text": "Tepeyi sıfırla"
+ },
+ "d26aa233": {
+  "en": "Feed a snack: ",
+  "ru": "Кормить, вкусн.: ",
+  "text": "Çerez ver: "
  },
  "a1d384e9": {
   "en": "Encryption test",
@@ -4658,6 +4918,181 @@
   "en": "chat",
   "ru": "чат",
   "text": "sohbet"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "telefon"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "saat"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "kulaklık"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "telefon/saat"
+ },
+ "ba84ede8": {
+  "en": "Gone",
+  "ru": "Умер",
+  "text": "Öldü"
+ },
+ "a31cd116": {
+  "en": "Egg · ",
+  "ru": "Яйцо · ",
+  "text": "Yumurta · "
+ },
+ "810e0ff0": {
+  "en": " · Lv ",
+  "ru": " · Ур. ",
+  "text": " · Sv. "
+ },
+ "ce0ce922": {
+  "en": "Hatches in ",
+  "ru": "Вылупится через ",
+  "text": "Çıkmasına kalan: "
+ },
+ "2a8e9f84": {
+  "en": "It will feed on the radio: packets, messages and ACKs. Pet it, feed it snacks, keep it company.",
+  "ru": "Будет кормиться эфиром: пакеты, сообщения, подтверждения. Гладьте, кормите вкусняшками, не оставляйте одного.",
+  "text": "Radyoyla beslenir: paketler, mesajlar ve ACK'ler. Onu sev, çerez ver, yalnız bırakma."
+ },
+ "91a7dcb8": {
+  "en": "Knock",
+  "ru": "Постучать",
+  "text": "Tıklat"
+ },
+ "0616fc6b": {
+  "en": "Lived ",
+  "ru": "Прожил ",
+  "text": "Yaşadı "
+ },
+ "f3e64761": {
+  "en": "In memory",
+  "ru": "Память",
+  "text": "Anılar"
+ },
+ "6c284654": {
+  "en": "Lv ",
+  "ru": "Ур. ",
+  "text": "Sv. "
+ },
+ "05d720a7": {
+  "en": "New egg",
+  "ru": "Новое яйцо",
+  "text": "Yeni yumurta"
+ },
+ "4ff125b3": {
+  "en": "Death: on",
+  "ru": "Смерть: вкл.",
+  "text": "Ölüm: açık"
+ },
+ "877d6155": {
+  "en": "Death: off",
+  "ru": "Смерть: выкл.",
+  "text": "Ölüm: kapalı"
+ },
+ "af7ebae0": {
+  "en": "Food",
+  "ru": "Сытость",
+  "text": "Tokluk"
+ },
+ "1b6fca38": {
+  "en": "Joy",
+  "ru": "Радость",
+  "text": "Neşe"
+ },
+ "bbd248b0": {
+  "en": "Health",
+  "ru": "Здоровье",
+  "text": "Sağlık"
+ },
+ "b4b0095b": {
+  "en": "Snacks ",
+  "ru": "Вкусняшки ",
+  "text": "Çerez "
+ },
+ "edbb065e": {
+  "en": {
+   "one": "friend",
+   "other": "friends"
+  },
+  "ru": {
+   "one": "друг",
+   "few": "друга",
+   "many": "друзей"
+  },
+  "forms": {
+   "one": "{n} arkadaş",
+   "other": "{n} arkadaş"
+  }
+ },
+ "78941dac": {
+  "en": "Age ",
+  "ru": "Возраст ",
+  "text": "Yaş "
+ },
+ "f0dcf1dc": {
+  "en": "D: death on",
+  "ru": "D: смерть вкл.",
+  "text": "D: ölüm açık"
+ },
+ "fcd119ce": {
+  "en": "D: death off",
+  "ru": "D: смерть выкл.",
+  "text": "D: ölüm kapalı"
+ },
+ "f4fe8e62": {
+  "en": "Pet",
+  "ru": "Погладить",
+  "text": "Sev"
+ },
+ "fe77b785": {
+  "en": "Feed",
+  "ru": "Кормить",
+  "text": "Besle"
+ },
+ "5002dec8": {
+  "en": "Heal",
+  "ru": "Лечить",
+  "text": "Tedavi et"
+ },
+ "55b2846a": {
+  "en": "Lv",
+  "ru": "Ур.",
+  "text": "Sv."
+ },
+ "d8751fe2": {
+  "en": "hatches in",
+  "ru": "до вылупления",
+  "text": "çıkmasına"
+ },
+ "40deacab": {
+  "en": "lived ",
+  "ru": "прожил ",
+  "text": "yaşadı "
+ },
+ "60629a34": {
+  "en": "death: on",
+  "ru": "смерть: вкл.",
+  "text": "ölüm: açık"
+ },
+ "9bfaa9de": {
+  "en": "death: off",
+  "ru": "смерть: выкл.",
+  "text": "ölüm: kapalı"
+ },
+ "1a26c2cc": {
+  "en": "snacks ",
+  "ru": "вкусн. ",
+  "text": "çerez "
  },
  "a851b542": {
   "en": "Announced to the network",

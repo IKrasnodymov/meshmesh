@@ -289,6 +289,261 @@
   "ru": " · попытка ",
   "text": " · próba "
  },
+ "8de3cbb9": {
+  "en": " is gone",
+  "ru": " больше нет",
+  "text": " odszedł"
+ },
+ "8638388a": {
+  "en": "A message, how tasty",
+  "ru": "Сообщение! Вкусно",
+  "text": "Wiadomość! Pycha"
+ },
+ "4692b473": {
+  "en": "Delivered, a snack for me",
+  "ru": "Доставлено! Мне вкусняшка",
+  "text": "Doręczone! Mam smakołyk"
+ },
+ "fde903f8": {
+  "en": "We won at chess",
+  "ru": "Мы выиграли в шахматы",
+  "text": "Wygraliśmy w szachy"
+ },
+ "90839634": {
+  "en": "New friend: ",
+  "ru": "Новый друг: ",
+  "text": "Nowy znajomy: "
+ },
+ "cee3cb3e": {
+  "en": "A walk, wheee",
+  "ru": "Гуляем! Ура",
+  "text": "Spacerek! Hura"
+ },
+ "7b7fe295": {
+  "en": "Packets are tasty today",
+  "ru": "Пакеты сегодня вкусные",
+  "text": "Pakiety dziś smaczne"
+ },
+ "0872084c": {
+  "en": "I love this mesh",
+  "ru": "Обожаю эту сеть",
+  "text": "Kocham tę sieć"
+ },
+ "91106b04": {
+  "en": "Beep-boop",
+  "ru": "Бип-буп",
+  "text": "Bip-bup"
+ },
+ "bedfd24f": {
+  "en": "Listening to the air...",
+  "ru": "Слушаю эфир...",
+  "text": "Słucham eteru..."
+ },
+ "b468fe02": {
+  "en": "Pet me?",
+  "ru": "Погладишь?",
+  "text": "Pogłaszcz?"
+ },
+ "5b98ebce": {
+  "en": "Hungry: the air is empty",
+  "ru": "Голодно: эфир пуст",
+  "text": "Głodno: eter pusty"
+ },
+ "ff0009ab": {
+  "en": "A snack?",
+  "ru": "Вкусняшку?",
+  "text": "Smakołyk?"
+ },
+ "7cbcaad7": {
+  "en": "Write to someone?",
+  "ru": "Напиши кому-нибудь?",
+  "text": "Napisz do kogoś?"
+ },
+ "246a12b9": {
+  "en": "It's lonely here",
+  "ru": "Мне одиноко",
+  "text": "Samotnie mi"
+ },
+ "426f68b9": {
+  "en": "I feel bad... heal me",
+  "ru": "Мне плохо... полечи",
+  "text": "Źle mi... wylecz mnie"
+ },
+ "df18626f": {
+  "en": "*tap tap*",
+  "ru": "*тук-тук*",
+  "text": "*puk-puk*"
+ },
+ "886c9dde": {
+  "en": "It is gone",
+  "ru": "Питомца нет",
+  "text": "Już go nie ma"
+ },
+ "0ac79633": {
+  "en": "Enough for now",
+  "ru": "Хватит пока",
+  "text": "Na razie dość"
+ },
+ "671b5608": {
+  "en": "Zzz... purr",
+  "ru": "Хрр... мурр",
+  "text": "Chrr... mrr"
+ },
+ "1340b4ef": {
+  "en": "Purr",
+  "ru": "Мурр",
+  "text": "Mrr"
+ },
+ "501ae7fd": {
+  "en": "Eggs do not eat",
+  "ru": "Яйца не едят",
+  "text": "Jajka nie jedzą"
+ },
+ "b95e1594": {
+  "en": "No snacks: traffic brings them",
+  "ru": "Нет вкусняшек: их приносит эфир",
+  "text": "Brak smakołyków: daje je eter"
+ },
+ "f8c2e2b0": {
+  "en": "I'm full",
+  "ru": "Я сыт",
+  "text": "Już syty"
+ },
+ "a10cd239": {
+  "en": "Eggs do not get ill",
+  "ru": "Яйца не болеют",
+  "text": "Jajka nie chorują"
+ },
+ "9732014f": {
+  "en": "I'm healthy",
+  "ru": "Я здоров",
+  "text": "Jestem zdrów"
+ },
+ "18d1255d": {
+  "en": "Medicine works slowly",
+  "ru": "Лекарство действует не сразу",
+  "text": "Lek działa powoli"
+ },
+ "e8f1af35": {
+  "en": "Medicine costs a snack",
+  "ru": "Лекарство стоит вкусняшку",
+  "text": "Lek kosztuje smakołyk"
+ },
+ "8c716d4b": {
+  "en": "Better now",
+  "ru": "Уже лучше",
+  "text": "Już lepiej"
+ },
+ "2e3ab72f": {
+  "en": "Your pet is alive",
+  "ru": "Питомец жив",
+  "text": "Zwierzak żyje"
+ },
+ "f31b24e4": {
+  "en": "A new egg",
+  "ru": "Новое яйцо",
+  "text": "Nowe jajo"
+ },
+ "7a6f342c": {
+  "en": "Egg",
+  "ru": "Яйцо",
+  "text": "Jajo"
+ },
+ "1110da4e": {
+  "en": "Baby",
+  "ru": "Малыш",
+  "text": "Bobas"
+ },
+ "b2715af0": {
+  "en": "Kid",
+  "ru": "Детёныш",
+  "text": "Dziecko"
+ },
+ "3b5c3b3f": {
+  "en": "Teen",
+  "ru": "Подросток",
+  "text": "Nastolatek"
+ },
+ "4d14e8f8": {
+  "en": "Adult",
+  "ru": "Взрослый",
+  "text": "Dorosły"
+ },
+ "daa2d256": {
+  "en": "happy",
+  "ru": "счастлив",
+  "text": "szczęśliwy"
+ },
+ "7c27dd56": {
+  "en": "calm",
+  "ru": "спокоен",
+  "text": "spokojny"
+ },
+ "46680c35": {
+  "en": "hungry",
+  "ru": "голоден",
+  "text": "głodny"
+ },
+ "86312d8b": {
+  "en": "lonely",
+  "ru": "скучает",
+  "text": "tęskni"
+ },
+ "4b2bc280": {
+  "en": "asleep",
+  "ru": "спит",
+  "text": "śpi"
+ },
+ "a8450dca": {
+  "en": "ill",
+  "ru": "болеет",
+  "text": "chory"
+ },
+ "7b2ac85a": {
+  "en": "eating",
+  "ru": "ест",
+  "text": "je"
+ },
+ "7077504d": {
+  "en": "gone",
+  "ru": "умер",
+  "text": "zmarł"
+ },
+ "836e3cf3": {
+  "en": "of hunger",
+  "ru": "от голода",
+  "text": "z głodu"
+ },
+ "16ce1dff": {
+  "en": "of loneliness",
+  "ru": "от одиночества",
+  "text": "z samotności"
+ },
+ "3718a17b": {
+  "en": "Level ",
+  "ru": "Уровень ",
+  "text": "Poziom "
+ },
+ "2d7b1554": {
+  "en": "I grew up: ",
+  "ru": "Я подрос: ",
+  "text": "Urosłem: "
+ },
+ "c892063e": {
+  "en": "Hello! I am ",
+  "ru": "Привет! Я ",
+  "text": "Cześć! Jestem "
+ },
+ "83fa412c": {
+  "en": "Found a crumb in the air",
+  "ru": "Нашёл крошку в эфире",
+  "text": "Znalazłem okruch w eterze"
+ },
+ "4d3f2400": {
+  "en": "Yum",
+  "ru": "Ням",
+  "text": "Mniam"
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -609,6 +864,11 @@
   "en": "New tournament",
   "ru": "Новый турнир",
   "text": "Nowy turniej"
+ },
+ "fa63d9cb": {
+  "en": "Pet",
+  "ru": "Питомец",
+  "text": "Zwierzak"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2330,6 +2590,11 @@
   "ru": "Название турнира",
   "text": "Nazwa turnieju"
  },
+ "4257ae5d": {
+  "en": "Pet name",
+  "ru": "Имя питомца",
+  "text": "Imię zwierzaka"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2424,6 +2689,16 @@
   "en": "Cannot remove while sending",
   "ru": "Нельзя удалить во время отправки",
   "text": "Nie można usunąć podczas wysyłania"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "Imię zapisane"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "Imię: 1-15 bajtów UTF-8"
  },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
@@ -3858,26 +4133,6 @@
   "ru": "Кому: ",
   "text": "Do: "
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "telefon"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "zegarek"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "słuchawki"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "tel./zegarek"
- },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4142,6 +4397,11 @@
   "en": "Reset peak",
   "ru": "Сбросить пик",
   "text": "Zeruj szczyt"
+ },
+ "d26aa233": {
+  "en": "Feed a snack: ",
+  "ru": "Кормить, вкусн.: ",
+  "text": "Nakarm, smak.: "
  },
  "a1d384e9": {
   "en": "Encryption test",
@@ -4672,6 +4932,182 @@
   "en": "chat",
   "ru": "чат",
   "text": "czat"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "telefon"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "zegarek"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "słuchawki"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "tel./zegarek"
+ },
+ "ba84ede8": {
+  "en": "Gone",
+  "ru": "Умер",
+  "text": "Zmarł"
+ },
+ "a31cd116": {
+  "en": "Egg · ",
+  "ru": "Яйцо · ",
+  "text": "Jajo · "
+ },
+ "810e0ff0": {
+  "en": " · Lv ",
+  "ru": " · Ур. ",
+  "text": " · Poz. "
+ },
+ "ce0ce922": {
+  "en": "Hatches in ",
+  "ru": "Вылупится через ",
+  "text": "Wykluje się za "
+ },
+ "2a8e9f84": {
+  "en": "It will feed on the radio: packets, messages and ACKs. Pet it, feed it snacks, keep it company.",
+  "ru": "Будет кормиться эфиром: пакеты, сообщения, подтверждения. Гладьте, кормите вкусняшками, не оставляйте одного.",
+  "text": "Będzie się żywić eterem: pakiety, wiadomości, potwierdzenia. Głaszcz go, karm smakołykami, nie zostawiaj samego."
+ },
+ "91a7dcb8": {
+  "en": "Knock",
+  "ru": "Постучать",
+  "text": "Zapukaj"
+ },
+ "0616fc6b": {
+  "en": "Lived ",
+  "ru": "Прожил ",
+  "text": "Przeżył "
+ },
+ "f3e64761": {
+  "en": "In memory",
+  "ru": "Память",
+  "text": "Pamięć"
+ },
+ "6c284654": {
+  "en": "Lv ",
+  "ru": "Ур. ",
+  "text": "Poz. "
+ },
+ "05d720a7": {
+  "en": "New egg",
+  "ru": "Новое яйцо",
+  "text": "Nowe jajo"
+ },
+ "4ff125b3": {
+  "en": "Death: on",
+  "ru": "Смерть: вкл.",
+  "text": "Śmierć: wł."
+ },
+ "877d6155": {
+  "en": "Death: off",
+  "ru": "Смерть: выкл.",
+  "text": "Śmierć: wył."
+ },
+ "af7ebae0": {
+  "en": "Food",
+  "ru": "Сытость",
+  "text": "Sytość"
+ },
+ "1b6fca38": {
+  "en": "Joy",
+  "ru": "Радость",
+  "text": "Radość"
+ },
+ "bbd248b0": {
+  "en": "Health",
+  "ru": "Здоровье",
+  "text": "Zdrowie"
+ },
+ "b4b0095b": {
+  "en": "Snacks ",
+  "ru": "Вкусняшки ",
+  "text": "Smakołyki "
+ },
+ "edbb065e": {
+  "en": {
+   "one": "friend",
+   "other": "friends"
+  },
+  "ru": {
+   "one": "друг",
+   "few": "друга",
+   "many": "друзей"
+  },
+  "forms": {
+   "one": "{n} znajomy",
+   "few": "{n} znajomych",
+   "many": "{n} znajomych"
+  }
+ },
+ "78941dac": {
+  "en": "Age ",
+  "ru": "Возраст ",
+  "text": "Wiek "
+ },
+ "f0dcf1dc": {
+  "en": "D: death on",
+  "ru": "D: смерть вкл.",
+  "text": "D: śmierć wł."
+ },
+ "fcd119ce": {
+  "en": "D: death off",
+  "ru": "D: смерть выкл.",
+  "text": "D: śmierć wył."
+ },
+ "f4fe8e62": {
+  "en": "Pet",
+  "ru": "Погладить",
+  "text": "Pogłaszcz"
+ },
+ "fe77b785": {
+  "en": "Feed",
+  "ru": "Кормить",
+  "text": "Nakarm"
+ },
+ "5002dec8": {
+  "en": "Heal",
+  "ru": "Лечить",
+  "text": "Wylecz"
+ },
+ "55b2846a": {
+  "en": "Lv",
+  "ru": "Ур.",
+  "text": "Poz."
+ },
+ "d8751fe2": {
+  "en": "hatches in",
+  "ru": "до вылупления",
+  "text": "do wyklucia"
+ },
+ "40deacab": {
+  "en": "lived ",
+  "ru": "прожил ",
+  "text": "przeżył "
+ },
+ "60629a34": {
+  "en": "death: on",
+  "ru": "смерть: вкл.",
+  "text": "śmierć: wł."
+ },
+ "9bfaa9de": {
+  "en": "death: off",
+  "ru": "смерть: выкл.",
+  "text": "śmierć: wył."
+ },
+ "1a26c2cc": {
+  "en": "snacks ",
+  "ru": "вкусн. ",
+  "text": "smak. "
  },
  "a851b542": {
   "en": "Announced to the network",

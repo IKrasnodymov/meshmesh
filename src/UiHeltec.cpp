@@ -5,6 +5,7 @@
 #include "ChessNet.h"
 #include "ChessTour.h"
 #include "MeshServer.h"
+#include "Pet.h"
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
@@ -20,8 +21,8 @@
 // the menu, the centre runs the action or opens the menu, Back closes and goes home; messages are
 // written on an on-screen keyboard (UiCompose.inc).
 namespace {
-enum Page {Home,Messages,Nodes,Chess,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
-const char* pageNames[]={"home","messages","nodes","chess","radar","gps","wifi","ble","settings","modules"};
+enum Page {Home,Messages,Nodes,Chess,PetPage,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
+const char* pageNames[]={"home","messages","nodes","chess","pet","radar","gps","wifi","ble","settings","modules"};
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
@@ -112,7 +113,7 @@ bool pageShown(int p){
 #if defined(MM_NO_WIFI)
  if(p==Wifi)return false; // no Wi-Fi radio
 #endif
- return config.role==RoleNormal||p==Home||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;}
+ return config.role==RoleNormal||p==Home||p==PetPage||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;} // the pet lives in every role
 int nextPage(int p){do p=(p+1)%PageCount;while(!pageShown(p));return p;}
 int previousPage(int p){do p=(p+PageCount-1)%PageCount;while(!pageShown(p));return p;}
 // Device role: offered for 5 s after boot (click: next, hold: choose) and from the menus.
@@ -132,10 +133,11 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 #include "UiCompose.inc"
 #endif
 #include "UiChessCompact.inc"
+#include "UiPetCompact.inc"
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActClose};
+enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActClose};
 // Channels are added on the web page or in the app; here: an invitation in a message and a hashtag heard on air.
 const HeardChannel* heardTag(){for(unsigned i=0;i<meshRadio.heardCount;i++)if(meshRadio.heard[i].name[0])return &meshRadio.heard[i];return nullptr;}
 String channelTag(uint64_t id){const channels::Channel* c=meshRadio.channel(id);return channels::isPublic(c?c->secret:channels::publicSecret)?String(" #"):" "+String(c->name[0]=='#'?"":"#")+c->name;}
@@ -177,6 +179,9 @@ unsigned actions(Act* out){
   if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
   else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
   else{out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff){out[n++]=ActCsiSensor;if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}}}break; // CSI first: the beacon is the usual Heltec role
+ case PetPage:
+  if(!creature.alive())out[n++]=ActPetEgg;else{out[n++]=ActPetCuddle;if(creature.s.stage!=pet::Egg){out[n++]=ActPetFeed;if(creature.s.health<800)out[n++]=ActPetHeal;}}
+  out[n++]=ActPetDeath;break;
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:
@@ -187,7 +192,7 @@ unsigned actions(Act* out){
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
-bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast;}
+bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath;}
 String actName(Act a){
  const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
@@ -212,6 +217,9 @@ String actName(Act a){
  case ActCsiSensor:return radar.csi==Radar::CsiSensor?t("CSI motion: off","Движение CSI: выкл."):t("CSI sensor","Приёмник CSI");
  case ActCalibrate:return t("Calibrate (10 s still)","Калибровка (10 с тихо)");
  case ActStopHoming:return t("Stop homing","Остановить пеленг");case ActResetPeak:return t("Reset peak","Сбросить пик");
+ case ActPetCuddle:return creature.s.stage==pet::Egg?t("Knock","Постучать"):t("Pet","Погладить");
+ case ActPetFeed:return t("Feed a snack: ","Кормить, вкусн.: ")+String(creature.s.snacks);case ActPetHeal:return t("Heal","Лечить");case ActPetEgg:return t("New egg","Новое яйцо");
+ case ActPetDeath:return creature.s.mortal?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  }return "";
 }
@@ -261,6 +269,8 @@ void run(Act a){
  case ActCsiBeacon:radar.setCsi(radar.csi==Radar::CsiBeacon?Radar::CsiOff:Radar::CsiBeacon);break;
  case ActCsiSensor:radar.setCsi(radar.csi==Radar::CsiSensor?Radar::CsiOff:Radar::CsiSensor);break;
  case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t("Calibrating 10 s","Калибровка 10 с"));}else notice(t("No beacon heard","Маяк не слышен"));break;
+ case ActPetCuddle:creature.cuddle();break;case ActPetFeed:creature.feed();break;case ActPetHeal:creature.heal();break;case ActPetEgg:creature.newEgg();break; // it answers in its bubble
+ case ActPetDeath:notice(creature.setMortal(!creature.s.mortal));break;
  case ActClose:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
@@ -423,6 +433,7 @@ void draw(){
   say(0,36,t("Screen off: ","Гасить экран: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда")),small);say(0,44,t("Contrast: ","Контраст: ")+String(config.brightness),small);
   say(0,52,String(config.frequency,3)+" SF"+String(config.sf)+" CR4/"+String(config.cr)+" "+String(config.power)+"dBm",small);break;
  case Chess:if(chessOpen&&chessOpen->state!=ChessMatch::Free){drawChessBoard(*chessOpen);return;}chessOpen=nullptr;drawChessList(title);break;
+ case PetPage:title=petTitle();drawPetMono();break;
  default:title=t("Modules","Модули");say(0,21,"LoRa "+String(meshRadio.ready?"OK":"ERR")+"  FS "+String(hardware.fsOk?"OK":"ERR")+"  GPS "+String(!config.gps?"-":hardware.gps.passedChecksum()?"OK":"?"),small);
   say(0,30,String(ESP.getFreeHeap()/1024)+"K RAM"+(ESP.getPsramSize()?"  "+String(ESP.getFreePsram()/1024)+"K PSRAM":String()),small);say(0,39,t("relayed ","переслано ")+String(meshRadio.relayed)+t("  rejected ","  откл. ")+String(meshRadio.rejected),small);
   say(0,48,t("up ","работа ")+ago(millis())+t("  boot ","  загр. ")+String(config.bootCounter),small);
@@ -513,6 +524,7 @@ void uiTick(){
  #if defined(MM_JOYSTICK)
  if(composing)dirty=true; // blinking cursor
  #endif
+ if(page==PetPage)dirty=true; // it moves
  if(page==Chess&&chessOpen&&(chessHeld>=0||(chessOpen->state==ChessMatch::Playing&&chessOpen->myTurn())))dirty=true; // the picked piece or the cursor blinks
  if(chessNet.dirty&&page==Chess){dirty=true;chessNet.dirty=false;}
  if((dirty||meshRadio.dirty||radar.dirty||now-drawAt>1000)&&now-drawAt>150){draw();drawAt=now;dirty=false;meshRadio.dirty=false;radar.dirty=false;}

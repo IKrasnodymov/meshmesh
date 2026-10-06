@@ -94,7 +94,7 @@ template<class F> void menuBox(unsigned n,int index,F name){
 }
 void empty(Icon ic,const String& a,const String& b){icon(ic,120,46,12,ColFaint);center(120,84,fit(a,228),ColInk);center(120,103,fit(b,228,small),ColDim,small);}
 String pageTitle(int p){
- switch(p){case Home:return "MeshMesh";case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
+ switch(p){case Home:return "MeshMesh";case PetPage:return petTitle();case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
  case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
  return t("Modules","Модули");
 }
@@ -199,6 +199,40 @@ void signals(String& title){
   d.fillCircle(17,y+11,3,signalColor(r));text(27,y+16,fit(signalName(r),166,small),focus?ColInk:ColDim,small);right(231,y+17,String(int(r.rssi)),focus?ColInk:ColDim,bold);}
  if(st.length())text(8,112,fit(st,224,tiny),ColWarn,tiny);
 }
+// The pet: the creature on its card in colour, its words in a bubble, the food, joy and health bars.
+uint8_t petInk(uint8_t ink,pet::Mood m){
+ bool dead=m==pet::Gone;
+ switch(ink){case pet::InkOutline:return ColBar;case pet::InkBody:return dead?ColPetStone:m==pet::Sick?ColPetSick:ColPet0+creature.s.species%pet::Species;
+ case pet::InkLight:return dead?ColPetStoneLight:ColPetLight;case pet::InkEye:return ColPetEye;case pet::InkCheek:return ColPink;case pet::InkTear:return ColInfo;case pet::InkGlow:return ColTarget;}return ColCard;
+}
+void petArt(int x,int y,int scale,uint32_t now){
+ uint8_t grid[pet::Size][pet::Size];creature.sprite(grid,now);pet::Mood m=creature.mood();
+ y-=creature.bob(now)*2;x+=creature.sway(now)*2;
+ for(unsigned r=0;r<pet::Size;r++)for(unsigned k=0;k<pet::Size;k++)if(grid[r][k])g().fillRect(x+k*scale,y+r*scale,scale,scale,petInk(grid[r][k],m));
+}
+void petBar(int y,Icon ic,uint16_t ink,uint16_t v){
+ icon(ic,112,y+3,4,ink,ColBack);uint16_t c=v>=500?ColGood:v>=250?ColWarn:ColBad;
+ panel(122,y,82,7,ColLine,3);if(v)panel(122,y,max(6,82*v/pet::Full),7,c,3);right(236,y+8,String((v+5)/10)+"%",v<250?ColBad:ColDim,tiny);
+}
+void petPage(){
+ auto& d=g();uint32_t now=millis();const auto& s=creature.s;
+ panel(4,24,96,91,ColCard,8);d.fillRoundRect(16,104,72,5,2,ColBack);petArt(12,26,5,now);
+ if(creature.mood()==pet::Sleepy)text(80,46-((now/700)%2)*4,"z",ColDim,small);
+ uint32_t e=now-creature.effectAt;
+ if(e<2500&&creature.effect==pet::Hearts)for(int i=0;i<2;i++){int hx=36+i*30,hy=max(30,52-int(e/150)-i*6);d.fillCircle(hx-2,hy,3,ColPink);d.fillCircle(hx+2,hy,3,ColPink);d.fillTriangle(hx-5,hy+1,hx+5,hy+1,hx,hy+6,ColPink);}
+ if(e<2500&&creature.effect==pet::Sparkle)for(int i=0;i<3;i++){int sx=22+i*28,sy=40+(i%2)*12;d.drawFastHLine(sx-3,sy,7,ColTarget);d.drawFastVLine(sx,sy-3,7,ColTarget);}
+ if(e<2500&&creature.effect==pet::Medicine){int cy=44-int(e/120);d.fillRect(46,cy-2,13,5,ColGood);d.fillRect(50,cy-6,5,13,ColGood);}
+ if(creature.talking(now)){panel(106,24,130,48,ColInk,8);d.fillTriangle(106,52,106,62,98,58,ColInk);lines(creature.speech,112,42,118,16,2,ColBack,small);}
+ else{text(106,41,fit(s.name,128,bold),ColInk,bold);
+  String sub=!creature.alive()?creature.causeText(s.cause):s.stage==pet::Egg?creature.stageName(pet::Egg):creature.stageName(s.stage)+t(" · Lv "," · Ур. ")+String(creature.level());
+  text(106,57,fit(sub,130,tiny),creature.alive()?ColDim:ColBad,tiny);
+  pet::Mood m=creature.mood();if(creature.alive()&&s.stage!=pet::Egg)text(106,71,fit(creature.moodName(),130,small),m==pet::Happy?ColGood:m==pet::Hungry||m==pet::Lonely?ColWarn:m==pet::Sick?ColBad:ColDim,small);}
+ if(s.stage==pet::Egg){text(106,80,fit(t("hatches in","до вылупления"),130,small),ColDim,small);text(106,98,creature.ageText(creature.hatchLeft()),ColInk,bold);
+  panel(106,104,128,7,ColLine,3);panel(106,104,max(6,int(128*(900-creature.hatchLeft())/900)),7,ColAccent,3);return;}
+ if(!creature.alive()){text(106,90,fit(t("lived ","прожил ")+creature.ageText(s.age),130,small),ColInk,small);
+  text(106,108,fit(s.mortal?t("death: on","смерть: вкл."):t("death: off","смерть: выкл."),130,tiny),ColDim,tiny);return;}
+ petBar(78,IcMail,ColWarn,s.food);petBar(91,IcPaw,ColPink,s.joy);petBar(104,IcPulse,ColGood,s.health);
+}
 void gps(){
  bool fix=hardware.gpsFix();uint16_t c=!config.gps?ColFaint:fix?ColGood:hardware.clockConflict?ColBad:ColWarn;
  panel(4,25,232,40,ColCard,8);icon(IcPin,20,45,8,c,ColCard);
@@ -299,7 +333,7 @@ void draw(){
  if(page==Chess&&chessOpen&&chessOpen->state!=ChessMatch::Free){chessBoard(*chessOpen);hardware.flush();return;}
  if(page==Chess)chessOpen=nullptr;
  String title=pageTitle(page);
- switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;case Chess:chessList();break;case Signals:signals(title);break;
+ switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;case Chess:chessList();break;case PetPage:petPage();break;case Signals:signals(title);break;
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
  if(menuOpen){Act acts[8];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}

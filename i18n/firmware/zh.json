@@ -289,6 +289,261 @@
   "ru": " · попытка ",
   "text": " · 尝试 "
  },
+ "8de3cbb9": {
+  "en": " is gone",
+  "ru": " больше нет",
+  "text": " 离开了"
+ },
+ "8638388a": {
+  "en": "A message, how tasty",
+  "ru": "Сообщение! Вкусно",
+  "text": "有消息,真好吃"
+ },
+ "4692b473": {
+  "en": "Delivered, a snack for me",
+  "ru": "Доставлено! Мне вкусняшка",
+  "text": "送达了,奖我零食"
+ },
+ "fde903f8": {
+  "en": "We won at chess",
+  "ru": "Мы выиграли в шахматы",
+  "text": "我们下棋赢了"
+ },
+ "90839634": {
+  "en": "New friend: ",
+  "ru": "Новый друг: ",
+  "text": "新朋友: "
+ },
+ "cee3cb3e": {
+  "en": "A walk, wheee",
+  "ru": "Гуляем! Ура",
+  "text": "散步啦,耶"
+ },
+ "7b7fe295": {
+  "en": "Packets are tasty today",
+  "ru": "Пакеты сегодня вкусные",
+  "text": "今天的数据包真香"
+ },
+ "0872084c": {
+  "en": "I love this mesh",
+  "ru": "Обожаю эту сеть",
+  "text": "我爱这个网络"
+ },
+ "91106b04": {
+  "en": "Beep-boop",
+  "ru": "Бип-буп",
+  "text": "哔哔啵啵"
+ },
+ "bedfd24f": {
+  "en": "Listening to the air...",
+  "ru": "Слушаю эфир...",
+  "text": "在收听空中..."
+ },
+ "b468fe02": {
+  "en": "Pet me?",
+  "ru": "Погладишь?",
+  "text": "摸摸我?"
+ },
+ "5b98ebce": {
+  "en": "Hungry: the air is empty",
+  "ru": "Голодно: эфир пуст",
+  "text": "饿了: 空中没数据"
+ },
+ "ff0009ab": {
+  "en": "A snack?",
+  "ru": "Вкусняшку?",
+  "text": "来点零食?"
+ },
+ "7cbcaad7": {
+  "en": "Write to someone?",
+  "ru": "Напиши кому-нибудь?",
+  "text": "给别人发消息?"
+ },
+ "246a12b9": {
+  "en": "It's lonely here",
+  "ru": "Мне одиноко",
+  "text": "好寂寞"
+ },
+ "426f68b9": {
+  "en": "I feel bad... heal me",
+  "ru": "Мне плохо... полечи",
+  "text": "好难受...治治我"
+ },
+ "df18626f": {
+  "en": "*tap tap*",
+  "ru": "*тук-тук*",
+  "text": "*咚咚*"
+ },
+ "886c9dde": {
+  "en": "It is gone",
+  "ru": "Питомца нет",
+  "text": "宠物不在了"
+ },
+ "0ac79633": {
+  "en": "Enough for now",
+  "ru": "Хватит пока",
+  "text": "先这样吧"
+ },
+ "671b5608": {
+  "en": "Zzz... purr",
+  "ru": "Хрр... мурр",
+  "text": "Zzz...呼噜"
+ },
+ "1340b4ef": {
+  "en": "Purr",
+  "ru": "Мурр",
+  "text": "呼噜"
+ },
+ "501ae7fd": {
+  "en": "Eggs do not eat",
+  "ru": "Яйца не едят",
+  "text": "蛋不吃东西"
+ },
+ "b95e1594": {
+  "en": "No snacks: traffic brings them",
+  "ru": "Нет вкусняшек: их приносит эфир",
+  "text": "没有零食: 空中流量会带来"
+ },
+ "f8c2e2b0": {
+  "en": "I'm full",
+  "ru": "Я сыт",
+  "text": "我饱了"
+ },
+ "a10cd239": {
+  "en": "Eggs do not get ill",
+  "ru": "Яйца не болеют",
+  "text": "蛋不会生病"
+ },
+ "9732014f": {
+  "en": "I'm healthy",
+  "ru": "Я здоров",
+  "text": "我很健康"
+ },
+ "18d1255d": {
+  "en": "Medicine works slowly",
+  "ru": "Лекарство действует не сразу",
+  "text": "药效要慢慢来"
+ },
+ "e8f1af35": {
+  "en": "Medicine costs a snack",
+  "ru": "Лекарство стоит вкусняшку",
+  "text": "吃药要一份零食"
+ },
+ "8c716d4b": {
+  "en": "Better now",
+  "ru": "Уже лучше",
+  "text": "好多了"
+ },
+ "2e3ab72f": {
+  "en": "Your pet is alive",
+  "ru": "Питомец жив",
+  "text": "宠物还活着"
+ },
+ "f31b24e4": {
+  "en": "A new egg",
+  "ru": "Новое яйцо",
+  "text": "新的蛋"
+ },
+ "7a6f342c": {
+  "en": "Egg",
+  "ru": "Яйцо",
+  "text": "蛋"
+ },
+ "1110da4e": {
+  "en": "Baby",
+  "ru": "Малыш",
+  "text": "宝宝"
+ },
+ "b2715af0": {
+  "en": "Kid",
+  "ru": "Детёныш",
+  "text": "幼年"
+ },
+ "3b5c3b3f": {
+  "en": "Teen",
+  "ru": "Подросток",
+  "text": "少年"
+ },
+ "4d14e8f8": {
+  "en": "Adult",
+  "ru": "Взрослый",
+  "text": "成年"
+ },
+ "daa2d256": {
+  "en": "happy",
+  "ru": "счастлив",
+  "text": "开心"
+ },
+ "7c27dd56": {
+  "en": "calm",
+  "ru": "спокоен",
+  "text": "平静"
+ },
+ "46680c35": {
+  "en": "hungry",
+  "ru": "голоден",
+  "text": "饿了"
+ },
+ "86312d8b": {
+  "en": "lonely",
+  "ru": "скучает",
+  "text": "寂寞"
+ },
+ "4b2bc280": {
+  "en": "asleep",
+  "ru": "спит",
+  "text": "睡着"
+ },
+ "a8450dca": {
+  "en": "ill",
+  "ru": "болеет",
+  "text": "生病"
+ },
+ "7b2ac85a": {
+  "en": "eating",
+  "ru": "ест",
+  "text": "在吃"
+ },
+ "7077504d": {
+  "en": "gone",
+  "ru": "умер",
+  "text": "死了"
+ },
+ "836e3cf3": {
+  "en": "of hunger",
+  "ru": "от голода",
+  "text": "死于饥饿"
+ },
+ "16ce1dff": {
+  "en": "of loneliness",
+  "ru": "от одиночества",
+  "text": "死于孤独"
+ },
+ "3718a17b": {
+  "en": "Level ",
+  "ru": "Уровень ",
+  "text": "等级 "
+ },
+ "2d7b1554": {
+  "en": "I grew up: ",
+  "ru": "Я подрос: ",
+  "text": "长大了: "
+ },
+ "c892063e": {
+  "en": "Hello! I am ",
+  "ru": "Привет! Я ",
+  "text": "你好!我是 "
+ },
+ "83fa412c": {
+  "en": "Found a crumb in the air",
+  "ru": "Нашёл крошку в эфире",
+  "text": "在空中捡到碎屑"
+ },
+ "4d3f2400": {
+  "en": "Yum",
+  "ru": "Ням",
+  "text": "好吃"
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -607,6 +862,11 @@
   "en": "New tournament",
   "ru": "Новый турнир",
   "text": "新比赛"
+ },
+ "fa63d9cb": {
+  "en": "Pet",
+  "ru": "Питомец",
+  "text": "宠物"
  },
  "969e0815": {
   "en": "Device mode",
@@ -2308,6 +2568,11 @@
   "ru": "Название турнира",
   "text": "比赛名称"
  },
+ "4257ae5d": {
+  "en": "Pet name",
+  "ru": "Имя питомца",
+  "text": "宠物名字"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2402,6 +2667,16 @@
   "en": "Cannot remove while sending",
   "ru": "Нельзя удалить во время отправки",
   "text": "发送中无法删除"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "名字已保存"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "名字: 1-15 字节 UTF-8"
  },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
@@ -3830,26 +4105,6 @@
   "ru": "Кому: ",
   "text": "发给 "
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "手机"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "手表"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "耳机"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "手机/手表"
- },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4114,6 +4369,11 @@
   "en": "Reset peak",
   "ru": "Сбросить пик",
   "text": "重置峰值"
+ },
+ "d26aa233": {
+  "en": "Feed a snack: ",
+  "ru": "Кормить, вкусн.: ",
+  "text": "喂零食: "
  },
  "a1d384e9": {
   "en": "Encryption test",
@@ -4644,6 +4904,180 @@
   "en": "chat",
   "ru": "чат",
   "text": "聊天"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "手机"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "手表"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "耳机"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "手机/手表"
+ },
+ "ba84ede8": {
+  "en": "Gone",
+  "ru": "Умер",
+  "text": "死了"
+ },
+ "a31cd116": {
+  "en": "Egg · ",
+  "ru": "Яйцо · ",
+  "text": "蛋 · "
+ },
+ "810e0ff0": {
+  "en": " · Lv ",
+  "ru": " · Ур. ",
+  "text": " · Lv "
+ },
+ "ce0ce922": {
+  "en": "Hatches in ",
+  "ru": "Вылупится через ",
+  "text": "孵化还需 "
+ },
+ "2a8e9f84": {
+  "en": "It will feed on the radio: packets, messages and ACKs. Pet it, feed it snacks, keep it company.",
+  "ru": "Будет кормиться эфиром: пакеты, сообщения, подтверждения. Гладьте, кормите вкусняшками, не оставляйте одного.",
+  "text": "它以空中信号为食: 数据包、消息和ACK。摸摸它、喂它零食、多陪陪它。"
+ },
+ "91a7dcb8": {
+  "en": "Knock",
+  "ru": "Постучать",
+  "text": "敲敲"
+ },
+ "0616fc6b": {
+  "en": "Lived ",
+  "ru": "Прожил ",
+  "text": "活了 "
+ },
+ "f3e64761": {
+  "en": "In memory",
+  "ru": "Память",
+  "text": "纪念"
+ },
+ "6c284654": {
+  "en": "Lv ",
+  "ru": "Ур. ",
+  "text": "Lv "
+ },
+ "05d720a7": {
+  "en": "New egg",
+  "ru": "Новое яйцо",
+  "text": "新的蛋"
+ },
+ "4ff125b3": {
+  "en": "Death: on",
+  "ru": "Смерть: вкл.",
+  "text": "死亡: 开启"
+ },
+ "877d6155": {
+  "en": "Death: off",
+  "ru": "Смерть: выкл.",
+  "text": "死亡: 关闭"
+ },
+ "af7ebae0": {
+  "en": "Food",
+  "ru": "Сытость",
+  "text": "饱腹"
+ },
+ "1b6fca38": {
+  "en": "Joy",
+  "ru": "Радость",
+  "text": "快乐"
+ },
+ "bbd248b0": {
+  "en": "Health",
+  "ru": "Здоровье",
+  "text": "健康"
+ },
+ "b4b0095b": {
+  "en": "Snacks ",
+  "ru": "Вкусняшки ",
+  "text": "零食 "
+ },
+ "edbb065e": {
+  "en": {
+   "one": "friend",
+   "other": "friends"
+  },
+  "ru": {
+   "one": "друг",
+   "few": "друга",
+   "many": "друзей"
+  },
+  "forms": {
+   "other": "{n}个朋友"
+  }
+ },
+ "78941dac": {
+  "en": "Age ",
+  "ru": "Возраст ",
+  "text": "年龄 "
+ },
+ "f0dcf1dc": {
+  "en": "D: death on",
+  "ru": "D: смерть вкл.",
+  "text": "D: 死亡开启"
+ },
+ "fcd119ce": {
+  "en": "D: death off",
+  "ru": "D: смерть выкл.",
+  "text": "D: 死亡关闭"
+ },
+ "f4fe8e62": {
+  "en": "Pet",
+  "ru": "Погладить",
+  "text": "摸摸"
+ },
+ "fe77b785": {
+  "en": "Feed",
+  "ru": "Кормить",
+  "text": "喂食"
+ },
+ "5002dec8": {
+  "en": "Heal",
+  "ru": "Лечить",
+  "text": "治疗"
+ },
+ "55b2846a": {
+  "en": "Lv",
+  "ru": "Ур.",
+  "text": "Lv"
+ },
+ "d8751fe2": {
+  "en": "hatches in",
+  "ru": "до вылупления",
+  "text": "孵化还需"
+ },
+ "40deacab": {
+  "en": "lived ",
+  "ru": "прожил ",
+  "text": "活了 "
+ },
+ "60629a34": {
+  "en": "death: on",
+  "ru": "смерть: вкл.",
+  "text": "死亡: 开启"
+ },
+ "9bfaa9de": {
+  "en": "death: off",
+  "ru": "смерть: выкл.",
+  "text": "死亡: 关闭"
+ },
+ "1a26c2cc": {
+  "en": "snacks ",
+  "ru": "вкусн. ",
+  "text": "零食 "
  },
  "a851b542": {
   "en": "Announced to the network",

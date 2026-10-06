@@ -28,6 +28,8 @@ void drawIcon(Adafruit_GFX& d,Icon id,int cx,int cy,int s,uint16_t c,uint16_t ho
  case IcRadio:d.drawFastVLine(cx,cy-h,s+h,c);d.fillCircle(cx,cy-h,max(1,s/5),c);arc(d,cx,cy-h,h+1,-120,-60,c);arc(d,cx,cy-h,h+1,60,120,c);arc(d,cx,cy-h,s,-125,-55,c);arc(d,cx,cy-h,s,55,125,c);break;
  case IcRadar:d.drawCircle(cx,cy,s,c);d.drawCircle(cx,cy,max(2,s/2),c);thick(d,cx,cy,cx+roundf(s*.7f)-1,cy-roundf(s*.7f)+1,c);d.fillCircle(cx,cy,max(1,s/6),c);d.fillCircle(cx-h,cy+q+1,max(1,s/6),c);break;
  case IcCards:{d.fillRoundRect(cx-s,cy-s,s*9/8,s*3/2,2,c);int x0=cx-s/4,y0=cy-s/2,w=s*5/4,h=s*3/2,mx=x0+w/2,my=y0+h/2;d.fillRoundRect(x0-2,y0-2,w+4,h+4,3,hole);d.fillRoundRect(x0,y0,w,h,2,c);d.fillTriangle(mx,my-q-2,mx-q-1,my,mx+q+1,my,hole);d.fillTriangle(mx,my+q+2,mx-q-1,my,mx+q+1,my,hole);break;}
+ case IcPaw:{int r=max(1,s/5);d.fillCircle(cx,cy+q+1,h+1,c);d.fillCircle(cx-q,cy+h,q+1,c);d.fillCircle(cx+q,cy+h,q+1,c);
+  d.fillCircle(cx-s*3/4,cy-q+1,r,c);d.fillCircle(cx-q-1,cy-s*3/4+1,r,c);d.fillCircle(cx+q+1,cy-s*3/4+1,r,c);d.fillCircle(cx+s*3/4,cy-q+1,r,c);break;}
  case IcChess:d.fillCircle(cx,cy-s/2,max(2,s*3/10),c);d.fillTriangle(cx,cy-s/2,cx-s/2,cy+s/2,cx+s/2,cy+s/2,c);d.fillRoundRect(cx-s*3/4,cy+s/2,s*3/2,max(2,s/3),1,c);d.fillRect(cx-s*3/8,cy-s/6,s*3/4,max(1,s/6),c);break;
  case IcScreen:d.drawRoundRect(cx-s,cy-s*5/8,2*s,s*5/4,2,c);d.fillRect(cx-s+3,cy-s*5/8+3,2*s-6,s*5/4-6,c);break;
  case IcKey:d.drawCircle(cx-h,cy,max(2,s*3/8),c);d.drawFastHLine(cx-h+s*3/8,cy,s+1,c);d.drawFastVLine(cx+h,cy,max(2,s/3),c);d.drawFastVLine(cx+s-1,cy,max(2,s/3),c);break;

@@ -44,6 +44,7 @@ class MeshRadio {
   DeviceRadio radio;
   bool ready=false;int16_t radioError=0;
   uint64_t nodeId=0;uint32_t networkId=0,rxCount=0,txCount=0,rejected=0,relayed=0,replaced=0; // replaced: contacts overwritten by new nodes
+  uint32_t received=0,delivered=0; // chat messages received and delivery ACKs since boot (the pet counts them)
   float lastRssi=0,lastSnr=0;uint32_t lastRxAt=0;
   ChatMessage history[64];unsigned historyCount=0;
   Peer peers[24];unsigned peerCount=0;

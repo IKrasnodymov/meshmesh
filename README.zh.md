@@ -24,6 +24,7 @@
 - **信号雷达**——扫描周围的 Wi-Fi、Bluetooth 和 LoRa，支持“变强 / 变弱”测向。
 - **移动传感器**——两块开发板可检测到有人从它们之间走过（Wi-Fi CSI）。
 - 通过 Mesh 网络与联系人下**国际象棋**，M9 上还有 Klondike 纸牌接龙。
+- **网络宠物**：每块板上都有一只类似拓麻歌子的像素小生物，以无线电流量为食，会成长，也会因饥饿或孤独而死去。 [docs/en/pet.md](docs/en/pet.md)
 - **设备上无需 MeshMesh 也能下国际象棋**：[国际象棋页面](https://ikrasnodymov.github.io/meshmesh/chess/)通过运行官方
   MeshCore Companion 固件的开发板对弈，经 USB（Web Serial）或 Bluetooth（Web Bluetooth）连接，使用 Chrome 或 Edge。
 - **中继器和房间服务器模式**——在启动时（M9 屏幕、Heltec 按键）或在设置、网页、USB 中选择：

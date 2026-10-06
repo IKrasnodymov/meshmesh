@@ -25,6 +25,7 @@ węzłami MeshCore.
 - **Radar sygnałów** — Wi-Fi, Bluetooth i LoRa wokół ciebie, z namierzaniem „ciepło / zimno”.
 - **Czujnik ruchu** — dwie płytki wykrywają osobę przechodzącą między nimi (Wi-Fi CSI).
 - **Szachy** z kontaktami przez sieć mesh oraz pasjans Klondike na M9.
+- **Zwierzak sieci** — pikselowe stworzonko w stylu Tamagotchi na każdej płytce: żywi się ruchem radiowym, rośnie i może umrzeć z głodu lub samotności. [docs/en/pet.md](docs/en/pet.md)
 - **Szachy bez MeshMesh na urządzeniu**: [strona szachów](https://ikrasnodymov.github.io/meshmesh/chess/) gra przez
   płytkę z oficjalnym oprogramowaniem MeshCore Companion, przez USB (Web Serial) lub Bluetooth (Web Bluetooth), w Chrome lub Edge.
 - **Tryby repeatera i serwera pokoju** — wybierane przy starcie (ekran M9, przycisk Heltec) lub w Ustawieniach,

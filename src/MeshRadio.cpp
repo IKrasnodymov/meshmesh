@@ -148,7 +148,7 @@ class MeshCoreBackend:public BaseChatMesh {
    // The ACK packet itself is not at hand: its signal and hops may be a repeater's. Only a zero-hop direct
    // delivery proves the node still hears us directly.
    wait.active=false;updateContact(*c,false);if(wait.route[i]==ChatMessage::RouteDirect&&!wait.hops[i]){p->heard=true;p->seen=millis();p->hops=0;}
-   owner.track(wait,i,true);owner.status(wait.message.id,ChatMessage::Delivered);if(!wait.message.game){owner.event="Delivered to "+String(c->name);hardware.beep();}return c;
+   owner.track(wait,i,true);owner.status(wait.message.id,ChatMessage::Delivered);if(!wait.message.game){owner.delivered++;owner.event="Delivered to "+String(c->name);hardware.beep();}return c;
   }return nullptr;
  }
  void onContactPathUpdated(const ContactInfo& c) override{updateContact(c,false);contactsDue=millis()+2000;}
@@ -343,7 +343,7 @@ void MeshRadio::addMessage(const ChatMessage& m,bool save) {
   ChatMessage& added=history[historyCount++];added=m;
   // A clock that is not set (no RTC, GPS or phone yet) gives no time: the uptime stands in until it is set.
   if(save&&!clockSet()){added.timestamp=0;added.uptime=upSeconds();unstamped++;}
-  if(save)persist(added);dirty=true;
+  if(save)persist(added);if(save&&!m.outgoing&&!m.game)received++;dirty=true;
 }
 // The clock was set: the messages of this boot recorded before it get their time, saved as a later row.
 void MeshRadio::stampLate(){

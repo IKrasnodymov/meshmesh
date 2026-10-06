@@ -110,3 +110,4 @@ int MeshRadio::probeHashtag(const String& raw){String tag=channels::hashtag(raw)
 // MeshMesh storage files: none in the preview (read marks fall back to the Preferences shim).
 bool readStored(const char*,const char*,void*,size_t){return false;}
 bool writeStored(const char*,const char*,const void*,size_t){return false;}
+bool MeshRadio::clockSet(){return time(nullptr)>=1735689600;}

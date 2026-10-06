@@ -25,6 +25,7 @@ MeshCore nodes.
 - **Signal radar** — Wi-Fi, Bluetooth and LoRa around you, with “warmer / colder” homing.
 - **Motion sensor** — two boards detect a person walking between them (Wi-Fi CSI).
 - **Chess** with your contacts over the mesh, and Klondike solitaire on the M9.
+- **Mesh pet** — a Tamagotchi-like pixel creature on every board that feeds on radio traffic, grows up and can die of hunger or loneliness. [docs/en/pet.md](docs/en/pet.md)
 - **Chess without MeshMesh on your device**: [the chess page](https://ikrasnodymov.github.io/meshmesh/chess/) plays through a
   board running the official MeshCore Companion firmware, over USB (Web Serial) or Bluetooth (Web Bluetooth), in Chrome or Edge.
 - **Repeater and room server modes** — chosen at boot (M9 screen, Heltec button) or in Settings,
@@ -90,7 +91,7 @@ The screen UI can be rendered on a computer without a board: `tools/ui_preview/b
 
 Detailed documentation in English: [channels](docs/en/channels.md), [MeshCore compatibility](docs/en/meshcore-migration.md), [boards](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [repeater and room modes](docs/en/repeater.md),
-[chess protocol](docs/en/chess.md), [map format](docs/en/maps-format.md), [comparison with MeshCore](docs/en/feature-parity.md),
+[chess protocol](docs/en/chess.md), [mesh pet](docs/en/pet.md), [map format](docs/en/maps-format.md), [comparison with MeshCore](docs/en/feature-parity.md),
 [hardware verification](docs/en/verification.md). The Russian originals are in [docs/](docs/), with the full
 guide to controls and features in [README.ru.md](README.ru.md).
 

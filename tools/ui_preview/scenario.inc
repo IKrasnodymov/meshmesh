@@ -91,7 +91,7 @@ static void scenario(){
   for(int i=0;i<40&&uiStatus().indexOf("\"chess_cursor\":-1,")<0;i++)key(13);expect("Game menu after the pieces","\"chess_cursor\":-1,");shot("heltec-chess-gamemenu");
   key(0xa3);expect("game menu","\"chess_menu\":true");shot("heltec-chess-menu");
   key(13);key(13);key(0xa3);expect("Game list","\"page\":\"chess\"");if(uiStatus().indexOf("chess_game")>=0){printf("FAIL game list: %s\n",uiStatus().c_str());exit(1);}
-  key(13);expect("click leaves the list","\"page\":\"radar\"");
+  key(13);expect("click leaves the list","\"page\":\"pet\"");
   chessNet.remove(*g);}
 #else
  shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);
@@ -246,4 +246,48 @@ static void scenario(){
  config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.lang==LangRu||config.lang==LangUk?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);
  key(0x90);key(0xb5);key(13);key(0xb6);shot("role-pick");key(0x86);config.role=RoleNormal;key(0x82);
 #endif
+ // The pet: an egg, a happy kid with a new friend, a hungry adult, an ill teen and a grave with its memory.
+ {auto look=[](uint8_t stage,uint16_t food,uint16_t joy,uint16_t health,uint32_t xp,const char* words,pet::Effect e){auto& s=creature.s;s.stage=stage;s.food=food;s.joy=joy;s.health=health;s.xp=xp;s.age=stage==pet::Egg?420:stage*86400+5*3600;
+   s.snacks=3;s.friends=4;s.packets=1873;creature.speech=words?words:"";creature.speechAt=words?fakeMillis:0;creature.effect=e;creature.effectAt=fakeMillis;};
+  strcpy(creature.s.name,"Ping");creature.s.species=0;
+#if defined(MM_HELTEC_V4)
+  for(int i=0;i<11;i++)tick(); // menus and popups close
+  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"pet\"")<0;i++)
+#if defined(MM_JOYSTICK)
+   key(0xb7);
+#else
+   key(13);
+#endif
+  const char* prefix=
+#if defined(MM_JOYSTICK)
+   "gat562-";
+#else
+   "heltec-";
+#endif
+  auto snap=[&](const char* n){shot((std::string(prefix)+n).c_str());};
+#else
+  key(0x82);for(int i=0;i<3;i++)key(0xb6);key(0xb7);auto snap=[&](const char* n){shot(n);};snap("home-pet");key(13);
+#endif
+  if(uiStatus().indexOf("\"page\":\"pet\"")<0){printf("FAIL pet page: %s\n",uiStatus().c_str());exit(1);}
+  look(pet::Egg,700,700,1000,0,nullptr,pet::NoEffect);snap("pet-egg");
+  look(pet::Child,820,900,1000,190,config.lang==LangRu?"Новый друг: Марат":"New friend: Marat",pet::Hearts);snap("pet-happy");
+  creature.speechAt=0;snap("pet-stats");
+  creature.s.species=3;look(pet::Adult,120,520,700,2600,nullptr,pet::NoEffect);snap("pet-hungry");
+  creature.s.species=5;look(pet::Teen,420,300,260,900,nullptr,pet::NoEffect);snap("pet-ill");
+#if defined(MM_HELTEC_V4)
+  key(0xa3);snap("pet-menu");
+#if defined(MM_JOYSTICK)
+  key(0x86);
+#else
+  for(int i=0;i<11;i++)tick();
+#endif
+#endif
+  auto& s=creature.s;s.food=0;s.joy=0;s.health=0;creature.speech="";creature.command("pet skip 3600");
+  if(creature.alive()){printf("FAIL the pet outlived zero health: %s\n",creature.json().c_str());exit(1);}
+  snap("pet-dead");
+  creature.command("pet egg");if(!creature.alive()||creature.s.stage!=pet::Egg||creature.s.graveCount!=1){printf("FAIL new egg: %s\n",creature.json().c_str());exit(1);}
+  creature.command("pet skip 900");if(creature.s.stage!=pet::Baby){printf("FAIL hatching: %s\n",creature.json().c_str());exit(1);}
+  creature.command("pet mortal off");s.food=0;s.joy=0;creature.command("pet skip 864000");if(!creature.alive()||creature.s.health!=1){printf("FAIL death switched off: %s\n",creature.json().c_str());exit(1);}
+  creature.command("pet mortal on");s.food=s.joy=800;s.health=1000;
+  printf("pet checks passed\n");}
 }

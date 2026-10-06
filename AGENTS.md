@@ -6,7 +6,9 @@
 чаты и каналы MeshCore (хештег, ссылка/QR, ключ, приглашения; `docs/channels.md`, `src/Channels.cpp`), LoRa, офлайн-карты, Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
 шахматы с контактами (экран M9 и веб обеих плат, личные сообщения MeshCore,
 партии на рейтинг ELO с результатом, подписанным ключами обоих узлов, — `src/ChessRating.cpp`, турниры по швейцарской системе — `src/ChessTour.cpp`; `docs/chess.md`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
-`web/chess-companion.js`, `tools/chess_site.py`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
+`web/chess-companion.js`, `tools/chess_site.py`), питомец сети — тамагочи, который кормится эфиром,
+растёт и может умереть (`src/Pet.cpp`, экраны `src/UiPet.inc`, `src/UiPetCompact.inc`, T114 — `src/UiHires.inc`;
+`docs/pet.md`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
 по-русски. Доводить согласованные изменения до сборки, установки и проверки,
 если устройства доступны. Различать реализованную функцию, успешную сборку,
 установленную прошивку и подтверждённую аппаратную работу.

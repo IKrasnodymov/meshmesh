@@ -25,6 +25,7 @@ nœuds MeshCore standard.
 - **Radar de signaux** — Wi-Fi, Bluetooth et LoRa autour de vous, avec un pistage « chaud / froid ».
 - **Détecteur de mouvement** — deux cartes détectent une personne qui passe entre elles (Wi-Fi CSI).
 - **Échecs** avec vos contacts à travers le maillage, et solitaire Klondike sur le M9.
+- **Animal du réseau** — une créature en pixels façon Tamagotchi sur toutes les cartes : elle se nourrit du trafic radio, grandit et peut mourir de faim ou de solitude. [docs/en/pet.md](docs/en/pet.md)
 - **Échecs sans MeshMesh sur votre appareil** : [la page d'échecs](https://ikrasnodymov.github.io/meshmesh/chess/) joue via une
   carte équipée du firmware officiel MeshCore Companion, en USB (Web Serial) ou Bluetooth (Web Bluetooth), dans Chrome ou Edge.
 - **Modes répéteur et serveur de salon** — choisis au démarrage (écran du M9, bouton du Heltec) ou dans les Réglages,
