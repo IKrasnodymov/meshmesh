@@ -169,7 +169,7 @@ void Hardware::tick() {
     if(pins::adcEnable>=0)digitalWrite(pins::adcEnable,!adcActive);
   }
 #endif
-  if(gps.date.isValid() && gps.time.isValid() && gps.time.age()<10000 && gps.date.age()<10000 && gps.location.isValid() && gps.location.age()<10000 && gps.date.year()>=2025) {
+  if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }
 }

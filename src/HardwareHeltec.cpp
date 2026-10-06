@@ -42,7 +42,7 @@ void Hardware::tick() {
   if(millis()-lastSample<1000)return;lastSample=millis();
   analogReadResolution(12);analogSetPinAttenuation(pins::battery,ADC_0db);
   uint32_t sum=0;for(int i=0;i<6;i++)sum+=analogReadMilliVolts(pins::battery);batteryMv=uint16_t((sum/6)*4.9f);
-  if(gps.date.isValid() && gps.time.isValid() && gps.time.age()<10000 && gps.date.age()<10000 && gps.location.isValid() && gps.location.age()<10000 && gps.date.year()>=2025) {
+  if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }
 }

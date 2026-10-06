@@ -26,6 +26,9 @@ struct ChatMessage {
   // Flood hops of a delivered message are those of the path returned with the ACK. 255: not known.
   enum Route:uint8_t { RouteNone,RouteDirect,RouteFlood } route=RouteNone;
   uint8_t hops=255,tries=0;
+  // RAM only. uptime: the second of this boot it was recorded in while the clock was not set (timestamp 0);
+  // the time is filled in when the clock is set. seen: an incoming one read on the screen.
+  uint32_t uptime=0;bool seen=false;
 };
 // A channel heard on air that this node has not joined: its hash byte and, when a common or probed
 // hashtag opened one of its packets, that name.
@@ -70,6 +73,7 @@ class MeshRadio {
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();
+  static bool clockSet();
   bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;
   // The node key signs rated chess results (ChessRating.h): nullptr / false before the identity is loaded.
@@ -87,7 +91,7 @@ class MeshRadio {
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);
   bool startRadio(bool quiet);int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
-  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false);void persist(const ChatMessage& m);
+  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false);void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
   Peer* contact(uint64_t id);
   struct Sample {uint8_t length=0,data[184]={};} samples[6];unsigned nextSample=0; // packets of unjoined channels
   uint32_t seenGroup[16]={};unsigned nextSeenGroup=0;

@@ -54,7 +54,7 @@ void Hardware::tick() {
   // Battery divider on AIN3 (P0.05), as in MeshCore's board file: 12 bits against the 3.6 V reference.
   analogReadResolution(12);uint32_t raw=0;for(int i=0;i<8;i++)raw+=analogRead(pins::battery);
   batteryMv=uint16_t((3*1.75f*1.187f*1000)*(raw/8)/4096);
-  if(gps.date.isValid()&&gps.time.isValid()&&gps.time.age()<10000&&gps.date.age()<10000&&gps.location.isValid()&&gps.location.age()<10000&&gps.date.year()>=2025) {
+  if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }
 }

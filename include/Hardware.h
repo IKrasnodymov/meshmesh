@@ -52,6 +52,7 @@ class Hardware {
   bool setUtc(uint32_t epoch,const char* source,bool persist=false);
   String clockInfo();
   bool gpsFix();
+  bool gpsTime(); // the receiver's date and time may set the clock
   void begin();
   void tick();
   int readKey();

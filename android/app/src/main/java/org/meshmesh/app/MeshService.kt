@@ -354,7 +354,8 @@ class MeshService : Service() {
         val incoming = ArrayList<JSONObject>()
         val a = JSONArray(messages.body)
         for (i in 0 until a.length()) a.getJSONObject(i).takeIf { !it.optBoolean("outgoing") }?.let { incoming += it }
-        val key = { m: JSONObject -> "${m.optLong("time")}|${m.optString("source")}|${m.optInt("id")}|${m.optString("text").hashCode()}" }
+        // Without the time: the board fills it in later for messages received before its clock was set.
+        val key = { m: JSONObject -> "${m.optLong("session")}|${m.optString("source")}|${m.optLong("id")}|${m.optString("text").hashCode()}" }
         val previous = lastSeen
         lastSeen = incoming.lastOrNull()?.let(key) ?: previous
         if (first || incoming.isEmpty() || lastSeen == previous) return !first

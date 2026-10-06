@@ -162,10 +162,10 @@ uint32_t readAt(uint64_t id){
  uint32_t v=0;Preferences p;if(p.begin("meshmesh-ui",true)){v=p.getUInt(readKey(id).c_str(),0);p.end();}
  if(markCount<65)marks[markCount++]={id,v};return v; // cached: status bar needs unread totals every frame
 }
-unsigned unread(uint64_t id){uint32_t at=readAt(id);unsigned n=0;for(unsigned i=0;i<meshRadio.historyCount;i++){auto& m=meshRadio.history[i];if(belongs(m,id)&&!m.outgoing&&m.timestamp>at)n++;}return n;}
+unsigned unread(uint64_t id){uint32_t at=readAt(id);unsigned n=0;for(unsigned i=0;i<meshRadio.historyCount;i++){auto& m=meshRadio.history[i];if(belongs(m,id)&&!m.outgoing&&!m.seen&&(m.timestamp>at||(!m.timestamp&&m.uptime)))n++;}return n;}
 unsigned unreadTotal(){threads();unsigned n=0;for(unsigned i=0;i<conversationCount;i++)if(conversations[i])n+=unread(conversations[i]);return n;}
 void markRead(){
- uint32_t at=0;for(unsigned i=0;i<meshRadio.historyCount;i++){auto& m=meshRadio.history[i];if(belongs(m,recipient)&&!m.outgoing)at=max(at,m.timestamp);}
+ uint32_t at=0;for(unsigned i=0;i<meshRadio.historyCount;i++){auto& m=meshRadio.history[i];if(belongs(m,recipient)&&!m.outgoing){at=max(at,m.timestamp);m.seen=true;}}
  if(at<=readAt(recipient))return;
  for(unsigned i=0;i<markCount;i++)if(marks[i].id==recipient)marks[i].at=at;
  Preferences p;String key=readKey(recipient);

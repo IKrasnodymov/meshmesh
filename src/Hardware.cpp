@@ -68,7 +68,7 @@ void Hardware::tick() {
     while(Serial1.available() && budget--) {gps.encode(Serial1.read());gpsBytes++;}
     static bool fallback=false;
     if(!gpsBytes && !fallback && millis()-lastGpsBaud>6000) {Serial1.updateBaudRate(9600);fallback=true;}
-    if(gps.date.isValid() && gps.time.isValid() && gps.time.isUpdated() && gps.time.age()<10000 && gps.date.age()<10000 && gps.location.isValid() && gps.location.age()<10000 && gps.date.year()>=2025) {
+    if(gpsTime() && gps.time.isUpdated()) {
       DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());
       bool accepted=setUtc(now.unixtime(),"GPS");
       static uint32_t synced=0;if(accepted && rtcOk && (!rtcValid || millis()-synced>3600000)) {rtc.adjust(now);rtcValid=true;synced=millis();}

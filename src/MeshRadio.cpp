@@ -336,9 +336,21 @@ String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
  if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?" #"+String(m.tries):String(tr(" · try "," · попытка "))+m.tries):" "+String(m.tries)+"/3";
  return s;
 }
+bool MeshRadio::clockSet(){return time(nullptr)>=1735689600;}
+static uint32_t upSeconds(){return uint32_t(millis()/1000)+1;}
 void MeshRadio::addMessage(const ChatMessage& m,bool save) {
   if(historyCount==64) {memmove(history,history+1,sizeof(ChatMessage)*63);historyCount=63;}
-  history[historyCount++]=m;if(save)persist(m);dirty=true;
+  ChatMessage& added=history[historyCount++];added=m;
+  // A clock that is not set (no RTC, GPS or phone yet) gives no time: the uptime stands in until it is set.
+  if(save&&!clockSet()){added.timestamp=0;added.uptime=upSeconds();unstamped++;}
+  if(save)persist(added);dirty=true;
+}
+// The clock was set: the messages of this boot recorded before it get their time, saved as a later row.
+void MeshRadio::stampLate(){
+  uint32_t now=time(nullptr),up=upSeconds();
+  for(unsigned i=0;i<historyCount;i++){auto& m=history[i];if(!m.uptime||m.timestamp)continue;
+    uint32_t ago=up-m.uptime;if(ago<now&&now-ago>=1735689600){m.timestamp=now-ago;persist(m);}}
+  unstamped=0;dirty=true;
 }
 void MeshRadio::persist(const ChatMessage& m) {
   HistoryFs* fs=historyFs();if(!fs)return;
@@ -357,7 +369,7 @@ void MeshRadio::restoreHistory() {
       m.session=d["session"]|0;m.id=d["id"]|0;m.timestamp=d["time"]|0;m.outgoing=d["outgoing"]|false;m.status=ChatMessage::Status(constrain(d["status"]|0,0,4));
       m.route=ChatMessage::Route(constrain(d["route"]|0,0,2));m.hops=d["hops"]|255;m.tries=d["tries"]|0;
       strlcpy(m.name,d["name"]|"?",sizeof(m.name));strlcpy(m.text,d["text"]|"",sizeof(m.text));
-      bool found=false;for(unsigned i=0;i<historyCount;i++) if(history[i].protocol==m.protocol && history[i].source==m.source && history[i].session==m.session && history[i].id==m.id) {history[i].status=m.status;if(m.route){history[i].route=m.route;history[i].hops=m.hops;history[i].tries=m.tries;}found=true;break;}
+      bool found=false;for(unsigned i=0;i<historyCount;i++) if(history[i].protocol==m.protocol && history[i].source==m.source && history[i].session==m.session && history[i].id==m.id) {history[i].status=m.status;if(m.route){history[i].route=m.route;history[i].hops=m.hops;history[i].tries=m.tries;}if(m.timestamp>=1735689600)history[i].timestamp=m.timestamp;found=true;break;}
       if(!found)addMessage(m,false);
     }
     f.close();
@@ -374,6 +386,7 @@ void MeshRadio::restoreHistory() {
 }
 // After the last failed attempt a known path is reset: the next message floods and learns a new one.
 void MeshRadio::tick(){
+ if(unstamped&&clockSet())stampLate();
  uint32_t now=millis();
  if(recalFailed){if(now-recalAt>=5000)recalibrate();return;} // retried until the transceiver answers again
  if(ready&&!busy()&&now-lastRxAt>=600000&&now-recalAt>=600000)recalibrate();

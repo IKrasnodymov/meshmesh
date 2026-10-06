@@ -57,7 +57,7 @@ void Hardware::tick() {
   analogReference(AR_INTERNAL_3_0);analogReadResolution(12);uint32_t raw=0;for(int i=0;i<8;i++)raw+=analogRead(pins::battery);
   digitalWrite(pins::adcEnable,LOW);
   batteryMv=uint16_t(3000.f*pins::batteryScale*(raw/8)/4096);
-  if(gps.date.isValid()&&gps.time.isValid()&&gps.time.age()<10000&&gps.date.age()<10000&&gps.location.isValid()&&gps.location.age()<10000&&gps.date.year()>=2025) {
+  if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }
 }

@@ -106,3 +106,5 @@ the RSSI tracker and radar HUDs by [Stevee87](https://github.com/Stevee87).
 Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent firmware/Android versions and publishing](docs/en/releases.md). Battery-life gains have not been measured.
 
 Firmware 0.4.1 reduces history-export memory use and reports allocation failures explicitly; Android remains 0.4.0.
+
+Firmware 0.4.2: messages recorded before the clock is set get their exact time once it is set; a spoofed GPS date earlier than the firmware build, or one contradicting the phone/NTP time, is rejected. Android 0.4.1 does not repeat message notifications after that.

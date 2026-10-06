@@ -1,5 +1,20 @@
 # MeshMesh verification
 
+> **0.4.2: message times and a clock without a source** (6 October 2026, local Heltec V4 image `B33C9817…` built before the version bump,
+> boot 157; the full run was not done). The app shows the reception time in bubbles and the chat list,
+> but some V4 stamps were false: the V4's GPS module reports a fix of 10 satellites dated 8 July 2026
+> (spoofed signals; the M9 saw the same) and set the clock from it, and the ESP32 time survived a
+> restart marked "not set". Now a GPS or RTC time before the firmware's build date is rejected (the
+> position of such a receiver is not used either), GPS does not overwrite a phone or NTP time by more
+> than 5 minutes and needs at least 3 satellites; a time kept over a restart stays only with a known
+> source. A message recorded before the clock is set keeps 0 and its uptime, and gets the exact time
+> when the clock is set (checked: 0 s off, kept after a restart; the M9 confirmed delivery). On the V4
+> the spoofed fix was rejected (`gps_conflict`) and the phone time kept. Stamps already recorded
+> wrong are not corrected. An incoming message before the clock is set and the unread count on the
+> board's screen were not checked (the T114 was a repeater). Built m9, heltec_v4, heltec_v3, tdeck,
+> gat562_30s, heltec_t114; Android unit tests and build passed, checked in the emulator with the V4
+> over the bridge.
+
 > **0.4.1: bounded history-export memory** (6 October 2026).
 > On published 0.4.0, switching T114 from repeater to normal mode reproduced an empty history
 > response after sender ACK. A potential silent-failure path was removed: the additional 32 KB

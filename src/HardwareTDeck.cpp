@@ -76,7 +76,7 @@ void Hardware::begin() {
 void Hardware::tick() {
   if(gpsEnabled) {
     gpsBytes+=gpsPort.tick(gps);
-    if(gps.date.isValid() && gps.time.isValid() && gps.time.isUpdated() && gps.time.age()<10000 && gps.date.age()<10000 && gps.location.isValid() && gps.location.age()<10000 && gps.date.year()>=2025) {
+    if(gpsTime() && gps.time.isUpdated()) {
       DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
     }
   }
