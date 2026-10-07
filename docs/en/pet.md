@@ -120,6 +120,7 @@ pet skip SECONDS          run its clock forward (up to 14 days) to check growing
 - Meetings and exchange between pets of different devices (a BLE "boop", visits over LoRa, a signed
   album of meetings) and a repeater answering `!pet` from the mesh are the next step.
 - The boards have no NFC; BLE and LoRa are meant to take the place of tapping a tag.
+- In the repeater and room modes "friends" are not counted: the MeshCore server keeps the contacts there.
 - Boards without a screen (XIAO, a T-Beam without OLED) show the pet only on the web page, in the app and over USB.
 
 ## Checks

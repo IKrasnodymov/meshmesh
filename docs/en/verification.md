@@ -4,8 +4,14 @@
 > board's screen, the web page and the app) and nRF52 language images without the Russian strings (translation
 > keys at compile time): T114 Chinese 12 KB free (it would be 3), GAT562 Chinese 39 KB. 15 boards built; the
 > screen emulator (m9, tdeck, heltec, gat562, t114) and the Android unit tests passed; Chinese translations
-> are found by the new keys. This 0.5.0 build was not installed on boards: the last one checked on hardware is
-> `9ffbbbf`/`3d367a3` (below).
+> are found by the new keys. On hardware (7 October): packages `0c31aa7` installed on the M9 (`tools/flash.py`, ELF
+> `43D98FA1…`, boot 217) and the T114 (`tools/nrf52.py`, ELF `2C7A2937…`, boot 63, repeater role kept); settings
+> and history (64 and 44 records) kept, the pets stayed (their species number is now a new drawing: Lora is Boo,
+> Mote Octomesh). The M9's advert was received and relayed by the T114 (`rx` 1, `relayed` 1), its pet's packets
+> and relays grew. The app in the Android emulator through `tools/usb_tcp_bridge.py` to the M9 showed the "Pet"
+> section and ran "Pet" (the answer "Мурр"). A repeater's pet gets no "friends": in the server role the MeshCore
+> server keeps the contacts, not the normal role's node list. Bluetooth, the Wi-Fi page, a phone, physical
+> buttons and the GAT562 on 0.5.0 unchecked.
 
 > **Optional pet, web page and app** (7 October 2026, branch `feature/pet`; the full run was not done, no
 > boards were plugged in). The app (debug build, unit tests passed, a test for `pet` added) in the Android
