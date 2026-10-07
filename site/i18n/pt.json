@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Com fome: o rádio está quieto",
  "shot.heltec-pet-stats": "OLED: desenhado em contorno",
  "shot.m9-pet-dead": "Um túmulo e a memória do bichinho",
- "doc.pet": "Bichinho da rede"
+ "doc.pet": "Bichinho da rede",
+ "news.dice": "<b>Novo:</b> dados — o rolador DIC3R para RPG e Warhammer em todas as placas",
+ "f.dice.t": "Dados",
+ "f.dice.d": "O rolador de dados DIC3R em todas as placas. RPG: uma parada como 2d6+1 ou qualquer fórmula, cada dado com seu formato, a soma; d66 e d%. Warhammer: uma grade de até 50 dados, do maior para o menor, com limiar de sucesso. Contadores de vida e recursos, personagens com suas rolagens salvas. O dispositivo guarda tudo: a tela, a página web e o app mostram as mesmas rolagens.",
+ "shot.m9-dice-shapes": "Cada dado com seu formato: de d4 a d20",
+ "shot.t114-dice-saved": "Uma rolagem salva no T114",
+ "shot.m9-dice-grid": "Warhammer: 8 sucessos em 4+",
+ "shot.m9-dice-counters": "Contadores: ±1 e ±5",
+ "shot.heltec-dice-grid": "A OLED: a grade em contorno",
+ "shot.m9-dice-saved": "Rolagens salvas de um personagem",
+ "doc.dice": "Dados"
 }

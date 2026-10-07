@@ -1,5 +1,18 @@
 # MeshMesh verification
 
+> **Dice (the DIC3R roller)** (7 October 2026, branch `feature/dice`; no board was connected — not checked on
+> hardware, no full run). RPG, Warhammer and counter modes, characters, the `dice` command, the web page and app section
+> ([dice.md](dice.md)). The `tools/ui_preview` scenario (`dice checks passed`) checks formula parsing (`2d6+1`, `4к6-2`,
+> d%, d66 and bad ones), the range of 400 rolls of 3d6+2, the ends of d%, the digits of d66, subtraction, the grid's
+> order, the success count, the commands and the JSON size; the M9, T-Deck (taps on a tab, a grid die, the roll card and a
+> counter's +5), Heltec, GAT562 (joystick) and T114 screens were rendered in Russian and English. The web section was
+> checked in headless Chromium (1100 and 390 px wide) with a mock API that runs the same `Dice.cpp`: pool, formulas,
+> saved rolls, grid, threshold, counters, adding/renaming/deleting a character; no page errors. Found and fixed: quick
+> taps on the modifier's "+" used a stale state (commands are now built in turn); `prompt()` became a field on the page
+> (WebView has none). The Android unit tests passed (new test `diceAreReadFreshAndTheirActionsGoAsCommands`). Size: on
+> the nRF52 the dice and the compact boards' interface (`UiHeltec.cpp`) are built with `-Os` — without it the T114
+> Chinese image overflowed by 4.7 KB; now T114 Chinese has 4 KB free, Japanese 7 KB, GAT562 Chinese 34 KB.
+
 > **0.5.1: the Heltec V3 flash driver mode** (7 October 2026). The V3 owner's reply on 0.4.3: flash `c84017`,
 > the write is lost at every address from `0x310000` to `0x7ff000`, the storage move failed; other firmware on
 > the same board writes. The `heltec_v3` target moved from the `qio_qspi` driver libraries to `dio_qspi`

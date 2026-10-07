@@ -15,6 +15,7 @@
 #include "ChessTour.h"
 #include "ChessSync.h"
 #include "Pet.h"
+#include "Dice.h"
 #include "Board.h"
 #include "Power.h"
 #include <Wire.h>
@@ -116,7 +117,7 @@ void appSetup() {
 #endif
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   BOOT("config");config.load();BOOT("clock");hardware.beginClock();BOOT("hardware");hardware.begin();
-  BOOT("chess");chessNet.begin();tour::net.begin();BOOT("radio");meshRadio.begin();BOOT("pet");creature.begin();BOOT("maps");maps.begin();
+  BOOT("chess");chessNet.begin();tour::net.begin();BOOT("radio");meshRadio.begin();BOOT("pet");creature.begin();BOOT("dice");dicer.begin();BOOT("maps");maps.begin();
 #if !defined(MM_COMPACT)
   if(config.role==RoleNormal)internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
@@ -134,7 +135,7 @@ void appLoop() {
 #if !defined(MM_COMPACT)
   internet.tick();
 #endif
-  maps.tick();navigation.tick();radar.tick();creature.tick();
+  maps.tick();navigation.tick();radar.tick();creature.tick();dicer.tick();
   int key=hardware.readKey();if(key){powerWake();uiKey(key);}
 #if defined(MM_BOARD_TDECK)
   {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch){powerWake();uiTouch(touch,x,y);}}

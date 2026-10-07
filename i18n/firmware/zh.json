@@ -234,6 +234,16 @@
   "ru": "Турнир: выберите чат-контакты",
   "text": "比赛:请选择聊天联系人"
  },
+ "22423572": {
+  "en": "Counter ",
+  "ru": "Счётчик ",
+  "text": "计数器 "
+ },
+ "a521fdd8": {
+  "en": "General",
+  "ru": "Общий",
+  "text": "通用"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -872,6 +882,11 @@
   "en": "Pet",
   "ru": "Питомец",
   "text": "宠物"
+ },
+ "0dd48b86": {
+  "en": "Dice",
+  "ru": "Кости",
+  "text": "骰子"
  },
  "969e0815": {
   "en": "Device mode",
@@ -4110,6 +4125,423 @@
   "ru": "Кому: ",
   "text": "发给 "
  },
+ "753a50c9": {
+  "en": "Counters: life, wounds, resources",
+  "ru": "Счётчики: жизни, раны, ресурсы",
+  "text": "计数器: 生命、伤势、资源"
+ },
+ "847159d6": {
+  "en": "N: name   C: colour   DEL: delete",
+  "ru": "N: имя   C: цвет   DEL: удалить",
+  "text": "N: 名称   C: 颜色   DEL: 删除"
+ },
+ "2a033d73": {
+  "en": "Saved rolls · ",
+  "ru": "Сохранённые броски · ",
+  "text": "已存掷骰 · "
+ },
+ "88cada1c": {
+  "en": "No saved rolls",
+  "ru": "Сохранённых бросков нет",
+  "text": "没有已存掷骰"
+ },
+ "f9b1ccca": {
+  "en": "A: save a formula with a name",
+  "ru": "A: сохранить формулу с именем",
+  "text": "A: 保存带名称的公式"
+ },
+ "5db08647": {
+  "en": "F: formula  N: name  C: colour  DEL: delete",
+  "ru": "F: формула  N: имя  C: цвет  DEL: удалить",
+  "text": "F: 公式  N: 名称  C: 颜色  DEL: 删除"
+ },
+ "fbc08e80": {
+  "en": "Characters",
+  "ru": "Персонажи",
+  "text": "角色"
+ },
+ "1bde5876": {
+  "en": {
+   "one": "roll",
+   "other": "rolls"
+  },
+  "ru": {
+   "one": "бросок",
+   "few": "броска",
+   "many": "бросков"
+  },
+  "forms": {
+   "other": "{n}个掷骰"
+  }
+ },
+ "7f5f4e27": {
+  "en": {
+   "one": "counter",
+   "other": "counters"
+  },
+  "ru": {
+   "one": "счётчик",
+   "few": "счётчика",
+   "many": "счётчиков"
+  },
+  "forms": {
+   "other": "{n}个计数器"
+  }
+ },
+ "2faba250": {
+  "en": "A: new   N: rename   DEL: delete",
+  "ru": "A: новый   N: имя   DEL: удалить",
+  "text": "A: 新建   N: 改名   DEL: 删除"
+ },
+ "4be35553": {
+  "en": "Roll",
+  "ru": "Бросить",
+  "text": "掷骰"
+ },
+ "ff62d5a0": {
+  "en": "Add",
+  "ru": "Добавить",
+  "text": "添加"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "关闭"
+ },
+ "7c3624b1": {
+  "en": "Saved",
+  "ru": "Броски",
+  "text": "已存"
+ },
+ "e45d38ac": {
+  "en": "Formula",
+  "ru": "Формула",
+  "text": "公式"
+ },
+ "cebaa29e": {
+  "en": "Mode",
+  "ru": "Режим",
+  "text": "模式"
+ },
+ "a07143b9": {
+  "en": "Count",
+  "ru": "Число",
+  "text": "数量"
+ },
+ "ba4ec213": {
+  "en": "Character",
+  "ru": "Персонаж",
+  "text": "角色"
+ },
+ "e13f98a0": {
+  "en": "Formula to roll",
+  "ru": "Формула броска",
+  "text": "掷骰公式"
+ },
+ "28983874": {
+  "en": "New roll: formula",
+  "ru": "Новый бросок: формула",
+  "text": "新掷骰: 公式"
+ },
+ "7a1df7ee": {
+  "en": "New roll: name",
+  "ru": "Новый бросок: имя",
+  "text": "新掷骰: 名称"
+ },
+ "510de52a": {
+  "en": "Roll name",
+  "ru": "Имя броска",
+  "text": "掷骰名称"
+ },
+ "f12916a4": {
+  "en": "Counter name",
+  "ru": "Имя счётчика",
+  "text": "计数器名称"
+ },
+ "8ced0833": {
+  "en": "New character",
+  "ru": "Новый персонаж",
+  "text": "新角色"
+ },
+ "49e48a96": {
+  "en": "Character name",
+  "ru": "Имя персонажа",
+  "text": "角色名称"
+ },
+ "3648955c": {
+  "en": "OK: roll   BACK: cancel",
+  "ru": "OK: бросить   BACK: отменить",
+  "text": "OK: 掷骰   BACK: 取消"
+ },
+ "47a608e8": {
+  "en": "2d6+1, d20, 4d6-2, d%, d66",
+  "ru": "2d6+1, d20, 4к6-2, d%, d66",
+  "text": "2d6+1, d20, 4d6-2, d%, d66"
+ },
+ "3b05ab8e": {
+  "en": "Formula: 2d6+1, d20, d%, d66",
+  "ru": "Формула: 2d6+1, d20, d%, d66",
+  "text": "公式: 2d6+1, d20, d%, d66"
+ },
+ "ea0e9c43": {
+  "en": "Name: 1-23 UTF-8 bytes",
+  "ru": "Имя: 1-23 байта UTF-8",
+  "text": "名称: 1-23 字节 UTF-8"
+ },
+ "0ea54a8d": {
+  "en": "Roll saved",
+  "ru": "Бросок сохранён",
+  "text": "掷骰已保存"
+ },
+ "fc8c1178": {
+  "en": "10 saved rolls at most",
+  "ru": "Не больше 10 бросков",
+  "text": "最多 10 个掷骰"
+ },
+ "e93489cf": {
+  "en": "Formula saved",
+  "ru": "Формула сохранена",
+  "text": "公式已保存"
+ },
+ "a55a28b5": {
+  "en": "DEL again: delete",
+  "ru": "Ещё раз DEL: удалить",
+  "text": "再按 DEL: 删除"
+ },
+ "c784cfd9": {
+  "en": "50 dice at most",
+  "ru": "Не больше 50 костей",
+  "text": "最多 50 个骰子"
+ },
+ "f53f52d9": {
+  "en": "Counters",
+  "ru": "Счётчики",
+  "text": "计数器"
+ },
+ "7f0e2ad9": {
+  "en": "6 counters at most",
+  "ru": "Не больше 6 счётчиков",
+  "text": "最多 6 个计数器"
+ },
+ "113cbc15": {
+  "en": "Counter deleted",
+  "ru": "Счётчик удалён",
+  "text": "计数器已删除"
+ },
+ "78b42472": {
+  "en": "Roll deleted",
+  "ru": "Бросок удалён",
+  "text": "掷骰已删除"
+ },
+ "2d9c5925": {
+  "en": "6 characters at most",
+  "ru": "Не больше 6 персонажей",
+  "text": "最多 6 个角色"
+ },
+ "904dbaa5": {
+  "en": "The general set stays",
+  "ru": "Общий набор не удаляется",
+  "text": "通用组不可删除"
+ },
+ "b135f43c": {
+  "en": "Character deleted",
+  "ru": "Персонаж удалён",
+  "text": "角色已删除"
+ },
+ "97bf0171": {
+  "en": "OK: roll ",
+  "ru": "OK: бросить ",
+  "text": "OK: 掷骰 "
+ },
+ "81656fcc": {
+  "en": "E: any formula, 3d8+2",
+  "ru": "E: любая формула, 3к8+2",
+  "text": "E: 任意公式, 3d8+2"
+ },
+ "390afd4a": {
+  "en": "d66 and d%: each die on its own",
+  "ru": "d66 и d%: каждая кость отдельно",
+  "text": "d66 和 d%: 每颗骰子单独计"
+ },
+ "ed2f5230": {
+  "en": "Before:",
+  "ru": "Ранее:",
+  "text": "之前:"
+ },
+ "d41de9b0": {
+  "en": "S: saved ",
+  "ru": "S: сохранённые ",
+  "text": "S: 已存 "
+ },
+ "14ee3ca4": {
+  "en": "Choose dice: arrows",
+  "ru": "Выберите кости стрелками",
+  "text": "用方向键选择骰子"
+ },
+ "6ee9cd71": {
+  "en": {
+   "one": "success",
+   "other": "successes"
+  },
+  "ru": {
+   "one": "успех",
+   "few": "успеха",
+   "many": "успехов"
+  },
+  "forms": {
+   "other": "{n}个成功"
+  }
+ },
+ "05608fd1": {
+  "en": "sum ",
+  "ru": "сумма ",
+  "text": "总和 "
+ },
+ "1192dd3c": {
+  "en": "Threshold ",
+  "ru": "Порог ",
+  "text": "目标值 "
+ },
+ "ec36b964": {
+  "en": "No threshold",
+  "ru": "Без порога",
+  "text": "无目标值"
+ },
+ "d25de403": {
+  "en": "A: +5 dice   R: reset   D: die   T, +/-: threshold",
+  "ru": "A: +5 костей   R: сброс   D: кость   T, +/-: порог",
+  "text": "A: +5骰   R: 重置   D: 骰子   T, +/-: 目标值"
+ },
+ "76fe485a": {
+  "en": "A: add",
+  "ru": "A: добавить",
+  "text": "A: 添加"
+ },
+ "c9d0bbdd": {
+  "en": "Roll ",
+  "ru": "Бросить ",
+  "text": "掷骰 "
+ },
+ "0b0be955": {
+  "en": "Roll: ",
+  "ru": "Бросок: ",
+  "text": "掷骰: "
+ },
+ "64882be4": {
+  "en": "Next saved roll",
+  "ru": "Другой бросок",
+  "text": "下一个掷骰"
+ },
+ "eadde752": {
+  "en": "Dice: ",
+  "ru": "Кости: ",
+  "text": "骰子: "
+ },
+ "fcaab742": {
+  "en": "Die: ",
+  "ru": "Кость: ",
+  "text": "骰型: "
+ },
+ "912ec67c": {
+  "en": "Modifier: ",
+  "ru": "Модификатор: ",
+  "text": "修正: "
+ },
+ "f1453b43": {
+  "en": "Character: ",
+  "ru": "Персонаж: ",
+  "text": "角色: "
+ },
+ "637d5f0a": {
+  "en": "Mode: ",
+  "ru": "Режим: ",
+  "text": "模式: "
+ },
+ "6b6e3fda": {
+  "en": "Dice +1: ",
+  "ru": "Кости +1: ",
+  "text": "骰子 +1: "
+ },
+ "59702ada": {
+  "en": "Dice +5: ",
+  "ru": "Кости +5: ",
+  "text": "骰子 +5: "
+ },
+ "a429d894": {
+  "en": "Threshold: ",
+  "ru": "Порог: ",
+  "text": "目标值: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "关"
+ },
+ "c1eb04c4": {
+  "en": "Add 5 dice",
+  "ru": "Ещё 5 костей",
+  "text": "加 5 颗骰子"
+ },
+ "3eab825d": {
+  "en": "Next counter",
+  "ru": "Другой счётчик",
+  "text": "下一个计数器"
+ },
+ "7ec8f659": {
+  "en": "Add counter",
+  "ru": "Добавить счётчик",
+  "text": "添加计数器"
+ },
+ "96da71cd": {
+  "en": "Choose dice: Dice +1",
+  "ru": "Выберите: Кости +1",
+  "text": "请选择: 骰子 +1"
+ },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "骰子 "
+ },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "没有计数器"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "请在菜单中添加"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "尚未掷骰"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "掷骰是菜单首项"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "手机"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "手表"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "耳机"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "手机/手表"
+ },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4925,30 +5357,15 @@
   "ru": "чат",
   "text": "聊天"
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "手机"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "手表"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "耳机"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "手机/手表"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
   "text": "可选"
+ },
+ "071236e4": {
+  "en": "Before",
+  "ru": "Ранее",
+  "text": "之前"
  },
  "ccdb9efa": {
   "en": "No pet",

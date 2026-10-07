@@ -234,6 +234,16 @@
   "ru": "Турнир: выберите чат-контакты",
   "text": "Tournoi : choisir des contacts"
  },
+ "22423572": {
+  "en": "Counter ",
+  "ru": "Счётчик ",
+  "text": "Compteur "
+ },
+ "a521fdd8": {
+  "en": "General",
+  "ru": "Общий",
+  "text": "Général"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -873,6 +883,11 @@
   "en": "Pet",
   "ru": "Питомец",
   "text": "Animal"
+ },
+ "0dd48b86": {
+  "en": "Dice",
+  "ru": "Кости",
+  "text": "Dés"
  },
  "969e0815": {
   "en": "Device mode",
@@ -4124,6 +4139,426 @@
   "ru": "Кому: ",
   "text": "À : "
  },
+ "753a50c9": {
+  "en": "Counters: life, wounds, resources",
+  "ru": "Счётчики: жизни, раны, ресурсы",
+  "text": "Compteurs : vie, blessures, ressources"
+ },
+ "847159d6": {
+  "en": "N: name   C: colour   DEL: delete",
+  "ru": "N: имя   C: цвет   DEL: удалить",
+  "text": "N : nom   C : couleur   DEL : suppr."
+ },
+ "2a033d73": {
+  "en": "Saved rolls · ",
+  "ru": "Сохранённые броски · ",
+  "text": "Jets enregistrés · "
+ },
+ "88cada1c": {
+  "en": "No saved rolls",
+  "ru": "Сохранённых бросков нет",
+  "text": "Aucun jet enregistré"
+ },
+ "f9b1ccca": {
+  "en": "A: save a formula with a name",
+  "ru": "A: сохранить формулу с именем",
+  "text": "A : enregistrer formule et nom"
+ },
+ "5db08647": {
+  "en": "F: formula  N: name  C: colour  DEL: delete",
+  "ru": "F: формула  N: имя  C: цвет  DEL: удалить",
+  "text": "F : formule  N : nom  C : couleur  DEL : suppr."
+ },
+ "fbc08e80": {
+  "en": "Characters",
+  "ru": "Персонажи",
+  "text": "Personnages"
+ },
+ "1bde5876": {
+  "en": {
+   "one": "roll",
+   "other": "rolls"
+  },
+  "ru": {
+   "one": "бросок",
+   "few": "броска",
+   "many": "бросков"
+  },
+  "forms": {
+   "one": "{n} jet",
+   "other": "{n} jets"
+  }
+ },
+ "7f5f4e27": {
+  "en": {
+   "one": "counter",
+   "other": "counters"
+  },
+  "ru": {
+   "one": "счётчик",
+   "few": "счётчика",
+   "many": "счётчиков"
+  },
+  "forms": {
+   "one": "{n} compteur",
+   "other": "{n} compteurs"
+  }
+ },
+ "2faba250": {
+  "en": "A: new   N: rename   DEL: delete",
+  "ru": "A: новый   N: имя   DEL: удалить",
+  "text": "A : nouveau   N : nom   DEL : suppr."
+ },
+ "4be35553": {
+  "en": "Roll",
+  "ru": "Бросить",
+  "text": "Lancer"
+ },
+ "ff62d5a0": {
+  "en": "Add",
+  "ru": "Добавить",
+  "text": "Ajouter"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "Fermer"
+ },
+ "7c3624b1": {
+  "en": "Saved",
+  "ru": "Броски",
+  "text": "Jets"
+ },
+ "e45d38ac": {
+  "en": "Formula",
+  "ru": "Формула",
+  "text": "Formule"
+ },
+ "cebaa29e": {
+  "en": "Mode",
+  "ru": "Режим",
+  "text": "Mode"
+ },
+ "a07143b9": {
+  "en": "Count",
+  "ru": "Число",
+  "text": "Nombre"
+ },
+ "ba4ec213": {
+  "en": "Character",
+  "ru": "Персонаж",
+  "text": "Perso"
+ },
+ "e13f98a0": {
+  "en": "Formula to roll",
+  "ru": "Формула броска",
+  "text": "Formule à lancer"
+ },
+ "28983874": {
+  "en": "New roll: formula",
+  "ru": "Новый бросок: формула",
+  "text": "Nouveau jet : formule"
+ },
+ "7a1df7ee": {
+  "en": "New roll: name",
+  "ru": "Новый бросок: имя",
+  "text": "Nouveau jet : nom"
+ },
+ "510de52a": {
+  "en": "Roll name",
+  "ru": "Имя броска",
+  "text": "Nom du jet"
+ },
+ "f12916a4": {
+  "en": "Counter name",
+  "ru": "Имя счётчика",
+  "text": "Nom compteur"
+ },
+ "8ced0833": {
+  "en": "New character",
+  "ru": "Новый персонаж",
+  "text": "Nouveau perso"
+ },
+ "49e48a96": {
+  "en": "Character name",
+  "ru": "Имя персонажа",
+  "text": "Nom du perso"
+ },
+ "3648955c": {
+  "en": "OK: roll   BACK: cancel",
+  "ru": "OK: бросить   BACK: отменить",
+  "text": "OK : lancer   BACK : annuler"
+ },
+ "47a608e8": {
+  "en": "2d6+1, d20, 4d6-2, d%, d66",
+  "ru": "2d6+1, d20, 4к6-2, d%, d66",
+  "text": "2d6+1, d20, 4d6-2, d%, d66"
+ },
+ "3b05ab8e": {
+  "en": "Formula: 2d6+1, d20, d%, d66",
+  "ru": "Формула: 2d6+1, d20, d%, d66",
+  "text": "Formule : 2d6+1, d20, d%, d66"
+ },
+ "ea0e9c43": {
+  "en": "Name: 1-23 UTF-8 bytes",
+  "ru": "Имя: 1-23 байта UTF-8",
+  "text": "Nom : 1-23 octets UTF-8"
+ },
+ "0ea54a8d": {
+  "en": "Roll saved",
+  "ru": "Бросок сохранён",
+  "text": "Jet enregistré"
+ },
+ "fc8c1178": {
+  "en": "10 saved rolls at most",
+  "ru": "Не больше 10 бросков",
+  "text": "10 jets au maximum"
+ },
+ "e93489cf": {
+  "en": "Formula saved",
+  "ru": "Формула сохранена",
+  "text": "Formule enregistrée"
+ },
+ "a55a28b5": {
+  "en": "DEL again: delete",
+  "ru": "Ещё раз DEL: удалить",
+  "text": "DEL encore : suppr."
+ },
+ "c784cfd9": {
+  "en": "50 dice at most",
+  "ru": "Не больше 50 костей",
+  "text": "50 dés au maximum"
+ },
+ "f53f52d9": {
+  "en": "Counters",
+  "ru": "Счётчики",
+  "text": "Compteurs"
+ },
+ "7f0e2ad9": {
+  "en": "6 counters at most",
+  "ru": "Не больше 6 счётчиков",
+  "text": "6 compteurs au max."
+ },
+ "113cbc15": {
+  "en": "Counter deleted",
+  "ru": "Счётчик удалён",
+  "text": "Compteur supprimé"
+ },
+ "78b42472": {
+  "en": "Roll deleted",
+  "ru": "Бросок удалён",
+  "text": "Jet supprimé"
+ },
+ "2d9c5925": {
+  "en": "6 characters at most",
+  "ru": "Не больше 6 персонажей",
+  "text": "6 personnages au max."
+ },
+ "904dbaa5": {
+  "en": "The general set stays",
+  "ru": "Общий набор не удаляется",
+  "text": "Le jeu général reste"
+ },
+ "b135f43c": {
+  "en": "Character deleted",
+  "ru": "Персонаж удалён",
+  "text": "Perso supprimé"
+ },
+ "97bf0171": {
+  "en": "OK: roll ",
+  "ru": "OK: бросить ",
+  "text": "OK : lancer "
+ },
+ "81656fcc": {
+  "en": "E: any formula, 3d8+2",
+  "ru": "E: любая формула, 3к8+2",
+  "text": "E : toute formule, 3d8+2"
+ },
+ "390afd4a": {
+  "en": "d66 and d%: each die on its own",
+  "ru": "d66 и d%: каждая кость отдельно",
+  "text": "d66 et d% : chaque dé à part"
+ },
+ "ed2f5230": {
+  "en": "Before:",
+  "ru": "Ранее:",
+  "text": "Avant :"
+ },
+ "d41de9b0": {
+  "en": "S: saved ",
+  "ru": "S: сохранённые ",
+  "text": "S : jets "
+ },
+ "14ee3ca4": {
+  "en": "Choose dice: arrows",
+  "ru": "Выберите кости стрелками",
+  "text": "Choisir dés : flèches"
+ },
+ "6ee9cd71": {
+  "en": {
+   "one": "success",
+   "other": "successes"
+  },
+  "ru": {
+   "one": "успех",
+   "few": "успеха",
+   "many": "успехов"
+  },
+  "forms": {
+   "one": "{n} réussite",
+   "other": "{n} réussites"
+  }
+ },
+ "05608fd1": {
+  "en": "sum ",
+  "ru": "сумма ",
+  "text": "somme "
+ },
+ "1192dd3c": {
+  "en": "Threshold ",
+  "ru": "Порог ",
+  "text": "Seuil "
+ },
+ "ec36b964": {
+  "en": "No threshold",
+  "ru": "Без порога",
+  "text": "Sans seuil"
+ },
+ "d25de403": {
+  "en": "A: +5 dice   R: reset   D: die   T, +/-: threshold",
+  "ru": "A: +5 костей   R: сброс   D: кость   T, +/-: порог",
+  "text": "A : +5 dés   R : RAZ   D : dé   T, +/- : seuil"
+ },
+ "76fe485a": {
+  "en": "A: add",
+  "ru": "A: добавить",
+  "text": "A : ajouter"
+ },
+ "c9d0bbdd": {
+  "en": "Roll ",
+  "ru": "Бросить ",
+  "text": "Lancer "
+ },
+ "0b0be955": {
+  "en": "Roll: ",
+  "ru": "Бросок: ",
+  "text": "Jet : "
+ },
+ "64882be4": {
+  "en": "Next saved roll",
+  "ru": "Другой бросок",
+  "text": "Jet suivant"
+ },
+ "eadde752": {
+  "en": "Dice: ",
+  "ru": "Кости: ",
+  "text": "Dés : "
+ },
+ "fcaab742": {
+  "en": "Die: ",
+  "ru": "Кость: ",
+  "text": "Dé : "
+ },
+ "912ec67c": {
+  "en": "Modifier: ",
+  "ru": "Модификатор: ",
+  "text": "Modificateur : "
+ },
+ "f1453b43": {
+  "en": "Character: ",
+  "ru": "Персонаж: ",
+  "text": "Perso : "
+ },
+ "637d5f0a": {
+  "en": "Mode: ",
+  "ru": "Режим: ",
+  "text": "Mode : "
+ },
+ "6b6e3fda": {
+  "en": "Dice +1: ",
+  "ru": "Кости +1: ",
+  "text": "Dés +1 : "
+ },
+ "59702ada": {
+  "en": "Dice +5: ",
+  "ru": "Кости +5: ",
+  "text": "Dés +5 : "
+ },
+ "a429d894": {
+  "en": "Threshold: ",
+  "ru": "Порог: ",
+  "text": "Seuil : "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "non"
+ },
+ "c1eb04c4": {
+  "en": "Add 5 dice",
+  "ru": "Ещё 5 костей",
+  "text": "Ajouter 5 dés"
+ },
+ "3eab825d": {
+  "en": "Next counter",
+  "ru": "Другой счётчик",
+  "text": "Compteur suivant"
+ },
+ "7ec8f659": {
+  "en": "Add counter",
+  "ru": "Добавить счётчик",
+  "text": "Ajouter compteur"
+ },
+ "96da71cd": {
+  "en": "Choose dice: Dice +1",
+  "ru": "Выберите: Кости +1",
+  "text": "Choisir : Dés +1"
+ },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "Dés "
+ },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "Aucun compteur"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "Ajoutez-en au menu"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "Aucun jet"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "Lancer : 1er du menu"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "téléphone"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "montre"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "écouteurs"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "tél./montre"
+ },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4939,30 +5374,15 @@
   "ru": "чат",
   "text": "chat"
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "téléphone"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "montre"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "écouteurs"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "tél./montre"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
   "text": "Facultatif"
+ },
+ "071236e4": {
+  "en": "Before",
+  "ru": "Ранее",
+  "text": "Avant"
  },
  "ccdb9efa": {
   "en": "No pet",

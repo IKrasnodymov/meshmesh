@@ -119,6 +119,7 @@ Added to `executeCommand`, so they are available over USB, BLE and `/api/command
 | `channels` | JSON `/api/channels` | MeshCore channels; for a paired client, with the links of private channels |
 | `channel do {JSON}` | `OK …` / `ERR …`, JSON for `probe` | `/api/channels` actions: add, remove, invite, probe |
 | `pet` | JSON `/api/pet` | the pet: its state and 16×16 picture (the "Pet" section, [pet.md](pet.md)); actions `pet adopt`, `release`, `cuddle`, `feed`, `heal`, `name`, `mortal` through `/api/command` |
+| `dice` | JSON `/api/dice` | dice: mode, characters, pool, saved rolls, counters, results and the grid (the "Кости" section, [dice.md](dice.md)); actions `dice roll`, `pool`, `saved`, `grid`, `counter`, `char` through `/api/command` |
 
 The diagnostic command `radar` still does not print network and device names; `radar web`
 prints them, like the page over Wi-Fi. The BLE response is now sent in notifications the size of

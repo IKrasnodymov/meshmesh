@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Hungrig: Funkstille",
  "shot.heltec-pet-stats": "OLED: als Umriss gezeichnet",
  "shot.m9-pet-dead": "Ein Grab und die Erinnerung an das Haustier",
- "doc.pet": "Mesh-Haustier"
+ "doc.pet": "Mesh-Haustier",
+ "news.dice": "<b>Neu:</b> Würfel — der Würfler DIC3R für RPG und Warhammer auf jeder Platine",
+ "f.dice.t": "Würfel",
+ "f.dice.d": "Der Würfler DIC3R auf jeder Platine. RPG: ein Pool wie 2d6+1 oder jede Formel, jeder Würfel in seiner Form, die Summe; d66 und d%. Warhammer: ein Raster bis 50 Würfel, vom höchsten zum niedrigsten, mit Erfolgsschwelle. Zähler für Leben und Ressourcen, Charaktere mit eigenen gespeicherten Würfen. Das Gerät speichert alles, daher zeigen Bildschirm, Webseite und App dieselben Würfe.",
+ "shot.m9-dice-shapes": "Jeder Würfel in seiner Form: d4 bis d20",
+ "shot.t114-dice-saved": "Ein gespeicherter Wurf auf dem T114",
+ "shot.m9-dice-grid": "Warhammer: 8 Erfolge bei 4+",
+ "shot.m9-dice-counters": "Zähler: ±1 und ±5",
+ "shot.heltec-dice-grid": "Das OLED: das Raster als Umriss",
+ "shot.m9-dice-saved": "Gespeicherte Würfe eines Charakters",
+ "doc.dice": "Würfel"
 }

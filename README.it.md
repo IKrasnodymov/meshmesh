@@ -26,6 +26,7 @@ nodi MeshCore.
 - **Sensore di movimento** — due schede rilevano una persona che cammina tra loro (Wi-Fi CSI).
 - **Scacchi** con i tuoi contatti attraverso la mesh, e il solitario Klondike sull'M9.
 - **Cucciolo della rete** — una creatura in pixel in stile Tamagotchi su ogni scheda: si nutre del traffico radio, cresce e può morire di fame o di solitudine. [docs/en/pet.md](docs/en/pet.md)
+- **Dadi** — il lanciadadi DIC3R su ogni scheda: riserve e formule da GdR (2d6+1, d20, d66, d%), una griglia Warhammer con soglia di successo, contatori e personaggi, uguali sullo schermo, sulla pagina web e nell’app. [docs/en/dice.md](docs/en/dice.md)
 - **Scacchi senza MeshMesh sul dispositivo**: [la pagina degli scacchi](https://ikrasnodymov.github.io/meshmesh/chess/) gioca tramite
   una scheda con il firmware ufficiale MeshCore Companion, via USB (Web Serial) o Bluetooth (Web Bluetooth), in Chrome o Edge.
 - **Modalità ripetitore e server stanza** — scelte all'avvio (schermo dell'M9, pulsante dell'Heltec) o in Impostazioni,

@@ -112,6 +112,26 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 .petbar{display:grid;grid-template-columns:96px 1fr 44px;align-items:center;gap:8px;margin:9px 0;font-size:13px}.petbar span{color:var(--dim)}.petbar em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
 .petbar .meter{margin:0}
 @media(max-width:700px){.petgrid{grid-template-columns:1fr}.petbox{width:180px}}
+.dicegrid{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px;align-items:start}
+.droll{position:relative;padding:14px;min-height:206px;display:flex;flex-direction:column}.droll .head{font-size:13px;color:var(--dim);margin-bottom:8px}.droll .head b{color:var(--violet);font-weight:600}
+.dfaces{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:48px}.dfaces svg{width:46px;height:46px;flex:none}.dfaces.many{font-size:15px;color:var(--ink);word-spacing:2px}
+.dnum{background:#1d3557;color:var(--info);border-radius:6px;padding:6px 9px;font-weight:700}
+.dsum{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.dsum small{color:var(--dim);font-size:13px;overflow-wrap:anywhere}.dsum b{font-size:64px;line-height:.9;color:var(--warn);font-variant-numeric:tabular-nums;white-space:nowrap}.dsum b i{font-style:normal;font-size:30px;color:var(--dim);margin-right:8px;vertical-align:middle}
+.spin svg{animation:dspin .45s ease-out}@keyframes dspin{0%{transform:rotate(-200deg) scale(.6)}70%{transform:rotate(15deg) scale(1.08)}100%{transform:none}}
+.dpool{text-align:center;font-size:30px;font-weight:700;padding:12px;font-variant-numeric:tabular-nums}
+.dstep{display:grid;grid-template-columns:44px 1fr 44px 44px;gap:6px;align-items:center;margin:6px 0}.dstep span{text-align:center;color:var(--dim);font-size:13px}.dstep span b{color:var(--ink);font-size:16px;display:block}.dstep .btn{min-height:38px;padding:6px}
+.dtypes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.dtypes .btn{min-height:36px;padding:6px 2px}.dtypes .btn.on{background:var(--accent);color:var(--bg)}
+.dhist{display:flex;flex-direction:column;gap:2px;margin-top:8px}.dhist div{display:flex;justify-content:space-between;gap:10px;padding:5px 4px;font-size:13px;color:var(--dim)}.dhist div b{color:var(--ink);font-variant-numeric:tabular-nums}
+.dsaved{display:flex;flex-wrap:wrap;gap:8px}.dsaved .btn{border:2px solid var(--c);flex:0 1 auto;min-height:38px;padding:6px 10px}.dsaved .btn small{color:var(--dim);font-weight:400}.dsaved .ed{border:0;background:none;color:var(--faint);padding:4px;min-height:0}
+.dedit{display:grid;gap:8px;margin-top:10px}.dcolors{display:flex;flex-wrap:wrap;gap:6px}.dcolors button{width:26px;height:26px;border-radius:50%;border:0;padding:0;background:var(--c)}.dcolors button.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.whgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:420px;margin:0 auto}.whgrid button{aspect-ratio:1.25;border:0;border-radius:8px;background:var(--card);color:var(--faint);font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.whgrid button.c{background:#2f5f9e;color:var(--ink)}.whgrid button.p{background:#2f8f4e;color:var(--ink)}.whgrid button.f{background:#a8322c;color:var(--ink)}.whgrid button.last{box-shadow:inset 0 0 0 2px var(--ink)}
+.whstat{text-align:center;margin:12px 0;font-size:15px}.whstat b{font-size:20px}
+.dcounters{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.dctr{position:relative;padding:14px 12px 12px;overflow:hidden}.dctr::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--c)}
+.dctr .top{display:flex;gap:6px;align-items:center}.dctr .top input{flex:1;min-width:0;padding:6px 8px}.dctr .top .btn{min-height:34px;padding:5px 9px}.dctr .val{text-align:center;font-size:60px;font-weight:700;line-height:1.1;margin:8px 0;font-variant-numeric:tabular-nums}
+.dctr .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.dctr .steps .btn,.card .dtypes .btn:not(.on){background:var(--hi)}.dctr .steps .btn{min-height:44px;font-size:17px}
+.dhero{display:flex;gap:8px;align-items:center;margin-bottom:10px}.dhero select{flex:1}.dhero .btn{min-height:42px}
+@media(max-width:700px){.dicegrid{grid-template-columns:1fr}.dsum b{font-size:54px}}
 .chessgrid{display:grid;grid-template-columns:minmax(0,560px) minmax(220px,1fr);gap:12px;align-items:start}
 .bwrap{position:relative}.board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:3px solid #3a2a1c;border-radius:4px;user-select:none;touch-action:manipulation;overflow:hidden}
 .sq{position:relative;border:0;padding:0;margin:0;display:grid;place-items:center;aspect-ratio:1;min-width:0;cursor:pointer}.sq.l{background:#f0d9b5}.sq.d{background:#b58863}
@@ -153,6 +173,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="7" cy="12" r="4"/><path d="M11 12h11M18.5 12v4M21.5 12v3"/></symbol>
 <symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6.6-6.6"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="7.3" cy="15.3" r="1.7" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-cards" viewBox="0 0 24 24" fill="currentColor"><rect x="2.5" y="2.5" width="11" height="15" rx="2" opacity=".55"/><path fill-rule="evenodd" d="M11 6h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zM15 9.5l3 4.5-3 4.5-3-4.5z"/></symbol>
+<symbol id="i-dice" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M6.5 3h11A3.5 3.5 0 0 1 21 6.5v11a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 17.5v-11A3.5 3.5 0 0 1 6.5 3zM6.3 7.8a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0zM10.2 12a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0zM14.1 16.2a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0z"/></symbol>
 <symbol id="i-paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="16.5" rx="5.2" ry="4.3"/><circle cx="5.2" cy="10.6" r="2.2"/><circle cx="9.3" cy="6.4" r="2.3"/><circle cx="14.7" cy="6.4" r="2.3"/><circle cx="18.8" cy="10.6" r="2.2"/></symbol>
 <symbol id="i-chess" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.8" r="3.6"/><path d="M9.2 10h5.6l1.8 8H7.4z"/><rect x="5" y="18.5" width="14" height="3.5" rx="1.2"/></symbol>
 <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5L7.5 12l7.5 7.5"/></symbol>
@@ -243,6 +264,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div><div id="chessToursView" hidden></div></section>
 
 <section class="page" id="p-pet" hidden><div id="petView"></div></section>
+<section class="page" id="p-dice" hidden><div id="diceView"></div></section>
 
 <section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
 <div><div class="card cstate" id="cState"></div><div class="offer" id="cOffer" hidden></div><div class="btns" id="cActs"></div><div class="card mvlist" id="cMoves"></div></div></div></section>
@@ -324,7 +346,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -359,8 +381,9 @@ function enter(page,prev){
  if(page==='game')enterGame();
  if(page==='board')enterBoard();
  if(page==='pet')enterPet();
+ if(page==='dice')enterDice();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
@@ -390,7 +413,7 @@ function renderHome(){
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
   ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар',noWifi()?'BLE, LoRa':'Wi-Fi, BLE, LoRa'],
   ['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],
-  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],['chess','chess','','Шахматы',chessTileText(),chess.waiting],...petTile()];
+  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],['chess','chess','','Шахматы',chessTileText(),chess.waiting],...petTile(),...diceTile()];
  $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
 
 // Mesh pet (firmware "pet", docs/pet.md): its look comes as 256 inks (one digit a pixel) and the page draws
@@ -440,6 +463,109 @@ async function petAct(a){if(!pet)return;let line='pet '+a;
   if(a==='name')notify('Имя сохранено','ok');else if(a==='mortal')notify(pet.mortal?'Смерть включена':'Смерть выключена: питомец будет болеть, но не умрёт','muted');else if(a==='release')notify('Питомец ушёл на волю','muted');
   renderPet()}catch(e){notify(e.message,'bad')}}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pet]');if(t)petAct(t.dataset.pet)});
+
+// Dice, the port of DIC3R (firmware "dice", docs/dice.md): the device keeps the rolls, saved rolls, counters and
+// characters, so the screen, this page and the app show the same; the page sends "dice ..." commands one by one
+// and draws the answer. Dice take the shapes of the M9 screen; the newest roll tumbles.
+let dice=null,diceAt=0,diceTimer=null,diceQueue=Promise.resolve(),diceSeenRoll=0,diceEdit=-1,diceArmed='',diceColorFor=-1,diceHero=''; // diceHero: 'new' or 'name' while its field is open (WebView has no prompt())
+const DICE_TYPES=['d4','d6','d8','d10','d12','d20','d66','d%'],DICE_MODES=[['rpg','RPG'],['grid','Warhammer'],['counters','Счётчики']];
+const DICE_COLORS=['#ff6b6b','#4ecdc4','#45b7d1','#ffa07a','#98d8c8','#f06292','#aed581','#ffd54f','#4dd0e1','#ba68c8','#4fc3f7','#fff176','#81c784','#dce775','#64b5f6'];
+async function loadDice(){try{dice=await request('/api/dice');diceAt=Date.now()}catch{if(!dice)dice=false}}
+function enterDice(){diceEdit=-1;diceArmed='';diceColorFor=-1;diceHero='';loadDice().then(()=>{if(route==='dice')renderDice()});if(diceTimer)return;
+ diceTimer=setInterval(async()=>{if(route!=='dice'){clearInterval(diceTimer);diceTimer=null;return}const f=document.activeElement;if(f&&$('diceView').contains(f)&&/INPUT|SELECT/.test(f.tagName))return;await loadDice();if(route==='dice')renderDice()},window.MeshNative?3000:2000)}
+function diceTile(){const d=dice;if(!d)return[];const r=d.results[d.results.length-1];return[['dice','dice',r?'warn':'muted','Кости',r?`${r.label||r.formula}${r.special?'':' = '+r.total}`:'RPG · Warhammer']]}
+// One command at a time (a function makes the line from the state the previous one left); the answer "OK … {json}" replaces the state.
+function diceDo(line,done){diceQueue=diceQueue.then(async()=>{try{if(typeof line==='function')line=line(dice);const r=await command('dice '+line),j=typeof r==='string'?r.indexOf('{'):-1;if(j>=0){dice=JSON.parse(r.slice(j));diceAt=Date.now()}if(done)done();if(route==='dice')renderDice()}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}});return diceQueue}
+const diceParts=r=>r.parts.map(p=>{const a=Math.abs(p);return{v:a>>2,k:a&3,neg:p<0}});
+const diceVal=(v,k)=>k===3?(v>=100?'00':String(v).padStart(2,'0')):String(v);
+function dieSvg(type,v,k,neg){
+ const top={d4:4,d6:6,d8:8,d10:10,d12:12,d20:20}[type]||0,fill=neg?'#8d99a6':k>=2?'#1fc2ae':top&&v===top?'#4cc26b':top>=4&&v===1?'#e5564d':'#e4e9ee',face=top>=4&&v===1&&!neg?'#e4e9ee':'#080c11';
+ const poly=(n,r,cy=0)=>[...Array(n)].map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return (r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1)}).join(' ');
+ let shape,ty=5;
+ if(type==='d4'){shape=`<polygon points="0,-15 -16,12 16,12"/>`;ty=9}
+ else if(type==='d6'){shape=`<rect x="-13" y="-13" width="26" height="26" rx="5"/>`;if(v>=1&&v<=6){const o=6.5,pip=(x,y)=>`<circle cx="${x*o}" cy="${y*o}" r="2.6" fill="${face}"/>`;let p='';if(v&1)p+=pip(0,0);if(v>=2)p+=pip(-1,-1)+pip(1,1);if(v>=4)p+=pip(1,-1)+pip(-1,1);if(v===6)p+=pip(-1,0)+pip(1,0);return `<svg viewBox="-16 -16 32 32"><g fill="${fill}">${shape}</g>${p}</svg>`}}
+ else if(type==='d8')shape=`<polygon points="0,-15 -14,0 0,15 14,0"/>`;
+ else if(type==='d10')shape=`<polygon points="0,-15 -14,2 0,13 14,2"/>`;
+ else if(type==='d12')shape=`<polygon points="${poly(5,15,1)}"/>`;
+ else if(type==='d20')shape=`<polygon points="${poly(6,15)}"/><polygon points="0,-10 -10,7 10,7" fill="none" stroke="#000" stroke-opacity=".25"/>`;
+ else{shape=`<rect x="-15.5" y="-10" width="31" height="20" rx="4"/>`}
+ const t=diceVal(v,k);return `<svg viewBox="-16 -16 32 32"><g fill="${fill}">${shape}</g><text y="${ty}" text-anchor="middle" font-size="${t.length>2?10:13}" font-weight="700" fill="${face}">${t}</text></svg>`}
+// The type of each die from the formula: "2d6+d20" gives d6, d6, d20.
+function diceShapes(formula){const out=[];for(const m of formula.matchAll(/([+-]?)(\d*)d(%|\d+)|([+-]?)(\d+)/g)){if(m[3]!==undefined){const n=+(m[2]||1),t=m[3]==='%'?'d%':'d'+m[3];for(let i=0;i<n;i++)out.push(t)}else out.push('n')}return out}
+function diceRollCard(r,spin){
+ if(!r)return `<div class="card droll"><div class="empty" style="padding:28px 8px">${ic('dice')}Бросков ещё нет<small>Нажмите «Бросить» или введите формулу: 2d6+1, d20, 4к6-2, d%, d66</small></div></div>`;
+ const parts=diceParts(r),types=diceShapes(r.formula);let faces='',many=parts.length>14||r.more,j=0;
+ if(many)faces=`<div class="dfaces many">${parts.map((p,i)=>(i?(p.neg?' − ':' + '):p.neg?'−':'')+diceVal(p.v,p.k)).join('')}${r.more?' …':''}</div>`;
+ else faces=`<div class="dfaces ${spin?'spin':''}">${parts.map(p=>{let t=types[j++];while(t==='n'&&p.k!==1)t=types[j++];return p.k===1?`<span class="dnum">${p.neg?'−':'+'}${p.v}</span>`:dieSvg(t||'',p.v,p.k,p.neg)}).join('')}</div>`;
+ const sum=parts.map((p,i)=>(i?(p.neg?' − ':' + '):p.neg?'−':'')+diceVal(p.v,p.k)).join('');
+ return `<div class="card droll"><div class="head">${r.label?`<b>${esc(r.label)}</b> · `:''}${esc(r.formula)}</div>${faces}<div class="dsum"><small>${r.special?'d66 и d%: каждая кость отдельно':parts.length>1&&!many?sum:''}</small>${r.special?'':`<b><i>=</i>${r.total}</b>`}</div></div>`}
+function diceRpg(d){
+ const last=d.results[d.results.length-1],spin=last&&last.n!==diceSeenRoll;if(last)diceSeenRoll=last.n;const p=d.pool,b=(a,t,cls='')=>`<button class="btn ${cls}" data-dice="${a}">${t}</button>`;
+ const hist=d.results.slice(0,-1).reverse().map(r=>`<div><span>${esc(r.label||r.formula)}</span><b>${r.special?diceParts(r).map(x=>diceVal(x.v,x.k)).join(' '):r.total}</b></div>`).join('');
+ let saved=d.rolls.map((r,i)=>`<span style="display:inline-flex;align-items:center;gap:2px"><button class="btn" style="--c:${DICE_COLORS[r.color]||DICE_COLORS[0]}" data-dice="saved roll ${i}">${esc(r.name)} <small>${esc(r.formula)}</small></button><button class="btn ed" data-dedit="${i}" title="Изменить">✎</button></span>`).join('');
+ let editor='';
+ if(diceEdit>=0){const r=diceEdit<d.rolls.length?d.rolls[diceEdit]:{name:'',formula:p.text,color:0},isNew=diceEdit>=d.rolls.length,armed=diceArmed==='roll'+diceEdit;
+  editor=`<div class="card pad dedit"><b>${isNew?'Новый бросок':'Бросок'}</b><input id="drName" maxlength="40" placeholder="Название, например «Огненный шар»" value="${esc(r.name)}"><input id="drFormula" maxlength="27" placeholder="Формула: 8d6, d20+5" value="${esc(r.formula)}" autocapitalize="off" autocomplete="off">
+   ${isNew?'':`<div class="dcolors">${DICE_COLORS.map((c,i)=>`<button style="--c:${c}" class="${i===r.color?'on':''}" data-dice="saved color ${diceEdit} ${i}" title="Цвет"></button>`).join('')}</div>`}
+   <div class="btns">${b('dsave','Сохранить','primary')}${b('dcancel','Отмена')}${isNew?'':b('ddel',armed?'Точно удалить?':'Удалить',armed?'danger armed':'danger')}</div></div>`}
+ return `<div class="dicegrid"><div>${diceRollCard(last,spin)}${hist?`<h3>Ранее</h3><div class="card dhist" style="padding:4px 8px">${hist}</div>`:''}</div>
+  <div><div class="card"><div class="dpool">${esc(p.text)}</div></div>
+   <div class="dstep">${b('count -1','−')}<span>Кости<b>${p.count}</b></span>${b('count 1','+')}${b('count r','R','soft')}</div>
+   <div class="dtypes">${DICE_TYPES.map(t=>`<button class="btn ${t===p.type?'on':''}" data-dice="type ${t}">${t}</button>`).join('')}</div>
+   <div class="dstep">${b('mod -1','−')}<span>Модификатор<b>${p.mod>0?'+':''}${p.mod}</b></span>${b('mod 1','+')}${b('mod r','R','soft')}</div>
+   <button class="btn primary" style="width:100%;min-height:52px;font-size:17px;margin-top:6px" data-dice="roll">${ic('dice')}Бросить ${esc(p.text)}</button>
+   <div style="display:flex;gap:6px;margin-top:8px"><input id="dFormula" placeholder="Формула: 3d8+2" maxlength="27" autocapitalize="off" autocomplete="off" style="flex:1;min-width:0">${b('formula','Бросить')}</div></div></div>
+  <h3>Сохранённые броски</h3><div class="dsaved">${saved||'<span class="muted small" style="padding:4px">Пока нет: сохраните формулу с названием, чтобы бросать её одним нажатием</span>'}</div>
+  ${diceEdit<0&&d.rolls.length<10?`<button class="btn" style="width:100%;margin-top:10px" data-dedit="${d.rolls.length}">+ Добавить бросок</button>`:''}${editor}`}
+function diceGrid(d){
+ const g=d.grid,b=(a,t,cls='')=>`<button class="btn ${cls}" data-dice="${a}">${t}</button>`,top={d66:66,'d%':100}[g.type]||+g.type.slice(1);
+ const cells=g.values.map((v,i)=>{const chosen=i<g.chosen,rolled=chosen&&g.rolled,pass=!g.threshold_on||v>=g.threshold;
+  return `<button class="${rolled?(pass?'p':'f'):chosen?'c':''}${i===g.chosen-1?' last':''}" data-dice="grid choose ${i+1===g.chosen?i:i+1}">${chosen&&rolled?diceVal(v,g.type==='d%'?3:0):chosen?'·':''}</button>`}).join('');
+ const sum=g.rolled?g.values.slice(0,g.chosen).reduce((a,v)=>a+v,0):0;
+ const stat=!g.chosen?'<span class="muted">Нажмите на кость: бросок возьмёт её и все до неё</span>':g.rolled&&g.threshold_on?`Успехов: <b class="ok">${g.successes}</b> из ${g.chosen} (${g.threshold}+)`:g.rolled?`${g.chosen} × ${g.type} · сумма <b>${sum}</b>`:`Выбрано: <b>${g.chosen}</b> × ${g.type}`;
+ return `<div class="whgrid">${cells}</div><div class="whstat">${stat}</div>
+  <div class="btns">${b('grid row','+5 костей',g.size>=50?'" disabled data-x="':'')}${b('grid roll',ic('dice')+'Бросить','primary')}${b('grid reset','Сброс')}</div>
+  <div class="card pad" style="margin-top:12px"><div style="display:flex;align-items:center;gap:12px"><button class="sw ${g.threshold_on?'on':''}" data-dice="grid threshold ${g.threshold_on?'off':g.threshold}" aria-label="Порог успеха"></button><b style="flex:1">Порог успеха</b><span class="${g.threshold_on?'warn':'faint'}" style="font-size:20px;font-weight:700">${g.threshold}+</span></div>
+   <input type="range" min="2" max="${top}" value="${g.threshold}" id="dThreshold" style="width:100%;accent-color:var(--accent);margin-top:12px" ${g.threshold_on?'':'disabled'}>
+   <h3 style="margin-left:0">Кость</h3><div class="dtypes">${DICE_TYPES.map(t=>`<button class="btn ${t===g.type?'on':''}" data-dice="grid type ${t}">${t}</button>`).join('')}</div></div>`}
+function diceCounters(d){
+ const cards=d.counters.map((c,i)=>{const armed=diceArmed==='ctr'+i;return `<div class="card dctr" style="--c:${DICE_COLORS[c.color]||DICE_COLORS[0]}"><div class="top"><input value="${esc(c.name)}" maxlength="40" data-dname="${i}" aria-label="Название"><button class="btn" data-dpal="${i}" title="Цвет"><span style="width:14px;height:14px;border-radius:50%;background:var(--c);display:inline-block"></span></button><button class="btn ${armed?'danger armed':'danger'}" data-dice="ctrdel ${i}" title="Удалить">${armed?'Точно?':'✕'}</button></div>
+  ${diceColorFor===i?`<div class="dcolors" style="margin-top:8px">${DICE_COLORS.map((k,j)=>`<button style="--c:${k}" class="${j===c.color?'on':''}" data-dice="counter ${i} color ${j}"></button>`).join('')}</div>`:''}
+  <div class="val">${c.value}</div><div class="steps">${[-5,-1,1,5].map(v=>`<button class="btn" data-dice="counter ${i} ${v>0?'+':''}${v}">${v>0?'+':'−'}${Math.abs(v)}</button>`).join('')}</div></div>`}).join('');
+ return `<div class="dcounters">${cards}</div>${d.counters.length<6?`<button class="btn primary" style="width:100%;margin-top:10px" data-dice="counter add">+ Добавить счётчик</button>`:''}${d.counters.length?'':'<p class="muted small" style="margin-top:10px">Счётчики жизней, ран, ресурсов: ±1 и ±5 одним нажатием. До шести у каждого персонажа.</p>'}`}
+function renderDice(){
+ const v=$('diceView'),d=dice;if(!v)return;
+ if(!d){v.innerHTML=`<div class="empty">${ic('dice')}${d===false?'Прошивка устройства без дайсера: обновите MeshMesh':'Загрузка…'}</div>`;return}
+ const heroArmed=diceArmed==='hero';
+ const hero=diceHero?`<div class="dhero"><input id="dHeroName" maxlength="40" placeholder="Имя персонажа" value="${diceHero==='name'?esc(d.characters[d.character]):''}" style="flex:1;min-width:0"><button class="btn primary" data-dice="herosave">Сохранить</button><button class="btn" data-dice="herocancel">Отмена</button></div>`:`<div class="dhero"><select id="dHero" aria-label="Персонаж">${d.characters.map((n,i)=>`<option value="${i}" ${i===d.character?'selected':''}>${esc(n)}${i?'':' (общий набор)'}</option>`).join('')}${d.characters.length<6?'<option value="new">+ Новый персонаж…</option>':''}</select>
+  ${d.character?`<button class="btn" data-dice="heroname">Имя</button><button class="btn ${heroArmed?'danger armed':'danger'}" data-dice="herodel">${heroArmed?'Точно удалить?':'Удалить'}</button>`:''}</div>`;
+ const tabs=`<div class="tabs">${DICE_MODES.map(([m,n])=>`<button class="${d.mode===m?'on':''}" data-dice="mode ${m}">${n}</button>`).join('')}</div>`;
+ v.innerHTML=tabs+hero+(d.mode==='grid'?diceGrid(d):d.mode==='counters'?diceCounters(d):diceRpg(d))}
+async function diceAct(a){
+ const d=dice;if(!d)return;
+ if(a.startsWith('count ')||a.startsWith('mod ')||a.startsWith('type ')){const v=a.split(' ')[1];
+  return diceDo(d=>{let n=d.pool.count,t=d.pool.type,m=d.pool.mod;if(a.startsWith('count '))n=v==='r'?1:Math.max(1,Math.min(99,n+ +v));else if(a.startsWith('mod '))m=v==='r'?0:Math.max(-99,Math.min(99,m+ +v));else t=v;return `pool ${n} ${t} ${m}`})}
+ if(a==='formula'){const f=$('dFormula').value.trim();if(!f)return;return diceDo('roll '+f,()=>{})}
+ if(a==='dsave'){const n=$('drName').value.trim(),f=$('drFormula').value.trim();if(!n||new TextEncoder().encode(n).length>23){notify('Название: от 1 до 23 байт','warn');return}if(!f){notify('Нужна формула','warn');return}
+  const i=diceEdit;return diceDo(i<d.rolls.length?`saved edit ${i} ${f.replace(/\s+/g,'')} ${n}`:`saved add ${f.replace(/\s+/g,'')} ${n}`,()=>{diceEdit=-1})}
+ if(a==='dcancel'){diceEdit=-1;diceArmed='';renderDice();return}
+ if(a==='ddel'){if(diceArmed!=='roll'+diceEdit){diceArmed='roll'+diceEdit;renderDice();return}const i=diceEdit;diceArmed='';return diceDo('saved del '+i,()=>{diceEdit=-1})}
+ if(a.startsWith('ctrdel ')){const i=a.split(' ')[1];if(diceArmed!=='ctr'+i){diceArmed='ctr'+i;renderDice();return}diceArmed='';return diceDo('counter '+i+' del')}
+ if(a==='heroname'){diceHero='name';renderDice();$('dHeroName').focus();return}
+ if(a==='herocancel'){diceHero='';renderDice();return}
+ if(a==='herosave'){const n=$('dHeroName').value.trim();if(!n||new TextEncoder().encode(n).length>23){notify('Имя: от 1 до 23 байт','warn');return}const add=diceHero==='new';return diceDo((add?'char add ':'char name ')+n,()=>{diceHero=''})}
+ if(a==='herodel'){if(diceArmed!=='hero'){diceArmed='hero';renderDice();return}diceArmed='';return diceDo('char del')}
+ if(a.startsWith('counter ')&&a.includes(' color '))diceColorFor=-1;
+ diceArmed='';return diceDo(a)}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-dice],[data-dedit],[data-dpal]');if(!t||!$('diceView')?.contains(t))return;
+ if(t.dataset.dedit!==undefined){diceEdit=+t.dataset.dedit;diceArmed='';renderDice();$('drName')?.focus();return}
+ if(t.dataset.dpal!==undefined){const i=+t.dataset.dpal;diceColorFor=diceColorFor===i?-1:i;renderDice();return}
+ diceAct(t.dataset.dice)});
+document.addEventListener('change',e=>{const t=e.target;if(!$('diceView')?.contains(t))return;
+ if(t.id==='dHero'){if(t.value==='new'){diceHero='new';renderDice();$('dHeroName').focus();return}diceDo('char use '+t.value);return}
+ if(t.id==='dThreshold'){diceDo('grid threshold '+t.value);return}
+ if(t.dataset.dname!==undefined){const n=t.value.trim();if(n&&new TextEncoder().encode(n).length<=23)diceDo(`counter ${t.dataset.dname} name ${n}`);else{notify('Название: от 1 до 23 байт','warn');renderDice()}}});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t.id==='dFormula')diceAct('formula');else if(t.id==='drFormula'||t.id==='drName')diceAct('dsave');else if(t.id==='dHeroName')diceAct('herosave')});
 
 // Chats.
 function renderThreads(){const ids=conversationIds(),k=ids.findIndex(id=>!isChan(id));
@@ -869,6 +995,7 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  if(window.MeshNative&&!clockSynced&&!(status.unix_time>=1735689600)){clockSynced=true;const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
  await refreshChess(false,false);
  if(pet===null||route==='home'&&Date.now()-petAt>60000)await loadPet(); // the home tile; the pet page polls itself
+ if(dice===null||route==='home'&&Date.now()-diceAt>60000)await loadDice();
  PAGES.server[0]=status.role==='room'?'Комната':'Репитер';
  if(route==='server')await loadServer(false);
  if(status.channels!==undefined&&(!chans||chans.channels.length!==status.channels||['addch','chinfo','join'].includes(route)))await loadChans();

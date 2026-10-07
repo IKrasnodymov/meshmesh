@@ -26,6 +26,7 @@ MeshCore 노드와 통신합니다.
 - **움직임 센서** — 두 보드가 그 사이를 지나가는 사람을 감지합니다(Wi-Fi CSI).
 - 메시를 통해 연락처와 두는 **체스**, M9에서 즐기는 클론다이크 솔리테어.
 - **메시 펫**: 모든 보드에 사는 다마고치 같은 픽셀 생물. 무선 트래픽을 먹고 자라며, 배고픔이나 외로움으로 죽을 수도 있습니다. [docs/en/pet.md](docs/en/pet.md)
+- **주사위**: 모든 보드에서 쓰는 주사위 굴리기 DIC3R. RPG 주사위 풀과 수식(2d6+1, d20, d66, d%), 성공 기준이 있는 Warhammer 격자, 카운터와 캐릭터를 화면, 웹 페이지, 앱에서 똑같이 씁니다. [docs/en/dice.md](docs/en/dice.md)
 - **장치에 MeshMesh가 없어도 체스**: [체스 페이지](https://ikrasnodymov.github.io/meshmesh/chess/)가
   공식 MeshCore Companion 펌웨어를 실행하는 보드를 통해 USB(Web Serial) 또는 Bluetooth(Web Bluetooth)로 대국합니다. Chrome 또는 Edge에서 작동합니다.
 - **리피터 모드와 룸 서버 모드** — 부팅할 때(M9 화면, Heltec 버튼) 또는 설정, 웹 페이지, USB에서

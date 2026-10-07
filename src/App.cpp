@@ -13,6 +13,7 @@
 #include "ChessTour.h"
 #include "MeshServer.h"
 #include "Pet.h"
+#include "Dice.h"
 #include "Power.h"
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
@@ -164,6 +165,7 @@ String executeCommand(const String& input) {
 #endif
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
   if(line=="pet"||line.startsWith("pet "))return creature.command(line);
+  if(line=="dice"||line.startsWith("dice "))return dicer.command(line);
   if(line=="tour"||line.startsWith("tour "))return tour::net.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();

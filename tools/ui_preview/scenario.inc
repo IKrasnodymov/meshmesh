@@ -60,6 +60,13 @@ static void scenario(){
  // Storage left by another firmware: OK on Module health, then OK again, formats and restarts.
  hardware.fsOk=false;key(0x82);key(0x83);shot("tdeck-format");previewCommands="";key(13);key(13);
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
+ // Dice: taps on a tab, a grid die, the roll card and a counter's +5.
+ {dicer.begin();dicer.addCounter("HP");key(0x82);for(int i=0;i<3;i++)key(0xb6);key(0xb7);key(0xb7);key(13);expect("dice tile","\"page\":\"dice\"");
+  touch('t',80,34);if(dicer.s.mode!=dice::Grid){printf("FAIL dice tab tap: %s\n",dicer.json().c_str());exit(1);}
+  touch('t',20,60);touch('t',50,60);if(dicer.s.gridChosen!=2){printf("FAIL dice grid tap: %s\n",dicer.json().c_str());exit(1);}
+  touch('t',20,34);uint32_t rolls=dicer.rolls;touch('t',100,120);if(dicer.rolls!=rolls+1){printf("FAIL dice roll tap: %s\n",dicer.json().c_str());exit(1);}shot("tdeck-dice");
+  dicer.setMode(dice::Tally);tick();touch('t',8+3+3*24+5,48+66);if(dicer.hero().counter[0].value!=25){printf("FAIL counter +5 tap: %s\n",dicer.json().c_str());exit(1);}
+  touch('t',160,10);expect("dice back","\"page\":\"home\"");}
  printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
  auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
@@ -300,4 +307,67 @@ static void scenario(){
    if(creature.has()||creature.s.graveCount!=graves){printf("FAIL release: %s\n",creature.json().c_str());exit(1);}
    snap("pet-none");creature.command("pet adopt");if(creature.s.stage!=pet::Egg){printf("FAIL adopt: %s\n",creature.json().c_str());exit(1);}}config.dimAfter=dim;config.autoLock=lock;config.utcOffset=offset;
   printf("pet checks passed\n");}
+ // Dice (DIC3R, Dice.h): the rules of formulas, rolls, the grid and the commands first, then the screens.
+ {uint16_t dim=config.dimAfter,lock=config.autoLock;config.dimAfter=config.autoLock=0;srand(11);dicer.begin();
+  auto must=[](bool v,const char* what){if(!v){printf("FAIL dice %s: %s\n",what,dicer.json().c_str());exit(1);}};
+  using dice::Dicer;
+  must(Dicer::valid("2d6+1")&&Dicer::valid("d20")&&Dicer::valid("4к6-2")&&Dicer::valid("d%")&&Dicer::valid("3D8 + 2d4 - 1")&&Dicer::valid("-1d4+3")&&Dicer::valid("99d1000"),"good formulas");
+  must(!Dicer::valid("")&&!Dicer::valid("2d")&&!Dicer::valid("d1")&&!Dicer::valid("100d6")&&!Dicer::valid("2d6+")&&!Dicer::valid("abc")&&!Dicer::valid("1+1+1+1+1+1+1+1+1")&&!Dicer::valid("2d6 3")&&!Dicer::valid("0d6"),"bad formulas");
+  for(int i=0;i<400;i++){must(dicer.roll("3d6+2"),"3d6+2");const dice::Result* r=dicer.last();must(r->total>=5&&r->total<=20&&r->parts==4&&!r->special,"3d6+2 range");}
+  {bool ends=false;for(int i=0;i<400;i++){dicer.roll("d%");unsigned v=dicer.last()->value[0];must(v>=1&&v<=100&&dicer.last()->special,"d% range");ends|=v==1||v==100;
+    dicer.roll("d66");v=dicer.last()->value[0];must(v/10>=1&&v/10<=6&&v%10>=1&&v%10<=6,"d66 digits");}must(ends,"d% reaches its ends");}
+  {must(dicer.roll("2d6-1d4-1"),"subtraction");const dice::Result* r=dicer.last();must(r->negative[2]&&r->negative[3]&&r->total==int(r->value[0]+r->value[1])-int(r->value[2])-1,"subtraction sum");}
+  must(dicer.roll("40d6")&&dicer.last()->more&&dicer.last()->parts==dice::Parts&&dicer.resultCount==dice::Results,"many dice, eight results kept");
+  dicer.gridReset();dicer.gridChoose(12);dicer.gridRoll();for(unsigned i=0;i+1<12;i++)must(dicer.grid[i]>=dicer.grid[i+1],"grid from high to low");
+  dicer.gridSetThreshold(true,4);{unsigned n=0;for(unsigned i=0;i<12;i++)n+=dicer.grid[i]>=4;must(dicer.gridSuccesses()==n,"successes");}
+  dicer.gridSetThreshold(true,99);must(dicer.s.threshold==6,"threshold within the die");
+  for(int i=0;i<8;i++)dicer.gridAddRow();must(dicer.s.gridSize==dice::GridMax,"50 dice at most");
+  must(dicer.command("dice saved add 8d6 Fire ball").startsWith("OK")&&String(dicer.hero().roll[0].name)=="Fire ball","saved add");
+  must(dicer.command("dice saved add 2d Bad").startsWith("ERR"),"a bad saved roll");
+  must(dicer.command("dice saved roll 0").startsWith("OK")&&String(dicer.last()->label)=="Fire ball","saved roll");
+  must(dicer.command("dice counter add Life").startsWith("OK")&&dicer.command("dice counter 0 -3").startsWith("OK")&&dicer.hero().counter[0].value==17,"counter");
+  must(dicer.command("dice char add Hero").startsWith("OK")&&dicer.s.character==1&&dicer.hero().counters==1&&!dicer.hero().rolls,"character");
+  must(dicer.command("dice char use 0").startsWith("OK")&&dicer.hero().rolls==1,"general set");
+  must(dicer.command("dice pool 3 d8 -2").startsWith("OK")&&dicer.poolText()=="3d8-2","pool");
+  for(int i=0;i<dice::Results;i++)dicer.roll("24d6");for(int i=0;i<9;i++)dicer.command("dice saved add 2d10+10 Long saved roll name");
+  must(dicer.json().indexOf("\"overflowed\"")<0,"the reply fits");
+  // The screens: a general set with saved rolls and counters, a second character.
+  bool ru=config.lang==LangRu||config.lang==LangUk;
+  dicer.s=dice::State();dicer.clearResults();dicer.gridReset();
+  dicer.addRoll("8d6",ru?"Огненный шар":"Fireball");dicer.addRoll("d20+5",ru?"Атака мечом":"Sword attack");dicer.addRoll("2d6+3",ru?"Урон":"Damage");dicer.addRoll("d20+7",ru?"Скрытность":"Stealth");
+  dicer.colorRoll(1,1);dicer.colorRoll(2,6);dicer.colorRoll(3,9);
+  dicer.addCounter(ru?"Жизни":"Life");dicer.addCounter(ru?"Мана":"Mana");dicer.addCounter(ru?"Стрелы":"Arrows");dicer.setCounter(0,24);dicer.setCounter(1,12);dicer.setCounter(2,18);dicer.colorCounter(2,7);
+  dicer.addCharacter(ru?"Арагорн":"Aragorn");dicer.useCharacter(0);
+#if defined(MM_HELTEC_V4)
+#if defined(MM_JOYSTICK)
+  const int next=0xb7,hold=13,run=13;const char* prefix="gat562-";
+#else
+  const int next=13,hold=0xa3,run=0xa3;const char* prefix="heltec-";
+#endif
+  auto snap=[&](const char* n){shot((std::string(prefix)+n).c_str());};
+  for(int i=0;i<11;i++)tick();for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"dice\"")<0;i++)key(next);
+  if(uiStatus().indexOf("\"page\":\"dice\"")<0){printf("FAIL dice page: %s\n",uiStatus().c_str());exit(1);}
+  snap("dice-empty");key(hold);snap("dice-menu");key(run);must(dicer.resultCount==1&&uiStatus().indexOf("\"menu\":false")>=0,"hold, hold rolls the pool");snap("dice-rpg");
+  dicer.roll("d20+5",ru?"Атака мечом":"Sword attack");snap("dice-saved");dicer.roll("d4+d6+d8+d10+d12");snap("dice-shapes");
+  dicer.setMode(dice::Grid);dicer.gridChoose(10);dicer.gridSetThreshold(true,4);dicer.gridRoll();snap("dice-grid");
+  dicer.setMode(dice::Tally);snap("dice-counters");key(hold);key(run);must(dicer.hero().counter[0].value==25,"+1 from the menu");snap("dice-counter-menu");
+#if defined(MM_JOYSTICK)
+  key(0x86);key(0xb5);must(dicer.hero().counter[0].value==26,"joystick up");
+#else
+  for(int i=0;i<11;i++)tick();
+#endif
+  dicer.setMode(dice::Rpg);
+#else
+  key(0x82);for(int i=0;i<3;i++)key(0xb6);key(0xb7);key(0xb7);shot("home-dice");key(13);
+  if(uiStatus().indexOf("\"page\":\"dice\"")<0){printf("FAIL dice page: %s\n",uiStatus().c_str());exit(1);}
+  shot("dice-empty");key(13);shot("dice-rpg");must(dicer.resultCount==1&&dicer.last()->parts==2,"OK rolls the pool");
+  dicer.roll("d4+d6+d8+d10+d12+d20");shot("dice-shapes");
+  dicer.roll("d66+d%+d66");shot("dice-d66");
+  key('s');shot("dice-saved");key(0xb6);key(13);must(String(dicer.last()->label)==(ru?"Атака мечом":"Sword attack"),"saved roll from the list");shot("dice-saved-roll");
+  key('e');for(int i=0;i<5;i++)key(8);for(char ch:std::string("4d6-2"))key(ch);shot("dice-formula");key(13);must(String(dicer.last()->formula)=="4d6-2","typed formula");
+  key('m');for(int i=0;i<10;i++)key(0xb7);key('t');key(13);must(dicer.gridRolled&&dicer.s.gridChosen==10&&dicer.s.thresholdOn,"grid roll");shot("dice-grid");
+  key('m');key(0xb7);key(0xb5);key('+');must(dicer.hero().counter[1].value==18,"counter keys");shot("dice-counters");
+  key('p');shot("dice-characters");key(0x86);key('1');
+#endif
+  config.dimAfter=dim;config.autoLock=lock;printf("dice checks passed\n");}
 }

@@ -26,6 +26,7 @@ nœuds MeshCore standard.
 - **Détecteur de mouvement** — deux cartes détectent une personne qui passe entre elles (Wi-Fi CSI).
 - **Échecs** avec vos contacts à travers le maillage, et solitaire Klondike sur le M9.
 - **Animal du réseau** — une créature en pixels façon Tamagotchi sur toutes les cartes : elle se nourrit du trafic radio, grandit et peut mourir de faim ou de solitude. [docs/en/pet.md](docs/en/pet.md)
+- **Dés** — le lanceur de dés DIC3R sur toutes les cartes : réserves et formules de JdR (2d6+1, d20, d66, d%), une grille Warhammer avec seuil de réussite, compteurs et personnages, identiques sur l’écran, la page web et l’appli. [docs/en/dice.md](docs/en/dice.md)
 - **Échecs sans MeshMesh sur votre appareil** : [la page d'échecs](https://ikrasnodymov.github.io/meshmesh/chess/) joue via une
   carte équipée du firmware officiel MeshCore Companion, en USB (Web Serial) ou Bluetooth (Web Bluetooth), dans Chrome ou Edge.
 - **Modes répéteur et serveur de salon** — choisis au démarrage (écran du M9, bouton du Heltec) ou dans les Réglages,

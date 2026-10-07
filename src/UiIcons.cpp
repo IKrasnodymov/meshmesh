@@ -1,4 +1,5 @@
 #include "UiIcons.h"
+#include "Dice.h"
 #include <Arduino.h>
 #include <math.h>
 #include <initializer_list>
@@ -31,7 +32,24 @@ void drawIcon(Adafruit_GFX& d,Icon id,int cx,int cy,int s,uint16_t c,uint16_t ho
  case IcPaw:{int r=max(1,s/5);d.fillCircle(cx,cy+q+1,h+1,c);d.fillCircle(cx-q,cy+h,q+1,c);d.fillCircle(cx+q,cy+h,q+1,c);
   d.fillCircle(cx-s*3/4,cy-q+1,r,c);d.fillCircle(cx-q-1,cy-s*3/4+1,r,c);d.fillCircle(cx+q+1,cy-s*3/4+1,r,c);d.fillCircle(cx+s*3/4,cy-q+1,r,c);break;}
  case IcChess:d.fillCircle(cx,cy-s/2,max(2,s*3/10),c);d.fillTriangle(cx,cy-s/2,cx-s/2,cy+s/2,cx+s/2,cy+s/2,c);d.fillRoundRect(cx-s*3/4,cy+s/2,s*3/2,max(2,s/3),1,c);d.fillRect(cx-s*3/8,cy-s/6,s*3/4,max(1,s/6),c);break;
+ case IcDice:{int r=max(2,s/4),p=max(1,s/5);d.fillRoundRect(cx-s*7/8,cy-s*7/8,s*7/4,s*7/4,r,c);for(int k:{-1,0,1})d.fillCircle(cx+k*h,cy+k*h,p,hole);break;} // a die showing three
  case IcScreen:d.drawRoundRect(cx-s,cy-s*5/8,2*s,s*5/4,2,c);d.fillRect(cx-s+3,cy-s*5/8+3,2*s-6,s*5/4-6,c);break;
  case IcKey:d.drawCircle(cx-h,cy,max(2,s*3/8),c);d.drawFastHLine(cx-h+s*3/8,cy,s+1,c);d.drawFastVLine(cx+h,cy,max(2,s/3),c);d.drawFastVLine(cx+s-1,cy,max(2,s/3),c);break;
+ }
+}
+namespace {
+void polygon(Adafruit_GFX& d,int cx,int cy,int r,int n,uint16_t c){int xp=0,yp=0;for(int k=0;k<=n;k++){float a=-M_PI/2+k*2*M_PI/n;int x=cx+roundf(r*cosf(a)),y=cy+roundf(r*sinf(a));if(k)d.fillTriangle(cx,cy,xp,yp,x,y,c);xp=x;yp=y;}}
+}
+void drawDieShape(Adafruit_GFX& d,uint8_t shape,int cx,int cy,int s,uint16_t fill,uint16_t edge,uint16_t face,unsigned pips){
+ switch(shape){
+ case dice::D4:d.fillTriangle(cx,cy-s-1,cx-s-2,cy+s-1,cx+s+2,cy+s-1,fill);break;
+ case dice::D6:d.fillRoundRect(cx-s+1,cy-s+1,2*s-1,2*s-1,max(2,s/3),fill);
+  if(pips>=1&&pips<=6){int o=s/2,r=max(1,o/3);auto p=[&](int dx,int dy){d.fillCircle(cx+dx*o,cy+dy*o,r,face);};
+   if(pips&1)p(0,0);if(pips>=2){p(-1,-1);p(1,1);}if(pips>=4){p(1,-1);p(-1,1);}if(pips==6){p(-1,0);p(1,0);}}break;
+ case dice::D8:d.fillTriangle(cx,cy-s-1,cx-s,cy,cx+s,cy,fill);d.fillTriangle(cx,cy+s+1,cx-s,cy,cx+s,cy,fill);break;
+ case dice::D10:d.fillTriangle(cx,cy-s-1,cx-s,cy+2,cx+s,cy+2,fill);d.fillTriangle(cx,cy+s-1,cx-s,cy+2,cx+s,cy+2,fill);break;
+ case dice::D12:polygon(d,cx,cy+1,s+1,5,fill);break;
+ case dice::D20:{polygon(d,cx,cy,s+1,6,fill);int r=s*5/8;d.drawTriangle(cx,cy-r-2,cx-r-2,cy+r-1,cx+r+2,cy+r-1,edge);break;}
+ default:d.fillRoundRect(cx-s-2,cy-s+3,2*s+5,2*s-5,max(2,s/3),fill);break;
  }
 }

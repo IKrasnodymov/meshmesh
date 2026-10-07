@@ -26,6 +26,7 @@ MeshCore padrão.
 - **Sensor de movimento** — duas placas detectam uma pessoa andando entre elas (Wi-Fi CSI).
 - **Xadrez** com seus contatos pela malha, e paciência Klondike no M9.
 - **Bichinho da rede** — uma criatura de pixels no estilo Tamagotchi em todas as placas: se alimenta do tráfego de rádio, cresce e pode morrer de fome ou de solidão. [docs/en/pet.md](docs/en/pet.md)
+- **Dados** — o rolador de dados DIC3R em todas as placas: paradas e fórmulas de RPG (2d6+1, d20, d66, d%), uma grade de Warhammer com limiar de sucesso, contadores e personagens, iguais na tela, na página web e no app. [docs/en/dice.md](docs/en/dice.md)
 - **Xadrez sem MeshMesh no seu aparelho**: [a página de xadrez](https://ikrasnodymov.github.io/meshmesh/chess/) joga por meio de
   uma placa com o firmware oficial MeshCore Companion, via USB (Web Serial) ou Bluetooth (Web Bluetooth), no Chrome ou Edge.
 - **Modos repetidor e servidor de sala** — escolhidos ao ligar (tela do M9, botão do Heltec) ou em Configurações,

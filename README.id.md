@@ -26,6 +26,7 @@ MeshCore standar.
 - **Sensor gerak** — dua papan mendeteksi orang yang berjalan di antaranya (Wi-Fi CSI).
 - **Catur** dengan kontak Anda lewat mesh, dan solitaire Klondike di M9.
 - **Peliharaan mesh** — makhluk piksel ala Tamagotchi di setiap papan: makan dari lalu lintas radio, tumbuh, dan bisa mati karena lapar atau kesepian. [docs/en/pet.md](docs/en/pet.md)
+- **Dadu** — pelempar dadu DIC3R di setiap papan: kumpulan dadu dan rumus RPG (2d6+1, d20, d66, d%), grid Warhammer dengan ambang sukses, penghitung dan karakter, sama di layar, halaman web, dan aplikasi. [docs/en/dice.md](docs/en/dice.md)
 - **Catur tanpa MeshMesh di perangkat Anda**: [halaman catur](https://ikrasnodymov.github.io/meshmesh/chess/) bermain melalui
   papan yang menjalankan firmware resmi MeshCore Companion, lewat USB (Web Serial) atau Bluetooth (Web Bluetooth), di Chrome atau Edge.
 - **Mode repeater dan server ruang** — dipilih saat boot (layar M9, tombol Heltec) atau di Pengaturan,

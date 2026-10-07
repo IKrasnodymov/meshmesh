@@ -26,6 +26,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
 - **モーションセンサー** — 2 台のボードの間を人が歩くと検知します (Wi-Fi CSI)。
 - メッシュ経由で連絡先と遊べる**チェス**、M9 ではクロンダイク・ソリティアも。
 - **メッシュペット**: すべてのボードで暮らすたまごっち風のピクセル生物。無線のトラフィックを食べて成長し、空腹や孤独で死ぬこともあります。 [docs/en/pet.md](docs/en/pet.md)
+- **ダイス**: すべてのボードで使えるダイスローラー DIC3R。RPG のダイスプールと式（2d6+1、d20、d66、d%）、成功しきい値付きの Warhammer グリッド、カウンターとキャラクター。画面・Web ページ・アプリで同じ内容です。 [docs/en/dice.md](docs/en/dice.md)
 - **デバイスに MeshMesh がなくてもチェス**: [チェスページ](https://ikrasnodymov.github.io/meshmesh/chess/) は、
   公式の MeshCore Companion ファームウェアを載せたボードを通じて、USB (Web Serial) または Bluetooth (Web Bluetooth) 経由で、Chrome または Edge で対局できます。
 - **リピーターとルームサーバーのモード** — 起動時 (M9 の画面、Heltec のボタン) または設定、

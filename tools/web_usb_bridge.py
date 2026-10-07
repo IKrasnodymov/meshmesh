@@ -18,7 +18,7 @@ from device import connect, command
 ROOT = Path(__file__).resolve().parents[1]
 GETS = {'/api/status': 'status', '/api/messages': 'messages', '/api/nodes': 'nodes', '/api/config': 'config',
         '/api/navigation': 'navigation', '/api/maps': 'map info', '/api/maps/areas': 'map areas',
-        '/api/clock': 'clock', '/api/key': 'key'}
+        '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice'}
 
 
 def main():

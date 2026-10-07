@@ -115,6 +115,7 @@ M9 (мост CH340, 1A86:7522) и Heltec V4 (встроенный USB ESP32-S3, 
 | `channels` | JSON `/api/channels` | каналы MeshCore; сопряжённому клиенту — со ссылками закрытых каналов |
 | `channel do {JSON}` | `OK …` / `ERR …`, для `probe` — JSON | действия `/api/channels`: add, remove, invite, probe |
 | `pet` | JSON `/api/pet` | питомец: состояние и рисунок 16×16 (раздел «Питомец», [pet.md](pet.md)); действия — `pet adopt`, `release`, `cuddle`, `feed`, `heal`, `name`, `mortal` через `/api/command` |
+| `dice` | JSON `/api/dice` | кости: режим, персонажи, пул, сохранённые броски, счётчики, результаты и сетка (раздел «Кости», [dice.md](dice.md)); действия — `dice roll`, `pool`, `saved`, `grid`, `counter`, `char` через `/api/command` |
 
 Диагностическая команда `radar` по-прежнему не выводит имён сетей и устройств; `radar web`
 выводит их, как страница по Wi-Fi. BLE-ответ теперь отправляется уведомлениями размером

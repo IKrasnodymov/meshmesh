@@ -26,6 +26,7 @@ MeshCore düğümleriyle haberleşir.
 - **Hareket sensörü** — iki kart, aralarından geçen bir insanı algılar (Wi-Fi CSI).
 - Mesh üzerinden kişilerinizle **satranç** ve M9'da Klondike solitaire.
 - **Ağ evcil hayvanı** — her kartta Tamagotchi tarzı piksel bir yaratık: radyo trafiğiyle beslenir, büyür ve açlıktan ya da yalnızlıktan ölebilir. [docs/en/pet.md](docs/en/pet.md)
+- **Zarlar** — her kartta DIC3R zar atıcı: RPG zar havuzları ve formüller (2d6+1, d20, d66, d%), başarı eşiğiyle Warhammer ızgarası, sayaçlar ve karakterler; ekranda, web sayfasında ve uygulamada aynı. [docs/en/dice.md](docs/en/dice.md)
 - **Cihazınızda MeshMesh olmadan satranç**: [satranç sayfası](https://ikrasnodymov.github.io/meshmesh/chess/), resmi MeshCore
   Companion yazılımını çalıştıran bir kart üzerinden, USB (Web Serial) veya Bluetooth (Web Bluetooth) ile Chrome ya da Edge'de oynar.
 - **Tekrarlayıcı ve oda sunucusu modları** — açılışta (M9 ekranı, Heltec düğmesi) ya da Ayarlar'da,

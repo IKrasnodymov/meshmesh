@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Affamato: la radio tace",
  "shot.heltec-pet-stats": "OLED: disegnato a contorno",
  "shot.m9-pet-dead": "Una tomba e il ricordo del cucciolo",
- "doc.pet": "Cucciolo della rete"
+ "doc.pet": "Cucciolo della rete",
+ "news.dice": "<b>Novità:</b> dadi — il lanciadadi DIC3R per GdR e Warhammer su ogni scheda",
+ "f.dice.t": "Dadi",
+ "f.dice.d": "Il lanciadadi DIC3R su ogni scheda. GdR: una riserva come 2d6+1 o qualsiasi formula, ogni dado nella sua forma, la somma; d66 e d%. Warhammer: una griglia fino a 50 dadi, dal più alto al più basso, con soglia di successo. Contatori di vita e risorse, personaggi con i loro tiri salvati. Il dispositivo conserva tutto: schermo, pagina web e app mostrano gli stessi tiri.",
+ "shot.m9-dice-shapes": "Ogni dado nella sua forma: da d4 a d20",
+ "shot.t114-dice-saved": "Un tiro salvato sul T114",
+ "shot.m9-dice-grid": "Warhammer: 8 successi a 4+",
+ "shot.m9-dice-counters": "Contatori: ±1 e ±5",
+ "shot.heltec-dice-grid": "L’OLED: la griglia in contorno",
+ "shot.m9-dice-saved": "Tiri salvati di un personaggio",
+ "doc.dice": "Dadi"
 }

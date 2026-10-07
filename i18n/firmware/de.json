@@ -234,6 +234,16 @@
   "ru": "Турнир: выберите чат-контакты",
   "text": "Turnier: Chatkontakte wählen"
  },
+ "22423572": {
+  "en": "Counter ",
+  "ru": "Счётчик ",
+  "text": "Zähler "
+ },
+ "a521fdd8": {
+  "en": "General",
+  "ru": "Общий",
+  "text": "Allgemein"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -873,6 +883,11 @@
   "en": "Pet",
   "ru": "Питомец",
   "text": "Haustier"
+ },
+ "0dd48b86": {
+  "en": "Dice",
+  "ru": "Кости",
+  "text": "Würfel"
  },
  "969e0815": {
   "en": "Device mode",
@@ -4124,6 +4139,426 @@
   "ru": "Кому: ",
   "text": "An "
  },
+ "753a50c9": {
+  "en": "Counters: life, wounds, resources",
+  "ru": "Счётчики: жизни, раны, ресурсы",
+  "text": "Zähler: Leben, Wunden, Ressourcen"
+ },
+ "847159d6": {
+  "en": "N: name   C: colour   DEL: delete",
+  "ru": "N: имя   C: цвет   DEL: удалить",
+  "text": "N: Name   C: Farbe   DEL: löschen"
+ },
+ "2a033d73": {
+  "en": "Saved rolls · ",
+  "ru": "Сохранённые броски · ",
+  "text": "Gespeicherte Würfe · "
+ },
+ "88cada1c": {
+  "en": "No saved rolls",
+  "ru": "Сохранённых бросков нет",
+  "text": "Keine gespeicherten Würfe"
+ },
+ "f9b1ccca": {
+  "en": "A: save a formula with a name",
+  "ru": "A: сохранить формулу с именем",
+  "text": "A: Formel mit Namen speichern"
+ },
+ "5db08647": {
+  "en": "F: formula  N: name  C: colour  DEL: delete",
+  "ru": "F: формула  N: имя  C: цвет  DEL: удалить",
+  "text": "F: Formel  N: Name  C: Farbe  DEL: löschen"
+ },
+ "fbc08e80": {
+  "en": "Characters",
+  "ru": "Персонажи",
+  "text": "Charaktere"
+ },
+ "1bde5876": {
+  "en": {
+   "one": "roll",
+   "other": "rolls"
+  },
+  "ru": {
+   "one": "бросок",
+   "few": "броска",
+   "many": "бросков"
+  },
+  "forms": {
+   "one": "{n} Wurf",
+   "other": "{n} Würfe"
+  }
+ },
+ "7f5f4e27": {
+  "en": {
+   "one": "counter",
+   "other": "counters"
+  },
+  "ru": {
+   "one": "счётчик",
+   "few": "счётчика",
+   "many": "счётчиков"
+  },
+  "forms": {
+   "one": "{n} Zähler",
+   "other": "{n} Zähler"
+  }
+ },
+ "2faba250": {
+  "en": "A: new   N: rename   DEL: delete",
+  "ru": "A: новый   N: имя   DEL: удалить",
+  "text": "A: neu   N: umbenennen   DEL: löschen"
+ },
+ "4be35553": {
+  "en": "Roll",
+  "ru": "Бросить",
+  "text": "Würfeln"
+ },
+ "ff62d5a0": {
+  "en": "Add",
+  "ru": "Добавить",
+  "text": "Hinzufügen"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "Schließen"
+ },
+ "7c3624b1": {
+  "en": "Saved",
+  "ru": "Броски",
+  "text": "Würfe"
+ },
+ "e45d38ac": {
+  "en": "Formula",
+  "ru": "Формула",
+  "text": "Formel"
+ },
+ "cebaa29e": {
+  "en": "Mode",
+  "ru": "Режим",
+  "text": "Modus"
+ },
+ "a07143b9": {
+  "en": "Count",
+  "ru": "Число",
+  "text": "Anzahl"
+ },
+ "ba4ec213": {
+  "en": "Character",
+  "ru": "Персонаж",
+  "text": "Charakter"
+ },
+ "e13f98a0": {
+  "en": "Formula to roll",
+  "ru": "Формула броска",
+  "text": "Wurfformel"
+ },
+ "28983874": {
+  "en": "New roll: formula",
+  "ru": "Новый бросок: формула",
+  "text": "Neuer Wurf: Formel"
+ },
+ "7a1df7ee": {
+  "en": "New roll: name",
+  "ru": "Новый бросок: имя",
+  "text": "Neuer Wurf: Name"
+ },
+ "510de52a": {
+  "en": "Roll name",
+  "ru": "Имя броска",
+  "text": "Wurfname"
+ },
+ "f12916a4": {
+  "en": "Counter name",
+  "ru": "Имя счётчика",
+  "text": "Zählername"
+ },
+ "8ced0833": {
+  "en": "New character",
+  "ru": "Новый персонаж",
+  "text": "Neuer Charakter"
+ },
+ "49e48a96": {
+  "en": "Character name",
+  "ru": "Имя персонажа",
+  "text": "Charaktername"
+ },
+ "3648955c": {
+  "en": "OK: roll   BACK: cancel",
+  "ru": "OK: бросить   BACK: отменить",
+  "text": "OK: würfeln   BACK: abbrechen"
+ },
+ "47a608e8": {
+  "en": "2d6+1, d20, 4d6-2, d%, d66",
+  "ru": "2d6+1, d20, 4к6-2, d%, d66",
+  "text": "2d6+1, d20, 4d6-2, d%, d66"
+ },
+ "3b05ab8e": {
+  "en": "Formula: 2d6+1, d20, d%, d66",
+  "ru": "Формула: 2d6+1, d20, d%, d66",
+  "text": "Formel: 2d6+1, d20, d%, d66"
+ },
+ "ea0e9c43": {
+  "en": "Name: 1-23 UTF-8 bytes",
+  "ru": "Имя: 1-23 байта UTF-8",
+  "text": "Name: 1-23 Byte UTF-8"
+ },
+ "0ea54a8d": {
+  "en": "Roll saved",
+  "ru": "Бросок сохранён",
+  "text": "Wurf gespeichert"
+ },
+ "fc8c1178": {
+  "en": "10 saved rolls at most",
+  "ru": "Не больше 10 бросков",
+  "text": "Höchstens 10 Würfe"
+ },
+ "e93489cf": {
+  "en": "Formula saved",
+  "ru": "Формула сохранена",
+  "text": "Formel gespeichert"
+ },
+ "a55a28b5": {
+  "en": "DEL again: delete",
+  "ru": "Ещё раз DEL: удалить",
+  "text": "Erneut DEL: löschen"
+ },
+ "c784cfd9": {
+  "en": "50 dice at most",
+  "ru": "Не больше 50 костей",
+  "text": "Höchstens 50 Würfel"
+ },
+ "f53f52d9": {
+  "en": "Counters",
+  "ru": "Счётчики",
+  "text": "Zähler"
+ },
+ "7f0e2ad9": {
+  "en": "6 counters at most",
+  "ru": "Не больше 6 счётчиков",
+  "text": "Höchstens 6 Zähler"
+ },
+ "113cbc15": {
+  "en": "Counter deleted",
+  "ru": "Счётчик удалён",
+  "text": "Zähler gelöscht"
+ },
+ "78b42472": {
+  "en": "Roll deleted",
+  "ru": "Бросок удалён",
+  "text": "Wurf gelöscht"
+ },
+ "2d9c5925": {
+  "en": "6 characters at most",
+  "ru": "Не больше 6 персонажей",
+  "text": "Höchstens 6 Charaktere"
+ },
+ "904dbaa5": {
+  "en": "The general set stays",
+  "ru": "Общий набор не удаляется",
+  "text": "Allgemeines Set bleibt"
+ },
+ "b135f43c": {
+  "en": "Character deleted",
+  "ru": "Персонаж удалён",
+  "text": "Charakter gelöscht"
+ },
+ "97bf0171": {
+  "en": "OK: roll ",
+  "ru": "OK: бросить ",
+  "text": "OK: würfeln "
+ },
+ "81656fcc": {
+  "en": "E: any formula, 3d8+2",
+  "ru": "E: любая формула, 3к8+2",
+  "text": "E: beliebige Formel, 3d8+2"
+ },
+ "390afd4a": {
+  "en": "d66 and d%: each die on its own",
+  "ru": "d66 и d%: каждая кость отдельно",
+  "text": "d66 und d%: jeder Würfel einzeln"
+ },
+ "ed2f5230": {
+  "en": "Before:",
+  "ru": "Ранее:",
+  "text": "Zuvor:"
+ },
+ "d41de9b0": {
+  "en": "S: saved ",
+  "ru": "S: сохранённые ",
+  "text": "S: gespeichert "
+ },
+ "14ee3ca4": {
+  "en": "Choose dice: arrows",
+  "ru": "Выберите кости стрелками",
+  "text": "Würfel wählen: Pfeile"
+ },
+ "6ee9cd71": {
+  "en": {
+   "one": "success",
+   "other": "successes"
+  },
+  "ru": {
+   "one": "успех",
+   "few": "успеха",
+   "many": "успехов"
+  },
+  "forms": {
+   "one": "{n} Erfolg",
+   "other": "{n} Erfolge"
+  }
+ },
+ "05608fd1": {
+  "en": "sum ",
+  "ru": "сумма ",
+  "text": "Summe "
+ },
+ "1192dd3c": {
+  "en": "Threshold ",
+  "ru": "Порог ",
+  "text": "Schwelle "
+ },
+ "ec36b964": {
+  "en": "No threshold",
+  "ru": "Без порога",
+  "text": "Ohne Schwelle"
+ },
+ "d25de403": {
+  "en": "A: +5 dice   R: reset   D: die   T, +/-: threshold",
+  "ru": "A: +5 костей   R: сброс   D: кость   T, +/-: порог",
+  "text": "A: +5 Würfel   R: Reset   D: Typ   T, +/-: Schwelle"
+ },
+ "76fe485a": {
+  "en": "A: add",
+  "ru": "A: добавить",
+  "text": "A: hinzufügen"
+ },
+ "c9d0bbdd": {
+  "en": "Roll ",
+  "ru": "Бросить ",
+  "text": "Würfeln "
+ },
+ "0b0be955": {
+  "en": "Roll: ",
+  "ru": "Бросок: ",
+  "text": "Wurf: "
+ },
+ "64882be4": {
+  "en": "Next saved roll",
+  "ru": "Другой бросок",
+  "text": "Nächster Wurf"
+ },
+ "eadde752": {
+  "en": "Dice: ",
+  "ru": "Кости: ",
+  "text": "Würfel: "
+ },
+ "fcaab742": {
+  "en": "Die: ",
+  "ru": "Кость: ",
+  "text": "Typ: "
+ },
+ "912ec67c": {
+  "en": "Modifier: ",
+  "ru": "Модификатор: ",
+  "text": "Modifikator: "
+ },
+ "f1453b43": {
+  "en": "Character: ",
+  "ru": "Персонаж: ",
+  "text": "Charakter: "
+ },
+ "637d5f0a": {
+  "en": "Mode: ",
+  "ru": "Режим: ",
+  "text": "Modus: "
+ },
+ "6b6e3fda": {
+  "en": "Dice +1: ",
+  "ru": "Кости +1: ",
+  "text": "Würfel +1: "
+ },
+ "59702ada": {
+  "en": "Dice +5: ",
+  "ru": "Кости +5: ",
+  "text": "Würfel +5: "
+ },
+ "a429d894": {
+  "en": "Threshold: ",
+  "ru": "Порог: ",
+  "text": "Schwelle: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "aus"
+ },
+ "c1eb04c4": {
+  "en": "Add 5 dice",
+  "ru": "Ещё 5 костей",
+  "text": "+5 Würfel"
+ },
+ "3eab825d": {
+  "en": "Next counter",
+  "ru": "Другой счётчик",
+  "text": "Nächster Zähler"
+ },
+ "7ec8f659": {
+  "en": "Add counter",
+  "ru": "Добавить счётчик",
+  "text": "Zähler hinzufügen"
+ },
+ "96da71cd": {
+  "en": "Choose dice: Dice +1",
+  "ru": "Выберите: Кости +1",
+  "text": "Wählen: Würfel +1"
+ },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "Würfel "
+ },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "Keine Zähler"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "Im Menü hinzufügen"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "Noch keine Würfe"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "Würfeln steht oben im Menü"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "Telefon"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "Uhr"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "Kopfhörer"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "Telefon/Uhr"
+ },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4939,30 +5374,15 @@
   "ru": "чат",
   "text": "Chat"
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "Telefon"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "Uhr"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "Kopfhörer"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "Telefon/Uhr"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
   "text": "Optional"
+ },
+ "071236e4": {
+  "en": "Before",
+  "ru": "Ранее",
+  "text": "Zuvor"
  },
  "ccdb9efa": {
   "en": "No pet",

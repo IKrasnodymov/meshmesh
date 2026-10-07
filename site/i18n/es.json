@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Hambrienta: la radio está en silencio",
  "shot.heltec-pet-stats": "OLED: dibujada en contorno",
  "shot.m9-pet-dead": "Una tumba y el recuerdo de la mascota",
- "doc.pet": "Mascota de la red"
+ "doc.pet": "Mascota de la red",
+ "news.dice": "<b>Nuevo:</b> dados — el lanzador DIC3R para rol y Warhammer en todas las placas",
+ "f.dice.t": "Dados",
+ "f.dice.d": "El lanzador de dados DIC3R en todas las placas. Rol: una reserva como 2d6+1 o cualquier fórmula, cada dado con su forma, la suma; d66 y d%. Warhammer: una cuadrícula de hasta 50 dados, ordenados de mayor a menor, con umbral de éxito. Contadores de vida y recursos, personajes con sus tiradas guardadas. El dispositivo lo guarda todo: la pantalla, la página web y la app muestran las mismas tiradas.",
+ "shot.m9-dice-shapes": "Cada dado con su forma: de d4 a d20",
+ "shot.t114-dice-saved": "Una tirada guardada en el T114",
+ "shot.m9-dice-grid": "Warhammer: 8 éxitos a 4+",
+ "shot.m9-dice-counters": "Contadores: ±1 y ±5",
+ "shot.heltec-dice-grid": "La OLED: la cuadrícula en contorno",
+ "shot.m9-dice-saved": "Tiradas guardadas de un personaje",
+ "doc.dice": "Dados"
 }

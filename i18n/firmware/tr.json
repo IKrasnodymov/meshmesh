@@ -234,6 +234,16 @@
   "ru": "Турнир: выберите чат-контакты",
   "text": "Turnuva: sohbet kişilerini seçin"
  },
+ "22423572": {
+  "en": "Counter ",
+  "ru": "Счётчик ",
+  "text": "Sayaç "
+ },
+ "a521fdd8": {
+  "en": "General",
+  "ru": "Общий",
+  "text": "Genel"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -873,6 +883,11 @@
   "en": "Pet",
   "ru": "Питомец",
   "text": "Hayvan"
+ },
+ "0dd48b86": {
+  "en": "Dice",
+  "ru": "Кости",
+  "text": "Zar"
  },
  "969e0815": {
   "en": "Device mode",
@@ -4124,6 +4139,426 @@
   "ru": "Кому: ",
   "text": "Kime: "
  },
+ "753a50c9": {
+  "en": "Counters: life, wounds, resources",
+  "ru": "Счётчики: жизни, раны, ресурсы",
+  "text": "Sayaçlar: can, yara, kaynak"
+ },
+ "847159d6": {
+  "en": "N: name   C: colour   DEL: delete",
+  "ru": "N: имя   C: цвет   DEL: удалить",
+  "text": "N: ad   C: renk   DEL: sil"
+ },
+ "2a033d73": {
+  "en": "Saved rolls · ",
+  "ru": "Сохранённые броски · ",
+  "text": "Kayıtlı atışlar · "
+ },
+ "88cada1c": {
+  "en": "No saved rolls",
+  "ru": "Сохранённых бросков нет",
+  "text": "Kayıtlı atış yok"
+ },
+ "f9b1ccca": {
+  "en": "A: save a formula with a name",
+  "ru": "A: сохранить формулу с именем",
+  "text": "A: formülü adıyla kaydet"
+ },
+ "5db08647": {
+  "en": "F: formula  N: name  C: colour  DEL: delete",
+  "ru": "F: формула  N: имя  C: цвет  DEL: удалить",
+  "text": "F: formül  N: ad  C: renk  DEL: sil"
+ },
+ "fbc08e80": {
+  "en": "Characters",
+  "ru": "Персонажи",
+  "text": "Karakterler"
+ },
+ "1bde5876": {
+  "en": {
+   "one": "roll",
+   "other": "rolls"
+  },
+  "ru": {
+   "one": "бросок",
+   "few": "броска",
+   "many": "бросков"
+  },
+  "forms": {
+   "one": "{n} atış",
+   "other": "{n} atış"
+  }
+ },
+ "7f5f4e27": {
+  "en": {
+   "one": "counter",
+   "other": "counters"
+  },
+  "ru": {
+   "one": "счётчик",
+   "few": "счётчика",
+   "many": "счётчиков"
+  },
+  "forms": {
+   "one": "{n} sayaç",
+   "other": "{n} sayaç"
+  }
+ },
+ "2faba250": {
+  "en": "A: new   N: rename   DEL: delete",
+  "ru": "A: новый   N: имя   DEL: удалить",
+  "text": "A: yeni   N: ad   DEL: sil"
+ },
+ "4be35553": {
+  "en": "Roll",
+  "ru": "Бросить",
+  "text": "At"
+ },
+ "ff62d5a0": {
+  "en": "Add",
+  "ru": "Добавить",
+  "text": "Ekle"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "Kapat"
+ },
+ "7c3624b1": {
+  "en": "Saved",
+  "ru": "Броски",
+  "text": "Kayıtlı"
+ },
+ "e45d38ac": {
+  "en": "Formula",
+  "ru": "Формула",
+  "text": "Formül"
+ },
+ "cebaa29e": {
+  "en": "Mode",
+  "ru": "Режим",
+  "text": "Mod"
+ },
+ "a07143b9": {
+  "en": "Count",
+  "ru": "Число",
+  "text": "Sayı"
+ },
+ "ba4ec213": {
+  "en": "Character",
+  "ru": "Персонаж",
+  "text": "Karakter"
+ },
+ "e13f98a0": {
+  "en": "Formula to roll",
+  "ru": "Формула броска",
+  "text": "Atış formülü"
+ },
+ "28983874": {
+  "en": "New roll: formula",
+  "ru": "Новый бросок: формула",
+  "text": "Yeni atış: formül"
+ },
+ "7a1df7ee": {
+  "en": "New roll: name",
+  "ru": "Новый бросок: имя",
+  "text": "Yeni atış: ad"
+ },
+ "510de52a": {
+  "en": "Roll name",
+  "ru": "Имя броска",
+  "text": "Atış adı"
+ },
+ "f12916a4": {
+  "en": "Counter name",
+  "ru": "Имя счётчика",
+  "text": "Sayaç adı"
+ },
+ "8ced0833": {
+  "en": "New character",
+  "ru": "Новый персонаж",
+  "text": "Yeni karakter"
+ },
+ "49e48a96": {
+  "en": "Character name",
+  "ru": "Имя персонажа",
+  "text": "Karakter adı"
+ },
+ "3648955c": {
+  "en": "OK: roll   BACK: cancel",
+  "ru": "OK: бросить   BACK: отменить",
+  "text": "OK: at   BACK: iptal"
+ },
+ "47a608e8": {
+  "en": "2d6+1, d20, 4d6-2, d%, d66",
+  "ru": "2d6+1, d20, 4к6-2, d%, d66",
+  "text": "2d6+1, d20, 4d6-2, d%, d66"
+ },
+ "3b05ab8e": {
+  "en": "Formula: 2d6+1, d20, d%, d66",
+  "ru": "Формула: 2d6+1, d20, d%, d66",
+  "text": "Formül: 2d6+1, d20, d%, d66"
+ },
+ "ea0e9c43": {
+  "en": "Name: 1-23 UTF-8 bytes",
+  "ru": "Имя: 1-23 байта UTF-8",
+  "text": "Ad: 1-23 bayt UTF-8"
+ },
+ "0ea54a8d": {
+  "en": "Roll saved",
+  "ru": "Бросок сохранён",
+  "text": "Atış kaydedildi"
+ },
+ "fc8c1178": {
+  "en": "10 saved rolls at most",
+  "ru": "Не больше 10 бросков",
+  "text": "En fazla 10 atış"
+ },
+ "e93489cf": {
+  "en": "Formula saved",
+  "ru": "Формула сохранена",
+  "text": "Formül kaydedildi"
+ },
+ "a55a28b5": {
+  "en": "DEL again: delete",
+  "ru": "Ещё раз DEL: удалить",
+  "text": "Tekrar DEL: sil"
+ },
+ "c784cfd9": {
+  "en": "50 dice at most",
+  "ru": "Не больше 50 костей",
+  "text": "En fazla 50 zar"
+ },
+ "f53f52d9": {
+  "en": "Counters",
+  "ru": "Счётчики",
+  "text": "Sayaçlar"
+ },
+ "7f0e2ad9": {
+  "en": "6 counters at most",
+  "ru": "Не больше 6 счётчиков",
+  "text": "En fazla 6 sayaç"
+ },
+ "113cbc15": {
+  "en": "Counter deleted",
+  "ru": "Счётчик удалён",
+  "text": "Sayaç silindi"
+ },
+ "78b42472": {
+  "en": "Roll deleted",
+  "ru": "Бросок удалён",
+  "text": "Atış silindi"
+ },
+ "2d9c5925": {
+  "en": "6 characters at most",
+  "ru": "Не больше 6 персонажей",
+  "text": "En fazla 6 karakter"
+ },
+ "904dbaa5": {
+  "en": "The general set stays",
+  "ru": "Общий набор не удаляется",
+  "text": "Genel set silinmez"
+ },
+ "b135f43c": {
+  "en": "Character deleted",
+  "ru": "Персонаж удалён",
+  "text": "Karakter silindi"
+ },
+ "97bf0171": {
+  "en": "OK: roll ",
+  "ru": "OK: бросить ",
+  "text": "OK: at "
+ },
+ "81656fcc": {
+  "en": "E: any formula, 3d8+2",
+  "ru": "E: любая формула, 3к8+2",
+  "text": "E: her formül, 3d8+2"
+ },
+ "390afd4a": {
+  "en": "d66 and d%: each die on its own",
+  "ru": "d66 и d%: каждая кость отдельно",
+  "text": "d66 ve d%: her zar ayrı"
+ },
+ "ed2f5230": {
+  "en": "Before:",
+  "ru": "Ранее:",
+  "text": "Önceki:"
+ },
+ "d41de9b0": {
+  "en": "S: saved ",
+  "ru": "S: сохранённые ",
+  "text": "S: kayıtlı "
+ },
+ "14ee3ca4": {
+  "en": "Choose dice: arrows",
+  "ru": "Выберите кости стрелками",
+  "text": "Zarları oklarla seç"
+ },
+ "6ee9cd71": {
+  "en": {
+   "one": "success",
+   "other": "successes"
+  },
+  "ru": {
+   "one": "успех",
+   "few": "успеха",
+   "many": "успехов"
+  },
+  "forms": {
+   "one": "{n} başarı",
+   "other": "{n} başarı"
+  }
+ },
+ "05608fd1": {
+  "en": "sum ",
+  "ru": "сумма ",
+  "text": "toplam "
+ },
+ "1192dd3c": {
+  "en": "Threshold ",
+  "ru": "Порог ",
+  "text": "Eşik "
+ },
+ "ec36b964": {
+  "en": "No threshold",
+  "ru": "Без порога",
+  "text": "Eşik yok"
+ },
+ "d25de403": {
+  "en": "A: +5 dice   R: reset   D: die   T, +/-: threshold",
+  "ru": "A: +5 костей   R: сброс   D: кость   T, +/-: порог",
+  "text": "A: +5 zar   R: sıfırla   D: zar   T, +/-: eşik"
+ },
+ "76fe485a": {
+  "en": "A: add",
+  "ru": "A: добавить",
+  "text": "A: ekle"
+ },
+ "c9d0bbdd": {
+  "en": "Roll ",
+  "ru": "Бросить ",
+  "text": "At "
+ },
+ "0b0be955": {
+  "en": "Roll: ",
+  "ru": "Бросок: ",
+  "text": "Atış: "
+ },
+ "64882be4": {
+  "en": "Next saved roll",
+  "ru": "Другой бросок",
+  "text": "Sonraki atış"
+ },
+ "eadde752": {
+  "en": "Dice: ",
+  "ru": "Кости: ",
+  "text": "Zar: "
+ },
+ "fcaab742": {
+  "en": "Die: ",
+  "ru": "Кость: ",
+  "text": "Zar: "
+ },
+ "912ec67c": {
+  "en": "Modifier: ",
+  "ru": "Модификатор: ",
+  "text": "Değiştirici: "
+ },
+ "f1453b43": {
+  "en": "Character: ",
+  "ru": "Персонаж: ",
+  "text": "Karakter: "
+ },
+ "637d5f0a": {
+  "en": "Mode: ",
+  "ru": "Режим: ",
+  "text": "Mod: "
+ },
+ "6b6e3fda": {
+  "en": "Dice +1: ",
+  "ru": "Кости +1: ",
+  "text": "Zar +1: "
+ },
+ "59702ada": {
+  "en": "Dice +5: ",
+  "ru": "Кости +5: ",
+  "text": "Zar +5: "
+ },
+ "a429d894": {
+  "en": "Threshold: ",
+  "ru": "Порог: ",
+  "text": "Eşik: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "kapalı"
+ },
+ "c1eb04c4": {
+  "en": "Add 5 dice",
+  "ru": "Ещё 5 костей",
+  "text": "5 zar ekle"
+ },
+ "3eab825d": {
+  "en": "Next counter",
+  "ru": "Другой счётчик",
+  "text": "Sonraki sayaç"
+ },
+ "7ec8f659": {
+  "en": "Add counter",
+  "ru": "Добавить счётчик",
+  "text": "Sayaç ekle"
+ },
+ "96da71cd": {
+  "en": "Choose dice: Dice +1",
+  "ru": "Выберите: Кости +1",
+  "text": "Seç: Zar +1"
+ },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "Zar "
+ },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "Sayaç yok"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "Menüden ekle"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "Henüz atış yok"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "Atış menüde ilk sırada"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "telefon"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "saat"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "kulaklık"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "telefon/saat"
+ },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4939,30 +5374,15 @@
   "ru": "чат",
   "text": "sohbet"
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "telefon"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "saat"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "kulaklık"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "telefon/saat"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
   "text": "İsteğe bağlı"
+ },
+ "071236e4": {
+  "en": "Before",
+  "ru": "Ранее",
+  "text": "Önceki"
  },
  "ccdb9efa": {
   "en": "No pet",

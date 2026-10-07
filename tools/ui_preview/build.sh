@@ -31,6 +31,7 @@ eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -I$LIB/Crypto -c "$ROOT/src/ChessRatin
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/ChessTour.cpp" -o "$B/chesstour.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/ChessSync.cpp" -o "$B/chesssync.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/Pet.cpp" -o "$B/pet.o"
+eval c++ -std=gnu++17 -O1 -Wall -Wextra $DEF $INC -c "$ROOT/src/Dice.cpp" -o "$B/dice.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -I$LIB/Crypto -c "$ROOT/src/Channels.cpp" -o "$B/channels.o"
 for f in SHA256 Hash Crypto;do eval c++ -std=gnu++17 -O1 -w $DEF $INC -c "$LIB/Crypto/$f.cpp" -o "$B/crypto-$f.o";done
 c++ "$B"/*.o -o "$B/preview"

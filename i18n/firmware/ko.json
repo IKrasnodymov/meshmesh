@@ -234,6 +234,16 @@
   "ru": "Турнир: выберите чат-контакты",
   "text": "대회: 채팅 연락처 선택"
  },
+ "22423572": {
+  "en": "Counter ",
+  "ru": "Счётчик ",
+  "text": "카운터 "
+ },
+ "a521fdd8": {
+  "en": "General",
+  "ru": "Общий",
+  "text": "공용"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -872,6 +882,11 @@
   "en": "Pet",
   "ru": "Питомец",
   "text": "펫"
+ },
+ "0dd48b86": {
+  "en": "Dice",
+  "ru": "Кости",
+  "text": "주사위"
  },
  "969e0815": {
   "en": "Device mode",
@@ -4110,6 +4125,423 @@
   "ru": "Кому: ",
   "text": "받는 이: "
  },
+ "753a50c9": {
+  "en": "Counters: life, wounds, resources",
+  "ru": "Счётчики: жизни, раны, ресурсы",
+  "text": "카운터: 생명, 부상, 자원"
+ },
+ "847159d6": {
+  "en": "N: name   C: colour   DEL: delete",
+  "ru": "N: имя   C: цвет   DEL: удалить",
+  "text": "N: 이름   C: 색   DEL: 삭제"
+ },
+ "2a033d73": {
+  "en": "Saved rolls · ",
+  "ru": "Сохранённые броски · ",
+  "text": "저장된 굴림 · "
+ },
+ "88cada1c": {
+  "en": "No saved rolls",
+  "ru": "Сохранённых бросков нет",
+  "text": "저장된 굴림 없음"
+ },
+ "f9b1ccca": {
+  "en": "A: save a formula with a name",
+  "ru": "A: сохранить формулу с именем",
+  "text": "A: 이름 붙여 수식 저장"
+ },
+ "5db08647": {
+  "en": "F: formula  N: name  C: colour  DEL: delete",
+  "ru": "F: формула  N: имя  C: цвет  DEL: удалить",
+  "text": "F: 수식  N: 이름  C: 색  DEL: 삭제"
+ },
+ "fbc08e80": {
+  "en": "Characters",
+  "ru": "Персонажи",
+  "text": "캐릭터"
+ },
+ "1bde5876": {
+  "en": {
+   "one": "roll",
+   "other": "rolls"
+  },
+  "ru": {
+   "one": "бросок",
+   "few": "броска",
+   "many": "бросков"
+  },
+  "forms": {
+   "other": "굴림 {n}개"
+  }
+ },
+ "7f5f4e27": {
+  "en": {
+   "one": "counter",
+   "other": "counters"
+  },
+  "ru": {
+   "one": "счётчик",
+   "few": "счётчика",
+   "many": "счётчиков"
+  },
+  "forms": {
+   "other": "카운터 {n}개"
+  }
+ },
+ "2faba250": {
+  "en": "A: new   N: rename   DEL: delete",
+  "ru": "A: новый   N: имя   DEL: удалить",
+  "text": "A: 추가   N: 이름   DEL: 삭제"
+ },
+ "4be35553": {
+  "en": "Roll",
+  "ru": "Бросить",
+  "text": "굴리기"
+ },
+ "ff62d5a0": {
+  "en": "Add",
+  "ru": "Добавить",
+  "text": "추가"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "닫기"
+ },
+ "7c3624b1": {
+  "en": "Saved",
+  "ru": "Броски",
+  "text": "저장됨"
+ },
+ "e45d38ac": {
+  "en": "Formula",
+  "ru": "Формула",
+  "text": "수식"
+ },
+ "cebaa29e": {
+  "en": "Mode",
+  "ru": "Режим",
+  "text": "모드"
+ },
+ "a07143b9": {
+  "en": "Count",
+  "ru": "Число",
+  "text": "개수"
+ },
+ "ba4ec213": {
+  "en": "Character",
+  "ru": "Персонаж",
+  "text": "캐릭터"
+ },
+ "e13f98a0": {
+  "en": "Formula to roll",
+  "ru": "Формула броска",
+  "text": "굴릴 수식"
+ },
+ "28983874": {
+  "en": "New roll: formula",
+  "ru": "Новый бросок: формула",
+  "text": "새 굴림: 수식"
+ },
+ "7a1df7ee": {
+  "en": "New roll: name",
+  "ru": "Новый бросок: имя",
+  "text": "새 굴림: 이름"
+ },
+ "510de52a": {
+  "en": "Roll name",
+  "ru": "Имя броска",
+  "text": "굴림 이름"
+ },
+ "f12916a4": {
+  "en": "Counter name",
+  "ru": "Имя счётчика",
+  "text": "카운터 이름"
+ },
+ "8ced0833": {
+  "en": "New character",
+  "ru": "Новый персонаж",
+  "text": "새 캐릭터"
+ },
+ "49e48a96": {
+  "en": "Character name",
+  "ru": "Имя персонажа",
+  "text": "캐릭터 이름"
+ },
+ "3648955c": {
+  "en": "OK: roll   BACK: cancel",
+  "ru": "OK: бросить   BACK: отменить",
+  "text": "OK: 굴리기   BACK: 취소"
+ },
+ "47a608e8": {
+  "en": "2d6+1, d20, 4d6-2, d%, d66",
+  "ru": "2d6+1, d20, 4к6-2, d%, d66",
+  "text": "2d6+1, d20, 4d6-2, d%, d66"
+ },
+ "3b05ab8e": {
+  "en": "Formula: 2d6+1, d20, d%, d66",
+  "ru": "Формула: 2d6+1, d20, d%, d66",
+  "text": "수식: 2d6+1, d20, d%, d66"
+ },
+ "ea0e9c43": {
+  "en": "Name: 1-23 UTF-8 bytes",
+  "ru": "Имя: 1-23 байта UTF-8",
+  "text": "이름: 1-23 UTF-8 바이트"
+ },
+ "0ea54a8d": {
+  "en": "Roll saved",
+  "ru": "Бросок сохранён",
+  "text": "굴림 저장됨"
+ },
+ "fc8c1178": {
+  "en": "10 saved rolls at most",
+  "ru": "Не больше 10 бросков",
+  "text": "굴림은 최대 10개"
+ },
+ "e93489cf": {
+  "en": "Formula saved",
+  "ru": "Формула сохранена",
+  "text": "수식 저장됨"
+ },
+ "a55a28b5": {
+  "en": "DEL again: delete",
+  "ru": "Ещё раз DEL: удалить",
+  "text": "DEL 한 번 더: 삭제"
+ },
+ "c784cfd9": {
+  "en": "50 dice at most",
+  "ru": "Не больше 50 костей",
+  "text": "주사위는 최대 50개"
+ },
+ "f53f52d9": {
+  "en": "Counters",
+  "ru": "Счётчики",
+  "text": "카운터"
+ },
+ "7f0e2ad9": {
+  "en": "6 counters at most",
+  "ru": "Не больше 6 счётчиков",
+  "text": "카운터는 최대 6개"
+ },
+ "113cbc15": {
+  "en": "Counter deleted",
+  "ru": "Счётчик удалён",
+  "text": "카운터 삭제됨"
+ },
+ "78b42472": {
+  "en": "Roll deleted",
+  "ru": "Бросок удалён",
+  "text": "굴림 삭제됨"
+ },
+ "2d9c5925": {
+  "en": "6 characters at most",
+  "ru": "Не больше 6 персонажей",
+  "text": "캐릭터는 최대 6명"
+ },
+ "904dbaa5": {
+  "en": "The general set stays",
+  "ru": "Общий набор не удаляется",
+  "text": "공용 세트는 삭제 불가"
+ },
+ "b135f43c": {
+  "en": "Character deleted",
+  "ru": "Персонаж удалён",
+  "text": "캐릭터 삭제됨"
+ },
+ "97bf0171": {
+  "en": "OK: roll ",
+  "ru": "OK: бросить ",
+  "text": "OK: 굴리기 "
+ },
+ "81656fcc": {
+  "en": "E: any formula, 3d8+2",
+  "ru": "E: любая формула, 3к8+2",
+  "text": "E: 임의 수식, 3d8+2"
+ },
+ "390afd4a": {
+  "en": "d66 and d%: each die on its own",
+  "ru": "d66 и d%: каждая кость отдельно",
+  "text": "d66, d%: 주사위별로 따로"
+ },
+ "ed2f5230": {
+  "en": "Before:",
+  "ru": "Ранее:",
+  "text": "이전:"
+ },
+ "d41de9b0": {
+  "en": "S: saved ",
+  "ru": "S: сохранённые ",
+  "text": "S: 저장됨 "
+ },
+ "14ee3ca4": {
+  "en": "Choose dice: arrows",
+  "ru": "Выберите кости стрелками",
+  "text": "화살표로 주사위 선택"
+ },
+ "6ee9cd71": {
+  "en": {
+   "one": "success",
+   "other": "successes"
+  },
+  "ru": {
+   "one": "успех",
+   "few": "успеха",
+   "many": "успехов"
+  },
+  "forms": {
+   "other": "성공 {n}"
+  }
+ },
+ "05608fd1": {
+  "en": "sum ",
+  "ru": "сумма ",
+  "text": "합계 "
+ },
+ "1192dd3c": {
+  "en": "Threshold ",
+  "ru": "Порог ",
+  "text": "목표 "
+ },
+ "ec36b964": {
+  "en": "No threshold",
+  "ru": "Без порога",
+  "text": "목표 없음"
+ },
+ "d25de403": {
+  "en": "A: +5 dice   R: reset   D: die   T, +/-: threshold",
+  "ru": "A: +5 костей   R: сброс   D: кость   T, +/-: порог",
+  "text": "A: +5개   R: 초기화   D: 주사위   T, +/-: 목표"
+ },
+ "76fe485a": {
+  "en": "A: add",
+  "ru": "A: добавить",
+  "text": "A: 추가"
+ },
+ "c9d0bbdd": {
+  "en": "Roll ",
+  "ru": "Бросить ",
+  "text": "굴리기 "
+ },
+ "0b0be955": {
+  "en": "Roll: ",
+  "ru": "Бросок: ",
+  "text": "굴림: "
+ },
+ "64882be4": {
+  "en": "Next saved roll",
+  "ru": "Другой бросок",
+  "text": "다음 굴림"
+ },
+ "eadde752": {
+  "en": "Dice: ",
+  "ru": "Кости: ",
+  "text": "주사위: "
+ },
+ "fcaab742": {
+  "en": "Die: ",
+  "ru": "Кость: ",
+  "text": "종류: "
+ },
+ "912ec67c": {
+  "en": "Modifier: ",
+  "ru": "Модификатор: ",
+  "text": "보정: "
+ },
+ "f1453b43": {
+  "en": "Character: ",
+  "ru": "Персонаж: ",
+  "text": "캐릭터: "
+ },
+ "637d5f0a": {
+  "en": "Mode: ",
+  "ru": "Режим: ",
+  "text": "모드: "
+ },
+ "6b6e3fda": {
+  "en": "Dice +1: ",
+  "ru": "Кости +1: ",
+  "text": "주사위 +1: "
+ },
+ "59702ada": {
+  "en": "Dice +5: ",
+  "ru": "Кости +5: ",
+  "text": "주사위 +5: "
+ },
+ "a429d894": {
+  "en": "Threshold: ",
+  "ru": "Порог: ",
+  "text": "목표: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "끔"
+ },
+ "c1eb04c4": {
+  "en": "Add 5 dice",
+  "ru": "Ещё 5 костей",
+  "text": "주사위 5개 추가"
+ },
+ "3eab825d": {
+  "en": "Next counter",
+  "ru": "Другой счётчик",
+  "text": "다음 카운터"
+ },
+ "7ec8f659": {
+  "en": "Add counter",
+  "ru": "Добавить счётчик",
+  "text": "카운터 추가"
+ },
+ "96da71cd": {
+  "en": "Choose dice: Dice +1",
+  "ru": "Выберите: Кости +1",
+  "text": "선택: 주사위 +1"
+ },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "주사위 "
+ },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "카운터 없음"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "메뉴에서 추가"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "아직 굴림 없음"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "굴리기는 메뉴 첫 항목"
+ },
+ "c1f1d7de": {
+  "en": "phone",
+  "ru": "телефон",
+  "text": "휴대폰"
+ },
+ "5f7d922f": {
+  "en": "watch",
+  "ru": "часы",
+  "text": "시계"
+ },
+ "e90e9e08": {
+  "en": "headphones",
+  "ru": "наушники",
+  "text": "헤드폰"
+ },
+ "da15f669": {
+  "en": "phone/watch",
+  "ru": "телефон/часы",
+  "text": "휴대폰/시계"
+ },
  "a71d0499": {
   "en": "hidden network",
   "ru": "скрытая сеть",
@@ -4925,30 +5357,15 @@
   "ru": "чат",
   "text": "채팅"
  },
- "c1f1d7de": {
-  "en": "phone",
-  "ru": "телефон",
-  "text": "휴대폰"
- },
- "5f7d922f": {
-  "en": "watch",
-  "ru": "часы",
-  "text": "시계"
- },
- "e90e9e08": {
-  "en": "headphones",
-  "ru": "наушники",
-  "text": "헤드폰"
- },
- "da15f669": {
-  "en": "phone/watch",
-  "ru": "телефон/часы",
-  "text": "휴대폰/시계"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
   "text": "선택 사항"
+ },
+ "071236e4": {
+  "en": "Before",
+  "ru": "Ранее",
+  "text": "이전"
  },
  "ccdb9efa": {
   "en": "No pet",

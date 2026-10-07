@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "배고파요: 전파가 조용해요",
  "shot.heltec-pet-stats": "OLED: 윤곽선으로 그림",
  "shot.m9-pet-dead": "무덤과 펫의 기억",
- "doc.pet": "메시 펫"
+ "doc.pet": "메시 펫",
+ "news.dice": "<b>새 기능:</b> 주사위 — 모든 보드의 RPG·Warhammer용 주사위 굴리기 DIC3R",
+ "f.dice.t": "주사위",
+ "f.dice.d": "모든 보드에서 쓰는 주사위 굴리기 DIC3R. RPG: 2d6+1 같은 주사위 풀이나 임의의 수식, 주사위마다 고유한 모양과 합계, d66과 d%. Warhammer: 큰 값부터 정렬되는 최대 50개 주사위 격자와 성공 기준. 생명과 자원 카운터, 저장된 굴림을 가진 캐릭터. 모든 것이 기기에 저장되므로 화면, 웹 페이지, 앱에서 같은 굴림을 봅니다.",
+ "shot.m9-dice-shapes": "주사위마다 고유한 모양: d4부터 d20까지",
+ "shot.t114-dice-saved": "T114의 저장된 굴림",
+ "shot.m9-dice-grid": "Warhammer: 4+로 8회 성공",
+ "shot.m9-dice-counters": "카운터: ±1과 ±5",
+ "shot.heltec-dice-grid": "OLED: 윤곽으로 그린 격자",
+ "shot.m9-dice-saved": "캐릭터의 저장된 굴림",
+ "doc.dice": "주사위"
 }

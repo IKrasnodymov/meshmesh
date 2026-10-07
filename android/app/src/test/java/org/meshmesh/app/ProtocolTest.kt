@@ -163,6 +163,24 @@ class ProtocolTest {
         assertEquals(200, api.request("POST", "/api/command", """{"command":"pet cuddle"}""").status)
     }
 
+    @Test fun diceAreReadFreshAndTheirActionsGoAsCommands() = runBlocking {
+        // Rolls change on the device's screen too: GET /api/dice runs "dice" each time; an action answers "OK ... {json}".
+        val board = FakeBoard { c -> when {
+            c == "dice" -> listOf("""{"mode":"rpg","results":[],"pool":{"text":"2d6"}}""")
+            c == "dice roll 2d6+1" -> listOf("""OK rolled {"mode":"rpg","results":[{"n":1,"formula":"2d6+1","parts":[12,8,5],"total":6}]}""")
+            c == "dice roll 2d" -> listOf("ERR formula: NdX+NdX-N, X 2..1000, d% d66, up to 8 terms")
+            else -> listOf("""{"rx":1}""")
+        } }
+        val api = CommandApi(LineTransport(board), "ble", "test", null)
+        assertEquals(200, api.request("GET", "/api/dice", null).status)
+        api.request("GET", "/api/dice", null)
+        assertEquals(2, board.commands.count { it == "dice" })
+        val rolled = api.request("POST", "/api/command", """{"command":"dice roll 2d6+1"}""")
+        assertEquals(200, rolled.status)
+        assertTrue(rolled.body.contains("\"total\":6"))
+        assertEquals(400, api.request("POST", "/api/command", """{"command":"dice roll 2d"}""").status)
+    }
+
     @Test fun channelsGoAsCommandsAndListRefreshesAfterChange() = runBlocking {
         val board = FakeBoard { c -> listOf(when {
             c == "status" -> """{"rx":1,"channels":1}"""

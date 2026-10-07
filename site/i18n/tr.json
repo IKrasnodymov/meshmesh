@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Aç: radyo sessiz",
  "shot.heltec-pet-stats": "OLED: çizgiyle çizilmiş",
  "shot.m9-pet-dead": "Bir mezar ve hayvanın anısı",
- "doc.pet": "Ağ evcil hayvanı"
+ "doc.pet": "Ağ evcil hayvanı",
+ "news.dice": "<b>Yeni:</b> zarlar — her kartta RPG ve Warhammer için DIC3R zar atıcı",
+ "f.dice.t": "Zarlar",
+ "f.dice.d": "Her kartta DIC3R zar atıcı. RPG: 2d6+1 gibi bir havuz ya da herhangi bir formül, her zar kendi şekliyle, toplam; d66 ve d%. Warhammer: büyükten küçüğe dizilen, başarı eşikli 50 zara kadar ızgara. Can ve kaynak sayaçları, kendi kayıtlı atışları olan karakterler. Her şeyi cihaz saklar; ekran, web sayfası ve uygulama aynı atışları gösterir.",
+ "shot.m9-dice-shapes": "Her zar kendi şekliyle: d4'ten d20'ye",
+ "shot.t114-dice-saved": "T114'te kayıtlı bir atış",
+ "shot.m9-dice-grid": "Warhammer: 4+ ile 8 başarı",
+ "shot.m9-dice-counters": "Sayaçlar: ±1 ve ±5",
+ "shot.heltec-dice-grid": "OLED: ızgara çizgiyle",
+ "shot.m9-dice-saved": "Bir karakterin kayıtlı atışları",
+ "doc.dice": "Zarlar"
 }

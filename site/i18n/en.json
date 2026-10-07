@@ -230,5 +230,15 @@
  "shot.m9-pet-hungry": "Hungry: the air is quiet",
  "shot.heltec-pet-stats": "The OLED: drawn in outline",
  "shot.m9-pet-dead": "A grave and the memory of the pet",
- "doc.pet": "Mesh pet"
+ "doc.pet": "Mesh pet",
+ "news.dice": "<b>New:</b> dice — the DIC3R roller for RPG and Warhammer on every board",
+ "f.dice.t": "Dice",
+ "f.dice.d": "The DIC3R dice roller on every board. RPG: a pool such as 2d6+1 or any formula, each die drawn in its own shape, the sum; d66 and d%. Warhammer: a grid of up to 50 dice, rolled high to low, with a success threshold. Counters for life and resources, characters with their own saved rolls. The device keeps it all, so the screen, the web page and the app show the same rolls.",
+ "shot.m9-dice-shapes": "Each die in its shape: d4 to d20",
+ "shot.t114-dice-saved": "A saved roll on the T114",
+ "shot.m9-dice-grid": "Warhammer: 8 successes at 4+",
+ "shot.m9-dice-counters": "Counters: ±1 and ±5",
+ "shot.heltec-dice-grid": "The OLED: the grid in outline",
+ "shot.m9-dice-saved": "Saved rolls of a character",
+ "doc.dice": "Dice"
 }

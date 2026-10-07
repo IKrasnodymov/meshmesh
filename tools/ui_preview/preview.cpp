@@ -7,6 +7,7 @@
 #include "MeshRadio.h"
 #include "Maps.h"
 #include "Pet.h"
+#include "Dice.h"
 #include "Navigation.h"
 #include "Wire.h"
 #include <time.h>

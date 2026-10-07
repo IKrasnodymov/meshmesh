@@ -94,7 +94,7 @@ template<class F> void menuBox(unsigned n,int index,F name){
 }
 void empty(Icon ic,const String& a,const String& b){icon(ic,120,46,12,ColFaint);center(120,84,fit(a,228),ColInk);center(120,103,fit(b,228,small),ColDim,small);}
 String pageTitle(int p){
- switch(p){case Home:return "MeshMesh";case PetPage:return petTitle();case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
+ switch(p){case Home:return "MeshMesh";case PetPage:return petTitle();case DicePage:return diceTitle();case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
  case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
  return t("Modules","Модули");
 }
@@ -234,6 +234,49 @@ void petPage(){
   text(106,108,fit(s.mortal?t("death: on","смерть: вкл."):t("death: off","смерть: выкл."),130,tiny),ColDim,tiny);return;}
  petBar(78,IcMail,ColWarn,s.food);petBar(91,IcPaw,ColPink,s.joy);petBar(104,IcPulse,ColGood,s.health);
 }
+// Dice: the RPG card with the dice in the M9's shapes and the pool, the Warhammer grid, three counters a page.
+void hiDie(int cx,int cy,uint8_t shape,unsigned v,bool negative,int s){
+ unsigned top=shape<dice::D66?dice::faces(shape):0;bool high=top&&v==top,one=top>=4&&v==1;
+ uint8_t fill=negative?ColDim:shape==dice::D66||shape==dice::DPercent?ColAccent:high?ColGood:one?ColBad:ColInk,face=one?ColInk:ColBack;
+ drawDieShape(g(),shape,cx,cy,s,fill,ColDim,face,shape==dice::D6?v:0);
+ if(shape==dice::D6&&v>=1&&v<=6)return;
+ String l=shape==dice::DPercent?dice::valueText(dice::DPercent,v):String(v);center(cx,cy+(shape==dice::D4?s/2+4:5),l,face,l.length()>2?tiny:small);
+}
+void dicePage(){
+ auto& d=g();const auto& s=dicer.s;
+ if(s.mode==dice::Grid){
+  for(unsigned i=0;i<s.gridSize;i++){int x=5+(i%10)*23,y=24+(i/10)*18;bool chosen=i<s.gridChosen,rolled=chosen&&dicer.gridRolled,pass=!s.thresholdOn||dicer.grid[i]>=s.threshold;
+   d.fillRoundRect(x,y,21,16,4,rolled?(pass?ColDicePass:ColDiceFail):chosen?ColDiceChosen:ColCard);
+   if(chosen)center(x+11,y+13,dice::valueText(s.gridType,dicer.grid[i]),ColInk,small);}
+  if(s.gridSize<=30&&!s.gridChosen)center(120,104,fit(t("Choose dice: Dice +1","Выберите: Кости +1"),228,tiny),ColDim,tiny);
+  return;}
+ if(s.mode==dice::Tally){
+  const auto& c=dicer.hero();if(!diceShownCounter()){empty(IcDice,t("No counters","Счётчиков нет"),t("Add one in the menu","Добавьте в меню"));return;}
+  int first=diceCounterSel/3*3;
+  for(int i=first;i<int(c.counters)&&i<first+3;i++){int x=4+(i-first)*79;const dice::Counter& k=c.counter[i];bool focus=i==diceCounterSel;uint8_t hue=ColDice0+k.color%dice::Colors;
+   panel(x,24,74,90,focus?ColCardHi:ColCard,8);d.fillRoundRect(x,24,74,5,2,hue);if(focus){d.drawRoundRect(x,24,74,90,8,hue);d.drawRoundRect(x+1,25,72,88,7,hue);}
+   text(x+6,44,fit(k.name,64,tiny),focus?ColInk:ColDim,tiny);String v=String(k.value);center(x+37,88,v,ColInk,width(v,big)<=68?big:bold);}
+  return;}
+ const dice::Result* r=dicer.last();panel(4,24,150,90,ColCard,8);
+ if(!r){icon(IcDice,79,54,12,ColFaint,ColCard);center(79,96,fit(t("No rolls yet","Бросков ещё нет"),146,small),ColDim,small);}
+ else{
+  text(10,40,fit(r->label[0]?String(r->label)+" · "+r->formula:String(r->formula),138,tiny),r->label[0]?ColViolet:ColDim,tiny);
+  auto label=[&](unsigned i){unsigned v=r->value[i];return r->kind[i]==dice::PartNumber?String(r->negative[i]?"-":"+")+String(v):r->kind[i]==dice::PartPercent?dice::valueText(dice::DPercent,v):String(v);};
+  auto wide=[&](unsigned i){return r->kind[i]==dice::PartNumber?width(label(i),small)+8:r->shape[i]>=dice::D66?30:26;};
+  int x=10;bool many=r->more;for(unsigned i=0;i<r->parts&&!many;i++){x+=wide(i)+2;many=x>150;}
+  if(many)lines(dicer.resultText(*r,false),10,60,138,15,2,ColInk,small);
+  else{x=10;for(unsigned i=0;i<r->parts;i++){int w=wide(i);
+    if(r->kind[i]==dice::PartNumber){panel(x,49,w,18,ColDiceNumber,5);center(x+w/2,63,label(i),ColInfo,small);}
+    else hiDie(x+w/2,58,r->shape[i],r->value[i],r->negative[i],11);
+    x+=w+2;}}
+  if(!r->special){String total=String(r->total);int tw=width(total,big);right(148,108,total,ColWarn,big);text(148-tw-16,103,"=",ColDim);
+   if(r->parts>1&&!many)text(10,108,fit(dicer.resultText(*r,false),max(30,148-tw-32),tiny),ColDim,tiny);}
+ }
+ panel(158,24,78,34,ColCardHi,8);String pool=dicer.poolText();center(197,47,pool,ColInk,width(pool,bold)<=70?bold:small);
+ if(dicer.resultCount>1)text(160,74,t("Before","Ранее"),ColFaint,tiny);
+ int y=92;for(int i=int(dicer.resultCount)-2;i>=0&&y<=112;i--,y+=18){const dice::Result& p=dicer.results[i];
+  String v=p.special?String():String(p.total);text(160,y,fit(p.label[0]?String(p.label):String(p.formula),74-width(v,small)-4,tiny),ColDim,tiny);right(236,y,v,ColInk,small);}
+}
 void gps(){
  bool fix=hardware.gpsFix();uint16_t c=!config.gps?ColFaint:fix?ColGood:hardware.clockConflict?ColBad:ColWarn;
  panel(4,25,232,40,ColCard,8);icon(IcPin,20,45,8,c,ColCard);
@@ -334,10 +377,10 @@ void draw(){
  if(page==Chess&&chessOpen&&chessOpen->state!=ChessMatch::Free){chessBoard(*chessOpen);hardware.flush();return;}
  if(page==Chess)chessOpen=nullptr;
  String title=pageTitle(page);
- switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;case Chess:chessList();break;case PetPage:petPage();break;case Signals:signals(title);break;
+ switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;case Chess:chessList();break;case PetPage:petPage();break;case DicePage:dicePage();break;case Signals:signals(title);break;
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
- if(menuOpen){Act acts[8];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}
+ if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}
  else footer({clickHint(pageTitle(nextPage(page))),hint()});
  toast();hardware.flush();
 }

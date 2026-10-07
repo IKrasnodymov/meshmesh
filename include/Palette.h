@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "PetSprites.h"
+#include "Dice.h"
 // Colours of the compact interface as canvas values. Monochrome panels light any non-zero value,
 // so the colour entries are used only on colour screens: the T114 TFT (MM_HIRES, UiHires.inc), where
 // they are the M9 interface's colours (Ui.cpp), and colour 1 on the Wireless Tracker's TFT.
@@ -9,7 +10,8 @@ enum UiColor:uint8_t {ColBack,ColInk,ColAccent,ColDim,ColGood,ColWarn,ColBad,Col
   ColBoardLight,ColBoardDark,ColTarget,ColCursor,ColPieceDark,ColLastMove,
   ColCard,ColCardHi,ColLine,ColFaint,ColInfo,ColViolet,ColPink,ColOutBubble,ColInBubble,ColHashBack,ColLockBack,
   ColHue0,ColHue1,ColHue2,ColHue3,ColHue4,ColHue5,ColHue6,ColHue7,
-  ColPetBody0,ColPetAccent0=ColPetBody0+pet::Species,ColPetShell=ColPetAccent0+pet::Species,ColPetEye,ColPetSick,ColPetStone,ColPetStoneLight,ColCount};
+  ColPetBody0,ColPetAccent0=ColPetBody0+pet::Species,ColPetShell=ColPetAccent0+pet::Species,ColPetEye,ColPetSick,ColPetStone,ColPetStoneLight,
+  ColDice0,ColDicePass=ColDice0+dice::Colors,ColDiceFail,ColDiceChosen,ColDiceNumber,ColCount};
 constexpr uint16_t rgb565(uint32_t v){return ((v>>8)&0xf800)|((v>>5)&0x07e0)|((v>>3)&0x1f);}
 constexpr uint16_t palette565[ColCount]={
   rgb565(0x080c11), // background
@@ -46,4 +48,8 @@ constexpr uint16_t palette565[ColCount]={
   rgb565(0x101418), // its eyes and mouth
   rgb565(0x9fb08a), // its body when ill
   rgb565(0x8d99a6),rgb565(0xc5ccd3), // the grave stone and its cross
+  // dice: the counters' and saved rolls' colours (Dice.h), then grid dice at or over and under the threshold, chosen dice and numbers in a roll
+  rgb565(dice::colors[0]),rgb565(dice::colors[1]),rgb565(dice::colors[2]),rgb565(dice::colors[3]),rgb565(dice::colors[4]),rgb565(dice::colors[5]),rgb565(dice::colors[6]),rgb565(dice::colors[7]),
+  rgb565(dice::colors[8]),rgb565(dice::colors[9]),rgb565(dice::colors[10]),rgb565(dice::colors[11]),rgb565(dice::colors[12]),rgb565(dice::colors[13]),rgb565(dice::colors[14]),
+  rgb565(0x2f8f4e),rgb565(0xa8322c),rgb565(0x2f5f9e),rgb565(0x1d3557),
 };
