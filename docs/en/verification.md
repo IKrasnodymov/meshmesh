@@ -13,6 +13,10 @@
 > screenshots (M9 page with a speech bubble, Heltec hold menu); physical buttons, the T114, the GAT562 and the
 > community boards were not checked on hardware; growing up to adult and death only with time skipped
 > (`pet skip`), not real days.
+> T114 (7 October, repeater): package `3d367a3` (the same code, ELF `1A2D10CA…`) installed with `tools/nrf52.py`
+> over 0.4.2, boot 58; the repeater role and 44 history records kept. The colour pet screen, the hold menu
+> and "Pet" were checked with USB keys and a screenshot. Radio reception after the install was not checked:
+> the M9 and the Heltec were unplugged at the time, `rx` stayed 0.
 
 > **0.4.3: storage in the free OTA slot** (6 October 2026). A user's Heltec V3 erases the LittleFS partition
 > (`0x610000`) but does not keep a write, status register `0000`. `fsformat` now puts LittleFS into the free
