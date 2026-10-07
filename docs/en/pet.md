@@ -6,7 +6,21 @@ The Heltec V4/V3, Wireless Tracker, T-Beam and other boards with a 128×64 OLED 
 the LCD of a keychain pet; the T114 draws it in colour at its native 240×135. The pet also lives in the
 repeater and room server modes, where the relayed traffic feeds it.
 
-Code: `src/Pet.cpp`, `include/Pet.h` (life, food, saving, 16×16 sprites), `src/UiPet.inc` (320×240
+## Species
+
+Fifteen species, each with its own drawing, a young look (baby, kid) and a grown one (teen, adult) and its own
+body and accent colours: Pinglet (with an antenna), Bytecat, Lorafox (a fox with a tail), Hootnode (an owl),
+Sparkdrake (a little dragon), Bunbit (a bunny), Octomesh (an octopus), Boo (a ghost), Robo, Ribbit (a frog),
+Pengu, Shroom (a mushroom), Jelly (a slime), Buzz (a bee), Axolotl. A new egg gets a random species and name
+(hardware generator); the spots on the egg have the colour of the species inside. The accent in the top rows
+(the antenna ball, the bunny's ears) lights up when a packet arrives. On the OLED the outline tells the species.
+
+![Every species on the M9 and the T114](../pet-species.png)
+
+The drawings are in `tools/pet_sprites.py` (16×16, two bits a pixel, about 2 KB for all species); it writes
+`include/PetSprites.h`, and with `--sheet OUT.png` draws every species. The T114 palette takes the colours from there.
+
+Code: `src/Pet.cpp`, `include/Pet.h` (life, food, saving), `src/UiPet.inc` (320×240
 screen), `src/UiPetCompact.inc` (128×64 OLED), its page in `src/UiHires.inc` (T114). The state is the
 file `/meshmesh/pet.bin` in LittleFS (about 450 bytes with a checksum), not NVS.
 
@@ -42,8 +56,7 @@ The egg hatches after 15 minutes of running. Then the stage follows the level, b
 | Teen | 6–9 | 1 day |
 | Adult | 10+ | 3 days |
 
-Level n starts at 25·n·(n−1) experience: level 2 at 50, level 3 at 150, level 10 at 2250. The species
-(body colour) and the name of a new egg come from the node key; the name can be changed.
+Level n starts at 25·n·(n−1) experience: level 2 at 50, level 3 at 150, level 10 at 2250. The name can be changed.
 
 ## Death
 

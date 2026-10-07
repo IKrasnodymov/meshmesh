@@ -202,8 +202,8 @@ void signals(String& title){
 // The pet: the creature on its card in colour, its words in a bubble, the food, joy and health bars.
 uint8_t petInk(uint8_t ink,pet::Mood m){
  bool dead=m==pet::Gone;
- switch(ink){case pet::InkOutline:return ColBar;case pet::InkBody:return dead?ColPetStone:m==pet::Sick?ColPetSick:ColPet0+creature.s.species%pet::Species;
- case pet::InkLight:return dead?ColPetStoneLight:ColPetLight;case pet::InkEye:return ColPetEye;case pet::InkCheek:return ColPink;case pet::InkTear:return ColInfo;case pet::InkGlow:return ColTarget;}return ColCard;
+ switch(ink){case pet::InkOutline:return ColBar;case pet::InkBody:return dead?ColPetStone:m==pet::Sick?ColPetSick:ColPetBody0+creature.s.species%pet::Species;
+ case pet::InkLight:return dead?ColPetStoneLight:ColPetAccent0+creature.s.species%pet::Species;case pet::InkShell:return ColPetShell;case pet::InkEye:return ColPetEye;case pet::InkCheek:return ColPink;case pet::InkTear:return ColInfo;case pet::InkGlow:return ColTarget;}return ColCard;
 }
 void petArt(int x,int y,int scale,uint32_t now){
  uint8_t grid[pet::Size][pet::Size];creature.sprite(grid,now);pet::Mood m=creature.mood();
@@ -224,7 +224,7 @@ void petPage(){
  if(e<2500&&creature.effect==pet::Medicine){int cy=44-int(e/120);d.fillRect(46,cy-2,13,5,ColGood);d.fillRect(50,cy-6,5,13,ColGood);}
  if(creature.talking(now)){panel(106,24,130,48,ColInk,8);d.fillTriangle(106,52,106,62,98,58,ColInk);lines(creature.speech,112,42,118,16,2,ColBack,small);}
  else{text(106,41,fit(s.name,128,bold),ColInk,bold);
-  String sub=!creature.alive()?creature.causeText(s.cause):s.stage==pet::Egg?creature.stageName(pet::Egg):creature.stageName(s.stage)+t(" · Lv "," · Ур. ")+String(creature.level());
+  String sub=!creature.alive()?creature.causeText(s.cause):s.stage==pet::Egg?creature.stageName(pet::Egg):String(creature.kind().name)+" · "+creature.stageName(s.stage); // the level is in the title
   text(106,57,fit(sub,130,tiny),creature.alive()?ColDim:ColBad,tiny);
   pet::Mood m=creature.mood();if(creature.alive()&&s.stage!=pet::Egg)text(106,71,fit(creature.moodName(),130,small),m==pet::Happy?ColGood:m==pet::Hungry||m==pet::Lonely?ColWarn:m==pet::Sick?ColBad:ColDim,small);}
  if(s.stage==pet::Egg){text(106,80,fit(t("hatches in","до вылупления"),130,small),ColDim,small);text(106,98,creature.ageText(creature.hatchLeft()),ColInk,bold);

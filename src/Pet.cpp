@@ -1,44 +1,34 @@
+#define PET_SPRITES_DEFINE // the species drawings live in this file (PetSprites.h)
 #include "Pet.h"
 #include "Config.h"
 #include "Hardware.h"
 #include "MeshRadio.h"
 #include "ChessRating.h"
 #include <ArduinoJson.h>
+#if !defined(MM_UI_PREVIEW)
+#include <esp_system.h>
+#endif
 #include <math.h>
 #include <time.h>
 pet::Pet creature;
 namespace pet {
 namespace {
 const char* const PetFile="/meshmesh/pet.bin";const char* const PetTemp="/meshmesh/pet.tmp";
-// Pixel art, 16x16: 'o' outline, 'b' body, 'l' light (belly, spots; the antenna ball glows on a packet).
+// The egg (its spots in the colour of the species inside) and the grave: 'o' outline, 'b' shell or stone, 'l' spots or cross.
 const char* const SpriteEgg[Size]={
  "................","................","......oooo......",".....obbbbo.....","....obblbbbo....","....obbbbbbo....",
  "...obbbbbbllo...","...obllbbbblo...","...obllbbbbbo...","...obbbbblbbo...","...obbbbbbbbo...","...obbllbbbbo...",
  "....obbbbbbo....",".....oooooo.....","................","................"};
-const char* const SpriteBaby[Size]={
- "................","................","................","................","................","................",
- "......oooo......","....oobbbboo....","...obbbbbbbbo...","...obbbbbbbbo...","..obbbbbbbbbbo..","..obbbbbbbbbbo..",
- "..obbbllllbbbo..","...obllllllbo...","....oooooooo....","................"};
-const char* const SpriteChild[Size]={
- "................",".......oo.......","......ollo......",".......oo.......",".....oooooo.....","....obbbbbbo....",
- "...obbbbbbbbo...","..obbbbbbbbbbo..","..obbbbbbbbbbo..","..obbbbbbbbbbo..","..obbbbbbbbbbo..","..obbbllllbbbo..",
- "...obllllllbo...","....oooooooo....","....oo....oo....","................"};
-const char* const SpriteTeen[Size]={
- ".......oo.......","......ollo......","..o....oo....o..","..oo...oo...oo..","..oboooooooobo..","..obbbbbbbbbbo..",
- "..obbbbbbbbbbo..","..obbbbbbbbbbo..",".oobbbbbbbbbboo.","obobbbbbbbbbbobo",".oobbbllllbbboo.","..obbllllllbbo..",
- "..obbllllllbbo..","...obbbbbbbbo...","....oooooooo....","....oo....oo...."};
-const char* const SpriteAdult[Size]={
- "......oooo......","......ollo......",".o.....oo.....o.",".oo....oo....oo.",".oboooooooooobo.",".obbbbbbbbbbbbo.",
- ".obbbbbbbbbbbbo.",".obbbbbbbbbbbbo.",".obbbbbbbbbbbbo.","oobbbbbbbbbbbboo","obobbbbbbbbbbobo","oobbbbllllbbbboo",
- ".obbbllllllbbbo.",".obbbllllllbbbo.","..oooooooooooo..","...ooo....ooo..."};
 const char* const SpriteGrave[Size]={
  "................","................","................",".....oooooo.....","....obbbbbbo....","...obbbllbbbo...",
  "...obbbllbbbo...","...obllllllbo...","...obllllllbo...","...obbbllbbbo...","...obbbllbbbo...","...obbbbbbbbo...",
  "...obbbbbbbbo...",".oooooooooooooo.",".obbbbbbbbbbbbo.",".oooooooooooooo."};
-// Face of each stage: eye row, left and right eye column (2x2 each), mouth row, cheek row and columns.
-struct Face{int8_t eye,left,right,mouth,cheek,cheekL,cheekR;};
-const Face faces[]={{0,0,0,0,0,0,0},{9,5,9,12,11,3,12},{7,5,9,10,9,3,12},{6,4,10,9,8,3,12},{6,4,10,9,8,3,12}};
-const char* const names[]={"Ping","Bitty","Lora","Pixel","Blip","Nibble","Echo","Hopper","Chirp","Spark","Byte","Mote"};
+const char* const names[]={"Ping","Bitty","Lora","Pixel","Blip","Nibble","Echo","Hopper","Chirp","Spark","Byte","Mote","Pip","Zuzu","Taro","Kiwi","Momo","Bolt","Nori","Fizz"};
+#if defined(MM_UI_PREVIEW)
+uint32_t entropy(){return rand();}
+#else
+uint32_t entropy(){return esp_random();} // the hardware generator: each egg its own species
+#endif
 uint32_t fnv(const uint8_t* p,size_t n){uint32_t h=2166136261u;while(n--)h=(h^*p++)*16777619u;return h;}
 uint32_t mix(uint64_t v){uint32_t h=uint32_t(v^(v>>32))*2654435761u;return h^(h>>15);}
 String t(const char* en,const char* ru){return tr(en,ru);}
@@ -50,10 +40,10 @@ void Pet::begin(){
   bool ok=readStored(PetFile,PetTemp,stored,sizeof(State))&&stored->version==1&&stored->check==fnv((const uint8_t*)stored,offsetof(State,check))
     &&stored->stage<StageCount&&stored->species<Species&&stored->graveCount<=Graves&&stored->friendNext<FriendSlots&&memchr(stored->name,0,sizeof stored->name);
   if(ok)s=*stored;
-  else{s=State();s.species=mix(meshRadio.nodeId)%Species;hatchName();}
+  else{s=State();s.species=entropy()%Species;hatchName();}
   delete stored;lastTick=millis();lastSave=lastTick;events++;
 }
-void Pet::hatchName(){uint32_t h=mix(meshRadio.nodeId+s.generation*0x9e3779b9u);strlcpy(s.name,names[h%(sizeof names/sizeof *names)],sizeof s.name);}
+void Pet::hatchName(){strlcpy(s.name,names[entropy()%(sizeof names/sizeof *names)],sizeof s.name);}
 unsigned Pet::level() const{unsigned n=1;while(n<99&&s.xp>=levelXp(n+1))n++;return n;}
 bool Pet::asleep() const{
   if(!MeshRadio::clockSet()||!alive()||s.stage==Egg)return false;
@@ -158,7 +148,7 @@ String Pet::heal(){
 String Pet::newEgg(){
   if(alive())return t("Your pet is alive","Питомец жив");
   Grave graves[Graves];memcpy(graves,s.graves,sizeof graves);uint8_t count=s.graveCount;uint16_t generation=s.generation+1;
-  s=State();memcpy(s.graves,graves,sizeof graves);s.graveCount=count;s.generation=generation;s.species=mix(meshRadio.nodeId^(uint64_t(generation)<<40))%Species;
+  s=State();memcpy(s.graves,graves,sizeof graves);s.graveCount=count;s.generation=generation;s.species=entropy()%Species;
   hatchName();foodRest=joyRest=healthRest=crumbRest=0;say(t("A new egg","Новое яйцо"),Sparkle);save(true);return speech;
 }
 String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");}
@@ -189,13 +179,16 @@ int Pet::sway(uint32_t now) const{
   unsigned k=(now/period)%4;return k==1?-1:k==3?1:0;
 }
 void Pet::sprite(uint8_t grid[Size][Size],uint32_t now) const{
-  const char* const* art=s.stage==Egg?SpriteEgg:s.stage==Baby?SpriteBaby:s.stage==Child?SpriteChild:s.stage==Teen?SpriteTeen:s.stage==Adult?SpriteAdult:SpriteGrave;
   bool glow=now-glowAt<800&&alive();
-  for(unsigned y=0;y<Size;y++)for(unsigned x=0;x<Size;x++){char c=art[y][x];grid[y][x]=c=='o'?InkOutline:c=='b'?InkBody:c=='l'?(glow&&y<4&&s.stage!=Egg?InkGlow:InkLight):InkNone;}
-  if(s.stage==Egg){if(hatchLeft()<300){const uint8_t crack[][2]={{5,7},{6,8},{7,7},{8,8},{9,7},{10,8}};for(auto& c:crack)grid[c[1]][c[0]]=InkOutline;}return;}
-  if(!alive())return;
-  const Face& f=faces[s.stage];Mood m=mood();
+  if(s.stage==Egg||!alive()){const char* const* art=s.stage==Egg?SpriteEgg:SpriteGrave;bool egg=s.stage==Egg;
+    for(unsigned y=0;y<Size;y++)for(unsigned x=0;x<Size;x++){char c=art[y][x];grid[y][x]=c=='o'?InkOutline:c=='b'?(egg?InkShell:InkBody):c=='l'?(egg?InkBody:InkLight):InkNone;}
+    if(egg&&hatchLeft()<300){const uint8_t crack[][2]={{5,7},{6,8},{7,7},{8,8},{9,7},{10,8}};for(auto& c:crack)grid[c[1]][c[0]]=InkOutline;}
+    return;}
+  const Look& f=s.stage<=Child?kind().young:kind().grown;
+  for(unsigned y=0;y<Size;y++)for(unsigned x=0;x<Size;x++){uint8_t v=(f.rows[y]>>(2*x))&3;grid[y][x]=v==3?(glow&&y<4?InkGlow:InkLight):v;} // 1 outline, 2 body
+  Mood m=mood();
   auto px=[&](int x,int y,uint8_t ink){if(x>=0&&x<int(Size)&&y>=0&&y<int(Size))grid[y][x]=ink;};
+  auto skin=[&](int x,int y){return x>=0&&x<int(Size)&&y>=0&&y<int(Size)&&(grid[y][x]==InkBody||grid[y][x]==InkLight);};
   auto eye=[&](int x,uint8_t pattern){ // bits: top-left, top-right, bottom-left, bottom-right
     if(pattern&1)px(x,f.eye,InkEye);if(pattern&2)px(x+1,f.eye,InkEye);if(pattern&4)px(x,f.eye+1,InkEye);if(pattern&8)px(x+1,f.eye+1,InkEye);};
   bool blink=(now%4200)<160,talk=talking(now)&&now-speechAt<2500&&(now/220)%2;
@@ -206,19 +199,19 @@ void Pet::sprite(uint8_t grid[Size][Size],uint32_t now) const{
   else{eye(f.left,15);eye(f.right,15);}
   int mx=7,my=f.mouth;
   bool open=m==Eating?(now/200)%2:talk||m==Hungry;
-  if(open){px(mx,my,InkEye);px(mx+1,my,InkEye);px(mx,my+1,InkEye);px(mx+1,my+1,InkEye);}
-  else if(m==Happy){px(mx-1,my,InkEye);px(mx+2,my,InkEye);px(mx,my+1,InkEye);px(mx+1,my+1,InkEye);}
-  else if(m==Lonely||m==Sick){px(mx,my,InkEye);px(mx+1,my,InkEye);px(mx-1,my+1,InkEye);px(mx+2,my+1,InkEye);}
+  if(open){px(mx,my,InkEye);px(mx+1,my,InkEye);if(skin(mx,my+1))px(mx,my+1,InkEye);if(skin(mx+1,my+1))px(mx+1,my+1,InkEye);}
+  else if(m==Happy){if(skin(mx-1,my))px(mx-1,my,InkEye);if(skin(mx+2,my))px(mx+2,my,InkEye);if(skin(mx,my+1))px(mx,my+1,InkEye);if(skin(mx+1,my+1))px(mx+1,my+1,InkEye);}
+  else if(m==Lonely||m==Sick){px(mx,my,InkEye);px(mx+1,my,InkEye);if(skin(mx-1,my+1))px(mx-1,my+1,InkEye);if(skin(mx+2,my+1))px(mx+2,my+1,InkEye);}
   else if(m==Sleepy)px(mx,my,InkEye);
   else{px(mx,my,InkEye);px(mx+1,my,InkEye);}
-  if(m==Happy||m==Eating){px(f.cheekL,f.cheek,InkCheek);px(f.cheekR,f.cheek,InkCheek);}
-  if(m==Lonely&&(now/700)%3)px(f.left,f.eye+2,InkTear);
+  if((m==Happy||m==Eating)&&skin(3,f.cheek)&&skin(12,f.cheek)){px(3,f.cheek,InkCheek);px(12,f.cheek,InkCheek);}
+  if(m==Lonely&&(now/700)%3&&skin(f.left,f.eye+2))px(f.left,f.eye+2,InkTear);
 }
 String Pet::json() const{
   StaticJsonDocument<1024> d;d["name"]=s.name;d["stage"]=s.stage==Egg?"egg":s.stage==Baby?"baby":s.stage==Child?"kid":s.stage==Teen?"teen":s.stage==Adult?"adult":"dead";
   const char* moods[]={"happy","calm","hungry","lonely","asleep","ill","eating","gone"};d["mood"]=moods[mood()];
   d["level"]=level();d["xp"]=s.xp;d["next_level_xp"]=levelXp(level()+1);d["food"]=s.food;d["joy"]=s.joy;d["health"]=s.health;d["snacks"]=s.snacks;
-  d["age_s"]=s.age;d["hatch_left_s"]=hatchLeft();d["species"]=s.species;d["generation"]=s.generation;d["mortal"]=s.mortal;
+  d["age_s"]=s.age;d["hatch_left_s"]=hatchLeft();d["species"]=s.species;d["kind"]=kind().name;d["generation"]=s.generation;d["mortal"]=s.mortal;
   if(!alive())d["cause"]=s.cause==Hunger?"hunger":"loneliness";
   d["packets"]=s.packets;d["relays"]=s.relays;d["messages"]=s.messages;d["acks"]=s.acks;d["friends"]=s.friends;d["wins"]=s.wins;d["cuddles"]=s.cuddles;d["walks"]=s.walks;
   if(talking(millis()))d["speech"]=speech;

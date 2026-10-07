@@ -1,15 +1,15 @@
 // The pet page of the 320x240 screens (included by Ui.cpp; Pet.h has the creature): the creature on its
 // card with its words in a bubble, then name, stage, level and the food, joy and health bars. OK pets it,
 // F feeds a snack, H treats it, N renames it, D switches death on or off; a grave takes OK for a new egg.
-uint16_t petInk(uint8_t ink,uint32_t hue,pet::Mood m){
- bool dead=m==pet::Gone,ill=m==pet::Sick;uint32_t body=dead?0x8d99a6:ill?0x9fb08a:hue;
- switch(ink){case pet::InkOutline:return dead?rgb(0x2a3542):mix(body,0x000000,.68f);case pet::InkBody:return rgb(body);case pet::InkLight:return rgb(dead?0xc5ccd3:0xfff4dc);
+uint16_t petInk(uint8_t ink,unsigned kind,pet::Mood m){
+ bool dead=m==pet::Gone,ill=m==pet::Sick;uint32_t body=dead?0x8d99a6:ill?0x9fb08a:pet::bodies[kind];
+ switch(ink){case pet::InkOutline:return dead?rgb(0x2a3542):mix(body,0x000000,.68f);case pet::InkBody:return rgb(body);case pet::InkLight:return rgb(dead?0xc5ccd3:pet::accents[kind]);case pet::InkShell:return rgb(0xf4ecd8);
  case pet::InkEye:return rgb(0x101418);case pet::InkCheek:return rgb(0xf472b6);case pet::InkTear:return info;case pet::InkGlow:return rgb(0xf6f669);}return bg;
 }
 void petSprite(int x,int y,int scale,uint32_t now){
- uint8_t grid[pet::Size][pet::Size];creature.sprite(grid,now);pet::Mood m=creature.mood();uint32_t hue=pet::hues[creature.s.species%pet::Species];
+ uint8_t grid[pet::Size][pet::Size];creature.sprite(grid,now);pet::Mood m=creature.mood();unsigned k=creature.s.species%pet::Species;
  y-=creature.bob(now)*max(1,scale/3);x+=creature.sway(now)*max(1,scale/3);
- for(unsigned r=0;r<pet::Size;r++)for(unsigned c=0;c<pet::Size;c++)if(grid[r][c])g().fillRect(x+c*scale,y+r*scale,scale,scale,petInk(grid[r][c],hue,m));
+ for(unsigned r=0;r<pet::Size;r++)for(unsigned c=0;c<pet::Size;c++)if(grid[r][c])g().fillRect(x+c*scale,y+r*scale,scale,scale,petInk(grid[r][c],k,m));
 }
 void heart(int cx,int cy,int s,uint16_t c){g().fillCircle(cx-s/2,cy,s/2+1,c);g().fillCircle(cx+s/2,cy,s/2+1,c);g().fillTriangle(cx-s-1,cy+1,cx+s+1,cy+1,cx,cy+s+2,c);}
 void sparkle(int cx,int cy,int s,uint16_t c){g().drawFastHLine(cx-s,cy,2*s+1,c);g().drawFastVLine(cx,cy-s,2*s+1,c);g().drawPixel(cx-1,cy-1,c);g().drawPixel(cx+1,cy+1,c);g().drawPixel(cx+1,cy-1,c);g().drawPixel(cx-1,cy+1,c);}
@@ -42,7 +42,7 @@ void drawPet(){
  if(creature.talking(now)){String rows[2];unsigned n=wrap(creature.speech,rows,2,128,small);int h=10+n*11;
   panel(14,30,144,h,ink,7);d.fillTriangle(78,30+h-1,92,30+h-1,84,30+h+6,ink);for(unsigned i=0;i<n;i++)textCenter(86,40+i*11,rows[i],bg,small);}
  int x=172,w=138;text(x,45,fit(s.name,w,big),ink,big);
- String stage=creature.stageName(s.stage)+(dead||egg?String():t(" · Lv "," · Ур. ")+String(creature.level()));text(x,61,fit(stage,w,small),dim,small);
+ String stage=(dead||egg?String():String(creature.kind().name)+" · ")+creature.stageName(s.stage);text(x,61,fit(stage,w,small),dim,small);
  if(egg){
   uint32_t left=creature.hatchLeft();text(x,80,t("Hatches in ","Вылупится через "),dim,small);text(x,96,creature.ageText(left),ink,bold);
   d.fillRoundRect(x,102,w,7,3,line);d.fillRoundRect(x,102,max(4,int(w*(900-left)/900)),7,3,accent);
@@ -52,12 +52,12 @@ void drawPet(){
  if(dead){
   text(x,82,fit(t("Lived ","Прожил ")+creature.ageText(s.age),w),ink);text(x,98,fit(creature.causeText(s.cause),w,small),bad,small);
   text(x,124,t("In memory","Память"),dim,small);
-  for(unsigned i=0;i<s.graveCount&&i<3;i++){const auto& gr=s.graves[i];int y=140+i*22;d.fillCircle(x+5,y-4,4,rgb(pet::hues[gr.species%pet::Species]));
+  for(unsigned i=0;i<s.graveCount&&i<3;i++){const auto& gr=s.graves[i];int y=140+i*22;d.fillCircle(x+5,y-4,4,rgb(pet::bodies[gr.species%pet::Species]));
    text(x+14,y,fit(String(gr.name)+" · "+t("Lv ","Ур. ")+String(gr.level),w-14,small),ink,small);text(x+14,y+10,fit(creature.ageText(gr.age),w-14,small),faint,small);}
   footer({{"OK",t("New egg","Новое яйцо")},{"D",s.mortal?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.")},{"BACK",t("Menu","Меню")}});return;}
  pet::Mood m=creature.mood();uint16_t mc=m==pet::Happy?ok:m==pet::Hungry||m==pet::Lonely?warn:m==pet::Sick?bad:dim;
  text(x,76,creature.moodName(),mc,bold);
- uint32_t from=creature.levelXp(creature.level()),to=creature.levelXp(creature.level()+1);textRight(x+w,76,String(s.xp-from)+"/"+String(to-from)+" XP",faint,small);
+ uint32_t from=creature.levelXp(creature.level()),to=creature.levelXp(creature.level()+1);textRight(x+w,76,t("Lv ","Ур. ")+String(creature.level())+" · "+String(s.xp-from)+"/"+String(to-from),faint,small);
  d.fillRoundRect(x,81,w,3,1,line);d.fillRoundRect(x,81,max(2,int(w*(s.xp-from)/max<uint32_t>(1,to-from))),3,1,violet);
  petBar(x,100,w,t("Food","Сытость"),s.food);petBar(x,124,w,t("Joy","Радость"),s.joy);petBar(x,148,w,t("Health","Здоровье"),s.health);
  text(x,175,fit(t("Snacks ","Вкусняшки ")+String(s.snacks)+" · "+count(s.friends,"friend","friends","друг","друга","друзей"),w,small),ink,small);

@@ -358,7 +358,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:131: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
+   "src/Pet.cpp:120: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
   ]
  },
  "088500dd": {
@@ -452,7 +452,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:142: if(millis()-cuddleAt<20000&&cuddleAt){say(t(\"Enough for now\",\"Хватит пока\"));return speech;}"
+   "src/Pet.cpp:131: if(millis()-cuddleAt<20000&&cuddleAt){say(t(\"Enough for now\",\"Хватит пока\"));return speech;}"
   ]
  },
  "0b2e473c": {
@@ -726,7 +726,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:174: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
+   "src/Pet.cpp:163: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
   ]
  },
  "11ec7a8e": {
@@ -836,7 +836,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:143: cuddleAt=millis();s.cuddles++;gain(0,asleep()?30:100,1);say(asleep()?t(\"Zzz... purr\",\"Хрр... мурр\"):t(\"Purr\",\"Мурр\"),Hearts);save(true);return speech;"
+   "src/Pet.cpp:132: cuddleAt=millis();s.cuddles++;gain(0,asleep()?30:100,1);say(asleep()?t(\"Zzz... purr\",\"Хрр... мурр\"):t(\"Purr\",\"Мурр\"),Hearts);save(true);return speech;"
   ]
  },
  "13db9cb2": {
@@ -969,7 +969,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:181: String Pet::causeText(uint8_t cause) const{return cause==Hunger?t(\"of hunger\",\"от голода\"):cause==Loneliness?t(\"of loneliness\",\"от одиночества\"):\"\";}"
+   "src/Pet.cpp:170: String Pet::causeText(uint8_t cause) const{return cause==Hunger?t(\"of hunger\",\"от голода\"):cause==Loneliness?t(\"of loneliness\",\"от одиночества\"):\"\";}"
   ]
  },
  "171b883c": {
@@ -1089,7 +1089,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:154: if(millis()-healAt<300000&&healAt){say(t(\"Medicine works slowly\",\"Лекарство действует не сразу\"));return speech;}"
+   "src/Pet.cpp:143: if(millis()-healAt<300000&&healAt){say(t(\"Medicine works slowly\",\"Лекарство действует не сразу\"));return speech;}"
   ]
  },
  "191fb7b9": {
@@ -1256,7 +1256,7 @@
   ],
   "where": [
    "src/Ui.cpp:202: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return t(\"now\",\"сейчас\");if(s<3600)return String(s/60)+t(\" min\",\" мин\");if(s<86400)return String(s/3600)+t(\" h\",\" ч\");return String(s/86400)+t(\" d\",\" д\");}",
-   "src/Pet.cpp:184: return String(v/86400)+t(\" d\",\" д\")+(v%86400>=3600?\" \"+String(v%86400/3600)+t(\" h\",\" ч\"):String());"
+   "src/Pet.cpp:173: return String(v/86400)+t(\" d\",\" д\")+(v%86400>=3600?\" \"+String(v%86400/3600)+t(\" h\",\" ч\"):String());"
   ]
  },
  "1e1fe6d3": {
@@ -1558,7 +1558,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:134: case Lonely:line=r%2?t(\"Write to someone?\",\"Напиши кому-нибудь?\"):t(\"It's lonely here\",\"Мне одиноко\");break;"
+   "src/Pet.cpp:123: case Lonely:line=r%2?t(\"Write to someone?\",\"Напиши кому-нибудь?\"):t(\"It's lonely here\",\"Мне одиноко\");break;"
   ]
  },
  "247e64bb": {
@@ -2082,7 +2082,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:77: uint8_t next=min(byLevel,byAge);if(next>s.stage){s.stage=next;say(t(\"I grew up: \",\"Я подрос: \")+stageName(next),Sparkle);save(true);}"
+   "src/Pet.cpp:66: uint8_t next=min(byLevel,byAge);if(next>s.stage){s.stage=next;say(t(\"I grew up: \",\"Я подрос: \")+stageName(next),Sparkle);save(true);}"
   ]
  },
  "2da2d675": {
@@ -2100,7 +2100,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:159: if(alive())return t(\"Your pet is alive\",\"Питомец жив\");"
+   "src/Pet.cpp:148: if(alive())return t(\"Your pet is alive\",\"Питомец жив\");"
   ]
  },
  "2e67f21b": {
@@ -2481,7 +2481,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:74: unsigned after=level();if(after>before)say(t(\"Level \",\"Уровень \")+String(after),Sparkle);"
+   "src/Pet.cpp:63: unsigned after=level();if(after>before)say(t(\"Level \",\"Уровень \")+String(after),Sparkle);"
   ]
  },
  "37509630": {
@@ -2628,7 +2628,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:174: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
+   "src/Pet.cpp:163: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
   ]
  },
  "3b695912": {
@@ -2878,7 +2878,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:135: case Sick:line=t(\"I feel bad... heal me\",\"Мне плохо... полечи\");break;"
+   "src/Pet.cpp:124: case Sick:line=t(\"I feel bad... heal me\",\"Мне плохо... полечи\");break;"
   ]
  },
  "42861984": {
@@ -3015,7 +3015,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:178: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
+   "src/Pet.cpp:167: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
   ]
  },
  "4685a184": {
@@ -3033,7 +3033,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:117: if(delivered&&alive()&&s.stage!=Egg){s.acks+=delivered;if(s.snacks<9)s.snacks++;gain(0,40*delivered,10*delivered);say(t(\"Delivered, a snack for me\",\"Доставлено! Мне вкусняшка\"),Hearts);}"
+   "src/Pet.cpp:106: if(delivered&&alive()&&s.stage!=Egg){s.acks+=delivered;if(s.snacks<9)s.snacks++;gain(0,40*delivered,10*delivered);say(t(\"Delivered, a snack for me\",\"Доставлено! Мне вкусняшка\"),Hearts);}"
   ]
  },
  "46b2c002": {
@@ -3333,7 +3333,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:179: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
+   "src/Pet.cpp:168: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
   ]
  },
  "4b634e5b": {
@@ -3382,7 +3382,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:174: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
+   "src/Pet.cpp:163: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
   ]
  },
  "4d3f2400": {
@@ -3391,8 +3391,8 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:93: if(server&&s.food<250&&s.snacks){s.snacks--;s.food=clampPoints(s.food+300);say(t(\"Yum\",\"Ням\"),Food);}",
-   "src/Pet.cpp:149: s.snacks--;gain(300,20,2);say(t(\"Yum\",\"Ням\"),Food);save(true);return speech;"
+   "src/Pet.cpp:82: if(server&&s.food<250&&s.snacks){s.snacks--;s.food=clampPoints(s.food+300);say(t(\"Yum\",\"Ням\"),Food);}",
+   "src/Pet.cpp:138: s.snacks--;gain(300,20,2);say(t(\"Yum\",\"Ням\"),Food);save(true);return speech;"
   ]
  },
  "4d46f025": {
@@ -3533,7 +3533,7 @@
   "where": [
    "src/UiPet.inc:57: footer({{\"OK\",t(\"New egg\",\"Новое яйцо\")},{\"D\",s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
    "src/UiHeltec.cpp:222: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
-   "src/Pet.cpp:164: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
+   "src/Pet.cpp:153: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
   ]
  },
  "5002dec8": {
@@ -3553,7 +3553,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:146: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not eat\",\"Яйца не едят\");"
+   "src/Pet.cpp:135: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not eat\",\"Яйца не едят\");"
   ]
  },
  "5020984c": {
@@ -3964,7 +3964,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:133: case Hungry:line=r%2?t(\"Hungry: the air is empty\",\"Голодно: эфир пуст\"):t(\"A snack?\",\"Вкусняшку?\");break;"
+   "src/Pet.cpp:122: case Hungry:line=r%2?t(\"Hungry: the air is empty\",\"Голодно: эфир пуст\"):t(\"A snack?\",\"Вкусняшку?\");break;"
   ]
  },
  "5bb9392e": {
@@ -4461,7 +4461,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:143: cuddleAt=millis();s.cuddles++;gain(0,asleep()?30:100,1);say(asleep()?t(\"Zzz... purr\",\"Хрр... мурр\"):t(\"Purr\",\"Мурр\"),Hearts);save(true);return speech;"
+   "src/Pet.cpp:132: cuddleAt=millis();s.cuddles++;gain(0,asleep()?30:100,1);say(asleep()?t(\"Zzz... purr\",\"Хрр... мурр\"):t(\"Purr\",\"Мурр\"),Hearts);save(true);return speech;"
   ]
  },
  "674356ff": {
@@ -4674,7 +4674,8 @@
    "full"
   ],
   "where": [
-   "src/UiPet.inc:56: text(x+14,y,fit(String(gr.name)+\" · \"+t(\"Lv \",\"Ур. \")+String(gr.level),w-14,small),ink,small);text(x+14,y+10,fit(creature.ageText(gr.age),w-14,small),faint,small);}"
+   "src/UiPet.inc:56: text(x+14,y,fit(String(gr.name)+\" · \"+t(\"Lv \",\"Ур. \")+String(gr.level),w-14,small),ink,small);text(x+14,y+10,fit(creature.ageText(gr.age),w-14,small),faint,small);}",
+   "src/UiPet.inc:60: uint32_t from=creature.levelXp(creature.level()),to=creature.levelXp(creature.level()+1);textRight(x+w,76,t(\"Lv \",\"Ур. \")+String(creature.level())+\" · \"+String(s.xp-from)+\"/\"+String(to-from),faint,small);"
   ]
  },
  "6c80148e": {
@@ -4887,7 +4888,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:179: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
+   "src/Pet.cpp:168: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
   ]
  },
  "7079216d": {
@@ -5288,7 +5289,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:174: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
+   "src/Pet.cpp:163: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
   ]
  },
  "7a76bf2e": {
@@ -5344,7 +5345,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:179: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
+   "src/Pet.cpp:168: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
   ]
  },
  "7b798327": {
@@ -5362,7 +5363,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:131: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
+   "src/Pet.cpp:120: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
   ]
  },
  "7b962df1": {
@@ -5418,7 +5419,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:178: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
+   "src/Pet.cpp:167: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
   ]
  },
  "7c285a3c": {
@@ -5475,7 +5476,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:134: case Lonely:line=r%2?t(\"Write to someone?\",\"Напиши кому-нибудь?\"):t(\"It's lonely here\",\"Мне одиноко\");break;"
+   "src/Pet.cpp:123: case Lonely:line=r%2?t(\"Write to someone?\",\"Напиши кому-нибудь?\"):t(\"It's lonely here\",\"Мне одиноко\");break;"
   ]
  },
  "7d67f337": {
@@ -5649,17 +5650,6 @@
    "src/Ui.cpp:663: Hint keys[]={{tr(\"Ball, swipe\",\"Шар, свайп\"),t(\"Move: menu, lists, map\",\"Перемещение: меню, списки, карта\")},{tr(\"Click\",\"Нажатие\"),t(\"Open / send\",\"Открыть / отправить\")},{tr(\"Hold ball\",\"Удерж. шар\"),t(\"Unlock; in chat"
   ]
  },
- "810e0ff0": {
-  "cells": 7,
-  "families": [
-   "compact",
-   "full"
-  ],
-  "where": [
-   "src/UiPet.inc:45: String stage=creature.stageName(s.stage)+(dead||egg?String():t(\" · Lv \",\" · Ур. \")+String(creature.level()));text(x,61,fit(stage,w,small),dim,small);",
-   "src/UiHires.inc:227: String sub=!creature.alive()?creature.causeText(s.cause):s.stage==pet::Egg?creature.stageName(pet::Egg):creature.stageName(s.stage)+t(\" · Lv \",\" · Ур. \")+String(creature.level());"
-  ]
- },
  "81762a63": {
   "cells": 11,
   "families": [
@@ -5704,7 +5694,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:181: String Pet::causeText(uint8_t cause) const{return cause==Hunger?t(\"of hunger\",\"от голода\"):cause==Loneliness?t(\"of loneliness\",\"от одиночества\"):\"\";}"
+   "src/Pet.cpp:170: String Pet::causeText(uint8_t cause) const{return cause==Hunger?t(\"of hunger\",\"от голода\"):cause==Loneliness?t(\"of loneliness\",\"от одиночества\"):\"\";}"
   ]
  },
  "837d5b49": {
@@ -5722,7 +5712,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:91: crumbRest+=seconds;if(crumbRest>=6*3600){crumbRest-=6*3600;if(s.snacks<9){s.snacks++;say(t(\"Found a crumb in the air\",\"Нашёл крошку в эфире\"));}}"
+   "src/Pet.cpp:80: crumbRest+=seconds;if(crumbRest>=6*3600){crumbRest-=6*3600;if(s.snacks<9){s.snacks++;say(t(\"Found a crumb in the air\",\"Нашёл крошку в эфире\"));}}"
   ]
  },
  "8425f8b4": {
@@ -5882,7 +5872,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:178: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
+   "src/Pet.cpp:167: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
   ]
  },
  "8638388a": {
@@ -5891,7 +5881,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:116: if(received&&alive()&&s.stage!=Egg){s.messages+=received;gain(15*received,40*received,5*received);say(t(\"A message, how tasty\",\"Сообщение! Вкусно\"),Hearts);}"
+   "src/Pet.cpp:105: if(received&&alive()&&s.stage!=Egg){s.messages+=received;gain(15*received,40*received,5*received);say(t(\"A message, how tasty\",\"Сообщение! Вкусно\"),Hearts);}"
   ]
  },
  "86655252": {
@@ -5922,7 +5912,7 @@
   "where": [
    "src/UiPet.inc:57: footer({{\"OK\",t(\"New egg\",\"Новое яйцо\")},{\"D\",s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
    "src/UiHeltec.cpp:222: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
-   "src/Pet.cpp:164: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
+   "src/Pet.cpp:153: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
   ]
  },
  "87b75f3c": {
@@ -5949,9 +5939,9 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:141: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg){say(t(\"*tap tap*\",\"*тук-тук*\"));return speech;}",
-   "src/Pet.cpp:146: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not eat\",\"Яйца не едят\");",
-   "src/Pet.cpp:152: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not get ill\",\"Яйца не болеют\");"
+   "src/Pet.cpp:130: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg){say(t(\"*tap tap*\",\"*тук-тук*\"));return speech;}",
+   "src/Pet.cpp:135: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not eat\",\"Яйца не едят\");",
+   "src/Pet.cpp:141: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not get ill\",\"Яйца не болеют\");"
   ]
  },
  "8898dbce": {
@@ -6145,7 +6135,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:156: healAt=millis();s.snacks--;s.health=clampPoints(s.health+300);gain(0,0,2);say(t(\"Better now\",\"Уже лучше\"),Medicine);save(true);return speech;"
+   "src/Pet.cpp:145: healAt=millis();s.snacks--;s.health=clampPoints(s.health+300);gain(0,0,2);say(t(\"Better now\",\"Уже лучше\"),Medicine);save(true);return speech;"
   ]
  },
  "8d1fda3e": {
@@ -6172,7 +6162,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:100: s.cause=g.cause;s.stage=Dead;say(String(s.name)+t(\" is gone\",\" больше нет\"));save(true);"
+   "src/Pet.cpp:89: s.cause=g.cause;s.stage=Dead;say(String(s.name)+t(\" is gone\",\" больше нет\"));save(true);"
   ]
  },
  "8e2a5ac7": {
@@ -6266,7 +6256,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:121: s.friendIds[s.friendNext]=id;s.friendNext=(s.friendNext+1)%FriendSlots;s.friends++;gain(0,150,30);say(t(\"New friend: \",\"Новый друг: \")+String(p.name),Hearts);save(true);break;}"
+   "src/Pet.cpp:110: s.friendIds[s.friendNext]=id;s.friendNext=(s.friendNext+1)%FriendSlots;s.friends++;gain(0,150,30);say(t(\"New friend: \",\"Новый друг: \")+String(p.name),Hearts);save(true);break;}"
   ]
  },
  "90a747f1": {
@@ -6294,7 +6284,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:131: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
+   "src/Pet.cpp:120: case Happy:{static const char* const lines[][2]={{\"Packets are tasty today\",\"Пакеты сегодня вкусные\"},{\"I love this mesh\",\"Обожаю эту сеть\"},{\"Beep-boop\",\"Бип-буп\"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}"
   ]
  },
  "914eb578": {
@@ -6575,7 +6565,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:153: if(s.health>=800){say(t(\"I'm healthy\",\"Я здоров\"));return speech;}"
+   "src/Pet.cpp:142: if(s.health>=800){say(t(\"I'm healthy\",\"Я здоров\"));return speech;}"
   ]
  },
  "9756b440": {
@@ -7040,7 +7030,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:152: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not get ill\",\"Яйца не болеют\");"
+   "src/Pet.cpp:141: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg)return t(\"Eggs do not get ill\",\"Яйца не болеют\");"
   ]
  },
  "a120182c": {
@@ -7407,7 +7397,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:179: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
+   "src/Pet.cpp:168: case Sleepy:return t(\"asleep\",\"спит\");case Sick:return t(\"ill\",\"болеет\");case Eating:return t(\"eating\",\"ест\");default:return t(\"gone\",\"умер\");}"
   ]
  },
  "a851b542": {
@@ -7773,7 +7763,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:174: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
+   "src/Pet.cpp:163: switch(stage){case Egg:return t(\"Egg\",\"Яйцо\");case Baby:return t(\"Baby\",\"Малыш\");case Child:return t(\"Kid\",\"Детёныш\");case Teen:return t(\"Teen\",\"Подросток\");case Adult:return t(\"Adult\",\"Взрослый\");}"
   ]
  },
  "b27e0742": {
@@ -7810,7 +7800,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:132: case Content:line=r%2?t(\"Listening to the air...\",\"Слушаю эфир...\"):t(\"Pet me?\",\"Погладишь?\");break;"
+   "src/Pet.cpp:121: case Content:line=r%2?t(\"Listening to the air...\",\"Слушаю эфир...\"):t(\"Pet me?\",\"Погладишь?\");break;"
   ]
  },
  "b477e636": {
@@ -8012,7 +8002,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:147: if(!s.snacks){say(t(\"No snacks: traffic brings them\",\"Нет вкусняшек: их приносит эфир\"));return speech;}"
+   "src/Pet.cpp:136: if(!s.snacks){say(t(\"No snacks: traffic brings them\",\"Нет вкусняшек: их приносит эфир\"));return speech;}"
   ]
  },
  "ba0bb842": {
@@ -8041,7 +8031,7 @@
   ],
   "where": [
    "src/UiPet.inc:34: if(!creature.alive())return t(\"Gone\",\"Умер\");if(creature.s.stage==pet::Egg)return t(\"Egg · \",\"Яйцо · \")+creature.ageText(creature.hatchLeft());",
-   "src/Pet.cpp:175: return t(\"Gone\",\"Умер\");"
+   "src/Pet.cpp:164: return t(\"Gone\",\"Умер\");"
   ]
  },
  "baaea3e0": {
@@ -8248,7 +8238,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:132: case Content:line=r%2?t(\"Listening to the air...\",\"Слушаю эфир...\"):t(\"Pet me?\",\"Погладишь?\");break;"
+   "src/Pet.cpp:121: case Content:line=r%2?t(\"Listening to the air...\",\"Слушаю эфир...\"):t(\"Pet me?\",\"Погладишь?\");break;"
   ]
  },
  "bef7960c": {
@@ -8652,7 +8642,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:83: if(s.stage==Egg){if(s.age>=900){s.stage=Baby;s.food=s.joy=800;say(t(\"Hello! I am \",\"Привет! Я \")+String(s.name),Sparkle);save(true);}events++;return;}"
+   "src/Pet.cpp:72: if(s.stage==Egg){if(s.age>=900){s.stage=Baby;s.food=s.joy=800;say(t(\"Hello! I am \",\"Привет! Я \")+String(s.name),Sparkle);save(true);}events++;return;}"
   ]
  },
  "c8bcc2e2": {
@@ -8991,7 +8981,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:124: if(fabsf(a-1)>0.25f&&++walkSeconds>=30){walkSeconds=0;s.walks++;gain(0,60,3);say(t(\"A walk, wheee\",\"Гуляем! Ура\"),Hearts);}}"
+   "src/Pet.cpp:113: if(fabsf(a-1)>0.25f&&++walkSeconds>=30){walkSeconds=0;s.walks++;gain(0,60,3);say(t(\"A walk, wheee\",\"Гуляем! Ура\"),Hearts);}}"
   ]
  },
  "cef3039d": {
@@ -9548,7 +9538,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:178: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
+   "src/Pet.cpp:167: switch(mood()){case Happy:return t(\"happy\",\"счастлив\");case Content:return t(\"calm\",\"спокоен\");case Hungry:return t(\"hungry\",\"голоден\");case Lonely:return t(\"lonely\",\"скучает\");"
   ]
  },
  "daa47cca": {
@@ -9764,8 +9754,8 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:136: default:if(s.stage==Egg)line=t(\"*tap tap*\",\"*тук-тук*\");break;",
-   "src/Pet.cpp:141: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg){say(t(\"*tap tap*\",\"*тук-тук*\"));return speech;}"
+   "src/Pet.cpp:125: default:if(s.stage==Egg)line=t(\"*tap tap*\",\"*тук-тук*\");break;",
+   "src/Pet.cpp:130: if(!alive())return t(\"It is gone\",\"Питомца нет\");if(s.stage==Egg){say(t(\"*tap tap*\",\"*тук-тук*\"));return speech;}"
   ]
  },
  "df449de6": {
@@ -10155,7 +10145,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:155: if(!s.snacks){say(t(\"Medicine costs a snack\",\"Лекарство стоит вкусняшку\"));return speech;}"
+   "src/Pet.cpp:144: if(!s.snacks){say(t(\"Medicine costs a snack\",\"Лекарство стоит вкусняшку\"));return speech;}"
   ]
  },
  "e90e9e08": {
@@ -10545,7 +10535,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:162: hatchName();foodRest=joyRest=healthRest=crumbRest=0;say(t(\"A new egg\",\"Новое яйцо\"),Sparkle);save(true);return speech;"
+   "src/Pet.cpp:151: hatchName();foodRest=joyRest=healthRest=crumbRest=0;say(t(\"A new egg\",\"Новое яйцо\"),Sparkle);save(true);return speech;"
   ]
  },
  "f353a373": {
@@ -10718,7 +10708,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:148: if(s.food>=950){say(t(\"I'm full\",\"Я сыт\"));return speech;}"
+   "src/Pet.cpp:137: if(s.food>=950){say(t(\"I'm full\",\"Я сыт\"));return speech;}"
   ]
  },
  "f8db3325": {
@@ -10929,7 +10919,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:118: if(winsPrimed){uint32_t wins=rating::book.players[0].wins;if(wins>seenWins&&alive()&&s.stage!=Egg){s.wins+=wins-seenWins;gain(0,200,50);say(t(\"We won at chess\",\"Мы выиграли в шахматы\"),Sparkle);}seenWins=wins;}"
+   "src/Pet.cpp:107: if(winsPrimed){uint32_t wins=rating::book.players[0].wins;if(wins>seenWins&&alive()&&s.stage!=Egg){s.wins+=wins-seenWins;gain(0,200,50);say(t(\"We won at chess\",\"Мы выиграли в шахматы\"),Sparkle);}seenWins=wins;}"
   ]
  },
  "fe07ee74": {
@@ -11012,7 +11002,7 @@
    "shared"
   ],
   "where": [
-   "src/Pet.cpp:133: case Hungry:line=r%2?t(\"Hungry: the air is empty\",\"Голодно: эфир пуст\"):t(\"A snack?\",\"Вкусняшку?\");break;"
+   "src/Pet.cpp:122: case Hungry:line=r%2?t(\"Hungry: the air is empty\",\"Голодно: эфир пуст\"):t(\"A snack?\",\"Вкусняшку?\");break;"
   ]
  },
  "ff725bd0": {

@@ -289,11 +289,6 @@
   "ru": " · попытка ",
   "text": " · tentativa "
  },
- "8de3cbb9": {
-  "en": " is gone",
-  "ru": " больше нет",
-  "text": " se foi"
- },
  "8638388a": {
   "en": "A message, how tasty",
   "ru": "Сообщение! Вкусно",
@@ -543,6 +538,11 @@
   "en": "Yum",
   "ru": "Ням",
   "text": "Mmm"
+ },
+ "8de3cbb9": {
+  "en": " is gone",
+  "ru": " больше нет",
+  "text": " se foi"
  },
  "30b1f47d": {
   "en": "Channel",
@@ -4948,11 +4948,6 @@
   "en": "Egg · ",
   "ru": "Яйцо · ",
   "text": "Ovo · "
- },
- "810e0ff0": {
-  "en": " · Lv ",
-  "ru": " · Ур. ",
-  "text": " · Nv. "
  },
  "ce0ce922": {
   "en": "Hatches in ",

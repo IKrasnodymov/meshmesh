@@ -1,22 +1,23 @@
 #pragma once
 #include <Arduino.h>
+#include "PetSprites.h"
 // Mesh pet: a pixel creature that lives on the device and feeds on the radio. Received packets and packets
 // relayed for others are its food; messages, delivery ACKs, new nodes and won chess games cheer it up,
 // and the owner pets it, feeds it the snacks the traffic earns and treats it when it is ill. Time runs
 // while the device is on (a switched-off device puts it to sleep). Hunger or loneliness wears its health
 // down; at zero it dies (unless death is switched off), leaves a grave and the owner starts a new egg.
-// The screens draw it from a 16x16 grid of inks (sprite()); the state is a file in MeshMesh storage.
+// Fifteen species (PetSprites.h, tools/pet_sprites.py), each with a young and a grown look and its own
+// colours; a new egg gets a random one. The screens draw it from a 16x16 grid of inks (sprite()); the
+// state is a file in MeshMesh storage.
 namespace pet {
 enum Stage:uint8_t {Egg,Baby,Child,Teen,Adult,Dead,StageCount};
 enum Mood:uint8_t {Happy,Content,Hungry,Lonely,Sleepy,Sick,Eating,Gone};
 enum Cause:uint8_t {NoCause,Hunger,Loneliness};
 enum Effect:uint8_t {NoEffect,Hearts,Food,Sparkle,Medicine};
 // Inks of the sprite grid; each screen picks its colours (monochrome: outline, eyes and marks lit).
-enum Ink:uint8_t {InkNone,InkOutline,InkBody,InkLight,InkEye,InkCheek,InkTear,InkGlow};
-constexpr unsigned Size=16,Species=8,Graves=3,FriendSlots=48;
+enum Ink:uint8_t {InkNone,InkOutline,InkBody,InkLight,InkEye,InkCheek,InkTear,InkGlow,InkShell}; // InkLight: the species' accent; InkShell: the egg
+constexpr unsigned Size=16,Graves=3,FriendSlots=48;
 constexpr uint16_t Full=1000;
-// Body colours by species (RGB); the T114 palette has the same ones (Palette.h).
-constexpr uint32_t hues[Species]={0x5fd3b0,0x6fb2ff,0xb48cff,0xffa36c,0x9ad35a,0xff7aa8,0x52c8e0,0xf2c94c};
 struct Grave{char name[16];uint32_t age;uint16_t level;uint8_t cause,species;};
 struct State{
   uint32_t version=1;
@@ -44,7 +45,8 @@ class Pet {
   bool asleep() const;                   // at night by the local clock
   bool alive() const{return s.stage!=Dead;}
   uint32_t hatchLeft() const;            // seconds until the egg hatches
-  bool needsCare() const;                // hungry, lonely or ill: the home tile turns yellow
+  bool needsCare() const;
+  const Kind& kind() const{return kinds[s.species%Species];}                // hungry, lonely or ill: the home tile turns yellow
   // Owner actions; each returns what to show (and says it).
   String cuddle();String feed();String heal();String newEgg();String setMortal(bool on);
   bool rename(const String& name);       // 1-15 UTF-8 bytes

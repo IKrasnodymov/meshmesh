@@ -249,7 +249,7 @@ static void scenario(){
  // The pet: an egg, a happy kid with a new friend, a hungry adult, an ill teen and a grave with its memory.
  {auto look=[](uint8_t stage,uint16_t food,uint16_t joy,uint16_t health,uint32_t xp,const char* words,pet::Effect e){auto& s=creature.s;s.stage=stage;s.food=food;s.joy=joy;s.health=health;s.xp=xp;s.age=stage==pet::Egg?420:stage*86400+5*3600;
    s.snacks=3;s.friends=4;s.packets=1873;creature.speech=words?words:"";creature.speechAt=words?fakeMillis:0;creature.effect=e;creature.effectAt=fakeMillis;};
-  strcpy(creature.s.name,"Ping");creature.s.species=0;
+  strcpy(creature.s.name,"Ping");creature.s.species=0;uint16_t dim=config.dimAfter,lock=config.autoLock;config.dimAfter=config.autoLock=0; // dozens of shots outlast the screen timeout
 #if defined(MM_HELTEC_V4)
   for(int i=0;i<11;i++)tick(); // menus and popups close
   for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"pet\"")<0;i++)
@@ -269,6 +269,12 @@ static void scenario(){
   key(0x82);for(int i=0;i<3;i++)key(0xb6);key(0xb7);auto snap=[&](const char* n){shot(n);};snap("home-pet");key(13);
 #endif
   if(uiStatus().indexOf("\"page\":\"pet\"")<0){printf("FAIL pet page: %s\n",uiStatus().c_str());exit(1);}
+  // Every species, young and grown, awake at noon (the gallery of tools/pet_sprites.py on the real screens).
+  {int16_t offset=config.utcOffset;time_t now=time(nullptr);config.utcOffset=int16_t(((12-int(now/3600%24))+24)%24*60);
+   for(unsigned i=0;i<pet::Species;i++){creature.s.species=i;char n[32];
+    look(pet::Child,850,900,1000,190,nullptr,pet::NoEffect);snprintf(n,sizeof n,"pet-kind%02u-young",i);snap(n);
+    look(pet::Adult,850,900,1000,2600,nullptr,pet::NoEffect);snprintf(n,sizeof n,"pet-kind%02u-grown",i);snap(n);}
+   config.utcOffset=offset;creature.s.species=0;}
   look(pet::Egg,700,700,1000,0,nullptr,pet::NoEffect);snap("pet-egg");
   look(pet::Child,820,900,1000,190,config.lang==LangRu?"Новый друг: Марат":"New friend: Marat",pet::Hearts);snap("pet-happy");
   creature.speechAt=0;snap("pet-stats");
@@ -288,6 +294,6 @@ static void scenario(){
   creature.command("pet egg");if(!creature.alive()||creature.s.stage!=pet::Egg||creature.s.graveCount!=1){printf("FAIL new egg: %s\n",creature.json().c_str());exit(1);}
   creature.command("pet skip 900");if(creature.s.stage!=pet::Baby){printf("FAIL hatching: %s\n",creature.json().c_str());exit(1);}
   creature.command("pet mortal off");s.food=0;s.joy=0;creature.command("pet skip 864000");if(!creature.alive()||creature.s.health!=1){printf("FAIL death switched off: %s\n",creature.json().c_str());exit(1);}
-  creature.command("pet mortal on");s.food=s.joy=800;s.health=1000;
+  creature.command("pet mortal on");s.food=s.joy=800;s.health=1000;config.dimAfter=dim;config.autoLock=lock;
   printf("pet checks passed\n");}
 }
