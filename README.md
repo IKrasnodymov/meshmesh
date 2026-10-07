@@ -109,6 +109,8 @@ Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent f
 
 Firmware 0.4.1 reduces history-export memory use and reports allocation failures explicitly; Android remains 0.4.0.
 
+Firmware and Android 0.7.0: [dice](docs/en/dice.md) — the DIC3R roller (RPG pools and formulas, a Warhammer grid with a success threshold, counters, characters) on every board, the web page and the app; on the T114 and GAT562 chess, the pet and the dice are [optional modules](docs/en/gat562.md#modules-chosen-before-installing) chosen when building (`tools/nrf52.py package ENV --without …`). Dice checked on the M9 by the owner; the module images not yet on a board.
+
 Firmware and Android 0.6.0: reply to a chat message by swiping it from right to left, as in Telegram (double-click on a computer); a channel reply starts with the `@[Name]` mention, a direct one with a short `> …` quote. Checked in the Android emulator's Chrome with test data, not with a board.
 
 Firmware 0.5.1: the Heltec V3 build uses the DIO flash driver, matching its image header (a user's V3 did not keep writes with the QIO driver libraries; not yet verified there); `flashstatus` names the driver mode and `flashprobe` also writes through the ROM functions, as esptool does.
