@@ -229,5 +229,14 @@
  "nrf.retry": " — reintenta o usa firmware.uf2.",
  "aria.close": "Cerrar",
  "aria.prev": "Anterior",
- "aria.next": "Siguiente"
+ "aria.next": "Siguiente",
+ "news.pet": "<b>Nuevo:</b> una mascota de la red: 15 criaturas de píxeles que comen radio",
+ "f.pet.t": "Mascota de la red",
+ "f.pet.d": "Una criatura de píxeles al estilo Tamagotchi, opcional: una de 15 especies, elegida al azar. Se alimenta de la radio —paquetes recibidos y reenviados, mensajes, ACK de entrega, nodos nuevos, victorias en ajedrez—, crece, habla y necesita cuidados. Puede morir de hambre o de soledad si la muerte no está desactivada. En todas las placas, la página web y la app de Android.",
+ "shot.m9-pet-happy": "Una mascota feliz y lo que dice",
+ "shot.t114-pet-happy": "La pantalla a color del T114",
+ "shot.m9-pet-hungry": "Hambrienta: la radio está en silencio",
+ "shot.heltec-pet-stats": "OLED: dibujada en contorno",
+ "shot.m9-pet-dead": "Una tumba y el recuerdo de la mascota",
+ "doc.pet": "Mascota de la red"
 }

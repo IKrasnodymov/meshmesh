@@ -229,5 +229,14 @@
  "nrf.retry": " — riprova o usa firmware.uf2.",
  "aria.close": "Chiudi",
  "aria.prev": "Precedente",
- "aria.next": "Successivo"
+ "aria.next": "Successivo",
+ "news.pet": "<b>Novità:</b> un cucciolo della rete — 15 creature in pixel che si nutrono della radio",
+ "f.pet.t": "Cucciolo della rete",
+ "f.pet.d": "Una creatura in pixel stile Tamagotchi, facoltativa: una di 15 specie, scelta a caso. Si nutre della radio — pacchetti ricevuti e inoltrati, messaggi, ACK di consegna, nuovi nodi, vittorie a scacchi —, cresce, parla e ha bisogno di cure. Fame o solitudine possono ucciderla, se la morte non è disattivata. Su ogni scheda, la pagina web e l’app Android.",
+ "shot.m9-pet-happy": "Un cucciolo felice e ciò che dice",
+ "shot.t114-pet-happy": "Lo schermo a colori del T114",
+ "shot.m9-pet-hungry": "Affamato: la radio tace",
+ "shot.heltec-pet-stats": "OLED: disegnato a contorno",
+ "shot.m9-pet-dead": "Una tomba e il ricordo del cucciolo",
+ "doc.pet": "Cucciolo della rete"
 }

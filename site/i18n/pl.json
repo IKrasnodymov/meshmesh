@@ -229,5 +229,14 @@
  "nrf.retry": " — spróbuj ponownie lub użyj firmware.uf2.",
  "aria.close": "Zamknij",
  "aria.prev": "Poprzedni",
- "aria.next": "Następny"
+ "aria.next": "Następny",
+ "news.pet": "<b>Nowość:</b> zwierzak sieci — 15 pikselowych stworzeń, które żywią się radiem",
+ "f.pet.t": "Zwierzak sieci",
+ "f.pet.d": "Opcjonalne pikselowe stworzonko w stylu Tamagotchi: jeden z 15 gatunków, losowany. Żywi się radiem — odebranymi i przekazanymi pakietami, wiadomościami, potwierdzeniami doręczenia, nowymi węzłami, wygranymi w szachy — rośnie, mówi i wymaga opieki. Głód lub samotność mogą go zabić, jeśli śmierć nie jest wyłączona. Na każdej płytce, na stronie i w aplikacji na Androida.",
+ "shot.m9-pet-happy": "Szczęśliwy zwierzak i jego słowa",
+ "shot.t114-pet-happy": "Kolorowy ekran T114",
+ "shot.m9-pet-hungry": "Głodny: w eterze cisza",
+ "shot.heltec-pet-stats": "OLED: rysunek konturem",
+ "shot.m9-pet-dead": "Grób i pamięć o zwierzaku",
+ "doc.pet": "Zwierzak sieci"
 }

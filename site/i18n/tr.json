@@ -229,5 +229,14 @@
  "nrf.retry": " — yeniden deneyin ya da firmware.uf2 kullanın.",
  "aria.close": "Kapat",
  "aria.prev": "Önceki",
- "aria.next": "Sonraki"
+ "aria.next": "Sonraki",
+ "news.pet": "<b>Yeni:</b> ağ evcil hayvanı — radyoyla beslenen 15 piksel yaratık",
+ "f.pet.t": "Ağ evcil hayvanı",
+ "f.pet.d": "İsteğe bağlı, Tamagotchi tarzı bir piksel yaratık: 15 türden biri, rastgele seçilir. Radyoyla beslenir — alınan ve aktarılan paketler, mesajlar, teslim ACK’leri, yeni düğümler, satranç zaferleri —, büyür, konuşur ve bakım ister. Ölüm kapalı değilse açlık ya da yalnızlık onu öldürebilir. Her kartta, web sayfasında ve Android uygulamasında.",
+ "shot.m9-pet-happy": "Mutlu bir hayvan ve söyledikleri",
+ "shot.t114-pet-happy": "T114’ün renkli ekranı",
+ "shot.m9-pet-hungry": "Aç: radyo sessiz",
+ "shot.heltec-pet-stats": "OLED: çizgiyle çizilmiş",
+ "shot.m9-pet-dead": "Bir mezar ve hayvanın anısı",
+ "doc.pet": "Ağ evcil hayvanı"
 }

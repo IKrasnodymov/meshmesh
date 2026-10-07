@@ -229,5 +229,14 @@
  "nrf.retry": " — erneut versuchen oder firmware.uf2 verwenden.",
  "aria.close": "Schließen",
  "aria.prev": "Zurück",
- "aria.next": "Weiter"
+ "aria.next": "Weiter",
+ "news.pet": "<b>Neu:</b> ein Mesh-Haustier — 15 Pixelwesen, die sich vom Funk ernähren",
+ "f.pet.t": "Mesh-Haustier",
+ "f.pet.d": "Ein optionales Pixelwesen im Tamagotchi-Stil: eine von 15 Arten, zufällig gewählt. Es ernährt sich vom Funk — empfangene und weitergeleitete Pakete, Nachrichten, Zustell-ACKs, neue Knoten, Schachsiege —, wächst, spricht und braucht Pflege. Hunger oder Einsamkeit können es töten, wenn der Tod nicht abgeschaltet ist. Auf jeder Platine, der Webseite und in der Android-App.",
+ "shot.m9-pet-happy": "Ein glückliches Haustier und was es sagt",
+ "shot.t114-pet-happy": "Der Farbbildschirm des T114",
+ "shot.m9-pet-hungry": "Hungrig: Funkstille",
+ "shot.heltec-pet-stats": "OLED: als Umriss gezeichnet",
+ "shot.m9-pet-dead": "Ein Grab und die Erinnerung an das Haustier",
+ "doc.pet": "Mesh-Haustier"
 }

@@ -229,5 +229,14 @@
  "nrf.retry": " — réessayez ou utilisez firmware.uf2.",
  "aria.close": "Fermer",
  "aria.prev": "Précédent",
- "aria.next": "Suivant"
+ "aria.next": "Suivant",
+ "news.pet": "<b>Nouveau :</b> un animal du réseau — 15 créatures en pixels qui se nourrissent de la radio",
+ "f.pet.t": "Animal du réseau",
+ "f.pet.d": "Une créature en pixels façon Tamagotchi, facultative : une des 15 espèces, tirée au hasard. Elle se nourrit de la radio — paquets reçus et relayés, messages, ACK de livraison, nouveaux nœuds, victoires aux échecs —, grandit, parle et demande des soins. La faim ou la solitude peut la tuer, sauf si la mort est désactivée. Sur toutes les cartes, la page web et l’app Android.",
+ "shot.m9-pet-happy": "Un animal heureux et ce qu’il dit",
+ "shot.t114-pet-happy": "L’écran couleur du T114",
+ "shot.m9-pet-hungry": "Affamé : la radio est calme",
+ "shot.heltec-pet-stats": "OLED : dessiné en contour",
+ "shot.m9-pet-dead": "Une tombe et le souvenir de l’animal",
+ "doc.pet": "Animal du réseau"
 }

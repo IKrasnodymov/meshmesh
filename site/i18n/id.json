@@ -229,5 +229,14 @@
  "nrf.retry": " — coba lagi atau gunakan firmware.uf2.",
  "aria.close": "Tutup",
  "aria.prev": "Sebelumnya",
- "aria.next": "Berikutnya"
+ "aria.next": "Berikutnya",
+ "news.pet": "<b>Baru:</b> peliharaan mesh — 15 makhluk piksel yang makan dari radio",
+ "f.pet.t": "Peliharaan mesh",
+ "f.pet.d": "Makhluk piksel ala Tamagotchi yang opsional: satu dari 15 spesies, dipilih acak. Ia makan dari radio — paket yang diterima dan diteruskan, pesan, ACK pengiriman, node baru, kemenangan catur — tumbuh, berbicara, dan perlu dirawat. Lapar atau kesepian bisa membuatnya mati, kecuali kematian dimatikan. Di setiap papan, halaman web, dan aplikasi Android.",
+ "shot.m9-pet-happy": "Peliharaan yang senang dan ucapannya",
+ "shot.t114-pet-happy": "Layar warna T114",
+ "shot.m9-pet-hungry": "Lapar: radio sepi",
+ "shot.heltec-pet-stats": "OLED: digambar dengan garis",
+ "shot.m9-pet-dead": "Makam dan kenangan peliharaan",
+ "doc.pet": "Peliharaan mesh"
 }

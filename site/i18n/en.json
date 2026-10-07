@@ -229,5 +229,14 @@
  "nrf.retry": " — retry or use firmware.uf2.",
  "aria.close": "Close",
  "aria.prev": "Previous",
- "aria.next": "Next"
+ "aria.next": "Next",
+ "news.pet": "<b>New:</b> a mesh pet — 15 pixel creatures that feed on the radio",
+ "f.pet.t": "Mesh pet",
+ "f.pet.d": "An optional Tamagotchi-like pixel creature, one of 15 species, chosen at random. It feeds on the radio — received and relayed packets, messages, delivery ACKs, new nodes, chess wins — grows up, talks and needs care. Hunger or loneliness can kill it, unless death is off. On every board, the web page and the Android app.",
+ "shot.m9-pet-happy": "A happy pet and its words",
+ "shot.t114-pet-happy": "The T114 colour screen",
+ "shot.m9-pet-hungry": "Hungry: the air is quiet",
+ "shot.heltec-pet-stats": "The OLED: drawn in outline",
+ "shot.m9-pet-dead": "A grave and the memory of the pet",
+ "doc.pet": "Mesh pet"
 }

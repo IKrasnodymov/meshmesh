@@ -229,5 +229,14 @@
  "nrf.retry": " — 다시 시도하거나 firmware.uf2를 사용하세요.",
  "aria.close": "닫기",
  "aria.prev": "이전",
- "aria.next": "다음"
+ "aria.next": "다음",
+ "news.pet": "<b>새 기능:</b> 메시 펫 — 전파를 먹는 15종의 픽셀 생물",
+ "f.pet.t": "메시 펫",
+ "f.pet.d": "선택해서 키우는 다마고치 같은 픽셀 생물: 15종 중 하나가 무작위로 정해집니다. 받거나 중계한 패킷, 메시지, 전달 ACK, 새 노드, 체스 승리 같은 전파를 먹고 자라며, 말을 하고 돌봄이 필요합니다. 죽음을 끄지 않으면 배고픔이나 외로움으로 죽을 수 있습니다. 모든 보드, 웹 페이지, Android 앱에서.",
+ "shot.m9-pet-happy": "행복한 펫과 그 한마디",
+ "shot.t114-pet-happy": "T114 컬러 화면",
+ "shot.m9-pet-hungry": "배고파요: 전파가 조용해요",
+ "shot.heltec-pet-stats": "OLED: 윤곽선으로 그림",
+ "shot.m9-pet-dead": "무덤과 펫의 기억",
+ "doc.pet": "메시 펫"
 }

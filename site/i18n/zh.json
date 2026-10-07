@@ -229,5 +229,14 @@
  "nrf.retry": " ——请重试或使用 firmware.uf2。",
  "aria.close": "关闭",
  "aria.prev": "上一张",
- "aria.next": "下一张"
+ "aria.next": "下一张",
+ "news.pet": "<b>新功能：</b>网络宠物 — 15 种以无线电为食的像素小生物",
+ "f.pet.t": "网络宠物",
+ "f.pet.d": "可选的拓麻歌子式像素小生物：15 个物种之一，随机选出。它以无线电为食——收到和转发的数据包、消息、送达 ACK、新节点、象棋胜利——会长大、说话，需要照顾。若未关闭死亡，饥饿或孤独会让它死去。所有开发板、网页和 Android 应用中都有。",
+ "shot.m9-pet-happy": "开心的宠物和它说的话",
+ "shot.t114-pet-happy": "T114 彩色屏幕",
+ "shot.m9-pet-hungry": "饿了：电波很安静",
+ "shot.heltec-pet-stats": "OLED：线条绘制",
+ "shot.m9-pet-dead": "墓碑和对宠物的怀念",
+ "doc.pet": "网络宠物"
 }

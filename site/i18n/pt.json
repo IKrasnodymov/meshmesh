@@ -229,5 +229,14 @@
  "nrf.retry": " — tente de novo ou use o firmware.uf2.",
  "aria.close": "Fechar",
  "aria.prev": "Anterior",
- "aria.next": "Próximo"
+ "aria.next": "Próximo",
+ "news.pet": "<b>Novo:</b> um bichinho da rede — 15 criaturas de pixels que comem rádio",
+ "f.pet.t": "Bichinho da rede",
+ "f.pet.d": "Uma criatura de pixels estilo Tamagotchi, opcional: uma de 15 espécies, escolhida ao acaso. Ela se alimenta do rádio — pacotes recebidos e retransmitidos, mensagens, ACKs de entrega, nós novos, vitórias no xadrez —, cresce, fala e precisa de cuidados. Pode morrer de fome ou de solidão, se a morte não estiver desligada. Em todas as placas, na página web e no app Android.",
+ "shot.m9-pet-happy": "Um bichinho feliz e o que ele diz",
+ "shot.t114-pet-happy": "A tela colorida do T114",
+ "shot.m9-pet-hungry": "Com fome: o rádio está quieto",
+ "shot.heltec-pet-stats": "OLED: desenhado em contorno",
+ "shot.m9-pet-dead": "Um túmulo e a memória do bichinho",
+ "doc.pet": "Bichinho da rede"
 }

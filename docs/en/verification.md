@@ -1,5 +1,12 @@
 # MeshMesh verification
 
+> **0.5.0: mesh pet** (7 October 2026; firmware 0.5.0, Android 0.5.0). The pet (15 species, optional, every
+> board's screen, the web page and the app) and nRF52 language images without the Russian strings (translation
+> keys at compile time): T114 Chinese 12 KB free (it would be 3), GAT562 Chinese 39 KB. 15 boards built; the
+> screen emulator (m9, tdeck, heltec, gat562, t114) and the Android unit tests passed; Chinese translations
+> are found by the new keys. This 0.5.0 build was not installed on boards: the last one checked on hardware is
+> `9ffbbbf`/`3d367a3` (below).
+
 > **Optional pet, web page and app** (7 October 2026, branch `feature/pet`; the full run was not done, no
 > boards were plugged in). The app (debug build, unit tests passed, a test for `pet` added) in the Android
 > emulator was connected "USB through a computer" to the T-LoRa firmware in QEMU (no radio): without a pet,
@@ -19,7 +26,7 @@
 > ELF `002F361C…`) and the Heltec V4 (boot 165, ELF `BCD57A4F…`): settings and 64 history records kept. Over
 > LoRa, direct messages M9 → Heltec and Heltec → M9 were delivered with ACK: the sender's `acks` and snacks
 > grow, the receiver's `messages`, both `packets`; "friends" are the two nodes each heard (the other board and
-> the repeater KZN-PRV-901), not counted again after a restart and an advert. The pet's name and progress
+> a third-party repeater nearby), not counted again after a restart and an advert. The pet's name and progress
 > survived a Heltec restart and reflashing both boards. The pet screen and "Pet" were checked with USB keys and
 > screenshots (M9 page with a speech bubble, Heltec hold menu); physical buttons, the T114, the GAT562 and the
 > community boards were not checked on hardware; growing up to adult and death only with time skipped

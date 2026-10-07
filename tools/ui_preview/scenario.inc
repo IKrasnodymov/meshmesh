@@ -250,6 +250,7 @@ static void scenario(){
  {auto look=[](uint8_t stage,uint16_t food,uint16_t joy,uint16_t health,uint32_t xp,const char* words,pet::Effect e){auto& s=creature.s;s.stage=stage;s.food=food;s.joy=joy;s.health=health;s.xp=xp;s.age=stage==pet::Egg?420:stage*86400+5*3600;
    s.snacks=3;s.friends=4;s.packets=1873;creature.speech=words?words:"";creature.speechAt=words?fakeMillis:0;creature.effect=e;creature.effectAt=fakeMillis;};
   strcpy(creature.s.name,"Ping");creature.s.species=0;uint16_t dim=config.dimAfter,lock=config.autoLock;config.dimAfter=config.autoLock=0; // dozens of shots outlast the screen timeout
+  int16_t offset=config.utcOffset;{time_t now=time(nullptr);config.utcOffset=int16_t(((12-int(now/3600%24))+24)%24*60);} // noon: awake at any hour of the build
 #if defined(MM_HELTEC_V4)
   for(int i=0;i<11;i++)tick(); // menus and popups close
   for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"pet\"")<0;i++)
@@ -270,11 +271,10 @@ static void scenario(){
 #endif
   if(uiStatus().indexOf("\"page\":\"pet\"")<0){printf("FAIL pet page: %s\n",uiStatus().c_str());exit(1);}
   // Every species, young and grown, awake at noon (the gallery of tools/pet_sprites.py on the real screens).
-  {int16_t offset=config.utcOffset;time_t now=time(nullptr);config.utcOffset=int16_t(((12-int(now/3600%24))+24)%24*60);
-   for(unsigned i=0;i<pet::Species;i++){creature.s.species=i;char n[32];
+  {for(unsigned i=0;i<pet::Species;i++){creature.s.species=i;char n[32];
     look(pet::Child,850,900,1000,190,nullptr,pet::NoEffect);snprintf(n,sizeof n,"pet-kind%02u-young",i);snap(n);
     look(pet::Adult,850,900,1000,2600,nullptr,pet::NoEffect);snprintf(n,sizeof n,"pet-kind%02u-grown",i);snap(n);}
-   config.utcOffset=offset;creature.s.species=0;}
+   creature.s.species=0;}
   look(pet::Egg,700,700,1000,0,nullptr,pet::NoEffect);snap("pet-egg");
   look(pet::Child,820,900,1000,190,config.lang==LangRu?"Новый друг: Марат":"New friend: Marat",pet::Hearts);snap("pet-happy");
   creature.speechAt=0;snap("pet-stats");
@@ -298,6 +298,6 @@ static void scenario(){
   // A pet is optional: letting it go leaves no pet (and no new grave), the page offers to start one.
   {uint8_t graves=creature.s.graveCount;creature.command("pet release");
    if(creature.has()||creature.s.graveCount!=graves){printf("FAIL release: %s\n",creature.json().c_str());exit(1);}
-   snap("pet-none");creature.command("pet adopt");if(creature.s.stage!=pet::Egg){printf("FAIL adopt: %s\n",creature.json().c_str());exit(1);}}config.dimAfter=dim;config.autoLock=lock;
+   snap("pet-none");creature.command("pet adopt");if(creature.s.stage!=pet::Egg){printf("FAIL adopt: %s\n",creature.json().c_str());exit(1);}}config.dimAfter=dim;config.autoLock=lock;config.utcOffset=offset;
   printf("pet checks passed\n");}
 }
