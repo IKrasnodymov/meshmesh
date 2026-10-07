@@ -109,7 +109,7 @@ Release 0.4.0: [event waits on every board](docs/en/power.md) and [independent f
 
 Firmware 0.4.1 reduces history-export memory use and reports allocation failures explicitly; Android remains 0.4.0.
 
-Firmware and Android 0.8.0: switch the device off from the Settings menu on its screen, the web page, the app or the USB command `poweroff`; it saves its data, shows "Device is off" and how to turn it on, then enters deep sleep (ESP32), System OFF (nRF52) or is cut off by its PMU (T-Beam). Holding the button for about a second, RESET or the power switch turns it on, depending on the board ([docs/en/power.md](docs/en/power.md#power-off)).
+Firmware and Android 0.8.0: switch the device off from the Settings menu on its screen, the web page, the app or the USB command `poweroff`; it saves its data, shows "Device is off" and how to turn it on, then enters deep sleep (ESP32), a soft off (nRF52: everything off, the CPU waits for the button) or is cut off by its PMU (T-Beam). Holding the button for about a second, RESET or the power switch turns it on, depending on the board ([docs/en/power.md](docs/en/power.md#power-off)).
 
 Firmware and Android 0.7.0: [dice](docs/en/dice.md) — the DIC3R roller (RPG pools and formulas, a Warhammer grid with a success threshold, counters, characters) on every board, the web page and the app; on the T114 and GAT562 chess, the pet and the dice are [optional modules](docs/en/gat562.md#modules-chosen-before-installing) chosen when building (`tools/nrf52.py package ENV --without …`). Dice checked on the M9 by the owner; the module images not yet on a board.
 

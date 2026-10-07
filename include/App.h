@@ -21,6 +21,9 @@ String uiStatus();
 void portalBegin();void portalTick();void portalToggle();bool portalActive();String portalPassword();
 String connectionCredentials();
 void bleToggle();bool bleActive();
+#if defined(MM_NRF52)
+void bleSilence(); // power off: Bluetooth quiet, the setting kept
+#endif
 // Radar holders: the web page (Portal.cpp) and the screen pages (Ui.cpp / UiHeltec.cpp).
 bool webRadarActive();bool uiRadarPage();
 String webRadarCommand(const String& line); // "radar web" and "radar do {JSON}"

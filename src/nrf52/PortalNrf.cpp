@@ -86,6 +86,13 @@ void bleToggle(){
   }
   config.saveBle(bluetoothOn);meshRadio.dirty=true;
 }
+// Power off (Power.cpp): no advertising and no connection, without changing the saved setting.
+void bleSilence(){
+  if(!bluetoothOn)return;
+  Bluefruit.Advertising.restartOnDisconnect(false);Bluefruit.Advertising.stop();
+  if(client!=BLE_CONN_HANDLE_INVALID)Bluefruit.disconnect(client);
+  bluetoothOn=false;
+}
 void portalTick(){
   if(webRadar&&millis()-webRadarAt>10000)webRadarRelease();
   if(!started)return;

@@ -41,11 +41,16 @@ peripheral supply off and switches off:
 | Station G2, ThinkNode M2 | ESP32 deep sleep | RESET: the button is not on an RTC pin and cannot wake it |
 | ThinkNode M9 | ESP32 deep sleep | RESET or the power slider: the M9 has no button on a GPIO |
 | T-Beam, T-Beam Supreme | the AXP PMU cuts every rail (deep sleep without a PMU) | the board's PWR key |
-| GAT562, T114 | nRF52840 System OFF | hold the joystick centre / USER for about a second |
+| GAT562, T114 | soft off: the CPU sleeps in System ON waiting for the button, the rest is off | hold the joystick centre / USER until the LED lights (~1 s), then release |
 
-A short press (and, on the nRF52, plugging USB in) wakes the board only for a moment: without a 0.7 s
-hold after the start it goes back to sleep. RESET always turns it on. A USB update needs the board on; on
-the nRF52 the bootloader is also reachable by a double RESET. On the classic ESP32 (T-Beam, T-LoRa) IRAM is
+On the ESP32 a short press wakes the board only for a moment: without a 0.7 s hold after the start it goes
+back to sleep. RESET always turns it on. The nRF52 does not use System OFF: leaving it is a reset with the
+button still held, and the T114 bootloader takes USER held at reset for its Bluetooth OTA update mode
+(`HT-n5262-OTA`, no USB). The board stayed there, and a RESET at that moment ended in lost storage
+(`verification.md`). So the nRF52 sleeps in System ON (FreeRTOS polls the button every 50 ms, Bluetooth is
+silent, the BLE setting is kept) and restarts the ordinary way once the button is released. A switched-off
+nRF52 keeps its USB port but does not answer commands. A USB update needs the board on; on the nRF52 the
+bootloader is also reachable by a double RESET. On the classic ESP32 (T-Beam, T-LoRa) IRAM is
 full and the deep sleep code did not fit: these builds stub out (`src/NoLedc.cpp`) the LEDC calls of
 RadioLib's `tone()`, which only AFSK uses. The current while off has not been measured.
 

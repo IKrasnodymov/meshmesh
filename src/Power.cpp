@@ -58,11 +58,13 @@ void waitForRadio(bool usbIdle){
 }
 namespace {
 uint32_t offAt=0;
+#if !defined(MM_NRF52)
 // The wake button pressed at boot: on after it is held 0.7 s (with the boot, about a second), then released.
 bool wakeHeld(int pin){
   uint32_t start=millis();while(millis()-start<700){if(digitalRead(pin)==HIGH)return false;delay(5);}
   start=millis();while(digitalRead(pin)==LOW&&millis()-start<4000)delay(10);return true;
 }
+#endif
 [[noreturn]] void sleepNow(int pin);
 }
 String powerOff(){
@@ -82,6 +84,7 @@ void powerOffTick(){
   // A button still held (the hold that chose "Turn off") would wake the board at once.
   if(pin>=0){while(digitalRead(pin)==LOW&&millis()-shown<10000)delay(10);delay(50);}
   while(millis()-shown<3000)delay(10); // time to read it
+  if(radar.active)radar.release();
   meshRadio.sleep();
 #if !defined(MM_NRF52)
   if(WiFi.getMode()!=WIFI_OFF)WiFi.mode(WIFI_OFF);
@@ -90,21 +93,28 @@ void powerOffTick(){
   sleepNow(pin);
 }
 #if defined(MM_NRF52)
+// Soft off. A wake from System OFF is a reset with the button still held, and the T114 bootloader takes a
+// held USER key at reset for its Bluetooth OTA update mode ("HT-n5262-OTA"): the board stayed there with
+// no USB, and a RESET pressed then ended in lost storage (docs/verification.md). Here the CPU stays in
+// System ON: this task polls the button from FreeRTOS sleep (tickless idle) and nothing else runs. After
+// a 1 s hold the LED lights; the board restarts the ordinary way once the button is released.
 namespace {
 void sleepNow(int pin){
-  flash_nrf5x_flush();delay(20);
-  if(pin>=0)systemOff(pin,LOW); // the core's: SENSE low with the pull-up, then System OFF through the SoftDevice
-  uint8_t sd=0;sd_softdevice_is_enabled(&sd);if(sd)sd_power_system_off();
-  NRF_POWER->SYSTEMOFF=1;while(true){}
+  bleSilence();flash_nrf5x_flush();
+  if(pin<0){while(true)delay(1000);}
+  pinMode(pin,INPUT_PULLUP);uint32_t down=0;
+  while(true){
+    delay(50);
+    if(digitalRead(pin)==HIGH){down=0;continue;}
+    if(!down){down=millis()|1;continue;}
+    if(millis()-down<1000)continue;
+    if(pins::led>=0){pinMode(pins::led,OUTPUT);digitalWrite(pins::led,pins::ledOn);}
+    while(digitalRead(pin)==LOW)delay(20);
+    delay(50);ESP.restart(); // released: the bootloader starts the application
+  }
 }
 }
-void powerBootCheck(){
-  // System OFF ends in a reset; the reason tells it from RESET and power-on (esp_system.h).
-  if(esp_reset_reason()!=ESP_RST_DEEPSLEEP)return;
-  int pin=hardware.wakePin();if(pin<0)return;
-  pinMode(pin,INPUT_PULLUP);if(wakeHeld(pin))return;
-  hardware.powerDown(false);sleepNow(pin);
-}
+void powerBootCheck(){}
 #else
 namespace {
 void sleepNow(int pin){

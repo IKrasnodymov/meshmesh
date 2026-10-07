@@ -1,5 +1,20 @@
 # MeshMesh verification
 
+> **0.8.0: power off** (7 October 2026, branch `power-off`, no full run). All 15 boards build; the `tools/ui_preview`
+> scenarios pass (the menu, two OKs, the "Turning off..." and "Device is off" frames). **Heltec V4** (`f0caee3`, image
+> `CE80DADF…`): `poweroff` switches it off after ~4.5 s, USB goes and does not come back (watched for 20 s); the owner
+> turned it on by holding PRG twice — `reset_reason` 8 (deep sleep wake), history (64) and contacts kept. The farewell
+> frame on the screen and the current while off were not checked. **T114:** the first variant with System OFF switched
+> off, but after holding USER the board did not start: its bootloader takes USER held at reset for the Bluetooth OTA
+> update mode (seen as `HT-n5262-OTA`, no USB). After a RESET in one such case LittleFS did not mount: two 4 KB pages
+> (0xD4000 with the superblock and 0xDC000) were erased and not written back — the trace of an interrupted write; the
+> exact moment is not established. A copy of the region is in `backups/t114/` (0600); at the owner's choice the storage
+> was created again (`fsformat`): the T114 has a new node key, history, contacts and the pet are lost, the radio
+> profile matches the network. The nRF52 now has a soft off (the CPU waits for the button in System ON; after a ~1 s
+> hold the LED lights, the restart follows the release): on the T114 (image `D3425988…`) the owner turned it on by
+> holding USER — `reset_reason` 3, storage and radio fine, BLE back. The GAT562, M9, T-Deck and community boards were
+> not checked on hardware; the T114 Chinese image has 2 KB left.
+
 > **nRF52 modules** (7 October 2026, branch `feature/dice`; the T114 and GAT562 were not connected — not checked on
 > hardware). Chess, the pet and the dice are left out with `MM_NO_CHESS|PET|DICE` (`include/Modules.h`); a custom package
 > is built by `tools/nrf52.py package ENV --without … [--lang CODE]`. The T114 and GAT562 were built without each module,
