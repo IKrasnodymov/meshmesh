@@ -25,6 +25,30 @@ restores the setting. `nrf52_power_check.py` remains as a compatibility entry po
 direction without receiver USB polling until ACK, then restores the original roles. See `verification.md`
 for results tied to particular images and remaining limitations.
 
+## Power off
+
+Since 0.8.0 the device can be switched off in software: "Turn off..." in the Settings menu of the
+one-button boards, T114 and GAT562 (confirm by holding again or a second OK), the "Turn off" row in the
+M9 and T-Deck settings (OK twice), the "Turn off the device" button in the Settings of the web page and the
+app, and the USB command `poweroff`. After 1.5 s (the reply leaves; a packet on air gets up to 5 s more)
+the firmware flushes delayed writes (contacts, chess, tournaments, the pet, server logins and posts), shows
+"Device is off" and how to turn it on for 3 s, puts the transceiver to sleep, turns the screen, GPS and
+peripheral supply off and switches off:
+
+| Board | Off | On |
+|---|---|---|
+| Heltec V4, V3, Wireless Tracker, T3-S3, T-LoRa, XIAO S3, T-Deck | ESP32 deep sleep, pin levels held | hold PRG/BOOT (T-Deck: the trackball pressed) for about a second |
+| Station G2, ThinkNode M2 | ESP32 deep sleep | RESET: the button is not on an RTC pin and cannot wake it |
+| ThinkNode M9 | ESP32 deep sleep | RESET or the power slider: the M9 has no button on a GPIO |
+| T-Beam, T-Beam Supreme | the AXP PMU cuts every rail (deep sleep without a PMU) | the board's PWR key |
+| GAT562, T114 | nRF52840 System OFF | hold the joystick centre / USER for about a second |
+
+A short press (and, on the nRF52, plugging USB in) wakes the board only for a moment: without a 0.7 s
+hold after the start it goes back to sleep. RESET always turns it on. A USB update needs the board on; on
+the nRF52 the bootloader is also reachable by a double RESET. On the classic ESP32 (T-Beam, T-LoRa) IRAM is
+full and the deep sleep code did not fit: these builds stub out (`src/NoLedc.cpp`) the LEDC calls of
+RadioLib's `tone()`, which only AFSK uses. The current while off has not been measured.
+
 [EasySkyMesh](https://github.com/IoTThinks/EasySkyMesh/wiki/PowerSaving#3-test-results) informed this
 work. RXPS (duty-cycled LoRa reception) and scheduled GPS power cycling are not implemented.
 LoRa reception remains continuous. MeshMesh current and battery-life gains are unmeasured;

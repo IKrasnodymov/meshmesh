@@ -1844,6 +1844,26 @@
   "ru": "Маяк",
   "text": "Beacon"
  },
+ "7f758b38": {
+  "en": "To turn on, hold the trackball pressed",
+  "ru": "Включение: удерживать нажатый трекбол",
+  "text": "Para ligar, segure a trackball pressionada"
+ },
+ "46ceb3e1": {
+  "en": "To turn on: RESET or the power switch",
+  "ru": "Включение: RESET или выключатель питания",
+  "text": "Para ligar: RESET ou o interruptor"
+ },
+ "4bc6e1b8": {
+  "en": "Device is off",
+  "ru": "Устройство выключено",
+  "text": "Dispositivo desligado"
+ },
+ "c219ab1d": {
+  "en": "Turning off...",
+  "ru": "Выключение...",
+  "text": "Desligando..."
+ },
  "a28e14f1": {
   "en": "GPS & compass",
   "ru": "GPS и компас",
@@ -1853,6 +1873,11 @@
   "en": "Keys & help",
   "ru": "Клавиши и подсказки",
   "text": "Teclas e ajuda"
+ },
+ "30e40a74": {
+  "en": "Turn off",
+  "ru": "Выключить",
+  "text": "Desligar"
  },
  "6be9cca9": {
   "en": "Brightness ",
@@ -2778,6 +2803,11 @@
   "en": "Map unavailable",
   "ru": "Карта недоступна",
   "text": "Mapa indisponível"
+ },
+ "9777035b": {
+  "en": "OK again: turn off",
+  "ru": "Ещё раз OK: выключить",
+  "text": "OK de novo: desligar"
  },
  "a0b9db2e": {
   "en": "Nothing to save",
@@ -4834,6 +4864,11 @@
   "ru": "Отпустить...",
   "text": "Soltar..."
  },
+ "c339d69e": {
+  "en": "Turn off...",
+  "ru": "Выключить...",
+  "text": "Desligar..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4954,6 +4989,11 @@
   "ru": "Удерж. ещё: отпустить",
   "text": "Segure de novo: soltar"
  },
+ "32de491f": {
+  "en": "Hold again: turn off",
+  "ru": "Удерж. ещё: выключить",
+  "text": "Segure de novo: desligar"
+ },
  "5287dab1": {
   "en": "Encryption: OK",
   "ru": "Шифрование: OK",
@@ -5023,6 +5063,31 @@
   "en": "click-next hold-choose",
   "ru": "клик-далее держ-выбор",
   "text": "clique-próx seg.-sel."
+ },
+ "41e2a800": {
+  "en": "the power key",
+  "ru": "кнопка питания",
+  "text": "botão de energia"
+ },
+ "1575b669": {
+  "en": "RESET or power switch",
+  "ru": "RESET или выключатель",
+  "text": "RESET ou interruptor"
+ },
+ "c1622906": {
+  "en": "hold the joystick",
+  "ru": "удержать джойстик",
+  "text": "segure o joystick"
+ },
+ "b726e635": {
+  "en": "hold ",
+  "ru": "удержать ",
+  "text": "segure "
+ },
+ "d79bbe1b": {
+  "en": "To turn on:",
+  "ru": "Включить:",
+  "text": "Ligar:"
  },
  "bbe40d91": {
   "en": "posts ",

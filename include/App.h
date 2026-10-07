@@ -14,6 +14,7 @@ String executeCommand(const String& line);
 // Role changes restart the device; the restart waits for the reply to leave over USB, Wi-Fi or BLE.
 const char* roleName(uint8_t role);String setRole(uint8_t role);void restartTick();
 void uiBegin();void uiTick();void uiKey(int key);bool uiScreenOff();
+void uiFarewell(); // power off (Power.cpp): "the device is off" and how to turn it on, the last frame before the screen goes dark
 // Touch (T-Deck; "uitouch" over USB on the 320x240 boards): 't' tap and 'h' hold at x,y; 'u','d','l','r' swipes.
 void uiTouch(char gesture,int x,int y);
 String uiStatus();

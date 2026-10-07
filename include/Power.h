@@ -13,3 +13,13 @@ uint8_t powerMhz();
 uint32_t powerSleeps();uint32_t powerSleptMs();uint32_t powerSlowMs(); // light sleeps, time asleep, time at 80 MHz
 void powerRadioIrq(); // RadioLib ISR only
 uint32_t powerIdleWaits();uint32_t powerIdleMs();uint32_t powerRadioEvents();
+// Power off: deep sleep on the ESP32, System OFF on the nRF52 (Hardware::powerDown), a T-Beam's PMU
+// switches itself off. The request answers at once; 1.5 s later (the reply leaves over USB, Wi-Fi or
+// BLE; a packet being sent gets up to 5 s more) delayed writes are flushed, the transceiver sleeps and
+// the board turns off. Holding the wake button about a second turns it on again; a shorter press (or,
+// on the nRF52, USB plugged in) sends it back to sleep. RESET always starts it.
+String powerOff();
+bool powerOffPending();
+int powerOnWay();      // Hardware::wakePin(): a pin = hold that button; -1: RESET or the power switch; -2: the PMU key
+void powerOffTick();   // main loop
+void powerBootCheck(); // first thing at boot: a wake that is not a held button goes back to sleep

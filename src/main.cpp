@@ -106,6 +106,7 @@ static void bootWindow(){
 #define BOOT(step) do{}while(0)
 #endif
 void appSetup() {
+  powerBootCheck(); // woken from power off by a short press: back to sleep
 #if defined(MM_NRF52)
   Serial.begin(115200);delay(300);
 #if defined(MM_BOOT_TRACE)
@@ -190,7 +191,7 @@ void appLoop() {
     else if(c!='\r' && command.length()<1024)command+=c;
     else if(command.length()>=1024) {command="";usbLine("ERR command too long");}
   }
-  portalTick();uiTick();usbTick();restartTick();
+  portalTick();uiTick();usbTick();restartTick();powerOffTick();
   if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
 #if !defined(MM_NATIVE_USB) && !defined(MM_NRF52)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}

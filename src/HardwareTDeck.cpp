@@ -143,6 +143,12 @@ char Hardware::readTouch(int& x,int& y) {
   if(ax<16&&ay<16){x=x0;y=y0;return 't';}
   return 0;
 }
+// Off: the keyboard, LoRa and display supply and the backlight off; a trackball click (GPIO0) wakes.
+void Hardware::powerDown(bool started) {
+  if(started)brightness(0);
+  for(int pin:{pins::peripheralPower,pins::backlight}){gpio_hold_dis(gpio_num_t(pin));pinMode(pin,OUTPUT);digitalWrite(pin,LOW);gpio_hold_en(gpio_num_t(pin));}
+}
+int Hardware::wakePin() const {return pins::ballClick;}
 void Hardware::beep() {}  // the T-Deck speaker is an I2S amplifier, not driven here
 void Hardware::ping(uint16_t,uint16_t) {}
 void Hardware::flush() {display.drawRGBBitmap(0,0,canvas->getBuffer(),320,240);}

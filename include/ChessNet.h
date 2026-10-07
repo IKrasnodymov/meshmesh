@@ -49,7 +49,7 @@ class ChessNet {
   String event;uint32_t events=0;         // the latest news for the screen; events counts them
   ChessMatch* eventMatch=nullptr;
   bool dirty=true;
-  void begin();void tick();
+  void begin();void tick();void flush(){if(saveDue)save();} // flush: before power off
   // From MeshRadio: a direct message from a known contact. True when it was a chess command.
   bool receive(uint64_t from,const char* name,const char* text);
   void delivery(uint32_t id,uint8_t status);

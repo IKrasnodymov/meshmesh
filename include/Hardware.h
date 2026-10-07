@@ -64,6 +64,11 @@ class Hardware {
   void beep();
   void ping(uint16_t hz,uint16_t ms);
   void flush();
+  // Power off (Power.cpp): the screen, GPS and peripheral supplies off; the levels are held through
+  // deep sleep (ESP32) or System OFF (nRF52). started: begin() ran; false on a wake that goes back to
+  // sleep, when only the pin levels are set again. A board with a PMU (T-Beam) is switched off by it here.
+  void powerDown(bool started);
+  int wakePin() const; // the button that turns it on again, pressed = LOW; -1: only RESET or the power switch
   void text(int x,int y,const String& value,uint16_t color=0xffff);
   void line(int y,const String& value,uint16_t color=0xffff);
  private:

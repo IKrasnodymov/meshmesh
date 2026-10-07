@@ -41,6 +41,7 @@ class Pet {
   uint32_t events=0;                     // grows with every change a screen should show
   void begin();
   void tick();
+  void flush(){if(has())save();}       // before power off: the last ten minutes are not lost
   unsigned level() const;                // from 1
   uint32_t levelXp(unsigned n) const{return 25UL*n*(n-1);} // experience where level n starts
   Mood mood() const;

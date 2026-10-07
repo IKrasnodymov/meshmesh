@@ -76,6 +76,14 @@ int Hardware::readKey() {
   }
   return 0;
 }
+// Off: the OLED, GPS supply, LEDs and buzzer off, the SX1262 asleep and deselected (as MeshCore's
+// powerOff); System OFF keeps the levels. The joystick centre wakes it.
+void Hardware::powerDown(bool started) {
+  if(started){brightness(0);setGps(false);}
+  const int levels[][2]={{pins::gpsPower,LOW},{pins::led,!pins::ledOn},{pins::txLed,!pins::ledOn},{pins::buzzer,LOW},{pins::radioCs,HIGH}};
+  for(auto& l:levels){pinMode(l[0],OUTPUT);digitalWrite(l[0],l[1]);}
+}
+int Hardware::wakePin() const {return pins::keyPress;}
 void Hardware::beep() {if(config.sound)tone(pins::buzzer,2200,60);}
 void Hardware::ping(uint16_t hz,uint16_t ms) {if(config.sound)tone(pins::buzzer,hz,ms);}
 void Hardware::flush() {

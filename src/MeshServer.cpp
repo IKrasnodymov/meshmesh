@@ -260,6 +260,7 @@ class ServerMesh:public mesh::Mesh,public CommonCLICallbacks {
     memset(defaultScope.key,0,sizeof(defaultScope.key));loadFromConfig();
   }
   virtual ~ServerMesh(){}
+  virtual void flush(){if(dirtyContactsExpiry){saveAcl();dirtyContactsExpiry=0;}}
   void loadFromConfig(){strlcpy(prefs.node_name,config.name,sizeof(prefs.node_name));prefs.freq=config.frequency;prefs.bw=config.bandwidth;prefs.sf=config.sf;prefs.cr=config.cr;prefs.tx_power_dbm=config.power;prefs.gps_enabled=config.gps;}
   virtual void begin(){
     mesh::Mesh::begin();
@@ -636,6 +637,7 @@ class RoomMesh:public ServerMesh {
     if(!*msg)strcpy(reply,"ERR empty message");else{storePost(self_id,msg);strcpy(reply,"OK");}
     return true;
   }
+  void flush() override{ServerMesh::flush();if(postsDue)savePosts();}
   void roleLoop() override{
     if(postsDue&&millisHasNowPassed(postsDue))savePosts();
     if(!millisHasNowPassed(nextPush)||!acl.getNumClients())return;
@@ -683,6 +685,7 @@ bool MeshServer::begin(uint8_t role,mesh::Radio& radio,mesh::MillisecondClock& m
 }
 bool MeshServer::room() const{return node&&node->type==ADV_TYPE_ROOM;}
 void MeshServer::tick(){if(node)node->loop();}
+void MeshServer::flush(){if(node)node->flush();}
 void MeshServer::configChanged(){if(!node)return;node->loadFromConfig();node->savePrefs();}
 bool MeshServer::advertise(bool flood){return node&&node->announce(flood);}
 bool MeshServer::post(const String& text){return room()&&text.length()<=maxPostText&&meshmesh::validUtf8((const uint8_t*)text.c_str(),text.length())&&static_cast<RoomMesh*>(node)->post(text.c_str());}

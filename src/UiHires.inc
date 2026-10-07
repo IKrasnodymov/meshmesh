@@ -382,8 +382,10 @@ void chessBoard(const ChessMatch& m){
  toast();
 }
 #endif
+void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),ColInk,bold);center(120,106,t("To turn on:","Включить:")+" "+powerOnHint(),ColDim,small);}
 void draw(){
  auto& d=g();
+ if(powerOffPending()){offPage();hardware.flush();return;}
  if(rolePick){rolePage();hardware.flush();return;}
  d.fillScreen(ColBack);
  const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;

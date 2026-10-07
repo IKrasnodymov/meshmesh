@@ -69,6 +69,13 @@ int Hardware::readKey() {
   if(!pressed && held) {held=false;if(!longSent && millis()-down>30){keyCount++;lastKey=13;return 13;}}
   return 0;
 }
+// Off: backlight, TFT and Vext (GPS) supplies off, LED off, the SX1262 deselected; System OFF keeps the
+// levels. The USER button wakes it.
+void Hardware::powerDown(bool started) {
+  if(started){brightness(0);setGps(false);}
+  output(pins::tftLight,HIGH);output(pins::tftPower,HIGH);output(pins::vext,!pins::vextOn);output(pins::led,!pins::ledOn);output(pins::radioCs,HIGH);
+}
+int Hardware::wakePin() const {return pins::button;}
 void Hardware::beep() {}
 void Hardware::ping(uint16_t,uint16_t) {}
 void Hardware::flush() {

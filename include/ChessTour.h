@@ -35,7 +35,7 @@ class Net {
  public:
   Tour tours[MaxTours];
   String event;uint32_t events=0;Tour* eventTour=nullptr;bool dirty=true;
-  void begin();void tick();
+  void begin();void tick();void flush(){if(saveDue)save();} // flush: before power off
   // From MeshRadio: a direct message from a known contact. True when it was a tournament command.
   bool receive(uint64_t from,const char* name,const char* text);
   bool delivery(uint32_t id,uint8_t status);  // true when the message was one of ours

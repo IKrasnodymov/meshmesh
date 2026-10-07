@@ -239,6 +239,7 @@ class MeshCoreBackend:public BaseChatMesh {
  // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.
  bool resetPath(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c)return false;resetPathTo(*c);saveContacts();return true;}
  bool forget(const uint8_t* key){ContactInfo* c=lookupContactByPubKey(key,32);if(!c||!removeContact(*c))return false;saveContacts();return true;}
+ void flush(){if(contactsDue)saveContacts();}
  void tick(){if(!protectedAt||millis()-protectedAt>=5000)protectContacts();loop();if(contactsDue&&int32_t(millis()-contactsDue)>=0)saveContacts();}
 };
 #if defined(MM_RADIO_SX1276)
@@ -270,6 +271,8 @@ void MeshRadio::begin(){
  restoreHistory();if(ready&&core&&core->announce)autoHelloDue=millis()+3000+esp_random()%2000;
 }
 bool MeshRadio::busy() const{return transmitting||corePool.getOutboundTotal()>0;}
+void MeshRadio::flush(){if(core)core->flush();meshServer.flush();}
+void MeshRadio::sleep(){if(ready)radio.sleep();ready=false;}
 void MeshRadio::cancelPending(){for(auto& p:pending)if(p.active){status(p.message.id,ChatMessage::Failed);p.active=false;}while(corePool.getOutboundTotal()){auto* packet=corePool.removeOutboundByIdx(0);corePool.free(packet);}}
 namespace {uint32_t recalAt=0;bool recalFailed=false;}
 bool MeshRadio::applyConfig(){

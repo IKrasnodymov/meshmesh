@@ -70,6 +70,15 @@ String Internet::address(){return "192.168.1.101";}
 bool Maps::inArea() const{return true;}
 bool webRadarActive(){return false;}
 static String previewCommands; // commands the screens ran, for the checks
+// Power off (Power.cpp): the screens only; the M9 wakes by RESET, the others by a held button.
+static bool previewOff=false;
+String powerOff(){previewOff=true;return "OK turning off";}
+bool powerOffPending(){return previewOff;}
+#if defined(MM_COMPACT) || defined(MM_BOARD_TDECK)
+int powerOnWay(){return 0;}
+#else
+int powerOnWay(){return -1;}
+#endif
 String executeCommand(const String& line){previewCommands+=line+";";return "OK";} // UiHeltec.cpp: the GAT562 GPS menu
 // Same as src/MeshRadio.cpp (the preview does not link the radio).
 String MeshRadio::routeText(const ChatMessage& m,bool brief) const{

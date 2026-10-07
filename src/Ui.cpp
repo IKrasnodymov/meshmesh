@@ -14,6 +14,7 @@
 #include "MeshServer.h"
 #include "Pet.h"
 #include "Dice.h"
+#include "Power.h"
 #include <Preferences.h>
 #include <Mm1Packet.h>
 #include <time.h>
@@ -542,15 +543,20 @@ void drawMotion(){
  if(beacon)footer({{"<>",t("Signals","Сигналы")},{"B",t("Sensor","Приёмник")},{"BACK",t("Menu","Меню")}});
  else footer({{"OK",t("Calibrate","Калибровка")},{"<>",t("Signals","Сигналы")},{"B",t("Beacon","Маяк")},{"BACK",t("Menu","Меню")}});
 }
-const int settingsCount=8;
+const int settingsCount=9;
+// Power off (Power.cpp): the M9 has no button on a GPIO, the T-Deck wakes on a held trackball click.
+String powerOnHint(){return powerOnWay()>=0?t("To turn on, hold the trackball pressed","Включение: удерживать нажатый трекбол"):t("To turn on: RESET or the power switch","Включение: RESET или выключатель питания");}
+bool farewell=false; // the board is about to turn off: the last frame
+void drawOff(){panel(30,62,260,116,card,10);icon(IcPower,160,96,14,farewell?dim:warn,card);textCenter(160,138,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),ink,bold);textCenter(160,160,powerOnHint(),dim,small);}
+uint32_t powerArmed=0; // the first OK on "Turn off" arms it for 5 s
 void drawSettings(){
- Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin,IcTower};uint16_t hues[]={accent,info,warn,info,ok,dim,ok,violet};
- String names[]={t("Radio","Радио"),t("Screen & device","Экран и устройство"),t("GPS & compass","GPS и компас"),t("Connections","Подключения"),t("Module health","Состояние модулей"),t("Keys & help","Клавиши и подсказки"),t("Saved maps","Сохранённые карты"),t("Device mode","Режим работы")};
+ Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin,IcTower,IcPower};uint16_t hues[]={accent,info,warn,info,ok,dim,ok,violet,bad};
+ String names[]={t("Radio","Радио"),t("Screen & device","Экран и устройство"),t("GPS & compass","GPS и компас"),t("Connections","Подключения"),t("Module health","Состояние модулей"),t("Keys & help","Клавиши и подсказки"),t("Saved maps","Сохранённые карты"),t("Device mode","Режим работы"),t("Turn off","Выключить")};
  String details[]={String(config.frequency,3)+t(" MHz · SF"," МГц · SF")+String(config.sf)+" · "+String(config.power)+" dBm",
   t("Brightness ","Яркость ")+String(config.brightness)+" · "+langNames[config.lang<LangCount?config.lang:0],
   "GPS "+flag(config.gps)+" · "+(navigation.calibrated?t("compass calibrated","компас откалиброван"):t("compass not calibrated","компас не откалиброван")),
   "Wi-Fi "+flag(portalActive())+" · BLE "+flag(bleActive()),"RX "+String(meshRadio.rxCount)+" · TX "+String(meshRadio.txCount)+" · "+String(meshRadio.relayed)+t(" relayed"," переслано"),
-  t("What every key does","Что делает каждая клавиша"),maps.title.length()?maps.title+" · "+count(maps.tileCount,"tile","tiles","тайл","тайла","тайлов"):t("No maps","Карт нет"),config.role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):config.role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal: chats, maps, radar","Обычный: чаты, карты, радар")};
+  t("What every key does","Что делает каждая клавиша"),maps.title.length()?maps.title+" · "+count(maps.tileCount,"tile","tiles","тайл","тайла","тайлов"):t("No maps","Карт нет"),config.role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):config.role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal: chats, maps, radar","Обычный: чаты, карты, радар"),powerOnHint()};
  int first=max(0,selected-5);for(int i=first;i<settingsCount&&i<first+6;i++){int y=24+(i-first)*32;bool focus=selected==i;listRow(y,30,focus);target(8,y,304,30,i);
   g().fillRoundRect(16,y+4,22,22,5,card);icon(icons[i],27,y+15,7,hues[i],card);text(46,y+14,names[i],ink,bold);text(46,y+26,fit(details[i],250,small),dim,small);tri(302,y+15,1,4,focus?accent:faint);}
  scrollbar(first,6,settingsCount,24,190);footer({{"OK",t("Open","Открыть")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
@@ -706,6 +712,7 @@ String tourTitle(){return tourOpen&&tourOpen->state!=tour::Free?String(tourOpen-
 String chessTitle(){return chessOpen&&chessOpen->state!=ChessMatch::Free?t("Chess · ","Шахматы · ")+chessOpen->name:t("Chess","Шахматы");}
 void draw(){
  auto& c=g();c.fillScreen(bg);targetCount=hintCount=0;
+ if(powerOffPending()){drawOff();hardware.flush();return;}
  if(locked)drawLocked();
  else switch(page){
  case Home:drawHome();break;case Threads:drawThreads();break;case Chat:drawChat();break;case Map:drawMap();break;case Library:drawLibrary();break;
@@ -768,9 +775,10 @@ void runNodeAction(){
 static bool realErase=false; // DEL tapped in the footer: a real delete, also on the T-Deck
 bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
 bool uiScreenOff(){return wakeOnly;}
+void uiFarewell(){farewell=true;wakeOnly=locked=false;hardware.brightness(config.brightness);draw();}
 void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;d["locked"]=locked;d["selected"]=selected;d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);tourStatus(d);if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node)d["action"]=action;if(page==ChannelInfo)d["channel"]=meshRadio.idText(focusChannel);if(page==ChannelAdd)d["add_step"]=int(addStep);d["channels"]=meshRadio.channelCount;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}if(page==DiceView){const char* sheets[]={"main","saved","characters"};d["dice_sheet"]=sheets[diceSheet];d["dice_selected"]=diceSel;d["dice_counter"]=diceCounter;}String s;serializeJson(d,s);return s;}
-void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold){locked=false;if(const ChessMatch* m=lockChess())chessEnter(const_cast<ChessMatch*>(m));}return;}if(asleep)return;
+void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){if(key==KeyHold){locked=false;if(const ChessMatch* m=lockChess())chessEnter(const_cast<ChessMatch*>(m));}return;}if(asleep)return;
 #if defined(MM_BOARD_TDECK)
  // The T-Deck has no BACK key: DEL goes back when there is no text here to delete (DEL tapped in the footer stays DEL).
  bool erase=realErase;realErase=false;
@@ -815,6 +823,7 @@ void uiKey(int key){bool asleep=wakeOnly;lastInput=millis();hardware.brightness(
  else if(page==ChannelAdd)channelAddEnter();
  else if(page==Nodes&&nodeTotal){focusNode=meshRadio.peers[nodeOrder[selected]].id;change(Node);}
  else if(page==Node)runNodeAction();
+ else if(page==Settings&&selected==settingsCount-1){if(!powerArmed||millis()-powerArmed>5000){powerArmed=millis();notice(t("OK again: turn off","Ещё раз OK: выключить"),warn);return;}powerArmed=0;powerOff();}
  else if(page==Settings){Page pages[]={Radio,Display,Sensors,Network,Diagnostics,Help,Library,RolePick};if(pages[selected]==RolePick)openRolePick(false);else change(pages[selected]);}
  else if(page==Radio||page==Display){if(selected==settingRows()-1){if(draftChanged())saveDraft();else notice(t("Nothing to save","Изменений нет"),dim);}else if(page==Display&&selected==0){editing=true;edit=draft.name;}else alter(1);}
  else if(page==Network){if(selected==0)portalToggle();if(selected==1){if(config.role!=RoleNormal)notice(t("Internet over Wi-Fi is off in this mode","Интернет по Wi-Fi выключен в этом режиме"),warn);else change(NetList);}if(selected==2)bleToggle();if(selected==3)notice(t("Public key: ","Открытый ключ: ")+meshRadio.publicKeyText().substring(0,16));}
@@ -851,6 +860,7 @@ void uiTouch(char gesture,int x,int y){
 }
 String eventLabel(const String& value){if(value.startsWith("New message from "))return tr("New message from ","Сообщение от ")+value.substring(17);if(value.startsWith("Delivered to "))return tr("Delivered to ","Доставлено: ")+value.substring(13);if(value=="Queued: waiting for delivery")return tr("Queued: waiting for delivery","Ожидание подтверждения");if(value=="Queued: broadcast")return tr("Queued: broadcast","Сообщение в общем чате отправляется");if(value=="No delivery ACK")return tr("No delivery ACK","Получатель не подтвердил доставку");if(config.lang!=LangEn&&(value.startsWith("Radio TX error")||value.startsWith("TX failed")))return tr("Radio TX error","Ошибка передачи по радио");return value;}
 void uiTick(){uint32_t now=millis();
+ if(powerOffPending()){static bool shown=false;if(!shown){shown=true;wakeOnly=locked=false;hardware.brightness(config.brightness);draw();}return;} // drawn once: the board turns off
  if(bootPick&&page==RolePick&&now-bootPickAt>=bootPickMs){bootPick=false;change(homePage());}
  if(page==Game)gameTick(now);
  // Rolls from the web page or the app tumble on the screen too.

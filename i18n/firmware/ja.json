@@ -1835,6 +1835,26 @@
   "ru": "Маяк",
   "text": "ビーコン"
  },
+ "7f758b38": {
+  "en": "To turn on, hold the trackball pressed",
+  "ru": "Включение: удерживать нажатый трекбол",
+  "text": "電源オン：トラックボールを長押し"
+ },
+ "46ceb3e1": {
+  "en": "To turn on: RESET or the power switch",
+  "ru": "Включение: RESET или выключатель питания",
+  "text": "電源オン：RESET または電源スイッチ"
+ },
+ "4bc6e1b8": {
+  "en": "Device is off",
+  "ru": "Устройство выключено",
+  "text": "電源オフしました"
+ },
+ "c219ab1d": {
+  "en": "Turning off...",
+  "ru": "Выключение...",
+  "text": "電源オフ中..."
+ },
  "a28e14f1": {
   "en": "GPS & compass",
   "ru": "GPS и компас",
@@ -1844,6 +1864,11 @@
   "en": "Keys & help",
   "ru": "Клавиши и подсказки",
   "text": "キーとヘルプ"
+ },
+ "30e40a74": {
+  "en": "Turn off",
+  "ru": "Выключить",
+  "text": "電源オフ"
  },
  "6be9cca9": {
   "en": "Brightness ",
@@ -2767,6 +2792,11 @@
   "en": "Map unavailable",
   "ru": "Карта недоступна",
   "text": "地図を使用できません"
+ },
+ "9777035b": {
+  "en": "OK again: turn off",
+  "ru": "Ещё раз OK: выключить",
+  "text": "もう一度 OK：電源オフ"
  },
  "a0b9db2e": {
   "en": "Nothing to save",
@@ -4817,6 +4847,11 @@
   "ru": "Отпустить...",
   "text": "逃がす..."
  },
+ "c339d69e": {
+  "en": "Turn off...",
+  "ru": "Выключить...",
+  "text": "電源オフ..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4937,6 +4972,11 @@
   "ru": "Удерж. ещё: отпустить",
   "text": "もう一度長押し: 逃がす"
  },
+ "32de491f": {
+  "en": "Hold again: turn off",
+  "ru": "Удерж. ещё: выключить",
+  "text": "もう一度長押し：オフ"
+ },
  "5287dab1": {
   "en": "Encryption: OK",
   "ru": "Шифрование: OK",
@@ -5006,6 +5046,31 @@
   "en": "click-next hold-choose",
   "ru": "клик-далее держ-выбор",
   "text": "押す:次 長押し:選択"
+ },
+ "41e2a800": {
+  "en": "the power key",
+  "ru": "кнопка питания",
+  "text": "電源キー"
+ },
+ "1575b669": {
+  "en": "RESET or power switch",
+  "ru": "RESET или выключатель",
+  "text": "RESET か電源スイッチ"
+ },
+ "c1622906": {
+  "en": "hold the joystick",
+  "ru": "удержать джойстик",
+  "text": "ジョイスティック長押し"
+ },
+ "b726e635": {
+  "en": "hold ",
+  "ru": "удержать ",
+  "text": "長押し "
+ },
+ "d79bbe1b": {
+  "en": "To turn on:",
+  "ru": "Включить:",
+  "text": "電源オン："
  },
  "bbe40d91": {
   "en": "posts ",

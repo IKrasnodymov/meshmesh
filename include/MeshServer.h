@@ -18,6 +18,7 @@ class MeshServer {
   bool running() const{return node!=nullptr;}
   bool room() const;
   void tick();
+  void flush();                         // delayed writes (logins, posts) now: before power off
   void configChanged();                 // radio, power or name changed in MeshMesh settings
   bool advertise(bool flood=true);
   bool post(const String& text);        // the room: a post by the room itself, as "room.post"

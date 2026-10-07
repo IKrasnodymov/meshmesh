@@ -93,6 +93,14 @@ int Hardware::readKey() {
   uint8_t key=0;if(!read(Wire1,pins::keyboardAddress,1,&key,1,true)) return 0;
   if(key==0 || key==255) return 0;lastKey=key;keyCount++;brightness(config.brightness);return key;
 }
+// Off: the backlight and the screen, GPS and sensor supply off (both active LOW), the LR1110 deselected.
+// The M9 has no button on a GPIO: RESET or the power slider turns it on.
+void Hardware::powerDown(bool started) {
+  if(started){ledcDetachPin(pins::backlight);setGps(false);}
+  const int levels[][2]={{pins::backlight,HIGH},{pins::peripheralPower,HIGH},{pins::radioCs,HIGH}};
+  for(auto& l:levels){gpio_hold_dis(gpio_num_t(l[0]));pinMode(l[0],OUTPUT);digitalWrite(l[0],l[1]);gpio_hold_en(gpio_num_t(l[0]));}
+}
+int Hardware::wakePin() const {return -1;}
 void Hardware::beep() {if(config.sound) {tone(pins::buzzer,2200,60);}}
 void Hardware::ping(uint16_t hz,uint16_t ms) {if(config.sound) {tone(pins::buzzer,hz,ms);}}
 void Hardware::flush() {display.drawRGBBitmap(0,0,canvas->getBuffer(),320,240);}

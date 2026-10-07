@@ -1835,6 +1835,26 @@
   "ru": "Маяк",
   "text": "Beacon"
  },
+ "7f758b38": {
+  "en": "To turn on, hold the trackball pressed",
+  "ru": "Включение: удерживать нажатый трекбол",
+  "text": "Untuk menyalakan, tahan trackball"
+ },
+ "46ceb3e1": {
+  "en": "To turn on: RESET or the power switch",
+  "ru": "Включение: RESET или выключатель питания",
+  "text": "Menyalakan: RESET atau sakelar daya"
+ },
+ "4bc6e1b8": {
+  "en": "Device is off",
+  "ru": "Устройство выключено",
+  "text": "Perangkat mati"
+ },
+ "c219ab1d": {
+  "en": "Turning off...",
+  "ru": "Выключение...",
+  "text": "Mematikan..."
+ },
  "a28e14f1": {
   "en": "GPS & compass",
   "ru": "GPS и компас",
@@ -1844,6 +1864,11 @@
   "en": "Keys & help",
   "ru": "Клавиши и подсказки",
   "text": "Tombol & bantuan"
+ },
+ "30e40a74": {
+  "en": "Turn off",
+  "ru": "Выключить",
+  "text": "Matikan"
  },
  "6be9cca9": {
   "en": "Brightness ",
@@ -2767,6 +2792,11 @@
   "en": "Map unavailable",
   "ru": "Карта недоступна",
   "text": "Peta tak tersedia"
+ },
+ "9777035b": {
+  "en": "OK again: turn off",
+  "ru": "Ещё раз OK: выключить",
+  "text": "OK lagi: matikan"
  },
  "a0b9db2e": {
   "en": "Nothing to save",
@@ -4817,6 +4847,11 @@
   "ru": "Отпустить...",
   "text": "Lepaskan..."
  },
+ "c339d69e": {
+  "en": "Turn off...",
+  "ru": "Выключить...",
+  "text": "Matikan..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4937,6 +4972,11 @@
   "ru": "Удерж. ещё: отпустить",
   "text": "Tahan lagi: lepaskan"
  },
+ "32de491f": {
+  "en": "Hold again: turn off",
+  "ru": "Удерж. ещё: выключить",
+  "text": "Tahan lagi: matikan"
+ },
  "5287dab1": {
   "en": "Encryption: OK",
   "ru": "Шифрование: OK",
@@ -5006,6 +5046,31 @@
   "en": "click-next hold-choose",
   "ru": "клик-далее держ-выбор",
   "text": "klik-maju tahan-pilih"
+ },
+ "41e2a800": {
+  "en": "the power key",
+  "ru": "кнопка питания",
+  "text": "tombol daya"
+ },
+ "1575b669": {
+  "en": "RESET or power switch",
+  "ru": "RESET или выключатель",
+  "text": "RESET atau sakelar"
+ },
+ "c1622906": {
+  "en": "hold the joystick",
+  "ru": "удержать джойстик",
+  "text": "tahan joystick"
+ },
+ "b726e635": {
+  "en": "hold ",
+  "ru": "удержать ",
+  "text": "tahan "
+ },
+ "d79bbe1b": {
+  "en": "To turn on:",
+  "ru": "Включить:",
+  "text": "Menyalakan:"
  },
  "bbe40d91": {
   "en": "posts ",

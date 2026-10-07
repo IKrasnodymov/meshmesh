@@ -33,6 +33,7 @@ void drawIcon(Adafruit_GFX& d,Icon id,int cx,int cy,int s,uint16_t c,uint16_t ho
   d.fillCircle(cx-s*3/4,cy-q+1,r,c);d.fillCircle(cx-q-1,cy-s*3/4+1,r,c);d.fillCircle(cx+q+1,cy-s*3/4+1,r,c);d.fillCircle(cx+s*3/4,cy-q+1,r,c);break;}
  case IcChess:d.fillCircle(cx,cy-s/2,max(2,s*3/10),c);d.fillTriangle(cx,cy-s/2,cx-s/2,cy+s/2,cx+s/2,cy+s/2,c);d.fillRoundRect(cx-s*3/4,cy+s/2,s*3/2,max(2,s/3),1,c);d.fillRect(cx-s*3/8,cy-s/6,s*3/4,max(1,s/6),c);break;
  case IcDice:{int r=max(2,s/4),p=max(1,s/5);d.fillRoundRect(cx-s*7/8,cy-s*7/8,s*7/4,s*7/4,r,c);for(int k:{-1,0,1})d.fillCircle(cx+k*h,cy+k*h,p,hole);break;} // a die showing three
+ case IcPower:{int r=s*3/4;arc(d,cx,cy+q/2,r,40,320,c);arc(d,cx,cy+q/2,r-1,40,320,c);thick(d,cx,cy-s,cx,cy,c);break;}
  case IcScreen:d.drawRoundRect(cx-s,cy-s*5/8,2*s,s*5/4,2,c);d.fillRect(cx-s+3,cy-s*5/8+3,2*s-6,s*5/4-6,c);break;
  case IcKey:d.drawCircle(cx-h,cy,max(2,s*3/8),c);d.drawFastHLine(cx-h+s*3/8,cy,s+1,c);d.drawFastVLine(cx+h,cy,max(2,s/3),c);d.drawFastVLine(cx+s-1,cy,max(2,s/3),c);break;
  }

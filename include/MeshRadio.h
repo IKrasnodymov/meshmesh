@@ -69,6 +69,8 @@ class MeshRadio {
   // Deaf receiver guard: the transceiver is set up again as at boot (reset, calibration, settings)
   // after 10 min without a packet, or by the server's agc.reset.interval; the queue is kept.
   bool recalibrate();uint32_t recalibrations=0;
+  // Power off (Power.cpp): delayed writes now, then the transceiver sleeps until the next boot.
+  void flush();void sleep();
   bool sendMessage(const String& text,uint64_t destination=meshmesh::Broadcast);
   uint32_t sendGame(const String& text,uint64_t destination); // message ID for delivery, 0 when refused
   bool sendHello();bool sendPosition();bool selfTest();

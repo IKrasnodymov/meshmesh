@@ -10,6 +10,7 @@
 #include "MeshServer.h"
 #include "Pet.h"
 #include "Dice.h"
+#include "Power.h"
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
@@ -147,7 +148,7 @@ template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96
 
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
-  ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
+  ActPowerOff,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
   ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActClose};
 constexpr unsigned MenuMax=10;
 #if MM_DICE
@@ -211,7 +212,7 @@ unsigned actions(Act* out){
 #if defined(MM_JOYSTICK)
   out[n++]=ActSound; // the GAT562 buzzer
 #endif
-  out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;break;
+  out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;break;
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
@@ -219,7 +220,7 @@ bool keepsMenu(Act a){
 #if MM_DICE
  if(a>=ActDiceRoll&&a<ActClose)return diceKeeps(a);
 #endif
- return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
+ return a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
 String actName(Act a){
 #if MM_DICE
  if(a>=ActDiceRoll&&a<ActClose)return diceActName(a);
@@ -251,6 +252,7 @@ String actName(Act a){
  case ActPetFeed:return t("Feed a snack: ","Кормить, вкусн.: ")+String(creature.s.snacks);case ActPetHeal:return t("Heal","Лечить");case ActPetEgg:return t("New egg","Новое яйцо");
  case ActPetAdopt:return t("Start a pet","Завести питомца");case ActPetRelease:return t("Let it go...","Отпустить...");
  case ActPetDeath:return creature.s.mortal?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");
+ case ActPowerOff:return t("Turn off...","Выключить...");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  default:break;
  }return "";
@@ -318,6 +320,13 @@ void run(Act a){
 #endif
   break;}armed=0;notice(creature.release());menuOpen=false;break;}
 #endif
+ case ActPowerOff:{static uint32_t armed=0;if(!armed||millis()-armed>5000){armed=millis();
+#if defined(MM_JOYSTICK)
+  notice(t("OK again: turn off","Ещё раз OK: выключить"));
+#else
+  notice(t("Hold again: turn off","Удерж. ещё: выключить"));
+#endif
+  break;}armed=0;powerOff();menuOpen=false;break;}
  case ActClose:default:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
@@ -392,6 +401,20 @@ void drawRolePick(){
  if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
  hardware.flush();
 }
+// Power off pending (Power.cpp): what turns the board on again.
+String powerOnHint(){int way=powerOnWay();
+ if(way==-2)return t("the power key","кнопка питания");if(way<0)return t("RESET or power switch","RESET или выключатель");
+#if defined(MM_JOYSTICK)
+ return t("hold the joystick","удержать джойстик");
+#else
+ return t("hold ","удержать ")+MM_BUTTON;
+#endif
+}
+bool farewell=false; // the board is about to turn off: the last frame
+void drawOff(){
+ auto& c=*hardware.canvas;c.fillScreen(0);say(0,24,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),bold);
+ say(0,44,t("To turn on:","Включить:"),small);say(0,54,powerOnHint(),small);hardware.flush();
+}
 // Server home: role, radio, traffic and the passwords an owner needs for the MeshCore app.
 void drawServerHome(){
  ServerView v=meshServer.view();bool room=config.role==RoleRoom;
@@ -407,7 +430,7 @@ void draw(){
 #if defined(MM_HIRES)
  hi::draw();return; // T114: its own drawing at 240x135
 #endif
- auto& c=*hardware.canvas;if(rolePick){drawRolePick();return;}
+ auto& c=*hardware.canvas;if(powerOffPending()){drawOff();return;}if(rolePick){drawRolePick();return;}
 #if defined(MM_JOYSTICK)
  if(composing){drawCompose();return;}
 #endif
@@ -535,6 +558,7 @@ void joystickKey(int key){
 }
 #endif
 void uiKey(int key){
+ if(powerOffPending())return; // the screen says it is turning off
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness);return;} // the first press only wakes the panel
 #if defined(MM_JOYSTICK)
@@ -575,8 +599,10 @@ if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}
 #endif
  String s;serializeJson(d,s);return s;}
 bool uiScreenOff(){return screenOff;}
+void uiFarewell(){farewell=true;screenOff=false;hardware.brightness(config.brightness);draw();}
 void uiTick(){
  uint32_t now=millis();
+ if(powerOffPending()){static bool shown=false;if(!shown){shown=true;screenOff=false;hardware.brightness(config.brightness);draw();}return;} // drawn once: the board turns off
  // New incoming message: popup, wake the panel and blink the LED three times.
  if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
  if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}

@@ -5,9 +5,21 @@
 #include "Radar.h"
 #include "BleDiagnostics.h"
 #include "WifiDiagnostics.h"
-#if !defined(MM_NRF52)
+#include "Hardware.h"
+#include "ChessNet.h"
+#include "ChessTour.h"
+#include "Pet.h"
+#if defined(MM_NRF52)
+#include <esp_system.h>
+#include <nrf_soc.h>
+#include <nrf_sdm.h>
+#include <flash/flash_nrf5x.h>
+#else
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <esp_sleep.h>
+#include <driver/rtc_io.h>
+#include <WiFi.h>
 #endif
 namespace {
 TaskHandle_t volatile idleTask=nullptr;
@@ -44,6 +56,71 @@ void waitForRadio(bool usbIdle){
   idleWaits++;idleMs+=millis()-start;
 }
 }
+namespace {
+uint32_t offAt=0;
+// The wake button pressed at boot: on after it is held 0.7 s (with the boot, about a second), then released.
+bool wakeHeld(int pin){
+  uint32_t start=millis();while(millis()-start<700){if(digitalRead(pin)==HIGH)return false;delay(5);}
+  start=millis();while(digitalRead(pin)==LOW&&millis()-start<4000)delay(10);return true;
+}
+[[noreturn]] void sleepNow(int pin);
+}
+String powerOff(){
+  if(!offAt){offAt=millis()+1500;meshRadio.event="Turning off";meshRadio.dirty=true;}
+  int way=powerOnWay();
+  return way>=0?"OK turning off; hold the button to turn on":way==-2?"OK turning off; the power key turns it on":"OK turning off; RESET or the power switch turns it on";
+}
+bool powerOffPending(){return offAt!=0;}
+int powerOnWay(){return hardware.wakePin();}
+void powerOffTick(){
+  if(!offAt||int32_t(millis()-offAt)<0)return;
+  if(meshRadio.busy()&&millis()-offAt<5000)return;
+  meshRadio.flush();chessNet.flush();tour::net.flush();creature.flush();
+  Serial.println("OFF");Serial.flush();
+  uiFarewell();uint32_t shown=millis();
+  int pin=hardware.wakePin();
+  // A button still held (the hold that chose "Turn off") would wake the board at once.
+  if(pin>=0){while(digitalRead(pin)==LOW&&millis()-shown<10000)delay(10);delay(50);}
+  while(millis()-shown<3000)delay(10); // time to read it
+  meshRadio.sleep();
+#if !defined(MM_NRF52)
+  if(WiFi.getMode()!=WIFI_OFF)WiFi.mode(WIFI_OFF);
+#endif
+  hardware.powerDown(true);
+  sleepNow(pin);
+}
+#if defined(MM_NRF52)
+namespace {
+void sleepNow(int pin){
+  flash_nrf5x_flush();delay(20);
+  if(pin>=0)systemOff(pin,LOW); // the core's: SENSE low with the pull-up, then System OFF through the SoftDevice
+  uint8_t sd=0;sd_softdevice_is_enabled(&sd);if(sd)sd_power_system_off();
+  NRF_POWER->SYSTEMOFF=1;while(true){}
+}
+}
+void powerBootCheck(){
+  // System OFF ends in a reset; the reason tells it from RESET and power-on (esp_system.h).
+  if(esp_reset_reason()!=ESP_RST_DEEPSLEEP)return;
+  int pin=hardware.wakePin();if(pin<0)return;
+  pinMode(pin,INPUT_PULLUP);if(wakeHeld(pin))return;
+  hardware.powerDown(false);sleepNow(pin);
+}
+#else
+namespace {
+void sleepNow(int pin){
+  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+  if(pin>=0){gpio_num_t g=gpio_num_t(pin);esp_sleep_enable_ext0_wakeup(g,0);rtc_gpio_pullup_en(g);rtc_gpio_pulldown_dis(g);}
+  gpio_deep_sleep_hold_en(); // the levels Hardware::powerDown() held
+  esp_deep_sleep_start();
+}
+}
+void powerBootCheck(){
+  if(esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_EXT0)return;
+  int pin=hardware.wakePin();if(pin<0)return;
+  rtc_gpio_deinit(gpio_num_t(pin));pinMode(pin,INPUT_PULLUP);if(wakeHeld(pin))return;
+  hardware.powerDown(false);sleepNow(pin);
+}
+#endif
 uint32_t powerIdleWaits(){return idleWaits;}
 uint32_t powerIdleMs(){return idleMs;}
 uint32_t powerRadioEvents(){return radioEvents;}

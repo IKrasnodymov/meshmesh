@@ -370,4 +370,12 @@ static void scenario(){
   key('p');shot("dice-characters");key(0x86);key('1');
 #endif
   config.dimAfter=dim;config.autoLock=lock;printf("dice checks passed\n");}
+// Power off last: the screens stop taking keys once it is requested.
+#if defined(MM_HELTEC_V4)
+ powerOff();shot("heltec-poweroff");uiFarewell();shot("heltec-poweroff-done");
+#else
+ key(0x90);key(0xb5);shot("settings-poweroff");key(13);key(13);
+ if(!powerOffPending()){printf("FAIL Turn off needs two OK\n");exit(1);}
+ shot("poweroff");uiFarewell();shot("poweroff-done");
+#endif
 }

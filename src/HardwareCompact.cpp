@@ -181,6 +181,25 @@ int Hardware::readKey() {
   if(!pressed && held) {held=false;if(!longSent && millis()-down>30){keyCount++;lastKey=13;return 13;}}
   return 0;
 }
+// Off: the screen, GPS and Vext supply off, the transceiver deselected; the levels are held in deep sleep.
+// The button wakes the board when it is on an RTC GPIO (not on Station G2 and ThinkNode M2). A PMU
+// (T-Beam) switches every rail off itself; its power key turns the board on.
+void Hardware::powerDown(bool started) {
+  if(started) {
+    brightness(0);setGps(false);
+#if defined(MM_PMU)
+    if(pmu){Serial.flush();pmu->shutdown();delay(1000);} // returns only if the PMU did not cut the power
+#endif
+  }
+  auto hold=[](int pin,int level){if(pin<0)return;output(pin,level);gpio_hold_en(gpio_num_t(pin));};
+  hold(pins::vext,!pins::vextOn);hold(pins::gpsEnable,!pins::gpsOn);hold(pins::radioCs,HIGH);
+}
+int Hardware::wakePin() const {
+#if defined(MM_PMU)
+  if(pmu)return -2;
+#endif
+  return pins::button>=0&&rtc_gpio_is_valid_gpio(gpio_num_t(pins::button))?pins::button:-1;
+}
 void Hardware::beep() {if(pins::buzzer>=0&&config.sound)tone(pins::buzzer,2200,60);}
 void Hardware::ping(uint16_t hz,uint16_t ms) {if(pins::buzzer>=0&&config.sound)tone(pins::buzzer,hz,ms);}
 void Hardware::flush() {

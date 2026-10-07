@@ -13,7 +13,7 @@ void Hardware::setGps(bool enabled) {
   if(enabled)Serial1.begin(9600,SERIAL_8N1,pins::gpsRx,pins::gpsTx);else Serial1.end();
 }
 void Hardware::begin() {
-  for(int pin:{pins::peripheralPower,pins::femPower,pins::femEnable}) {gpio_hold_dis(gpio_num_t(pin));if(pin<=21)rtc_gpio_hold_dis(gpio_num_t(pin));}
+  for(int pin:{pins::peripheralPower,pins::femPower,pins::femEnable,pins::gpsEnable,pins::radioCs}) {gpio_hold_dis(gpio_num_t(pin));if(pin<=21)rtc_gpio_hold_dis(gpio_num_t(pin));}
   gpio_deep_sleep_hold_dis();
   pinMode(pins::peripheralPower,OUTPUT);digitalWrite(pins::peripheralPower,LOW);
   pinMode(pins::femPower,OUTPUT);digitalWrite(pins::femPower,HIGH);delay(5);
@@ -54,6 +54,13 @@ int Hardware::readKey() {
   if(!pressed && held) {held=false;if(!longSent && millis()-down>30){keyCount++;lastKey=13;return 13;}}
   return 0;
 }
+// Off: the OLED and GNSS supply (Vext) and the LoRa front end unpowered, the SX1262 deselected; PRG wakes.
+void Hardware::powerDown(bool started) {
+  if(started){display.ssd1306_command(SSD1306_DISPLAYOFF);setGps(false);}
+  const int levels[][2]={{pins::peripheralPower,HIGH},{pins::gpsEnable,HIGH},{pins::femPower,LOW},{pins::femEnable,LOW},{pins::radioCs,HIGH}};
+  for(auto& l:levels){gpio_hold_dis(gpio_num_t(l[0]));pinMode(l[0],OUTPUT);digitalWrite(l[0],l[1]);gpio_hold_en(gpio_num_t(l[0]));}
+}
+int Hardware::wakePin() const {return pins::button;}
 void Hardware::beep() {} // Standard V4 board has no buzzer.
 void Hardware::ping(uint16_t,uint16_t) {}
 void Hardware::flush() {
