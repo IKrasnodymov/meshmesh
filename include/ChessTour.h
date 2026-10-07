@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 struct ChessMatch;
 // Swiss chess tournaments over MeshCore direct messages (docs/chess.md, «Турнир»). The organiser's device

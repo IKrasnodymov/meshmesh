@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """nRF52 boards (GAT562 30S, Heltec T114): package, back up and install through the Adafruit UF2 bootloader.
 
-  package ENV        firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
+  package ENV [--without chess,pet,dice] [--lang CODE]
+                     firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
                      English and Russian, and in lang/<code>/ the image of English and that language
-                     (1 MB flash: one image does not hold every language; tools/pio_lang.py)
+                     (1 MB flash: one image does not hold every language; tools/pio_lang.py).
+                     --without leaves optional modules out (include/Modules.h; chess about 76 KB, pet 26 KB,
+                     dice 17 KB on the T114) and builds the package itself, in its own folders, as
+                     artifacts/meshmesh-<board>-<version>-without-<modules>; --lang builds that one language
+                     image only (the full package builds all of them)
   backup             copy CURRENT.UF2 and INFO_UF2.TXT from the mounted bootloader drive (0600) into
                      backups/<board>/ (the board from the drive's Board-ID)
   flash PACKAGE [--lang CODE]  require a backup, enter the bootloader and write the package: a mounted UF2 drive
@@ -86,20 +91,39 @@ def dfu_package(data, base_zip, out):
         z.writestr('manifest.json', json.dumps(manifest, indent=4))
 
 
-LANG_BUILD = ROOT / '.pio/build-lang'  # the language images (without Russian) build apart from the plain one
+MODULES = ('chess', 'pet', 'dice')  # optional modules (include/Modules.h)
+WITHOUT = ()  # the modules this run leaves out (package --without)
+
+
+def slug():
+    return '-'.join(sorted(WITHOUT))
+
+
+def plain_build():
+    """The build folder of the plain image: .pio/build, or one per module set."""
+    return ROOT / '.pio/build' if not WITHOUT else ROOT / '.pio/build-mods' / slug()
+
+
+def lang_build():
+    """The language images (without Russian) build apart from the plain one."""
+    return ROOT / '.pio/build-lang' if not WITHOUT else ROOT / '.pio/build-mods-lang' / slug()
 
 
 def build(env, lang=None):
-    """PlatformIO build of env; lang adds that screen language (MM_LANG, tools/pio_lang.py)."""
-    environ = {k: v for k, v in os.environ.items() if k not in ('MM_LANG', 'PLATFORMIO_BUILD_DIR')}
+    """PlatformIO build of env; lang adds that screen language (MM_LANG, tools/pio_lang.py), WITHOUT the modules."""
+    environ = {k: v for k, v in os.environ.items() if k not in ('MM_LANG', 'PLATFORMIO_BUILD_DIR', 'PLATFORMIO_BUILD_FLAGS')}
     if lang:
         environ['MM_LANG'] = lang
-        environ['PLATFORMIO_BUILD_DIR'] = str(LANG_BUILD)
+        environ['PLATFORMIO_BUILD_DIR'] = str(lang_build())
+    elif WITHOUT:
+        environ['PLATFORMIO_BUILD_DIR'] = str(plain_build())
+    if WITHOUT:
+        environ['PLATFORMIO_BUILD_FLAGS'] = ' '.join(f'-DMM_NO_{m.upper()}' for m in WITHOUT)
     subprocess.run([sys.executable, '-m', 'platformio', 'run', '-s', '-e', env], cwd=ROOT, env=environ, check=True)
 
 
 def image(env, objcopy, out, lang=False):
-    elf = (LANG_BUILD if lang else ROOT / '.pio/build') / env / 'firmware.elf'
+    elf = (lang_build() if lang else plain_build()) / env / 'firmware.elf'
     subprocess.run([objcopy, '-O', 'binary', elf, out], check=True)
     data = out.read_bytes()
     if APP_START + len(data) > APP_END:
@@ -107,14 +131,14 @@ def image(env, objcopy, out, lang=False):
     return data
 
 
-def languages(env, objcopy, target, base):
+def languages(env, objcopy, target, base, only=None):
     """lang/<code>/: firmware.bin, firmware.uf2 and firmware-dfu.zip per screen language after en and ru
     (English and that language, without Russian). They build in their own folder, where after the first one
     each recompiles I18n.cpp only; then the plain image is built again and checked unchanged."""
     from i18n import CODES
     out = {}
     try:
-        for code in CODES[2:]:
+        for code in [only] if only else CODES[2:]:
             build(env, code)
             folder = target / 'lang' / code
             folder.mkdir(parents=True, exist_ok=True)
@@ -138,9 +162,11 @@ def version():
     return VERSION
 
 
-def package(env):
+def package(env, only=None):
     name, title = BOARDS[env]
-    build_dir = ROOT / '.pio/build' / env
+    if WITHOUT:
+        build(env)
+    build_dir = plain_build() / env
     elf = build_dir / 'firmware.elf'
     if not elf.is_file():
         raise SystemExit('Build missing; run PlatformIO for this environment first')
@@ -149,13 +175,13 @@ def package(env):
     if any(p.stat().st_mtime > elf.stat().st_mtime for p in sources):
         raise SystemExit('Firmware is older than project sources; run a successful build before packaging')
     objcopy = Path.home() / '.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-objcopy'
-    target = ROOT / 'artifacts' / f'meshmesh-{name}-{version()}'
+    target = ROOT / 'artifacts' / (f'meshmesh-{name}-{version()}' + (f'-without-{slug()}' if WITHOUT else ''))
     target.mkdir(parents=True, exist_ok=True)
     data = image(env, objcopy, target / 'firmware.bin')
     (target / 'firmware.uf2').write_bytes(uf2(data, APP_START))
     shutil.copy(build_dir / 'firmware.zip', target / 'firmware-dfu.zip')
     shutil.rmtree(target / 'lang', ignore_errors=True)
-    langs = languages(env, objcopy, target, data)
+    langs = languages(env, objcopy, target, data, only)
     digest = hashlib.sha256(data).hexdigest()
     (target / 'INSTALL.txt').write_text(f"""MeshMesh {version()} для {title}
 
@@ -171,7 +197,7 @@ def package(env):
 создаёт его по запросу.
 Обновление по Bluetooth (DFU) не поддерживается: firmware-dfu.zip — для adafruit-nrfutil по USB.
 
-Языки экрана: образ в корне пакета — английский и русский. Образ английского и другого языка
+{('Без модулей: ' + ', '.join(WITHOUT) + ' (tools/nrf52.py package --without; включить их обратно — установить полный пакет).' + chr(10) + chr(10)) if WITHOUT else ''}Языки экрана: образ в корне пакета — английский и русский. Образ английского и другого языка
 (без русского) — в lang/<код>/ (uk, es, pt, fr, de, it, pl, tr, zh, ja, ko, ar, id): весь набор языков
 не помещается в 1 МБ flash. Язык включается в настройках платы после установки.
 
@@ -180,7 +206,8 @@ SHA-256 firmware.bin: {digest}
     uf2_digest = hashlib.sha256((target / 'firmware.uf2').read_bytes()).hexdigest()
     manifest = {'target': env, 'board': env, 'version': version(), 'chip': 'nrf52840', 'firmware_sha256': digest, 'size': len(data),
                 'uf2_sha256': uf2_digest, 'firmware.bin': {'bytes': len(data), 'sha256': digest},
-                'firmware.uf2': {'family': hex(FAMILY), 'base': hex(APP_START), 'sha256': uf2_digest}, 'languages': langs}
+                'firmware.uf2': {'family': hex(FAMILY), 'base': hex(APP_START), 'sha256': uf2_digest}, 'languages': langs,
+                'modules': [m for m in MODULES if m not in WITHOUT]}
     release = json.loads((build_dir / 'release.json').read_text())
     if release['version'] != version():
         raise SystemExit('Build version is stale')
@@ -344,14 +371,24 @@ def flash(path, lang=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest='command', required=True)
-    sub.add_parser('package').add_argument('environment', choices=BOARDS)
+    pk = sub.add_parser('package')
+    pk.add_argument('environment', choices=BOARDS)
+    pk.add_argument('--without', default='', help='optional modules to leave out, comma-separated: ' + ', '.join(MODULES))
+    pk.add_argument('--lang', help='build only this language image (besides English and Russian)')
     sub.add_parser('backup')
     f = sub.add_parser('flash')
     f.add_argument('package')
     f.add_argument('--lang', help='screen language of the image (en and ru are in every image)')
     args = parser.parse_args()
     if args.command == 'package':
-        package(args.environment)
+        global WITHOUT
+        WITHOUT = tuple(sorted({m.strip() for m in args.without.split(',') if m.strip()}))
+        if any(m not in MODULES for m in WITHOUT):
+            raise SystemExit('--without takes ' + ', '.join(MODULES))
+        from i18n import CODES
+        if args.lang and args.lang not in CODES[2:]:
+            raise SystemExit('--lang takes one of ' + ' '.join(CODES[2:]))
+        package(args.environment, args.lang)
     elif args.command == 'backup':
         backup()
     else:

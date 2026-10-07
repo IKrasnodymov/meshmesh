@@ -94,7 +94,14 @@ template<class F> void menuBox(unsigned n,int index,F name){
 }
 void empty(Icon ic,const String& a,const String& b){icon(ic,120,46,12,ColFaint);center(120,84,fit(a,228),ColInk);center(120,103,fit(b,228,small),ColDim,small);}
 String pageTitle(int p){
- switch(p){case Home:return "MeshMesh";case PetPage:return petTitle();case DicePage:return diceTitle();case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
+ switch(p){case Home:return "MeshMesh";
+#if MM_PET
+ case PetPage:return petTitle();
+#endif
+#if MM_DICE
+ case DicePage:return diceTitle();
+#endif
+ case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
  case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
  return t("Modules","Модули");
 }
@@ -115,8 +122,12 @@ void home(){
  struct {Icon ic;uint16_t hue;String name;unsigned n;bool news;} tiles[3]={
   {IcChat,ColAccent,t("Chats","Чаты"),unreadCount?unreadCount:meshRadio.historyCount,unreadCount>0},
   {IcMesh,ColViolet,t("Nodes","Узлы"),near,false},
+#if MM_CHESS
   {IcChess,ColInk,t("Chess","Шахматы"),mine?mine:games,mine>0}};
- for(int i=0;i<3;i++){int x=4+i*79,y=69;panel(x,y,74,45,ColCard,8);d.fillRoundRect(x+6,y+6,22,22,6,ColBack);icon(tiles[i].ic,x+17,y+17,6,tiles[i].hue);
+#else
+  {IcDice,ColWarn,t("Dice","Кости"),dicer.rolls,false}}; // chess left out of this image (Modules.h)
+#endif
+ for(int i=0;i<(MM_CHESS||MM_DICE?3:2);i++){int x=4+i*79,y=69;panel(x,y,74,45,ColCard,8);d.fillRoundRect(x+6,y+6,22,22,6,ColBack);icon(tiles[i].ic,x+17,y+17,6,tiles[i].hue);
   text(x+35,y+23,String(tiles[i].n),tiles[i].news?ColWarn:ColInk,bold);text(x+6,y+41,fit(tiles[i].name,64,tiny),ColDim,tiny);}
 }
 // Repeater and room server: role, radio, traffic and the passwords an owner needs for the MeshCore app.
@@ -199,6 +210,7 @@ void signals(String& title){
   d.fillCircle(17,y+11,3,signalColor(r));text(27,y+16,fit(signalName(r),166,small),focus?ColInk:ColDim,small);right(231,y+17,String(int(r.rssi)),focus?ColInk:ColDim,bold);}
  if(st.length())text(8,112,fit(st,224,tiny),ColWarn,tiny);
 }
+#if MM_PET
 // The pet: the creature on its card in colour, its words in a bubble, the food, joy and health bars.
 uint8_t petInk(uint8_t ink,pet::Mood m){
  bool dead=m==pet::Gone;
@@ -234,6 +246,8 @@ void petPage(){
   text(106,108,fit(s.mortal?t("death: on","смерть: вкл."):t("death: off","смерть: выкл."),130,tiny),ColDim,tiny);return;}
  petBar(78,IcMail,ColWarn,s.food);petBar(91,IcPaw,ColPink,s.joy);petBar(104,IcPulse,ColGood,s.health);
 }
+#endif
+#if MM_DICE
 // Dice: the RPG card with the dice in the M9's shapes and the pool, the Warhammer grid, three counters a page.
 void hiDie(int cx,int cy,uint8_t shape,unsigned v,bool negative,int s){
  unsigned top=shape<dice::D66?dice::faces(shape):0;bool high=top&&v==top,one=top>=4&&v==1;
@@ -277,6 +291,7 @@ void dicePage(){
  int y=92;for(int i=int(dicer.resultCount)-2;i>=0&&y<=112;i--,y+=18){const dice::Result& p=dicer.results[i];
   String v=p.special?String():String(p.total);text(160,y,fit(p.label[0]?String(p.label):String(p.formula),74-width(v,small)-4,tiny),ColDim,tiny);right(236,y,v,ColInk,small);}
 }
+#endif
 void gps(){
  bool fix=hardware.gpsFix();uint16_t c=!config.gps?ColFaint:fix?ColGood:hardware.clockConflict?ColBad:ColWarn;
  panel(4,25,232,40,ColCard,8);icon(IcPin,20,45,8,c,ColCard);
@@ -333,6 +348,7 @@ void rolePage(){
  footer({rolePickBoot?t("as now in ","как сейчас через ")+String(left)+t("s","с"):t("click-next hold-choose","клик-далее держ-выбор")});
  toast();
 }
+#if MM_CHESS
 // Chess: the game list with avatars; a game fills the screen.
 void chessList(){
  ChessMatch* games[ChessNet::MaxMatches];unsigned n=chessGames(games);
@@ -365,6 +381,7 @@ void chessBoard(const ChessMatch& m){
  if(chessMenu){ChessAct acts[8];unsigned k=chessActions(m,acts);chessMenuIndex%=k;menuBox(k,chessMenuIndex,[&](unsigned i){return chessActName(acts[i]);});}
  toast();
 }
+#endif
 void draw(){
  auto& d=g();
  if(rolePick){rolePage();hardware.flush();return;}
@@ -374,10 +391,22 @@ void draw(){
  popupAt=0;
  if(chessPopupAt&&millis()-chessPopupAt<8000){statusBar(t("Chess","Шахматы"));chessPopup();footer({config.role==RoleNormal?t("hold: open the game","держ: открыть партию"):String()});hardware.flush();return;}
  chessPopupAt=0;
+#if MM_CHESS
  if(page==Chess&&chessOpen&&chessOpen->state!=ChessMatch::Free){chessBoard(*chessOpen);hardware.flush();return;}
  if(page==Chess)chessOpen=nullptr;
+#endif
  String title=pageTitle(page);
- switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;case Chess:chessList();break;case PetPage:petPage();break;case DicePage:dicePage();break;case Signals:signals(title);break;
+ switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;
+#if MM_CHESS
+ case Chess:chessList();break;
+#endif
+#if MM_PET
+ case PetPage:petPage();break;
+#endif
+#if MM_DICE
+ case DicePage:dicePage();break;
+#endif
+ case Signals:signals(title);break;
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
  if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}

@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 // Rated chess results (docs/chess.md). Both players sign the same record of a finished game with their
 // MeshCore node key; a record is kept only with both signatures checked. Ratings (ELO) are replayed from

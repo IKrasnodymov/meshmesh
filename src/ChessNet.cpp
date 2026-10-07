@@ -8,6 +8,7 @@
 #include <ArduinoJson.h>
 #include <time.h>
 #include <vector>
+#if MM_CHESS
 ChessNet chessNet;
 using namespace chess;
 namespace {
@@ -439,4 +440,13 @@ size_t chessStoreRead(uint8_t* data,size_t cap){
   }
   return 0;
 }
+#endif
+#else
+// Chess left out of this image (Modules.h): the radio passes it nothing, the command says so.
+ChessNet chessNet;
+void ChessNet::begin(){}void ChessNet::tick(){}void ChessNet::save(){}
+bool ChessNet::receive(uint64_t,const char*,const char*){return false;}
+void ChessNet::delivery(uint32_t,uint8_t){}
+unsigned ChessNet::waiting() const{return 0;}
+String ChessNet::command(const String&){return "ERR chess is not in this build";}
 #endif

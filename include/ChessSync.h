@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 // Exchange of signed chess results between nodes (docs/chess.md, «Обмен журналами»). A record carries both
 // players' keys and signatures, so a node checks it by itself and accepts it from any contact; with the same

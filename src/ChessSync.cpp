@@ -3,6 +3,7 @@
 #include "MeshRadio.h"
 #include "Config.h"
 #include <ArduinoJson.h>
+#if MM_CHESS
 namespace ledger {
 Ledger exchange;
 namespace {
@@ -118,3 +119,10 @@ String Ledger::json() const{
   String s;serializeJson(d,s);return s;
 }
 }
+#else
+namespace ledger {
+Ledger exchange;
+bool Ledger::receive(uint64_t,const char*,const char*){return false;}
+void Ledger::tick(){}
+}
+#endif

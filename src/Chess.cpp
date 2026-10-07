@@ -1,4 +1,6 @@
 #include "Chess.h"
+#include "Modules.h"
+#if MM_CHESS // the rules; the stand-in of ChessNet.cpp needs none of them
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,3 +161,4 @@ Outcome Game::judge() const{
   return plies>=MaxPlies?TooLong:Ongoing;
 }
 }
+#endif

@@ -117,6 +117,7 @@ bool pageShown(int p){
 #if defined(MM_NO_WIFI)
  if(p==Wifi)return false; // no Wi-Fi radio
 #endif
+ if((p==Chess&&!MM_CHESS)||(p==PetPage&&!MM_PET)||(p==DicePage&&!MM_DICE))return false; // modules left out of this image (Modules.h)
  return config.role==RoleNormal||p==Home||p==PetPage||p==DicePage||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;} // the pet lives in every role
 int nextPage(int p){do p=(p+1)%PageCount;while(!pageShown(p));return p;}
 int previousPage(int p){do p=(p+PageCount-1)%PageCount;while(!pageShown(p));return p;}
@@ -136,8 +137,12 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 #if defined(MM_JOYSTICK)
 #include "UiCompose.inc"
 #endif
+#if MM_CHESS
 #include "UiChessCompact.inc"
+#endif
+#if MM_PET
 #include "UiPetCompact.inc"
+#endif
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
@@ -145,7 +150,9 @@ enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChess
   ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
   ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActClose};
 constexpr unsigned MenuMax=10;
+#if MM_DICE
 #include "UiDiceCompact.inc"
+#endif
 // Channels are added on the web page or in the app; here: an invitation in a message and a hashtag heard on air.
 const HeardChannel* heardTag(){for(unsigned i=0;i<meshRadio.heardCount;i++)if(meshRadio.heard[i].name[0])return &meshRadio.heard[i];return nullptr;}
 String channelTag(uint64_t id){const channels::Channel* c=meshRadio.channel(id);return channels::isPublic(c?c->secret:channels::publicSecret)?String(" #"):" "+String(c->name[0]=='#'?"":"#")+c->name;}
@@ -170,14 +177,16 @@ unsigned actions(Act* out){
   if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
  case Nodes:if(Peer* p=shownNode()){
 #if defined(MM_JOYSTICK)
-  if(p->type==1){out[n++]=ActWrite;out[n++]=ActChess;}
+  if(p->type==1){out[n++]=ActWrite;if(MM_CHESS)out[n++]=ActChess;}
 #else
-  out[n++]=ActNextNode;if(p->type==1)out[n++]=ActChess;
+  out[n++]=ActNextNode;if(MM_CHESS&&p->type==1)out[n++]=ActChess;
 #endif
   if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
  case Chess:
 #if !defined(MM_JOYSTICK)
+#if MM_CHESS
   {ChessMatch* games[ChessNet::MaxMatches];unsigned g=chessGames(games);if(g){out[n++]=ActChessOpen;if(g>1)out[n++]=ActChessNext;}} // the joystick opens with OK
+#endif
 #endif
   break;
  case Signals:
@@ -187,11 +196,15 @@ unsigned actions(Act* out){
   if(radar.csi==Radar::CsiSensor){out[n++]=ActCalibrate;out[n++]=ActCsiSensor;}
   else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
   else{out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff){out[n++]=ActCsiSensor;if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}}}break; // CSI first: the beacon is the usual Heltec role
+#if MM_PET
  case PetPage:
   if(!creature.has()){out[n++]=ActPetAdopt;break;} // a pet is optional
   if(!creature.alive())out[n++]=ActPetEgg;else{out[n++]=ActPetCuddle;if(creature.s.stage!=pet::Egg){out[n++]=ActPetFeed;if(creature.s.health<800)out[n++]=ActPetHeal;}}
   out[n++]=ActPetDeath;out[n++]=ActPetRelease;break;
+#endif
+#if MM_DICE
  case DicePage:n=diceActions(out);break;
+#endif
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:
@@ -202,9 +215,15 @@ unsigned actions(Act* out){
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
-bool keepsMenu(Act a){if(a>=ActDiceRoll&&a<ActClose)return diceKeeps(a);return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
+bool keepsMenu(Act a){
+#if MM_DICE
+ if(a>=ActDiceRoll&&a<ActClose)return diceKeeps(a);
+#endif
+ return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
 String actName(Act a){
+#if MM_DICE
  if(a>=ActDiceRoll&&a<ActClose)return diceActName(a);
+#endif
  const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
  case ActWrite:return page==Nodes?t("Write message...","Написать...")
@@ -238,7 +257,9 @@ String actName(Act a){
 }
 void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadio.sendMessage(text,to);notice(sent?t("Reply ","Ответ ")+text+t(" queued"," в очереди"):t("Reply not queued","Ответ не отправлен"));}
 void run(Act a){
+#if MM_DICE
  if(a>=ActDiceRoll&&a<ActClose){diceRun(a);return;}
+#endif
  switch(a){
  case ActFormat:{static uint32_t armed=0;
 #if defined(MM_JOYSTICK)
@@ -257,12 +278,14 @@ void run(Act a){
   else openCompose(meshmesh::Broadcast,t("Public channel","Общий канал"));
 #endif
   break;
+#if MM_CHESS
  case ActChess:
   if(Peer* p=shownNode()){ // the board shows the invitation; no news popup for it
    uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t("Challenge sent","Вызов отправлен"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=chessNet.events;}
   break;
  case ActChessOpen:{ChessMatch* games[ChessNet::MaxMatches];unsigned g=chessGames(games);if(g)openChess(games[chessSel%g]);break;}
  case ActChessNext:chessSel++;menuIndex=0;break;
+#endif
  case ActRole:openRolePick(false);break;
  case ActForward:{String r=meshServer.command(meshServer.view().forwarding?"set repeat off":"set repeat on");notice(r.startsWith("OK")?(meshServer.view().forwarding?t("Forwarding on","Пересылка вкл."):t("Forwarding off","Пересылка выкл.")):r);break;}
  case ActAdvert:notice(meshRadio.sendHello()?t("Node announced","Узел объявлен"):t("Announcement failed","Объявление не отправлено"));break;
@@ -283,6 +306,7 @@ void run(Act a){
  case ActCsiBeacon:radar.setCsi(radar.csi==Radar::CsiBeacon?Radar::CsiOff:Radar::CsiBeacon);break;
  case ActCsiSensor:radar.setCsi(radar.csi==Radar::CsiSensor?Radar::CsiOff:Radar::CsiSensor);break;
  case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t("Calibrating 10 s","Калибровка 10 с"));}else notice(t("No beacon heard","Маяк не слышен"));break;
+#if MM_PET
  case ActPetCuddle:creature.cuddle();break;case ActPetFeed:creature.feed();break;case ActPetHeal:creature.heal();break;case ActPetEgg:creature.newEgg();break; // it answers in its bubble
  case ActPetDeath:notice(creature.setMortal(!creature.s.mortal));break;
  case ActPetAdopt:creature.newEgg();menuOpen=false;break;
@@ -293,6 +317,7 @@ void run(Act a){
   notice(t("Hold again: let it go","Удерж. ещё: отпустить"));
 #endif
   break;}armed=0;notice(creature.release());menuOpen=false;break;}
+#endif
  case ActClose:default:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
@@ -454,9 +479,15 @@ void draw(){
  case Settings:title=t("Settings","Настройки");say(0,20,t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t("Battery: ","Батарея: ")+(config.batteryVolts?t("volts","вольты"):t("percent","проценты")),small);
   say(0,36,t("Screen off: ","Гасить экран: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда")),small);say(0,44,t("Contrast: ","Контраст: ")+String(config.brightness),small);
   say(0,52,String(config.frequency,3)+" SF"+String(config.sf)+" CR4/"+String(config.cr)+" "+String(config.power)+"dBm",small);break;
+#if MM_CHESS
  case Chess:if(chessOpen&&chessOpen->state!=ChessMatch::Free){drawChessBoard(*chessOpen);return;}chessOpen=nullptr;drawChessList(title);break;
+#endif
+#if MM_PET
  case PetPage:title=petTitle();drawPetMono();break;
+#endif
+#if MM_DICE
  case DicePage:title=diceTitle();drawDiceMono();break;
+#endif
  default:title=t("Modules","Модули");say(0,21,"LoRa "+String(meshRadio.ready?"OK":"ERR")+"  FS "+String(hardware.fsOk?"OK":"ERR")+"  GPS "+String(!config.gps?"-":hardware.gps.passedChecksum()?"OK":"?"),small);
   say(0,30,String(ESP.getFreeHeap()/1024)+"K RAM"+(ESP.getPsramSize()?"  "+String(ESP.getFreePsram()/1024)+"K PSRAM":String()),small);say(0,39,t("relayed ","переслано ")+String(meshRadio.relayed)+t("  rejected ","  откл. ")+String(meshRadio.rejected),small);
   say(0,48,t("up ","работа ")+ago(millis())+t("  boot ","  загр. ")+String(config.bootCounter),small);
@@ -472,7 +503,9 @@ void draw(){
 void scroll(int step){
  if(page==Messages){messageOffset=max(0,messageOffset-step);shownMessage();}
  else if(page==Nodes){unsigned n=meshRadio.peerCount;if(n)nodeIndex=(nodeIndex+n+step)%n;}
+#if MM_DICE
  else if(page==DicePage)diceScroll(step);
+#endif
  else if(page==Signals&&radar.count&&!radar.tracking){int i=shownSignal();signalManual=true;if(i>=0){i=(i+radar.count+step)%radar.count;signalId=radar.targets[i].id;signalKind=radar.targets[i].kind;}}
 }
 void joystickKey(int key){
@@ -483,12 +516,18 @@ void joystickKey(int key){
   if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;return;}
   if(back)rolePick=false;return;}
  if(popupAt){popupAt=0;if(ok)showPage(Messages);return;}
- if(chessPopupAt){chessPopupAt=0;if(ok&&config.role==RoleNormal){ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);}return;}
+ if(chessPopupAt){chessPopupAt=0;if(ok&&config.role==RoleNormal){
+#if MM_CHESS
+ ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
+#endif
+ }return;}
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(up||down){menuIndex=(menuIndex+(up?n-1:1))%n;return;}
   if(ok){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;return;}
   menuOpen=false;return;}
+#if MM_CHESS
  if(page==Chess&&chessKey(key))return;
+#endif
  if(left||right){showPage(left?previousPage(page):nextPage(page));return;}
  if(back){if(page!=Home)showPage(Home);return;}
  if(up||down){scroll(up?-1:1);return;}
@@ -504,12 +543,18 @@ void uiKey(int key){
  if(rolePick){if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
   if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;}return;}
  if(popupAt){popupAt=0;if(key==13)return;}
- if(chessPopupAt){chessPopupAt=0;if(key==0xa3&&config.role==RoleNormal){ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);}return;}
+ if(chessPopupAt){chessPopupAt=0;if(key==0xa3&&config.role==RoleNormal){
+#if MM_CHESS
+ ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
+#endif
+ }return;}
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(key==13||key==0x82){menuIndex=(menuIndex+1)%n;return;}
   if(key==0xa3){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;}return;}
 #if !defined(MM_JOYSTICK)
+#if MM_CHESS
  if(page==Chess&&chessButton(key))return;
+#endif
 #endif
  if(key==13||key==0x82){showPage(nextPage(page));return;}
  if(key==0xa3){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
@@ -517,12 +562,18 @@ void uiKey(int key){
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
 String uiStatus(){StaticJsonDocument<640>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+#if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}
+#endif
 #if defined(MM_JOYSTICK)
  if(composing){d["compose"]=true;d["draft"]=draft;d["keyboard"]=layoutNames[kbLayout];d["key_row"]=kbRow;d["key_col"]=kbCol;}
 #endif
-if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}if(page==DicePage){d["dice_counter"]=diceCounterSel;d["dice_saved"]=diceSavedSel;}String s;serializeJson(d,s);return s;}
+if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}
+#if MM_DICE
+ if(page==DicePage){d["dice_counter"]=diceCounterSel;d["dice_saved"]=diceSavedSel;}
+#endif
+ String s;serializeJson(d,s);return s;}
 bool uiScreenOff(){return screenOff;}
 void uiTick(){
  uint32_t now=millis();
@@ -531,7 +582,11 @@ void uiTick(){
  if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){
   // News of the game on the screen updates the board instead of covering it.
-  if(page==Chess&&chessOpen&&chessNet.eventMatch==chessOpen&&!menuOpen)chessNet.viewed(*chessOpen);else{chessPopupText=chessNet.event;chessPopupAt=now;}ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+  
+#if MM_CHESS
+  if(page==Chess&&chessOpen&&chessNet.eventMatch==chessOpen&&!menuOpen)chessNet.viewed(*chessOpen);else
+#endif
+  {chessPopupText=chessNet.event;chessPopupAt=now;}ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;led(false);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;
@@ -549,8 +604,12 @@ void uiTick(){
  if(composing)dirty=true; // blinking cursor
  #endif
  if(page==PetPage)dirty=true; // it moves
+#if MM_DICE
  if(page==DicePage&&dicer.events!=diceSeen){diceSeen=dicer.events;dirty=true;} // rolls from the web page or the app
+#endif
+#if MM_CHESS
  if(page==Chess&&chessOpen&&(chessHeld>=0||(chessOpen->state==ChessMatch::Playing&&chessOpen->myTurn())))dirty=true; // the picked piece or the cursor blinks
+#endif
  if(chessNet.dirty&&page==Chess){dirty=true;chessNet.dirty=false;}
  if((dirty||meshRadio.dirty||radar.dirty||now-drawAt>1000)&&now-drawAt>150){draw();drawAt=now;dirty=false;meshRadio.dirty=false;radar.dirty=false;}
 }

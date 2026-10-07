@@ -1,4 +1,7 @@
+#include "Modules.h"
+#if MM_PET
 #define PET_SPRITES_DEFINE // the species drawings live in this file (PetSprites.h)
+#endif
 #include "Pet.h"
 #include "Config.h"
 #include "Hardware.h"
@@ -10,6 +13,7 @@
 #endif
 #include <math.h>
 #include <time.h>
+#if MM_PET
 pet::Pet creature;
 namespace pet {
 namespace {
@@ -247,3 +251,14 @@ String Pet::command(const String& line){
   return "ERR pet [adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS]";
 }
 }
+#else
+// The pet left out of this image (Modules.h): never one, the command says so.
+pet::Pet creature;
+namespace pet {
+void Pet::begin(){s.stage=Empty;}
+void Pet::tick(){}
+void Pet::save(bool){}
+String Pet::json() const{return "{\"stage\":\"none\",\"graves\":[]}";}
+String Pet::command(const String&){return "ERR pet is not in this build";}
+}
+#endif

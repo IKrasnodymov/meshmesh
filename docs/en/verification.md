@@ -1,5 +1,16 @@
 # MeshMesh verification
 
+> **nRF52 modules** (7 October 2026, branch `feature/dice`; the T114 and GAT562 were not connected — not checked on
+> hardware). Chess, the pet and the dice are left out with `MM_NO_CHESS|PET|DICE` (`include/Modules.h`); a custom package
+> is built by `tools/nrf52.py package ENV --without … [--lang CODE]`. The T114 and GAT562 were built without each module,
+> without chess and dice, without all three (T114: 686 → 581, 629, 641, 566, 567 KB); a T114 package without chess and the
+> pet with the Chinese image was made, `manifest.modules` = `dice`. Full set: the 15 boards build, the preview scenarios
+> pass. The web page in headless Chromium hides tiles by `status.modules`.
+
+> **Dice on the M9** (7 October 2026): the `feature/dice` build (before the commit, revision `21405ff-dirty`, image
+> `CA4D4883…`) installed with `tools/flash.py`, boot 218, history (64) and settings kept, `dice` answers; the owner checked
+> the screen with the keys — "everything works".
+
 > **Dice (the DIC3R roller)** (7 October 2026, branch `feature/dice`; no board was connected — not checked on
 > hardware, no full run). RPG, Warhammer and counter modes, characters, the `dice` command, the web page and app section
 > ([dice.md](dice.md)). The `tools/ui_preview` scenario (`dice checks passed`) checks formula parsing (`2d6+1`, `4к6-2`,

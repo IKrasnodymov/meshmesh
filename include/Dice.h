@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 // Dice roller, the port of DIC3R (docs/dice.md): three modes as in the app. RPG rolls a pool ("2d6+1": count,
 // die, modifier) or a formula ("3d8+2d4-1"; "2к6" in Russian notation; d66 and d% show each die, without a

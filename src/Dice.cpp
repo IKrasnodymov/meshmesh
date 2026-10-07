@@ -9,6 +9,7 @@
 #if !defined(MM_UI_PREVIEW)
 #include <esp_system.h>
 #endif
+#if MM_DICE
 dice::Dicer dicer;
 namespace dice {
 const char* const typeNames[TypeCount]={"d4","d6","d8","d10","d12","d20","d66","d%"};
@@ -211,3 +212,12 @@ String Dicer::command(const String& line){
   return "ERR dice [roll|pool|mode|clear|saved|grid|counter|char]";
 }
 }
+#else
+// The dice left out of this image (Modules.h): the command says so.
+dice::Dicer dicer;
+namespace dice {
+void Dicer::begin(){}void Dicer::tick(){}void Dicer::save(){}
+String Dicer::json() const{return "{}";}
+String Dicer::command(const String&){return "ERR dice are not in this build";}
+}
+#endif

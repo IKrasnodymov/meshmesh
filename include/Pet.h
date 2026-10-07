@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 #include "PetSprites.h"
 // Mesh pet: a pixel creature that lives on the device and feeds on the radio. Received packets and packets

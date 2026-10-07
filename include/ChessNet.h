@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules.h"
 #include <Arduino.h>
 #include "Chess.h"
 // Chess with contacts over MeshCore direct messages (docs/chess.md). Every command is an ordinary

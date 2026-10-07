@@ -4,6 +4,7 @@
 #include "MeshRadio.h"
 #include "Config.h"
 #include <ArduinoJson.h>
+#if MM_CHESS
 namespace tour {
 Net net;
 namespace {
@@ -379,5 +380,14 @@ size_t storeRead(uint8_t* data,size_t cap){
   }
   return 0;
 }
+}
+#endif
+#else
+namespace tour {
+Net net;
+void Net::begin(){}void Net::tick(){}void Net::save(){}
+bool Net::receive(uint64_t,const char*,const char*){return false;}
+bool Net::delivery(uint32_t,uint8_t){return false;}
+String Net::command(const String&){return "ERR chess is not in this build";}
 }
 #endif

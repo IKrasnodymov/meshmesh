@@ -414,7 +414,7 @@ function renderHome(){
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
   ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар',noWifi()?'BLE, LoRa':'Wi-Fi, BLE, LoRa'],
   ['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],
-  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],['chess','chess','','Шахматы',chessTileText(),chess.waiting],...petTile(),...diceTile()];
+  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],...(hasModule('chess')?[['chess','chess','','Шахматы',chessTileText(),chess.waiting]]:[]),...petTile(),...diceTile()];
  $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
 
 // Mesh pet (firmware "pet", docs/pet.md): its look comes as 256 inks (one digit a pixel) and the page draws
@@ -425,7 +425,9 @@ const PET_MOOD={happy:['счастлив','ok'],calm:['спокоен','muted'],
 async function loadPet(){if(petBusy)return;petBusy=true;try{pet=await request('/api/pet');petAt=Date.now()}catch(e){if(!pet)pet=false}finally{petBusy=false}}
 function enterPet(){if(petTimer)return;loadPet().then(()=>{if(route==='pet')renderPet()});
  petTimer=setInterval(async()=>{if(route!=='pet'){clearInterval(petTimer);petTimer=null;return}await loadPet();if(route==='pet'&&!petNaming)renderPet()},window.MeshNative?2000:1200)}
-function petTile(){const p=pet;if(!p)return[];const detail=p.stage==='none'?'Нет питомца':p.stage==='dead'?'Умер':p.stage==='egg'?'Яйцо':`${p.name} · ${(PET_MOOD[p.mood]||[''])[0]}`;
+// Optional modules of the nRF52 images (firmware include/Modules.h): status.modules lists those built in; older firmware has them all.
+const hasModule=m=>typeof status.modules!=='string'||status.modules.split(' ').includes(m);
+function petTile(){const p=pet;if(!p||!hasModule('pet'))return[];const detail=p.stage==='none'?'Нет питомца':p.stage==='dead'?'Умер':p.stage==='egg'?'Яйцо':`${p.name} · ${(PET_MOOD[p.mood]||[''])[0]}`;
  return[['pet','paw',p.needs_care?'warn':p.stage==='none'?'muted':'pink','Питомец',detail]]}
 function petAge(s){s=s||0;if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' д'+(s%86400>=3600?' '+Math.floor(s%86400/3600)+' ч':'')}
 function petSvg(p){
@@ -474,7 +476,7 @@ const DICE_COLORS=['#ff6b6b','#4ecdc4','#45b7d1','#ffa07a','#98d8c8','#f06292','
 async function loadDice(){try{dice=await request('/api/dice');diceAt=Date.now()}catch{if(!dice)dice=false}}
 function enterDice(){diceEdit=-1;diceArmed='';diceColorFor=-1;diceHero='';loadDice().then(()=>{if(route==='dice')renderDice()});if(diceTimer)return;
  diceTimer=setInterval(async()=>{if(route!=='dice'){clearInterval(diceTimer);diceTimer=null;return}const f=document.activeElement;if(f&&$('diceView').contains(f)&&/INPUT|SELECT/.test(f.tagName))return;await loadDice();if(route==='dice')renderDice()},window.MeshNative?3000:2000)}
-function diceTile(){const d=dice;if(!d)return[];const r=d.results[d.results.length-1];return[['dice','dice',r?'warn':'muted','Кости',r?`${r.label||r.formula}${r.special?'':' = '+r.total}`:'RPG · Warhammer']]}
+function diceTile(){const d=dice;if(!d||!hasModule('dice'))return[];const r=d.results[d.results.length-1];return[['dice','dice',r?'warn':'muted','Кости',r?`${r.label||r.formula}${r.special?'':' = '+r.total}`:'RPG · Warhammer']]}
 // One command at a time (a function makes the line from the state the previous one left); the answer "OK … {json}" replaces the state.
 function diceDo(line,done){diceQueue=diceQueue.then(async()=>{try{if(typeof line==='function')line=line(dice);const r=await command('dice '+line),j=typeof r==='string'?r.indexOf('{'):-1;if(j>=0){dice=JSON.parse(r.slice(j));diceAt=Date.now()}if(done)done();if(route==='dice')renderDice()}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}});return diceQueue}
 const diceParts=r=>r.parts.map(p=>{const a=Math.abs(p);return{v:a>>2,k:a&3,neg:p<0}});

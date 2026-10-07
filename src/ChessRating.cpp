@@ -2,6 +2,7 @@
 #include <SHA256.h>
 #include <ArduinoJson.h>
 #include <math.h>
+#if MM_CHESS
 namespace rating {
 Book book;
 namespace {
@@ -173,5 +174,10 @@ size_t storeRead(uint8_t* data,size_t cap){
   }
   return 0;
 }
+}
+#endif
+#else
+namespace rating {
+Book book; // never ready: nothing reads the records
 }
 #endif

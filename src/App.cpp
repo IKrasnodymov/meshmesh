@@ -49,6 +49,7 @@ String statusJson() {
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
   {String l;for(int i=0;i<LangCount;i++)if(langAvailable(i))l+=String(l.length()?" ":"")+langCodes[i];d["langs"]=l;} // the screen languages of this image
+  {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";d["modules"]=m;} // optional modules in this image (Modules.h)
 #endif
   d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
 }
