@@ -86,7 +86,7 @@ unsigned wrap(const String& s,String* rows,unsigned maxRows,int px,const Face& f
  }
  if(row.length()&&count<maxRows)rows[count++]=row;return count;
 }
-String t(const char* en,const char* ru){return tr(en,ru);}
+#define t(en,ru) String(tr(en,ru)) // a macro: tr() keys its translation at compile time (I18n.h)
 String flag(bool v){return v?t("On","Вкл"):t("Off","Выкл");}
 String count(unsigned n,const char* one,const char* many,const char* ru1,const char* ru2,const char* ru5){return plural(n,one,many,ru1,ru2,ru5);}
 void notice(const String& value,uint16_t color=accent){toast=value;toastAt=millis();toastColor=color;dirty=true;}
@@ -608,7 +608,7 @@ String netError(){String e=internet.error;if(config.lang==LangEn)return e;
  const char* map[][2]={{"Wrong password or refused: ","Неверный пароль или отказ: "},{"No answer from ","Нет ответа от "},{"No saved network in range","Сохранённых сетей рядом нет"},{"Connection lost","Связь с сетью потеряна"},
   {"Wi-Fi scan failed","Сбой поиска сетей"},{"Wi-Fi scan timed out","Поиск сетей не завершился"},{"Clock not set","Часы не установлены"},{"SSID 1-32 bytes, password empty or 8-63","Имя 1-32 байта, пароль пустой или 8-63"},
   {"Tile is not 256 or 512 px","Тайл не 256/512 пикселей"},{"Not a PNG image","Сервер вернул не PNG"},{"No location","Положение по IP не найдено"},{"SD full: web tiles not cached","SD заполнена: тайлы не сохраняются"}};
- for(auto& m:map)if(e.startsWith(m[0]))return String(tr(m[0],m[1]))+e.substring(strlen(m[0]));return e;}
+ for(auto& m:map)if(e.startsWith(m[0]))return String(trPair(m[0],m[1]))+e.substring(strlen(m[0]));return e;}
 unsigned netCount(){NetRow rows[Internet::MaxSeen+Internet::MaxSaved];return netRows(rows,Internet::MaxSeen+Internet::MaxSaved);}
 uint32_t netScanAt=0;
 void netListEnter(){

@@ -5,7 +5,11 @@
 #if !defined(MM_LANG_EXTRA)
 #define MM_LANG_EXTRA 0
 #endif
+#if defined(MM_NO_RU)
+#define MM_LANG_IN(l) ((l)==LangEn||(l)==MM_LANG_EXTRA)
+#else
 #define MM_LANG_IN(l) ((l)<2||(l)==MM_LANG_EXTRA)
+#endif
 #else
 #define MM_LANG_IN(l) 1
 #endif
@@ -55,9 +59,9 @@ uint8_t category(uint8_t l,unsigned n){
 }
 }
 
-const char* tr(const char* en,const char* ru){
- uint8_t l=lang();if(l==LangEn)return en;if(l==LangRu)return ru;
- const char* s=lookup(hashParts({en,ru}));return s?s:en;
+const char* trKey(const char* en,const char* ru,uint32_t key){
+ uint8_t l=lang();if(l==LangEn)return en;if(l==LangRu)return ru?ru:en;
+ const char* s=lookup(key);return s?s:en;
 }
 
 String plural(unsigned n,const char* one,const char* many,const char* ru1,const char* ru2,const char* ru5){

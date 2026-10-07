@@ -30,7 +30,7 @@ uint32_t chessPopupAt=0,chessSeen=0,tourSeen=0;String chessPopupText; // chess a
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
-String t(const char* en,const char* ru){return tr(en,ru);}
+#define t(en,ru) String(tr(en,ru)) // a macro: tr() keys its translation at compile time (I18n.h)
 // Lengths in 6 px columns: CJK glyphs take two.
 unsigned chars(const String& value){unsigned n=0;for(unsigned i=0;i<value.length();)n+=glyphCells(utf8Next(value,i));return n;}
 String clipped(const String& value,unsigned count){unsigned i=0,n=0,cut=0;while(i<value.length()){unsigned at=i,w=glyphCells(utf8Next(value,i));if(n+w>count){i=at;break;}if(n+w+2<=count)cut=i;n+=w;}return i<value.length()&&count>2?value.substring(0,cut)+"..":value.substring(0,i);}

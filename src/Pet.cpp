@@ -31,7 +31,7 @@ uint32_t entropy(){return esp_random();} // the hardware generator: each egg its
 #endif
 uint32_t fnv(const uint8_t* p,size_t n){uint32_t h=2166136261u;while(n--)h=(h^*p++)*16777619u;return h;}
 uint32_t mix(uint64_t v){uint32_t h=uint32_t(v^(v>>32))*2654435761u;return h^(h>>15);}
-String t(const char* en,const char* ru){return tr(en,ru);}
+#define t(en,ru) String(tr(en,ru)) // a macro: tr() keys its translation at compile time (I18n.h)
 }
 uint16_t clampPoints(int v){return v<0?0:v>Full?Full:v;}
 
@@ -118,7 +118,7 @@ void Pet::tick(){
 void Pet::chatter(){
   uint32_t r=random(1000);String line;
   switch(mood()){
-  case Happy:{static const char* const lines[][2]={{"Packets are tasty today","Пакеты сегодня вкусные"},{"I love this mesh","Обожаю эту сеть"},{"Beep-boop","Бип-буп"}};line=tr(lines[r%3][0],lines[r%3][1]);break;}
+  case Happy:{static const char* const lines[][2]={{"Packets are tasty today","Пакеты сегодня вкусные"},{"I love this mesh","Обожаю эту сеть"},{"Beep-boop","Бип-буп"}};line=trPair(lines[r%3][0],lines[r%3][1]);break;}
   case Content:line=r%2?t("Listening to the air...","Слушаю эфир..."):t("Pet me?","Погладишь?");break;
   case Hungry:line=r%2?t("Hungry: the air is empty","Голодно: эфир пуст"):t("A snack?","Вкусняшку?");break;
   case Lonely:line=r%2?t("Write to someone?","Напиши кому-нибудь?"):t("It's lonely here","Мне одиноко");break;

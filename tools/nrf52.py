@@ -2,7 +2,7 @@
 """nRF52 boards (GAT562 30S, Heltec T114): package, back up and install through the Adafruit UF2 bootloader.
 
   package ENV        firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
-                     English and Russian, and in lang/<code>/ the image with one more screen language
+                     English and Russian, and in lang/<code>/ the image of English and that language
                      (1 MB flash: one image does not hold every language; tools/pio_lang.py)
   backup             copy CURRENT.UF2 and INFO_UF2.TXT from the mounted bootloader drive (0600) into
                      backups/<board>/ (the board from the drive's Board-ID)
@@ -86,16 +86,20 @@ def dfu_package(data, base_zip, out):
         z.writestr('manifest.json', json.dumps(manifest, indent=4))
 
 
+LANG_BUILD = ROOT / '.pio/build-lang'  # the language images (without Russian) build apart from the plain one
+
+
 def build(env, lang=None):
     """PlatformIO build of env; lang adds that screen language (MM_LANG, tools/pio_lang.py)."""
-    environ = {k: v for k, v in os.environ.items() if k != 'MM_LANG'}
+    environ = {k: v for k, v in os.environ.items() if k not in ('MM_LANG', 'PLATFORMIO_BUILD_DIR')}
     if lang:
         environ['MM_LANG'] = lang
+        environ['PLATFORMIO_BUILD_DIR'] = str(LANG_BUILD)
     subprocess.run([sys.executable, '-m', 'platformio', 'run', '-s', '-e', env], cwd=ROOT, env=environ, check=True)
 
 
-def image(env, objcopy, out):
-    elf = ROOT / '.pio/build' / env / 'firmware.elf'
+def image(env, objcopy, out, lang=False):
+    elf = (LANG_BUILD if lang else ROOT / '.pio/build') / env / 'firmware.elf'
     subprocess.run([objcopy, '-O', 'binary', elf, out], check=True)
     data = out.read_bytes()
     if APP_START + len(data) > APP_END:
@@ -104,8 +108,9 @@ def image(env, objcopy, out):
 
 
 def languages(env, objcopy, target, base):
-    """lang/<code>/: firmware.bin, firmware.uf2 and firmware-dfu.zip per screen language after en and ru.
-    Each build recompiles I18n.cpp only; the last one rebuilds the plain image and checks it is unchanged."""
+    """lang/<code>/: firmware.bin, firmware.uf2 and firmware-dfu.zip per screen language after en and ru
+    (English and that language, without Russian). They build in their own folder, where after the first one
+    each recompiles I18n.cpp only; then the plain image is built again and checked unchanged."""
     from i18n import CODES
     out = {}
     try:
@@ -113,7 +118,7 @@ def languages(env, objcopy, target, base):
             build(env, code)
             folder = target / 'lang' / code
             folder.mkdir(parents=True, exist_ok=True)
-            data = image(env, objcopy, folder / 'firmware.bin')
+            data = image(env, objcopy, folder / 'firmware.bin', lang=True)
             if data.count(b'MMLANG:--') != 1:
                 raise SystemExit(f'{code}: the image needs exactly one language field')
             (folder / 'firmware.uf2').write_bytes(uf2(data, APP_START))
@@ -166,8 +171,8 @@ def package(env):
 создаёт его по запросу.
 Обновление по Bluetooth (DFU) не поддерживается: firmware-dfu.zip — для adafruit-nrfutil по USB.
 
-Языки экрана: образ в корне пакета — английский и русский. Образ с ещё одним языком —
-в lang/<код>/ (uk, es, pt, fr, de, it, pl, tr, zh, ja, ko, ar, id): весь набор языков
+Языки экрана: образ в корне пакета — английский и русский. Образ английского и другого языка
+(без русского) — в lang/<код>/ (uk, es, pt, fr, de, it, pl, tr, zh, ja, ko, ar, id): весь набор языков
 не помещается в 1 МБ flash. Язык включается в настройках платы после установки.
 
 SHA-256 firmware.bin: {digest}
