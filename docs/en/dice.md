@@ -30,7 +30,7 @@ roll lays them out from high to low. With the threshold on (`4+`) dice at or ove
 and the successes are counted; without it, the sum. The grid's die is chosen apart from the RPG pool.
 
 **Counters.** Up to six per character: a name, a colour of the app's palette (15 colours), a value (20 for a
-new one), buttons −5, −1, +1, +5. Counters are written two seconds after the last press.
+new one), buttons −5, −1, +1, +5. Counters are written two seconds after the last press, and at once when the board is switched off.
 
 **Characters.** The "General" set and up to five characters, each with up to ten saved rolls (name, formula,
 colour) and its own counters. A new character gets one counter, as in the app. The general set stays.
