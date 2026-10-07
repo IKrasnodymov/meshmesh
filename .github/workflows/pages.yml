@@ -27,6 +27,7 @@ jobs:
           python tools/version.py --check
           python tools/version_check.py
           python tools/i18n.py check
+          node tools/chess/i18n_check.cjs
           python tools/web_header.py
           git diff --exit-code -- include/PortalPage.h
 

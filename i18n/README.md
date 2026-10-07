@@ -8,10 +8,16 @@ Chinese (`zh`, Simplified), Japanese (`ja`), Korean (`ko`), Arabic (`ar`) and In
 |---|---|---|
 | Device screens (firmware) | `t("English","Русский")`, `tr(...)`, `count(n,"one","many","ру1","ру2","ру5")` in `src/` | `i18n/firmware/<lang>.json` |
 | Website | `site/i18n/en.json` (and `ru.json`) | `site/i18n/<lang>.json` |
+| Chess page of the website (`chess/`) | the Russian text of `web/index.html` and `web/chess-companion.js`, listed in `i18n/chess/en.json` | `i18n/chess/<lang>.json` |
 | Overview | `README.md` | `README.<lang>.md` (`README.ru.md` is the full Russian guide) |
 | Detailed documents | `docs/*.md` (Russian) | `docs/en/*.md` (English) |
 
-The device web page (`web/index.html`) and the Android app are in Russian only.
+The device web page (`web/index.html`) and the Android app are in Russian only. The website's chess page is
+built from that page; `web/chess-i18n.js` translates it as it is drawn. Its dictionaries use the Russian
+text as the key (`{0}` keeps a name or number, `{r}` is translated again, `_pieces` gives the piece letters
+K Q R B N of the notation). After changing chess strings in `web/index.html`, add them to every
+`i18n/chess/<lang>.json` and run `node tools/chess/i18n_check.cjs`; `tools/chess_site.py` checks keys and
+placeholders when the site is built.
 
 ```sh
 python3 tools/i18n.py sync        # after changing strings in src/: new ones appear empty, removed ones go

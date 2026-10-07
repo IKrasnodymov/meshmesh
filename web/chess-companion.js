@@ -137,6 +137,8 @@ const Tag='♟',Queued=1,Sent=2,Delivered=3,Failed=4,MaxMatches=12;
 const RetryDelays=[120000,300000,600000,900000],RetryWindow=86400000,HeardGap=120000;
 const retryDelay=n=>RetryDelays[Math.min(n,3)],inFlight=s=>s===Queued||s===Sent;
 const hex4=n=>n.toString(16).toUpperCase().padStart(4,'0');
+// The text for a human reader in the page's language (web/chess-i18n.js); Russian without it.
+const say=s=>globalThis.MeshMeshChessI18n?globalThis.MeshMeshChessI18n.t(s):s;
 
 class Match{
  constructor(){
@@ -252,7 +254,7 @@ class ChessNet{
   const m=this.slot();if(!m){this.note('Шахматы: все доски заняты, завершите партию');return null}
   let id;do id=1+this.env.random(0xffff);while(this.matches.some(x=>x!==m&&x.id===id));
   Object.assign(m,{peer,id,name:p.name,mine:color===2?this.env.random(2):color&1,state:'inviting',started:this.env.unix()});m.game.reset();
-  this.send(m,`${Tag}${hex4(id)} new ${m.mine===White?'w':'b'} · шахматы MeshMesh: вы играете ${m.mine===White?'чёрными':'белыми'}`);
+  this.send(m,`${Tag}${hex4(id)} new ${m.mine===White?'w':'b'} · ${say(m.mine===White?'шахматы MeshMesh: вы играете чёрными':'шахматы MeshMesh: вы играете белыми')}`);
   this.changed(m);return m}
  accept(m){if(m.state!=='invited')return false;m.state='playing';m.unseen=false;this.send(m,`${Tag}${hex4(m.id)} yes`);this.changed(m);return true}
  decline(m){
@@ -497,9 +499,13 @@ box.innerHTML=`<p class="small muted">Подключите устройство 
 <div class="cmpbtns"><button class="btn primary" id="cmpUsb"${hasSerial?'':' disabled'}>${ic('bolt')}USB (Web Serial)</button><button class="btn soft" id="cmpBle"${hasBle?'':' disabled'}>${ic('ble')}Bluetooth</button></div>
 <p class="small muted cmpwhy" id="cmpWhy">${hasSerial||hasBle?'Пока страница подключена, штатное приложение MeshCore к этому устройству не подключайте: сообщения заберёт кто-то один.':'Этот браузер не умеет Web Serial и Web Bluetooth. Откройте страницу в Chrome или Edge на компьютере либо в Chrome на Android.'}</p>`;
 login.insertBefore(box,login.querySelector('.foot'));
+// The language of this page (web/chess-i18n.js): on the start screen and under the games.
+const langRow=()=>{const r=document.createElement('p');r.className='small muted';r.style.cssText='display:flex;gap:8px;align-items:center;justify-content:center;margin:12px 4px';r.innerHTML=`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>${globalThis.MeshMeshChessI18n?MeshMeshChessI18n.select():''}`;return r};
+if(globalThis.MeshMeshChessI18n)box.appendChild(langRow());
 // The link card above the games, and messages that were not chess (they leave the companion's queue here).
 const card=document.createElement('div');card.className='card cmp';const other=document.createElement('div');
-$('p-chess').insertBefore(card,$('p-chess').firstChild);$('p-chess').appendChild(other);
+$('p-chess').insertBefore(card,$('p-chess').firstChild);$('p-chess').appendChild(other);if(globalThis.MeshMeshChessI18n)$('p-chess').appendChild(langRow());
+other.dataset.notr=''; // other people's messages are not translated
 const hint=$('p-chess').querySelector('p.faint');if(hint)hint.textContent='Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Соперник играет на MeshMesh (M9, Heltec, GAT562) или на такой же странице. Партии хранятся в этом браузере отдельно для каждого companion; ходы соперника, пришедшие без страницы, ждут в очереди companion (до 16 сообщений).';
 
 function draw(){clearTimeout(drawTimer);drawTimer=setTimeout(()=>{if(auth)refreshChess(false)},150)}

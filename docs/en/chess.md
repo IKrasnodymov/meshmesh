@@ -275,6 +275,14 @@ on MeshMesh (M9, Heltec, GAT562) or on the same page.
 - Only one app can connect to a companion: while the page is open, do not connect the MeshCore app to that
   device. Direct and channel messages unrelated to chess are taken from the queue by the page
   and shown in the “Other messages” section; they will no longer be in the MeshCore app.
+- Languages are the site's 15: the page takes the language chosen on the site (`mm-lang`), otherwise the
+  browser's; a picker is on the start screen and under the game list. The page is built from the Russian
+  `web/index.html`, so `web/chess-i18n.js` translates its text as it is drawn with the dictionaries
+  `i18n/chess/<lang>.json` (the key is the Russian text, `en.json` has the full list); the boards' web page
+  stays Russian. Moves use the piece letters of the language (Sf3, Cf3, Nf3); castling and pawn moves stay
+  as they are. The note in a challenge (“MeshMesh chess: you play Black”) goes to the opponent in the
+  chosen language, as from the boards; the commands in the messages do not depend on it. Names and other
+  people's messages are not translated.
 - Chrome or Edge on a computer and Chrome on Android; Safari, iOS and Firefox support neither Web Serial
   nor Web Bluetooth. The page opens a previously allowed USB port by itself on load.
 - Verified on October 2, 2026 (`docs/verification.md`): USB companion v1.17.1 on the GAT562 against the M9 over the radio
@@ -354,6 +362,10 @@ is a separate file, `rating.bin` (see “ELO rating”).
   `src/Chess.cpp` (`tools/chess/replay.cpp`); a game between two instances with a lost ACK, a retry,
   checkmate, automatic resending, a draw and storage; the companion protocol on a simulator (frames with garbage
   in front of them, contacts, ACK, three attempts with a path reset, “not delivered”).
+- `node tools/chess/i18n_check.cjs [lang ...]` — the languages of the companion page: the real functions of
+  `web/index.html` give the texts of every game state, move news and delivery; no untranslated piece may
+  remain in any language, and moves use the language's piece letters. `tools/chess_site.py` checks the
+  dictionaries' keys, placeholders and plural forms when the site is built.
 - `tools/chess_companion_check.py --companion PORT` — over the radio: the page code in Node
   (`tools/chess/companion_node.cjs`) through `usb_tcp_bridge.py --raw` and the stock USB companion
   against the M9 on MeshMesh: an invitation from the page and checkmate, a repeat and an illegal move as text are ignored,
