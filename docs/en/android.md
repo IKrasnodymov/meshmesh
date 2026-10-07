@@ -43,6 +43,10 @@ WebView debugging is enabled (`chrome://inspect`).
   for earlier days. If the board clock is unset (Heltec and other boards without an RTC after a
   restart), the app sets the phone's time once on connecting with the `clock` command; messages
   received before that stay without a time.
+- Reply to a message by swiping its bubble from right to left, as in Telegram (double-click on a
+  computer). MeshCore has no reply field, so a reply is plain text: in a channel, a reply to someone
+  else starts with the `@[Name] ` mention; otherwise with a quote line `> start of the message` up to
+  40 bytes. The page shows the quote as a block and highlights the mention; board screens show the text as is.
 - `Updater` — updates of the app itself from the website. The site publishes `app/version.json`
   (number, name, size and SHA-256 of the APK; `tools/app_release.py`) and a copy `app/meshmesh-<number>.apk`.
   On start the app reads the description; if the number is higher than its own, an «Update» card

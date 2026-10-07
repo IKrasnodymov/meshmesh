@@ -37,9 +37,12 @@ button.row:hover,button.row:focus-visible,.row.sel{background:var(--hi);outline:
 .av{width:var(--s,36px);height:var(--s,36px);border-radius:50%;display:grid;place-items:center;flex:none;font-weight:700;color:var(--ink);font-size:calc(var(--s,36px)*.42)}.av .ic{font-size:calc(var(--s,36px)*.5)}.av.ring{background:var(--card);box-shadow:inset 0 0 0 1.5px currentColor}
 .pill{min-width:20px;height:18px;padding:0 6px;border-radius:9px;background:var(--accent);color:var(--bg);font-size:12px;font-weight:700;display:inline-grid;place-items:center}
 .sub{font-size:12px;color:var(--dim);padding:2px 4px 6px;display:flex;justify-content:space-between;gap:10px}
-.messages{display:flex;flex-direction:column;gap:6px;padding:4px 0 10px;min-height:40vh}
+.messages{display:flex;flex-direction:column;gap:6px;padding:4px 0 10px;min-height:40vh;overflow-x:clip}
 .bubble{align-self:flex-start;max-width:min(78%,520px);background:var(--in);border-radius:8px;padding:6px 10px 4px;overflow-wrap:anywhere}.bubble.out{align-self:flex-end;background:var(--out)}
 .bubble .from{font-size:12px;font-weight:600;display:block}.bubble p{white-space:pre-wrap;margin:1px 0}
+.bubble{position:relative;touch-action:pan-y}.bubble::after{content:"↩";position:absolute;right:-34px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--faint);opacity:var(--pull,0)}.bubble.armed::after{color:var(--accent)}
+.bubble .quote,.reply{display:block;border-left:3px solid var(--accent);border-radius:3px;background:rgba(127,127,127,.12);padding:2px 8px;margin:2px 0 4px;font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bubble .mention{color:var(--accent);font-weight:600}
+.reply{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:4px 4px 4px 10px}.reply span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.reply b{color:var(--ink)}.reply button{border:0;background:none;color:var(--dim);font-size:18px;width:32px;height:32px;flex:none}
 .meta{display:flex;justify-content:flex-end;align-items:center;gap:5px;font-size:11px;color:var(--dim)}.meta .ic{font-size:13px}
 .empty{padding:48px 16px;text-align:center;color:var(--dim)}.empty .ic{font-size:40px;color:var(--faint);display:block;margin:0 auto 12px}.empty small{display:block;color:var(--faint);margin-top:4px}
 .composer{position:sticky;bottom:0;background:var(--bg);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
@@ -177,7 +180,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <section class="page" id="p-chats" hidden><div class="list" id="conversations"></div></section>
 
 <section class="page" id="p-chat" hidden><div class="sub"><span id="chatSub"></span><span id="chatHint"></span></div><div class="messages" id="messages"></div>
-<form class="composer" id="chatForm"><div class="box" id="composeBox"><textarea id="text" rows="1" placeholder="Сообщение…" enterkeyhint="send"></textarea><button class="send" id="sendButton" aria-label="Отправить" disabled><svg class="ic"><use href="#i-send"/></svg></button></div><div class="count" id="byteCount">0 / 151 байт</div></form></section>
+<form class="composer" id="chatForm"><div class="reply" id="replyBar" hidden><span id="replyText"></span><button type="button" id="replyCancel" aria-label="Не отвечать">×</button></div><div class="box" id="composeBox"><textarea id="text" rows="1" placeholder="Сообщение…" enterkeyhint="send"></textarea><button class="send" id="sendButton" aria-label="Отправить" disabled><svg class="ic"><use href="#i-send"/></svg></button></div><div class="count" id="byteCount">0 / 151 байт</div></form></section>
 
 <section class="page" id="p-addch" hidden><div class="tabs five"><button data-chtab="tag">Хештег</button><button data-chtab="link">Ссылка</button><button data-chtab="key">Ключ</button><button data-chtab="new">Новый</button><button data-chtab="air">Эфир</button></div>
 <form class="card pad" data-chform="tag"><p class="small muted" style="margin:0">Открытый канал: ключ получается из имени, как в приложении MeshCore. Вступить может каждый, кто знает хештег.</p><label class="field">Хештег<input id="chTag" placeholder="#test" autocomplete="off" autocapitalize="off" spellcheck="false"></label><p class="small muted" id="chProbe"></p><button class="btn primary save">Вступить</button></form>
@@ -256,7 +259,7 @@ let route='home',param='',fetchedAt=Date.now(),clockBase={unix:0,at:0},refreshin
 let companion=null;
 let recipient='ALL',eventSeen=null,readInit=false,trackAt=0,deleteArmed='',wifiArmed=0,scopeRef=null,scopeManual=false,radarTimer=null,radarBusy=false;
 let chans=null,joinLink=null,chTab='tag',probeTimer=0,clockSynced=false;
-let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};
+let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};let chatRows=[],replyTo=null;
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
 // Board family: 'compact' (128x64 screen, one button) or 'full' (320x240 screen and keyboard). Older firmware: board only.
 const heltec=()=>status.family?status.family==='compact':status.board==='heltec_v4';
@@ -336,7 +339,7 @@ function show(){
  enter(route,prev);render();if(prev!==next||route==='chat')window.scrollTo(0,route==='chat'?document.body.scrollHeight:0)}
 function parent(){return cameFrom[route]||(route==='chinfo'?'chat/'+param:PAGES[route][1])||'home'}
 function leave(prev,next){
- if(prev==='chat'){drafts.set(recipient,$('text').value)}
+ if(prev==='chat'){drafts.set(recipient,$('text').value);setReply(null)}
  if(prev==='join')joinLink=null;
  if(RADAR_PAGES.includes(prev)&&!RADAR_PAGES.includes(next))stopRadar();
  else if(prev==='motion'&&next!=='motion'&&radarData?.csi?.role!=='off')radarAction({action:'csi',role:'off'});
@@ -453,13 +456,30 @@ function renderChat(){
  $('chatHint').textContent=isChan(recipient)?'':'✓✓ — доставлено';
  const rows=history.filter(m=>matches(m,recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length;
  if(box.dataset.fingerprint!==fingerprint){const near=document.documentElement.scrollHeight-window.scrollY-window.innerHeight<120,first=!box.dataset.fingerprint;box.dataset.fingerprint=fingerprint;
-  box.innerHTML=rows.length?rows.map(m=>{const named=!m.outgoing&&isChan(recipient),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):`<p>${esc(m.text)}</p>`}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
+  chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&isChan(recipient),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
   if(near||first)window.scrollTo(0,document.body.scrollHeight)}
  if(route==='chat')markRead();byteCount()}
-function byteCount(){const n=bytes($('text').value),l=messageLimit();$('byteCount').textContent=`${n} / ${l} байт`;$('byteCount').className='count '+(n>=l?'bad':n*10>=l*9?'warn':'');$('sendButton').disabled=!$('text').value.trim()||n>l;$('composeBox').classList.toggle('typing',n>0);return n}
+function byteCount(){const n=bytes(replyPrefix()+$('text').value),l=messageLimit();$('byteCount').textContent=`${n} / ${l} байт`;$('byteCount').className='count '+(n>=l?'bad':n*10>=l*9?'warn':'');$('sendButton').disabled=!$('text').value.trim()||n>l;$('composeBox').classList.toggle('typing',n>0);return n}
+// Replies: MeshCore has no reply field. In a channel the reply to another sender starts with the
+// "@[Name] " mention of MeshCore apps; otherwise with a quote line "> start of the message".
+function cutBytes(s,n){s=s.replace(/\s+/g,' ').trim();if(bytes(s)<=n)return s;while(bytes(s+'…')>n)s=[...s].slice(0,-1).join('');return s+'…'}
+function replyPrefix(){const m=replyTo;if(!m)return'';return isChan(recipient)&&!m.outgoing?`@[${m.name}] `:`> ${cutBytes(m.text.replace(/^> [^\n]*\n/,''),40)}\n`}
+function setReply(m){replyTo=m;$('replyBar').hidden=!m;if(m)$('replyText').innerHTML=`<b>${esc(m.outgoing?'Вы':m.name||nodeName(recipient))}</b> · ${esc(m.text.replace(/^> [^\n]*\n/,'').replace(/^@\[([^\]\n]{1,32})\]/,'@$1').replace(/\s+/g,' '))}`;byteCount()}
+function messageText(t){const q=/^> ([^\n]*)\n/.exec(t);if(q)t=t.slice(q[0].length);
+ return (q?`<span class="quote">${esc(q[1])}</span>`:'')+`<p>${esc(t).replace(/^@\[([^\]\n]{1,32})\]/,'<span class="mention">@$1</span>')}</p>`}
+function startReply(m){if(!m)return;setReply(m);$('text').focus()}
+// Swipe a bubble from right to left, as in Telegram; touches at the right edge belong to the system back gesture.
+function swipeReply(box){let s=null;const pull=36,max=64;
+ box.addEventListener('pointerdown',e=>{const b=e.target.closest('.bubble[data-i]');s=e.pointerType!=='mouse'&&b&&!e.target.closest('button,a')&&e.clientX<window.innerWidth-32?{b,m:chatRows[b.dataset.i],id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,on:false}:null});
+ box.addEventListener('pointermove',e=>{if(!s||e.pointerId!==s.id)return;const dx=s.x-e.clientX,dy=Math.abs(e.clientY-s.y);
+  if(!s.on){if(dy>10&&dy>dx){s=null;return}if(dx<10||dx<dy*1.5)return;s.on=true}
+  s.dx=Math.max(0,Math.min(max,dx));s.b.style.transform=`translateX(${-s.dx}px)`;s.b.style.setProperty('--pull',Math.min(1,s.dx/pull));s.b.classList.toggle('armed',s.dx>=pull)});
+ const end=e=>{if(!s||e.pointerId!==s.id)return;const {b,m,dx}=s,ok=e.type==='pointerup'&&dx>=pull;s=null;b.style.transition='transform .15s';b.style.transform='';b.style.removeProperty('--pull');b.classList.remove('armed');setTimeout(()=>b.style.transition='',160);if(ok)startReply(m)};
+ box.addEventListener('pointerup',end);box.addEventListener('pointercancel',end);
+ box.addEventListener('dblclick',e=>{const b=e.target.closest('.bubble[data-i]');if(b&&!e.target.closest('button,a')){getSelection()?.removeAllRanges();startReply(chatRows[b.dataset.i])}})}
 function autosize(){const t=$('text');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
-async function send(){const text=$('text').value;if(!text.trim())return;if(byteCount()>messageLimit()){notify('Лимит байт UTF-8: '+messageLimit(),'warn');return}
- $('sendButton').disabled=true;try{await request('/api/send',{to:recipient,text});$('text').value='';drafts.delete(recipient);autosize();byteCount();notify('Сообщение в очереди');await refresh()}catch(e){notify(e.message.startsWith('ERR')?'Не отправлено: текст, очередь или радио':e.message,'bad')}finally{byteCount()}}
+async function send(){if(!$('text').value.trim())return;const text=replyPrefix()+$('text').value;if(byteCount()>messageLimit()){notify('Лимит байт UTF-8: '+messageLimit(),'warn');return}
+ $('sendButton').disabled=true;try{await request('/api/send',{to:recipient,text});$('text').value='';drafts.delete(recipient);setReply(null);autosize();byteCount();notify('Сообщение в очереди');await refresh()}catch(e){notify(e.message.startsWith('ERR')?'Не отправлено: текст, очередь или радио':e.message,'bad')}finally{byteCount()}}
 
 // Channels: joining by hashtag, link (QR), key or a new random key; the channel page with its QR code and invitations.
 const chanKind=c=>c?.kind==='public'?'Общий канал MeshCore':c?.kind==='private'?'Закрытый канал':'Открытый канал (хештег)';
@@ -1098,7 +1118,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('stopHoming').onclick=()=>go('radar');$('resetPeak').onclick=()=>radarAction({action:'peak'}).then(()=>notify('Пик сброшен','muted'));
  $('pingToggle').onclick=()=>{ping.on=!ping.on;if(ping.on&&!ping.ctx){try{ping.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch{ping.on=false;notify('Звук в этом браузере недоступен','warn')}}if(ping.ctx&&ping.ctx.state==='suspended')ping.ctx.resume();notify(ping.on?'Звук пеленга включён':'Звук пеленга выключен','muted');renderHoming()};setInterval(pingTick,50);
  $('csiCalibrate').onclick=()=>radarAction({action:'calibrate'}).then(r=>{if(r)notify('Калибровка: 10 с без движения в зоне','info')});
- $('text').oninput=()=>{autosize();byteCount()};$('text').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}};$('chatForm').onsubmit=e=>{e.preventDefault();send()};
+ $('text').oninput=()=>{autosize();byteCount()};$('text').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}};$('chatForm').onsubmit=e=>{e.preventDefault();send()};$('replyCancel').onclick=()=>{setReply(null);$('text').focus()};swipeReply($('messages'));
  $('chanInfo').onclick=()=>go('chinfo/'+recipient);$('chScan').onclick=()=>MeshNative.scanQr();
  $('p-addch').oninput=e=>{if(e.target.id==='chTag'||e.target.id==='chTry')probe(e.target,$(e.target.id==='chTag'?'chProbe':'chTryOut'))};
  $('p-addch').onsubmit=e=>{e.preventDefault();const f=e.target.dataset.chform,v=id=>$(id).value.trim();
