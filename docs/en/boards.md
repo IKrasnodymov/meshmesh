@@ -102,6 +102,19 @@ holds no data — which shows from which address the flash stops keeping writes.
 made to lose the write): the storage was created at `0x310000` and mounted from there after a restart. Not
 verified on the V3.
 
+The reply on 0.4.3 (7 October): flash `c84017` (GigaDevice GD25Q64, 8 MB), registers `200000` (SR3 bit 5 on
+GigaDevice appears to be output drive strength, not protection). `flashprobe`: at all eight addresses from
+`0x310000` to `0x7ff000` the erase works and the write is lost (`lost, reads ffffffff`); the move failed. Other
+firmware on the same board (MeshCore-Low-Power by dt267 among them) keeps messages, so the chip can write. Our
+builds differ: the image header says DIO while the flash driver libraries (`libspi_flash` and others) come from
+`qio_qspi`, built for QIO; stock V3 firmware uses QIO for both. Since 0.5.1 the `heltec_v3` target takes the
+`dio_qspi` libraries (`memory_type` in `boards/meshmesh_heltec_v3.json`), so the driver mode matches the header.
+`flashstatus` shows the driver and its mode (`driver gd dio`); `flashprobe` also writes the first sector of each
+region through the ROM functions (`rom ok`/`rom lost`) in the bootloader's mode, as esptool does. If the V3 says
+`rom ok` while the driver's write is lost, the driver is the cause. Checked in QEMU (ESP32, `driver gd dio`,
+`rom ok`); in the release the ROM test is on ESP32-S3 only — the classic ESP32 builds have no IRAM to spare. Not
+verified on the V3.
+
 The ESPFlash (Android) error `Firmware overlap: boot_app0.bin` means a wrong address: `boot_app0.bin` goes
 to `0xe000`, not `0xe0000` — with the extra zero it lands inside `firmware.bin` (`0x10000`, about 2 MB).
 It is simpler to write the single `…-factory.bin` at `0x0` (first install; erases the previous firmware's data).

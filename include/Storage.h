@@ -3,6 +3,7 @@
 #include <esp_partition.h>
 #include <esp_spi_flash.h>
 #include <esp_flash.h>
+#include <spi_flash_chip_driver.h>
 #include <esp_ota_ops.h>
 #include <Preferences.h>
 #if CONFIG_IDF_TARGET_ESP32S3
@@ -65,8 +66,11 @@ static IRAM_ATTR uint32_t flashStatus(bool unlock) {
 inline String flashInfo() {
   uint32_t id=0,physical=0;esp_flash_read_id(nullptr,&id);esp_flash_get_physical_size(nullptr,&physical);
   const esp_partition_t* part=storage::partition();storage::Region home=storage::home();
-  char s[224];snprintf(s,sizeof(s),"OK flash id %06x, size %u KB (image header %u KB), status %06x (SR3<<16 | SR2<<8 | SR1; SR1 bits 2-6 and SR3 bit 2 protect blocks), storage at 0x%x, %u KB%s",
-    unsigned(id),unsigned(physical/1024),unsigned(spi_flash_get_chip_size()/1024),unsigned(flashStatus(false)),
+  // The esp_flash driver's mode for erase, write and direct reads (SPI1); the cache reads use the image header's mode.
+  static const char* const modes[]={"slowrd","fastrd","dout","dio","qout","qio"};const esp_flash_t* chip=esp_flash_default_chip;
+  const char* mode=chip&&chip->read_mode<6?modes[chip->read_mode]:"?";const char* driver=chip&&chip->chip_drv?chip->chip_drv->name:"?";
+  char s[256];snprintf(s,sizeof(s),"OK flash id %06x, size %u KB (image header %u KB), driver %s %s, status %06x (SR3<<16 | SR2<<8 | SR1; SR1 bits 2-6 and SR3 bit 2 protect blocks), storage at 0x%x, %u KB%s",
+    unsigned(id),unsigned(physical/1024),unsigned(spi_flash_get_chip_size()/1024),driver,mode,unsigned(flashStatus(false)),
     part?unsigned(part->address):0,part?unsigned(part->size/1024):0,part&&part->address!=home.at?" (moved to the free OTA slot)":"");
   return s;
 }
@@ -81,14 +85,40 @@ inline String flashSectorTest(uint32_t address) {
   if(!memcmp(probe,back,sizeof(probe)))return "ok";
   snprintf(word,sizeof(word),"%08x",unsigned(back[0]));return String("lost, reads ")+word;
 }
+// The same test through the ROM functions, as esptool writes: the mode the bootloader set (the image
+// header's), not the esp_flash driver's. Runs from IRAM with the flash cache off, so the data is in DRAM.
+// ESP32-S3 only (the Heltec V3 case): the classic ESP32 builds have no IRAM to spare.
+#if CONFIG_IDF_TARGET_ESP32S3
+static IRAM_ATTR __attribute__((noinline)) int romSectorTest(uint32_t address,uint32_t* back) {
+  static DRAM_ATTR const uint32_t probe[4]={0x4d657368,0x524f4d21,0x5a5aa5a5,0x0f1e2d3c};
+  const spi_flash_guard_funcs_t* guard=spi_flash_guard_get();guard->start();
+  int r=esp_rom_spiflash_erase_sector(address/SPI_FLASH_SEC_SIZE);
+  if(!r)r=esp_rom_spiflash_write(address,probe,sizeof(probe));
+  if(!r)r=esp_rom_spiflash_read(address,back,16);
+  int erased=esp_rom_spiflash_erase_sector(address/SPI_FLASH_SEC_SIZE);
+  guard->end();
+  if(r)return 1;if(erased)return 2;
+  for(int i=0;i<4;i++)if(back[i]!=probe[i])return 3;
+  return 0;
+}
+inline String romSectorReport(uint32_t address) {
+  uint32_t back[4]={};char s[48];int r=romSectorTest(address,back);
+  if(r==1)return "rom failed";if(r==2)return "rom erase-back failed";if(!r)return "rom ok";
+  snprintf(s,sizeof(s),"rom lost, reads %08x",unsigned(back[0]));return s;
+}
+#endif
 // USB "flashprobe": the erase and write test at the first and last sector and every megabyte boundary of
-// the free OTA slot and the table's LittleFS region, each only while nothing lives there. Shows where the
-// flash stops keeping writes; destroys only data nobody uses.
+// the free OTA slot and the table's LittleFS region, each only while nothing lives there; at the first
+// sector also through the ROM functions (ESP32-S3). Shows where the flash stops keeping writes; destroys
+// only data nobody uses.
 inline String flashProbe(bool fsMounted) {
   String out="OK flash probe:";
   auto region=[&](uint32_t start,uint32_t size){
     auto test=[&](uint32_t address){char at[16];snprintf(at,sizeof(at)," 0x%x ",unsigned(address));out+=at;out+=flashSectorTest(address);out+=';';};
     test(start);
+#if CONFIG_IDF_TARGET_ESP32S3
+    {char at[16];snprintf(at,sizeof(at)," 0x%x ",unsigned(start));out+=at;out+=romSectorReport(start);out+=';';}
+#endif
     for(uint32_t at=(start+0xfffff)&~0xfffffu;at<start+size;at+=0x100000)if(at>start)test(at);
     test(start+size-SPI_FLASH_SEC_SIZE);
   };

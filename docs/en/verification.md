@@ -1,5 +1,13 @@
 # MeshMesh verification
 
+> **0.5.1: the Heltec V3 flash driver mode** (7 October 2026). The V3 owner's reply on 0.4.3: flash `c84017`,
+> the write is lost at every address from `0x310000` to `0x7ff000`, the storage move failed; other firmware on
+> the same board writes. The `heltec_v3` target moved from the `qio_qspi` driver libraries to `dio_qspi`
+> (confirmed in the build's map file); `flashstatus` shows the driver and mode, `flashprobe` also writes through
+> the ROM functions. Checked only in QEMU (ESP32 T-LoRa, 8 MB): `driver gd dio`, `rom ok`, 85 s without restarts
+> after the probe; in the release the ROM test is on ESP32-S3 only (the T-Beam has no IRAM to spare) (watchdog resets in the emulator also happen without commands). The Heltec V4 was not
+> connected and we have no V3; not verified on a board.
+
 > **0.5.0: mesh pet** (7 October 2026; firmware 0.5.0, Android 0.5.0). The pet (15 species, optional, every
 > board's screen, the web page and the app) and nRF52 language images without the Russian strings (translation
 > keys at compile time): T114 Chinese 12 KB free (it would be 3), GAT562 Chinese 39 KB. 15 boards built; the

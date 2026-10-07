@@ -19,6 +19,13 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
+## 0.5.1 — режим flash Heltec V3
+
+На Heltec V3 пользователя (flash GigaDevice `c84017`) запись не сохранялась нигде выше `0x310000`, перенос
+0.4.3 не помог, а другие прошивки на той же плате пишут. Наши сборки записывали в заголовок образа DIO, а
+драйвер flash брали из библиотек под QIO; для V3 драйвер теперь тоже DIO. `flashstatus` называет драйвер и его
+режим, `flashprobe` дополнительно пишет функциями ПЗУ, как esptool. Исправление на V3 ещё не проверено.
+
 ## 0.4.3 — хранилище на flash, которая не держит запись
 
 Если раздел LittleFS не сохраняет запись (так у пользователя Heltec V3), `fsformat` и пункт «Создать
