@@ -457,15 +457,12 @@ const ICONS={
  hash:'<path d="M5 9h15M4 15h15M10 3 8 21M16 3l-2 18"/>',
  tower:'<path d="M12 10 7 21M12 10l5 11M12 10v11M9 16h6"/><circle cx="12" cy="7.5" r="1.6"/><path d="M8.6 4a5 5 0 0 0 0 7M15.4 4a5 5 0 0 1 0 7"/>'
 };
-// Each feature: icon, colour, screenshots (img/<name>-<lang>.png unless phone: true); texts f.<id>.t, f.<id>.d and shot.<name>.
+// Each feature: icon, colour, screenshots (img/<name>-<lang>.png, web-* pages img/<name>.webp); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
  {id:'pet',ic:'paw',c:'#f472b6',shots:['m9-pet-happy','t114-pet-happy','m9-pet-hungry','heltec-pet-stats','m9-pet-dead']},
  {id:'t114',ic:'oled',c:'#4f9df7',oled:true,shots:['t114-home','t114-chess-targets','t114-chess-list','t114-radar','t114-popup','t114-nodes']},
- {id:'chessButton',ic:'chess',c:'#4cc26b',oled:true,shots:['heltec-chess-piece','heltec-chess-move','heltec-chess-gamemenu','heltec-chess-list']},
- {id:'tour',ic:'chess',c:'#a78bfa',shots:['m9-tour-final','m9-tour-new-players','m9-tour-invite']},
- {id:'rating',ic:'chess',c:'#e9b13b',shots:['m9-chess-rating','m9-chess-pick-rated','m9-chess-rated-result']},
+ {id:'chess',ic:'chess',c:'#4cc26b',shots:['m9-chess-italian','m9-chess-promotion','m9-locked-chess','heltec-chess-piece','heltec-chess-move','heltec-chess-gamemenu','heltec-chess-list','m9-chess-rating','m9-chess-pick-rated','m9-chess-rated-result','m9-tour-final','m9-tour-new-players','m9-tour-invite','web-chess-companion-board','web-chess-companion-list','web-chess-companion-connect']},
  {id:'channels',ic:'hash',c:'#1fc2ae',shots:['m9-threads-channels','m9-channel-private','m9-channel-add','m9-chat-invite','heltec-invite-menu']},
- {id:'chessCompanion',ic:'chess',c:'#4cc26b',phone:true,shots:['web-chess-companion-board','web-chess-companion-list','web-chess-companion-connect']},
  {id:'gat562',ic:'oled',c:'#e4e9ee',oled:true,shots:['gat562-home','gat562-keyboard','gat562-chess','gat562-chess-list','gat562-radar','gat562-node-menu']},
  {id:'modes',ic:'tower',c:'#a78bfa',shots:['m9-role-boot','m9-repeater','m9-room','m9-room-post','heltec-role','heltec-repeater','heltec-room']},
  {id:'chats',ic:'chat',c:'#1fc2ae',shots:['m9-threads','m9-chat','m9-chat-public','heltec-messages','heltec-popup']},
@@ -473,7 +470,6 @@ const FEATURES=[
  {id:'nodes',ic:'nodes',c:'#a78bfa',shots:['m9-nodes','m9-node','heltec-nodes']},
  {id:'radar',ic:'radar',c:'#f472b6',shots:['m9-radar','m9-homing','heltec-radar','heltec-homing']},
  {id:'motion',ic:'motion',c:'#e9b13b',shots:['m9-motion']},
- {id:'chess',ic:'chess',c:'#4cc26b',shots:['m9-chess-italian','m9-chess-promotion','m9-locked-chess']},
  {id:'solitaire',ic:'cards',c:'#e5564d',shots:['m9-solitaire-played']},
  {id:'gps',ic:'compass',c:'#4f9df7',shots:['m9-sensors','heltec-gps']},
  {id:'screen',ic:'keyboard',c:'#1fc2ae',shots:['m9-home','m9-layout','m9-locked']},
@@ -493,7 +489,7 @@ function docPath(path){
 let lang='en',T={},EN={};
 const L=k=>T[k]??EN[k]??k;
 // Screenshots: generated for each language (tools/site_shots.py); English when one is missing.
-const shotSrc=(n,web)=>web?`img/${n}.webp`:`img/${n}-${lang}.png`;
+const shotSrc=n=>n.startsWith('web-')?`img/${n}.webp`:`img/${n}-${lang}.png`;
 const shotFallback='onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/-[a-z]+\\.png$/,\'-en.png\')}"';
 const svg=(k,col)=>`<svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 const dicts={};
@@ -519,7 +515,7 @@ function render(){
  document.getElementById('features-grid').innerHTML=FEATURES.map((f,i)=>{
   const s=f.shots[0];
   const cls=f.oled?'shot oled':f.phone?'shot phone':'shot';
-  return `<button class="feat" data-f="${i}"><div class="${cls}">${s?`<img loading="lazy" src="${shotSrc(s,f.phone)}" ${shotFallback} alt="${L('f.'+f.id+'.t')}">`:''}${f.shots.length>1?`<span class="count">${f.shots.length}</span>`:''}</div><div class="txt"><h3><span class="ic" style="background:${f.c}22">${svg(f.ic,f.c)}</span>${L('f.'+f.id+'.t')}</h3><p>${L('f.'+f.id+'.d')}</p></div></button>`}).join('');
+  return `<button class="feat" data-f="${i}"><div class="${cls}">${s?`<img loading="lazy" src="${shotSrc(s)}" ${shotFallback} alt="${L('f.'+f.id+'.t')}">`:''}${f.shots.length>1?`<span class="count">${f.shots.length}</span>`:''}</div><div class="txt"><h3><span class="ic" style="background:${f.c}22">${svg(f.ic,f.c)}</span>${L('f.'+f.id+'.t')}</h3><p>${L('f.'+f.id+'.d')}</p></div></button>`}).join('');
  document.getElementById('docs-list').innerHTML=DOCS.map(d=>{const p=docPath(d[0]);return `<a class="doc" href="${REPO}/blob/main/${p}"><b>${L(d[1])}</b><span dir="ltr">${p.replace(/^docs\/(en\/)?/,'')}</span></a>`}).join('');
  fwLangDefault();buildHero();renderBoards();
 }
@@ -544,12 +540,12 @@ let lbF=null,lbI=0;
 function lbShow(){
  const f=FEATURES[lbF],s=f.shots[lbI],img=document.getElementById('lbImg');
  img.dataset.f='';img.onerror=()=>{if(!img.dataset.f){img.dataset.f=1;img.src=img.src.replace(/-[a-z]+\.png$/,'-en.png')}};
- img.src=shotSrc(s,f.phone);img.alt=L('shot.'+s);
- img.classList.toggle('px',!f.phone);
- img.style.maxWidth=f.phone&&s!=='web-desktop'?'380px':'';
+ const web=s.startsWith('web-');img.src=shotSrc(s);img.alt=L('shot.'+s);
+ img.classList.toggle('px',!web);
+ img.style.maxWidth=web&&s!=='web-desktop'?'380px':'';
  document.getElementById('lbTitle').textContent=L('shot.'+s);
  document.getElementById('lbText').textContent=f.shots.length>1?`${L('f.'+f.id+'.t')} · ${lbI+1} / ${f.shots.length}`:L('f.'+f.id+'.t');
- document.getElementById('lbThumbs').innerHTML=f.shots.length>1?f.shots.map((t,i)=>`<button class="${i===lbI?'on':''}" data-t="${i}"><img src="${shotSrc(t,f.phone)}" ${shotFallback} alt=""></button>`).join(''):'';
+ document.getElementById('lbThumbs').innerHTML=f.shots.length>1?f.shots.map((t,i)=>`<button class="${i===lbI?'on':''}" data-t="${i}"><img src="${shotSrc(t)}" ${shotFallback} alt=""></button>`).join(''):'';
  document.querySelectorAll('#lb .nav').forEach(n=>n.style.visibility=f.shots.length>1?'':'hidden');
 }
 function lbOpen(i){if(!FEATURES[i].shots.length)return;lbF=i;lbI=0;lbShow();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
