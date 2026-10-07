@@ -439,6 +439,11 @@
   "ru": "Новое яйцо",
   "text": "Nouvel œuf"
  },
+ "8dc64d77": {
+  "en": " went free",
+  "ru": " ушёл на волю",
+  "text": " est parti libre"
+ },
  "7a6f342c": {
   "en": "Egg",
   "ru": "Яйцо",
@@ -4389,6 +4394,11 @@
   "ru": "Кормить, вкусн.: ",
   "text": "Donner friand. : "
  },
+ "1132915b": {
+  "en": "Let it go...",
+  "ru": "Отпустить...",
+  "text": "Libérer..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4498,6 +4508,16 @@
   "en": "No beacon heard",
   "ru": "Маяк не слышен",
   "text": "Aucune balise"
+ },
+ "8993ca58": {
+  "en": "OK again: let it go",
+  "ru": "Ещё раз OK: отпустить",
+  "text": "OK encore : libérer"
+ },
+ "e22b7b2a": {
+  "en": "Hold again: let it go",
+  "ru": "Удерж. ещё: отпустить",
+  "text": "Maintenir : libérer"
  },
  "5287dab1": {
   "en": "Encryption: OK",
@@ -4939,6 +4959,16 @@
   "ru": "телефон/часы",
   "text": "tél./montre"
  },
+ "696ee294": {
+  "en": "Optional",
+  "ru": "Заводить по желанию",
+  "text": "Facultatif"
+ },
+ "ccdb9efa": {
+  "en": "No pet",
+  "ru": "Нет питомца",
+  "text": "Pas d'animal"
+ },
  "ba84ede8": {
   "en": "Gone",
   "ru": "Умер",
@@ -4948,6 +4978,26 @@
   "en": "Egg · ",
   "ru": "Яйцо · ",
   "text": "Œuf · "
+ },
+ "cca6ff71": {
+  "en": "A pixel creature that feeds on the radio: packets, messages and ACKs. It grows, talks and needs care. It is optional.",
+  "ru": "Пиксельный зверёк, который кормится эфиром: пакеты, сообщения, подтверждения. Растёт, разговаривает и требует ухода. Заводить не обязательно.",
+  "text": "Une créature en pixels qui se nourrit de la radio : paquets, messages et ACK. Elle grandit, parle et demande des soins. Facultatif."
+ },
+ "f3e64761": {
+  "en": "In memory",
+  "ru": "Память",
+  "text": "Souvenirs"
+ },
+ "6c284654": {
+  "en": "Lv ",
+  "ru": "Ур. ",
+  "text": "Nv "
+ },
+ "01d8f9da": {
+  "en": "Start a pet",
+  "ru": "Завести питомца",
+  "text": "Adopter un animal"
  },
  "ce0ce922": {
   "en": "Hatches in ",
@@ -4968,16 +5018,6 @@
   "en": "Lived ",
   "ru": "Прожил ",
   "text": "A vécu "
- },
- "f3e64761": {
-  "en": "In memory",
-  "ru": "Память",
-  "text": "Souvenirs"
- },
- "6c284654": {
-  "en": "Lv ",
-  "ru": "Ур. ",
-  "text": "Nv "
  },
  "05d720a7": {
   "en": "New egg",
@@ -5044,6 +5084,11 @@
   "ru": "D: смерть выкл.",
   "text": "D: mort désact."
  },
+ "d4535bce": {
+  "en": "R: let go",
+  "ru": "R: отпустить",
+  "text": "R : libérer"
+ },
  "f4fe8e62": {
   "en": "Pet",
   "ru": "Погладить",
@@ -5059,10 +5104,20 @@
   "ru": "Лечить",
   "text": "Soigner"
  },
+ "18c22ac8": {
+  "en": "R again: let it go",
+  "ru": "Ещё раз R: отпустить",
+  "text": "R encore : libérer"
+ },
  "55b2846a": {
   "en": "Lv",
   "ru": "Ур.",
   "text": "Nv"
+ },
+ "c2104214": {
+  "en": "Feeds on the radio, grows, needs care. Optional.",
+  "ru": "Кормится эфиром, растёт, требует ухода. По желанию.",
+  "text": "Mange la radio, grandit, demande des soins. Facultatif."
  },
  "d8751fe2": {
   "en": "hatches in",

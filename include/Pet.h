@@ -7,10 +7,11 @@
 // while the device is on (a switched-off device puts it to sleep). Hunger or loneliness wears its health
 // down; at zero it dies (unless death is switched off), leaves a grave and the owner starts a new egg.
 // Fifteen species (PetSprites.h, tools/pet_sprites.py), each with a young and a grown look and its own
-// colours; a new egg gets a random one. The screens draw it from a 16x16 grid of inks (sprite()); the
+// colours; a new egg gets a random one. A pet is optional: a new device has none until the owner starts
+// an egg, and the owner can let it go. The screens draw it from a 16x16 grid of inks (sprite()); the
 // state is a file in MeshMesh storage.
 namespace pet {
-enum Stage:uint8_t {Egg,Baby,Child,Teen,Adult,Dead,StageCount};
+enum Stage:uint8_t {Egg,Baby,Child,Teen,Adult,Dead,Empty,StageCount}; // Empty: no pet (the owner did not start one or let it go)
 enum Mood:uint8_t {Happy,Content,Hungry,Lonely,Sleepy,Sick,Eating,Gone};
 enum Cause:uint8_t {NoCause,Hunger,Loneliness};
 enum Effect:uint8_t {NoEffect,Hearts,Food,Sparkle,Medicine};
@@ -43,12 +44,14 @@ class Pet {
   uint32_t levelXp(unsigned n) const{return 25UL*n*(n-1);} // experience where level n starts
   Mood mood() const;
   bool asleep() const;                   // at night by the local clock
-  bool alive() const{return s.stage!=Dead;}
+  bool has() const{return s.stage!=Empty;}
+  bool alive() const{return s.stage!=Dead&&s.stage!=Empty;}
   uint32_t hatchLeft() const;            // seconds until the egg hatches
   bool needsCare() const;
   const Kind& kind() const{return kinds[s.species%Species];}                // hungry, lonely or ill: the home tile turns yellow
   // Owner actions; each returns what to show (and says it).
-  String cuddle();String feed();String heal();String newEgg();String setMortal(bool on);
+  String cuddle();String feed();String heal();String newEgg();String release();     // newEgg: a first pet or the next one after death or release
+ String setMortal(bool on);
   bool rename(const String& name);       // 1-15 UTF-8 bytes
   String stageName(uint8_t stage) const;String moodName() const;String causeText(uint8_t cause) const;
   String ageText(uint32_t seconds) const;
@@ -57,7 +60,7 @@ class Pet {
   bool talking(uint32_t now) const{return speech.length()&&now-speechAt<6000;}
   int bob(uint32_t now) const;           // 0 or 1: the screens lift it a little to the beat
   int sway(uint32_t now) const;          // -1, 0, 1: an egg rocks before it hatches
-  String json() const;
+  String json() const;                   // with the look now: "sprite" (256 inks) and its colours
   String command(const String& line);    // USB "pet ..."
  private:
   uint32_t lastTick=0,lastSave=0,saveDue=0,chatAt=0,cuddleAt=0,healAt=0;

@@ -265,7 +265,7 @@ void drawHome(){
   {IcGear,dim,t("Settings","Настройки"),t("Radio, screen","Радио, экран"),0},
   {IcCards,warn,t("Solitaire","Косынка"),gameTileDetail(),0},
   {IcChess,ink,t("Chess","Шахматы"),chessTileDetail(),chessNet.waiting()},
-  {IcPaw,creature.needsCare()?warn:rgb(0xf472b6),t("Pet","Питомец"),petTileDetail(),0}};
+  {IcPaw,creature.needsCare()?warn:creature.has()?rgb(0xf472b6):dim,t("Pet","Питомец"),petTileDetail(),0}};
  int firstRow=max(0,selected/tileColumns-1);
  for(int i=firstRow*tileColumns;i<tileCount&&i<(firstRow+2)*tileColumns;i++){
   int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);target(x,y,96,min(68,219-y),i);

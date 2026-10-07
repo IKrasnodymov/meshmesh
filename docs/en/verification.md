@@ -1,5 +1,16 @@
 # MeshMesh verification
 
+> **Optional pet, web page and app** (7 October 2026, branch `feature/pet`; the full run was not done, no
+> boards were plugged in). The app (debug build, unit tests passed, a test for `pet` added) in the Android
+> emulator was connected "USB through a computer" to the T-LoRa firmware in QEMU (no radio): without a pet,
+> the tile "No pet" and "Start a pet"; an egg with spots of the species' colour; a hatched Buzz with bars,
+> experience, "Pet" (Purr, joy +10 %) and "Feed" (Yum, snacks 2 → 1); the name in a field on the page; "Let it
+> go" with a second press; the grave with the memory after 7 days without food (died after 2 d 8 h of hunger).
+> Found and fixed: the app did not take the `pet` JSON answer (the JSON command list in `Lines.kt`); the
+> standard `confirm()`/`prompt()` in the WebView were replaced by a second press and a field on the page; the
+> owner's decisions are written to flash at once (QEMU restarts by its watchdog and lost an action saved
+> 5 s later). The section was not checked over Wi-Fi or BLE with a real board or on a phone.
+
 > **Mesh pet, branch `feature/pet`** (6 October 2026, commit `9ffbbbf`, version number unchanged — 0.4.3;
 > the full run was not done). All 15 boards build; the nRF52 language images fit (the largest, Chinese:
 > GAT562 35 KB free, T114 8 KB). Screen emulator (m9, tdeck, heltec, gat562, t114): shots of the egg, a happy,

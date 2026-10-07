@@ -31,10 +31,22 @@ void petBar(int x,int y,int w,const String& name,uint16_t value){
  g().fillRoundRect(x,y+4,w,7,3,line);if(value)g().fillRoundRect(x,y+4,max(4,int(w*value/pet::Full)),7,3,c);
 }
 String petTileDetail(){
- if(!creature.alive())return t("Gone","Умер");if(creature.s.stage==pet::Egg)return t("Egg · ","Яйцо · ")+creature.ageText(creature.hatchLeft());
+ if(!creature.has())return t("No pet","Нет питомца");if(!creature.alive())return t("Gone","Умер");if(creature.s.stage==pet::Egg)return t("Egg · ","Яйцо · ")+creature.ageText(creature.hatchLeft());
  return String(creature.s.name)+" · "+creature.moodName();
 }
+// No pet: what it is and OK to start one; the memory of earlier pets stays.
+void drawPetEmpty(){
+ const auto& s=creature.s;panel(8,26,156,188,card,10);target(8,26,156,188,-Enter);icon(IcPaw,86,104,30,faint,card);
+ textCenter(86,176,t("No pet","Нет питомца"),dim,bold);
+ int x=172,w=138;text(x,45,t("Pet","Питомец"),ink,big);
+ String rows[8];unsigned n=wrap(t("A pixel creature that feeds on the radio: packets, messages and ACKs. It grows, talks and needs care. It is optional.","Пиксельный зверёк, который кормится эфиром: пакеты, сообщения, подтверждения. Растёт, разговаривает и требует ухода. Заводить не обязательно."),rows,8,w,small);
+ for(unsigned i=0;i<n;i++)text(x,66+i*12,rows[i],dim,small);
+ if(s.graveCount){text(x,172,t("In memory","Память"),faint,small);for(unsigned i=0;i<s.graveCount&&i<2;i++){const auto& gr=s.graves[i];int y=186+i*13;g().fillCircle(x+4,y-3,3,rgb(pet::bodies[gr.species%pet::Species]));text(x+12,y,fit(String(gr.name)+" · "+t("Lv ","Ур. ")+String(gr.level),w-12,small),dim,small);}}
+ footer({{"OK",t("Start a pet","Завести питомца")},{"BACK",t("Menu","Меню")}});
+}
+uint32_t releaseArmed=0;
 void drawPet(){
+ if(!creature.has()){drawPetEmpty();return;}
  auto& d=g();uint32_t now=millis();const auto& s=creature.s;bool dead=!creature.alive(),egg=s.stage==pet::Egg;
  panel(8,26,156,188,card,10);target(8,26,156,188,-Enter);
  d.fillRoundRect(28,192,116,8,4,rgb(0x0b1016)); // its shadow on the floor
@@ -62,7 +74,7 @@ void drawPet(){
  petBar(x,100,w,t("Food","Сытость"),s.food);petBar(x,124,w,t("Joy","Радость"),s.joy);petBar(x,148,w,t("Health","Здоровье"),s.health);
  text(x,175,fit(t("Snacks ","Вкусняшки ")+String(s.snacks)+" · "+count(s.friends,"friend","friends","друг","друга","друзей"),w,small),ink,small);
  text(x,189,fit(t("Age ","Возраст ")+creature.ageText(s.age),w,small),dim,small);
- text(x,203,fit(s.mortal?t("D: death on","D: смерть вкл."):t("D: death off","D: смерть выкл."),w,small),faint,small);
+ text(x,203,s.mortal?t("D: death on","D: смерть вкл."):t("D: death off","D: смерть выкл."),faint,small);textRight(x+w,203,t("R: let go","R: отпустить"),faint,small);
  footer({{"OK",t("Pet","Погладить")},{"F",t("Feed","Кормить")},{"H",t("Heal","Лечить")},{"N",t("Name","Имя")}});
 }
 // A small pet on the locked screen when no game or message takes the place.
@@ -74,6 +86,9 @@ void drawLockPet(int y){
 // The pet answers in its bubble; only the death switch takes a notice.
 bool petKey(int key){
  if(key==Enter||key==KeyHold){if(creature.alive())creature.cuddle();else creature.newEgg();return true;}
+ if(!creature.has())return key!=KeyBack; // nothing else to do without a pet
+ if(key=='r'||key=='R'){if(!releaseArmed||millis()-releaseArmed>5000){releaseArmed=millis();notice(t("R again: let it go","Ещё раз R: отпустить"),warn);return true;}
+  releaseArmed=0;notice(creature.release(),dim);return true;}
  if(key=='f'||key=='F'){creature.feed();return true;}
  if(key=='h'||key=='H'){creature.heal();return true;}
  if(key=='d'||key=='D'){notice(creature.setMortal(!creature.s.mortal),creature.s.mortal?warn:ok);return true;}

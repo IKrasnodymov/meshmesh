@@ -147,6 +147,22 @@ class ProtocolTest {
         assertEquals(2, board.commands.count { it == "messages" })
     }
 
+    @Test fun petIsReadFreshAndItsActionsGoAsCommands() = runBlocking {
+        // The pet's JSON follows a log line; its look changes every poll, so BLE does not cache it.
+        val board = FakeBoard { c -> when {
+            c == "pet" -> listOf("I (123) wifi: log", """{"stage":"baby","sprite":"0120","graves":[]}""")
+            c == "pet cuddle" -> listOf("""OK Purr {"stage":"baby"}""")
+            else -> listOf("""{"rx":1}""")
+        } }
+        val api = CommandApi(LineTransport(board), "ble", "test", null)
+        val got = api.request("GET", "/api/pet", null)
+        assertEquals(200, got.status)
+        assertTrue(got.body.contains("sprite"))
+        api.request("GET", "/api/pet", null)
+        assertEquals(2, board.commands.count { it == "pet" })
+        assertEquals(200, api.request("POST", "/api/command", """{"command":"pet cuddle"}""").status)
+    }
+
     @Test fun channelsGoAsCommandsAndListRefreshesAfterChange() = runBlocking {
         val board = FakeBoard { c -> listOf(when {
             c == "status" -> """{"rx":1,"channels":1}"""

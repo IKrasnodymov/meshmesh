@@ -294,6 +294,10 @@ static void scenario(){
   creature.command("pet egg");if(!creature.alive()||creature.s.stage!=pet::Egg||creature.s.graveCount!=1){printf("FAIL new egg: %s\n",creature.json().c_str());exit(1);}
   creature.command("pet skip 900");if(creature.s.stage!=pet::Baby){printf("FAIL hatching: %s\n",creature.json().c_str());exit(1);}
   creature.command("pet mortal off");s.food=0;s.joy=0;creature.command("pet skip 864000");if(!creature.alive()||creature.s.health!=1){printf("FAIL death switched off: %s\n",creature.json().c_str());exit(1);}
-  creature.command("pet mortal on");s.food=s.joy=800;s.health=1000;config.dimAfter=dim;config.autoLock=lock;
+  creature.command("pet mortal on");s.food=s.joy=800;s.health=1000;
+  // A pet is optional: letting it go leaves no pet (and no new grave), the page offers to start one.
+  {uint8_t graves=creature.s.graveCount;creature.command("pet release");
+   if(creature.has()||creature.s.graveCount!=graves){printf("FAIL release: %s\n",creature.json().c_str());exit(1);}
+   snap("pet-none");creature.command("pet adopt");if(creature.s.stage!=pet::Egg){printf("FAIL adopt: %s\n",creature.json().c_str());exit(1);}}config.dimAfter=dim;config.autoLock=lock;
   printf("pet checks passed\n");}
 }

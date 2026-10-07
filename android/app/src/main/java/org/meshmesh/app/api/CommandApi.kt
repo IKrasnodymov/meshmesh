@@ -181,7 +181,7 @@ class CommandApi(
             "/api/status" to "status", "/api/messages" to "messages", "/api/nodes" to "nodes",
             "/api/config" to "config", "/api/key" to "key", "/api/navigation" to "navigation",
             "/api/maps" to "map info", "/api/maps/areas" to "map areas", "/api/clock" to "clock",
-            "/api/connections" to "connections", "/api/channels" to "channels",
+            "/api/connections" to "connections", "/api/channels" to "channels", "/api/pet" to "pet",
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
         private val APP_COMMANDS = listOf("radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")

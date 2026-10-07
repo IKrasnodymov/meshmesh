@@ -32,7 +32,7 @@ object Replies {
     private val jsonCommands = setOf(
         "status", "config", "key", "messages", "nodes", "ui", "navigation", "connections", "clock",
         "bleprobe", "wifiprobe", "map info", "map areas", "radar", "radar web", "internet", "internet info",
-        "chess", "chess web", "channels",
+        "chess", "chess web", "channels", "pet",
     )
 
     fun expectsJson(command: String) = command in jsonCommands || command.startsWith("chess show ")

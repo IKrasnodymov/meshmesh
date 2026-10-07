@@ -216,6 +216,7 @@ void petBar(int y,Icon ic,uint16_t ink,uint16_t v){
 }
 void petPage(){
  auto& d=g();uint32_t now=millis();const auto& s=creature.s;
+ if(!creature.has()){empty(IcPaw,t("No pet","Нет питомца"),t("Optional","Заводить по желанию"));return;}
  panel(4,24,96,91,ColCard,8);d.fillRoundRect(16,104,72,5,2,ColBack);petArt(12,26,5,now);
  if(creature.mood()==pet::Sleepy)text(80,46-((now/700)%2)*4,"z",ColDim,small);
  uint32_t e=now-creature.effectAt;

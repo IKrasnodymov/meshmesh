@@ -16,9 +16,10 @@ void petSign(int x,int y,int which){
  else{c.fillRect(x+2,y-2,3,7,1);c.fillRect(x,y,7,3,1);}
 }
 void petBarMono(int x,int y,int w,uint16_t v){auto& c=*hardware.canvas;c.drawRect(x,y,w,5,1);int f=(w-2)*v/pet::Full;if(f)c.fillRect(x+1,y+1,f,3,1);}
-String petTitle(){return creature.alive()&&creature.s.stage!=pet::Egg?String(creature.s.name)+" "+t("Lv","Ур.")+String(creature.level()):String(creature.s.name);}
+String petTitle(){if(!creature.has())return t("Pet","Питомец");return creature.alive()&&creature.s.stage!=pet::Egg?String(creature.s.name)+" "+t("Lv","Ур.")+String(creature.level()):String(creature.s.name);}
 void drawPetMono(){
  auto& c=*hardware.canvas;uint32_t now=millis();const auto& s=creature.s;
+ if(!creature.has()){say(0,26,t("No pet","Нет питомца"),bold);textLines(t("Feeds on the radio, grows, needs care. Optional.","Кормится эфиром, растёт, требует ухода. По желанию."),38,2);return;}
  petMono(0,11,3,now);
  if(creature.mood()==pet::Sleepy)say(42,20+((now/700)%2)*3,"z",small);
  if(creature.effect==pet::Hearts&&now-creature.effectAt<2500){int dy=(now-creature.effectAt)/200;c.fillCircle(38,24-dy,1,1);c.fillCircle(42,24-dy,1,1);c.fillTriangle(37,24-dy,43,24-dy,40,27-dy,1);}

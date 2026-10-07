@@ -40,7 +40,7 @@ void Pet::begin(){
   bool ok=readStored(PetFile,PetTemp,stored,sizeof(State))&&stored->version==1&&stored->check==fnv((const uint8_t*)stored,offsetof(State,check))
     &&stored->stage<StageCount&&stored->species<Species&&stored->graveCount<=Graves&&stored->friendNext<FriendSlots&&memchr(stored->name,0,sizeof stored->name);
   if(ok)s=*stored;
-  else{s=State();s.species=entropy()%Species;hatchName();}
+  else s.stage=Empty; // no pet until the owner starts one
   delete stored;lastTick=millis();lastSave=lastTick;events++;
 }
 void Pet::hatchName(){strlcpy(s.name,names[entropy()%(sizeof names/sizeof *names)],sizeof s.name);}
@@ -128,18 +128,18 @@ void Pet::chatter(){
   if(line.length())say(line);else chatAt=millis();
 }
 String Pet::cuddle(){
-  if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg){say(t("*tap tap*","*тук-тук*"));return speech;}
+  if(!has())return t("No pet","Нет питомца");if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg){say(t("*tap tap*","*тук-тук*"));return speech;}
   if(millis()-cuddleAt<20000&&cuddleAt){say(t("Enough for now","Хватит пока"));return speech;}
   cuddleAt=millis();s.cuddles++;gain(0,asleep()?30:100,1);say(asleep()?t("Zzz... purr","Хрр... мурр"):t("Purr","Мурр"),Hearts);save(true);return speech;
 }
 String Pet::feed(){
-  if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg)return t("Eggs do not eat","Яйца не едят");
+  if(!has())return t("No pet","Нет питомца");if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg)return t("Eggs do not eat","Яйца не едят");
   if(!s.snacks){say(t("No snacks: traffic brings them","Нет вкусняшек: их приносит эфир"));return speech;}
   if(s.food>=950){say(t("I'm full","Я сыт"));return speech;}
   s.snacks--;gain(300,20,2);say(t("Yum","Ням"),Food);save(true);return speech;
 }
 String Pet::heal(){
-  if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg)return t("Eggs do not get ill","Яйца не болеют");
+  if(!has())return t("No pet","Нет питомца");if(!alive())return t("It is gone","Питомца нет");if(s.stage==Egg)return t("Eggs do not get ill","Яйца не болеют");
   if(s.health>=800){say(t("I'm healthy","Я здоров"));return speech;}
   if(millis()-healAt<300000&&healAt){say(t("Medicine works slowly","Лекарство действует не сразу"));return speech;}
   if(!s.snacks){say(t("Medicine costs a snack","Лекарство стоит вкусняшку"));return speech;}
@@ -147,14 +147,22 @@ String Pet::heal(){
 }
 String Pet::newEgg(){
   if(alive())return t("Your pet is alive","Питомец жив");
-  Grave graves[Graves];memcpy(graves,s.graves,sizeof graves);uint8_t count=s.graveCount;uint16_t generation=s.generation+1;
-  s=State();memcpy(s.graves,graves,sizeof graves);s.graveCount=count;s.generation=generation;s.species=entropy()%Species;
-  hatchName();foodRest=joyRest=healthRest=crumbRest=0;say(t("A new egg","Новое яйцо"),Sparkle);save(true);return speech;
+  Grave graves[Graves];memcpy(graves,s.graves,sizeof graves);uint8_t count=s.graveCount;uint16_t generation=s.stage==Dead?s.generation+1:s.generation;bool mortal=s.mortal;
+  s=State();memcpy(s.graves,graves,sizeof graves);s.graveCount=count;s.generation=generation;s.mortal=mortal;s.species=entropy()%Species;
+  hatchName();foodRest=joyRest=healthRest=crumbRest=0;say(t("A new egg","Новое яйцо"),Sparkle);save();return speech;
 }
-String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save(true);events++;return on?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");}
+// Letting it go: no grave, the memory of earlier pets and the death setting stay; the next egg is a new generation.
+String Pet::release(){
+  if(!has())return t("No pet","Нет питомца");
+  String name=s.name;Grave graves[Graves];memcpy(graves,s.graves,sizeof graves);uint8_t count=s.graveCount;uint16_t generation=s.generation+1;bool mortal=s.mortal;
+  s=State();s.stage=Empty;memcpy(s.graves,graves,sizeof graves);s.graveCount=count;s.generation=generation;s.mortal=mortal;
+  speech="";effect=NoEffect;save();events++;return name+t(" went free"," ушёл на волю");
+}
+// The owner's choices (start, let go, name, death) are written at once; life changes wait a few seconds.
+String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save();events++;return on?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");}
 bool Pet::rename(const String& name){
   String v=name;v.trim();if(!v.length()||v.length()>15||!meshmesh::validUtf8((const uint8_t*)v.c_str(),v.length()))return false;
-  strlcpy(s.name,v.c_str(),sizeof s.name);save(true);events++;return true;
+  strlcpy(s.name,v.c_str(),sizeof s.name);save();events++;return true;
 }
 void Pet::save(bool soon){
   if(soon){if(!saveDue)saveDue=millis()+5000;return;}
@@ -179,6 +187,7 @@ int Pet::sway(uint32_t now) const{
   unsigned k=(now/period)%4;return k==1?-1:k==3?1:0;
 }
 void Pet::sprite(uint8_t grid[Size][Size],uint32_t now) const{
+  if(!has()){memset(grid,InkNone,Size*Size);return;}
   bool glow=now-glowAt<800&&alive();
   if(s.stage==Egg||!alive()){const char* const* art=s.stage==Egg?SpriteEgg:SpriteGrave;bool egg=s.stage==Egg;
     for(unsigned y=0;y<Size;y++)for(unsigned x=0;x<Size;x++){char c=art[y][x];grid[y][x]=c=='o'?InkOutline:c=='b'?(egg?InkShell:InkBody):c=='l'?(egg?InkBody:InkLight):InkNone;}
@@ -208,26 +217,33 @@ void Pet::sprite(uint8_t grid[Size][Size],uint32_t now) const{
   if(m==Lonely&&(now/700)%3&&skin(f.left,f.eye+2))px(f.left,f.eye+2,InkTear);
 }
 String Pet::json() const{
-  StaticJsonDocument<1024> d;d["name"]=s.name;d["stage"]=s.stage==Egg?"egg":s.stage==Baby?"baby":s.stage==Child?"kid":s.stage==Teen?"teen":s.stage==Adult?"adult":"dead";
+  DynamicJsonDocument d(2048);d["stage"]=s.stage==Egg?"egg":s.stage==Baby?"baby":s.stage==Child?"kid":s.stage==Teen?"teen":s.stage==Adult?"adult":s.stage==Dead?"dead":"none";
+  d["generation"]=s.generation;d["mortal"]=s.mortal;
+  JsonArray g=d.createNestedArray("graves");for(unsigned i=0;i<s.graveCount;i++){JsonObject o=g.createNestedObject();o["name"]=s.graves[i].name;o["age_s"]=s.graves[i].age;o["level"]=s.graves[i].level;o["cause"]=s.graves[i].cause==Hunger?"hunger":"loneliness";o["kind"]=kinds[s.graves[i].species%Species].name;}
+  if(!has()){String out;serializeJson(d,out);return out;}
+  d["name"]=s.name;
   const char* moods[]={"happy","calm","hungry","lonely","asleep","ill","eating","gone"};d["mood"]=moods[mood()];
   d["level"]=level();d["xp"]=s.xp;d["next_level_xp"]=levelXp(level()+1);d["food"]=s.food;d["joy"]=s.joy;d["health"]=s.health;d["snacks"]=s.snacks;
-  d["age_s"]=s.age;d["hatch_left_s"]=hatchLeft();d["species"]=s.species;d["kind"]=kind().name;d["generation"]=s.generation;d["mortal"]=s.mortal;
+  d["age_s"]=s.age;d["hatch_left_s"]=hatchLeft();d["species"]=s.species;d["kind"]=kind().name;
   if(!alive())d["cause"]=s.cause==Hunger?"hunger":"loneliness";
   d["packets"]=s.packets;d["relays"]=s.relays;d["messages"]=s.messages;d["acks"]=s.acks;d["friends"]=s.friends;d["wins"]=s.wins;d["cuddles"]=s.cuddles;d["walks"]=s.walks;
   if(talking(millis()))d["speech"]=speech;
-  JsonArray g=d.createNestedArray("graves");for(unsigned i=0;i<s.graveCount;i++){JsonObject o=g.createNestedObject();o["name"]=s.graves[i].name;o["age_s"]=s.graves[i].age;o["level"]=s.graves[i].level;o["cause"]=s.graves[i].cause==Hunger?"hunger":"loneliness";}
+  // The look for the web page and the app: one digit per pixel (Ink), rows top to bottom.
+  uint8_t grid[Size][Size];uint32_t now=millis();sprite(grid,now);char art[Size*Size+1];for(unsigned i=0;i<Size*Size;i++)art[i]="0123456789"[grid[i/Size][i%Size]];art[Size*Size]=0;
+  d["sprite"]=art;char c[8];snprintf(c,sizeof c,"#%06lx",(unsigned long)bodies[s.species%Species]);d["body"]=c;snprintf(c,sizeof c,"#%06lx",(unsigned long)accents[s.species%Species]);d["accent"]=c;
+  d["needs_care"]=needsCare();
   String out;serializeJson(d,out);return out;
 }
-// USB: "pet" shows it; "pet cuddle|feed|heal|egg", "pet mortal on|off", "pet name NAME"; "pet skip SECONDS"
+// USB: "pet" shows it; "pet adopt" (also "egg") starts one, "pet release" lets it go; "pet cuddle|feed|heal", "pet mortal on|off", "pet name NAME"; "pet skip SECONDS"
 // runs its clock forward (up to 14 days) to check growing up and dying without waiting.
 String Pet::command(const String& line){
   String arg=line.length()>4?line.substring(4):String();arg.trim();
   auto reply=[&](const String& r){return "OK "+r+" "+json();};
   if(!arg.length())return json();
-  if(arg=="cuddle")return reply(cuddle());if(arg=="feed")return reply(feed());if(arg=="heal")return reply(heal());if(arg=="egg")return reply(newEgg());
+  if(arg=="cuddle")return reply(cuddle());if(arg=="feed")return reply(feed());if(arg=="heal")return reply(heal());if(arg=="egg"||arg=="adopt")return reply(newEgg());if(arg=="release")return reply(release());
   if(arg=="mortal on"||arg=="mortal off")return reply(setMortal(arg=="mortal on"));
   if(arg.startsWith("name "))return rename(arg.substring(5))?reply("renamed"):"ERR name: 1-15 UTF-8 bytes";
   if(arg.startsWith("skip ")){long v=arg.substring(5).toInt();if(v<=0||v>14*86400)return "ERR skip 1-1209600 seconds";uint32_t left=v;while(left){uint32_t step=min<uint32_t>(left,600);elapse(step);left-=step;}save(true);return reply("skipped "+String(v)+" s");}
-  return "ERR pet [cuddle|feed|heal|egg|mortal on|off|name NAME|skip SECONDS]";
+  return "ERR pet [adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS]";
 }
 }

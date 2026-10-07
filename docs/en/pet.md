@@ -1,6 +1,10 @@
 # Mesh pet
 
-A Tamagotchi-like pixel creature that lives on the device and feeds on the radio. It is on every board:
+A Tamagotchi-like pixel creature that lives on the device and feeds on the radio. It is optional: new
+firmware has no pet until the owner presses "Start a pet" (on the screen, the web page or in the app, USB
+`pet adopt`), and the owner can let it go ("Let it go...", `pet release`): it leaves without a grave, the
+memory of earlier pets stays. A pet started before is kept. It lives in the device's firmware; the web
+page and the app show it and control it. It is on every board:
 the "Pet" tile on the M9 and T-Deck, its own screen after "Chess" on the one-button boards and the GAT562.
 The Heltec V4/V3, Wireless Tracker, T-Beam and other boards with a 128×64 OLED draw it in outline, like
 the LCD of a keychain pet; the T114 draws it in colour at its native 240×135. The pet also lives in the
@@ -79,13 +83,20 @@ In the repeater and room modes there is no owner nearby, so a hungry pet eats a 
 **M9 and T-Deck.** The "Pet" tile on the home screen (yellow when it needs care); in the repeater and
 room modes the P key opens it. On the left the creature on its card with a speech bubble, on the right
 its name, stage, level, experience and the Food, Joy and Health bars. Keys: OK pets it (a tap on the
-card on the T-Deck), F feeds it, H heals it, N renames it, D switches death on or off. The locked
+card on the T-Deck; without a pet it starts one), F feeds it, H heals it, N renames it, D switches death on
+or off, R twice lets it go. The locked
 screen shows a small pet under the clock when no game or unread message takes the place.
 
 **128×64 OLED (Heltec and other one-button boards).** The screen after "Chess": the creature on the
 left, its mood and three bars with signs (bowl, heart, cross) on the right. Holding the button opens
 the menu: "Pet", "Feed", "Heal", "Death: on/off"; at a grave, "New egg". On the GAT562 the joystick
 centre does the same.
+
+**Web page and Android app.** A "Pet" tile on the home page and a section with the same creature in the
+colours of its species (the page draws the picture the firmware sends: `/api/pet`, in the app the `pet`
+command over USB or BLE), its words, bars, experience, snacks, friends and age; buttons "Pet", "Feed",
+"Heal", "Name", "Death on/off", "Let it go..." (confirmed by a second press), "New egg" at a grave and
+"Start a pet" without one; the memory below. The page refreshes it every 1.2 s (2 s in the app).
 
 **T114.** The same screen and menu in colour: a card with the creature, a speech bubble, bars with icons.
 
@@ -97,7 +108,8 @@ someone?", and moves its mouth while talking. Moods: happy, calm, hungry, lonely
 ```
 pet                       the state as JSON (food, joy, health 0–1000, level, experience, counters, graves)
 pet cuddle|feed|heal      pet it, feed it, heal it
-pet egg                   a new egg (only after death)
+pet adopt                 start a pet (or a new egg after death; also pet egg)
+pet release               let the pet go (no grave)
 pet mortal on|off         death on or off
 pet name NAME             the name, 1–15 UTF-8 bytes
 pet skip SECONDS          run its clock forward (up to 14 days) to check growing up and death
@@ -105,11 +117,10 @@ pet skip SECONDS          run its clock forward (up to 14 days) to check growing
 
 ## Not done yet
 
-- The web page and the Android app do not show the pet yet (only USB `pet`).
 - Meetings and exchange between pets of different devices (a BLE "boop", visits over LoRa, a signed
   album of meetings) and a repeater answering `!pet` from the mesh are the next step.
 - The boards have no NFC; BLE and LoRa are meant to take the place of tapping a tag.
-- Boards without a screen (XIAO, a T-Beam without OLED) keep a pet, but only USB shows it.
+- Boards without a screen (XIAO, a T-Beam without OLED) show the pet only on the web page, in the app and over USB.
 
 ## Checks
 

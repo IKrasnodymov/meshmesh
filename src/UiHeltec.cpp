@@ -137,7 +137,7 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActClose};
+enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,ActClose};
 // Channels are added on the web page or in the app; here: an invitation in a message and a hashtag heard on air.
 const HeardChannel* heardTag(){for(unsigned i=0;i<meshRadio.heardCount;i++)if(meshRadio.heard[i].name[0])return &meshRadio.heard[i];return nullptr;}
 String channelTag(uint64_t id){const channels::Channel* c=meshRadio.channel(id);return channels::isPublic(c?c->secret:channels::publicSecret)?String(" #"):" "+String(c->name[0]=='#'?"":"#")+c->name;}
@@ -180,8 +180,9 @@ unsigned actions(Act* out){
   else if(radar.tracking){out[n++]=ActStopHoming;out[n++]=ActResetPeak;}
   else{out[n++]=ActCsiBeacon;if(radar.csi==Radar::CsiOff){out[n++]=ActCsiSensor;if(radar.count){out[n++]=ActHoming;out[n++]=ActNextSignal;}}}break; // CSI first: the beacon is the usual Heltec role
  case PetPage:
+  if(!creature.has()){out[n++]=ActPetAdopt;break;} // a pet is optional
   if(!creature.alive())out[n++]=ActPetEgg;else{out[n++]=ActPetCuddle;if(creature.s.stage!=pet::Egg){out[n++]=ActPetFeed;if(creature.s.health<800)out[n++]=ActPetHeal;}}
-  out[n++]=ActPetDeath;break;
+  out[n++]=ActPetDeath;out[n++]=ActPetRelease;break;
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
  case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
  case Settings:
@@ -192,7 +193,7 @@ unsigned actions(Act* out){
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
-bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath;}
+bool keepsMenu(Act a){return a==ActFormat||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
 String actName(Act a){
  const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
@@ -219,6 +220,7 @@ String actName(Act a){
  case ActStopHoming:return t("Stop homing","Остановить пеленг");case ActResetPeak:return t("Reset peak","Сбросить пик");
  case ActPetCuddle:return creature.s.stage==pet::Egg?t("Knock","Постучать"):t("Pet","Погладить");
  case ActPetFeed:return t("Feed a snack: ","Кормить, вкусн.: ")+String(creature.s.snacks);case ActPetHeal:return t("Heal","Лечить");case ActPetEgg:return t("New egg","Новое яйцо");
+ case ActPetAdopt:return t("Start a pet","Завести питомца");case ActPetRelease:return t("Let it go...","Отпустить...");
  case ActPetDeath:return creature.s.mortal?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  }return "";
@@ -271,6 +273,14 @@ void run(Act a){
  case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t("Calibrating 10 s","Калибровка 10 с"));}else notice(t("No beacon heard","Маяк не слышен"));break;
  case ActPetCuddle:creature.cuddle();break;case ActPetFeed:creature.feed();break;case ActPetHeal:creature.heal();break;case ActPetEgg:creature.newEgg();break; // it answers in its bubble
  case ActPetDeath:notice(creature.setMortal(!creature.s.mortal));break;
+ case ActPetAdopt:creature.newEgg();menuOpen=false;break;
+ case ActPetRelease:{static uint32_t armed=0;if(!armed||millis()-armed>5000){armed=millis();
+#if defined(MM_JOYSTICK)
+  notice(t("OK again: let it go","Ещё раз OK: отпустить"));
+#else
+  notice(t("Hold again: let it go","Удерж. ещё: отпустить"));
+#endif
+  break;}armed=0;notice(creature.release());menuOpen=false;break;}
  case ActClose:break;
  case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?"Encryption test OK":"Encryption test FAILED";notice(valid?t("Encryption: OK","Шифрование: OK"):t("Encryption: ERROR","Шифрование: ошибка"));break;}
  }
