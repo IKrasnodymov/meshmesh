@@ -79,8 +79,10 @@ void start(){
 }
 }
 String bleName(){
-  String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
-  return "MeshCore-"+name;
+  // The scan response holds 29 bytes: the name cut to 15, then 4 hex digits of the node key, so boards
+  // with the same name differ in the list of devices.
+  String name=config.name;while(name.length()>15){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);}
+  return "MeshCore-"+name+" "+meshRadio.idText(meshRadio.nodeId).substring(0,4);
 }
 bool webRadarActive(){return webRadar;}
 String webRadarCommand(const String& line){
@@ -101,6 +103,7 @@ void portalBegin(){pinCode=config.blePin;}
 void portalToggle(){meshRadio.event="No Wi-Fi on this board";meshRadio.dirty=true;}
 // The SoftDevice starts once (the radar may have started it); "off" means no advertising and no connection.
 bool bleStack(){if(!started)start();return started;}
+void bleRename(){if(!started)return;bool on=bluetoothOn;if(on)Bluefruit.Advertising.stop();Bluefruit.Advertising.clearData();Bluefruit.ScanResponse.clearData();advertise();if(on)Bluefruit.Advertising.start(0);}
 void bleToggle(){
   bleStack();
   if(bluetoothOn){

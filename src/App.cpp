@@ -156,7 +156,7 @@ String applySettings(JsonObjectConst v) {
   if(!next.valid())return "ERR invalid settings; M9 868 MHz range is 863..870";
   Config old=config;config=next;
   if(!meshRadio.applyConfig()) {config=old;meshRadio.applyConfig();return "ERR radio rejected settings; restored previous";}
-  config.save();meshServer.configChanged();hardware.brightness(config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
+  config.save();meshServer.configChanged();if(strcmp(old.name,config.name))bleRename();hardware.brightness(config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
   meshRadio.event="Settings saved";meshRadio.dirty=true;return "OK settings saved";
 }
 namespace {uint32_t restartAt=0;}

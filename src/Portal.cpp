@@ -87,8 +87,10 @@ void advertise(){
 }
 }
 String bleName(){
-  String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
-  return "MeshCore-"+name;
+  // The scan response holds 29 bytes: the name cut to 15, then 4 hex digits of the node key, so boards
+  // with the same name differ in the list of devices.
+  String name=config.name;while(name.length()>15){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);}
+  return "MeshCore-"+name+" "+meshRadio.idText(meshRadio.nodeId).substring(0,4);
 }
 bool webRadarActive() {return webRadar;}
 // The page's radar over USB or BLE (the Android app): the same hold, JSON and actions as /api/radar.
@@ -153,6 +155,7 @@ void portalToggle() {
   }
   meshRadio.dirty=true;
 }
+void bleRename(){if(!bluetoothOn)return;auto* a=NimBLEDevice::getAdvertising();a->stop();advertise();a->start();}
 void bleToggle() {
   if(bleProbeActive()) {meshRadio.event="BLE probe busy";meshRadio.dirty=true;return;}
   radar.releaseBle(); // stops the radar scan; it scans on the stack again next tick

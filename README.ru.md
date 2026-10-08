@@ -22,7 +22,7 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 ## 0.9.0 — приложения MeshCore
 
 К плате подключаются штатные приложения MeshCore (MeshCore, MeshCore Open и другие клиенты протокола
-companion) по Bluetooth и USB, без переключений: плата рекламируется как штатная, `MeshCore-<имя>` с
+companion) по Bluetooth и USB, без переключений: плата рекламируется как штатная, `MeshCore-<имя> XXXX` (4 знака ключа узла) с
 сервисом Nordic UART, а приложение MeshMesh 0.9.0 находит её по своей метке в рекламе (старые версии
 приложения плату не найдут — обновите). Приложение MeshCore видит
 чаты, контакты и каналы платы, сообщения из него попадают в историю и на экран. Шахматы, питомец и

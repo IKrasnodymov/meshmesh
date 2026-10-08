@@ -86,7 +86,7 @@ the phone is already connected to.
 
 ### Bluetooth LE
 
-Finding the board: since firmware 0.9.0 it is named `MeshCore-<name>` and advertises the stock MeshCore
+Finding the board: since firmware 0.9.0 it is named `MeshCore-<name> XXXX` (XXXX: 4 hex digits of the node key) and advertises the stock MeshCore
 service; the app finds it by the `MM` mark in the manufacturer data (company 0xFFFF), and boards with
 firmware before 0.9.0 by the `7a9e0001-…` service ([companion.md](companion.md)).
 Service `7a9e0001-…`: a command is written to RX with acknowledgement (up to 255 bytes), the response arrives

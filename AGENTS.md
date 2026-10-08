@@ -78,7 +78,7 @@ MeshMesh начиная с 0.3.0 использует MeshCore (`docs/meshcore-m
 `lib/MeshCore`). Архивная 0.2.0 использует MM/1 (`docs/protocol.md`,
 `lib/MeshProtocol/Mm1Packet.h`). Meshtastic не поддерживается.
 Совместимость 0.3.0 относится к радио. С 0.9.0 плата сама реализует протокол MeshCore companion
-(`src/Companion.inc`, `docs/companion.md`): BLE Nordic UART и имя `MeshCore-<имя>` всегда (приложение MeshMesh ищет метку `MM`
+(`src/Companion.inc`, `docs/companion.md`): BLE Nordic UART и имя `MeshCore-<имя> XXXX` (4 знака ключа) всегда (приложение MeshMesh ищет метку `MM`
 компании 0xFFFF в рекламе, свой сервис по-прежнему отвечает), USB-кадры `<`/`>`;
 без входа на репитеры, трассировки и TCP.
 Совпадение частоты и остальных радиопараметров не обеспечивает совместимость

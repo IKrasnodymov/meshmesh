@@ -8,8 +8,8 @@ the radar stay in the MeshMesh app, on the web page and on the screen.
 ## Connecting
 
 There is nothing to switch. The board's Bluetooth advertises as stock firmware does: the Nordic UART
-service (`6E400001-B5A3-F393-E0A9-E50E24DCCA9E`) and the name `MeshCore-<node name>` (the node name is cut
-to 20 bytes). MeshCore apps find the board by this name. The MeshMesh app finds it by the `MM` mark in the
+service (`6E400001-B5A3-F393-E0A9-E50E24DCCA9E`) and the name `MeshCore-<node name> XXXX` (the name is cut to 15 bytes, XXXX are the first 4 hex digits of the
+node key: boards with the same name differ in the list of devices; on the mesh the node keeps its plain name). MeshCore apps find the board by this name. The MeshMesh app finds it by the `MM` mark in the
 manufacturer data (company ID 0xFFFF, "no company") and connects to its own service `7a9e0001-…`, which
 answers as before. The MeshMesh app before 0.9.0 looks for the `7a9e0001-…` service in the advert and does
 not find a board with the new firmware: it has to be updated. One phone connects at a time.
