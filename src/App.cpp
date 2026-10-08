@@ -3,6 +3,7 @@
 #include <esp_ota_ops.h>
 #include <esp_system.h>
 #include "App.h"
+#include "Companion.h"
 #include "MeshRadio.h"
 #include "Hardware.h"
 #include "Maps.h"
@@ -58,7 +59,7 @@ String statusJson() {
   {String l;for(int i=0;i<LangCount;i++)if(langAvailable(i))l+=String(l.length()?" ":"")+langCodes[i];d["langs"]=l;} // the screen languages of this image
   {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";d["modules"]=m;} // optional modules in this image (Modules.h)
 #endif
-  d["internet"]=internet.online();d["ble"]=bleActive();String s;serializeJson(d,s);return s;
+  d["internet"]=internet.online();d["ble"]=bleActive();d["ble_app"]=config.bleApp==Config::BleMeshCore?"meshcore":"meshmesh";d["companion"]=companion::connected();String s;serializeJson(d,s);return s;
 }
 String messagesJson() {
   // Do not reserve a 32 KB JSON pool in addition to the serialized history on small nRF52 heaps.
@@ -211,6 +212,8 @@ String executeCommand(const String& input) {
   if(line=="selftest")return meshRadio.selfTest()?"OK crypto/UTF-8/tamper selftest":"ERR selftest";
   if(line=="wifi") {portalToggle();return portalActive()?"OK Wi-Fi portal on; credentials on device":"OK Wi-Fi off";}
   if(line=="ble") {bleToggle();return bleActive()?"OK BLE on":"OK BLE off";}
+  // Who Bluetooth is advertised for: the MeshMesh app or the stock MeshCore apps (companion protocol).
+  if(line=="ble app meshcore"||line=="ble app meshmesh"){bleSetApp(line.endsWith("meshcore")?Config::BleMeshCore:Config::BleMeshMesh);return "OK BLE for "+String(config.bleApp==Config::BleMeshCore?"MeshCore apps":"the MeshMesh app")+", name "+bleName();}
   if(line=="restart"){restartAt=millis()+1000;return "OK restarting";}
   if(line=="poweroff")return powerOff(); // e.g. after fsformat: the settings are read at boot
 #if !defined(MM_NRF52)
@@ -245,5 +248,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, ble app meshmesh|meshcore, recalibrate, fsformat, restart, poweroff";
 }

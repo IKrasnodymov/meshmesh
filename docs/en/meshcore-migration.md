@@ -4,9 +4,9 @@
 
 The radio layer of the M9 and Heltec V4 has been moved from MM/1 to MeshCore. Our own screen,
 web interface, maps, GPS, compass, Wi-Fi and diagnostic BLE are kept.
-Compatibility applies to the radio. Our BLE service does not yet implement the companion API
-of the official MeshCore app: to control the M9 itself, use our
-web interface. A third-party MeshCore companion can see the M9 and message it over the radio.
+Compatibility applies to the radio. A third-party MeshCore companion can see the M9 and message it over the radio.
+Since 0.9.0 the board speaks the companion protocol itself: the stock MeshCore apps connect to it
+over Bluetooth or USB ([companion.md](companion.md)).
 
 ## Settings and discovery
 

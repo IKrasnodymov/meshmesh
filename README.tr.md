@@ -33,6 +33,7 @@ MeshCore düğümleriyle haberleşir.
   web sayfasında veya USB üzerinden seçilir: cihaz, standartla uyumlu bir MeshCore tekrarlayıcısı ya da oda sunucusu olur;
   MeshCore uygulamasından yönetici girişi ve uzak CLI sunar; anahtar, kişiler ve geçmiş korunur.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore uygulamaları** — resmî MeshCore uygulamaları Bluetooth veya USB ile bağlanır ve kartın sohbetlerini, kişilerini ve kanallarını kullanır (satranç MeshMesh uygulamasında kalır). [docs/en/companion.md](docs/en/companion.md)
 - **GPS ve pusula**, konum paylaşımı, kilit ekranı, fonetik Kiril klavye girişi.
 - Cihazın kendi Wi-Fi erişim noktası veya bağlandığı ev Wi-Fi ağı (M9, T-Deck) üzerinden **web arayüzü** ve mesaj bildirimli bir **Android uygulaması**
   (Wi-Fi, Bluetooth LE veya USB).

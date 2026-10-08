@@ -33,6 +33,7 @@ nodi MeshCore.
   sulla pagina web, via USB: il dispositivo diventa un ripetitore o un server stanza MeshCore compatibile con quelli originali,
   con accesso admin e CLI remota dall'app MeshCore; chiave, contatti e cronologia restano.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **App MeshCore** — le app MeshCore ufficiali si collegano via Bluetooth o USB e usano chat, contatti e canali della scheda (gli scacchi restano nell'app MeshMesh). [docs/en/companion.md](docs/en/companion.md)
 - **GPS e bussola**, condivisione della posizione, schermata di blocco, input cirillico fonetico da tastiera.
 - **Interfaccia web** tramite il punto di accesso Wi-Fi del dispositivo stesso o la rete Wi-Fi di casa a cui si collega (M9, T-Deck), e un'**app Android**
   (Wi-Fi, Bluetooth LE o USB) con notifiche dei messaggi.

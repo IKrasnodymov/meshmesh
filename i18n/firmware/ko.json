@@ -2189,10 +2189,20 @@
   "ru": "Пароль ",
   "text": "비밀번호 "
  },
- "94fa3c79": {
-  "en": "Secure pairing, MeshMesh service",
-  "ru": "Защищённое сопряжение, сервис MeshMesh",
-  "text": "보안 페어링, MeshMesh 서비스"
+ "2ad33e6e": {
+  "en": "For MeshCore apps: ",
+  "ru": "Для приложений MeshCore: ",
+  "text": "MeshCore 앱용: "
+ },
+ "5aaa7a5b": {
+  "en": "Secure pairing, MeshMesh app",
+  "ru": "Защищённое сопряжение, приложение MeshMesh",
+  "text": "보안 페어링, MeshMesh 앱"
+ },
+ "e01d4103": {
+  "en": "Off · for MeshCore apps",
+  "ru": "Выключен · для приложений MeshCore",
+  "text": "꺼짐 · MeshCore 앱용"
  },
  "3efed7d9": {
   "en": "Off",
@@ -2204,15 +2214,20 @@
   "ru": "Ключ MeshCore",
   "text": "MeshCore 키"
  },
- "01f31114": {
-  "en": "Networks",
-  "ru": "Сети",
-  "text": "네트워크"
- },
  "e6b593c8": {
   "en": "Toggle",
   "ru": "Переключить",
   "text": "전환"
+ },
+ "e0830853": {
+  "en": "App",
+  "ru": "Приложение",
+  "text": "앱"
+ },
+ "01f31114": {
+  "en": "Networks",
+  "ru": "Сети",
+  "text": "네트워크"
  },
  "80266824": {
   "en": "Wrong password or refused: ",
@@ -2782,6 +2797,16 @@
   "en": "This board is now the sensor",
   "ru": "Эта плата — приёмник",
   "text": "이제 이 보드가 수신기"
+ },
+ "c3b6ee86": {
+  "en": "Bluetooth for MeshCore apps",
+  "ru": "Bluetooth для приложений MeshCore",
+  "text": "Bluetooth: MeshCore 앱용"
+ },
+ "98726351": {
+  "en": "Bluetooth for the MeshMesh app",
+  "ru": "Bluetooth для приложения MeshMesh",
+  "text": "Bluetooth: MeshMesh 앱용"
  },
  "a4a4ec2c": {
   "en": "Peak reset",
@@ -4762,6 +4787,11 @@
   "ru": "Включить BLE",
   "text": "BLE 켜기"
  },
+ "03dcef12": {
+  "en": "App: ",
+  "ru": "Прил.: ",
+  "text": "앱: "
+ },
  "929d4e52": {
   "en": "Language: ",
   "ru": "Язык: ",
@@ -5431,6 +5461,11 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "이전"
+ },
+ "bbd8460e": {
+  "en": "For MeshCore apps",
+  "ru": "Для приложений MeshCore",
+  "text": "MeshCore 앱용"
  },
  "ccdb9efa": {
   "en": "No pet",

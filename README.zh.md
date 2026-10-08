@@ -31,6 +31,7 @@
 - **中继器和房间服务器模式**——在启动时（M9 屏幕、Heltec 按键）或在设置、网页、USB 中选择：
   设备会成为与原版兼容的 MeshCore 中继器或房间服务器，可通过 MeshCore 应用进行管理员登录和远程 CLI；
   密钥、联系人和历史记录都会保留。[docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore 应用**——官方 MeshCore 应用可通过蓝牙或 USB 连接，使用开发板的聊天、联系人和频道（国际象棋仍在 MeshMesh 应用中）。[docs/en/companion.md](docs/en/companion.md)
 - **GPS 和指南针**、位置共享、锁屏、西里尔字母音译键盘输入。
 - 通过设备自带的 Wi-Fi 热点或其接入的家庭 Wi-Fi（M9、T-Deck）访问的**网页界面**，以及带消息通知的 **Android 应用**
   （Wi-Fi、Bluetooth LE 或 USB）。

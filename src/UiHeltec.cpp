@@ -147,7 +147,7 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
+enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActBleApp,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPowerOff,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
   ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActClose};
 constexpr unsigned MenuMax=10;
@@ -207,7 +207,7 @@ unsigned actions(Act* out){
  case DicePage:n=diceActions(out);break;
 #endif
  case Gps:out[n++]=ActGps;out[n++]=ActPosition;break;
- case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;break;
+ case Wifi:out[n++]=ActWifi;break;case Ble:out[n++]=ActBle;out[n++]=ActBleApp;break;
  case Settings:
 #if defined(MM_JOYSTICK)
   out[n++]=ActSound; // the GAT562 buzzer
@@ -241,6 +241,7 @@ String actName(Act a){
  case ActOlder:return t("Older message","Предыдущее");case ActNewer:return t("Newer message","Следующее");case ActNextNode:return t("Next node","Следующий узел");case ActNodeOk:return t("Send: OK","Написать: OK");case ActResetPath:return t("Reset path","Сбросить путь");
  case ActGps:return config.gps?t("Turn GPS off","Выключить GPS"):t("Turn GPS on","Включить GPS");case ActPosition:return t("Share position","Передать позицию");
  case ActWifi:return portalActive()?t("Turn Wi-Fi off","Выключить Wi-Fi"):t("Turn Wi-Fi on","Включить Wi-Fi");case ActBle:return bleActive()?t("Turn BLE off","Выключить BLE"):t("Turn BLE on","Включить BLE");
+ case ActBleApp:return t("App: ","Прил.: ")+String(config.bleApp==Config::BleMeshCore?"MeshCore":"MeshMesh");
  case ActLanguage:return t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
  case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
@@ -297,7 +298,7 @@ void run(Act a){
  case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t("Path reset","Путь сброшен"):t("Path reset failed","Путь не сброшен"));break;}
  case ActGps:notice(applyOne("gps",!config.gps).startsWith("OK")?"GPS: "+String(config.gps?t("on","вкл"):t("off","выкл")):t("Radio busy, retry","Радио занято, повторите"));break;
  case ActPosition:notice(meshRadio.sendPosition()?t("Position shared","Позиция передана"):t("Needs a GPS fix","Нужна позиция GPS"));break;
- case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
+ case ActWifi:portalToggle();break;case ActBle:bleToggle();break;case ActBleApp:bleSetApp(config.bleApp==Config::BleMeshCore?Config::BleMeshMesh:Config::BleMeshCore);break;
  case ActSound:applyOne("sound",!config.sound);hardware.beep();break;
  case ActLanguage:applyOne("lang",langCodes[langStep(config.lang,1)]);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
@@ -498,7 +499,7 @@ void draw(){
   if(fix)say(0,42,String(hardware.gps.location.lat(),5)+", "+String(hardware.gps.location.lng(),5),small);
   say(0,51,t("Clock ","Часы ")+clockText(time(nullptr))+" "+(hardware.clockSource=="unset"?t("not set","не задано"):hardware.clockSource),small);break;}
  case Wifi:title="Wi-Fi";if(portalActive()){say(0,23,"MM-"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,"192.168.4.1",small);}else{say(0,27,t("Access point off","Точка доступа выкл."));say(0,41,t("Web chat and settings","Веб-чат и настройки"),small);}break;
- case Ble:title="Bluetooth";if(bleActive()){say(0,23,"MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,37,"PIN "+String(blePin()),bold);}else{say(0,27,t("Bluetooth off","Bluetooth выкл."));say(0,41,t("Secure pairing","Защищённое сопряжение"),small);}break;
+ case Ble:title="Bluetooth";if(bleActive()){say(0,23,bleName(),bold);say(0,37,"PIN "+String(blePin()),bold);}else{say(0,27,t("Bluetooth off","Bluetooth выкл."));say(0,41,t("Secure pairing","Защищённое сопряжение"),small);}break;
  case Settings:title=t("Settings","Настройки");say(0,20,t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t("Battery: ","Батарея: ")+(config.batteryVolts?t("volts","вольты"):t("percent","проценты")),small);
   say(0,36,t("Screen off: ","Гасить экран: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда")),small);say(0,44,t("Contrast: ","Контраст: ")+String(config.brightness),small);
   say(0,52,String(config.frequency,3)+" SF"+String(config.sf)+" CR4/"+String(config.cr)+" "+String(config.power)+"dBm",small);break;

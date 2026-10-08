@@ -33,6 +33,7 @@ void Config::load() {
   // Bluetooth is on unless switched off, as in other mesh firmware: the board stays reachable from a phone.
   // A repeater or room starts with it off (light sleep needs it off) until the user turns it on.
   bleOn=p.isKey("ble_on")?p.getBool("ble_on",false):role==RoleNormal;
+  bleApp=p.getUChar("ble_app",BleMeshMesh)==BleMeshCore?BleMeshCore:BleMeshMesh;
   if(blePin<100000||blePin>999999){uint8_t e[3];bootloader_random_enable();esp_fill_random(e,3);bootloader_random_disable();blePin=100000+(uint32_t(e[0])<<16|uint32_t(e[1])<<8|e[2])%900000;p.putUInt("ble_pin",blePin);}
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}
@@ -47,6 +48,7 @@ void Config::save() {
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }
 bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role
+void Config::saveBleApp(uint8_t app){app=app==BleMeshCore?BleMeshCore:BleMeshMesh;if(bleApp==app)return;bleApp=app;Preferences p;if(p.begin("meshmesh",false)){p.putUChar("ble_app",app);p.end();}}
 void Config::saveBle(bool on){if(bleOn==on)return;bleOn=on;Preferences p;if(p.begin("meshmesh",false)){p.putBool("ble_on",on);p.end();}}
 String Config::keyHex() const {String s; s.reserve(64);char b[3];for(auto v:key) {snprintf(b,3,"%02x",v);s+=b;}return s;}
 bool Config::setKey(const String& text) {

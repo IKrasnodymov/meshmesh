@@ -307,8 +307,8 @@ void wifi(){
 }
 void ble(){
  bool on=bleActive();panel(4,25,232,40,ColCard,8);icon(IcBle,20,45,8,on?ColInfo:ColFaint,ColCard);
- text(36,42,fit(on?"MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6):t("Bluetooth off","Bluetooth выкл."),196,bold),ColInk,bold);
- text(36,58,fit(t("Secure pairing","Защищённое сопряжение"),196,tiny),ColDim,tiny);
+ text(36,42,fit(on?bleName():t("Bluetooth off","Bluetooth выкл."),196,bold),ColInk,bold);
+ text(36,58,fit(config.bleApp==Config::BleMeshCore?t("For MeshCore apps","Для приложений MeshCore"):t("Secure pairing","Защищённое сопряжение"),196,tiny),ColDim,tiny);
  if(on){text(8,100,"PIN",ColDim,small);text(48,104,String(blePin()),ColAccent,big);}
 }
 void settings(){

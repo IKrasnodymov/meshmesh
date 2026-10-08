@@ -20,6 +20,9 @@ struct Config {
   uint8_t role=RoleNormal;
   uint32_t blePin=0; // pairing PIN, made once: a restart (e.g. a USB-UART reset) keeps it
   bool bleOn=false;  // Bluetooth on after boot: the last choice, else on in the normal role
+  // The phone app Bluetooth is advertised for: the MeshMesh app (its service and "MeshMesh" name) or the
+  // stock MeshCore apps (Nordic UART service, "MeshCore-" name, include/Companion.h). Both services answer.
+  enum BleApp:uint8_t {BleMeshMesh=0,BleMeshCore=1};uint8_t bleApp=BleMeshMesh;
   bool lockDetails=true; // the locked screen names chess opponents, moves and message senders
   void load();
   void save();
@@ -28,5 +31,6 @@ struct Config {
   bool setKey(const String& text);
   bool saveRole(uint8_t next); // stored for the next boot; role stays the running one
   void saveBle(bool on);
+  void saveBleApp(uint8_t app);
 };
 extern Config config;

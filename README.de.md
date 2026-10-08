@@ -33,6 +33,7 @@ MeshCore-Knoten.
   auf der Webseite, über USB: Das Gerät wird zu einem mit der Original-Firmware kompatiblen MeshCore-Repeater oder Raumserver
   mit Admin-Anmeldung und Fern-CLI aus der MeshCore-App; Schlüssel, Kontakte und Verlauf bleiben erhalten.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore-Apps** — die originalen MeshCore-Apps verbinden sich über Bluetooth oder USB und nutzen Chats, Kontakte und Kanäle der Platine (Schach bleibt in der MeshMesh-App). [docs/en/companion.md](docs/en/companion.md)
 - **GPS und Kompass**, Teilen der Position, Sperrbildschirm, phonetische kyrillische Tastatureingabe.
 - **Weboberfläche** über den eigenen Wi-Fi-Access-Point des Geräts oder das Heim-WLAN, mit dem es verbunden ist (M9, T-Deck), und eine **Android-App**
   (Wi-Fi, Bluetooth LE oder USB) mit Benachrichtigungen bei Nachrichten.

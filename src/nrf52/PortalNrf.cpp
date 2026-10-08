@@ -5,6 +5,7 @@
 #include "MeshRadio.h"
 #include "Radar.h"
 #include "Power.h"
+#include "Companion.h"
 #include <bluefruit.h>
 #include <esp_system.h>
 
@@ -14,6 +15,13 @@ namespace {
 const uint8_t serviceUuid[]=MM_UUID(0x01),rxUuid[]=MM_UUID(0x02),txUuid[]=MM_UUID(0x03);
 BLEService service(serviceUuid);
 BLECharacteristic rx(rxUuid),tx(txUuid);
+// MeshCore companion apps: the Nordic UART service of stock MeshCore (6E40000x-B5A3-F393-E0A9-E50E24DCCA9E).
+#define NUS_UUID(n) {0x9e,0xca,0xdc,0x24,0x0e,0xe5,0xa9,0xe0,0x93,0xf3,0xa3,0xb5,n,0x00,0x40,0x6e}
+const uint8_t nusUuid[]=NUS_UUID(0x01),nusRxUuid[]=NUS_UUID(0x02),nusTxUuid[]=NUS_UUID(0x03);
+BLEService nus(nusUuid);
+BLECharacteristic appRx(nusRxUuid),appTx(nusTxUuid);
+struct AppFrame {uint8_t length;uint8_t data[companion::MaxFrame];};
+QueueHandle_t appFrames=nullptr;
 bool started=false,bluetoothOn=false;
 uint32_t pinCode=123456;
 struct BleCommand {char text[256];};
@@ -37,24 +45,47 @@ String radarAction(JsonObjectConst v){
 void onWrite(uint16_t,BLECharacteristic*,uint8_t* data,uint16_t size){
   if(!bluetoothOn||!commands||size>255)return;BleCommand c{};memcpy(c.text,data,size);xQueueSend(commands,&c,0);
 }
+void onAppWrite(uint16_t,BLECharacteristic*,uint8_t* data,uint16_t size){
+  if(!bluetoothOn||!appFrames||!size||size>companion::MaxFrame)return;AppFrame f{};f.length=size;memcpy(f.data,data,size);xQueueSend(appFrames,&f,0);
+}
 void onConnect(uint16_t handle){client=handle;}
-void onDisconnect(uint16_t handle,uint8_t){if(handle==client){client=BLE_CONN_HANDLE_INVALID;bleResponse="";bleOffset=0;}}
+void onDisconnect(uint16_t handle,uint8_t){if(handle==client){client=BLE_CONN_HANDLE_INVALID;bleResponse="";bleOffset=0;companion::disconnected(companion::LinkBle);}}
+// The advert names the app's service, as stock firmware does (MeshCore apps look for a "MeshCore-" name).
+void advertiseFor(){
+  String name=bleName();Bluefruit.setName(name.c_str());
+  Bluefruit.Advertising.clearData();Bluefruit.ScanResponse.clearData();
+  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);Bluefruit.Advertising.addTxPower();
+  if(config.bleApp==Config::BleMeshCore)Bluefruit.Advertising.addService(nus);else Bluefruit.Advertising.addService(service);
+  Bluefruit.ScanResponse.addName();
+}
 void start(){
   Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
   Bluefruit.begin(1,1); // one phone; the central role scans for the radar
   Bluefruit.autoConnLed(false);Bluefruit.setTxPower(4);
-  String name="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);Bluefruit.setName(name.c_str());
+  Bluefruit.setName(bleName().c_str());
   char pin[8];snprintf(pin,sizeof(pin),"%06lu",(unsigned long)pinCode);
   Bluefruit.Security.setMITM(true);Bluefruit.Security.setIOCaps(true,false,false);Bluefruit.Security.setPIN(pin);
   Bluefruit.Periph.setConnectCallback(onConnect);Bluefruit.Periph.setDisconnectCallback(onDisconnect);
   service.begin();
   rx.setProperties(CHR_PROPS_WRITE);rx.setPermission(SECMODE_NO_ACCESS,SECMODE_ENC_WITH_MITM);rx.setMaxLen(255);rx.setWriteCallback(onWrite);rx.begin();
   tx.setProperties(CHR_PROPS_READ|CHR_PROPS_NOTIFY);tx.setPermission(SECMODE_ENC_WITH_MITM,SECMODE_NO_ACCESS);tx.setMaxLen(244);tx.begin();
-  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);Bluefruit.Advertising.addTxPower();
-  Bluefruit.Advertising.addService(service);Bluefruit.ScanResponse.addName();
+  nus.begin();
+  appRx.setProperties(CHR_PROPS_WRITE|CHR_PROPS_WRITE_WO_RESP);appRx.setPermission(SECMODE_NO_ACCESS,SECMODE_ENC_WITH_MITM);appRx.setMaxLen(companion::MaxFrame);appRx.setWriteCallback(onAppWrite);appRx.begin();
+  appTx.setProperties(CHR_PROPS_READ|CHR_PROPS_NOTIFY);appTx.setPermission(SECMODE_ENC_WITH_MITM,SECMODE_NO_ACCESS);appTx.setMaxLen(companion::MaxFrame);appTx.begin();
+  advertiseFor();
   Bluefruit.Advertising.setInterval(32,244);Bluefruit.Advertising.setFastTimeout(30);
-  commands=xQueueCreate(4,sizeof(BleCommand));started=true;
+  commands=xQueueCreate(4,sizeof(BleCommand));appFrames=xQueueCreate(4,sizeof(AppFrame));started=true;
 }
+}
+String bleName(){
+  if(config.bleApp!=Config::BleMeshCore)return "MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);
+  String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
+  return "MeshCore-"+name;
+}
+void bleSetApp(uint8_t app){
+  config.saveBleApp(app);
+  if(started){bool on=bluetoothOn;if(on)Bluefruit.Advertising.stop();advertiseFor();if(on){Bluefruit.Advertising.start(0);meshRadio.event="BLE: "+bleName();}}
+  meshRadio.dirty=true;
 }
 bool webRadarActive(){return webRadar;}
 String webRadarCommand(const String& line){
@@ -67,7 +98,7 @@ String portalPassword(){return "";}
 bool bleActive(){return bluetoothOn;}
 uint32_t blePin(){return pinCode;}
 String connectionCredentials(){
-  StaticJsonDocument<384>d;d["wifi"]=false;d["ble"]=bluetoothOn;d["ble_name"]="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);d["pin"]=pinCode;
+  StaticJsonDocument<384>d;d["wifi"]=false;d["ble"]=bluetoothOn;d["ble_name"]=bleName();d["ble_app"]=config.bleApp==Config::BleMeshCore?"meshcore":"meshmesh";d["pin"]=pinCode;
   if(bluetoothOn){uint8_t a[6];Bluefruit.getAddr(a);char s[18];snprintf(s,sizeof(s),"%02x:%02x:%02x:%02x:%02x:%02x",a[5],a[4],a[3],a[2],a[1],a[0]);d["ble_address"]=s;}
   String out;serializeJson(d,out);return out;
 }
@@ -80,7 +111,7 @@ void bleToggle(){
   if(bluetoothOn){
     Bluefruit.Advertising.restartOnDisconnect(false);Bluefruit.Advertising.stop();
     if(client!=BLE_CONN_HANDLE_INVALID)Bluefruit.disconnect(client);
-    bluetoothOn=false;bleResponse="";bleOffset=0;xQueueReset(commands);meshRadio.event="BLE off";
+    bluetoothOn=false;bleResponse="";bleOffset=0;xQueueReset(commands);xQueueReset(appFrames);companion::disconnected(companion::LinkBle);meshRadio.event="BLE off";
   } else {
     Bluefruit.Advertising.restartOnDisconnect(true);Bluefruit.Advertising.start(0);bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
@@ -96,6 +127,14 @@ void bleSilence(){
 void portalTick(){
   if(webRadar&&millis()-webRadarAt>10000)webRadarRelease();
   if(!started)return;
+  // Companion frames: one per write, one per notification.
+  if(appFrames){AppFrame f;if(xQueueReceive(appFrames,&f,0)==pdTRUE){powerWake();companion::command(f.data,f.length,companion::LinkBle);}}
+  static uint8_t held[companion::MaxFrame];static size_t heldLength=0;static uint32_t nextApp=0; // a refused frame is sent again, never skipped
+  if(client==BLE_CONN_HANDLE_INVALID||!appTx.notifyEnabled(client))heldLength=0;
+  else if(int32_t(millis()-nextApp)>=0){
+    if(!heldLength)heldLength=companion::next(held,companion::LinkBle);
+    if(heldLength){if(appTx.notify(client,held,heldLength)){heldLength=0;nextApp=millis()+2;}else nextApp=millis()+10;}
+  }
   if(commands&&!bleResponse.length()){BleCommand c;if(xQueueReceive(commands,&c,0)==pdTRUE){powerWake();bleResponse=executeCommand(c.text)+'\n';bleOffset=0;nextNotification=millis();}}
   if(bleResponse.length()&&int32_t(millis()-nextNotification)>=0){
     BLEConnection* link=client!=BLE_CONN_HANDLE_INVALID?Bluefruit.Connection(client):nullptr;

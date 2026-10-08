@@ -23,6 +23,7 @@ String Config::keyHex() const{return String("00");}bool Config::setKey(const Str
 static bool wifiOn=false,bleOn=false;
 bool portalActive(){return wifiOn;}String portalPassword(){return "preview-pass";}void portalToggle(){wifiOn=!wifiOn;}
 bool bleActive(){return bleOn;}void bleToggle(){bleOn=!bleOn;}uint32_t blePin(){return 123456;}
+String bleName(){return config.bleApp==Config::BleMeshCore?String("MeshCore-")+config.name:String("MeshMesh 5EA1");}void bleSetApp(uint8_t app){config.bleApp=app;}
 String configJson(bool){return "{}";}
 String applySettings(JsonObjectConst){return "OK settings saved";}
 // Hardware

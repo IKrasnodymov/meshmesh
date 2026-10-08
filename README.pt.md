@@ -33,6 +33,7 @@ MeshCore padrão.
   na página web ou via USB: o aparelho vira um repetidor ou servidor de sala MeshCore compatível com o padrão,
   com login de administrador e CLI remota pelo app MeshCore; chave, contatos e histórico são mantidos.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **Apps do MeshCore** — os apps oficiais do MeshCore se conectam por Bluetooth ou USB e usam os chats, contatos e canais da placa (o xadrez fica no app MeshMesh). [docs/en/companion.md](docs/en/companion.md)
 - **GPS e bússola**, compartilhamento de posição, tela de bloqueio, digitação fonética em cirílico.
 - **Interface web** pelo próprio ponto de acesso Wi-Fi do aparelho ou pela rede Wi-Fi de casa à qual ele se conecta (M9, T-Deck), e um **app para Android**
   (Wi-Fi, Bluetooth LE ou USB) com notificações de mensagens.

@@ -598,10 +598,12 @@ void drawNetwork(){
  // On the home network the device page answers at the client's address, with the same password.
  y+=wh+6;int ih=internet.online()?56:38;cardAt(1,ih,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(),internet.online());toggle(274,y+11,web);
  if(internet.online()){text(48,y+48,"http://"+internet.address(),accent,bold);int pw=measure(portalPassword(),bold);textRight(302,y+48,portalPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==1?cardHi:card);} // the password, whole
- y+=ih+6;cardAt(2,38,IcBle,"Bluetooth LE",ble?t("Secure pairing, MeshMesh service","Защищённое сопряжение, сервис MeshMesh"):t("Off","Выключен"),ble);toggle(274,y+11,ble);
+ bool app=config.bleApp==Config::BleMeshCore;
+ y+=ih+6;cardAt(2,38,IcBle,"Bluetooth LE",ble?(app?t("For MeshCore apps: ","Для приложений MeshCore: ")+bleName():t("Secure pairing, MeshMesh app","Защищённое сопряжение, приложение MeshMesh")):app?t("Off · for MeshCore apps","Выключен · для приложений MeshCore"):t("Off","Выключен"),ble);toggle(274,y+11,ble);
  if(ble)textRight(266,y+17,"PIN "+String(blePin()),accent,bold);
  y+=44;if(y+38<=216)cardAt(3,38,IcKey,t("MeshCore identity","Ключ MeshCore"),meshRadio.publicKeyText().substring(0,24)+"...",true);
- footer({{"OK",selected==1?t("Networks","Сети"):t("Toggle","Переключить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ if(selected==2)footer({{"OK",t("Toggle","Переключить")},{"<>",t("App","Приложение")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ else footer({{"OK",selected==1?t("Networks","Сети"):t("Toggle","Переключить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
 }
 // Internet over Wi-Fi: the client switch, networks in range, then saved networks out of range.
 String pendingSsid;
@@ -813,6 +815,8 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(page==Scope&&(key==KeyLeft||key==KeyRight)){change(Motion);return;}
  if(page==Motion&&(key==KeyLeft||key==KeyRight)){change(Scope);return;}
  if(page==Motion&&(key=='b'||key=='B')){csiBeaconRole=!csiBeaconRole;radar.setCsi(csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);notice(csiBeaconRole?t("This board is now the beacon","Эта плата — маяк"):t("This board is now the sensor","Эта плата — приёмник"));return;}
+ // Bluetooth for the MeshMesh app or for the stock MeshCore apps (companion protocol).
+ if(page==Network&&selected==2&&(key==KeyLeft||key==KeyRight)){bleSetApp(config.bleApp==Config::BleMeshCore?Config::BleMeshMesh:Config::BleMeshCore);notice(config.bleApp==Config::BleMeshCore?t("Bluetooth for MeshCore apps","Bluetooth для приложений MeshCore"):t("Bluetooth for the MeshMesh app","Bluetooth для приложения MeshMesh"));return;}
  if(page==Homing&&(key==KeyLeft||key==KeyRight)){radar.resetPeak();notice(t("Peak reset","Пик сброшен"),dim);return;}
  if(key==KeyUp||key==KeyDown){if(page==Threads)threads();if(page==Nodes)sortNodes();int total=page==Threads?conversationCount:page==ChannelAdd?addRows():page==Nodes?nodeTotal:page==Settings?settingsCount:page==Radio||page==Display?settingRows():page==Network?4:page==NetList?1+int(netCount()):page==Sensors?2:page==Library?int(library.size()):1;selected=total?(selected+(key==KeyUp?-1:1)+total)%total:0;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;return;}
  if((page==Radio||page==Display)&&(key==KeyLeft||key==KeyRight)){alter(key==KeyLeft?-1:1);return;}

@@ -14,6 +14,7 @@ using DeviceRadio=LR1110;
 #endif
 class MeshCoreBackend;
 class MeshCoreRadioAdapter;
+struct CompanionCore;
 struct ChatMessage {
   uint64_t source=0,destination=meshmesh::Broadcast;
   uint32_t session=0,id=0,timestamp=0;
@@ -86,9 +87,11 @@ class MeshRadio {
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
   String routeText(const ChatMessage& m,bool brief=false) const; // e.g. "via 2 rpt · 2/3"; empty when unknown
  private:
-  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;
+  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;
   MeshCoreBackend* core=nullptr;
-  struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};} pending[4];
+  struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};
+  // app: sent for a companion app, which retries itself: one attempt with its timestamp and attempt byte.
+  bool app=false;uint8_t appAttempt=0;} pending[4];
   uint32_t sequence=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;

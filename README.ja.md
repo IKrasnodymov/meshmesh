@@ -33,6 +33,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
   ウェブページ、USB から選択します。デバイスは標準互換の MeshCore リピーターまたはルームサーバーになり、
   MeshCore アプリから管理者ログインとリモート CLI が使えます。鍵、連絡先、履歴はそのまま保持されます。
   [docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore アプリ**: 公式の MeshCore アプリが Bluetooth または USB で接続し、ボードのチャット・連絡先・チャンネルを使えます（チェスは MeshMesh アプリで）。 [docs/en/companion.md](docs/en/companion.md)
 - **GPS とコンパス**、位置の共有、ロック画面、フォネティック配列によるキリル文字のキーボード入力。
 - デバイス自身の Wi-Fi アクセスポイントまたは接続先の家庭用 Wi-Fi (M9、T-Deck) 経由の**ウェブインターフェース**と、メッセージ通知付きの
   **Android アプリ** (Wi-Fi、Bluetooth LE、USB)。

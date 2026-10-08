@@ -33,6 +33,7 @@ węzłami MeshCore.
   na stronie www, przez USB: urządzenie staje się repeaterem lub serwerem pokoju MeshCore zgodnym ze standardowym
   oprogramowaniem, z logowaniem administratora i zdalnym CLI z aplikacji MeshCore; klucz, kontakty i historia zostają.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **Aplikacje MeshCore** — oryginalne aplikacje MeshCore łączą się przez Bluetooth lub USB i korzystają z czatów, kontaktów i kanałów płytki (szachy zostają w aplikacji MeshMesh). [docs/en/companion.md](docs/en/companion.md)
 - **GPS i kompas**, udostępnianie pozycji, ekran blokady, fonetyczne pisanie cyrylicą z klawiatury.
 - **Interfejs www** przez własny punkt dostępu Wi-Fi urządzenia lub domową sieć Wi-Fi, do której się łączy (M9, T-Deck), oraz **aplikacja na Androida**
   (Wi-Fi, Bluetooth LE lub USB) z powiadomieniami o wiadomościach.

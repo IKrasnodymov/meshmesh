@@ -733,14 +733,16 @@ function renderNav(){
 
 // Connections: access point, Bluetooth and the MeshCore identity.
 async function loadConnections(){try{conn=await request('/api/connections')}catch(e){notify(e.message,'bad')}if(route==='connect')renderConnect()}
-function renderConnect(){const c=conn||{},wifi=status.wifi,ble=status.ble;
+function renderConnect(){const c=conn||{},wifi=status.wifi,ble=status.ble,core=c.ble_app==='meshcore';
  const card=(id,icon,on,name,state,extra)=>`<div class="card conn"><div class="top"><span class="icbox">${ic(icon,on?'info':'faint')}</span><div><b>${name}</b><small>${state}</small></div>${id?`<button class="sw${on?' on':''}" data-toggle="${id}" role="switch" aria-checked="${on}" aria-label="${name}"></button>`:''}</div>${extra?`<div class="extra">${extra}</div>`:''}</div>`;
  $('connList').innerHTML=(noWifi()?'':card('wifi','wifi',wifi,'Точка доступа Wi-Fi',wifi?'Веб-чат и загрузка карт':'Выключена',wifi&&c.ssid?`<b class="acc">${esc(c.ssid)}</b><div>Пароль: <span class="mono" style="font-size:14px">${esc(c.password)}</span></div><small class="muted">${esc(c.ip)} · выключение прервёт эту страницу</small>`:''))
-  +card('ble','ble',ble,'Bluetooth LE',ble?'Защищённое сопряжение, сервис MeshMesh':'Выключен',ble&&c.pin?`<b class="acc">PIN ${esc(c.pin)}</b><div class="small muted">${esc(c.ble_name||'')}</div>`:'')
+  +card('ble','ble',ble,'Bluetooth LE',ble?(core?'Для приложений MeshCore':'Защищённое сопряжение, приложение MeshMesh'):'Выключен',(ble&&c.pin?`<b class="acc">PIN ${esc(c.pin)}</b><div class="small muted">${esc(c.ble_name||'')}</div>`:'')
+   +`<div class="inv"><b>Для приложения: ${core?'MeshCore':'MeshMesh'}</b><button class="btn" data-toggle="bleapp">${core?'Для MeshMesh':'Для MeshCore'}</button></div><small class="muted">${core?'Штатные приложения MeshCore находят плату по Bluetooth; приложение MeshMesh подключается по Wi-Fi или USB.':'Для приложений MeshCore (MeshCore, MeshCore Open и др.): чаты, контакты и каналы этой платы, без шахмат.'}</small>`)
   +card('','key',true,'Ключ MeshCore','Открытый ключ этого узла',`<div class="mono" id="pubkey" style="user-select:all">${esc(status.public_key)}</div>`)}
 async function toggle(which){
  if(which==='wifi'){if(Date.now()-wifiArmed>5000){wifiArmed=Date.now();notify('Нажмите ещё раз: страница потеряет связь, включить Wi-Fi снова можно только на устройстве','warn');return}
   try{await command('wifi');notify('Точка доступа выключается','warn');clearInterval(timer);stopRadar()}catch(e){notify(e.message,'bad')}return}
+ if(which==='bleapp'){const to=conn?.ble_app==='meshcore'?'meshmesh':'meshcore';try{await command('ble app '+to);notify(to==='meshcore'?'Bluetooth для приложений MeshCore':'Bluetooth для приложения MeshMesh');await loadConnections()}catch(e){notify(e.message,'bad')}return}
  try{const r=await command('ble');notify(r.includes('on')?'Bluetooth включён':'Bluetooth выключен');await refresh();await loadConnections()}catch(e){notify(e.message,'bad')}}
 
 // Signal radar: Wi-Fi access points, Bluetooth devices and LoRa nodes heard directly.

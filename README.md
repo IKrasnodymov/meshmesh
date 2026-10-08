@@ -33,6 +33,7 @@ MeshCore nodes.
   on the web page, over USB: the device becomes a stock-compatible MeshCore repeater or room server
   with admin login and remote CLI from the MeshCore app; key, contacts and history stay.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore apps** — the stock MeshCore apps connect over Bluetooth or USB and work with the board's chats, contacts and channels (chess stays in the MeshMesh app). [docs/en/companion.md](docs/en/companion.md)
 - **GPS and compass**, position sharing, lock screen, phonetic Cyrillic keyboard input.
 - **Web interface** over the device's own Wi-Fi access point or the home Wi-Fi it joins (M9, T-Deck), and an **Android app**
   (Wi-Fi, Bluetooth LE or USB) with message notifications.

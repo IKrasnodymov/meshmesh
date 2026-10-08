@@ -33,6 +33,7 @@ MeshCore 노드와 통신합니다.
   고릅니다. 장치는 기본 MeshCore와 호환되는 리피터나 룸 서버가 되며, MeshCore 앱에서 관리자 로그인과
   원격 CLI를 쓸 수 있습니다. 키, 연락처, 기록은 그대로 유지됩니다.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **MeshCore 앱** — 공식 MeshCore 앱이 Bluetooth 또는 USB로 연결되어 보드의 채팅, 연락처, 채널을 사용합니다(체스는 MeshMesh 앱에서). [docs/en/companion.md](docs/en/companion.md)
 - **GPS와 나침반**, 위치 공유, 잠금 화면, 발음식 키릴 문자 키보드 입력.
 - 장치 자체 Wi-Fi 액세스 포인트나 장치가 접속한 집 Wi-Fi(M9, T-Deck)로 여는 **웹 인터페이스**, 메시지 알림을 지원하는 **Android 앱**
   (Wi-Fi, Bluetooth LE 또는 USB).

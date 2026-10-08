@@ -33,6 +33,7 @@ nœuds MeshCore standard.
   sur la page web ou en USB : l'appareil devient un répéteur ou un serveur de salon MeshCore compatible avec le firmware d'origine,
   avec connexion admin et CLI à distance depuis l'appli MeshCore ; la clé, les contacts et l'historique sont conservés.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **Applis MeshCore** — les applis MeshCore officielles se connectent en Bluetooth ou USB et utilisent les discussions, contacts et canaux de la carte (les échecs restent dans l'appli MeshMesh). [docs/en/companion.md](docs/en/companion.md)
 - **GPS et boussole**, partage de position, écran de verrouillage, saisie phonétique du cyrillique au clavier.
 - **Interface web** via le point d'accès Wi-Fi de l'appareil lui-même ou le réseau Wi-Fi domestique qu'il rejoint (M9, T-Deck), et une **appli Android**
   (Wi-Fi, Bluetooth LE ou USB) avec notifications de messages.

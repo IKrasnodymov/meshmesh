@@ -18,6 +18,7 @@
 #include "Dice.h"
 #include "Board.h"
 #include "Power.h"
+#include "Companion.h"
 #include <Wire.h>
 #include <esp_system.h>
 #if defined(MM_NATIVE_USB)
@@ -31,6 +32,13 @@ namespace {
 uint8_t* usbBytes=nullptr;
 size_t usbSize=0,usbOffset=0;
 unsigned usbBaud=115200,pendingBaud=0;uint32_t baudExpires=0;
+// MeshCore companion apps over USB: '<', a 16-bit length and the frame in; '>', the length and the frame out.
+// A text command on the port ends that link, so the frames never mix with text replies.
+uint8_t appFrame[companion::MaxFrame];int appState=-1;size_t appLength=0,appGot=0; // -1: text; 0, 1: length; 2: frame
+void usbFrame(const uint8_t* frame,size_t length) {
+  usbSize=length+3;usbOffset=0;usbBytes=(uint8_t*)malloc(usbSize);if(!usbBytes){usbSize=0;return;}
+  usbBytes[0]='>';usbBytes[1]=length&255;usbBytes[2]=length>>8;memcpy(usbBytes+3,frame,length);
+}
 void usbLine(const String& value) {
   usbSize=value.length()+1;usbOffset=0;usbBytes=(uint8_t*)malloc(usbSize);
   if(!usbBytes) {usbSize=0;Serial.println("ERR USB output allocation");return;}
@@ -146,7 +154,16 @@ void appLoop() {
   if(!usbBytes&&Serial.available())powerWake();
   while(!usbBytes && Serial.available() && budget--) {
     char c=Serial.read();baudExpires=millis()+10000;
+    if(appState>=0) {
+      uint8_t b=c;
+      if(appState==0){appLength=b;appState=1;}
+      else if(appState==1){appLength|=size_t(b)<<8;appGot=0;appState=appLength?2:-1;}
+      else{if(appGot<sizeof(appFrame))appFrame[appGot]=b;if(++appGot>=appLength){appState=-1;if(appLength<=sizeof(appFrame))companion::command(appFrame,appLength,companion::LinkUsb);}}
+      continue;
+    }
+    if(c=='<'&&!command.length()){appState=0;continue;}
     if(c=='\n') {
+      companion::disconnected(companion::LinkUsb);
       if(command.startsWith("baud ")) {
 #if defined(MM_NATIVE_USB) || defined(MM_NRF52)
         usbLine("ERR native USB does not need baud switching");
@@ -191,7 +208,9 @@ void appLoop() {
     else if(c!='\r' && command.length()<1024)command+=c;
     else if(command.length()>=1024) {command="";usbLine("ERR command too long");}
   }
-  portalTick();uiTick();usbTick();restartTick();powerOffTick();
+  portalTick();uiTick();usbTick();
+  if(!usbBytes){uint8_t frame[companion::MaxFrame];size_t length=companion::next(frame,companion::LinkUsb);if(length)usbFrame(frame,length);}
+  restartTick();powerOffTick();
   if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
 #if !defined(MM_NATIVE_USB) && !defined(MM_NRF52)
   if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}

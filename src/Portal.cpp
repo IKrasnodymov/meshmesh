@@ -13,6 +13,7 @@
 #include "Internet.h"
 #include "ChessNet.h"
 #include "ChessTour.h"
+#include "Companion.h"
 #include <WiFi.h>
 #include <WebServer.h>
 #include <NimBLEDevice.h>
@@ -34,6 +35,12 @@ String bleResponse;
 unsigned bleOffset=0;
 uint32_t nextNotification=0;
 struct BleCommand {char text[256];};
+// MeshCore companion apps: the Nordic UART service of stock MeshCore, one frame per write and notification.
+const char* const NusService="6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
+NimBLECharacteristic* appTx=nullptr;
+QueueHandle_t appFrames=nullptr;
+struct AppFrame {uint8_t length;uint8_t data[companion::MaxFrame];};
+uint32_t nextAppNotification=0;
 // The web radar page holds the radar while it polls; the screen may hold it too (uiRadarPage).
 bool webRadar=false;uint32_t webRadarAt=0;
 bool wifiOffPending=false; // the web page turns the access point off after its reply is sent
@@ -62,6 +69,30 @@ class BleCallbacks:public NimBLECharacteristicCallbacks {
  }
 };
 BleCallbacks bleCallbacks;
+class AppCallbacks:public NimBLECharacteristicCallbacks {
+ void onWrite(NimBLECharacteristic* c) override {
+   auto value=c->getValue();if(!value.size()||value.size()>companion::MaxFrame||!appFrames)return;
+   AppFrame frame{};frame.length=value.size();memcpy(frame.data,value.data(),value.size());xQueueSend(appFrames,&frame,0);
+ }
+};
+AppCallbacks appCallbacks;
+// The advert names the app's service, as stock firmware does (MeshCore apps look for a "MeshCore-" name).
+void advertiseFor(){
+  String name=bleName();NimBLEDevice::setDeviceName(name.c_str());
+  NimBLEAdvertisementData adv,scan;adv.setFlags(BLE_HS_ADV_F_DISC_GEN|BLE_HS_ADV_F_BREDR_UNSUP);
+  adv.setCompleteServices(NimBLEUUID(config.bleApp==Config::BleMeshCore?NusService:"7a9e0001-98bd-4d56-89a8-c4eab4179010"));scan.setName(name.c_str());
+  auto* a=NimBLEDevice::getAdvertising();a->setAdvertisementData(adv);a->setScanResponseData(scan);
+}
+}
+String bleName(){
+  if(config.bleApp!=Config::BleMeshCore)return "MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);
+  String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
+  return "MeshCore-"+name;
+}
+void bleSetApp(uint8_t app){
+  config.saveBleApp(app);
+  if(bluetoothOn){auto* a=NimBLEDevice::getAdvertising();a->stop();advertiseFor();a->start();meshRadio.event="BLE: "+bleName();}
+  meshRadio.dirty=true;
 }
 bool webRadarActive() {return webRadar;}
 // The page's radar over USB or BLE (the Android app): the same hold, JSON and actions as /api/radar.
@@ -77,7 +108,7 @@ uint32_t blePin() {return pinCode;}
 String connectionCredentials() {
   StaticJsonDocument<512> d;d["wifi"]=wifiOn;d["ssid"]="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);
   d["password"]=password;d["ip"]="192.168.4.1";if(internet.online())d["lan_ip"]=internet.address();d["ble"]=bluetoothOn;
-  d["ble_name"]="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);d["pin"]=pinCode;
+  d["ble_name"]=bleName();d["ble_app"]=config.bleApp==Config::BleMeshCore?"meshcore":"meshmesh";d["pin"]=pinCode;
   if(bluetoothOn)d["ble_address"]=NimBLEDevice::getAddress().toString().c_str();
   String result;serializeJson(d,result);return result;
 }
@@ -135,20 +166,25 @@ void bleToggle() {
   NimBLEServer* b=NimBLEDevice::getInitialized()?NimBLEDevice::getServer():nullptr;
   if(bluetoothOn) {
     if(b){b->advertiseOnDisconnect(false);NimBLEDevice::getAdvertising()->stop();for(uint16_t id:b->getPeerDevices())b->disconnect(id);}
-    bluetoothOn=false;bleResponse="";bleOffset=0;if(commands){vQueueDelete(commands);commands=nullptr;}meshRadio.event="BLE off";
+    bluetoothOn=false;bleResponse="";bleOffset=0;if(commands){vQueueDelete(commands);commands=nullptr;}
+    if(appFrames){vQueueDelete(appFrames);appFrames=nullptr;}companion::disconnected(companion::LinkBle);meshRadio.event="BLE off";
   }
   else {
-    commands=xQueueCreate(4,sizeof(BleCommand));
-    if(!commands){meshRadio.event="BLE: insufficient RAM";return;}
+    commands=xQueueCreate(4,sizeof(BleCommand));appFrames=xQueueCreate(4,sizeof(AppFrame));
+    if(!commands||!appFrames){if(commands)vQueueDelete(commands);if(appFrames)vQueueDelete(appFrames);commands=nullptr;appFrames=nullptr;meshRadio.event="BLE: insufficient RAM";return;}
     String name="MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);NimBLEDevice::init(name.c_str());NimBLEDevice::setDeviceName(name.c_str()); // the radar may have started the stack unnamed
     NimBLEDevice::setSecurityAuth(true,true,true);NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);NimBLEDevice::setSecurityPasskey(pinCode);
     if(!b){
       b=NimBLEDevice::createServer();NimBLEService* s=b->createService("7a9e0001-98bd-4d56-89a8-c4eab4179010");
       bleTx=s->createCharacteristic("7a9e0003-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::READ|NIMBLE_PROPERTY::READ_AUTHEN|NIMBLE_PROPERTY::NOTIFY);
       auto rx=s->createCharacteristic("7a9e0002-98bd-4d56-89a8-c4eab4179010",NIMBLE_PROPERTY::WRITE|NIMBLE_PROPERTY::WRITE_AUTHEN);
-      rx->setCallbacks(&bleCallbacks);s->start();NimBLEDevice::getAdvertising()->addServiceUUID(s->getUUID());
+      rx->setCallbacks(&bleCallbacks);s->start();
+      NimBLEService* nus=b->createService(NusService);
+      appTx=nus->createCharacteristic("6E400003-B5A3-F393-E0A9-E50E24DCCA9E",NIMBLE_PROPERTY::READ|NIMBLE_PROPERTY::READ_AUTHEN|NIMBLE_PROPERTY::NOTIFY);
+      auto appRx=nus->createCharacteristic("6E400002-B5A3-F393-E0A9-E50E24DCCA9E",NIMBLE_PROPERTY::WRITE|NIMBLE_PROPERTY::WRITE_AUTHEN);
+      appRx->setCallbacks(&appCallbacks);nus->start();
     }
-    b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
+    advertiseFor();b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
   config.saveBle(bluetoothOn);meshRadio.dirty=true;
 }
@@ -164,6 +200,13 @@ void portalTick() {
       powerWake();String response=executeCommand(cmd.text);
       if(bleTx) {bleResponse=response+'\n';bleOffset=0;nextNotification=millis();}
     }
+  }
+  // Companion frames: one per write, one per notification, while the host has spare buffers.
+  if(appFrames){AppFrame frame;if(xQueueReceive(appFrames,&frame,0)==pdTRUE){powerWake();companion::command(frame.data,frame.length,companion::LinkBle);}}
+  if(appTx&&companion::connected()&&!appTx->getSubscribedCount())companion::disconnected(companion::LinkBle);
+  else if(appTx&&int32_t(millis()-nextAppNotification)>=0&&os_msys_num_free()>=6){
+    uint8_t frame[companion::MaxFrame];size_t length=companion::next(frame,companion::LinkBle);
+    if(length){appTx->notify(frame,length);nextAppNotification=millis()+(length>20?8:15);}
   }
   if(bleTx && bleResponse.length() && int32_t(millis()-nextNotification)>=0) {
     if(!bleTx->getSubscribedCount()) {bleResponse="";bleOffset=0;return;}

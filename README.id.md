@@ -33,6 +33,7 @@ MeshCore standar.
   di halaman web, lewat USB: perangkat menjadi repeater atau server ruang MeshCore yang kompatibel dengan firmware standar,
   dengan login admin dan CLI jarak jauh dari aplikasi MeshCore; kunci, kontak dan riwayat tetap tersimpan.
   [docs/en/repeater.md](docs/en/repeater.md)
+- **Aplikasi MeshCore** — aplikasi MeshCore resmi tersambung lewat Bluetooth atau USB dan memakai obrolan, kontak, dan kanal papan (catur tetap di aplikasi MeshMesh). [docs/en/companion.md](docs/en/companion.md)
 - **GPS dan kompas**, berbagi posisi, layar kunci, input keyboard Sirilik fonetik.
 - **Antarmuka web** lewat titik akses Wi-Fi milik perangkat itu sendiri atau jaringan Wi-Fi rumah yang diikutinya (M9, T-Deck), dan **aplikasi Android**
   (Wi-Fi, Bluetooth LE atau USB) dengan notifikasi pesan.

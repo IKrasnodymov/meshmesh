@@ -2199,10 +2199,20 @@
   "ru": "Пароль ",
   "text": "Mot de passe "
  },
- "94fa3c79": {
-  "en": "Secure pairing, MeshMesh service",
-  "ru": "Защищённое сопряжение, сервис MeshMesh",
-  "text": "Appairage sécurisé, service MeshMesh"
+ "2ad33e6e": {
+  "en": "For MeshCore apps: ",
+  "ru": "Для приложений MeshCore: ",
+  "text": "Pour les apps MeshCore : "
+ },
+ "5aaa7a5b": {
+  "en": "Secure pairing, MeshMesh app",
+  "ru": "Защищённое сопряжение, приложение MeshMesh",
+  "text": "Appairage sécurisé, app MeshMesh"
+ },
+ "e01d4103": {
+  "en": "Off · for MeshCore apps",
+  "ru": "Выключен · для приложений MeshCore",
+  "text": "Désactivé · pour apps MeshCore"
  },
  "3efed7d9": {
   "en": "Off",
@@ -2214,15 +2224,20 @@
   "ru": "Ключ MeshCore",
   "text": "Identité MeshCore"
  },
- "01f31114": {
-  "en": "Networks",
-  "ru": "Сети",
-  "text": "Réseaux"
- },
  "e6b593c8": {
   "en": "Toggle",
   "ru": "Переключить",
   "text": "Basculer"
+ },
+ "e0830853": {
+  "en": "App",
+  "ru": "Приложение",
+  "text": "Appli"
+ },
+ "01f31114": {
+  "en": "Networks",
+  "ru": "Сети",
+  "text": "Réseaux"
  },
  "80266824": {
   "en": "Wrong password or refused: ",
@@ -2793,6 +2808,16 @@
   "en": "This board is now the sensor",
   "ru": "Эта плата — приёмник",
   "text": "Cet appareil est le récepteur"
+ },
+ "c3b6ee86": {
+  "en": "Bluetooth for MeshCore apps",
+  "ru": "Bluetooth для приложений MeshCore",
+  "text": "Bluetooth pour les apps MeshCore"
+ },
+ "98726351": {
+  "en": "Bluetooth for the MeshMesh app",
+  "ru": "Bluetooth для приложения MeshMesh",
+  "text": "Bluetooth pour l'app MeshMesh"
  },
  "a4a4ec2c": {
   "en": "Peak reset",
@@ -4779,6 +4804,11 @@
   "ru": "Включить BLE",
   "text": "Activer le BLE"
  },
+ "03dcef12": {
+  "en": "App: ",
+  "ru": "Прил.: ",
+  "text": "Appli : "
+ },
  "929d4e52": {
   "en": "Language: ",
   "ru": "Язык: ",
@@ -5448,6 +5478,11 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Avant"
+ },
+ "bbd8460e": {
+  "en": "For MeshCore apps",
+  "ru": "Для приложений MeshCore",
+  "text": "Pour les apps MeshCore"
  },
  "ccdb9efa": {
   "en": "No pet",
