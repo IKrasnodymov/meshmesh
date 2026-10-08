@@ -1974,6 +1974,11 @@
   "ru": "Ретрансляция",
   "text": "Retransmitir"
  },
+ "67c2abb2": {
+  "en": "Path hash size",
+  "ru": "Размер хэша пути",
+  "text": "Tamanho hash de rota"
+ },
  "055e7477": {
   "en": "Name",
   "ru": "Имя",
@@ -2034,6 +2039,21 @@
   "ru": " кГц",
   "text": " kHz"
  },
+ "44398b47": {
+  "en": {
+   "one": "byte",
+   "other": "bytes"
+  },
+  "ru": {
+   "one": "байт",
+   "few": "байта",
+   "many": "байт"
+  },
+  "forms": {
+   "one": "{n} byte",
+   "other": "{n} bytes"
+  }
+ },
  "a9bc47f3": {
   "en": "Volts",
   "ru": "Вольты",
@@ -2088,6 +2108,11 @@
   "en": "Forward other nodes' MeshCore packets",
   "ru": "Пересылать чужие пакеты MeshCore",
   "text": "Retransmitir pacotes MeshCore de outros nós"
+ },
+ "0e32bba8": {
+  "en": "Per hop in our floods; older MeshCore drops 2-3",
+  "ru": "На пересылку; старые MeshCore не пересылают 2-3",
+  "text": "Por salto nos nossos floods; MeshCore antigo descarta 2-3"
  },
  "7c140ddc": {
   "en": "Applied to the radio when saved",

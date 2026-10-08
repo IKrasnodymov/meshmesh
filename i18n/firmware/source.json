@@ -633,6 +633,15 @@
    "src/Ui.cpp:574: if(page==Radio){switch(i){case 0:return t(\"1 kHz steps; must match every node\",\"Шаг 1 кГц; должна совпадать у всех узлов\");case 1:return t(\"62.5 / 125 / 250 / 500 kHz\",\"62.5 / 125 / 250 / 500 кГц\");case 2:return t(\"Highe"
   ]
  },
+ "0e32bba8": {
+  "cells": 47,
+  "families": [
+   "full"
+  ],
+  "where": [
+   "src/Ui.cpp:574: if(page==Radio){switch(i){case 0:return t(\"1 kHz steps; must match every node\",\"Шаг 1 кГц; должна совпадать у всех узлов\");case 1:return t(\"62.5 / 125 / 250 / 500 kHz\",\"62.5 / 125 / 250 / 500 кГц\");case 2:return t(\"Highe"
+  ]
+ },
  "0e6d291b": {
   "cells": 10,
   "families": [
@@ -2482,7 +2491,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:358: String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr(\"routed\",\"по маршруту\")))"
+   "src/MeshRadio.cpp:375: String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr(\"routed\",\"по маршруту\")))"
   ]
  },
  "3229100a": {
@@ -2491,7 +2500,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:357: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:374: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "326bd72e": {
@@ -2842,7 +2851,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:501: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,bleName(),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairing\",\"Защищённое сопряжение\"),small);",
+   "src/UiHeltec.cpp:501: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
    "src/UiHires.inc:311: text(36,58,fit(t(\"Secure pairing\",\"Защищённое сопряжение\"),196,tiny),ColDim,tiny);"
   ]
  },
@@ -3221,6 +3230,15 @@
   "where": [
    "src/UiHeltec.cpp:457: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}",
    "src/UiHires.inc:158: if(!p){empty(IcMesh,t(\"No nodes heard\",\"Узлы пока не найдены\"),t(\"hold: announce\",\"держите: объявить\"));return;}"
+  ]
+ },
+ "44398b47": {
+  "cells": 5,
+  "families": [
+   "full"
+  ],
+  "where": [
+   "src/Ui.cpp:570: if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(\" MHz\",\" МГц\");case 1:return String(c.bandwidth,1)+t(\" kHz\",\" кГц\");case 2:return \"SF\"+String(c.sf);case 3:return \"4/\"+String(c.cr);case 4:return String(c.p"
   ]
  },
  "447f2127": {
@@ -3684,7 +3702,7 @@
   "where": [
    "src/Ui.cpp:205: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path unknown\",\"путь неизвестен\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return count(p.pathLength&63,\"hop\",\"hops\",\"хоп\",\"хопа\",\"хопов\");}",
    "src/UiHeltec.cpp:87: String pathText(const Peer& p){if(p.pathLength==255)return t(\"path ?\",\"путь ?\");if(!(p.pathLength&63))return t(\"direct\",\"напрямую\");return String(p.pathLength&63)+t(\" hops\",\" хоп.\");}",
-   "src/MeshRadio.cpp:357: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:374: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "4d14e8f8": {
@@ -4860,6 +4878,15 @@
    "src/Ui.cpp:790: if(editing){if(key==KeyBack){editing=false;return;}if(key==Erase){edit.remove(meshmesh::previousCharacter(edit.c_str(),edit.length()));return;}if(key==KeyRight&&page!=Network){toggleLastCase(edit);return;}if(key==Enter){"
   ]
  },
+ "67c2abb2": {
+  "cells": 16,
+  "families": [
+   "full"
+  ],
+  "where": [
+   "src/Ui.cpp:566: if(page==Radio){const char* names[]={tr(\"Frequency\",\"Частота\"),tr(\"Bandwidth\",\"Полоса\"),tr(\"Spreading factor\",\"Фактор SF\"),tr(\"Coding rate\",\"Кодирование CR\"),tr(\"TX power\",\"Мощность\"),tr(\"Our relay limit\",\"Предел наших п"
+  ]
+ },
  "67dca228": {
   "cells": 49,
   "families": [
@@ -5925,8 +5952,8 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:357: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));",
-   "src/MeshRadio.cpp:357: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:374: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));",
+   "src/MeshRadio.cpp:374: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "7cbcaad7": {
@@ -6288,8 +6315,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:501: case Ble:title=\"Bluetooth\";if(bleActive()){say(0,23,bleName(),bold);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairing\",\"Защищённое сопряжение\"),small);",
-   "src/UiHires.inc:310: text(36,42,fit(on?bleName():t(\"Bluetooth off\",\"Bluetooth выкл.\"),196,bold),ColInk,bold);"
+   "src/UiHeltec.cpp:501: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
+   "src/UiHires.inc:310: {String n=on?bleName():String(t(\"Bluetooth off\",\"Bluetooth выкл.\"));const uint8_t* f=width(n,bold)<=196?bold:small;text(36,42,fit(n,196,f),ColInk,f);} // the whole name, key digits too"
   ]
  },
  "857a3f77": {
@@ -8407,7 +8434,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:361: if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?\" #\"+String(m.tries):String(tr(\" · try \",\" · попытка \"))+m.tries):\" \"+String(m.tries)+\"/3\";"
+   "src/MeshRadio.cpp:378: if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?\" #\"+String(m.tries):String(tr(\" · try \",\" · попытка \"))+m.tries):\" \"+String(m.tries)+\"/3\";"
   ]
  },
  "b367cee2": {
@@ -9925,7 +9952,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:357: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:374: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "d2b3452b": {

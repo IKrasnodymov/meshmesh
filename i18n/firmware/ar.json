@@ -2014,6 +2014,11 @@
   "ru": "Ретрансляция",
   "text": "ترحيل الحزم"
  },
+ "67c2abb2": {
+  "en": "Path hash size",
+  "ru": "Размер хэша пути",
+  "text": "حجم تجزئة المسار"
+ },
  "055e7477": {
   "en": "Name",
   "ru": "Имя",
@@ -2074,6 +2079,25 @@
   "ru": " кГц",
   "text": " kHz"
  },
+ "44398b47": {
+  "en": {
+   "one": "byte",
+   "other": "bytes"
+  },
+  "ru": {
+   "one": "байт",
+   "few": "байта",
+   "many": "байт"
+  },
+  "forms": {
+   "zero": "{n} بايت",
+   "one": "{n} بايت",
+   "two": "{n} بايت",
+   "few": "{n} بايت",
+   "many": "{n} بايت",
+   "other": "{n} بايت"
+  }
+ },
  "a9bc47f3": {
   "en": "Volts",
   "ru": "Вольты",
@@ -2128,6 +2152,11 @@
   "en": "Forward other nodes' MeshCore packets",
   "ru": "Пересылать чужие пакеты MeshCore",
   "text": "ترحيل حزم MeshCore للعقد الأخرى"
+ },
+ "0e32bba8": {
+  "en": "Per hop in our floods; older MeshCore drops 2-3",
+  "ru": "На пересылку; старые MeshCore не пересылают 2-3",
+  "text": "لكل قفزة؛ MeshCore القديم يُسقط 2-3"
  },
  "7c140ddc": {
   "en": "Applied to the radio when saved",

@@ -184,6 +184,9 @@ class MeshCoreBackend:public BaseChatMesh {
  void onCommandDataRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const char* text) override{markConnectionActive(c);appLink::cliMessage(c,packet,stamp,text);}
  void onSignedMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text) override{markConnectionActive(c);appLink::roomPost(c,packet,stamp,author,text);}
  uint32_t calcFloodTimeoutMillisFor(uint32_t airtime) const override{return 15000+airtime*4+config.hops*5000;}
+ // Our flood packets (messages, ACKs, path returns, requests) carry the path hash size chosen in the settings.
+ void sendFloodScoped(const ContactInfo&,mesh::Packet* p,uint32_t delay) override{sendFlood(p,delay,config.pathHash);}
+ void sendFloodScoped(const mesh::GroupChannel&,mesh::Packet* p,uint32_t delay) override{sendFlood(p,delay,config.pathHash);}
  uint32_t calcDirectTimeoutMillisFor(uint32_t airtime,uint8_t path) const override{return 10000+airtime*4*(1+(path&63));}
  void onSendTimeout() override{} // Facade owns four pending sends and bounded retries.
  void onChannelMessageRecv(const mesh::GroupChannel& channel,mesh::Packet* packet,uint32_t stamp,const char* text) override{
@@ -244,7 +247,7 @@ class MeshCoreBackend:public BaseChatMesh {
   owner.contactsSaved=saved;delete blob;contactsDue=0;}
  static bool validBlob(const ContactBlob& b){uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)&b,offsetof(ContactBlob,hash));return b.version==1&&b.count<=24&&!memcmp(digest,b.hash,32);}
  bool reserveStamp(uint32_t stamp){Preferences p;if(!p.begin("meshmesh-mc",false))return false;bool saved=p.putUInt("last_tx",stamp)==4;p.end();return saved;}
- bool advertise(bool requirePosition=false,bool zeroHop=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved){p.putString("adv_name",config.name);p.putUChar("adv_type",ADV_TYPE_CHAT);}p.end();if(!saved){releasePacket(pkt);return false;}if(zeroHop)sendZeroHop(pkt);else sendFlood(pkt);return true;}
+ bool advertise(bool requirePosition=false,bool zeroHop=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved){p.putString("adv_name",config.name);p.putUChar("adv_type",ADV_TYPE_CHAT);}p.end();if(!saved){releasePacket(pkt);return false;}if(zeroHop)sendZeroHop(pkt);else sendFlood(pkt,0,config.pathHash);return true;}
  // A relayed path came with a path return and is used as is (the retries flood). "Direct" holds only while the
  // node is heard without relays: within 30 minutes and 5 dB over the SF floor (nodes do not announce periodically).
  bool pathTrusted(const ContactInfo& c){
@@ -261,10 +264,10 @@ class MeshCoreBackend:public BaseChatMesh {
    // message and the receiver's flood reply carries the new path back.
    if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);uint32_t airtime=coreRadio.getEstAirtimeFor(packet->getRawLength());
     bool viaPath=!wire&&c->out_path_len!=OUT_PATH_UNKNOWN&&pathTrusted(*c);wait.route[attempt]=viaPath?ChatMessage::RouteDirect:ChatMessage::RouteFlood;wait.hops[attempt]=viaPath?c->out_path_len&63:255;
-    if(viaPath){sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcDirectTimeoutMillisFor(airtime,c->out_path_len);}else{sendFlood(packet);wait.due=millis()+calcFloodTimeoutMillisFor(airtime);}}
+    if(viaPath){sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcDirectTimeoutMillisFor(airtime,c->out_path_len);}else{sendFlood(packet,0,config.pathHash);wait.due=millis()+calcFloodTimeoutMillisFor(airtime);}}
   }
   if(!packet)return false;
-  if(::channels::isChannel(wait.message.destination)){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);wait.route[0]=ChatMessage::RouteFlood;wait.hops[0]=255;sendFlood(packet);wait.due=millis()+45000;}
+  if(::channels::isChannel(wait.message.destination)){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);wait.route[0]=ChatMessage::RouteFlood;wait.hops[0]=255;sendFlood(packet,0,config.pathHash);wait.due=millis()+45000;}
   owner.track(wait,attempt);wait.started=true;wait.attempts++;return true;
  }
  // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.

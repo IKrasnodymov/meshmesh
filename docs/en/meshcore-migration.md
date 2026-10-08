@@ -35,6 +35,12 @@ its next advert returns it to the list. The counter is `contacts_replaced` in `s
 “Our relay limit” = 3 limits relaying by our device of packets
 that already carry an accumulated path. MeshCore has no global TTL as in MM/1; this is not a promise
 that other repeaters will limit the whole route to three hops.
+“Path hash size” (since 0.11.0, `path_hash`: 1–3 bytes, 1 by default) is how many bytes of each
+repeater's key go into the path of our flood packets (messages, ACKs, path returns, adverts, requests).
+2–3 bytes confuse repeaters sharing a first byte less often in a large network, but fewer hops fit in
+the path, and MeshCore firmware without multi-byte paths does not relay such packets. Packets of any
+size are received and relayed whatever the setting; a node's reply follows the path size of the request.
+The repeater and room modes use their own CLI setting `path.hash.mode`.
 The Heltec's amplifying radio front end affects the actual output power:
 the setting value applies to the SX1262; antenna power has not been measured.
 

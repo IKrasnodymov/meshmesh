@@ -840,7 +840,8 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'cr',n:'Кодирование CR',h:'Избыточность кода 4/5 … 4/8',t:'sel',o:[5,6,7,8].map(v=>[v,'4/'+v])},
  {k:'power',n:'Мощность, dBm',h:`Настройка чипа, 0–${status.max_power||22} dBm`,t:'num',min:0,max:status.max_power||22,step:1},
  {k:'hops',n:'Предел наших пересылок',h:'Только пакеты, пересылаемые этим узлом',t:'num',min:0,max:7,step:1},
- {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'}]:[
+ {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'},
+ ...config.path_hash===undefined?[]:[{k:'path_hash',n:'Размер хэша пути',h:'Байт на каждую пересылку в наших flood-пакетах; 2–3 реже путают узлы в большой сети, но старые прошивки MeshCore такие пакеты не пересылают',t:'sel',o:[[1,'1 байт'],[2,'2 байта'],[3,'3 байта']]}]]:[
  {k:'name',n:'Имя',h:'1–24 байта UTF-8',t:'text'},
  config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:status.langs?'Язык меню устройства; другие языки — прошивка с этим языком с сайта':'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:status.langs?SCREEN_LANGS.filter(x=>status.langs.split(' ').includes(x[0])):SCREEN_LANGS},
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},

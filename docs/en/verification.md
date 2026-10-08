@@ -1,5 +1,17 @@
 # MeshMesh verification
 
+> **0.11.0: path hash size in the settings** (8 October 2026, no full run). The `path_hash` setting (1–3 bytes,
+> 1 by default): the M9/T-Deck “Radio” screen, the web page, `set {JSON}`, the MeshCore app command
+> `CMD_SET_PATH_HASH_MODE` (61) and the field in `DEVICE_INFO`. 15 boards build; the Chinese T114 image has 6 KB free;
+> the M9 screen was viewed in `tools/ui_preview` (ru, en, de, fr, ar, zh, ja, ko). Heltec V4 (`tools/flash.py`, boot 185)
+> and T114 (`tools/nrf52.py`, boot 19) with 0.11.0 images (revision `47a0a7d-dirty`; V4 `01466A2A…`, T114 `7600BE99…`):
+> settings and history kept, default 1; 0 and 4 rejected; the value survives a restart. A V4 → T114 message with
+> 2 bytes (after `resetpath`): ACK, one copy, the V4 got the path return with `path_length=64` (2-byte mode, 0 hops).
+> T114 → V4 with 3 bytes (set by command 61): ACK, one copy, `path_length=128`. Command 61: mode 3 → `ILLEGAL_ARG`,
+> mode 2 → OK and `DEVICE_INFO` reports 2, another sub-code → unsupported. Both boards were set back to 1 byte
+> afterwards. Relaying of 2–3-byte packets by third-party repeaters and the screen on a real M9 (not connected) are
+> unchecked; not checked from a phone.
+
 > **0.10.0: repeaters, rooms and trace in the MeshCore app** (8 October 2026, no full run). 15 boards build; the
 > Chinese T114 image has 6 KB free. Heltec V4 (`tools/flash.py`) and T114 (`tools/nrf52.py`) with a local build; the
 > `meshcore` 2.3.15 Python library on the Heltec over USB, the T114 as a room, then a repeater: admin login, status,

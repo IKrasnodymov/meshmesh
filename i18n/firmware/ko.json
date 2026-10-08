@@ -1964,6 +1964,11 @@
   "ru": "Ретрансляция",
   "text": "패킷 중계"
  },
+ "67c2abb2": {
+  "en": "Path hash size",
+  "ru": "Размер хэша пути",
+  "text": "경로 해시 크기"
+ },
  "055e7477": {
   "en": "Name",
   "ru": "Имя",
@@ -2024,6 +2029,20 @@
   "ru": " кГц",
   "text": " kHz"
  },
+ "44398b47": {
+  "en": {
+   "one": "byte",
+   "other": "bytes"
+  },
+  "ru": {
+   "one": "байт",
+   "few": "байта",
+   "many": "байт"
+  },
+  "forms": {
+   "other": "{n}바이트"
+  }
+ },
  "a9bc47f3": {
   "en": "Volts",
   "ru": "Вольты",
@@ -2078,6 +2097,11 @@
   "en": "Forward other nodes' MeshCore packets",
   "ru": "Пересылать чужие пакеты MeshCore",
   "text": "다른 노드의 MeshCore 패킷 중계"
+ },
+ "0e32bba8": {
+  "en": "Per hop in our floods; older MeshCore drops 2-3",
+  "ru": "На пересылку; старые MeshCore не пересылают 2-3",
+  "text": "플러드 패킷 홉당 크기; 구 MeshCore는 2-3 폐기"
  },
  "7c140ddc": {
   "en": "Applied to the radio when saved",

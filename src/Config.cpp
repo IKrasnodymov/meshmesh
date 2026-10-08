@@ -6,7 +6,7 @@ Config config;
 bool Config::valid() const {
   return isfinite(frequency) && frequency>=863.0f && frequency<=870.0f &&
     (bandwidth==62.5f || bandwidth==125.0f || bandwidth==250.0f || bandwidth==500.0f) &&
-    sf>=7 && sf<=12 && cr>=5 && cr<=8 && power>=0 && power<=MM_MAX_POWER && hops<=7 && brightness>=10 &&
+    sf>=7 && sf<=12 && cr>=5 && cr<=8 && power>=0 && power<=MM_MAX_POWER && hops<=7 && pathHash>=1 && pathHash<=3 && brightness>=10 &&
     (autoLock==0 || (autoLock>=30&&autoLock<=600)) && (dimAfter==0||(dimAfter>=10&&dimAfter<=600)) && utcOffset>=-720&&utcOffset<=840&&utcOffset%15==0 &&
     strnlen(name,sizeof(name))>0 && strnlen(name,sizeof(name))<sizeof(name) &&
     meshmesh::validUtf8((const uint8_t*)name,strlen(name));
@@ -17,7 +17,7 @@ void Config::load() {
   if(!name[0]) strcpy(name,MM_NODE_NAME);
   frequency=p.getFloat("freq",868.731f); bandwidth=p.getFloat("bw",62.5f);
   sf=p.getUChar("sf",8); cr=p.getUChar("cr",6); power=p.getChar("power",10);
-  hops=p.getUChar("hops",3); relay=p.getBool("relay",true); gps=p.getBool("gps",MM_GPS_DEFAULT);
+  hops=p.getUChar("hops",3); pathHash=p.getUChar("path_hash",1); relay=p.getBool("relay",true); gps=p.getBool("gps",MM_GPS_DEFAULT);
   sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);lockDetails=p.getBool("lock_txt",true);
   utcOffset=p.getShort("utc_offset",180);
@@ -37,12 +37,12 @@ void Config::load() {
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}
   p.end();
-  if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;strcpy(name,"MeshMesh");}
+  if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=1;strcpy(name,"MeshMesh");}
 }
 void Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return;
   p.putString("name",name); p.putFloat("freq",frequency); p.putFloat("bw",bandwidth);
-  p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops);
+  p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops); p.putUChar("path_hash",pathHash);
   p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putUChar("lang",lang);p.putBool("russian",lang==LangRu);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putBytes("key",key,32);p.end();
 }

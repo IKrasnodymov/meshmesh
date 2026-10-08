@@ -10,6 +10,7 @@ struct Config {
   char name[25]=MM_NODE_NAME;
   float frequency=868.731f, bandwidth=62.5f;
   uint8_t sf=8, cr=6, hops=3, brightness=180;
+  uint8_t pathHash=1; // bytes per hop in the path of our flood packets, 1..3 (MeshCore path hash mode + 1)
   int8_t power=10;
   bool relay=true, gps=true, sound=true, batteryVolts=false;
   uint8_t lang=LangEn; // interface language, I18n.h

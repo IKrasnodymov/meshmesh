@@ -8,7 +8,7 @@ namespace {
 enum:uint8_t {CmdAppStart=1,CmdSendText,CmdSendChannelText,CmdGetContacts,CmdGetTime,CmdSetTime,CmdSendAdvert,CmdSetName,CmdAddContact,
  CmdSyncNext,CmdSetRadio,CmdSetPower,CmdResetPath,CmdSetPosition,CmdRemoveContact,CmdShareContact,CmdExportContact,CmdImportContact,CmdReboot,
  CmdBattery,CmdSetTuning,CmdDeviceQuery,CmdExportKey,CmdImportKey,CmdSendRaw,CmdLogin,CmdStatusReq,CmdHasConnection,CmdLogout,CmdContactByKey,
- CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdStats=56,CmdAnonReq,CmdGetAutoAdd=59};
+ CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdStats=56,CmdAnonReq,CmdGetAutoAdd=59,CmdSetPathHashMode=61};
 enum:uint8_t {RespOk,RespErr,RespContactsStart,RespContact,RespContactsEnd,RespSelfInfo,RespSent,RespContactMsgOld,RespChannelMsgOld,RespTime,
  RespNoMore,RespExport,RespBattery,RespDeviceInfo,RespDisabled=15,RespContactMsg,RespChannelMsg,RespChannelInfo,RespCustomVars=21,
  RespTuning=23,RespStats,RespAutoAdd};
@@ -202,7 +202,7 @@ struct CompanionCore {
  }
  void deviceInfo(){
   start(RespDeviceInfo);u8(ProtocolVersion);u8(MAX_CONTACTS/2);u8(channels::Max);u32(blePin());field(__DATE__,12);field(MM_BOARD_NAME,40);
-  field("MeshMesh " MESHMM_VERSION,20);u8(config.relay?1:0);u8(0);send();
+  field("MeshMesh " MESHMM_VERSION,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
  }
  void handle(const uint8_t* frame,size_t len){
   uint8_t cmd=frame[0];auto& r=meshRadio;
@@ -254,6 +254,7 @@ struct CompanionCore {
    case CmdSetChannel:if(len<50)break;if(len>=66){err(ErrUnsupported);return;}setChannel(frame);return; // 256-bit keys: not in MeshCore either
    case CmdCustomVars:start(RespCustomVars);send();return;
    case CmdStats:if(len<2)break;stats(frame[1]);return;
+   case CmdSetPathHashMode:{if(len<3||frame[1])break;if(frame[2]>=3){err(ErrIllegalArg);return;}StaticJsonDocument<32> j;j["path_hash"]=frame[2]+1;settingsReply(apply(j));return;}
    case CmdGetAutoAdd:start(RespAutoAdd);u8(0x1F);u8(0);send();return; // every type, the oldest replaced when full
   }
   err(cmd==CmdSendText||cmd==CmdAddContact||cmd==CmdSetChannel||cmd==CmdGetChannel?ErrIllegalArg:ErrUnsupported);

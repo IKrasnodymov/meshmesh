@@ -116,7 +116,7 @@ String channelCommand(JsonObjectConst v){
 }
 String configJson(bool includeKey) {
   StaticJsonDocument<768> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
-  d["hops"]=config.hops;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
+  d["hops"]=config.hops;d["path_hash"]=config.pathHash;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;d["lock_details"]=config.lockDetails;
   d["utc_offset"]=config.utcOffset;
   String s;serializeJson(d,s);return s;
@@ -131,12 +131,13 @@ String applySettings(JsonObjectConst v) {
     else if(name=="frequency" || name=="bandwidth") {
       if(!value.is<float>() && !value.is<int>())return "ERR numeric value required";
       if(name=="frequency")next.frequency=value.as<float>();else next.bandwidth=value.as<float>();
-    } else if(name=="sf"||name=="cr"||name=="power"||name=="hops"||name=="brightness") {
+    } else if(name=="sf"||name=="cr"||name=="power"||name=="hops"||name=="path_hash"||name=="brightness") {
       if(!value.is<int>())return "ERR integer value required";int n=value.as<int>();
       if(name=="sf") {if(n<7||n>12)return "ERR SF 7..12";next.sf=n;}
       if(name=="cr") {if(n<5||n>8)return "ERR CR 5..8";next.cr=n;}
       if(name=="power") {if(n<0||n>MM_MAX_POWER)return "ERR power 0.." + String(MM_MAX_POWER) + " dBm";next.power=n;}
       if(name=="hops") {if(n<0||n>7)return "ERR hops 0..7";next.hops=n;}
+      if(name=="path_hash") {if(n<1||n>3)return "ERR path_hash 1..3 bytes";next.pathHash=n;}
       if(name=="brightness") {if(n<10||n>255)return "ERR brightness 10..255";next.brightness=n;}
     } else if(name=="utc_offset") {
       if(!value.is<int>())return "ERR integer UTC offset required";int n=value.as<int>();if(n<-720||n>840||n%15)return "ERR UTC offset minutes: -720..840, step 15";next.utcOffset=n;

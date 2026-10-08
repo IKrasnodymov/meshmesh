@@ -36,7 +36,8 @@ Protocol version 10 (`examples/companion_radio` of MeshCore companion-v1.17.1), 
 - Receiving: direct and channel messages wait for the app in a queue (12 frames, in RAM). When it
   overflows, old channel messages go first. Messages appear on the screen as usual.
 - Node advert (flooded or zero-hop), time (read and set), name, radio parameters, power, relaying,
-  battery and storage, core, radio and packet statistics, restart.
+  path hash size (since 0.11.0, `CMD_SET_PATH_HASH_MODE`: mode 0–2 = 1–3 bytes; the same setting as
+  “Path hash size” on the board), battery and storage, core, radio and packet statistics, restart.
 - Messages sent from the app are kept in the board's history and shown on the screen and the web page.
 - Since 0.10.0, MeshCore repeaters and rooms (stock ones and MeshMesh in a server mode): login with a
   password (admin, member, guest), CLI commands and their replies, status, telemetry and binary requests
@@ -65,7 +66,7 @@ The board answers these commands with "unsupported" (`ERR_CODE_UNSUPPORTED_CMD`)
   discovery to a MeshMesh node in the normal mode gets no answer; repeaters and rooms answer;
 - coordinates for the advert set from the app (the position comes from the board's GPS), other
   parameters (telemetry mode, extra ACKs, manual contact adding), auto-add settings, receive delay,
-  flood scopes, path hash mode, PIN change;
+  flood scopes, PIN change;
 - exporting and importing the private key (answered "disabled", as on stock firmware without that option).
 
 Chess moves arriving over the radio are not passed to the app: they are service messages.
