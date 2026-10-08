@@ -4644,6 +4644,81 @@
   "ru": "Обычный",
   "text": "Normal"
  },
+ "86199342": {
+  "en": "Power",
+  "ru": "Мощность",
+  "text": "Güç"
+ },
+ "3bbc960b": {
+  "en": "Relay limit",
+  "ru": "Предел перес.",
+  "text": "Aktarma sınırı"
+ },
+ "68900df9": {
+  "en": "Relaying",
+  "ru": "Ретрансляция",
+  "text": "Aktarma"
+ },
+ "41cf12bb": {
+  "en": "Path hash",
+  "ru": "Хэш пути",
+  "text": "Yol hash"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "açık"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "kapalı"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Radyo meşgul, tekrarla"
+ },
+ "d7a4d1f0": {
+  "en": "<> digit, up/down value",
+  "ru": "<> цифра, вверх/вниз",
+  "text": "<> basamak, yukarı/aşağı"
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "yukarı/aşağı, OK"
+ },
+ "ef495f28": {
+  "en": "up/down, <> change",
+  "ru": "вверх/вниз, <> изменить",
+  "text": "yukarı/aşağı, <> değiştir"
+ },
+ "6ec06510": {
+  "en": "click-digit+ hold-next",
+  "ru": "клик-цифра+ держ-далее",
+  "text": "tık-basamak+ tut-ileri"
+ },
+ "432de4cf": {
+  "en": "click-change hold-done",
+  "ru": "клик-изм. держ-готово",
+  "text": "tık-değiştir tut-bitti"
+ },
+ "75f86982": {
+  "en": "click-next hold-save",
+  "ru": "клик-далее держ-сохр.",
+  "text": "tık-ileri tut-kaydet"
+ },
+ "85917c25": {
+  "en": "click-next hold-leave",
+  "ru": "клик-далее держ-выйти",
+  "text": "tık-ileri tut-çık"
+ },
+ "5acca8e7": {
+  "en": "click-next hold-change",
+  "ru": "клик-далее держ-изм.",
+  "text": "tık-ileri tut-değiştir"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4889,6 +4964,11 @@
   "ru": "Выключить...",
   "text": "Kapat..."
  },
+ "77455ac1": {
+  "en": "Radio...",
+  "ru": "Радио...",
+  "text": "Radyo..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4963,21 +5043,6 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Yol sıfırlanamadı"
- },
- "e349df7c": {
-  "en": "on",
-  "ru": "вкл",
-  "text": "açık"
- },
- "4e31008a": {
-  "en": "off",
-  "ru": "выкл",
-  "text": "kapalı"
- },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Radyo meşgul, tekrarla"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5073,11 +5138,6 @@
   "en": "as now in ",
   "ru": "как сейчас через ",
   "text": "aynı mod, "
- },
- "9ff2e26f": {
-  "en": "up/down, OK",
-  "ru": "вверх/вниз, OK",
-  "text": "yukarı/aşağı, OK"
  },
  "dc6208b5": {
   "en": "click-next hold-choose",

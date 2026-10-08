@@ -14,6 +14,13 @@ static void scenario(){
  key(0x86);key(0xb7);key(0xb7);key(0xb7);shot("gat562-chess-list");key(13);key(13);shot("gat562-chess");key(0x86);key(0x86);
  key(0xb7);for(int i=0;i<3;i++)tick();shot("gat562-radar");
  key(0xb4);key(0xb4);key(13);shot("gat562-node-menu");key(0x86);
+ // Radio settings: "Radio..." in the Settings menu; the frequency by digits (OK, left/right, up/down), SF by right, Save.
+ {auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
+  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"settings\"")<0;i++)key(0xb7);key(13);key(0xb6);key(13);expect("radio screen","\"page\":\"radio\"");shot("gat562-radio");
+  key(13);key(0xb5);expect("MHz +1","\"radio_draft\":\"869.731\"");key(0xb7);key(0xb7);key(0xb5);key(0xb5);expect("10 kHz +2","\"radio_draft\":\"869.751\"");shot("gat562-radio-freq");
+  key(13);key(0xb6);key(0xb6);key(0xb7);expect("SF9","\"radio_draft\":\"9\"");shot("gat562-radio-sf");
+  for(int i=0;i<6;i++)key(0xb6);expect("Save row","\"radio_row\":8");key(13);expect("saved and closed","\"page\":\"settings\"");
+  key(13);key(0xb6);key(13);key(0x86);expect("back leaves","\"page\":\"settings\"");}
 #elif defined(MM_BOARD_TDECK)
  // Touch (uiTouch): each step checks the page the production UI reached.
  auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
@@ -253,6 +260,12 @@ static void scenario(){
  // Storage left by another firmware: "Create storage..." heads the home menu, a second hold formats.
  hardware.fsOk=false;home();previewCommands="";key(0xa3);shot("heltec-format-menu");key(0xa3);shot("heltec-format-armed");key(0xa3);
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
+ // Radio settings with one button: hold on "Radio...", the frequency digit by digit (click +1, hold next), SF, Save.
+ for(int i=0;i<11;i++)tick();for(int i=0;i<12&&uiStatus().indexOf("\"page\":\"settings\"")<0;i++)key(13);
+ key(0xa3);expect("settings menu","\"menu\":true");key(0xa3);expect("radio screen","\"page\":\"radio\"");shot("heltec-radio");
+ key(0xa3);key(13);expect("MHz +1","\"radio_draft\":\"869.731\"");key(0xa3);key(0xa3);key(13);key(13);expect("10 kHz +2","\"radio_draft\":\"869.751\"");shot("heltec-radio-freq");
+ key(0xa3);key(0xa3);expect("digits done","\"radio_editing\":false");key(13);key(13);key(0xa3);key(13);expect("SF9","\"radio_draft\":\"9\"");shot("heltec-radio-sf");key(0xa3);
+ for(int i=0;i<6;i++)key(13);expect("Save row","\"radio_row\":8");shot("heltec-radio-save");key(0xa3);expect("saved and closed","\"page\":\"settings\"");
 #else
  config.role=RoleRepeater;key(0x82);shot("repeater");key(0x86);
  config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.lang==LangRu||config.lang==LangUk?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);

@@ -145,10 +145,77 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 #include "UiPetCompact.inc"
 #endif
 template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96>d;d[key]=value;return applySettings(d.as<JsonObjectConst>());}
+// Radio settings on the device: a draft saved at once, as on the M9. One button: click - next row,
+// hold - change it (click - next value, hold - done); the frequency goes digit by digit (click - the
+// digit +1, hold - the next digit). Joystick: up/down - rows, left/right - values, OK on the frequency -
+// its digits (left/right - digit, up/down - value), back - leave without saving.
+enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowSave,RowCancel,RadioRows};
+bool radioEdit=false,radioEditing=false;int radioRow=0,radioDigit=0;Config radioDraft;
+void openRadio(){radioDraft=config;radioEdit=true;radioEditing=false;radioRow=0;radioDigit=0;dirty=true;}
+String radioName(int i){
+ switch(i){case RowFreq:return t("Frequency","Частота");case RowBw:return t("Bandwidth","Полоса");case RowSf:return "SF";case RowCr:return "CR";
+ case RowPower:return t("Power","Мощность");case RowHops:return t("Relay limit","Предел перес.");case RowRelay:return t("Relaying","Ретрансляция");case RowHash:return t("Path hash","Хэш пути");
+ case RowSave:return t("Save","Сохранить");default:return t("Cancel","Отмена");}
+}
+String radioValue(const Config& c,int i){
+ switch(i){case RowFreq:return String(c.frequency,3);case RowBw:return String(c.bandwidth,1);case RowSf:return String(c.sf);case RowCr:return "4/"+String(c.cr);
+ case RowPower:return String(c.power)+" dBm";case RowHops:return String(c.hops);case RowRelay:return c.relay?t("on","вкл"):t("off","выкл");
+ case RowHash:return plural(c.pathHash,"byte","bytes","байт","байта","байт");}return "";
+}
+bool radioChanged(){for(int i=0;i<RowSave;i++)if(radioValue(radioDraft,i)!=radioValue(config,i))return true;return false;}
+// The frequency digit being set: 0 - megahertz (863..870), 1..3 - the kilohertz digits.
+void radioDigitSpan(const String& v,unsigned& from,unsigned& to){if(radioDigit==0){from=0;to=v.indexOf('.');}else{from=v.indexOf('.')+radioDigit;to=from+1;}}
+void radioStep(int dir){
+ auto& d=radioDraft;
+ switch(radioRow){
+ case RowFreq:{long k=lroundf(d.frequency*1000);
+  if(radioDigit==0){k+=dir*1000L;if(k>=871000)k-=8000;if(k<863000)k+=8000;}
+  else{long unit=radioDigit==1?100:radioDigit==2?10:1;int digit=k/unit%10;k+=((digit+dir+10)%10-digit)*unit;}
+  d.frequency=constrain(k,863000L,870000L)/1000.f;break;}
+ case RowBw:{const float bw[]={62.5f,125,250,500};int i=0;while(i<3&&d.bandwidth!=bw[i])i++;d.bandwidth=bw[(i+dir+4)%4];break;}
+ case RowSf:d.sf=7+(d.sf-7+dir+6)%6;break;
+ case RowCr:d.cr=5+(d.cr-5+dir+4)%4;break;
+ case RowPower:d.power=(d.power+dir+MM_MAX_POWER+1)%(MM_MAX_POWER+1);break;
+ case RowHops:d.hops=(d.hops+dir+8)%8;break;
+ case RowRelay:d.relay=!d.relay;break;
+ case RowHash:d.pathHash=1+(d.pathHash-1+dir+3)%3;break;
+ }dirty=true;
+}
+void radioSave(){
+ if(!radioChanged()){radioEdit=false;notice(t("Nothing to save","Изменений нет"));return;}
+ StaticJsonDocument<256> j;auto& d=radioDraft;j["frequency"]=d.frequency;j["bandwidth"]=d.bandwidth;j["sf"]=int(d.sf);j["cr"]=int(d.cr);j["power"]=int(d.power);j["hops"]=int(d.hops);j["relay"]=d.relay;j["path_hash"]=int(d.pathHash);
+ String r=applySettings(j.as<JsonObjectConst>());bool saved=r.startsWith("OK");if(saved)radioEdit=false;
+ notice(saved?t("Settings saved","Настройки сохранены"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4));
+}
+void radioButton(bool click,bool hold){
+ if(radioEditing){if(click)radioStep(1);else if(hold){if(radioRow==RowFreq&&radioDigit<3)radioDigit++;else{radioEditing=false;radioDigit=0;}}return;}
+ if(click){radioRow=(radioRow+1)%RadioRows;return;}
+ if(!hold)return;
+ if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowRelay)radioStep(1);else{radioEditing=true;radioDigit=0;}
+}
+#if defined(MM_JOYSTICK)
+void radioJoystick(bool up,bool down,bool left,bool right,bool ok,bool back){
+ if(radioEditing){if(up||down)radioStep(up?1:-1);else if(left||right)radioDigit=constrain(radioDigit+(right?1:-1),0,3);else if(ok||back)radioEditing=false;return;}
+ if(up||down){radioRow=(radioRow+(up?RadioRows-1:1))%RadioRows;return;}
+ if(left||right){if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else if(radioRow<RowSave)radioStep(right?1:-1);return;}
+ if(ok){if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else radioStep(1);return;}
+ if(back)radioEdit=false;
+}
+#endif
+// The key hints of the radio screen: what a click and a hold (or the joystick) do now.
+String radioHint(){
+#if defined(MM_JOYSTICK)
+ if(radioEditing)return t("<> digit, up/down value","<> цифра, вверх/вниз");
+ return radioRow>=RowSave?t("up/down, OK","вверх/вниз, OK"):t("up/down, <> change","вверх/вниз, <> изменить");
+#else
+ if(radioEditing)return radioRow==RowFreq?t("click-digit+ hold-next","клик-цифра+ держ-далее"):t("click-change hold-done","клик-изм. держ-готово");
+ return radioRow==RowSave?t("click-next hold-save","клик-далее держ-сохр."):radioRow==RowCancel?t("click-next hold-leave","клик-далее держ-выйти"):t("click-next hold-change","клик-далее держ-изм.");
+#endif
+}
 
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
-  ActPowerOff,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
+  ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
   ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActClose};
 constexpr unsigned MenuMax=10;
 #if MM_DICE
@@ -212,7 +279,7 @@ unsigned actions(Act* out){
 #if defined(MM_JOYSTICK)
   out[n++]=ActSound; // the GAT562 buzzer
 #endif
-  out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;break;
+  out[n++]=ActRadio;out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;break;
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
@@ -252,7 +319,7 @@ String actName(Act a){
  case ActPetFeed:return t("Feed a snack: ","Кормить, вкусн.: ")+String(creature.s.snacks);case ActPetHeal:return t("Heal","Лечить");case ActPetEgg:return t("New egg","Новое яйцо");
  case ActPetAdopt:return t("Start a pet","Завести питомца");case ActPetRelease:return t("Let it go...","Отпустить...");
  case ActPetDeath:return creature.s.mortal?t("Death: on","Смерть: вкл."):t("Death: off","Смерть: выкл.");
- case ActPowerOff:return t("Turn off...","Выключить...");
+ case ActPowerOff:return t("Turn off...","Выключить...");case ActRadio:return t("Radio...","Радио...");
  case ActSelfTest:return t("Encryption test","Тест шифрования");case ActClose:return t("< Close menu","< Закрыть меню");
  default:break;
  }return "";
@@ -288,7 +355,7 @@ void run(Act a){
  case ActChessOpen:{ChessMatch* games[ChessNet::MaxMatches];unsigned g=chessGames(games);if(g)openChess(games[chessSel%g]);break;}
  case ActChessNext:chessSel++;menuIndex=0;break;
 #endif
- case ActRole:openRolePick(false);break;
+ case ActRole:openRolePick(false);break;case ActRadio:openRadio();break;
  case ActForward:{String r=meshServer.command(meshServer.view().forwarding?"set repeat off":"set repeat on");notice(r.startsWith("OK")?(meshServer.view().forwarding?t("Forwarding on","Пересылка вкл."):t("Forwarding off","Пересылка выкл.")):r);break;}
  case ActAdvert:notice(meshRadio.sendHello()?t("Node announced","Узел объявлен"):t("Announcement failed","Объявление не отправлено"));break;
  case ActReplyOk:reply("OK");break;case ActReplyAck:reply(t("Got it","Принято"));break;
@@ -401,6 +468,18 @@ void drawRolePick(){
  if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
  hardware.flush();
 }
+// Radio settings: three rows; the value being changed (or the frequency digit) drawn inverted.
+void drawRadioEdit(){
+ auto& c=*hardware.canvas;c.fillScreen(0);int first=max(0,min(radioRow-1,RadioRows-3));
+ for(int r=first;r<first+3;r++){int y=21+(r-first)*12;bool focus=r==radioRow;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,radioName(r),small,!focus);
+  if(r>=RowSave)continue;String v=radioValue(radioDraft,r);int x=125-width(v,small);sayRight(125,y,v,small,!focus);
+  if(radioValue(config,r)!=v)c.fillRect(x-4,y-5,2,2,!focus); // changed, not saved yet
+  if(focus&&radioEditing){unsigned a=0,b=v.length();if(r==RowFreq)radioDigitSpan(v,a,b);int u=x+width(v.substring(0,a),small);String part=v.substring(a,b);
+   c.fillRect(u-1,y-9,width(part,small)+2,11,0);say(u,y,part,small,1);}}
+ header(t("Radio","Радио")+(radioChanged()?" *":""));sayRight(128,63,radioHint(),small);
+ if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
+ hardware.flush();
+}
 // Power off pending (Power.cpp): what turns the board on again.
 String powerOnHint(){int way=powerOnWay();
  if(way==-2)return t("the power key","кнопка питания");if(way<0)return t("RESET or power switch","RESET или выключатель");
@@ -430,7 +509,7 @@ void draw(){
 #if defined(MM_HIRES)
  hi::draw();return; // T114: its own drawing at 240x135
 #endif
- auto& c=*hardware.canvas;if(powerOffPending()){drawOff();return;}if(rolePick){drawRolePick();return;}
+ auto& c=*hardware.canvas;if(powerOffPending()){drawOff();return;}if(rolePick){drawRolePick();return;}if(radioEdit){drawRadioEdit();return;}
 #if defined(MM_JOYSTICK)
  if(composing){drawCompose();return;}
 #endif
@@ -562,8 +641,10 @@ void uiKey(int key){
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness);return;} // the first press only wakes the panel
 #if defined(MM_JOYSTICK)
+ if(radioEdit){radioJoystick(key==0xb5,key==0xb6,key==0xb4,key==0xb7,key==13||key==0xa3,key==0x86||key==0x82);return;}
  joystickKey(key);return;
 #endif
+ if(radioEdit){radioButton(key==13||key==0x82,key==0xa3);return;}
  if(rolePick){if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
   if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;}return;}
  if(popupAt){popupAt=0;if(key==13)return;}
@@ -585,7 +666,7 @@ void uiKey(int key){
 }
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<640>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+String uiStatus(){StaticJsonDocument<640>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
 #if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}

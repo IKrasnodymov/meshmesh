@@ -382,11 +382,25 @@ void chessBoard(const ChessMatch& m){
  toast();
 }
 #endif
+// Radio settings: four rows, changed values in amber, the value being set in the accent colour.
+void radioPage(){
+ g().fillScreen(ColBack);statusBar(t("Radio","Радио")+(radioChanged()?" *":""));int first=max(0,min(radioRow-1,RadioRows-4));
+ for(int r=first;r<first+4;r++){int y=23+(r-first)*23;bool focus=r==radioRow;row(y,22,focus);
+  text(14,y+16,radioName(r),focus?ColInk:ColDim,small);if(r>=RowSave)continue;
+  String v=radioValue(radioDraft,r);bool editing=focus&&radioEditing;uint16_t vc=editing?ColAccent:radioValue(config,r)!=v?ColWarn:ColInk;int x=228-width(v,small);right(228,y+16,v,vc,small);
+  if(editing){if(r==RowFreq){unsigned a,b;radioDigitSpan(v,a,b);g().fillRect(x+width(v.substring(0,a),small),y+18,width(v.substring(a,b),small),2,ColAccent);}
+   else g().drawRoundRect(x-4,y+2,width(v,small)+8,18,4,ColAccent);}}
+ // "click-next hold-change" as two key chips
+ String h=radioHint(),parts[2];int space=h.indexOf(' ');parts[0]=h.substring(0,space);parts[1]=h.substring(space+1);
+ for(auto& s:parts){int dash=s.indexOf('-');if(dash>0)s=s.substring(0,dash)+": "+s.substring(dash+1);}footer({parts[0],parts[1]});
+ toast();
+}
 void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),ColInk,bold);center(120,106,t("To turn on:","Включить:")+" "+powerOnHint(),ColDim,small);}
 void draw(){
  auto& d=g();
  if(powerOffPending()){offPage();hardware.flush();return;}
  if(rolePick){rolePage();hardware.flush();return;}
+ if(radioEdit){radioPage();hardware.flush();return;}
  d.fillScreen(ColBack);
  const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){statusBar(t("Messages","Сообщения"));popup(*last);footer({t("click: close","клик: закрыть")});hardware.flush();return;}

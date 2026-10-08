@@ -4644,6 +4644,81 @@
   "ru": "Обычный",
   "text": "Normal"
  },
+ "86199342": {
+  "en": "Power",
+  "ru": "Мощность",
+  "text": "Potência"
+ },
+ "3bbc960b": {
+  "en": "Relay limit",
+  "ru": "Предел перес.",
+  "text": "Limite saltos"
+ },
+ "68900df9": {
+  "en": "Relaying",
+  "ru": "Ретрансляция",
+  "text": "Retransmitir"
+ },
+ "41cf12bb": {
+  "en": "Path hash",
+  "ru": "Хэш пути",
+  "text": "Hash de rota"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "lig"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "desl"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Rádio ocupado, repita"
+ },
+ "d7a4d1f0": {
+  "en": "<> digit, up/down value",
+  "ru": "<> цифра, вверх/вниз",
+  "text": "<> dígito, cima/baixo"
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "cima/baixo, OK"
+ },
+ "ef495f28": {
+  "en": "up/down, <> change",
+  "ru": "вверх/вниз, <> изменить",
+  "text": "cima/baixo, <> mudar"
+ },
+ "6ec06510": {
+  "en": "click-digit+ hold-next",
+  "ru": "клик-цифра+ держ-далее",
+  "text": "clique-dígito+ seg.-próx"
+ },
+ "432de4cf": {
+  "en": "click-change hold-done",
+  "ru": "клик-изм. держ-готово",
+  "text": "clique-mudar seg.-ok"
+ },
+ "75f86982": {
+  "en": "click-next hold-save",
+  "ru": "клик-далее держ-сохр.",
+  "text": "clique-próx seg.-salvar"
+ },
+ "85917c25": {
+  "en": "click-next hold-leave",
+  "ru": "клик-далее держ-выйти",
+  "text": "clique-próx seg.-sair"
+ },
+ "5acca8e7": {
+  "en": "click-next hold-change",
+  "ru": "клик-далее держ-изм.",
+  "text": "clique-próx seg.-mudar"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4889,6 +4964,11 @@
   "ru": "Выключить...",
   "text": "Desligar..."
  },
+ "77455ac1": {
+  "en": "Radio...",
+  "ru": "Радио...",
+  "text": "Rádio..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4963,21 +5043,6 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Falha ao zerar rota"
- },
- "e349df7c": {
-  "en": "on",
-  "ru": "вкл",
-  "text": "lig"
- },
- "4e31008a": {
-  "en": "off",
-  "ru": "выкл",
-  "text": "desl"
- },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Rádio ocupado, repita"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5073,11 +5138,6 @@
   "en": "as now in ",
   "ru": "как сейчас через ",
   "text": "atual em "
- },
- "9ff2e26f": {
-  "en": "up/down, OK",
-  "ru": "вверх/вниз, OK",
-  "text": "cima/baixo, OK"
  },
  "dc6208b5": {
   "en": "click-next hold-choose",

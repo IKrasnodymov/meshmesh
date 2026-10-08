@@ -4626,6 +4626,81 @@
   "ru": "Обычный",
   "text": "Normal"
  },
+ "86199342": {
+  "en": "Power",
+  "ru": "Мощность",
+  "text": "Daya"
+ },
+ "3bbc960b": {
+  "en": "Relay limit",
+  "ru": "Предел перес.",
+  "text": "Batas relay"
+ },
+ "68900df9": {
+  "en": "Relaying",
+  "ru": "Ретрансляция",
+  "text": "Relay"
+ },
+ "41cf12bb": {
+  "en": "Path hash",
+  "ru": "Хэш пути",
+  "text": "Hash jalur"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "on"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "off"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Radio sibuk, coba lagi"
+ },
+ "d7a4d1f0": {
+  "en": "<> digit, up/down value",
+  "ru": "<> цифра, вверх/вниз",
+  "text": "<> digit, atas/bawah"
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "atas/bawah, OK"
+ },
+ "ef495f28": {
+  "en": "up/down, <> change",
+  "ru": "вверх/вниз, <> изменить",
+  "text": "atas/bawah, <> ubah"
+ },
+ "6ec06510": {
+  "en": "click-digit+ hold-next",
+  "ru": "клик-цифра+ держ-далее",
+  "text": "klik-digit+ tahan-lanjut"
+ },
+ "432de4cf": {
+  "en": "click-change hold-done",
+  "ru": "клик-изм. держ-готово",
+  "text": "klik-ubah tahan-selesai"
+ },
+ "75f86982": {
+  "en": "click-next hold-save",
+  "ru": "клик-далее держ-сохр.",
+  "text": "klik-lanjut tahan-simpan"
+ },
+ "85917c25": {
+  "en": "click-next hold-leave",
+  "ru": "клик-далее держ-выйти",
+  "text": "klik-lanjut tahan-keluar"
+ },
+ "5acca8e7": {
+  "en": "click-next hold-change",
+  "ru": "клик-далее держ-изм.",
+  "text": "klik-lanjut tahan-ubah"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4871,6 +4946,11 @@
   "ru": "Выключить...",
   "text": "Matikan..."
  },
+ "77455ac1": {
+  "en": "Radio...",
+  "ru": "Радио...",
+  "text": "Radio..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4945,21 +5025,6 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Gagal reset jalur"
- },
- "e349df7c": {
-  "en": "on",
-  "ru": "вкл",
-  "text": "on"
- },
- "4e31008a": {
-  "en": "off",
-  "ru": "выкл",
-  "text": "off"
- },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Radio sibuk, coba lagi"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5055,11 +5120,6 @@
   "en": "as now in ",
   "ru": "как сейчас через ",
   "text": "seperti kini dlm "
- },
- "9ff2e26f": {
-  "en": "up/down, OK",
-  "ru": "вверх/вниз, OK",
-  "text": "atas/bawah, OK"
  },
  "dc6208b5": {
   "en": "click-next hold-choose",

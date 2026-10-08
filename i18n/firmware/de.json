@@ -4644,6 +4644,81 @@
   "ru": "Обычный",
   "text": "Normal"
  },
+ "86199342": {
+  "en": "Power",
+  "ru": "Мощность",
+  "text": "Leistung"
+ },
+ "3bbc960b": {
+  "en": "Relay limit",
+  "ru": "Предел перес.",
+  "text": "Hop-Limit"
+ },
+ "68900df9": {
+  "en": "Relaying",
+  "ru": "Ретрансляция",
+  "text": "Weiterleiten"
+ },
+ "41cf12bb": {
+  "en": "Path hash",
+  "ru": "Хэш пути",
+  "text": "Pfad-Hash"
+ },
+ "e349df7c": {
+  "en": "on",
+  "ru": "вкл",
+  "text": "an"
+ },
+ "4e31008a": {
+  "en": "off",
+  "ru": "выкл",
+  "text": "aus"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Funk belegt, erneut"
+ },
+ "d7a4d1f0": {
+  "en": "<> digit, up/down value",
+  "ru": "<> цифра, вверх/вниз",
+  "text": "<> Ziffer, hoch/runter"
+ },
+ "9ff2e26f": {
+  "en": "up/down, OK",
+  "ru": "вверх/вниз, OK",
+  "text": "hoch/runter, OK"
+ },
+ "ef495f28": {
+  "en": "up/down, <> change",
+  "ru": "вверх/вниз, <> изменить",
+  "text": "hoch/runter, <> ändern"
+ },
+ "6ec06510": {
+  "en": "click-digit+ hold-next",
+  "ru": "клик-цифра+ держ-далее",
+  "text": "Klick-Ziffer+ Halten-vor"
+ },
+ "432de4cf": {
+  "en": "click-change hold-done",
+  "ru": "клик-изм. держ-готово",
+  "text": "Klick-ändern Halten-OK"
+ },
+ "75f86982": {
+  "en": "click-next hold-save",
+  "ru": "клик-далее держ-сохр.",
+  "text": "Klick-vor Halten-sichern"
+ },
+ "85917c25": {
+  "en": "click-next hold-leave",
+  "ru": "клик-далее держ-выйти",
+  "text": "Klick-vor Halten-raus"
+ },
+ "5acca8e7": {
+  "en": "click-next hold-change",
+  "ru": "клик-далее держ-изм.",
+  "text": "Klick-vor Halten-ändern"
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -4889,6 +4964,11 @@
   "ru": "Выключить...",
   "text": "Ausschalten..."
  },
+ "77455ac1": {
+  "en": "Radio...",
+  "ru": "Радио...",
+  "text": "Funk..."
+ },
  "a1d384e9": {
   "en": "Encryption test",
   "ru": "Тест шифрования",
@@ -4963,21 +5043,6 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Pfad nicht gelöscht"
- },
- "e349df7c": {
-  "en": "on",
-  "ru": "вкл",
-  "text": "an"
- },
- "4e31008a": {
-  "en": "off",
-  "ru": "выкл",
-  "text": "aus"
- },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Funk belegt, erneut"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5073,11 +5138,6 @@
   "en": "as now in ",
   "ru": "как сейчас через ",
   "text": "wie jetzt in "
- },
- "9ff2e26f": {
-  "en": "up/down, OK",
-  "ru": "вверх/вниз, OK",
-  "text": "hoch/runter, OK"
  },
  "dc6208b5": {
   "en": "click-next hold-choose",

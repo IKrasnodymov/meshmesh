@@ -1,5 +1,17 @@
 # MeshMesh verification
 
+> **0.12.0: radio settings on the Heltec, GAT562, T114 and community board screens** (8 October 2026, no full run).
+> “Settings → Radio...” in the compact interface: frequency digit by digit, bandwidth, SF, CR, power, relay limit,
+> relaying, path hash size; the draft is applied by the “Save” row. 15 boards build; the Chinese T114 image has 2 KB
+> free (6 before), GAT562 32 KB. The `tools/ui_preview` scenarios (Heltec one button, GAT562 joystick, T114) pass and
+> check the state after every step; the screens were viewed (ru, en, de, fr, pt, ar, zh, ja, tr; Arabic on the OLED still
+> overlaps rows). Heltec V4 (`tools/flash.py`, boot 187, `004722ED…`) and T114 (`tools/nrf52.py`, boot 21, `1BC0DCCD…`),
+> revision `1622561-dirty`, history kept. On each board by USB key events (`uikey`; the physical button was not
+> checked): path hash 1 → 2 and save; frequency 868.731 → 868.732 by the last digit, saved, radio restarted (`radio`
+> true), then back to 868.731 (digit 2 → 1 in 9 clicks); “Cancel” after changing SF saved nothing. Then T114 → V4 with
+> the 2-byte path set on the screen: ACK, one copy, `path_length=64`; no restarts. USB screenshots match the preview.
+> Both boards were set back to 1 byte afterwards. The GAT562 joystick was checked in the preview only (board not connected).
+
 > **0.11.0: path hash size in the settings** (8 October 2026, no full run). The `path_hash` setting (1–3 bytes,
 > 1 by default): the M9/T-Deck “Radio” screen, the web page, `set {JSON}`, the MeshCore app command
 > `CMD_SET_PATH_HASH_MODE` (61) and the field in `DEVICE_INFO`. 15 boards build; the Chinese T114 image has 6 KB free;
