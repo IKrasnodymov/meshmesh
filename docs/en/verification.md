@@ -9,7 +9,10 @@
 > Settings, then the rest, never to the hidden Chats and Nodes; an empty string restores the default; no restarts. On the
 > Heltec the choice survived a restart (boot 205). The web page through `web_usb_bridge.py` to the Heltec in headless
 > Chromium: moving, hiding, saving and "default order" reach the board, no JavaScript errors. A T114 screenshot over USB
-> shows the hint "click Settings". The M9 screen only in the preview (board not connected); the APK with the new page is
+> shows the hint "click Settings". The M9 (`tools/flash.py`, package
+> 0.14.0 `3627529`, boot 221, history of 64 and settings kept): the same USB checks, keys over USB — first tile Settings,
+> second Navigation; a screenshot shows no tiles for the hidden Chats, Map, Radar, Solitaire and the arrows move over the
+> shown ones. The APK with the new page is
 > unchecked on a phone. Both boards are back on the default order.
 
 > **0.13.1: a status request asked again, checked on the M9** (8 October 2026, no full run). The M9 went from 0.6.0 via
