@@ -13,6 +13,7 @@ struct Session {
   uint16_t battery=0,queue=0,posted=0;int16_t noise=0,rssi=0,snr=0;uint32_t uptime=0,received=0,sent=0,airtime=0;bool room=false;
   char reply[3][81]={};uint8_t replies=0; // the last CLI replies, newest first
   char password[16]={}; // the one tried last: saved when the login succeeds
+  uint8_t statusTries=0; // a lost status answer is asked once more, as the MeshCore apps do
 };
 // A path trace through the repeaters of the route and back: each hop's 1-byte hash and the SNR it heard (x4);
 // the last value is this node's reception.

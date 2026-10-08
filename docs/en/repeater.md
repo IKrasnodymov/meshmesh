@@ -116,7 +116,8 @@ is empty. A room's posts arrive in the history as its conversation, under the au
 digits of the key); a post from the screen is an ordinary message to the room with a delivery ACK. A room takes posts
 and sends new ones only after a login. The trace goes through the route's repeaters (1-byte hashes) and back, for a
 repeater up to the repeater itself, and shows the SNR of every hop. A server does not answer a wrong password: after
-the timeout it reads "no answer".
+the timeout it reads "no answer". A status answer that does not come is asked once more (since 0.13.1): right after a
+login a room pushes posts and may miss the request.
 
 ## Power saving
 

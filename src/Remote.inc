@@ -51,7 +51,7 @@ bool login(uint64_t id,const String& password,bool useSaved){
 }
 bool status(uint64_t id){
  ContactInfo* c=contactOf(id);if(!c||!ready())return false;uint32_t tag,timeout;int result=core()->sendRequest(*c,REQ_TYPE_GET_STATUS,tag,timeout);if(result==MSG_SEND_FAILED)return false;
- Session& s=*open(id);s.status=Waiting;s.statusAt=millis();s.room=c->type==ADV_TYPE_ROOM;waitFor(s,result,timeout);return true;
+ Session& s=*open(id);s.status=Waiting;s.statusAt=millis();s.statusTries=1;s.room=c->type==ADV_TYPE_ROOM;waitFor(s,result,timeout);return true;
 }
 bool command(uint64_t id,const String& line){
  ContactInfo* c=contactOf(id);Session* s=find(id);if(!c||!ready()||!s||s->login!=Done||!s->admin||!line.length()||line.length()>MAX_TEXT_LEN)return false;
@@ -75,6 +75,8 @@ bool traceTo(uint64_t id){
 void tick(){
  uint32_t now=millis();
  for(auto& s:sessions)if(s.id&&(s.login==Waiting||s.status==Waiting||s.command==Waiting)&&int32_t(now-s.due)>=0){
+  if(s.status==Waiting&&s.statusTries==1&&s.login!=Waiting&&s.command!=Waiting){ // a room busy pushing posts after a login may miss it
+   ContactInfo* c=contactOf(s.id);uint32_t tag,timeout;if(c&&ready()&&core()->sendRequest(*c,REQ_TYPE_GET_STATUS,tag,timeout)!=MSG_SEND_FAILED){s.statusTries=2;waitFor(s,0,timeout);continue;}}
   if(s.login==Waiting)s.login=Silent;if(s.status==Waiting)s.status=Silent;if(s.command==Waiting)s.command=s.replies?Done:Silent;meshRadio.dirty=true;}
  if(trace.state==Waiting&&int32_t(now-trace.due)>=0){trace.state=Silent;meshRadio.dirty=true;}
 }

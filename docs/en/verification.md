@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.13.1: a status request asked again, checked on the M9** (8 October 2026, no full run). The M9 went from 0.6.0 via
+> `tools/flash.py` (boot 219, history of 64 kept), then to 0.13.1 (boot 220). The Heltec V4 served as a room, then a
+> repeater. From the M9 over USB `remote`: a wrong password (no answer), admin login, CLI `ver`, a post from the screen
+> with ACK (stored by the room), the room's post in the history with its author; the repeater — login, status, CLI,
+> trace (SNR 13 › you 15.75). A room's status right after a login sometimes did not come (the room is then pushing posts
+> to the new member): 0.13.0 showed "no answer", 0.13.1 asks once more; 4 of 4 "login → status" passed, one answer came
+> from the second request (16.6 s). The M9 screen (keys over USB, screenshot): node card → "Server" → the page with the
+> admin login, status, trace and a command reply. The Heltec is back in the normal mode (0.13.1, boot 203, history
+> 64); `tools/companion_check.py` M9 ↔ Heltec passes. The T114 and GAT562 did not get 0.13.1 (not connected).
+
 > **0.13.0: other repeaters and rooms from the screen** (8 October 2026, branch `feature/remote`, no full run). 15 boards
 > build; on the nRF52 the web API, chess, pet, channels and server modules are built with `-Os` — the Chinese T114 image
 > has 50 KB free (0 before). Heltec V4 (boot 199) and T114: over USB `remote` from the Heltec to the T114 as a room —
