@@ -24,6 +24,9 @@
 // Defined in U8g2_for_Adafruit_GFX.cpp; used to fall back to Latin-1 and placeholders for missing glyphs.
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
 int8_t u8g2_GetGlyphWidth(u8g2_font_t* u8g2,uint16_t encoding);
+// The home tiles, in drawHome() order; the chosen order and the hidden ones: config.apps (App.h).
+const char* const uiApps[]={"chats","map","nodes","nav","connect","radar","health","settings","solitaire","chess","pet","dice"};
+const uint8_t uiAppCount=sizeof uiApps/sizeof *uiApps;
 namespace {
 enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing,Motion,Game,NetList,ChessList,ChessPick,ChessBoard,RolePick,ServerHome,ChannelAdd,ChannelInfo,ChessTour,ChessTourNew,PetView,DiceView,Remote};
 const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing","motion","solitaire","internet","chess","chess_pick","chess_board","role","server","channel_add","channel","chess_tour","chess_tour_new","pet","dice","remote"};
@@ -248,7 +251,8 @@ void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);if(focus
 // Module health: the same eight modules as the diagnostics page.
 unsigned moduleStates(bool* state){bool s[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};unsigned faults=0;for(int i=0;i<8;i++){if(state)state[i]=s[i];faults+=!s[i];}return faults;}
 // Home: identity strip and a 3-column grid of destinations; two rows are visible, the rest scroll.
-const int tileCount=12,tileColumns=3,tileRows=(tileCount+tileColumns-1)/tileColumns;
+// The tiles follow config.apps: its order, without the hidden ones.
+const int tileColumns=3;
 void drawHome(){
  auto& d=g();panel(8,26,304,38,card,8);icon(IcRadio,26,44,9,meshRadio.ready?accent:bad,card);
  text(44,41,fit(String(config.name),150,bold),ink,bold);
@@ -257,7 +261,7 @@ void drawHome(){
  textRight(302,56,String(meshRadio.rxCount),ink,small);tri(302-measure(String(meshRadio.rxCount),small)-7,53,2,3,ok);
  unsigned unreadCount=unreadTotal(),near=0,total=meshRadio.peerCount;for(unsigned i=0;i<total;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
  String links=portalActive()?"Wi-Fi":internet.online()?t("Internet","Интернет"):"";if(bleActive())links+=links.length()?" + BLE":"Bluetooth";if(!links.length())links=t("All off","Всё выключено");unsigned faults=moduleStates(nullptr);
- struct {Icon ic;uint16_t hue;String name,detail;unsigned badge;} tiles[tileCount]={
+ struct {Icon ic;uint16_t hue;String name,detail;unsigned badge;} tiles[]={
   {IcChat,accent,t("Chats","Чаты"),unreadCount?count(unreadCount,"new","new","новое","новых","новых"):count(meshRadio.historyCount,"message","messages","сообщение","сообщения","сообщений"),unreadCount},
   {IcPin,ok,t("Map","Карта"),maps.title.length()&&maps.available?maps.title:internet.online()?t("Online map","Онлайн-карта"):!maps.available?t("No SD card","Нет SD-карты"):t("No maps yet","Карт пока нет"),0},
   {IcMesh,violet,t("Nodes","Узлы"),String(near)+t(" of "," из ")+String(total)+t(" nearby"," рядом"),0},
@@ -270,14 +274,15 @@ void drawHome(){
   {IcChess,ink,t("Chess","Шахматы"),chessTileDetail(),chessNet.waiting()},
   {IcPaw,creature.needsCare()?warn:creature.has()?rgb(0xf472b6):dim,t("Pet","Питомец"),petTileDetail(),0},
   {IcDice,dicer.last()?warn:dim,t("Dice","Кости"),diceTileDetail(),0}};
- int firstRow=max(0,selected/tileColumns-1);
- for(int i=firstRow*tileColumns;i<tileCount&&i<(firstRow+2)*tileColumns;i++){
-  int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);target(x,y,96,min(68,219-y),i);
-  d.fillRoundRect(x+9,y+8,26,26,6,bg);icon(tiles[i].ic,x+22,y+21,8,tiles[i].hue,bg);
-  if(tiles[i].badge){String b=tiles[i].badge>99?"99+":String(tiles[i].badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(x+88-w,y+8,w,13,6,bad);textCenter(x+88-w/2,y+18,b,ink,small);}
-  text(x+9,y+49,fit(tiles[i].name,80,bold),ink,bold);text(x+9,y+61,fit(tiles[i].detail,80,small),dim,small);
+ static_assert(sizeof tiles/sizeof *tiles==sizeof uiApps/sizeof *uiApps,"a tile for every app ID");
+ uint8_t order[AppsMax];int shown=appsShown(order);selected=constrain(selected,0,shown-1);int firstRow=max(0,selected/tileColumns-1);
+ for(int i=firstRow*tileColumns;i<shown&&i<(firstRow+2)*tileColumns;i++){
+  auto& tile=tiles[order[i]];int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);target(x,y,96,min(68,219-y),i);
+  d.fillRoundRect(x+9,y+8,26,26,6,bg);icon(tile.ic,x+22,y+21,8,tile.hue,bg);
+  if(tile.badge){String b=tile.badge>99?"99+":String(tile.badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(x+88-w,y+8,w,13,6,bad);textCenter(x+88-w/2,y+18,b,ink,small);}
+  text(x+9,y+49,fit(tile.name,80,bold),ink,bold);text(x+9,y+61,fit(tile.detail,80,small),dim,small);
  }
- scrollbar(firstRow,2,tileRows,71,142);
+ scrollbar(firstRow,2,(shown+tileColumns-1)/tileColumns,71,142);
  footer({{"OK",t("Open","Открыть")},{"MSG",t("Chats","Чаты")},{"MAP",t("Map","Карта")},{"MIC",t("Lock","Блок")}});
 }
 bool isRoom(uint64_t id){Peer* p=id&&!channels::isChannel(id)?peerOf(id):nullptr;return p&&p->type==3;} // a MeshCore room server
@@ -762,7 +767,7 @@ void drawLayoutHelp(){
 }
 
 void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;case 7:draft.pathHash=constrain(int(draft.pathHash)+dir,1,3);break;}}else switch(selected){case 1:draft.lang=langStep(draft.lang,dir);break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;case 9:draft.lockDetails=!draft.lockDetails;break;}dirty=true;}
-void saveDraft(){StaticJsonDocument<768>d;deserializeJson(d,configJson());if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;d["path_hash"]=int(draft.pathHash);}else{d["name"]=draft.name;d["lang"]=langCodes[draft.lang];d.remove("russian");d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;d["lock_details"]=draft.lockDetails;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
+void saveDraft(){StaticJsonDocument<1024>d;deserializeJson(d,configJson());if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;d["path_hash"]=int(draft.pathHash);}else{d["name"]=draft.name;d["lang"]=langCodes[draft.lang];d.remove("russian");d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;d["lock_details"]=draft.lockDetails;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
 void runNodeAction(){
  Peer* p=focusedPeer();if(!p)return;NodeAction acts[5];unsigned n=nodeActions(*p,acts);NodeAction a=acts[constrain(action,0,int(n)-1)];
  if(a!=ActForget)deleteArmed=false;
@@ -813,7 +818,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(page==NetList&&key==Erase){netListErase();return;}
  if(page==Map){if(key=='l'||key=='L'){change(Library);return;}if(key==KeyLeft)maps.pan(-70,0);if(key==KeyRight)maps.pan(70,0);if(key==KeyUp)maps.pan(0,-70);if(key==KeyDown)maps.pan(0,70);if(key=='+'||key=='=')maps.changeZoom(1);if(key=='-'||key=='_')maps.changeZoom(-1);if(key==Enter){maps.follow=true;if(hardware.gpsFix())maps.center(hardware.gps.location.lat(),hardware.gps.location.lng());else notice(t("Waiting for GPS fix","Ожидание GPS-позиции"),warn);}return;}
  if((page==Nodes||page==Node)&&(key=='p'||key=='P')){if(Peer* p=focusedPeer()){if(p->position){maps.follow=false;maps.center(p->latitude,p->longitude);change(Map);}else notice(t("This node has not shared GPS","Узел пока не передал GPS"),warn);}return;}
- if(page==Home&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){int col=selected%tileColumns,row=selected/tileColumns,n=min(tileColumns,tileCount-row*tileColumns);if(key==KeyLeft)col=(col+n-1)%n;if(key==KeyRight)col=(col+1)%n;if(key==KeyUp)row=(row+tileRows-1)%tileRows;if(key==KeyDown)row=(row+1)%tileRows;selected=min(row*tileColumns+col,tileCount-1);return;}
+ if(page==Home&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){uint8_t order[AppsMax];int tileCount=appsShown(order),tileRows=(tileCount+tileColumns-1)/tileColumns;selected=constrain(selected,0,tileCount-1);int col=selected%tileColumns,row=selected/tileColumns,n=min(tileColumns,tileCount-row*tileColumns);if(key==KeyLeft)col=(col+n-1)%n;if(key==KeyRight)col=(col+1)%n;if(key==KeyUp)row=(row+tileRows-1)%tileRows;if(key==KeyDown)row=(row+1)%tileRows;selected=min(row*tileColumns+col,tileCount-1);return;}
  if(page==Node&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){Peer* p=focusedPeer();if(!p)return;NodeAction acts[5];int n=nodeActions(*p,acts);action=(action+(key==KeyLeft||key==KeyUp?-1:1)+n)%n;return;}
  if(page==Sensors&&(key==KeyLeft||key==KeyRight)){selected^=1;return;}
  if(page==Scope&&(key==KeyUp||key==KeyDown)){int i=scopeSelected();scopeManual=true;if(radar.count)scopeSelect((i+(key==KeyUp?-1:1)+radar.count)%radar.count);return;}
@@ -824,7 +829,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(key==KeyUp||key==KeyDown){if(page==Threads)threads();if(page==Nodes)sortNodes();int total=page==Threads?conversationCount:page==ChannelAdd?addRows():page==Nodes?nodeTotal:page==Settings?settingsCount:page==Radio||page==Display?settingRows():page==Network?4:page==NetList?1+int(netCount()):page==Sensors?2:page==Library?int(library.size()):1;selected=total?(selected+(key==KeyUp?-1:1)+total)%total:0;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;return;}
  if((page==Radio||page==Display)&&(key==KeyLeft||key==KeyRight)){alter(key==KeyLeft?-1:1);return;}
  if(key!=Enter&&key!=KeyHold)return;
- if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Scope,Diagnostics,Settings,Game,ChessList,PetView,DiceView};change(pages[selected]);}
+ if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Scope,Diagnostics,Settings,Game,ChessList,PetView,DiceView};uint8_t order[AppsMax];int n=appsShown(order);if(selected>=0&&selected<n)change(pages[order[selected]]);}
  else if(page==Library&&library.size()){if(maps.selectArea(library[selected]["id"].as<String>()))change(Map);else notice(t("Map unavailable","Карта недоступна"),bad);}
  else if(page==Threads){threads();if(!conversations[selected]){change(ChannelAdd);return;}recipient=conversations[selected];chatReturn=Threads;composer="";change(Chat);}
  else if(page==ChannelAdd)channelAddEnter();

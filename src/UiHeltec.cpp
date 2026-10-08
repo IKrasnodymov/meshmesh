@@ -136,8 +136,43 @@ bool pageShown(int p){
 #endif
  if((p==Chess&&!MM_CHESS)||(p==PetPage&&!MM_PET)||(p==DicePage&&!MM_DICE))return false; // modules left out of this image (Modules.h)
  return config.role==RoleNormal||p==Home||p==PetPage||p==DicePage||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;} // the pet lives in every role
-int nextPage(int p){do p=(p+1)%PageCount;while(!pageShown(p));return p;}
-int previousPage(int p){do p=(p+PageCount-1)%PageCount;while(!pageShown(p));return p;}
+} // namespace
+// The pages after Home, in the default order; the chosen order and the hidden ones: config.apps (App.h).
+#if defined(MM_NO_WIFI)
+#define MM_WIFI_APP(x)
+#else
+#define MM_WIFI_APP(x) x,
+#endif
+const char* const uiApps[]={"chats","nodes",
+#if MM_CHESS
+ "chess",
+#endif
+#if MM_PET
+ "pet",
+#endif
+#if MM_DICE
+ "dice",
+#endif
+ "radar","gps",MM_WIFI_APP("wifi")"ble","settings","health"};
+const uint8_t uiAppCount=sizeof uiApps/sizeof *uiApps;
+namespace {
+const uint8_t appPages[]={Messages,Nodes,
+#if MM_CHESS
+ Chess,
+#endif
+#if MM_PET
+ PetPage,
+#endif
+#if MM_DICE
+ DicePage,
+#endif
+ Signals,Gps,MM_WIFI_APP(Wifi)Ble,Settings,Modules};
+static_assert(sizeof appPages==sizeof uiApps/sizeof *uiApps,"a page for every app ID");
+// What a click goes through: Home, then the shown apps in the chosen order.
+unsigned pageCycle(uint8_t* cycle){unsigned n=0;cycle[n++]=Home;uint8_t order[AppsMax];unsigned k=appsShown(order);for(unsigned i=0;i<k;i++)if(pageShown(appPages[order[i]]))cycle[n++]=appPages[order[i]];return n;}
+int stepPage(int p,int step){uint8_t c[AppsMax+1];unsigned n=pageCycle(c);for(unsigned i=0;i<n;i++)if(c[i]==p)return c[(i+n+step)%n];return Home;} // a hidden page opened by an event: back to Home
+int nextPage(int p){return stepPage(p,1);}
+int previousPage(int p){return stepPage(p,-1);}
 // Device role: offered for 5 s after boot (click: next, hold: choose) and from the menus.
 bool rolePick=false,rolePickBoot=false;int roleSel=0;uint32_t rolePickAt=0;
 String roleShort(int r){return r==RoleRepeater?t("Repeater","Репитер"):r==RoleRoom?t("Room server","Комната"):t("Normal","Обычный");}
@@ -441,7 +476,7 @@ String fitted(const String& value,int px,const uint8_t* f){
  return value.substring(0,cut)+"..";
 }
 void footer(const String& hint){
- auto& c=*hardware.canvas;int x=1;for(int i=0;i<PageCount;i++){if(!pageShown(i))continue;if(i==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
+ auto& c=*hardware.canvas;int x=1;uint8_t cycle[AppsMax+1];unsigned n=pageCycle(cycle);for(unsigned i=0;i<n;i++){if(cycle[i]==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
  if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small));
 }
 #if defined(MM_JOYSTICK)

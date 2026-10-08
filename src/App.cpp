@@ -119,10 +119,10 @@ String channelCommand(JsonObjectConst v){
   return "ERR channel action add|remove|invite|probe";
 }
 String configJson(bool includeKey) {
-  StaticJsonDocument<768> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
+  StaticJsonDocument<1024> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
   d["hops"]=config.hops;d["path_hash"]=config.pathHash;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;d["lock_details"]=config.lockDetails;
-  d["utc_offset"]=config.utcOffset;
+  d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);
   String s;serializeJson(d,s);return s;
 }
 String applySettings(JsonObjectConst v) {
@@ -149,6 +149,10 @@ String applySettings(JsonObjectConst v) {
       if(!value.is<int>())return "ERR integer value required";int n=value.as<int>();
       if(n!=0 && (n<(name=="auto_lock"?30:10)||n>600))return "ERR timeout 0 or 30..600 (dim: 10..600)";
       if(name=="auto_lock")next.autoLock=n;else next.dimAfter=n;
+    } else if(name=="apps") {
+      uint8_t order[AppsMax];bool hidden[AppsMax];
+      if(!value.is<const char*>()||!appsParse(value.as<const char*>(),order,hidden,true)){String all;for(uint8_t i=0;i<uiAppCount;i++)all+=String(i?" ":"")+uiApps[i];return "ERR apps: IDs separated by spaces, -ID hides: "+all;}
+      String text=appsText(value.as<const char*>());if(text.length()>=sizeof next.apps)return "ERR apps: too long";strlcpy(next.apps,text.c_str(),sizeof next.apps);
     } else if(name=="lang") {
       int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
       if(l<0||!langAvailable(l)){String all;for(int i=0;i<LangCount;i++)if(langAvailable(i))all+=String(all.length()?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;

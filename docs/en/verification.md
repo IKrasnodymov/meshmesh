@@ -1,5 +1,17 @@
 # MeshMesh verification
 
+> **0.14.0: order and hiding of the screen's apps** (8 October 2026, no full run). The `apps` setting (`set {JSON}`, the
+> web page, the app through `/api/config`). The M9, Heltec V4, T114, GAT562 and T-Deck build; the Chinese T114 image has
+> 49 KB free, GAT562 78 KB. The `tools/ui_preview` scenarios (M9, T-Deck, Heltec, T114, GAT562 with the joystick) check the
+> tiles and the page cycle with hidden apps. Heltec V4 (`tools/flash.py`, boot 204) and T114 (`tools/nrf52.py`, boot 27),
+> revision `543b2a6` (the same code before the version bump, the board reports 0.13.1), radio settings and name kept. On each board over USB: an unknown ID, a repeated one and a bare "-" are
+> rejected; "-settings" does not hide the settings; clicks (`uikey`, the physical button unchecked) go from home to
+> Settings, then the rest, never to the hidden Chats and Nodes; an empty string restores the default; no restarts. On the
+> Heltec the choice survived a restart (boot 205). The web page through `web_usb_bridge.py` to the Heltec in headless
+> Chromium: moving, hiding, saving and "default order" reach the board, no JavaScript errors. A T114 screenshot over USB
+> shows the hint "click Settings". The M9 screen only in the preview (board not connected); the APK with the new page is
+> unchecked on a phone. Both boards are back on the default order.
+
 > **0.13.1: a status request asked again, checked on the M9** (8 October 2026, no full run). The M9 went from 0.6.0 via
 > `tools/flash.py` (boot 219, history of 64 kept), then to 0.13.1 (boot 220). The Heltec V4 served as a room, then a
 > repeater. From the M9 over USB `remote`: a wrong password (no answer), admin login, CLI `ver`, a post from the screen

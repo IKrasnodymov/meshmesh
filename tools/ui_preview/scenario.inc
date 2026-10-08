@@ -393,6 +393,22 @@ static void scenario(){
   key('p');shot("dice-characters");key(0x86);key('1');
 #endif
   config.dimAfter=dim;config.autoLock=lock;printf("dice checks passed\n");}
+// Apps in the chosen order ("apps" setting): hidden ones get no tile and no click.
+ {auto page=[](const char* want){std::string w=std::string("\"page\":\"")+want+"\"";if(uiStatus().indexOf(w.c_str())<0){printf("FAIL apps order, want %s: %s\n",want,uiStatus().c_str());exit(1);}};
+  strlcpy(config.apps,"settings -chats -nodes map",sizeof config.apps);
+#if defined(MM_HELTEC_V4)
+  const int next=
+#if defined(MM_JOYSTICK)
+   0xb7; // joystick right
+#else
+   13;
+#endif
+  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(next);page("home");shot("heltec-apps-home");key(next);page("settings");key(next);page(MM_CHESS?"chess":"pet");
+  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"home\"")<0;i++){key(next);if(uiStatus().indexOf("\"page\":\"messages\"")>=0||uiStatus().indexOf("\"page\":\"nodes\"")>=0){printf("FAIL hidden page shown\n");exit(1);}}page("home");
+#else
+  key(0x82);shot("home-apps");key(13);page("settings");key(0x82);key(0xb7);key(13);page("map");key(0x82);
+#endif
+  config.apps[0]=0;printf("apps order checks passed\n");}
 // Power off last: the screens stop taking keys once it is requested.
 #if defined(MM_HELTEC_V4)
  powerOff();shot("heltec-poweroff");uiFarewell();shot("heltec-poweroff-done");
