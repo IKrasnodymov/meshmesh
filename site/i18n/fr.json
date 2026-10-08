@@ -243,7 +243,7 @@
  "doc.dice": "Dés",
  "news.companion": "<b>Nouveau :</b> les applis MeshCore officielles se connectent aux cartes MeshMesh en Bluetooth et USB",
  "f.companion.t": "Applis MeshCore",
- "f.companion.d": "Les applis MeshCore officielles (MeshCore, MeshCore Open et d'autres) se connectent à la carte en Bluetooth ou USB sans rien basculer : elles utilisent ses discussions, contacts et canaux, et les messages de l'appli s'affichent à l'écran. L'appli MeshMesh trouve aussi la même carte ; les échecs, l'animal et les dés y restent. La carte s'appelle MeshCore-&lt;nom&gt; avec 4 chiffres de sa clé.",
+ "f.companion.d": "Les applis MeshCore officielles (MeshCore, MeshCore Open et d'autres) se connectent à la carte en Bluetooth ou USB sans rien basculer : elles utilisent ses discussions, contacts et canaux, et les messages de l'appli s'affichent à l'écran. L'appli MeshMesh trouve aussi la même carte ; les échecs, l'animal et les dés y restent. La carte s'appelle MeshCore-&lt;nom&gt; avec 4 chiffres de sa clé. Via la carte, l'appli se connecte aussi aux répéteurs et aux salons (CLI, état, télémétrie, messages) et trace les routes.",
  "shot.m9-network-ble": "Bluetooth : le nom vu par les applis et le PIN",
  "shot.t114-ble-on": "La T114 : MeshCore-T114 et le PIN",
  "shot.heltec-ble-on": "L'OLED : le nom et le PIN",

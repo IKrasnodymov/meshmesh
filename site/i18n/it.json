@@ -243,7 +243,7 @@
  "doc.dice": "Dadi",
  "news.companion": "<b>Novità:</b> le app MeshCore ufficiali si collegano alle schede MeshMesh via Bluetooth e USB",
  "f.companion.t": "App MeshCore",
- "f.companion.d": "Le app MeshCore ufficiali (MeshCore, MeshCore Open e altre) si collegano alla scheda via Bluetooth o USB senza cambiare nulla: usano le sue chat, i contatti e i canali, e i messaggi dall'app compaiono sullo schermo. Anche l'app MeshMesh trova la stessa scheda; gli scacchi, il cucciolo e i dadi restano lì. La scheda si chiama MeshCore-&lt;nome&gt; con 4 cifre della sua chiave.",
+ "f.companion.d": "Le app MeshCore ufficiali (MeshCore, MeshCore Open e altre) si collegano alla scheda via Bluetooth o USB senza cambiare nulla: usano le sue chat, i contatti e i canali, e i messaggi dall'app compaiono sullo schermo. Anche l'app MeshMesh trova la stessa scheda; gli scacchi, il cucciolo e i dadi restano lì. La scheda si chiama MeshCore-&lt;nome&gt; con 4 cifre della sua chiave. Tramite la scheda l'app accede anche a ripetitori e stanze (CLI, stato, telemetria, post) e traccia i percorsi.",
  "shot.m9-network-ble": "Bluetooth: il nome visto dalle app e il PIN",
  "shot.t114-ble-on": "La T114: MeshCore-T114 e il PIN",
  "shot.heltec-ble-on": "L'OLED: il nome e il PIN",

@@ -38,6 +38,20 @@ Protocol version 10 (`examples/companion_radio` of MeshCore companion-v1.17.1), 
 - Node advert (flooded or zero-hop), time (read and set), name, radio parameters, power, relaying,
   battery and storage, core, radio and packet statistics, restart.
 - Messages sent from the app are kept in the board's history and shown on the screen and the web page.
+- Since 0.10.0, MeshCore repeaters and rooms (stock ones and MeshMesh in a server mode): login with a
+  password (admin, member, guest), CLI commands and their replies, status, telemetry and binary requests
+  (neighbours, access list), anonymous requests, room posts with ACK and the room's posts (signed messages
+  with their author), connection check and logout. CLI replies and room posts reach the app only: the
+  screen and the web page do not show them yet.
+- Since 0.10.0, path trace through given repeaters (hashes and the SNR of each hop) and path discovery to
+  a node (a flooded telemetry request; both paths go to the app and are not stored as the route). The
+  board's own telemetry is its battery voltage.
+
+The clock. A repeater or room drops a request whose time is not newer than the client's previous one
+(replay protection). The official apps set the board's clock when they connect; if the clock is not set
+and the app has already sent a message with its own time, the board's next requests are refused until
+the clock is set. The room's "read up to" mark is kept on the board only until a restart: after it the
+room may send past posts again.
 
 Input limits are those of the screen: radio parameters within MeshMesh settings (863–870 MHz,
 BW 62.5/125/250/500 kHz), the name up to 24 bytes of UTF-8, a channel name by the rules of `docs/channels.md`.
@@ -46,9 +60,9 @@ BW 62.5/125/250/500 kHz), the name up to 24 bytes of UTF-8, a channel name by th
 
 The board answers these commands with "unsupported" (`ERR_CODE_UNSUPPORTED_CMD`):
 
-- logging in to a repeater or a room, their CLI, status and telemetry requests; managing repeaters
-  from the app is not available yet;
-- path trace, path discovery, raw packets and channel data, data signing;
+- raw packets, channel data and control packets (neighbour discovery), data signing;
+- answers to other nodes' telemetry requests (as on stock firmware by default: "deny"), so a path
+  discovery to a MeshMesh node in the normal mode gets no answer; repeaters and rooms answer;
 - coordinates for the advert set from the app (the position comes from the board's GPS), other
   parameters (telemetry mode, extra ACKs, manual contact adding), auto-add settings, receive delay,
   flood scopes, path hash mode, PIN change;
@@ -67,5 +81,11 @@ In the repeater and room modes only the device information request answers: thos
   information, the contact list, channels (reading, joining `#mmtest`), time (read and set), battery and
   storage, the exported card, statistics, and adds, finds, resets the path of and removes a contact;
   an unsupported command answers with an error. Text commands work after frames.
-- On the boards over Bluetooth and USB, with the app on a phone, messaging with another node and ACKs
-  have not been checked yet.
+- The Heltec V4 and T114 over USB frames (`tools/companion_check.py`, both ways): direct messages with
+  ACKs, replies, Public, one copy on the peer.
+- 0.10.0, the `meshcore` 2.3.15 library on the Heltec V4 over USB, the T114 as a room and as a repeater:
+  admin login, status, CLI (`ver`, `get name`), room and repeater telemetry (voltage, temperature), a room
+  post with ACK, the room's post with its author, the board's own telemetry, path trace through the T114
+  (6 of 6 in a row), path discovery to the repeater. A wrong password: the repeater does not answer and
+  the app waits for its timeout (as with stock firmware).
+- Not checked from a phone over Bluetooth.

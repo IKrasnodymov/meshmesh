@@ -243,7 +243,7 @@
  "doc.dice": "Dadu",
  "news.companion": "<b>Baru:</b> aplikasi MeshCore resmi tersambung ke papan MeshMesh lewat Bluetooth dan USB",
  "f.companion.t": "Aplikasi MeshCore",
- "f.companion.d": "Aplikasi MeshCore resmi (MeshCore, MeshCore Open, dan lainnya) tersambung ke papan lewat Bluetooth atau USB tanpa perlu beralih: memakai obrolan, kontak, dan kanal papan, dan pesan dari aplikasi muncul di layar. Aplikasi MeshMesh juga menemukan papan yang sama; catur, peliharaan, dan dadu tetap di sana. Nama papan adalah MeshCore-&lt;nama&gt; dengan 4 digit kuncinya.",
+ "f.companion.d": "Aplikasi MeshCore resmi (MeshCore, MeshCore Open, dan lainnya) tersambung ke papan lewat Bluetooth atau USB tanpa perlu beralih: memakai obrolan, kontak, dan kanal papan, dan pesan dari aplikasi muncul di layar. Aplikasi MeshMesh juga menemukan papan yang sama; catur, peliharaan, dan dadu tetap di sana. Nama papan adalah MeshCore-&lt;nama&gt; dengan 4 digit kuncinya. Lewat papan, aplikasi juga masuk ke repeater dan room (CLI, status, telemetri, posting) dan melacak rute.",
  "shot.m9-network-ble": "Bluetooth: nama yang dilihat aplikasi dan PIN",
  "shot.t114-ble-on": "T114: MeshCore-T114 dan PIN",
  "shot.heltec-ble-on": "OLED: nama dan PIN",

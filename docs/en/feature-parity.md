@@ -28,7 +28,7 @@ State of MeshMesh 0.3.2 from the sources as of 30 September 2026. Sources:
 | Share contact (zero-hop), export/import, `meshcore://` | No | — |
 | Favourite contacts, manual add, auto-add settings | No | — |
 | Multi-ACK, flood scope/regions, path hash size, GRP_DATA, raw | No | — |
-| Companion API (the official app over BLE/USB/TCP) | Yes over BLE and USB, without repeater logins, trace and TCP ([companion.md](companion.md)) | `src/Companion.inc`, `src/Portal.cpp` |
+| Companion API (the official app over BLE/USB/TCP) | Yes over BLE and USB; since 0.10.0 repeater and room logins, CLI, status, telemetry, trace and path discovery; no TCP ([companion.md](companion.md)) | `src/Companion.inc`, `src/Portal.cpp` |
 
 Consequences for exchange with third-party nodes: in normal mode MeshMesh sees
 repeaters, room servers and sensors as contacts, but cannot log in to a room server, read
@@ -75,7 +75,7 @@ Missing compared with WadaMesh:
    raising the 24 limit using PSRAM.
 5. Trace path and a link check with a selected node.
 6. Regional radio presets after checking the values against the official list.
-7. Companion API: logins to repeaters and rooms, their CLI and telemetry from the MeshCore app.
+7. Repeater and room logins, room posts and trace on the screen and the web page (in the MeshCore app since 0.10.0).
 
 Each network item is tested with a third-party MeshCore node: adverts in both
 directions, addresses, keys, messages and delivery receipts. Receiving a packet does not prove

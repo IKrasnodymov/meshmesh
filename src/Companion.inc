@@ -1,18 +1,20 @@
 // MeshCore companion protocol (include/Companion.h), included at the end of MeshRadio.cpp: the frames of
 // examples/companion_radio/MyMesh.cpp, MeshCore companion-v1.17.1 (MIT), over this node's contacts, channels
-// and history. Not here: logins to repeaters and rooms, their CLI, telemetry, trace, raw data, signing and the
-// private key; those commands answer "unsupported".
+// and history, with logins to repeaters and rooms, their CLI, status, telemetry, room posts, path trace and path
+// discovery. Not here: raw data, signing and the private key; those commands answer "unsupported".
 #include "App.h"
 #include "Version.h"
 namespace {
 enum:uint8_t {CmdAppStart=1,CmdSendText,CmdSendChannelText,CmdGetContacts,CmdGetTime,CmdSetTime,CmdSendAdvert,CmdSetName,CmdAddContact,
  CmdSyncNext,CmdSetRadio,CmdSetPower,CmdResetPath,CmdSetPosition,CmdRemoveContact,CmdShareContact,CmdExportContact,CmdImportContact,CmdReboot,
- CmdBattery,CmdSetTuning,CmdDeviceQuery,CmdExportKey,CmdImportKey,CmdHasConnection=28,CmdLogout,CmdContactByKey,CmdGetChannel,CmdSetChannel,
- CmdCustomVars=40,CmdGetTuning=43,CmdStats=56,CmdGetAutoAdd=59};
+ CmdBattery,CmdSetTuning,CmdDeviceQuery,CmdExportKey,CmdImportKey,CmdSendRaw,CmdLogin,CmdStatusReq,CmdHasConnection,CmdLogout,CmdContactByKey,
+ CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdStats=56,CmdAnonReq,CmdGetAutoAdd=59};
 enum:uint8_t {RespOk,RespErr,RespContactsStart,RespContact,RespContactsEnd,RespSelfInfo,RespSent,RespContactMsgOld,RespChannelMsgOld,RespTime,
  RespNoMore,RespExport,RespBattery,RespDeviceInfo,RespDisabled=15,RespContactMsg,RespChannelMsg,RespChannelInfo,RespCustomVars=21,
  RespTuning=23,RespStats,RespAutoAdd};
-enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushNewAdvert=0x8A};
+enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushLoginOk=0x85,PushLoginFail,PushStatus,PushTrace=0x89,PushNewAdvert,PushTelemetry,PushBinary,PushDiscovery};
+enum:uint8_t {TextPlain=0,TextCli=1,TextSigned=2};
+constexpr uint8_t RequestTelemetry=0x03; // REQ_TYPE_GET_TELEMETRY_DATA of the companion
 enum:uint8_t {ErrUnsupported=1,ErrNotFound,ErrTableFull,ErrBadState,ErrFileIo,ErrIllegalArg};
 constexpr uint8_t ProtocolVersion=10; // the frames of version 10; later commands answer "unsupported"
 }
@@ -24,6 +26,9 @@ struct CompanionCore {
  bool listing=false;unsigned listNext=0;uint32_t listSince=0,listNewest=0;
  // The app's direct messages: its retries keep one history row; the ACK is announced as the app expects it.
  struct Sent {uint64_t to=0;uint32_t stamp=0,id=0,ack=0,at=0;} sent[8];unsigned nextSent=0;
+ // The one request awaiting its answer, as in stock MeshCore: a login and a status by the server's key, the others by tag.
+ uint32_t pendingLogin=0,pendingStatus=0,pendingTelemetry=0,pendingReq=0,pendingDiscovery=0;
+ void clearPending(){pendingLogin=pendingStatus=pendingTelemetry=pendingReq=pendingDiscovery=0;}
  uint8_t f[companion::MaxFrame];size_t n=0;
  MeshCoreBackend* core() const{return meshRadio.core;}
  void start(uint8_t code){f[0]=code;n=1;}
@@ -47,10 +52,79 @@ struct CompanionCore {
   auto& m=inbox[(inHead+inCount++)%12];m.length=n;memcpy(m.data,f,n);
   if(link){start(PushMsgWaiting);send();}
  }
- void message(bool channel,const uint8_t* who,int index,const mesh::Packet* packet,uint32_t stamp,const char* text){
+ // type: plain, CLI reply of a repeater or room, or a room post (extra: 4 bytes of its author's key).
+ void message(bool channel,const uint8_t* who,int index,const mesh::Packet* packet,uint32_t stamp,const char* text,uint8_t type=TextPlain,const uint8_t* extra=nullptr){
   if(appVersion>=3||!link){start(channel?RespChannelMsg:RespContactMsg);u8(uint8_t(int8_t(packet->getSNR()*4)));u8(0);u8(0);}else start(channel?RespChannelMsgOld:RespContactMsgOld);
   if(channel)u8(index);else put(who,6);
-  u8(packet->isRouteFlood()?packet->path_len:0xFF);u8(0);u32(stamp);put(text,strlen(text));keep();
+  u8(packet->isRouteFlood()?packet->path_len:0xFF);u8(type);u32(stamp);if(extra)put(extra,4);put(text,strlen(text));keep();
+ }
+ // The answer of a server to a login or a request (onContactResponse of the stock companion).
+ void response(const ContactInfo& c,const uint8_t* data,uint8_t len){
+  if(len<4)return;uint32_t tag;memcpy(&tag,data,4);
+  if(pendingLogin&&!memcmp(&pendingLogin,c.id.pub_key,4)){pendingLogin=0;
+   if(len>=6&&!memcmp(data+4,"OK",2)){start(PushLoginOk);u8(0);put(c.id.pub_key,6);} // older servers
+   else if(len>=13&&data[4]==RESP_SERVER_LOGIN_OK){uint16_t keepAlive=uint16_t(data[5])*16;if(keepAlive)core()->startConnection(c,keepAlive);
+    start(PushLoginOk);u8(data[6]);put(c.id.pub_key,6);u32(tag);u8(data[7]);u8(data[12]);} // admin, server time, ACL permissions, firmware level
+   else{start(PushLoginFail);u8(0);put(c.id.pub_key,6);}
+   if(link)send();return;}
+  if(len<=4)return;
+  if(pendingStatus&&!memcmp(&pendingStatus,c.id.pub_key,4)){pendingStatus=0;start(PushStatus);u8(0);put(c.id.pub_key,6);}
+  else if(pendingTelemetry&&tag==pendingTelemetry){pendingTelemetry=0;start(PushTelemetry);u8(0);put(c.id.pub_key,6);}
+  else if(pendingReq&&tag==pendingReq){pendingReq=0;start(PushBinary);u8(0);u32(tag);}
+  else return;
+  put(data+4,len-4);if(link)send();
+ }
+ void sentReply(int result,uint32_t tag,uint32_t timeout){if(result==MSG_SEND_FAILED){err(ErrTableFull);return;}start(RespSent);u8(result==MSG_SEND_SENT_FLOOD);u32(tag);u32(timeout);send();}
+ // Requests to a server (repeater, room, sensor) found by its whole key.
+ void request(uint8_t cmd,const uint8_t* frame,size_t len){
+  auto* d=core();const uint8_t* key=frame+(cmd==CmdTelemetryReq?4:1);ContactInfo* c=d->lookupContactByPubKey(key,32);
+  ContactInfo anon;
+  if(!c&&cmd==CmdAnonReq){anon={};memcpy(anon.id.pub_key,key,32);anon.out_path_len=0;anon.type=ADV_TYPE_NONE;anon.lastmod=coreRtc.getCurrentTime();if(d->addContact(anon))c=&anon;else{err(ErrTableFull);return;}}
+  if(!c){err(ErrNotFound);return;}
+  if(!meshRadio.ready){err(ErrBadState);return;}
+  uint32_t tag=0,timeout=0;int result;
+  if(cmd==CmdLogin){char password[companion::MaxFrame]={};memcpy(password,frame+33,min(len-33,sizeof(password)-1));
+   result=d->sendLogin(*c,password,timeout);if(result!=MSG_SEND_FAILED){clearPending();memcpy(&pendingLogin,c->id.pub_key,4);tag=pendingLogin;}}
+  else if(cmd==CmdStatusReq){result=d->sendRequest(*c,REQ_TYPE_GET_STATUS,tag,timeout);if(result!=MSG_SEND_FAILED){clearPending();memcpy(&pendingStatus,c->id.pub_key,4);}}
+  else if(cmd==CmdTelemetryReq){result=d->sendRequest(*c,RequestTelemetry,tag,timeout);if(result!=MSG_SEND_FAILED){clearPending();pendingTelemetry=tag;}}
+  else if(cmd==CmdAnonReq){result=d->sendAnonReq(*c,frame+33,len-33,tag,timeout);if(result!=MSG_SEND_FAILED){clearPending();pendingReq=tag;}}
+  else{result=d->sendRequest(*c,frame+33,len-33,tag,timeout);if(result!=MSG_SEND_FAILED){clearPending();pendingReq=tag;}}
+  sentReply(result,tag,timeout);
+ }
+ // Path trace: the app gives the hashes of the repeaters to pass; each adds the SNR it heard, the last
+ // node sends it back the same way (Mesh::onTraceRecv).
+ void trace(const uint8_t* frame,size_t len){
+  uint8_t pathLen=len-10,flags=frame[9],size=flags&3;
+  if((pathLen>>size)>MAX_PATH_SIZE||pathLen%(1<<size)){err(ErrIllegalArg);return;}
+  if(!meshRadio.ready){err(ErrBadState);return;}
+  uint32_t tag,auth;memcpy(&tag,frame+1,4);memcpy(&auth,frame+5,4);auto* d=core();mesh::Packet* p=d->createTrace(tag,auth,flags);
+  if(!p){err(ErrTableFull);return;}
+  d->sendDirect(p,frame+10,pathLen);uint32_t air=coreRadio.getEstAirtimeFor(p->payload_len+p->path_len+2);
+  start(RespSent);u8(0);u32(tag);u32(d->calcDirectTimeoutMillisFor(air,pathLen>>size));send();
+ }
+ void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen){
+  uint8_t size=flags&3;if(!link||12+pathLen+(pathLen>>size)+1>companion::MaxFrame)return;
+  start(PushTrace);u8(0);u8(pathLen);u8(flags);u32(tag);u32(auth);put(hashes,pathLen);put(snrs,pathLen>>size);u8(uint8_t(int8_t(packet->getSNR()*4)));send();
+ }
+ // Path discovery: a flooded telemetry request; the reply brings both paths (onContactPathRecv), which are not stored.
+ void discover(const uint8_t* frame){
+  auto* d=core();ContactInfo* c=d->lookupContactByPubKey(frame+2,32);if(!c){err(ErrNotFound);return;}
+  if(!meshRadio.ready){err(ErrBadState);return;}
+  uint8_t req[9]={RequestTelemetry,uint8_t(~TELEM_PERM_BASE)};coreRandom.random(req+5,4); // base telemetry only; random bytes keep the packet unique
+  uint32_t tag=0,timeout=0;uint8_t saved=c->out_path_len;c->out_path_len=OUT_PATH_UNKNOWN;int result=d->sendRequest(*c,req,sizeof(req),tag,timeout);c->out_path_len=saved;
+  if(result!=MSG_SEND_FAILED){clearPending();pendingDiscovery=tag;}
+  sentReply(result,tag,timeout);
+ }
+ bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen){
+  if(extraType!=PAYLOAD_TYPE_RESPONSE||extraLen<=4||!pendingDiscovery||memcmp(extra,&pendingDiscovery,4))return false;
+  pendingDiscovery=0;if(!mesh::Packet::isValidPathLen(inLen)||!mesh::Packet::isValidPathLen(outLen))return true;
+  start(PushDiscovery);u8(0);put(c.id.pub_key,6);u8(outLen);n+=mesh::Packet::writePath(f+n,outPath,outLen);u8(inLen);n+=mesh::Packet::writePath(f+n,inPath,inLen);if(link)send();
+  return true;
+ }
+ // The node's own telemetry (a request without a key): the battery, as CayenneLPP.
+ void selfTelemetry(){
+  CayenneLPP lpp(16);lpp.addVoltage(TELEM_CHANNEL_SELF,hardware.batteryMv/1000.0f);
+  start(PushTelemetry);u8(0);put(core()->self_id.pub_key,6);put(lpp.getBuffer(),lpp.getSize());send();
  }
  uint32_t confirm(uint32_t ack,uint64_t& to){
   if(!ack)return 0;
@@ -64,11 +138,14 @@ struct CompanionCore {
  void sendText(const uint8_t* frame,size_t len){
   uint8_t type=frame[1],attempt=frame[2];uint32_t stamp;memcpy(&stamp,frame+3,4);
   ContactInfo* c=core()->lookupContactByPubKey(frame+7,6);if(!c){err(ErrNotFound);return;}
-  if(type!=0||c->type!=ADV_TYPE_CHAT){err(ErrUnsupported);return;}
+  if(type!=TextPlain&&type!=TextCli){err(ErrUnsupported);return;}
   const char* text=(const char*)frame+13;size_t size=len-13;
   if(!size||size>MAX_TEXT_LEN||memchr(text,0,size)||!meshmesh::validUtf8((const uint8_t*)text,size)){err(ErrIllegalArg);return;}
   auto& r=meshRadio;uint64_t to=aliasOf(c->id.pub_key);Peer* p=r.contact(to);
   if(!r.ready||!config.bootCounter||!p){err(ErrBadState);return;}
+  // A CLI command to a repeater or room: one packet with this node's time (the server's replay check), no ACK.
+  if(type==TextCli){char line[MAX_TEXT_LEN+1];memcpy(line,text,size);line[size]=0;uint32_t timeout;
+   sentReply(core()->sendCommandData(*c,coreRtc.getCurrentTimeUnique(),attempt,line,timeout),0,timeout);return;}
   MeshRadio::Pending* slot=nullptr;for(auto& w:r.pending)if(!w.active){slot=&w;break;}if(!slot){err(ErrTableFull);return;}
   Sent* again=nullptr;for(auto& s:sent)if(s.id&&s.to==to&&s.stamp==stamp){again=&s;break;}
   auto& w=*slot;w={};w.active=true;w.app=true;w.appAttempt=attempt;w.wireTimestamp=stamp;
@@ -166,8 +243,12 @@ struct CompanionCore {
     start(RespBattery);u16(hardware.batteryMv);u32(used);u32(total);send();return;}
    case CmdGetTuning:start(RespTuning);u32(0);u32(uint32_t(d->getAirtimeBudgetFactor()*1000));send();return;
    case CmdExportKey:case CmdImportKey:start(RespDisabled);send();return;
-   case CmdHasConnection:err(ErrNotFound);return;
-   case CmdLogout:ok();return;
+   case CmdLogin:case CmdStatusReq:case CmdAnonReq:case CmdBinaryReq:if(len<33||((cmd==CmdAnonReq||cmd==CmdBinaryReq)&&len<34))break;request(cmd,frame,len);return;
+   case CmdTelemetryReq:if(len==4){selfTelemetry();return;}if(len<36)break;request(cmd,frame,len);return;
+   case CmdTrace:if(len<=10||len-10>=MAX_PACKET_PAYLOAD-5)break;trace(frame,len);return;
+   case CmdPathDiscovery:if(len<34||frame[1])break;discover(frame);return;
+   case CmdHasConnection:if(len<33)break;if(d->hasConnectionTo(frame+1))ok();else err(ErrNotFound);return;
+   case CmdLogout:if(len<33)break;d->stopConnection(frame+1);ok();return;
    case CmdGetChannel:{if(len<2)break;uint8_t i=frame[1];if(i>=channels::Max){err(ErrNotFound);return;}
     start(RespChannelInfo);u8(i);if(i<r.channelCount){field(r.channelList[i].name,32);put(r.channelList[i].secret,16);}else{field("",32);uint8_t zero[16]={};put(zero,16);}send();return;}
    case CmdSetChannel:if(len<50)break;if(len>=66){err(ErrUnsupported);return;}setChannel(frame);return; // 256-bit keys: not in MeshCore either
@@ -194,6 +275,11 @@ void advert(const ContactInfo& c,bool added){
  auto& a=app();if(!a.link)return;
  if(added)a.contactFrame(PushNewAdvert,c);else{a.start(PushAdvert);a.put(c.id.pub_key,32);}a.send();
 }
+void cliMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t stamp,const char* text){app().message(false,from.id.pub_key,0,packet,stamp,text,TextCli);}
+void roomPost(const ContactInfo& room,const mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text){app().message(false,room.id.pub_key,0,packet,stamp,text,TextSigned,author);}
+void response(const ContactInfo& c,const uint8_t* data,uint8_t len){app().response(c,data,len);}
+void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen){app().traced(packet,tag,auth,flags,snrs,hashes,pathLen);}
+bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen){return app().discovered(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen);}
 void keyEvent(uint8_t code,const uint8_t* key){auto& a=app();if(!a.link)return;a.start(code);a.put(key,32);a.send();}
 uint32_t confirm(uint32_t ack,uint64_t& destination){return app().confirm(ack,destination);}
 }

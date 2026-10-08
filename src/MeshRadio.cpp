@@ -30,6 +30,8 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include "MeshServer.h"
 #include "Power.h"
 #include "Companion.h"
+#include <CayenneLPP.h>
+#include <helpers/SensorManager.h>
 MeshRadio meshRadio;
 // Companion app events (src/Companion.inc): frames for a connected MeshCore app.
 namespace appLink {
@@ -37,6 +39,11 @@ void contactMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t 
 void channelMessage(int index,const mesh::Packet* packet,uint32_t stamp,const char* text);
 void advert(const ContactInfo& c,bool added);
 void keyEvent(uint8_t code,const uint8_t* key); // path updated, contact deleted
+void cliMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t stamp,const char* text);
+void roomPost(const ContactInfo& room,const mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text);
+void response(const ContactInfo& c,const uint8_t* data,uint8_t len); // a server's answer to a login or request
+void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen);
+bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen); // true: an app's path discovery
 uint32_t confirm(uint32_t ack,uint64_t& destination); // the message ID of an app's send; 0: not one
 }
 #if defined(MM_RADIO_SX1262)
@@ -166,15 +173,16 @@ class MeshCoreBackend:public BaseChatMesh {
   }
   // An app's message after its one attempt timed out: the app still counts it as delivered.
   if(appId){Peer* p=owner.contact(appTo);ContactInfo* c=p?lookupContactByPubKey(p->publicKey,32):nullptr;if(!c)return nullptr;owner.status(appId,ChatMessage::Delivered);owner.delivered++;owner.event="Delivered to "+String(c->name);return c;}
-  return nullptr;
+  return checkConnectionsAck(data); // a server's ACK of a keep-alive (logins of a companion app)
  }
  void onContactPathUpdated(const ContactInfo& c) override{updateContact(c,false);contactsDue=millis()+2000;appLink::keyEvent(0x81,c.id.pub_key);}
  // A flood packet carries the hops it travelled; a direct one arrives with its path consumed, so the
  // (symmetric) path to the sender stands for it.
  static uint8_t hopsOf(const ContactInfo& c,const mesh::Packet* packet){return packet->isRouteFlood()?packet->getPathHashCount():c.out_path_len==OUT_PATH_UNKNOWN?255:c.out_path_len&63;}
- void onMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t timestamp,const char* text) override{uint8_t hops=hopsOf(c,packet);updateContact(c,true,hops);if(receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,timestamp,c.name,text,packet,hops))appLink::contactMessage(c,packet,timestamp,text);}
- void onCommandDataRecv(const ContactInfo&,mesh::Packet*,uint32_t,const char*) override{}
- void onSignedMessageRecv(const ContactInfo&,mesh::Packet*,uint32_t,const uint8_t*,const char*) override{}
+ void onMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t timestamp,const char* text) override{uint8_t hops=hopsOf(c,packet);updateContact(c,true,hops);if(receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,timestamp,c.name,text,packet,hops))appLink::contactMessage(c,packet,timestamp,text);markConnectionActive(c);}
+ // Replies of repeater and room CLIs and room posts: for a companion app (the screen does not show them yet).
+ void onCommandDataRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const char* text) override{markConnectionActive(c);appLink::cliMessage(c,packet,stamp,text);}
+ void onSignedMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text) override{markConnectionActive(c);appLink::roomPost(c,packet,stamp,author,text);}
  uint32_t calcFloodTimeoutMillisFor(uint32_t airtime) const override{return 15000+airtime*4+config.hops*5000;}
  uint32_t calcDirectTimeoutMillisFor(uint32_t airtime,uint8_t path) const override{return 10000+airtime*4*(1+(path&63));}
  void onSendTimeout() override{} // Facade owns four pending sends and bounded retries.
@@ -186,7 +194,13 @@ class MeshCoreBackend:public BaseChatMesh {
   if(receiveMessage(source,dest,stamp,name.c_str(),split?split+2:text,packet,packet->isRouteFlood()?packet->getPathHashCount():255))appLink::channelMessage(owner.channelIndex(dest),packet,stamp,text);
  }
  uint8_t onContactRequest(const ContactInfo&,uint32_t,const uint8_t*,uint8_t,uint8_t*) override{return 0;}
- void onContactResponse(const ContactInfo&,const uint8_t*,uint8_t) override{}
+ void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{appLink::response(c,data,len);}
+ void onTraceRecv(mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen) override{appLink::traced(packet,tag,auth,flags,snrs,hashes,pathLen);}
+ // The answer to an app's path discovery reports both paths and is not stored as the route (as in stock MeshCore).
+ bool onContactPathRecv(ContactInfo& c,uint8_t* inPath,uint8_t inLen,uint8_t* outPath,uint8_t outLen,uint8_t extraType,uint8_t* extra,uint8_t extraLen) override{
+  if(appLink::discovered(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen))return false;
+  return BaseChatMesh::onContactPathRecv(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen);
+ }
  bool allowPacketForward(const mesh::Packet* p) override{bool allowed=config.relay&&config.hops>0&&p->getPathHashCount()<config.hops;if(allowed){auto& f=forwarded[nextForwarded];p->calculatePacketHash(f.hash);f.at=millis();nextForwarded=(nextForwarded+1)%32;}return allowed;}
  int calcRxDelay(float,uint32_t) const override{return 0;}
  void logTx(mesh::Packet* packet,int) override{
@@ -240,7 +254,7 @@ class MeshCoreBackend:public BaseChatMesh {
  bool startMessage(MeshRadio::Pending& wait){
   mesh::Packet* packet=nullptr;unsigned attempt=wait.attempts;
   if(::channels::isChannel(wait.message.destination)){int i=owner.channelIndex(wait.message.destination);ChannelDetails channel;if(i<0||!getChannel(i,channel))return false;uint8_t bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);String text=String(config.name)+": "+wait.message.text;memcpy(bytes+5,text.c_str(),text.length());packet=createGroupDatagram(PAYLOAD_TYPE_GRP_TXT,channel.channel,bytes,5+text.length());}
-  else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||c->type!=ADV_TYPE_CHAT){owner.event="Contact is not a chat node";return false;}
+  else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||(c->type!=ADV_TYPE_CHAT&&!wait.app)){owner.event="Contact is not a chat node";return false;} // an app also posts to rooms
    // Stock MeshCore layout. Keep timestamp/text stable for retries; attempt changes the ACK/hash.
    uint8_t wire=wait.app?wait.appAttempt:attempt,bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);bytes[4]=wire&3;size_t n=strlen(wait.message.text);memcpy(bytes+5,wait.message.text,n);mesh::Utils::sha256((uint8_t*)&wait.ack[attempt],4,bytes,5+n,self_id.pub_key,32);packet=createDatagram(PAYLOAD_TYPE_TXT_MSG,c->id,c->getSharedSecret(self_id),bytes,5+n);
    // Only the first attempt follows a trusted path; the retries flood, so a broken route does not lose the

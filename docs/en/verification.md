@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.10.0: repeaters, rooms and trace in the MeshCore app** (8 October 2026, no full run). 15 boards build; the
+> Chinese T114 image has 6 KB free. Heltec V4 (`tools/flash.py`) and T114 (`tools/nrf52.py`) with a local build; the
+> `meshcore` 2.3.15 Python library on the Heltec over USB, the T114 as a room, then a repeater: admin login, status,
+> CLI (`ver` → `v1.17.1-meshmesh`, `get name`), room and repeater telemetry (voltage, temperature), a room post with
+> ACK, the room's post with its author, own telemetry, trace through the T114 6 of 6 (SNR 12–14 dB per hop), path
+> discovery to the repeater (one of three runs got no answer). A wrong password: the repeater stays silent, as stock
+> does. The first requests after the app's post were refused by the room: neither board's clock was set and the post
+> carried the Mac's time (replay protection); after `set_time` everything passed. The T114 went back to the normal
+> mode afterwards (boot 17), `tools/companion_check.py` passes. Not checked from a phone.
+
 > **0.9.0: MeshCore apps (companion protocol)** (8 October 2026, branch `feature/companion`; no boards were connected — not
 > checked on hardware or with a phone, no full run). All 15 boards build; the `tools/ui_preview` scenarios (M9, Heltec,
 > T-Deck, T114) pass; there is no switch — the advert is always the stock one (`MeshCore-<name>`, Nordic UART) with the
