@@ -247,5 +247,6 @@
  "shot.m9-network-ble": "Bluetooth: 앱에 보이는 이름과 PIN",
  "shot.t114-ble-on": "T114: MeshCore-T114와 PIN",
  "shot.heltec-ble-on": "OLED: 이름과 PIN",
- "doc.companion": "MeshCore 앱"
+ "doc.companion": "MeshCore 앱",
+ "news.remote": "<b>새 기능:</b> 화면에서 바로 리피터와 룸에 로그인하고 룸 게시물을 읽고 쓰며 경로를 추적"
 }

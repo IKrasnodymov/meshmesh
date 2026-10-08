@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: the rating ledger are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 #include "ChessRating.h"
 #include <SHA256.h>
 #include <ArduinoJson.h>

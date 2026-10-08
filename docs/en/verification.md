@@ -1,5 +1,16 @@
 # MeshMesh verification
 
+> **0.13.0: other repeaters and rooms from the screen** (8 October 2026, branch `feature/remote`, no full run). 15 boards
+> build; on the nRF52 the web API, chess, pet, channels and server modules are built with `-Os` — the Chinese T114 image
+> has 50 KB free (0 before). Heltec V4 (boot 199) and T114: over USB `remote` from the Heltec to the T114 as a room —
+> a wrong password (no answer), admin login, status (the first run lost the answer, a retry took 1.6 s), CLI `ver`, a
+> post from the screen with ACK (stored by the room), the room's post arrived in the history with its author; the T114
+> as a repeater — login, status, CLI, trace (SNR 13.75 › you 12.5). The web page through `web_usb_bridge.py` to the
+> Heltec in headless Chromium: the repeater card with status, replies and trace, no JavaScript errors. The M9, T-Deck,
+> Heltec and T114 screens: `tools/ui_preview` only; physical buttons and the M9 screen not checked. The first build hung
+> on `remote`: an endless recursion after a search-and-replace in `src/Remote.inc` (fixed before the checks above). The
+> T114 is in the normal mode afterwards (boot 26), `tools/companion_check.py` passes.
+
 > **0.12.0: radio settings on the Heltec, GAT562, T114 and community board screens** (8 October 2026, no full run).
 > “Settings → Radio...” in the compact interface: frequency digit by digit, bandwidth, SF, CR, power, relay limit,
 > relaying, path hash size; the draft is applied by the “Save” row. 15 boards build; the Chinese T114 image has 2 KB

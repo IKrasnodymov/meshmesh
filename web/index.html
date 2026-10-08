@@ -357,7 +357,7 @@ function show(){
  if(next==='chat'&&prev==='node')cameFrom.chat='node/'+param;else if(next==='chat'&&prev!=='chat')delete cameFrom.chat;
  leave(prev,next);route=next;param=arg;
  for(const s of document.querySelectorAll('.page'))s.hidden=s.id!=='p-'+route;document.body.dataset.route=route;
- enter(route,prev);render();if(prev!==next||route==='chat')window.scrollTo(0,route==='chat'?document.body.scrollHeight:0)}
+ enter(route,prev);render();if(route==='node')loadRemote();if(prev!==next||route==='chat')window.scrollTo(0,route==='chat'?document.body.scrollHeight:0)}
 function parent(){return cameFrom[route]||(route==='chinfo'?'chat/'+param:PAGES[route][1])||'home'}
 function leave(prev,next){
  if(prev==='chat'){drafts.set(recipient,$('text').value);setReply(null)}
@@ -583,7 +583,7 @@ function renderChat(){
  $('chatHint').textContent=isChan(recipient)?'':'✓✓ — доставлено';
  const rows=history.filter(m=>matches(m,recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length;
  if(box.dataset.fingerprint!==fingerprint){const near=document.documentElement.scrollHeight-window.scrollY-window.innerHeight<120,first=!box.dataset.fingerprint;box.dataset.fingerprint=fingerprint;
-  chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&isChan(recipient),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
+  chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&(isChan(recipient)||peer(recipient)?.type===3),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
   if(near||first)window.scrollTo(0,document.body.scrollHeight)}
  if(route==='chat')markRead();byteCount()}
 function byteCount(){const n=bytes(replyPrefix()+$('text').value),l=messageLimit();$('byteCount').textContent=`${n} / ${l} байт`;$('byteCount').className='count '+(n>=l?'bad':n*10>=l*9?'warn':'');$('sendButton').disabled=!$('text').value.trim()||n>l;$('composeBox').classList.toggle('typing',n>0);return n}
@@ -706,14 +706,36 @@ function sortedPeers(){return [...peers].sort((a,b)=>a.heard!==b.heard?(a.heard?
 function renderNodes(){const list=sortedPeers();
  $('nodeList').innerHTML=list.length?list.map(p=>{const a=age(p),d=distance(p);let detail=typeText(p.type)+' · '+pathText(p);if(p.heard)detail+=` · ${Math.round(p.rssi)} dBm`;detail+=d?' · '+d:p.position?' · GPS':'';
   return `<button class="row" data-go="node/${p.id}">${avatar(p.id,p.name,p.type)}<span class="main"><b>${esc(p.name)}</b><small class="${p.type===1?'':typeClass(p.type)}">${esc(detail)}</small></span><span class="side"><span class="${p.heard&&a<1800?'ok':''}">${p.heard?ago(a):'сохранён'}</span>${p.heard?bars(snrLevel(p.snr)):''}</span></button>`}).join(''):`<div class="empty">${ic('mesh')}Узлы пока не обнаружены<small>«Объявить узел» отправит ваше объявление</small></div>`}
+// Repeaters and rooms of the mesh: login, status, CLI and route trace ("remote" USB commands); answers are polled while awaited.
+let remoteInfo=null,remoteTimer=0;
+async function loadRemote(){try{const r=await command('remote');remoteInfo=typeof r==='object'&&r.sessions?r:null}catch(e){} // older firmware answers with its command listif(route!=='node')return;renderNode();clearTimeout(remoteTimer);
+ const waiting=remoteInfo&&(remoteInfo.sessions.some(s=>[s.login,s.status_state,s.command_state].includes('waiting'))||remoteInfo.trace?.state==='waiting');if(waiting)remoteTimer=setTimeout(loadRemote,2000)}
+function remoteCard(p){const server=p.type===2||p.type===3,hops=p.path_length===255?0:p.path_length&63;if(!server&&!hops)return'';
+ const s=remoteInfo?.sessions?.find(x=>x.id===p.id),tr=remoteInfo?.trace?.id===p.id?remoteInfo.trace:null,st={waiting:'ждём ответа…',refused:'отказ',silent:'нет ответа'};
+ let h='<div class="card" style="margin-top:12px;padding:6px 12px 10px">';
+ if(server){const login=!s||s.login==='idle'?'вход не выполнен'+(s?.saved?' · пароль сохранён':''):s.login==='done'?(s.admin?'вход: администратор':'вход выполнен'):st[s.login];
+  h+=`<div class="detail"><span>${p.type===3?'Комната':'Репитер'}</span><span>${login}</span></div><div class="inv"><input id="remotePass" type="password" maxlength="15" placeholder="Пароль: пусто — сохранённый или гость" autocomplete="off"><button class="btn" data-node="login">Войти</button><button class="btn" data-node="status">Статус</button></div>`;
+  const v=s?.status;if(v)h+=[['Батарея',(v.battery_mv/1000).toFixed(2)+' В'],['Работает',v.uptime<3600?Math.round(v.uptime/60)+' мин':(v.uptime/3600).toFixed(1)+' ч'],['Приём / передача',v.received+' / '+v.sent],['Шум · RSSI · SNR',`${v.noise} · ${v.rssi} dBm · ${v.snr.toFixed(1)}`],...(p.type===3?[['Постов',v.posts]]:[])].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${b}</span></div>`).join('');
+  if(s&&st[s.status_state])h+=`<div class="small muted">Статус: ${st[s.status_state]}</div>`;
+  if(s?.admin&&s.login==='done')h+=`<div class="inv"><input id="remoteCmd" maxlength="151" placeholder="Команда: ver, get name, neighbors…" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" data-node="cli">Отправить</button></div>`;
+  if(s&&st[s.command_state])h+=`<div class="small muted">Команда: ${st[s.command_state]}</div>`;
+  if(s?.replies?.length)h+=s.replies.map(r=>`<div class="mono" style="font-size:13px;white-space:pre-wrap">${esc(r)}</div>`).join('');
+  if(p.type===3)h+=`<div class="small muted" style="margin-top:6px">Посты комнаты приходят в её чат после входа.</div>`}
+ if(server&&p.type===2||hops){h+=`<div class="inv"><b>Трассировка маршрута</b><button class="btn" data-node="trace">${tr?'Повторить':'Проверить'}</button></div>`;
+  if(tr)h+=`<div class="small">${tr.state==='done'?tr.hops.map(x=>`${x.hash} <b>${x.snr.toFixed(1)}</b>`).join(' › ')+` › вы <b>${tr.snr.toFixed(1)}</b> дБ (SNR на каждом участке)`:st[tr.state]||''}</div>`}
+ return h+'</div>'}
 function renderNode(){const p=peer(param);if(!p){$('nodeCard').innerHTML=`<div class="empty">${ic('mesh')}Узел удалён</div>`;return}
+ const keep={pass:$('remotePass')?.value,cmd:$('remoteCmd')?.value,focus:document.activeElement?.id}; // a refresh keeps what is being typed
  const d=distance(p),rows=[['Последний приём',p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад'):'после запуска не слышен'],['Сигнал',p.heard?`${Math.round(p.rssi)} dBm · SNR ${Number(p.snr).toFixed(1)}`:'—'],['Маршрут',pathText(p)+(p.path_length===255?' · flood':'')],['Позиция',d||(p.position?`${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}`:'не передана')],['ID',p.id]];
- const acts=[];if(p.type===1)acts.push(['write','Написать','primary']);if(p.position)acts.push(['map','На карте','']);if(p.path_length!==255)acts.push(['reset','Сброс пути','']);acts.push(['forget',deleteArmed===p.id?'Удалить?':'Удалить','danger'+(deleteArmed===p.id?' armed':'')]);
- $('nodeCard').innerHTML=`<div class="head">${avatar(p.id,p.name,p.type,52)}<div><span class="big">${esc(p.name)}</span><span class="${typeClass(p.type)} small">${typeText(p.type)}</span></div></div><div class="card" style="padding:0 12px">${rows.map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}<div class="detail"><span>Открытый ключ</span><span class="mono">${esc(p.public_key)}</span></div></div><div class="btns" style="margin-top:12px">${acts.map(([a,t,c])=>`<button class="btn ${c}" data-node="${a}">${t}</button>`).join('')}</div>`}
+ const acts=[];if(p.type===1||p.type===3)acts.push(['write',p.type===3?'Комната':'Написать','primary']);if(p.position)acts.push(['map','На карте','']);if(p.path_length!==255)acts.push(['reset','Сброс пути','']);acts.push(['forget',deleteArmed===p.id?'Удалить?':'Удалить','danger'+(deleteArmed===p.id?' armed':'')]);
+ $('nodeCard').innerHTML=`<div class="head">${avatar(p.id,p.name,p.type,52)}<div><span class="big">${esc(p.name)}</span><span class="${typeClass(p.type)} small">${typeText(p.type)}</span></div></div><div class="card" style="padding:0 12px">${rows.map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}<div class="detail"><span>Открытый ключ</span><span class="mono">${esc(p.public_key)}</span></div></div>${remoteCard(p)}<div class="btns" style="margin-top:12px">${acts.map(([a,t,c])=>`<button class="btn ${c}" data-node="${a}">${t}</button>`).join('')}</div>`;
+ if($('remotePass')&&keep.pass)$('remotePass').value=keep.pass;if($('remoteCmd')&&keep.cmd)$('remoteCmd').value=keep.cmd;if(keep.focus&&$(keep.focus))$(keep.focus).focus()}
 async function nodeAction(a){const p=peer(param);if(!p)return;if(a!=='forget')deleteArmed='';
  if(a==='write'){go('chat/'+encodeURIComponent(p.id));return}
  if(a==='map'){mapState={...mapState,lat:p.latitude,lon:p.longitude,center:true,follow:false};go('map');return}
  if(a==='reset'){await run('resetpath '+p.id,'Путь сброшен: следующее сообщение пойдёт flood');return}
+ if(['login','status','cli','trace'].includes(a)){const arg=a==='login'?$('remotePass').value:a==='cli'?$('remoteCmd').value.trim():'';if(a==='cli'&&!arg){notify('Введите команду, например ver','warn');return}
+  try{await command(`remote ${a} ${p.id}${arg?' '+arg:''}`);if(a==='login')$('remotePass').value='';if(a==='cli')$('remoteCmd').value='';notify({login:'Вход отправлен',status:'Статус запрошен',cli:'Команда отправлена',trace:'Трассировка отправлена'}[a])}catch(e){notify(e.message,'bad')}loadRemote();return}
  if(deleteArmed!==p.id){deleteArmed=p.id;notify('Нажмите ещё раз для удаления контакта','warn');renderNode();return}
  deleteArmed='';try{await command('forget '+p.id);notify('Контакт удалён; новое объявление вернёт его','ok');await refresh();go('nodes')}catch(e){notify(e.message.includes('busy')?'Радио занято, повторите':'Нельзя удалить во время отправки','bad')}}
 

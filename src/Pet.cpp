@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: the pet are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 #include "Modules.h"
 #if MM_PET
 #define PET_SPRITES_DEFINE // the species drawings live in this file (PetSprites.h)

@@ -96,6 +96,28 @@ Code:
   `PATCHES.md`);
 - `lib/CayenneLPP` (telemetry encoder).
 
+## Other repeaters and rooms from the screen (0.13.0)
+
+In the normal mode MeshMesh itself logs in to the network's repeaters and rooms, stock and MeshMesh ones, as the
+MeshCore app does (`include/Remote.h`, `src/Remote.inc`):
+
+- **M9 and T-Deck:** the node card → "Server". The "Server and route" page: "Login" (a password; empty takes the
+  saved one or a guest login), "Status" (battery, uptime, received and sent, noise, RSSI and SNR, room posts),
+  "Command" (after an admin login; CLI commands as in the app: `ver`, `get name`, `neighbors`…; the last three
+  replies on the page), "Trace". A room's "Room" button opens its chat.
+- **Heltec, GAT562, T114:** the node menu has "Log in" (with the saved password, else as a guest), "Server status"
+  and "Trace route"; the answer shows on the node page. CLI commands are not sent from these boards.
+- **Web page and the MeshMesh app:** the node card has a password field, "Login", "Status", a command field for the
+  admin, the replies and the trace; answers arrive without reloading the page.
+- **USB:** `remote` (sessions and the trace as JSON), `remote login|status|cli|trace NODE_ID [text]`.
+
+A password that logged in is kept on the board (`/meshmesh/remote.bin`, up to six servers) and used when the field
+is empty. A room's posts arrive in the history as its conversation, under the author's name (a contact, else 8 hex
+digits of the key); a post from the screen is an ordinary message to the room with a delivery ACK. A room takes posts
+and sends new ones only after a login. The trace goes through the route's repeaters (1-byte hashes) and back, for a
+repeater up to the repeater itself, and shows the SNR of every hop. A server does not answer a wrong password: after
+the timeout it reads "no answer".
+
 ## Power saving
 
 On ESP32 boards (`src/Power.cpp`, in every mode) the CPU runs at 80 MHz while the screen is dark and

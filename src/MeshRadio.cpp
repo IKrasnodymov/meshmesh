@@ -30,6 +30,7 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include "MeshServer.h"
 #include "Power.h"
 #include "Companion.h"
+#include "Remote.h"
 #include <CayenneLPP.h>
 #include <helpers/SensorManager.h>
 MeshRadio meshRadio;
@@ -43,6 +44,14 @@ void cliMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t stam
 void roomPost(const ContactInfo& room,const mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text);
 void response(const ContactInfo& c,const uint8_t* data,uint8_t len); // a server's answer to a login or request
 void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen);
+}
+// The screen's and web page's sessions with repeaters and rooms (src/Remote.inc): true when the answer was theirs.
+namespace remote {
+bool onResponse(const ContactInfo& c,const uint8_t* data,uint8_t len);
+void onCli(const ContactInfo& c,const char* text);
+bool onTrace(const mesh::Packet* packet,uint32_t tag,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen);
+}
+namespace appLink {
 bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen); // true: an app's path discovery
 uint32_t confirm(uint32_t ack,uint64_t& destination); // the message ID of an app's send; 0: not one
 }
@@ -118,7 +127,7 @@ bool writeStored(const char* path,const char* temp,const void* data,size_t size)
  return LittleFS.rename(temp,path);
 }
 class MeshCoreBackend:public BaseChatMesh {
- friend struct CompanionCore;
+ friend struct CompanionCore;friend struct RemoteAccess;
  MeshRadio& owner;
  uint32_t contactsDue=0;
  struct Forwarded {uint8_t hash[8]={};uint32_t at=0;} forwarded[32];unsigned nextForwarded=0;
@@ -181,8 +190,13 @@ class MeshCoreBackend:public BaseChatMesh {
  static uint8_t hopsOf(const ContactInfo& c,const mesh::Packet* packet){return packet->isRouteFlood()?packet->getPathHashCount():c.out_path_len==OUT_PATH_UNKNOWN?255:c.out_path_len&63;}
  void onMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t timestamp,const char* text) override{uint8_t hops=hopsOf(c,packet);updateContact(c,true,hops);if(receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,timestamp,c.name,text,packet,hops))appLink::contactMessage(c,packet,timestamp,text);markConnectionActive(c);}
  // Replies of repeater and room CLIs and room posts: for a companion app (the screen does not show them yet).
- void onCommandDataRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const char* text) override{markConnectionActive(c);appLink::cliMessage(c,packet,stamp,text);}
- void onSignedMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text) override{markConnectionActive(c);appLink::roomPost(c,packet,stamp,author,text);}
+ void onCommandDataRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const char* text) override{markConnectionActive(c);remote::onCli(c,text);appLink::cliMessage(c,packet,stamp,text);}
+ // A room post: the room's conversation in the history, under its author's name (a contact, else its key).
+ void onSignedMessageRecv(const ContactInfo& c,mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text) override{
+  markConnectionActive(c);char name[25];ContactInfo* a=lookupContactByPubKey(author,4);
+  if(a)copyUtf8(name,a->name,sizeof(name));else if(!memcmp(author,self_id.pub_key,4))copyUtf8(name,config.name,sizeof(name));else snprintf(name,sizeof(name),"%02X%02X%02X%02X",author[0],author[1],author[2],author[3]);
+  receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,stamp,name,text,packet,hopsOf(c,packet));appLink::roomPost(c,packet,stamp,author,text);
+ }
  uint32_t calcFloodTimeoutMillisFor(uint32_t airtime) const override{return 15000+airtime*4+config.hops*5000;}
  // Our flood packets (messages, ACKs, path returns, requests) carry the path hash size chosen in the settings.
  void sendFloodScoped(const ContactInfo&,mesh::Packet* p,uint32_t delay) override{sendFlood(p,delay,config.pathHash);}
@@ -197,8 +211,8 @@ class MeshCoreBackend:public BaseChatMesh {
   if(receiveMessage(source,dest,stamp,name.c_str(),split?split+2:text,packet,packet->isRouteFlood()?packet->getPathHashCount():255))appLink::channelMessage(owner.channelIndex(dest),packet,stamp,text);
  }
  uint8_t onContactRequest(const ContactInfo&,uint32_t,const uint8_t*,uint8_t,uint8_t*) override{return 0;}
- void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{appLink::response(c,data,len);}
- void onTraceRecv(mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen) override{appLink::traced(packet,tag,auth,flags,snrs,hashes,pathLen);}
+ void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{if(!remote::onResponse(c,data,len))appLink::response(c,data,len);}
+ void onTraceRecv(mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen) override{if(!remote::onTrace(packet,tag,flags,snrs,hashes,pathLen))appLink::traced(packet,tag,auth,flags,snrs,hashes,pathLen);}
  // The answer to an app's path discovery reports both paths and is not stored as the route (as in stock MeshCore).
  bool onContactPathRecv(ContactInfo& c,uint8_t* inPath,uint8_t inLen,uint8_t* outPath,uint8_t outLen,uint8_t extraType,uint8_t* extra,uint8_t extraLen) override{
   if(appLink::discovered(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen))return false;
@@ -257,7 +271,7 @@ class MeshCoreBackend:public BaseChatMesh {
  bool startMessage(MeshRadio::Pending& wait){
   mesh::Packet* packet=nullptr;unsigned attempt=wait.attempts;
   if(::channels::isChannel(wait.message.destination)){int i=owner.channelIndex(wait.message.destination);ChannelDetails channel;if(i<0||!getChannel(i,channel))return false;uint8_t bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);String text=String(config.name)+": "+wait.message.text;memcpy(bytes+5,text.c_str(),text.length());packet=createGroupDatagram(PAYLOAD_TYPE_GRP_TXT,channel.channel,bytes,5+text.length());}
-  else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||(c->type!=ADV_TYPE_CHAT&&!wait.app)){owner.event="Contact is not a chat node";return false;} // an app also posts to rooms
+  else{Peer* p=owner.contact(wait.message.destination);if(!p)return false;ContactInfo* c=lookupContactByPubKey(p->publicKey,32);if(!c||(c->type!=ADV_TYPE_CHAT&&c->type!=ADV_TYPE_ROOM&&!wait.app)){owner.event="Contact is not a chat node";return false;} // posts go to rooms too
    // Stock MeshCore layout. Keep timestamp/text stable for retries; attempt changes the ACK/hash.
    uint8_t wire=wait.app?wait.appAttempt:attempt,bytes[5+MAX_TEXT_LEN]={};meshmesh::put32(bytes,wait.wireTimestamp);bytes[4]=wire&3;size_t n=strlen(wait.message.text);memcpy(bytes+5,wait.message.text,n);mesh::Utils::sha256((uint8_t*)&wait.ack[attempt],4,bytes,5+n,self_id.pub_key,32);packet=createDatagram(PAYLOAD_TYPE_TXT_MSG,c->id,c->getSharedSecret(self_id),bytes,5+n);
    // Only the first attempt follows a trusted path; the retries flood, so a broken route does not lose the
@@ -355,7 +369,7 @@ uint32_t MeshRadio::sendGame(const String& text,uint64_t destination){return cha
 uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game){
  size_t n=text.length();if(!ready||!core||!config.bootCounter||!n||n>messageLimit(destination)||!meshmesh::validUtf8((const uint8_t*)text.c_str(),n)||!destination||destination==nodeId){event="Message: invalid or radio offline";dirty=true;return false;}
  if(channels::isChannel(destination)){if(channelIndex(destination)<0){event="Not a joined channel";dirty=true;return false;}}
- else{auto* p=contact(destination);if(!p||p->type!=ADV_TYPE_CHAT){event="Send advert and discover chat contact first";dirty=true;return false;}}
+ else{auto* p=contact(destination);if(!p||(p->type!=ADV_TYPE_CHAT&&p->type!=ADV_TYPE_ROOM)){event="Send advert and discover chat contact first";dirty=true;return false;}} // a room takes posts
  Pending* slot=nullptr;for(auto& wait:pending)if(!wait.active){slot=&wait;break;}if(!slot){event="Waiting for ACKs";dirty=true;return false;}
  auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
@@ -433,7 +447,7 @@ void MeshRadio::tick(){
  uint32_t now=millis();
  if(recalFailed){if(now-recalAt>=5000)recalibrate();return;} // retried until the transceiver answers again
  if(ready&&!busy()&&now-lastRxAt>=600000&&now-recalAt>=600000)recalibrate();
- if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();now=millis();
+ if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();remote::tick();now=millis();
  for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.app){p.active=false;continue;} // the app retries itself
   if(p.attempts>=3||channels::isChannel(p.message.destination)){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(!channels::isChannel(p.message.destination)){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
@@ -539,3 +553,4 @@ int MeshRadio::probeHashtag(const String& raw){
 static_assert(MAX_GROUP_CHANNELS>=channels::Max,"MAX_GROUP_CHANNELS in platformio.ini holds channels::Max");
 
 #include "Companion.inc"
+#include "Remote.inc"

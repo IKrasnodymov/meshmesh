@@ -167,6 +167,8 @@ void nodes(){
  if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr("N","С"),tr("NE","СВ"),tr("E","В"),tr("SE","ЮВ"),tr("S","Ю"),tr("SW","ЮЗ"),tr("W","З"),tr("NW","СЗ")};int k=int((bearing+22.5f)/45)%8;
   where=(metres<1000?String(int(metres))+t(" m "," м "):String(metres/1000,1)+t(" km "," км "))+dirs[k];}
  else if(p->position)where=t("has GPS position","есть GPS-позиция");
+ String login=remoteLogin(*p),result=remoteResult(*p); // a server's or a trace's answer takes the second row
+ if(login.length()||result.length()){text(12,103,fit(login.length()&&result.length()?login+" · "+result:login+result,212,small),ColAccent,small);return;}
  if(where.length()){icon(IcPin,16,97,5,ColGood,ColCard);text(28,103,where,ColDim,small);}
 }
 // Radar: signals with a colour per kind, the chosen one lit; homing with the level, trend and peak.

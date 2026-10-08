@@ -4,6 +4,7 @@
 #include "App.h"
 #include "Hardware.h"
 #include "MeshRadio.h"
+#include "Remote.h"
 #include "Radar.h"
 #include "ChessNet.h"
 #include "ChessTour.h"
@@ -86,6 +87,21 @@ String clockText(time_t at){if(at<1700000000)return "--:--";at+=config.utcOffset
 String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t("s","с");if(s<3600)return String(s/60)+t("m","м");if(s<86400)return String(s/3600)+t("h","ч");return String(s/86400)+t("d","д");}
 String pathText(const Peer& p){if(p.pathLength==255)return t("path ?","путь ?");if(!(p.pathLength&63))return t("direct","напрямую");return String(p.pathLength&63)+t(" hops"," хоп.");}
 String typeText(uint8_t type){switch(type){case 2:return t("repeater","ретранслятор");case 3:return t("room","комната");case 4:return t("sensor","датчик");}return t("chat","чат");}
+// The latest answer of a repeater or room, or of a route trace, in two short lines (empty when none).
+String remoteLogin(const Peer& p){
+ remote::Session* s=remote::find(p.id);if(!s||s->login==remote::Idle)return "";
+ switch(s->login){case remote::Waiting:return t("login: waiting","вход: ждём");case remote::Done:return s->admin?t("logged in: admin","вход: админ"):t("logged in","вход выполнен");case remote::Refused:return t("login refused","вход: отказ");default:return t("login: no answer","вход: нет ответа");}
+}
+String remoteResult(const Peer& p){
+ auto& tr=remote::trace;
+ if(tr.id==p.id&&tr.state!=remote::Idle){
+  if(tr.state==remote::Waiting)return t("trace: waiting","трасса: ждём");if(tr.state!=remote::Done)return t("trace: no answer","трасса: нет ответа");
+  String r;for(unsigned i=0;i<tr.hops;i++)r+=String(tr.snr[i]/4.0f,0)+">";return t("SNR ","SNR ")+r+String(tr.snr[tr.hops]/4.0f,0);
+ }
+ remote::Session* s=remote::find(p.id);if(!s||s->status==remote::Idle)return "";
+ if(s->status!=remote::Done)return s->status==remote::Waiting?t("status: waiting","статус: ждём"):t("status: no answer","статус: нет ответа");
+ return String(s->battery/1000.0f,2)+t("V up ","В ")+String(s->uptime/3600)+t("h rx ","ч прм ")+String(s->received);
+}
 bool distanceTo(const Peer& p,float& metres,float& bearing){
  if(!p.position||!hardware.gpsFix())return false;double la1=hardware.gps.location.lat()*M_PI/180,la2=p.latitude*M_PI/180,dl=(p.longitude-hardware.gps.location.lng())*M_PI/180;
  double a=sin((la2-la1)/2)*sin((la2-la1)/2)+cos(la1)*cos(la2)*sin(dl/2)*sin(dl/2);metres=12742000*atan2(sqrt(a),sqrt(1-a));bearing=fmod(atan2(sin(dl)*cos(la2),cos(la1)*sin(la2)-sin(la1)*cos(la2)*cos(dl))*180/M_PI+360,360);return true;
@@ -216,7 +232,7 @@ String radioHint(){
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
-  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActClose};
+  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
 constexpr unsigned MenuMax=10;
 #if MM_DICE
 #include "UiDiceCompact.inc"
@@ -249,7 +265,10 @@ unsigned actions(Act* out){
 #else
   out[n++]=ActNextNode;if(MM_CHESS&&p->type==1)out[n++]=ActChess;
 #endif
-  if(p->type==1)out[n++]=ActNodeOk;if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
+  if(p->type==1)out[n++]=ActNodeOk;
+  if(p->type==2||p->type==3){out[n++]=ActRemoteLogin;out[n++]=ActRemoteStatus;} // with the saved password, else as a guest
+  if(remote::traceable(p->id))out[n++]=ActTrace;
+  if(p->pathLength!=255)out[n++]=ActResetPath;}out[n++]=ActAdvert;break;
  case Chess:
 #if !defined(MM_JOYSTICK)
 #if MM_CHESS
@@ -306,6 +325,7 @@ String actName(Act a){
  case ActRole:return t("Device mode...","Режим работы...");case ActForward:return meshServer.view().forwarding?t("Forwarding: off","Пересылка: выкл."):t("Forwarding: on","Пересылка: вкл.");
  case ActAdvert:return t("Announce node","Объявить узел");case ActReplyOk:return t("Reply: OK","Ответить: OK")+String(publicChat?" #":"");case ActReplyAck:return t("Reply: Got it","Ответить: Принято");
  case ActOlder:return t("Older message","Предыдущее");case ActNewer:return t("Newer message","Следующее");case ActNextNode:return t("Next node","Следующий узел");case ActNodeOk:return t("Send: OK","Написать: OK");case ActResetPath:return t("Reset path","Сбросить путь");
+ case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t("Log in","Войти"):t("Log in as guest","Войти гостем");}case ActRemoteStatus:return t("Server status","Статус сервера");case ActTrace:return t("Trace route","Трассировка");
  case ActGps:return config.gps?t("Turn GPS off","Выключить GPS"):t("Turn GPS on","Включить GPS");case ActPosition:return t("Share position","Передать позицию");
  case ActWifi:return portalActive()?t("Turn Wi-Fi off","Выключить Wi-Fi"):t("Turn Wi-Fi on","Включить Wi-Fi");case ActBle:return bleActive()?t("Turn BLE off","Выключить BLE"):t("Turn BLE on","Включить BLE");
  case ActLanguage:return t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
@@ -362,6 +382,7 @@ void run(Act a){
  case ActOlder:messageOffset++;shownMessage();break;case ActNewer:messageOffset=max(0,messageOffset-1);break;case ActNextNode:nodeIndex++;menuIndex=0;break;
  case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage("OK",p->id);notice(sent?t("OK queued","OK в очереди"):t("Not queued","Не отправлено"));break;}
  case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t("Path reset","Путь сброшен"):t("Path reset failed","Путь не сброшен"));break;}
+ case ActRemoteLogin:case ActRemoteStatus:case ActTrace:{Peer* p=shownNode();bool sent=p&&(a==ActRemoteLogin?remote::login(p->id,""):a==ActRemoteStatus?remote::status(p->id):remote::traceTo(p->id));notice(sent?t("Sent, waiting","Отправлено, ждём"):t("Not sent","Не отправлено"));break;}
  case ActGps:notice(applyOne("gps",!config.gps).startsWith("OK")?"GPS: "+String(config.gps?t("on","вкл"):t("off","выкл")):t("Radio busy, retry","Радио занято, повторите"));break;
  case ActPosition:notice(meshRadio.sendPosition()?t("Position shared","Позиция передана"):t("Needs a GPS fix","Нужна позиция GPS"));break;
  case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
@@ -530,6 +551,8 @@ void draw(){
   else{say(0,30,t("No messages yet","Сообщений ещё нет"));say(0,44,t("They appear here","Здесь появятся входящие"),small);}break;}
  case Nodes:{unsigned order[24];unsigned n=sortedNodes(order);Peer* p=shownNode();title=t("Nodes","Узлы")+(n?" "+String(nodeIndex%n+1)+"/"+String(n):"");
   if(p){say(0,23,clipped(p->name,21),bold);say(0,33,typeText(p->type)+", "+pathText(*p),small);
+   String login=remoteLogin(*p),result=remoteResult(*p);
+   if(login.length()||result.length()){say(0,42,login.length()?login:String(int(p->rssi))+" dBm SNR "+String(p->snr,1),small);say(0,51,result,small);break;}
    say(0,42,p->heard?String(int(p->rssi))+" dBm SNR "+String(p->snr,1)+", "+ago(millis()-p->seen):t("saved, not heard","сохранён, не слышен"),small);
    float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr("N","С"),tr("NE","СВ"),tr("E","В"),tr("SE","ЮВ"),tr("S","Ю"),tr("SW","ЮЗ"),tr("W","З"),tr("NW","СЗ")};int k=int((bearing+22.5f)/45)%8;say(0,51,(metres<1000?String(int(metres))+t(" m "," м "):String(metres/1000,1)+t(" km "," км "))+dirs[k],small);}
    else if(p->position)say(0,51,t("has GPS position","есть GPS-позиция"),small);}

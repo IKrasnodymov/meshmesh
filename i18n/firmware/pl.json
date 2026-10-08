@@ -139,6 +139,11 @@
   "ru": "Журнал рейтинга: получено записей ",
   "text": "Rejestr rankingu: odebrane wpisy "
  },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "Turniej: wybierz kontakty czatu"
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -228,11 +233,6 @@
   "en": "Tournament: no free place",
   "ru": "Турнир: нет свободного места",
   "text": "Turniej: brak wolnego miejsca"
- },
- "00ece744": {
-  "en": "Tournament: choose chat contacts",
-  "ru": "Турнир: выберите чат-контакты",
-  "text": "Turniej: wybierz kontakty czatu"
  },
  "22423572": {
   "en": "Counter ",
@@ -890,6 +890,11 @@
   "ru": "Кости",
   "text": "Kości"
  },
+ "c1c1a690": {
+  "en": "Server and route",
+  "ru": "Сервер и маршрут",
+  "text": "Serwer i trasa"
+ },
  "969e0815": {
   "en": "Device mode",
   "ru": "Режим работы",
@@ -1123,6 +1128,16 @@
   "en": "Open channel · senders unverified · no ACK",
   "ru": "Открытый канал · без подтверждений",
   "text": "Otwarty kanał · bez weryfikacji · bez ACK"
+ },
+ "5b522704": {
+  "en": "logged in",
+  "ru": "вход выполнен",
+  "text": "zalogowano"
+ },
+ "06b58098": {
+  "en": "log in: node card > Server",
+  "ru": "войдите: карточка узла > Сервер",
+  "text": "zaloguj: karta węzła > Serwer"
  },
  "b86cfa5d": {
   "en": "Not in contacts",
@@ -1370,6 +1385,11 @@
   "ru": "не передана",
   "text": "nieudostępniona"
  },
+ "418fd57b": {
+  "en": "Room",
+  "ru": "Комната",
+  "text": "Pokój"
+ },
  "4ac9ad0f": {
   "en": "Message",
   "ru": "Написать",
@@ -1389,6 +1409,16 @@
   "en": "Forget",
   "ru": "Удалить",
   "text": "Usuń"
+ },
+ "51bab002": {
+  "en": "Server",
+  "ru": "Сервер",
+  "text": "Serwer"
+ },
+ "82a48d1c": {
+  "en": "Trace",
+  "ru": "Трасса",
+  "text": "Trasa"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -2676,10 +2706,30 @@
   "ru": " байт",
   "text": " bajtów"
  },
+ "47f20831": {
+  "en": "Saved after a successful login",
+  "ru": "Сохраняется после удачного входа",
+  "text": "Zapisywane po udanym logowaniu"
+ },
+ "ad5eec0a": {
+  "en": "As in the MeshCore app: ver, get name, neighbors...",
+  "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
+  "text": "Jak w aplikacji MeshCore: ver, get name, neighbors..."
+ },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
   "ru": "8-63 символа; -> после буквы: заглавная",
   "text": "8-63 znaki; -> po literze: wielka litera"
+ },
+ "e96a0252": {
+  "en": "OK: log in   BACK: cancel",
+  "ru": "OK: войти   BACK: отменить",
+  "text": "OK: zaloguj   BACK: anuluj"
+ },
+ "a000f97c": {
+  "en": "OK: send   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK: wyślij   BACK: anuluj"
  },
  "7a1da0b4": {
   "en": "OK: post   BACK: cancel",
@@ -2725,6 +2775,11 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "Ustawienia zapisane"
+ },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "Nie wysłano: radio lub trasa"
  },
  "315b16c1": {
   "en": "Radio busy, try again",
@@ -4607,6 +4662,26 @@
   "ru": "Бросок первый в меню",
   "text": "Rzut jest pierwszy w menu"
  },
+ "74c2869f": {
+  "en": "status: waiting",
+  "ru": "статус: ждём",
+  "text": "status: czekamy"
+ },
+ "ce9882a3": {
+  "en": "status: no answer",
+  "ru": "статус: нет ответа",
+  "text": "status: brak odpowiedzi"
+ },
+ "eada8c27": {
+  "en": "V up ",
+  "ru": "В ",
+  "text": "V dz. "
+ },
+ "0d13764a": {
+  "en": "h rx ",
+  "ru": "ч прм ",
+  "text": "h rx "
+ },
  "c1f1d7de": {
   "en": "phone",
   "ru": "телефон",
@@ -4862,6 +4937,26 @@
   "ru": "Сбросить путь",
   "text": "Zeruj trasę"
  },
+ "67e918b5": {
+  "en": "Log in",
+  "ru": "Войти",
+  "text": "Zaloguj"
+ },
+ "5617eb02": {
+  "en": "Log in as guest",
+  "ru": "Войти гостем",
+  "text": "Zaloguj jako gość"
+ },
+ "ca8c45a8": {
+  "en": "Server status",
+  "ru": "Статус сервера",
+  "text": "Status serwera"
+ },
+ "612190dc": {
+  "en": "Trace route",
+  "ru": "Трассировка",
+  "text": "Śledź trasę"
+ },
  "10f55374": {
   "en": "Turn GPS off",
   "ru": "Выключить GPS",
@@ -5061,6 +5156,16 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Trasa niewyzerowana"
+ },
+ "0146125b": {
+  "en": "Sent, waiting",
+  "ru": "Отправлено, ждём",
+  "text": "Wysłano, czekamy"
+ },
+ "443a9b3b": {
+  "en": "Not sent",
+  "ru": "Не отправлено",
+  "text": "Nie wysłano"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5537,6 +5642,41 @@
   "ru": "чат",
   "text": "czat"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "login: czekamy"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "login: admin"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "login odrzucony"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "login: brak odpowiedzi"
+ },
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "trasa: czekamy"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "trasa: brak odpowiedzi"
+ },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5727,6 +5867,161 @@
   "en": "snacks ",
   "ru": "вкусн. ",
   "text": "smak. "
+ },
+ "8bc75ba8": {
+  "en": "waiting for an answer...",
+  "ru": "ждём ответа...",
+  "text": "czekamy na odpowiedź..."
+ },
+ "3ac39946": {
+  "en": "refused",
+  "ru": "отказ",
+  "text": "odmowa"
+ },
+ "410872bd": {
+  "en": "no answer",
+  "ru": "нет ответа",
+  "text": "brak odpowiedzi"
+ },
+ "b3ad5c90": {
+  "en": "not logged in · password saved",
+  "ru": "вход не выполнен · пароль сохранён",
+  "text": "niezalogowany · hasło zapisane"
+ },
+ "7bc89bc5": {
+  "en": "not logged in",
+  "ru": "вход не выполнен",
+  "text": "niezalogowany"
+ },
+ "f811c09d": {
+  "en": "logged in as admin",
+  "ru": "вход: администратор",
+  "text": "zalogowano jako admin"
+ },
+ "026ea8d5": {
+  "en": "Status: ",
+  "ru": "Статус: ",
+  "text": "Status: "
+ },
+ "c6b489e7": {
+  "en": "Status: not asked yet",
+  "ru": "Статус: не запрашивался",
+  "text": "Status: jeszcze nie pytano"
+ },
+ "8e2a86b3": {
+  "en": "Battery ",
+  "ru": "Батарея ",
+  "text": "Bateria "
+ },
+ "f5327ffa": {
+  "en": " V",
+  "ru": " В",
+  "text": " V"
+ },
+ "17353f25": {
+  "en": "Up ",
+  "ru": "Работает ",
+  "text": "Działa "
+ },
+ "7ba0f104": {
+  "en": "Rx/tx ",
+  "ru": "Приём/передача ",
+  "text": "Odb./nad. "
+ },
+ "eb72ee48": {
+  "en": "Noise ",
+  "ru": "Шум ",
+  "text": "Szum "
+ },
+ "c2e7f41f": {
+  "en": "Air ",
+  "ru": "В эфире ",
+  "text": "W eterze "
+ },
+ "567720cb": {
+  "en": "Trace: ",
+  "ru": "Трассировка: ",
+  "text": "Trasa: "
+ },
+ "be1f99d5": {
+  "en": "you ",
+  "ru": "вы ",
+  "text": "ty "
+ },
+ "bd7e131a": {
+  "en": "Trace shows the SNR at every repeater of the route",
+  "ru": "Трассировка покажет SNR на каждом ретрансляторе маршрута",
+  "text": "Śledzenie pokaże SNR na każdym repeaterze trasy"
+ },
+ "43d6f19d": {
+  "en": "No route through repeaters to trace",
+  "ru": "Нет маршрута через ретрансляторы",
+  "text": "Brak trasy przez repeatery do śledzenia"
+ },
+ "3ca29d6b": {
+  "en": "Replies:",
+  "ru": "Ответы:",
+  "text": "Odpowiedzi:"
+ },
+ "03ffe110": {
+  "en": "Command: ",
+  "ru": "Команда: ",
+  "text": "Polecenie: "
+ },
+ "c1197973": {
+  "en": "Login",
+  "ru": "Войти",
+  "text": "Zaloguj"
+ },
+ "2e0785bd": {
+  "en": "Status",
+  "ru": "Статус",
+  "text": "Status"
+ },
+ "9877f53c": {
+  "en": "Command",
+  "ru": "Команда",
+  "text": "Polecenie"
+ },
+ "bec55541": {
+  "en": "Status requested",
+  "ru": "Статус запрошен",
+  "text": "Status zapytany"
+ },
+ "267a1cee": {
+  "en": "Not sent: radio or contact",
+  "ru": "Не отправлено: радио или контакт",
+  "text": "Nie wysłano: radio lub kontakt"
+ },
+ "9ce0d721": {
+  "en": "Trace sent",
+  "ru": "Трассировка отправлена",
+  "text": "Śledzenie wysłane"
+ },
+ "6cbaf28f": {
+  "en": "Password (empty: saved or guest)",
+  "ru": "Пароль (пусто: сохранённый или гость)",
+  "text": "Hasło (puste: zapisane lub gość)"
+ },
+ "85907275": {
+  "en": "Command to the server",
+  "ru": "Команда серверу",
+  "text": "Polecenie do serwera"
+ },
+ "85866a15": {
+  "en": "Type a command, e.g. ver",
+  "ru": "Введите команду, например ver",
+  "text": "Wpisz polecenie, np. ver"
+ },
+ "294219df": {
+  "en": "Login sent",
+  "ru": "Вход отправлен",
+  "text": "Logowanie wysłane"
+ },
+ "bd4949b8": {
+  "en": "Command sent",
+  "ru": "Команда отправлена",
+  "text": "Polecenie wysłane"
  },
  "a851b542": {
   "en": "Announced to the network",

@@ -5,6 +5,7 @@
 #include "Hardware.h"
 #include "Palette.h"
 #include "MeshRadio.h"
+#include "Remote.h"
 #include "Maps.h"
 #include "Pet.h"
 #include "Dice.h"
@@ -23,6 +24,12 @@ String Config::keyHex() const{return String("00");}bool Config::setKey(const Str
 static bool wifiOn=false,bleOn=false;
 bool portalActive(){return wifiOn;}String portalPassword(){return "preview-pass";}void portalToggle(){wifiOn=!wifiOn;}
 bool bleActive(){return bleOn;}void bleToggle(){bleOn=!bleOn;}uint32_t blePin(){return 123456;}
+// Repeater and room sessions (src/Remote.inc): fake answers, set up with the nodes below.
+namespace remote{Session sessions[MaxSessions];Trace trace;
+Session* find(uint64_t id){for(auto& x:sessions)if(x.id&&x.id==id)return &x;return nullptr;}
+bool login(uint64_t,const String&,bool){return true;}bool status(uint64_t){return true;}bool command(uint64_t,const String&){return true;}bool traceTo(uint64_t){return true;}
+bool traceable(uint64_t id){Peer* p=nullptr;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].id==id)p=&meshRadio.peers[i];return p&&(p->type==2||(p->pathLength!=255&&(p->pathLength&63)));}
+bool saved(uint64_t){return true;}void tick(){}String json(){return "{}";}String usbCommand(const String&){return "OK";}}
 String bleName(){return String("MeshCore-")+config.name+" 5EA1";}void bleRename(){}
 String configJson(bool){return "{}";}
 String applySettings(JsonObjectConst){return "OK settings saved";}
@@ -114,6 +121,9 @@ int main(int argc,char** argv){
  // Node names fit Peer::name (24 bytes, as the firmware allows).
  const char* names[]={"Heltec V4","Kazan RPT-1","Комн. Казань","Игорь T-Deck","Sensor-12","Марат"};uint8_t types[]={1,2,3,1,4,1};
  for(int i=0;i<6;i++){auto& p=meshRadio.peers[meshRadio.peerCount++];p.id=peerId(i);strcpy(p.name,names[i]);p.type=types[i];p.heard=i!=4;p.seen=fakeMillis-(i*47000+3000);p.rssi=-58-i*11;p.snr=11-i*3.5f;p.hops=i==0?0:i;p.pathLength=i==0?0:i==2?255:i;p.position=i==0||i==1||i==3;p.latitude=55.7963+0.0011*(i+1)*(i%2?1:-1);p.longitude=49.1088+0.0013*(i+1)*(i%3?1:-1);for(int k=0;k<8;k++)p.publicKey[k]=uint8_t(p.id>>(56-8*k));p.publicKey[8]=0x10*i+3;}
+ {auto& r=remote::sessions[0];r.id=peerId(1);r.login=r.status=r.command=remote::Done;r.admin=true;r.battery=4170;r.uptime=93780;r.received=1520;r.sent=611;r.airtime=4210;r.noise=-112;r.rssi=-79;r.snr=38;
+  strcpy(r.reply[0],"> Kazan RPT-1");strcpy(r.reply[1],"v1.17.1-meshmesh (Build: Oct  8 2026)");r.replies=2;
+  auto& tr=remote::trace;tr.id=peerId(1);tr.state=remote::Done;tr.hops=1;tr.hashes[0]=uint8_t(peerId(1)>>56);tr.snr[0]=49;tr.snr[1]=34;}
  time_t now=time(nullptr);
  auto add=[&](uint64_t src,uint64_t dst,const char* name,const char* text,bool out,ChatMessage::Status st,int ago){ChatMessage m;m.source=src;m.destination=dst;strcpy(m.name,name);strcpy(m.text,text);m.outgoing=out;m.status=st;m.timestamp=now-ago;m.id=++nextId;meshRadio.history[meshRadio.historyCount++]=m;};
  uint64_t B=meshmesh::Broadcast;

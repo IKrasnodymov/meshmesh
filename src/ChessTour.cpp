@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: the tournaments are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 #include "ChessTour.h"
 #include "ChessNet.h"
 #include "ChessRating.h"

@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: channel names, links and keys are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 #include "Channels.h"
 #include <SHA256.h>
 #include <Mm1Packet.h>

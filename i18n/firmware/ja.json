@@ -139,6 +139,11 @@
   "ru": "Журнал рейтинга: получено записей ",
   "text": "レート記録：受信数 "
  },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "大会:チャット連絡先を選択"
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -228,11 +233,6 @@
   "en": "Tournament: no free place",
   "ru": "Турнир: нет свободного места",
   "text": "大会:空きがありません"
- },
- "00ece744": {
-  "en": "Tournament: choose chat contacts",
-  "ru": "Турнир: выберите чат-контакты",
-  "text": "大会:チャット連絡先を選択"
  },
  "22423572": {
   "en": "Counter ",
@@ -888,6 +888,11 @@
   "ru": "Кости",
   "text": "ダイス"
  },
+ "c1c1a690": {
+  "en": "Server and route",
+  "ru": "Сервер и маршрут",
+  "text": "サーバーと経路"
+ },
  "969e0815": {
   "en": "Device mode",
   "ru": "Режим работы",
@@ -1113,6 +1118,16 @@
   "en": "Open channel · senders unverified · no ACK",
   "ru": "Открытый канал · без подтверждений",
   "text": "公開チャンネル · 送信者未確認 · ACKなし"
+ },
+ "5b522704": {
+  "en": "logged in",
+  "ru": "вход выполнен",
+  "text": "ログイン済み"
+ },
+ "06b58098": {
+  "en": "log in: node card > Server",
+  "ru": "войдите: карточка узла > Сервер",
+  "text": "ログイン：ノードカード > サーバー"
  },
  "b86cfa5d": {
   "en": "Not in contacts",
@@ -1358,6 +1373,11 @@
   "ru": "не передана",
   "text": "未共有"
  },
+ "418fd57b": {
+  "en": "Room",
+  "ru": "Комната",
+  "text": "ルーム"
+ },
  "4ac9ad0f": {
   "en": "Message",
   "ru": "Написать",
@@ -1377,6 +1397,16 @@
   "en": "Forget",
   "ru": "Удалить",
   "text": "削除"
+ },
+ "51bab002": {
+  "en": "Server",
+  "ru": "Сервер",
+  "text": "サーバー"
+ },
+ "82a48d1c": {
+  "en": "Trace",
+  "ru": "Трасса",
+  "text": "トレース"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -2652,10 +2682,30 @@
   "ru": " байт",
   "text": " バイト"
  },
+ "47f20831": {
+  "en": "Saved after a successful login",
+  "ru": "Сохраняется после удачного входа",
+  "text": "ログイン成功後に保存"
+ },
+ "ad5eec0a": {
+  "en": "As in the MeshCore app: ver, get name, neighbors...",
+  "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
+  "text": "MeshCore アプリと同じ：ver, get name, neighbors..."
+ },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
   "ru": "8-63 символа; -> после буквы: заглавная",
   "text": "8-63文字。英字の後に->で大文字"
+ },
+ "e96a0252": {
+  "en": "OK: log in   BACK: cancel",
+  "ru": "OK: войти   BACK: отменить",
+  "text": "OK：ログイン   BACK：取消"
+ },
+ "a000f97c": {
+  "en": "OK: send   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK：送信   BACK：取消"
  },
  "7a1da0b4": {
   "en": "OK: post   BACK: cancel",
@@ -2701,6 +2751,11 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "設定を保存しました"
+ },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "未送信：無線または経路"
  },
  "315b16c1": {
   "en": "Radio busy, try again",
@@ -4571,6 +4626,26 @@
   "ru": "Бросок первый в меню",
   "text": "振るはメニュー先頭"
  },
+ "74c2869f": {
+  "en": "status: waiting",
+  "ru": "статус: ждём",
+  "text": "状態：待機中"
+ },
+ "ce9882a3": {
+  "en": "status: no answer",
+  "ru": "статус: нет ответа",
+  "text": "状態：応答なし"
+ },
+ "eada8c27": {
+  "en": "V up ",
+  "ru": "В ",
+  "text": "V 稼働 "
+ },
+ "0d13764a": {
+  "en": "h rx ",
+  "ru": "ч прм ",
+  "text": "時 受 "
+ },
  "c1f1d7de": {
   "en": "phone",
   "ru": "телефон",
@@ -4826,6 +4901,26 @@
   "ru": "Сбросить путь",
   "text": "経路リセット"
  },
+ "67e918b5": {
+  "en": "Log in",
+  "ru": "Войти",
+  "text": "ログイン"
+ },
+ "5617eb02": {
+  "en": "Log in as guest",
+  "ru": "Войти гостем",
+  "text": "ゲストでログイン"
+ },
+ "ca8c45a8": {
+  "en": "Server status",
+  "ru": "Статус сервера",
+  "text": "サーバー状態"
+ },
+ "612190dc": {
+  "en": "Trace route",
+  "ru": "Трассировка",
+  "text": "経路をトレース"
+ },
  "10f55374": {
   "en": "Turn GPS off",
   "ru": "Выключить GPS",
@@ -5025,6 +5120,16 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "経路リセット失敗"
+ },
+ "0146125b": {
+  "en": "Sent, waiting",
+  "ru": "Отправлено, ждём",
+  "text": "送信済み、待機中"
+ },
+ "443a9b3b": {
+  "en": "Not sent",
+  "ru": "Не отправлено",
+  "text": "未送信"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5501,6 +5606,41 @@
   "ru": "чат",
   "text": "チャット"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "ログイン：待機中"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "ログイン：管理者"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "ログイン拒否"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "ログイン：応答なし"
+ },
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "トレース：待機中"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "トレース：応答なし"
+ },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5689,6 +5829,161 @@
   "en": "snacks ",
   "ru": "вкусн. ",
   "text": "おやつ "
+ },
+ "8bc75ba8": {
+  "en": "waiting for an answer...",
+  "ru": "ждём ответа...",
+  "text": "応答待ち..."
+ },
+ "3ac39946": {
+  "en": "refused",
+  "ru": "отказ",
+  "text": "拒否"
+ },
+ "410872bd": {
+  "en": "no answer",
+  "ru": "нет ответа",
+  "text": "応答なし"
+ },
+ "b3ad5c90": {
+  "en": "not logged in · password saved",
+  "ru": "вход не выполнен · пароль сохранён",
+  "text": "未ログイン · パスワード保存済み"
+ },
+ "7bc89bc5": {
+  "en": "not logged in",
+  "ru": "вход не выполнен",
+  "text": "未ログイン"
+ },
+ "f811c09d": {
+  "en": "logged in as admin",
+  "ru": "вход: администратор",
+  "text": "管理者でログイン"
+ },
+ "026ea8d5": {
+  "en": "Status: ",
+  "ru": "Статус: ",
+  "text": "状態: "
+ },
+ "c6b489e7": {
+  "en": "Status: not asked yet",
+  "ru": "Статус: не запрашивался",
+  "text": "状態：未取得"
+ },
+ "8e2a86b3": {
+  "en": "Battery ",
+  "ru": "Батарея ",
+  "text": "電池 "
+ },
+ "f5327ffa": {
+  "en": " V",
+  "ru": " В",
+  "text": " V"
+ },
+ "17353f25": {
+  "en": "Up ",
+  "ru": "Работает ",
+  "text": "稼働 "
+ },
+ "7ba0f104": {
+  "en": "Rx/tx ",
+  "ru": "Приём/передача ",
+  "text": "受信/送信 "
+ },
+ "eb72ee48": {
+  "en": "Noise ",
+  "ru": "Шум ",
+  "text": "ノイズ "
+ },
+ "c2e7f41f": {
+  "en": "Air ",
+  "ru": "В эфире ",
+  "text": "送信時間 "
+ },
+ "567720cb": {
+  "en": "Trace: ",
+  "ru": "Трассировка: ",
+  "text": "トレース: "
+ },
+ "be1f99d5": {
+  "en": "you ",
+  "ru": "вы ",
+  "text": "あなた "
+ },
+ "bd7e131a": {
+  "en": "Trace shows the SNR at every repeater of the route",
+  "ru": "Трассировка покажет SNR на каждом ретрансляторе маршрута",
+  "text": "トレースは経路上の各リピーターの SNR を表示"
+ },
+ "43d6f19d": {
+  "en": "No route through repeaters to trace",
+  "ru": "Нет маршрута через ретрансляторы",
+  "text": "トレースできるリピーター経路なし"
+ },
+ "3ca29d6b": {
+  "en": "Replies:",
+  "ru": "Ответы:",
+  "text": "応答："
+ },
+ "03ffe110": {
+  "en": "Command: ",
+  "ru": "Команда: ",
+  "text": "コマンド: "
+ },
+ "c1197973": {
+  "en": "Login",
+  "ru": "Войти",
+  "text": "ログイン"
+ },
+ "2e0785bd": {
+  "en": "Status",
+  "ru": "Статус",
+  "text": "状態"
+ },
+ "9877f53c": {
+  "en": "Command",
+  "ru": "Команда",
+  "text": "コマンド"
+ },
+ "bec55541": {
+  "en": "Status requested",
+  "ru": "Статус запрошен",
+  "text": "状態を要求しました"
+ },
+ "267a1cee": {
+  "en": "Not sent: radio or contact",
+  "ru": "Не отправлено: радио или контакт",
+  "text": "未送信：無線または連絡先"
+ },
+ "9ce0d721": {
+  "en": "Trace sent",
+  "ru": "Трассировка отправлена",
+  "text": "トレースを送信"
+ },
+ "6cbaf28f": {
+  "en": "Password (empty: saved or guest)",
+  "ru": "Пароль (пусто: сохранённый или гость)",
+  "text": "パスワード（空：保存済みかゲスト）"
+ },
+ "85907275": {
+  "en": "Command to the server",
+  "ru": "Команда серверу",
+  "text": "サーバーへのコマンド"
+ },
+ "85866a15": {
+  "en": "Type a command, e.g. ver",
+  "ru": "Введите команду, например ver",
+  "text": "コマンドを入力、例：ver"
+ },
+ "294219df": {
+  "en": "Login sent",
+  "ru": "Вход отправлен",
+  "text": "ログインを送信"
+ },
+ "bd4949b8": {
+  "en": "Command sent",
+  "ru": "Команда отправлена",
+  "text": "コマンドを送信"
  },
  "a851b542": {
   "en": "Announced to the network",

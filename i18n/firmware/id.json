@@ -139,6 +139,11 @@
   "ru": "Журнал рейтинга: получено записей ",
   "text": "Catatan rating: diterima "
  },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "Turnamen: pilih kontak chat"
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -228,11 +233,6 @@
   "en": "Tournament: no free place",
   "ru": "Турнир: нет свободного места",
   "text": "Turnamen: tak ada slot kosong"
- },
- "00ece744": {
-  "en": "Tournament: choose chat contacts",
-  "ru": "Турнир: выберите чат-контакты",
-  "text": "Turnamen: pilih kontak chat"
  },
  "22423572": {
   "en": "Counter ",
@@ -888,6 +888,11 @@
   "ru": "Кости",
   "text": "Dadu"
  },
+ "c1c1a690": {
+  "en": "Server and route",
+  "ru": "Сервер и маршрут",
+  "text": "Server dan rute"
+ },
  "969e0815": {
   "en": "Device mode",
   "ru": "Режим работы",
@@ -1113,6 +1118,16 @@
   "en": "Open channel · senders unverified · no ACK",
   "ru": "Открытый канал · без подтверждений",
   "text": "Kanal terbuka · tanpa verifikasi · tanpa ACK"
+ },
+ "5b522704": {
+  "en": "logged in",
+  "ru": "вход выполнен",
+  "text": "sudah masuk"
+ },
+ "06b58098": {
+  "en": "log in: node card > Server",
+  "ru": "войдите: карточка узла > Сервер",
+  "text": "masuk: kartu node > Server"
  },
  "b86cfa5d": {
   "en": "Not in contacts",
@@ -1358,6 +1373,11 @@
   "ru": "не передана",
   "text": "tak dibagikan"
  },
+ "418fd57b": {
+  "en": "Room",
+  "ru": "Комната",
+  "text": "Room"
+ },
  "4ac9ad0f": {
   "en": "Message",
   "ru": "Написать",
@@ -1377,6 +1397,16 @@
   "en": "Forget",
   "ru": "Удалить",
   "text": "Lupakan"
+ },
+ "51bab002": {
+  "en": "Server",
+  "ru": "Сервер",
+  "text": "Server"
+ },
+ "82a48d1c": {
+  "en": "Trace",
+  "ru": "Трасса",
+  "text": "Lacak"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -2652,10 +2682,30 @@
   "ru": " байт",
   "text": " bait"
  },
+ "47f20831": {
+  "en": "Saved after a successful login",
+  "ru": "Сохраняется после удачного входа",
+  "text": "Disimpan setelah masuk berhasil"
+ },
+ "ad5eec0a": {
+  "en": "As in the MeshCore app: ver, get name, neighbors...",
+  "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
+  "text": "Seperti di aplikasi MeshCore: ver, get name, neighbors..."
+ },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
   "ru": "8-63 символа; -> после буквы: заглавная",
   "text": "8-63 karakter; -> setelah huruf: kapital"
+ },
+ "e96a0252": {
+  "en": "OK: log in   BACK: cancel",
+  "ru": "OK: войти   BACK: отменить",
+  "text": "OK: masuk   BACK: batal"
+ },
+ "a000f97c": {
+  "en": "OK: send   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK: kirim   BACK: batal"
  },
  "7a1da0b4": {
   "en": "OK: post   BACK: cancel",
@@ -2701,6 +2751,11 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "Pengaturan tersimpan"
+ },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "Tidak terkirim: radio atau rute"
  },
  "315b16c1": {
   "en": "Radio busy, try again",
@@ -4571,6 +4626,26 @@
   "ru": "Бросок первый в меню",
   "text": "Lempar ada di awal menu"
  },
+ "74c2869f": {
+  "en": "status: waiting",
+  "ru": "статус: ждём",
+  "text": "status: menunggu"
+ },
+ "ce9882a3": {
+  "en": "status: no answer",
+  "ru": "статус: нет ответа",
+  "text": "status: tak ada jawaban"
+ },
+ "eada8c27": {
+  "en": "V up ",
+  "ru": "В ",
+  "text": "V nyala "
+ },
+ "0d13764a": {
+  "en": "h rx ",
+  "ru": "ч прм ",
+  "text": "j rx "
+ },
  "c1f1d7de": {
   "en": "phone",
   "ru": "телефон",
@@ -4826,6 +4901,26 @@
   "ru": "Сбросить путь",
   "text": "Reset jalur"
  },
+ "67e918b5": {
+  "en": "Log in",
+  "ru": "Войти",
+  "text": "Masuk"
+ },
+ "5617eb02": {
+  "en": "Log in as guest",
+  "ru": "Войти гостем",
+  "text": "Masuk sebagai tamu"
+ },
+ "ca8c45a8": {
+  "en": "Server status",
+  "ru": "Статус сервера",
+  "text": "Status server"
+ },
+ "612190dc": {
+  "en": "Trace route",
+  "ru": "Трассировка",
+  "text": "Lacak rute"
+ },
  "10f55374": {
   "en": "Turn GPS off",
   "ru": "Выключить GPS",
@@ -5025,6 +5120,16 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Gagal reset jalur"
+ },
+ "0146125b": {
+  "en": "Sent, waiting",
+  "ru": "Отправлено, ждём",
+  "text": "Terkirim, menunggu"
+ },
+ "443a9b3b": {
+  "en": "Not sent",
+  "ru": "Не отправлено",
+  "text": "Tidak terkirim"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5501,6 +5606,41 @@
   "ru": "чат",
   "text": "chat"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "masuk: menunggu"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "masuk: admin"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "masuk ditolak"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "masuk: tak ada jawaban"
+ },
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "lacak: menunggu"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "lacak: tak ada jawaban"
+ },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5689,6 +5829,161 @@
   "en": "snacks ",
   "ru": "вкусн. ",
   "text": "camilan "
+ },
+ "8bc75ba8": {
+  "en": "waiting for an answer...",
+  "ru": "ждём ответа...",
+  "text": "menunggu jawaban..."
+ },
+ "3ac39946": {
+  "en": "refused",
+  "ru": "отказ",
+  "text": "ditolak"
+ },
+ "410872bd": {
+  "en": "no answer",
+  "ru": "нет ответа",
+  "text": "tak ada jawaban"
+ },
+ "b3ad5c90": {
+  "en": "not logged in · password saved",
+  "ru": "вход не выполнен · пароль сохранён",
+  "text": "belum masuk · sandi tersimpan"
+ },
+ "7bc89bc5": {
+  "en": "not logged in",
+  "ru": "вход не выполнен",
+  "text": "belum masuk"
+ },
+ "f811c09d": {
+  "en": "logged in as admin",
+  "ru": "вход: администратор",
+  "text": "masuk sebagai admin"
+ },
+ "026ea8d5": {
+  "en": "Status: ",
+  "ru": "Статус: ",
+  "text": "Status: "
+ },
+ "c6b489e7": {
+  "en": "Status: not asked yet",
+  "ru": "Статус: не запрашивался",
+  "text": "Status: belum diminta"
+ },
+ "8e2a86b3": {
+  "en": "Battery ",
+  "ru": "Батарея ",
+  "text": "Baterai "
+ },
+ "f5327ffa": {
+  "en": " V",
+  "ru": " В",
+  "text": " V"
+ },
+ "17353f25": {
+  "en": "Up ",
+  "ru": "Работает ",
+  "text": "Nyala "
+ },
+ "7ba0f104": {
+  "en": "Rx/tx ",
+  "ru": "Приём/передача ",
+  "text": "Rx/tx "
+ },
+ "eb72ee48": {
+  "en": "Noise ",
+  "ru": "Шум ",
+  "text": "Derau "
+ },
+ "c2e7f41f": {
+  "en": "Air ",
+  "ru": "В эфире ",
+  "text": "Di udara "
+ },
+ "567720cb": {
+  "en": "Trace: ",
+  "ru": "Трассировка: ",
+  "text": "Lacak: "
+ },
+ "be1f99d5": {
+  "en": "you ",
+  "ru": "вы ",
+  "text": "kamu "
+ },
+ "bd7e131a": {
+  "en": "Trace shows the SNR at every repeater of the route",
+  "ru": "Трассировка покажет SNR на каждом ретрансляторе маршрута",
+  "text": "Pelacakan menampilkan SNR di tiap repeater rute"
+ },
+ "43d6f19d": {
+  "en": "No route through repeaters to trace",
+  "ru": "Нет маршрута через ретрансляторы",
+  "text": "Tak ada rute lewat repeater untuk dilacak"
+ },
+ "3ca29d6b": {
+  "en": "Replies:",
+  "ru": "Ответы:",
+  "text": "Jawaban:"
+ },
+ "03ffe110": {
+  "en": "Command: ",
+  "ru": "Команда: ",
+  "text": "Perintah: "
+ },
+ "c1197973": {
+  "en": "Login",
+  "ru": "Войти",
+  "text": "Masuk"
+ },
+ "2e0785bd": {
+  "en": "Status",
+  "ru": "Статус",
+  "text": "Status"
+ },
+ "9877f53c": {
+  "en": "Command",
+  "ru": "Команда",
+  "text": "Perintah"
+ },
+ "bec55541": {
+  "en": "Status requested",
+  "ru": "Статус запрошен",
+  "text": "Status diminta"
+ },
+ "267a1cee": {
+  "en": "Not sent: radio or contact",
+  "ru": "Не отправлено: радио или контакт",
+  "text": "Tidak terkirim: radio atau kontak"
+ },
+ "9ce0d721": {
+  "en": "Trace sent",
+  "ru": "Трассировка отправлена",
+  "text": "Pelacakan terkirim"
+ },
+ "6cbaf28f": {
+  "en": "Password (empty: saved or guest)",
+  "ru": "Пароль (пусто: сохранённый или гость)",
+  "text": "Sandi (kosong: tersimpan atau tamu)"
+ },
+ "85907275": {
+  "en": "Command to the server",
+  "ru": "Команда серверу",
+  "text": "Perintah ke server"
+ },
+ "85866a15": {
+  "en": "Type a command, e.g. ver",
+  "ru": "Введите команду, например ver",
+  "text": "Ketik perintah, mis. ver"
+ },
+ "294219df": {
+  "en": "Login sent",
+  "ru": "Вход отправлен",
+  "text": "Masuk terkirim"
+ },
+ "bd4949b8": {
+  "en": "Command sent",
+  "ru": "Команда отправлена",
+  "text": "Perintah terkirim"
  },
  "a851b542": {
   "en": "Announced to the network",

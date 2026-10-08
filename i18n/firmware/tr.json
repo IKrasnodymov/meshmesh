@@ -139,6 +139,11 @@
   "ru": "Журнал рейтинга: получено записей ",
   "text": "Derece kaydı: alınan kayıtlar "
  },
+ "00ece744": {
+  "en": "Tournament: choose chat contacts",
+  "ru": "Турнир: выберите чат-контакты",
+  "text": "Turnuva: sohbet kişilerini seçin"
+ },
  "bbc41d9b": {
   "en": "Tournament: nobody has agreed yet",
   "ru": "Турнир: пока никто не согласился",
@@ -228,11 +233,6 @@
   "en": "Tournament: no free place",
   "ru": "Турнир: нет свободного места",
   "text": "Turnuva: boş yer yok"
- },
- "00ece744": {
-  "en": "Tournament: choose chat contacts",
-  "ru": "Турнир: выберите чат-контакты",
-  "text": "Turnuva: sohbet kişilerini seçin"
  },
  "22423572": {
   "en": "Counter ",
@@ -889,6 +889,11 @@
   "ru": "Кости",
   "text": "Zar"
  },
+ "c1c1a690": {
+  "en": "Server and route",
+  "ru": "Сервер и маршрут",
+  "text": "Sunucu ve rota"
+ },
  "969e0815": {
   "en": "Device mode",
   "ru": "Режим работы",
@@ -1118,6 +1123,16 @@
   "en": "Open channel · senders unverified · no ACK",
   "ru": "Открытый канал · без подтверждений",
   "text": "Açık kanal · gönderen doğrulanmaz · ACK yok"
+ },
+ "5b522704": {
+  "en": "logged in",
+  "ru": "вход выполнен",
+  "text": "giriş yapıldı"
+ },
+ "06b58098": {
+  "en": "log in: node card > Server",
+  "ru": "войдите: карточка узла > Сервер",
+  "text": "giriş: düğüm kartı > Sunucu"
  },
  "b86cfa5d": {
   "en": "Not in contacts",
@@ -1364,6 +1379,11 @@
   "ru": "не передана",
   "text": "paylaşılmadı"
  },
+ "418fd57b": {
+  "en": "Room",
+  "ru": "Комната",
+  "text": "Oda"
+ },
  "4ac9ad0f": {
   "en": "Message",
   "ru": "Написать",
@@ -1383,6 +1403,16 @@
   "en": "Forget",
   "ru": "Удалить",
   "text": "Unut"
+ },
+ "51bab002": {
+  "en": "Server",
+  "ru": "Сервер",
+  "text": "Sunucu"
+ },
+ "82a48d1c": {
+  "en": "Trace",
+  "ru": "Трасса",
+  "text": "İz"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -2664,10 +2694,30 @@
   "ru": " байт",
   "text": " bayt"
  },
+ "47f20831": {
+  "en": "Saved after a successful login",
+  "ru": "Сохраняется после удачного входа",
+  "text": "Başarılı girişten sonra kaydedilir"
+ },
+ "ad5eec0a": {
+  "en": "As in the MeshCore app: ver, get name, neighbors...",
+  "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
+  "text": "MeshCore uygulamasındaki gibi: ver, get name, neighbors..."
+ },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
   "ru": "8-63 символа; -> после буквы: заглавная",
   "text": "8-63 karakter; harften sonra ->: büyük harf"
+ },
+ "e96a0252": {
+  "en": "OK: log in   BACK: cancel",
+  "ru": "OK: войти   BACK: отменить",
+  "text": "OK: giriş   BACK: iptal"
+ },
+ "a000f97c": {
+  "en": "OK: send   BACK: cancel",
+  "ru": "OK: отправить   BACK: отменить",
+  "text": "OK: gönder   BACK: iptal"
  },
  "7a1da0b4": {
   "en": "OK: post   BACK: cancel",
@@ -2713,6 +2763,11 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "Ayarlar kaydedildi"
+ },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "Gönderilmedi: radyo veya rota"
  },
  "315b16c1": {
   "en": "Radio busy, try again",
@@ -4589,6 +4644,26 @@
   "ru": "Бросок первый в меню",
   "text": "Atış menüde ilk sırada"
  },
+ "74c2869f": {
+  "en": "status: waiting",
+  "ru": "статус: ждём",
+  "text": "durum: bekleniyor"
+ },
+ "ce9882a3": {
+  "en": "status: no answer",
+  "ru": "статус: нет ответа",
+  "text": "durum: yanıt yok"
+ },
+ "eada8c27": {
+  "en": "V up ",
+  "ru": "В ",
+  "text": "V çalış. "
+ },
+ "0d13764a": {
+  "en": "h rx ",
+  "ru": "ч прм ",
+  "text": "sa rx "
+ },
  "c1f1d7de": {
   "en": "phone",
   "ru": "телефон",
@@ -4844,6 +4919,26 @@
   "ru": "Сбросить путь",
   "text": "Yolu sıfırla"
  },
+ "67e918b5": {
+  "en": "Log in",
+  "ru": "Войти",
+  "text": "Giriş yap"
+ },
+ "5617eb02": {
+  "en": "Log in as guest",
+  "ru": "Войти гостем",
+  "text": "Misafir olarak gir"
+ },
+ "ca8c45a8": {
+  "en": "Server status",
+  "ru": "Статус сервера",
+  "text": "Sunucu durumu"
+ },
+ "612190dc": {
+  "en": "Trace route",
+  "ru": "Трассировка",
+  "text": "Rotayı izle"
+ },
  "10f55374": {
   "en": "Turn GPS off",
   "ru": "Выключить GPS",
@@ -5043,6 +5138,16 @@
   "en": "Path reset failed",
   "ru": "Путь не сброшен",
   "text": "Yol sıfırlanamadı"
+ },
+ "0146125b": {
+  "en": "Sent, waiting",
+  "ru": "Отправлено, ждём",
+  "text": "Gönderildi, bekleniyor"
+ },
+ "443a9b3b": {
+  "en": "Not sent",
+  "ru": "Не отправлено",
+  "text": "Gönderilmedi"
  },
  "5b16daae": {
   "en": "Needs a GPS fix",
@@ -5519,6 +5624,41 @@
   "ru": "чат",
   "text": "sohbet"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "giriş: bekleniyor"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "giriş: yönetici"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "giriş reddedildi"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "giriş: yanıt yok"
+ },
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "iz: bekleniyor"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "iz: yanıt yok"
+ },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5708,6 +5848,161 @@
   "en": "snacks ",
   "ru": "вкусн. ",
   "text": "çerez "
+ },
+ "8bc75ba8": {
+  "en": "waiting for an answer...",
+  "ru": "ждём ответа...",
+  "text": "yanıt bekleniyor..."
+ },
+ "3ac39946": {
+  "en": "refused",
+  "ru": "отказ",
+  "text": "reddedildi"
+ },
+ "410872bd": {
+  "en": "no answer",
+  "ru": "нет ответа",
+  "text": "yanıt yok"
+ },
+ "b3ad5c90": {
+  "en": "not logged in · password saved",
+  "ru": "вход не выполнен · пароль сохранён",
+  "text": "giriş yok · parola kayıtlı"
+ },
+ "7bc89bc5": {
+  "en": "not logged in",
+  "ru": "вход не выполнен",
+  "text": "giriş yapılmadı"
+ },
+ "f811c09d": {
+  "en": "logged in as admin",
+  "ru": "вход: администратор",
+  "text": "yönetici girişi"
+ },
+ "026ea8d5": {
+  "en": "Status: ",
+  "ru": "Статус: ",
+  "text": "Durum: "
+ },
+ "c6b489e7": {
+  "en": "Status: not asked yet",
+  "ru": "Статус: не запрашивался",
+  "text": "Durum: henüz sorulmadı"
+ },
+ "8e2a86b3": {
+  "en": "Battery ",
+  "ru": "Батарея ",
+  "text": "Pil "
+ },
+ "f5327ffa": {
+  "en": " V",
+  "ru": " В",
+  "text": " V"
+ },
+ "17353f25": {
+  "en": "Up ",
+  "ru": "Работает ",
+  "text": "Çalışma "
+ },
+ "7ba0f104": {
+  "en": "Rx/tx ",
+  "ru": "Приём/передача ",
+  "text": "Alım/gönd. "
+ },
+ "eb72ee48": {
+  "en": "Noise ",
+  "ru": "Шум ",
+  "text": "Gürültü "
+ },
+ "c2e7f41f": {
+  "en": "Air ",
+  "ru": "В эфире ",
+  "text": "Yayında "
+ },
+ "567720cb": {
+  "en": "Trace: ",
+  "ru": "Трассировка: ",
+  "text": "İz: "
+ },
+ "be1f99d5": {
+  "en": "you ",
+  "ru": "вы ",
+  "text": "sen "
+ },
+ "bd7e131a": {
+  "en": "Trace shows the SNR at every repeater of the route",
+  "ru": "Трассировка покажет SNR на каждом ретрансляторе маршрута",
+  "text": "İz, rotadaki her tekrarlayıcıdaki SNR'yi gösterir"
+ },
+ "43d6f19d": {
+  "en": "No route through repeaters to trace",
+  "ru": "Нет маршрута через ретрансляторы",
+  "text": "İzlenecek tekrarlayıcı rotası yok"
+ },
+ "3ca29d6b": {
+  "en": "Replies:",
+  "ru": "Ответы:",
+  "text": "Yanıtlar:"
+ },
+ "03ffe110": {
+  "en": "Command: ",
+  "ru": "Команда: ",
+  "text": "Komut: "
+ },
+ "c1197973": {
+  "en": "Login",
+  "ru": "Войти",
+  "text": "Giriş"
+ },
+ "2e0785bd": {
+  "en": "Status",
+  "ru": "Статус",
+  "text": "Durum"
+ },
+ "9877f53c": {
+  "en": "Command",
+  "ru": "Команда",
+  "text": "Komut"
+ },
+ "bec55541": {
+  "en": "Status requested",
+  "ru": "Статус запрошен",
+  "text": "Durum istendi"
+ },
+ "267a1cee": {
+  "en": "Not sent: radio or contact",
+  "ru": "Не отправлено: радио или контакт",
+  "text": "Gönderilmedi: radyo veya kişi"
+ },
+ "9ce0d721": {
+  "en": "Trace sent",
+  "ru": "Трассировка отправлена",
+  "text": "İz gönderildi"
+ },
+ "6cbaf28f": {
+  "en": "Password (empty: saved or guest)",
+  "ru": "Пароль (пусто: сохранённый или гость)",
+  "text": "Parola (boş: kayıtlı veya misafir)"
+ },
+ "85907275": {
+  "en": "Command to the server",
+  "ru": "Команда серверу",
+  "text": "Sunucuya komut"
+ },
+ "85866a15": {
+  "en": "Type a command, e.g. ver",
+  "ru": "Введите команду, например ver",
+  "text": "Bir komut yazın, ör. ver"
+ },
+ "294219df": {
+  "en": "Login sent",
+  "ru": "Вход отправлен",
+  "text": "Giriş gönderildi"
+ },
+ "bd4949b8": {
+  "en": "Command sent",
+  "ru": "Команда отправлена",
+  "text": "Komut gönderildi"
  },
  "a851b542": {
   "en": "Announced to the network",

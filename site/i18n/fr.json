@@ -247,5 +247,6 @@
  "shot.m9-network-ble": "Bluetooth : le nom vu par les applis et le PIN",
  "shot.t114-ble-on": "La T114 : MeshCore-T114 et le PIN",
  "shot.heltec-ble-on": "L'OLED : le nom et le PIN",
- "doc.companion": "Applis MeshCore"
+ "doc.companion": "Applis MeshCore",
+ "news.remote": "<b>Nouveau :</b> connexion aux répéteurs et salons, messages des salons et trace des routes depuis l'écran"
 }

@@ -1,9 +1,13 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: the USB and web commands and their JSON are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 #include "Version.h"
 #include <Utils.h>
 #include <esp_ota_ops.h>
 #include <esp_system.h>
 #include "App.h"
 #include "Companion.h"
+#include "Remote.h"
 #include "MeshRadio.h"
 #include "Hardware.h"
 #include "Maps.h"
@@ -212,6 +216,7 @@ String executeCommand(const String& input) {
   if(line=="recalibrate")return meshRadio.recalibrate()?"OK radio set up again":"ERR radio busy with a packet";
   if(line=="selftest")return meshRadio.selfTest()?"OK crypto/UTF-8/tamper selftest":"ERR selftest";
   if(line=="wifi") {portalToggle();return portalActive()?"OK Wi-Fi portal on; credentials on device":"OK Wi-Fi off";}
+  if(line=="remote"||line.startsWith("remote "))return remote::usbCommand(line);
   if(line=="ble") {bleToggle();return bleActive()?"OK BLE on":"OK BLE off";}
   if(line=="restart"){restartAt=millis()+1000;return "OK restarting";}
   if(line=="poweroff")return powerOff(); // e.g. after fsformat: the settings are read at boot
@@ -247,5 +252,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

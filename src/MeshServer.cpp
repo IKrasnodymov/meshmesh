@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: the repeater and room server logic are not speed-critical (the rest of the nRF52 image is -O2)
+#endif
 // Server roles: the MeshCore repeater and room server. Ported from MeshCore examples/simple_repeater
 // and examples/simple_room_server (MyMesh.cpp, RateLimiter.h; MIT, https://github.com/meshcore-dev/MeshCore,
 // companion-v1.17.1) onto the vendored core-v1.17.4 helpers. What both share is in ServerMesh.

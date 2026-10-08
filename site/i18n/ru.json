@@ -247,5 +247,6 @@
  "shot.m9-network-ble": "Bluetooth: имя для приложений и PIN",
  "shot.t114-ble-on": "T114: MeshCore-T114 и PIN",
  "shot.heltec-ble-on": "OLED: имя и PIN",
- "doc.companion": "Приложения MeshCore"
+ "doc.companion": "Приложения MeshCore",
+ "news.remote": "<b>Новое:</b> вход на репитеры и в комнаты, посты комнат и трассировка маршрута прямо с экрана"
 }

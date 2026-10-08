@@ -247,5 +247,6 @@
  "shot.m9-network-ble": "Bluetooth: nama yang dilihat aplikasi dan PIN",
  "shot.t114-ble-on": "T114: MeshCore-T114 dan PIN",
  "shot.heltec-ble-on": "OLED: nama dan PIN",
- "doc.companion": "Aplikasi MeshCore"
+ "doc.companion": "Aplikasi MeshCore",
+ "news.remote": "<b>Baru:</b> masuk ke repeater dan room, baca dan tulis posting room, serta lacak rute langsung dari layar"
 }
