@@ -3,7 +3,7 @@
 // Uses the page's globals: auth, timer, route, config, status, conn, request, command, refresh, show…
 (()=>{'use strict';
 const N=window.MeshNative;if(!N)return;
-const H={tab:null,devices:{wifi:[],ble:[],usb:[]},scanning:{},done:{},state:{state:'idle'},prefs:{},sel:'',inApp:false,armed:0,upd:{state:'idle'},manual:false};
+const H={tab:null,devices:{wifi:[],ble:[],usb:[]},scanning:{},done:{},state:{state:'idle'},prefs:{},sel:'',inApp:false,armed:0,upd:{state:'idle'},manual:false,updNoted:false};
 const KIND={wifi:['wifi','Wi-Fi'],ble:['ble','Bluetooth'],usb:['bolt','USB'],tcp:['bolt','USB через компьютер']};
 
 // fetch('/api/…') → the app; everything else (OpenStreetMap for map preparation) → the network.
@@ -37,11 +37,11 @@ window.MeshHost={
  go(target){if(H.inApp)go(target)},
  // Updates of the app (MainActivity → Updater): a card on the connection screen and on «Подключения».
  update(u){const was=H.upd.state;H.upd=u||{state:'idle'};const st=H.upd.state;
-  if(st==='available'&&was!=='available'&&H.inApp&&!H.manual)notify('Вышла новая версия приложения: «Подключения» → «Обновить»','accent');
+  if(st==='available'&&was!=='available'&&H.inApp&&!H.manual&&!H.updNoted){H.updNoted=true;notify(UPD_NOTE,'accent')}
   if(H.manual&&['none','error','off'].includes(st)){H.manual=false;notify(st==='none'?'Установлена последняя версия приложения':H.upd.message,st==='none'?'ok':st==='off'?'warn':'bad')}
   else if(st==='error')notify(H.upd.message,'bad');
   if(st!=='checking'&&st!=='downloading')H.manual=false;
-  if(!H.inApp)renderPanel();else if(route==='connect')renderConnect()},
+  if(!H.inApp)renderPanel();else if(route==='connect')renderConnect();else if(route==='home')renderHome();else if(route==='settings')renderSettings()},
  back(){
   if(typeof standaloneMode!=='undefined'&&standaloneMode){standaloneMode=false;$('app').hidden=true;$('login').hidden=false;loginHud();return true}
   if(H.inApp&&!$('back').hidden){$('back').click();return true}
@@ -84,6 +84,14 @@ function renderPanel(){
  panel.innerHTML=updateCard(false)+h}
 
 function connect(spec){N.connect(JSON.stringify(spec))}
+// A found app update, once connected: a dot on «Связь» (home) and «Подключения» (settings), where its card is,
+// and one notice per run of the app, on entering the device or when the check finishes later.
+const UPD_NOTE='Вышла новая версия приложения: «Связь» → «Обновить»';
+function updatePending(){return ['available','downloading','ready'].includes(H.upd.state)}
+function markConnect(list){if(!updatePending())return;const t=$(list).querySelector('[data-go="connect"]');if(t)t.insertAdjacentHTML('beforeend','<span class="hdot"></span>')}
+const pageRenderHome=window.renderHome,pageRenderSettings=window.renderSettings;
+window.renderHome=function(){pageRenderHome();markConnect('tiles')};
+window.renderSettings=function(){pageRenderSettings();markConnect('settingsList')};
 function updateCard(always){const u=H.upd,st=u.state,mb=u.size?` · ${(u.size/1048576).toFixed(1)} МБ`:'';
  if(!always&&!['available','downloading','ready'].includes(st))return'';
  const text=st==='available'?`Доступна версия ${esc(u.name)}${mb}`:st==='downloading'?`Загрузка ${esc(u.name)}: ${u.progress|0}%`:st==='ready'?'Загружено: подтвердите установку в окне Android':st==='checking'?'Проверка…':`Версия ${esc(N.version())}`;
@@ -126,7 +134,8 @@ async function enterApp(){
  if(H.inApp)return;H.inApp=true;auth='MeshMesh app';
  try{config=await request('/api/config')}catch(e){H.inApp=false;auth='';N.disconnect();notify('Устройство не ответило: '+e.message,'bad');return}
  $('login').hidden=true;$('app').hidden=false;await refresh();clearInterval(timer);timer=setInterval(refresh,H.state.kind==='ble'?4000:3000);route='';show();
- notify('Подключено: '+(H.state.label||''),'ok');openLink()}
+ const note=updatePending()&&!H.updNoted;if(note)H.updNoted=true;
+ notify('Подключено: '+(H.state.label||'')+(note?'. '+UPD_NOTE:''),note?'accent':'ok');openLink()}
 function leaveApp(message,tone){
  H.inApp=false;auth='';clearInterval(timer);if(radarTimer){clearInterval(radarTimer);radarTimer=null;radarData=null}
  for(const [,p] of pending)p.reject(new TypeError('нет связи'));pending.clear();

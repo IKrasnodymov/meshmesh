@@ -18,3 +18,5 @@
 .hlink{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);padding:2px 4px 8px}
 .hlink b{color:var(--ink);font-weight:600}
 #hostPanel>.conn{margin-bottom:10px} /* the app update card above the tabs */
+.hdot{position:absolute;right:10px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--card)} /* app update: «Связь» and «Подключения» */
+.row>.hdot{right:auto;left:40px;top:6px}

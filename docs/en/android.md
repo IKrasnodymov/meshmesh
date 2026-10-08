@@ -50,7 +50,9 @@ WebView debugging is enabled (`chrome://inspect`).
 - `Updater` — updates of the app itself from the website. The site publishes `app/version.json`
   (number, name, size and SHA-256 of the APK; `tools/app_release.py`) and a copy `app/meshmesh-<number>.apk`.
   On start the app reads the description; if the number is higher than its own, an «Update» card
-  appears on the connection screen and in «Connections» (also «Check for updates» there). The APK is
+  appears on the connection screen and in «Connections» (also «Check for updates» there); while a
+  device is connected, the «Link» tile and the «Connections» row carry a dot, and the first entry into
+  a device per app run shows one notice. The APK is
   downloaded to the cache, checked by size and SHA-256 and handed to the Android installer, which asks
   once to allow installs from MeshMesh and checks the signature itself. Updates are enabled only in a
   build signed with the project key.
