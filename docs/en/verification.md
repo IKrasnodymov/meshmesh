@@ -8,7 +8,16 @@
 > built with `-Os` on the nRF52 (−10 KB), so LoRa exchange on the T114 and GAT562 must be checked again. QEMU emulator
 > (`tlora_v2_1_6` with `MM_EMULATOR`, no radio): the third-party `meshcore` 2.3.15 Python library gets device and node
 > information, contacts, channels, time, battery, the contact card and statistics; adds, finds and removes a contact,
-> joins a channel; an unsupported command answers with an error; text commands work after frames. Messaging and ACKs through the app — `tools/companion_check.py` on two boards — not run yet.
+> joins a channel; an unsupported command answers with an error; text commands work after frames.
+> **On hardware (8 October):** Heltec V4 (`tools/flash.py`, boot 179, history of 64 kept) and T114 (`tools/nrf52.py`,
+> boot 9, then switched from repeater to the normal mode — boot 10) with images of revision `7d7bc4c-dirty` (the sources
+> of commit `f61c3b0`; Heltec `BCB8B92E…`, T114 `DB47EAC2…`). From a Mac over Bluetooth `MeshCore-T114` is seen with
+> the Nordic UART service and the `MM` mark of company 0xFFFF. `tools/companion_check.py` over USB frames both ways
+> (the app on the T114, the Heltec as the peer, and the reverse): device and node info, the peer in the contacts, a
+> direct message with its ACK (`PUSH_SEND_CONFIRMED`, 1.0–1.3 s; one copy on the peer), the peer's reply and a Public
+> message received by the app, the peer got its ACK, text commands work after frames; no restarts. The first run lost
+> the Public message: the check sent it right after the direct one while the T114 was sending its ACK; now it waits
+> for the ACK. Not checked from a phone (MeshCore and MeshMesh apps over Bluetooth, pairing).
 
 > **0.8.0: power off** (7 October 2026, branch `power-off`, no full run). All 15 boards build; the `tools/ui_preview`
 > scenarios pass (the menu, two OKs, the "Turning off..." and "Device is off" frames). **Heltec V4** (`f0caee3`, image

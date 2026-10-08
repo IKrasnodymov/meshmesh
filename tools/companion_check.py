@@ -102,15 +102,16 @@ def main():
     command(peer, f'send {my_id} {reply}')
     app.push(PUSH_MSG_WAITING, args.timeout); got = app.sync()
     ok['direct_received'] = any(g[0] == RESP_CONTACT_MSG and g[4:10] == peer_key[:6] and g[16:].decode('utf-8', 'replace') == reply for g in got)
-    command(peer, f'send ALL {chan}')
-    app.push(PUSH_MSG_WAITING, args.timeout); got = app.sync()
-    ok['channel_received'] = any(g[0] == RESP_CHANNEL_MSG and g[4] == 0 and g[11:].decode('utf-8', 'replace').endswith(chan) for g in got)
+    # The channel message waits for the ACK of the reply: a node sending its ACK does not hear the air.
     deadline = time.monotonic() + args.timeout
     while time.monotonic() < deadline:
         delivered = [m for m in json.loads(command(peer, 'messages', 15)) if m['text'] == reply and m['outgoing']]
         if delivered and delivered[-1]['status'] == 3: break
         time.sleep(2)
     ok['peer_got_ack'] = bool(delivered) and delivered[-1]['status'] == 3
+    command(peer, f'send ALL {chan}')
+    app.push(PUSH_MSG_WAITING, args.timeout); got = app.sync()
+    ok['channel_received'] = any(g[0] == RESP_CHANNEL_MSG and g[4] == 0 and g[11:].decode('utf-8', 'replace').endswith(chan) for g in got)
     # Text commands work again on the app's port.
     app.s.close(); s = connect(args.port); st = json.loads(command(s, 'status'))
     ok['text_after_frames'] = st['node'] == my_id; result['app_rx_tx'] = [st['rx'], st['tx']]
