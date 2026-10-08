@@ -13,7 +13,7 @@
 > 0.14.0 `3627529`, boot 221, history of 64 and settings kept): the same USB checks, keys over USB — first tile Settings,
 > second Navigation; a screenshot shows no tiles for the hidden Chats, Map, Radar, Solitaire and the arrows move over the
 > shown ones. The APK with the new page is
-> unchecked on a phone. Both boards are back on the default order.
+> unchecked on a phone. All three boards are back on the default order.
 
 > **0.13.1: a status request asked again, checked on the M9** (8 October 2026, no full run). The M9 went from 0.6.0 via
 > `tools/flash.py` (boot 219, history of 64 kept), then to 0.13.1 (boot 220). The Heltec V4 served as a room, then a
