@@ -188,6 +188,9 @@ class BleLink private constructor(private val context: Context, private val devi
 
     companion object {
         val SERVICE: UUID = UUID.fromString("7a9e0001-98bd-4d56-89a8-c4eab4179010")
+        // The mark in the advert of firmware 0.9.0+: manufacturer data of company 0xFFFF (no company), "MM".
+        const val MARK_COMPANY = 0xFFFF
+        val MARK = byteArrayOf(0x4D, 0x4D)
         val RX: UUID = UUID.fromString("7a9e0002-98bd-4d56-89a8-c4eab4179010")
         val TX: UUID = UUID.fromString("7a9e0003-98bd-4d56-89a8-c4eab4179010")
         val CCCD: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")

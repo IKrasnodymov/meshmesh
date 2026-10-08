@@ -76,23 +76,19 @@ class AppCallbacks:public NimBLECharacteristicCallbacks {
  }
 };
 AppCallbacks appCallbacks;
-// The advert names the app's service, as stock firmware does (MeshCore apps look for a "MeshCore-" name).
-void advertiseFor(){
+// The advert of stock MeshCore (its service, "MeshCore-<name>" in the scan response): MeshCore apps find the board
+// by the name. The MeshMesh app finds it by the "MM" mark in the manufacturer data (company ID 0xFFFF: no company);
+// our own service still answers.
+void advertise(){
   String name=bleName();NimBLEDevice::setDeviceName(name.c_str());
   NimBLEAdvertisementData adv,scan;adv.setFlags(BLE_HS_ADV_F_DISC_GEN|BLE_HS_ADV_F_BREDR_UNSUP);
-  adv.setCompleteServices(NimBLEUUID(config.bleApp==Config::BleMeshCore?NusService:"7a9e0001-98bd-4d56-89a8-c4eab4179010"));scan.setName(name.c_str());
+  adv.setCompleteServices(NimBLEUUID(NusService));adv.setManufacturerData(std::string("\xff\xffMM",4));scan.setName(name.c_str());
   auto* a=NimBLEDevice::getAdvertising();a->setAdvertisementData(adv);a->setScanResponseData(scan);
 }
 }
 String bleName(){
-  if(config.bleApp!=Config::BleMeshCore)return "MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);
   String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
   return "MeshCore-"+name;
-}
-void bleSetApp(uint8_t app){
-  config.saveBleApp(app);
-  if(bluetoothOn){auto* a=NimBLEDevice::getAdvertising();a->stop();advertiseFor();a->start();meshRadio.event="BLE: "+bleName();}
-  meshRadio.dirty=true;
 }
 bool webRadarActive() {return webRadar;}
 // The page's radar over USB or BLE (the Android app): the same hold, JSON and actions as /api/radar.
@@ -108,7 +104,7 @@ uint32_t blePin() {return pinCode;}
 String connectionCredentials() {
   StaticJsonDocument<512> d;d["wifi"]=wifiOn;d["ssid"]="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);
   d["password"]=password;d["ip"]="192.168.4.1";if(internet.online())d["lan_ip"]=internet.address();d["ble"]=bluetoothOn;
-  d["ble_name"]=bleName();d["ble_app"]=config.bleApp==Config::BleMeshCore?"meshcore":"meshmesh";d["pin"]=pinCode;
+  d["ble_name"]=bleName();d["pin"]=pinCode;
   if(bluetoothOn)d["ble_address"]=NimBLEDevice::getAddress().toString().c_str();
   String result;serializeJson(d,result);return result;
 }
@@ -184,7 +180,7 @@ void bleToggle() {
       auto appRx=nus->createCharacteristic("6E400002-B5A3-F393-E0A9-E50E24DCCA9E",NIMBLE_PROPERTY::WRITE|NIMBLE_PROPERTY::WRITE_AUTHEN);
       appRx->setCallbacks(&appCallbacks);nus->start();
     }
-    advertiseFor();b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
+    advertise();b->advertiseOnDisconnect(true);NimBLEDevice::getAdvertising()->start();bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
   config.saveBle(bluetoothOn);meshRadio.dirty=true;
 }

@@ -2189,21 +2189,6 @@
   "ru": "Пароль ",
   "text": "Sandi "
  },
- "2ad33e6e": {
-  "en": "For MeshCore apps: ",
-  "ru": "Для приложений MeshCore: ",
-  "text": "Untuk aplikasi MeshCore: "
- },
- "5aaa7a5b": {
-  "en": "Secure pairing, MeshMesh app",
-  "ru": "Защищённое сопряжение, приложение MeshMesh",
-  "text": "Pemasangan aman, aplikasi MeshMesh"
- },
- "e01d4103": {
-  "en": "Off · for MeshCore apps",
-  "ru": "Выключен · для приложений MeshCore",
-  "text": "Mati · untuk aplikasi MeshCore"
- },
  "3efed7d9": {
   "en": "Off",
   "ru": "Выключен",
@@ -2214,20 +2199,15 @@
   "ru": "Ключ MeshCore",
   "text": "Identitas MeshCore"
  },
- "e6b593c8": {
-  "en": "Toggle",
-  "ru": "Переключить",
-  "text": "Alihkan"
- },
- "e0830853": {
-  "en": "App",
-  "ru": "Приложение",
-  "text": "Aplikasi"
- },
  "01f31114": {
   "en": "Networks",
   "ru": "Сети",
   "text": "Jaringan"
+ },
+ "e6b593c8": {
+  "en": "Toggle",
+  "ru": "Переключить",
+  "text": "Alihkan"
  },
  "80266824": {
   "en": "Wrong password or refused: ",
@@ -2797,16 +2777,6 @@
   "en": "This board is now the sensor",
   "ru": "Эта плата — приёмник",
   "text": "Papan ini kini jadi penerima"
- },
- "c3b6ee86": {
-  "en": "Bluetooth for MeshCore apps",
-  "ru": "Bluetooth для приложений MeshCore",
-  "text": "Bluetooth untuk aplikasi MeshCore"
- },
- "98726351": {
-  "en": "Bluetooth for the MeshMesh app",
-  "ru": "Bluetooth для приложения MeshMesh",
-  "text": "Bluetooth untuk aplikasi MeshMesh"
  },
  "a4a4ec2c": {
   "en": "Peak reset",
@@ -4787,11 +4757,6 @@
   "ru": "Включить BLE",
   "text": "Nyalakan BLE"
  },
- "03dcef12": {
-  "en": "App: ",
-  "ru": "Прил.: ",
-  "text": "Apl.: "
- },
  "929d4e52": {
   "en": "Language: ",
   "ru": "Язык: ",
@@ -5461,11 +5426,6 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Riwayat"
- },
- "bbd8460e": {
-  "en": "For MeshCore apps",
-  "ru": "Для приложений MeshCore",
-  "text": "Untuk aplikasi MeshCore"
  },
  "ccdb9efa": {
   "en": "No pet",

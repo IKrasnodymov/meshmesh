@@ -276,6 +276,7 @@ class MainActivity : ComponentActivity() {
     private fun startBleScan() = withBluetooth {
         stopBleScan()
         bleFound.clear()
+        // Paired boards of older firmware; "MeshCore-" boards come from the scan (a stock MeshCore node has the same name).
         bluetooth?.bondedDevices?.filter { it.name?.startsWith("MeshMesh ") == true }?.forEach {
             bleFound[it.address] = JSONObject().put("id", it.address).put("name", it.name).put("rssi", JSONObject.NULL).put("bonded", true)
         }
@@ -290,7 +291,10 @@ class MainActivity : ComponentActivity() {
             override fun onScanFailed(errorCode: Int) { toast("Поиск Bluetooth не запустился (код $errorCode)", "bad"); pushBle(true) }
         }
         bleScan = callback
-        scanner.startScan(listOf(ScanFilter.Builder().setServiceUuid(ParcelUuid(BleLink.SERVICE)).build()),
+        // Since firmware 0.9.0 the board advertises like stock MeshCore ("MeshCore-<name>") with the "MM" mark
+        // in its manufacturer data; older firmware advertises the MeshMesh service.
+        scanner.startScan(listOf(ScanFilter.Builder().setManufacturerData(BleLink.MARK_COMPANY, BleLink.MARK).build(),
+            ScanFilter.Builder().setServiceUuid(ParcelUuid(BleLink.SERVICE)).build()),
             ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), callback)
         pushBle(false)
         lifecycleScope.launch { delay(15_000); if (bleScan === callback) { stopBleScan(); pushBle(true) } }

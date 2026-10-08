@@ -78,9 +78,7 @@ static void scenario(){
 #if defined(MM_NO_WIFI)
   if(!strcmp(n,"wifi"))continue; // nRF52 (T114): no Wi-Fi screen
 #endif
-  go(n);shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}
-  if(!strcmp(n,"ble")){key(0xa3);key(13);shot("heltec-ble-menu");key(0xa3);if(config.bleApp!=Config::BleMeshCore){printf("FAIL BLE app item\n");exit(1);}shot("heltec-ble-meshcore");key(0xa3);key(13);key(0xa3);} // Bluetooth for MeshCore apps and back
-  key(13);}
+  go(n);shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}key(13);}
  {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;}shot("heltec-popup");
  // Chess with one button: hold on the list opens the game; click steps through the pieces that can move,
  // hold picks one, click steps through its squares (then "Cancel"), hold plays. Each step checks the UI state.
@@ -115,11 +113,7 @@ static void scenario(){
  key(0x85);shot("map");key(0xb7);key(0xb6);shot("map-browse");key('L');shot("library");key(0x86);
  key(0x82);key(0xb7);key(0xb7);key(13);shot("nodes");key(13);shot("node");key(0xb7);key(0xb7);key(0xb7);key(13);shot("node-forget");key(0x86);key(0x86);
  key(0x82);key(0xb6);key(13);shot("sensors");key(0x90);shot("settings");key(13);key(0xb7);shot("radio");key(0x86);key(0xb6);key(13);for(int i=0;i<8;i++)key(0xb6);key(0xb7);shot("display-battery");for(int i=0;i<8;i++)key(0xb5);shot("display");key(13);shot("display-name");key(0x86);key(0x86);
- key(0x82);key(0xb6);key(0xb7);key(13);key(13);key(0xb6);key(13);shot("network");
-key(13);key(0xb6);key(13);key(0x83);shot("diagnostics");key(0x90);for(int i=0;i<5;i++)key(0xb6);key(13);shot("help");key(13);shot("help-layout");key(0x86);key(13);shot("help-layout");key(0x86);
- // Connections, the Bluetooth card: <> picks MeshCore apps, then back.
- key(0x90);for(int i=0;i<3;i++)key(0xb6);key(13);key(0xb6);key(0xb6);key(0xb7);
- if(config.bleApp!=Config::BleMeshCore||uiStatus().indexOf("\"page\":\"network\"")<0){printf("FAIL BLE app key: %s\n",uiStatus().c_str());exit(1);}shot("network-meshcore");key(0xb7);key(0x86);key(0x86);
+ key(0x82);key(0xb6);key(0xb7);key(13);key(13);key(0xb6);key(13);shot("network");key(13);key(0xb6);key(13);key(0x83);shot("diagnostics");key(0x90);for(int i=0;i<5;i++)key(0xb6);key(13);shot("help");key(13);shot("help-layout");key(0x86);key(13);shot("help-layout");key(0x86);
  key(0x88);shot("locked");key(0xa3);key(0x82);
  key(0xb6);key(0xb7);key(0xb7);shot("home-radar");key(0xb6);shot("home-scrolled");key(0xb5);key(13);shot("radar");key(0xb6);key(0xb6);shot("radar-select");key(0xb5);key(0xb5);key(13);shot("homing");key(0x86);shot("radar-back");key(0xb7);shot("motion");key('b');for(int i=0;i<4;i++)tick();shot("motion-beacon");key('b');key(0xb7);key(0x86);
  // Solitaire: the ninth home tile; hints, a held run and the key sheet.

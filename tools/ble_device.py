@@ -14,8 +14,10 @@ TX = '7a9e0003-98bd-4d56-89a8-c4eab4179010'
 async def run(args):
     # macOS may cache the name of the previous firmware; match advertisement data.
     def match(device, advertisement):
-        return SERVICE in advertisement.service_uuids and args.node.upper() in (advertisement.local_name or '').upper()
-    device = await BleakScanner.find_device_by_filter(match, timeout=15, service_uuids=[SERVICE])
+        # 0.9.0+: "MeshCore-<name>" with the "MM" mark (company 0xFFFF); older firmware: the service and "MeshMesh XXXX".
+        ours = advertisement.manufacturer_data.get(0xFFFF, b'').startswith(b'MM') or SERVICE in advertisement.service_uuids
+        return ours and args.node.upper() in (advertisement.local_name or '').upper()
+    device = await BleakScanner.find_device_by_filter(match, timeout=15)
     if device is None:
         raise RuntimeError('MeshMesh BLE advertisement not found; enable BLE on the device')
     response = asyncio.get_running_loop().create_future()
@@ -60,7 +62,7 @@ async def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--node', default='AD4F7C', help='Six trailing hex digits displayed in the BLE name')
+    parser.add_argument('--node', default='AD4F7C', help='Part of the BLE name: the node name (MeshCore-<name>) or, before 0.9.0, the six hex digits of "MeshMesh XXXXXX"')
     parser.add_argument('--output', type=Path)
     parser.add_argument('command', nargs='?', default='status')
     try:

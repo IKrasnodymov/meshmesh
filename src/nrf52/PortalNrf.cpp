@@ -50,13 +50,14 @@ void onAppWrite(uint16_t,BLECharacteristic*,uint8_t* data,uint16_t size){
 }
 void onConnect(uint16_t handle){client=handle;}
 void onDisconnect(uint16_t handle,uint8_t){if(handle==client){client=BLE_CONN_HANDLE_INVALID;bleResponse="";bleOffset=0;companion::disconnected(companion::LinkBle);}}
-// The advert names the app's service, as stock firmware does (MeshCore apps look for a "MeshCore-" name).
-void advertiseFor(){
-  String name=bleName();Bluefruit.setName(name.c_str());
-  Bluefruit.Advertising.clearData();Bluefruit.ScanResponse.clearData();
-  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);Bluefruit.Advertising.addTxPower();
-  if(config.bleApp==Config::BleMeshCore)Bluefruit.Advertising.addService(nus);else Bluefruit.Advertising.addService(service);
-  Bluefruit.ScanResponse.addName();
+// The advert of stock MeshCore (its service, "MeshCore-<name>" in the scan response): MeshCore apps find the board
+// by the name. The MeshMesh app finds it by the "MM" mark in the manufacturer data (company ID 0xFFFF: no company);
+// our own service still answers.
+void advertise(){
+  static const uint8_t mark[]={0xff,0xff,'M','M'};
+  Bluefruit.setName(bleName().c_str());
+  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);Bluefruit.Advertising.addService(nus);
+  Bluefruit.Advertising.addData(BLE_GAP_AD_TYPE_MANUFACTURER_SPECIFIC_DATA,mark,sizeof(mark));Bluefruit.ScanResponse.addName();
 }
 void start(){
   Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
@@ -72,20 +73,14 @@ void start(){
   nus.begin();
   appRx.setProperties(CHR_PROPS_WRITE|CHR_PROPS_WRITE_WO_RESP);appRx.setPermission(SECMODE_NO_ACCESS,SECMODE_ENC_WITH_MITM);appRx.setMaxLen(companion::MaxFrame);appRx.setWriteCallback(onAppWrite);appRx.begin();
   appTx.setProperties(CHR_PROPS_READ|CHR_PROPS_NOTIFY);appTx.setPermission(SECMODE_ENC_WITH_MITM,SECMODE_NO_ACCESS);appTx.setMaxLen(companion::MaxFrame);appTx.begin();
-  advertiseFor();
+  advertise();
   Bluefruit.Advertising.setInterval(32,244);Bluefruit.Advertising.setFastTimeout(30);
   commands=xQueueCreate(4,sizeof(BleCommand));appFrames=xQueueCreate(4,sizeof(AppFrame));started=true;
 }
 }
 String bleName(){
-  if(config.bleApp!=Config::BleMeshCore)return "MeshMesh "+meshRadio.idText(meshRadio.nodeId).substring(6);
   String name=config.name;while(name.length()>20){unsigned cut=name.length()-1;while(cut&&(uint8_t(name[cut])&0xc0)==0x80)cut--;name.remove(cut);} // the scan response holds 29 bytes
   return "MeshCore-"+name;
-}
-void bleSetApp(uint8_t app){
-  config.saveBleApp(app);
-  if(started){bool on=bluetoothOn;if(on)Bluefruit.Advertising.stop();advertiseFor();if(on){Bluefruit.Advertising.start(0);meshRadio.event="BLE: "+bleName();}}
-  meshRadio.dirty=true;
 }
 bool webRadarActive(){return webRadar;}
 String webRadarCommand(const String& line){
@@ -98,7 +93,7 @@ String portalPassword(){return "";}
 bool bleActive(){return bluetoothOn;}
 uint32_t blePin(){return pinCode;}
 String connectionCredentials(){
-  StaticJsonDocument<384>d;d["wifi"]=false;d["ble"]=bluetoothOn;d["ble_name"]=bleName();d["ble_app"]=config.bleApp==Config::BleMeshCore?"meshcore":"meshmesh";d["pin"]=pinCode;
+  StaticJsonDocument<384>d;d["wifi"]=false;d["ble"]=bluetoothOn;d["ble_name"]=bleName();d["pin"]=pinCode;
   if(bluetoothOn){uint8_t a[6];Bluefruit.getAddr(a);char s[18];snprintf(s,sizeof(s),"%02x:%02x:%02x:%02x:%02x:%02x",a[5],a[4],a[3],a[2],a[1],a[0]);d["ble_address"]=s;}
   String out;serializeJson(d,out);return out;
 }

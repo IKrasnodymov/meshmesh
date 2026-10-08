@@ -2199,21 +2199,6 @@
   "ru": "Пароль ",
   "text": "Şifre "
  },
- "2ad33e6e": {
-  "en": "For MeshCore apps: ",
-  "ru": "Для приложений MeshCore: ",
-  "text": "MeshCore uygulamaları için: "
- },
- "5aaa7a5b": {
-  "en": "Secure pairing, MeshMesh app",
-  "ru": "Защищённое сопряжение, приложение MeshMesh",
-  "text": "Güvenli eşleme, MeshMesh uygulaması"
- },
- "e01d4103": {
-  "en": "Off · for MeshCore apps",
-  "ru": "Выключен · для приложений MeshCore",
-  "text": "Kapalı · MeshCore uygulamaları için"
- },
  "3efed7d9": {
   "en": "Off",
   "ru": "Выключен",
@@ -2224,20 +2209,15 @@
   "ru": "Ключ MeshCore",
   "text": "MeshCore kimliği"
  },
- "e6b593c8": {
-  "en": "Toggle",
-  "ru": "Переключить",
-  "text": "Aç/kapat"
- },
- "e0830853": {
-  "en": "App",
-  "ru": "Приложение",
-  "text": "Uygulama"
- },
  "01f31114": {
   "en": "Networks",
   "ru": "Сети",
   "text": "Ağlar"
+ },
+ "e6b593c8": {
+  "en": "Toggle",
+  "ru": "Переключить",
+  "text": "Aç/kapat"
  },
  "80266824": {
   "en": "Wrong password or refused: ",
@@ -2808,16 +2788,6 @@
   "en": "This board is now the sensor",
   "ru": "Эта плата — приёмник",
   "text": "Bu kart artık alıcı"
- },
- "c3b6ee86": {
-  "en": "Bluetooth for MeshCore apps",
-  "ru": "Bluetooth для приложений MeshCore",
-  "text": "MeshCore uygulamaları için Bluetooth"
- },
- "98726351": {
-  "en": "Bluetooth for the MeshMesh app",
-  "ru": "Bluetooth для приложения MeshMesh",
-  "text": "MeshMesh uygulaması için Bluetooth"
  },
  "a4a4ec2c": {
   "en": "Peak reset",
@@ -4804,11 +4774,6 @@
   "ru": "Включить BLE",
   "text": "BLE'yi aç"
  },
- "03dcef12": {
-  "en": "App: ",
-  "ru": "Прил.: ",
-  "text": "Uyg.: "
- },
  "929d4e52": {
   "en": "Language: ",
   "ru": "Язык: ",
@@ -5478,11 +5443,6 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Önceki"
- },
- "bbd8460e": {
-  "en": "For MeshCore apps",
-  "ru": "Для приложений MeshCore",
-  "text": "MeshCore uygulamaları için"
  },
  "ccdb9efa": {
   "en": "No pet",

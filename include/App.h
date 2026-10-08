@@ -21,8 +21,8 @@ String uiStatus();
 void portalBegin();void portalTick();void portalToggle();bool portalActive();String portalPassword();
 String connectionCredentials();
 void bleToggle();bool bleActive();
-// The advertised name and the app it is for (Config::bleApp); a change re-advertises at once.
-String bleName();void bleSetApp(uint8_t app);
+// The advertised name, "MeshCore-<node name>" as on stock firmware: MeshCore apps find the board by it.
+String bleName();
 #if defined(MM_NRF52)
 void bleSilence(); // power off: Bluetooth quiet, the setting kept
 #endif

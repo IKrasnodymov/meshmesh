@@ -2,13 +2,13 @@
 
 > **0.9.0: MeshCore apps (companion protocol)** (8 October 2026, branch `feature/companion`; no boards were connected — not
 > checked on hardware or with a phone, no full run). All 15 boards build; the `tools/ui_preview` scenarios (M9, Heltec,
-> T114) pass, including the "Bluetooth for MeshCore" switch. The Chinese T114 image has 9 KB free: `MeshRadio.cpp` is now
+> T-Deck, T114) pass; there is no switch — the advert is always the stock one (`MeshCore-<name>`, Nordic UART) with the
+> `MM` mark for the MeshMesh app 0.9.0 (its tests and APK build pass; finding by the mark on a phone not checked).
+> The Chinese T114 image has 11 KB free: `MeshRadio.cpp` is now
 > built with `-Os` on the nRF52 (−10 KB), so LoRa exchange on the T114 and GAT562 must be checked again. QEMU emulator
 > (`tlora_v2_1_6` with `MM_EMULATOR`, no radio): the third-party `meshcore` 2.3.15 Python library gets device and node
 > information, contacts, channels, time, battery, the contact card and statistics; adds, finds and removes a contact,
-> joins a channel; an unsupported command answers with an error; text commands work after frames. The "Connections"
-> web page in headless Chromium through `web_usb_bridge.py` to the emulator switches the mode both ways without
-> JavaScript errors. Messaging and ACKs through the app — `tools/companion_check.py` on two boards — not run yet.
+> joins a channel; an unsupported command answers with an error; text commands work after frames. Messaging and ACKs through the app — `tools/companion_check.py` on two boards — not run yet.
 
 > **0.8.0: power off** (7 October 2026, branch `power-off`, no full run). All 15 boards build; the `tools/ui_preview`
 > scenarios pass (the menu, two OKs, the "Turning off..." and "Device is off" frames). **Heltec V4** (`f0caee3`, image

@@ -68,7 +68,7 @@ String Radar::json() const{
  auto describe=[&](JsonObject o,const RadarTarget& t){o["kind"]=kinds[t.kind];o["rssi"]=t.rssi;
   if(t.kind==RadarTarget::Wifi)o["channel"]=t.channel;if(t.kind==RadarTarget::Ble)o["device"]=devices[t.device];
   if(t.kind==RadarTarget::Lora){char node[17];snprintf(node,sizeof node,"%04lX%08lX",(unsigned long)(t.id>>32),(unsigned long)(t.id&0xffffffffu));o["node"]=node;}
-  o["meshmesh"]=t.kind==RadarTarget::Lora||!strncmp(t.name,t.kind==RadarTarget::Ble?"MeshMesh ":"MM-",t.kind==RadarTarget::Ble?9:3);o["age_ms"]=now-t.seen;};
+  o["meshmesh"]=t.kind==RadarTarget::Lora||(t.kind==RadarTarget::Ble?!strncmp(t.name,"MeshCore-",9)||!strncmp(t.name,"MeshMesh ",9):!strncmp(t.name,"MM-",3));o["age_ms"]=now-t.seen;};
  JsonArray a=d.createNestedArray("strongest");for(unsigned i=0;i<count&&i<10;i++)describe(a.createNestedObject(),targets[i]);
  d["tracking"]=tracking;
  if(tracking){JsonObject f=d.createNestedObject("focus");describe(f,focus);f["samples"]=samples;f["rate"]=rate;f["smoothed"]=serialized(String(fast,1));f["peak"]=serialized(String(peak,1));f["trend"]=trend();f["fresh"]=fresh();}

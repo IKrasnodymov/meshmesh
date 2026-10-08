@@ -5,24 +5,18 @@ MeshCore Open and other clients of the companion protocol, for example the `mesh
 The app works with the board's own chats, contacts and channels. Chess, the pet, the dice, maps and
 the radar stay in the MeshMesh app, on the web page and on the screen.
 
-## How to turn it on
+## Connecting
 
-Bluetooth is advertised for one app:
+There is nothing to switch. The board's Bluetooth advertises as stock firmware does: the Nordic UART
+service (`6E400001-B5A3-F393-E0A9-E50E24DCCA9E`) and the name `MeshCore-<node name>` (the node name is cut
+to 20 bytes). MeshCore apps find the board by this name. The MeshMesh app finds it by the `MM` mark in the
+manufacturer data (company ID 0xFFFF, "no company") and connects to its own service `7a9e0001-…`, which
+answers as before. The MeshMesh app before 0.9.0 looks for the `7a9e0001-…` service in the advert and does
+not find a board with the new firmware: it has to be updated. One phone connects at a time.
 
-- **MeshMesh** (default): service `7a9e0001-…`, name `MeshMesh XXXX`. This is how it worked before.
-- **MeshCore**: the Nordic UART service (`6E400001-B5A3-F393-E0A9-E50E24DCCA9E`) and the name
-  `MeshCore-<node name>`, as on the stock firmware. MeshCore apps look for devices by this name.
-
-Where to switch:
-
-- M9 and T-Deck: "Settings → Connections", the Bluetooth LE card, the `<>` key.
-- Heltec, GAT562 and T114: the Bluetooth page, the item "App: MeshCore / MeshMesh".
-- Web page and the MeshMesh app: "Connections", the button "For MeshCore / For MeshMesh".
-- Over USB: `ble app meshcore` or `ble app meshmesh`.
-
-The choice is saved. Pairing is protected by the same PIN shown on the screen. Both services answer
-in either mode; only the advertisement changes. While Bluetooth is advertised for MeshCore, the
-MeshMesh app reaches the board over Wi-Fi (ESP32) or USB.
+Pairing is protected by the same PIN shown on the screen. The `MeshCore-…` name is shown in "Connections"
+on the screen and on the web page. The radar counts Bluetooth devices named `MeshCore-` and `MeshMesh ` as
+mesh nodes.
 
 The same protocol works over USB, as on the stock firmware: the byte `<`, a 2-byte length (low byte
 first), then the frame; replies come as `>`, the length, the frame. Text USB commands keep working.

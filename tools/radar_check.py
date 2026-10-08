@@ -56,7 +56,7 @@ def main():
   focus=wait('No beacons from the Heltec BSSID',20,lambda:(f:=read(m9,'radar')['focus'])['samples']>=first+20 and f['rate']>0 and f)
   result['m9_wifi_homing']={k:focus[k] for k in ('channel','samples','rate','rssi','smoothed','peak','trend','fresh')}
   screenshot(m9,'artifacts/m9-homing.ppm')
-  # Bluetooth: the Heltec BLE service advertises as "MeshMesh XXXX".
+  # Bluetooth: the Heltec advertises as "MeshCore-<name>" (before 0.9.0 "MeshMesh XXXX").
   key(m9,0x86);assert read(m9,'ui')['page']=='radar'
   own_ble=lambda t:t['kind']=='ble' and t['meshmesh']
   wait('M9 Bluetooth scan did not find the Heltec BLE service',30,lambda:(r:=read(m9,'radar'))['ble']=='ready' and any(own_ble(t) for t in r['strongest']))
