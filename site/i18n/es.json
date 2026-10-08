@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Contadores: ±1 y ±5",
  "shot.heltec-dice-grid": "La OLED: la cuadrícula en contorno",
  "shot.m9-dice-saved": "Tiradas guardadas de un personaje",
- "doc.dice": "Dados"
+ "doc.dice": "Dados",
+ "news.companion": "<b>Nuevo:</b> las apps oficiales de MeshCore se conectan a las placas MeshMesh por Bluetooth y USB",
+ "f.companion.t": "Apps de MeshCore",
+ "f.companion.d": "Las apps oficiales de MeshCore (MeshCore, MeshCore Open y otras) se conectan a la placa por Bluetooth o USB sin cambiar nada: usan sus chats, contactos y canales, y los mensajes de la app aparecen en la pantalla. La app MeshMesh también encuentra la misma placa; el ajedrez, la mascota y los dados siguen en ella. La placa se llama MeshCore-&lt;nombre&gt; con 4 dígitos de su clave.",
+ "shot.m9-network-ble": "Bluetooth: el nombre que ven las apps y el PIN",
+ "shot.t114-ble-on": "La T114: MeshCore-T114 y el PIN",
+ "shot.heltec-ble-on": "La OLED: el nombre y el PIN",
+ "doc.companion": "Apps de MeshCore"
 }

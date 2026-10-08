@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Лічильники: ±1 і ±5",
  "shot.heltec-dice-grid": "OLED: сітка контуром",
  "shot.m9-dice-saved": "Збережені кидки персонажа",
- "doc.dice": "Кості"
+ "doc.dice": "Кості",
+ "news.companion": "<b>Нове:</b> штатні застосунки MeshCore підключаються до плат MeshMesh через Bluetooth і USB",
+ "f.companion.t": "Застосунки MeshCore",
+ "f.companion.d": "Штатні застосунки MeshCore (MeshCore, MeshCore Open та інші) підключаються до плати через Bluetooth або USB без перемикань: їм доступні її чати, контакти й канали, а повідомлення із застосунку з’являються на екрані. Застосунок MeshMesh теж знаходить цю плату; шахи, улюбленець і кості лишаються в ньому. Плата називається MeshCore-&lt;ім’я&gt; з 4 знаками ключа.",
+ "shot.m9-network-ble": "Bluetooth: ім’я для застосунків і PIN",
+ "shot.t114-ble-on": "T114: MeshCore-T114 і PIN",
+ "shot.heltec-ble-on": "OLED: ім’я і PIN",
+ "doc.companion": "Застосунки MeshCore"
 }

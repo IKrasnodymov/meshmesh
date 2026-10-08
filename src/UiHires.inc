@@ -307,7 +307,7 @@ void wifi(){
 }
 void ble(){
  bool on=bleActive();panel(4,25,232,40,ColCard,8);icon(IcBle,20,45,8,on?ColInfo:ColFaint,ColCard);
- text(36,42,fit(on?bleName():t("Bluetooth off","Bluetooth выкл."),196,bold),ColInk,bold);
+ {String n=on?bleName():String(t("Bluetooth off","Bluetooth выкл."));const uint8_t* f=width(n,bold)<=196?bold:small;text(36,42,fit(n,196,f),ColInk,f);} // the whole name, key digits too
  text(36,58,fit(t("Secure pairing","Защищённое сопряжение"),196,tiny),ColDim,tiny);
  if(on){text(8,100,"PIN",ColDim,small);text(48,104,String(blePin()),ColAccent,big);}
 }

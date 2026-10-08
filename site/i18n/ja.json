@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "カウンター：±1 と ±5",
  "shot.heltec-dice-grid": "OLED：輪郭で描くグリッド",
  "shot.m9-dice-saved": "キャラクターの保存ロール",
- "doc.dice": "ダイス"
+ "doc.dice": "ダイス",
+ "news.companion": "<b>新機能：</b>公式の MeshCore アプリが Bluetooth と USB で MeshMesh ボードに接続できます",
+ "f.companion.t": "MeshCore アプリ",
+ "f.companion.d": "公式の MeshCore アプリ（MeshCore、MeshCore Open など）は切り替えなしで Bluetooth または USB からボードに接続し、そのチャット・連絡先・チャンネルを使えます。アプリから送ったメッセージは画面にも表示されます。MeshMesh アプリも同じボードを見つけられ、チェス・ペット・ダイスはそちらで使えます。ボード名は MeshCore-&lt;名前&gt; にキーの 4 文字が付きます。",
+ "shot.m9-network-ble": "Bluetooth：アプリに見える名前と PIN",
+ "shot.t114-ble-on": "T114：MeshCore-T114 と PIN",
+ "shot.heltec-ble-on": "OLED：名前と PIN",
+ "doc.companion": "MeshCore アプリ"
 }

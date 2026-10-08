@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Counters: ±1 and ±5",
  "shot.heltec-dice-grid": "The OLED: the grid in outline",
  "shot.m9-dice-saved": "Saved rolls of a character",
- "doc.dice": "Dice"
+ "doc.dice": "Dice",
+ "news.companion": "<b>New:</b> the stock MeshCore apps connect to MeshMesh boards over Bluetooth and USB",
+ "f.companion.t": "MeshCore apps",
+ "f.companion.d": "The stock MeshCore apps (MeshCore, MeshCore Open and others) connect to the board over Bluetooth or USB with nothing to switch: they work with its chats, contacts and channels, and messages from the app appear on the screen. The MeshMesh app finds the same board too; chess, the pet and the dice stay in it. The board is named MeshCore-&lt;name&gt; with 4 digits of its key.",
+ "shot.m9-network-ble": "Bluetooth: the name the apps see and the PIN",
+ "shot.t114-ble-on": "The T114: MeshCore-T114 and the PIN",
+ "shot.heltec-ble-on": "The OLED: the name and the PIN",
+ "doc.companion": "MeshCore apps"
 }

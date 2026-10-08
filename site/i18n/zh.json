@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "计数器：±1 与 ±5",
  "shot.heltec-dice-grid": "OLED：网格以轮廓绘制",
  "shot.m9-dice-saved": "角色保存的投掷",
- "doc.dice": "骰子"
+ "doc.dice": "骰子",
+ "news.companion": "<b>新功能：</b>官方 MeshCore 应用可通过蓝牙和 USB 连接 MeshMesh 开发板",
+ "f.companion.t": "MeshCore 应用",
+ "f.companion.d": "官方 MeshCore 应用（MeshCore、MeshCore Open 等）无需任何切换即可通过蓝牙或 USB 连接开发板：使用它的聊天、联系人和频道，应用发出的消息也会显示在屏幕上。MeshMesh 应用同样能找到这块开发板；国际象棋、宠物和骰子仍在其中。开发板名为 MeshCore-&lt;名称&gt;，后接密钥的 4 位字符。",
+ "shot.m9-network-ble": "蓝牙：应用看到的名称和 PIN",
+ "shot.t114-ble-on": "T114：MeshCore-T114 和 PIN",
+ "shot.heltec-ble-on": "OLED：名称和 PIN",
+ "doc.companion": "MeshCore 应用"
 }

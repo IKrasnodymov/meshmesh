@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Liczniki: ±1 i ±5",
  "shot.heltec-dice-grid": "OLED: siatka konturem",
  "shot.m9-dice-saved": "Zapisane rzuty postaci",
- "doc.dice": "Kości"
+ "doc.dice": "Kości",
+ "news.companion": "<b>Nowość:</b> oryginalne aplikacje MeshCore łączą się z płytkami MeshMesh przez Bluetooth i USB",
+ "f.companion.t": "Aplikacje MeshCore",
+ "f.companion.d": "Oryginalne aplikacje MeshCore (MeshCore, MeshCore Open i inne) łączą się z płytką przez Bluetooth lub USB bez przełączania: korzystają z jej czatów, kontaktów i kanałów, a wiadomości z aplikacji pojawiają się na ekranie. Aplikacja MeshMesh także znajduje tę płytkę; szachy, zwierzak i kości zostają w niej. Płytka nazywa się MeshCore-&lt;nazwa&gt; z 4 znakami klucza.",
+ "shot.m9-network-ble": "Bluetooth: nazwa dla aplikacji i PIN",
+ "shot.t114-ble-on": "T114: MeshCore-T114 i PIN",
+ "shot.heltec-ble-on": "OLED: nazwa i PIN",
+ "doc.companion": "Aplikacje MeshCore"
 }

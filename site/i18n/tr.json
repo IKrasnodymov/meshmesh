@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Sayaçlar: ±1 ve ±5",
  "shot.heltec-dice-grid": "OLED: ızgara çizgiyle",
  "shot.m9-dice-saved": "Bir karakterin kayıtlı atışları",
- "doc.dice": "Zarlar"
+ "doc.dice": "Zarlar",
+ "news.companion": "<b>Yeni:</b> resmî MeshCore uygulamaları MeshMesh kartlarına Bluetooth ve USB ile bağlanır",
+ "f.companion.t": "MeshCore uygulamaları",
+ "f.companion.d": "Resmî MeshCore uygulamaları (MeshCore, MeshCore Open ve diğerleri) hiçbir ayar değiştirmeden karta Bluetooth veya USB ile bağlanır: kartın sohbetlerini, kişilerini ve kanallarını kullanır, uygulamadan gelen mesajlar ekranda görünür. MeshMesh uygulaması da aynı kartı bulur; satranç, evcil hayvan ve zarlar onda kalır. Kartın adı anahtarının 4 hanesiyle MeshCore-&lt;ad&gt; olur.",
+ "shot.m9-network-ble": "Bluetooth: uygulamaların gördüğü ad ve PIN",
+ "shot.t114-ble-on": "T114: MeshCore-T114 ve PIN",
+ "shot.heltec-ble-on": "OLED: ad ve PIN",
+ "doc.companion": "MeshCore uygulamaları"
 }

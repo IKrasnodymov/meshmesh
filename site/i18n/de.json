@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "Zähler: ±1 und ±5",
  "shot.heltec-dice-grid": "Das OLED: das Raster als Umriss",
  "shot.m9-dice-saved": "Gespeicherte Würfe eines Charakters",
- "doc.dice": "Würfel"
+ "doc.dice": "Würfel",
+ "news.companion": "<b>Neu:</b> die originalen MeshCore-Apps verbinden sich über Bluetooth und USB mit MeshMesh-Platinen",
+ "f.companion.t": "MeshCore-Apps",
+ "f.companion.d": "Die originalen MeshCore-Apps (MeshCore, MeshCore Open und andere) verbinden sich ohne Umschalten über Bluetooth oder USB mit der Platine: Sie nutzen deren Chats, Kontakte und Kanäle, und Nachrichten aus der App erscheinen auf dem Bildschirm. Auch die MeshMesh-App findet dieselbe Platine; Schach, Haustier und Würfel bleiben dort. Die Platine heißt MeshCore-&lt;Name&gt; mit 4 Zeichen ihres Schlüssels.",
+ "shot.m9-network-ble": "Bluetooth: der Name für die Apps und die PIN",
+ "shot.t114-ble-on": "Der T114: MeshCore-T114 und die PIN",
+ "shot.heltec-ble-on": "Das OLED: Name und PIN",
+ "doc.companion": "MeshCore-Apps"
 }

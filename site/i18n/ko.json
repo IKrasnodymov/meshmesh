@@ -240,5 +240,12 @@
  "shot.m9-dice-counters": "카운터: ±1과 ±5",
  "shot.heltec-dice-grid": "OLED: 윤곽으로 그린 격자",
  "shot.m9-dice-saved": "캐릭터의 저장된 굴림",
- "doc.dice": "주사위"
+ "doc.dice": "주사위",
+ "news.companion": "<b>새 기능:</b> 공식 MeshCore 앱이 Bluetooth와 USB로 MeshMesh 보드에 연결됩니다",
+ "f.companion.t": "MeshCore 앱",
+ "f.companion.d": "공식 MeshCore 앱(MeshCore, MeshCore Open 등)은 아무것도 전환하지 않고 Bluetooth 또는 USB로 보드에 연결되어 보드의 채팅, 연락처, 채널을 사용하며, 앱에서 보낸 메시지는 화면에도 표시됩니다. MeshMesh 앱도 같은 보드를 찾으며 체스, 펫, 주사위는 그 앱에 남습니다. 보드 이름은 키 4자리가 붙은 MeshCore-&lt;이름&gt;입니다.",
+ "shot.m9-network-ble": "Bluetooth: 앱에 보이는 이름과 PIN",
+ "shot.t114-ble-on": "T114: MeshCore-T114와 PIN",
+ "shot.heltec-ble-on": "OLED: 이름과 PIN",
+ "doc.companion": "MeshCore 앱"
 }
