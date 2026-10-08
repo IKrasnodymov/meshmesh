@@ -17,7 +17,12 @@
 > direct message with its ACK (`PUSH_SEND_CONFIRMED`, 1.0–1.3 s; one copy on the peer), the peer's reply and a Public
 > message received by the app, the peer got its ACK, text commands work after frames; no restarts. The first run lost
 > the Public message: the check sent it right after the direct one while the T114 was sending its ACK; now it waits
-> for the ACK. Not checked from a phone (MeshCore and MeshMesh apps over Bluetooth, pairing).
+> for the ACK. The Bluetooth name with 4 hex digits of the key (commit `f86f755`, Heltec boot 180, T114 boot 12, revision
+> `f86f755`): a Mac sees `MeshCore-Heltec V4 C993` and `MeshCore-T114 FAE7` with the `MM` mark; after `set {"name":…}`
+> on the T114 the advert shows the new name at once, no restart. A name change on the T114 answers in ~1 s without
+> Bluetooth and ~2 s with it (nRF52 flash write), on the Heltec in 0.05 s; the first answer after installing missed the
+> 8 s wait of `device.py`, though the name was saved. Not checked from a phone (MeshCore and MeshMesh apps over
+> Bluetooth, pairing).
 
 > **0.8.0: power off** (7 October 2026, branch `power-off`, no full run). All 15 boards build; the `tools/ui_preview`
 > scenarios pass (the menu, two OKs, the "Turning off..." and "Device is off" frames). **Heltec V4** (`f0caee3`, image
