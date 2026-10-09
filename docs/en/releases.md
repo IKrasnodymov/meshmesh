@@ -2,7 +2,7 @@
 
 `versions.properties` is the single source of public versions: `firmware` for all boards and
 `android` for the app. They are independent `MAJOR.MINOR.PATCH` values: incompatible behaviour,
-compatible features, then fixes. Current releases are firmware 0.17.0 and Android 0.11.0. This does not change
+compatible features, then fixes. Current releases are firmware 0.18.0 and Android 0.11.0. This does not change
 the MeshCore wire protocol version.
 
 Before a release, bump the affected component and run:

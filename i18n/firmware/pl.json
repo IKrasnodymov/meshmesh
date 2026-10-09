@@ -4694,6 +4694,31 @@
   "ru": "A: добавить",
   "text": "A: dodaj"
  },
+ "61af3343": {
+  "en": "No counters",
+  "ru": "Счётчиков нет",
+  "text": "Brak liczników"
+ },
+ "5f0511a3": {
+  "en": "Add one in the menu",
+  "ru": "Добавьте в меню",
+  "text": "Dodaj w menu"
+ },
+ "2eb80aa3": {
+  "en": "No rolls yet",
+  "ru": "Бросков ещё нет",
+  "text": "Brak rzutów"
+ },
+ "609941b9": {
+  "en": "Roll is first in the menu",
+  "ru": "Бросок первый в меню",
+  "text": "Rzut jest pierwszy w menu"
+ },
+ "fc25f0c0": {
+  "en": "Counting done",
+  "ru": "Счёт завершён",
+  "text": "Koniec liczenia"
+ },
  "c9d0bbdd": {
   "en": "Roll ",
   "ru": "Бросить ",
@@ -4769,6 +4794,11 @@
   "ru": "Добавить счётчик",
   "text": "Dodaj licznik"
  },
+ "0945b008": {
+  "en": "Count with button",
+  "ru": "Считать кнопкой",
+  "text": "Licz przyciskiem"
+ },
  "96da71cd": {
   "en": "Choose dice: Dice +1",
   "ru": "Выберите: Кости +1",
@@ -4778,26 +4808,6 @@
   "en": "Dice ",
   "ru": "Кости ",
   "text": "Kości "
- },
- "61af3343": {
-  "en": "No counters",
-  "ru": "Счётчиков нет",
-  "text": "Brak liczników"
- },
- "5f0511a3": {
-  "en": "Add one in the menu",
-  "ru": "Добавьте в меню",
-  "text": "Dodaj w menu"
- },
- "2eb80aa3": {
-  "en": "No rolls yet",
-  "ru": "Бросков ещё нет",
-  "text": "Brak rzutów"
- },
- "609941b9": {
-  "en": "Roll is first in the menu",
-  "ru": "Бросок первый в меню",
-  "text": "Rzut jest pierwszy w menu"
  },
  "60a11f70": {
   "en": "SNR ",
@@ -5385,6 +5395,11 @@
   "ru": "OK: меню  < >",
   "text": "OK: menu  < >"
  },
+ "34f50217": {
+  "en": "click+ hold- 5s:exit",
+  "ru": "клик+ держ- 5с:выход",
+  "text": "klik+ trzym- 5s:stop"
+ },
  "1c9aa5a1": {
   "en": "hold: ",
   "ru": "держ: ",
@@ -5844,6 +5859,21 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Poprz."
+ },
+ "f0e4f1f9": {
+  "en": "click: +1",
+  "ru": "клик: +1",
+  "text": "klik: +1"
+ },
+ "995bd9f9": {
+  "en": "hold: -1",
+  "ru": "держ: -1",
+  "text": "trzym: -1"
+ },
+ "34338a17": {
+  "en": "5 s: exit",
+  "ru": "5 с: выход",
+  "text": "5 s: wyjdź"
  },
  "ccdb9efa": {
   "en": "No pet",

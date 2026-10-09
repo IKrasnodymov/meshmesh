@@ -1,8 +1,9 @@
 // The dice page of the one-button and joystick boards (included by UiHeltec.cpp after its actions; Dice.h keeps
 // the rolls). Hold (OK on the joystick) opens the menu with the roll first: hold, hold rolls. RPG shows the sum
 // and the dice, Warhammer the grid (filled: at or over the threshold), counters one at a time; the joystick's
-// up/down change the dice count, the chosen grid dice or the counter. Saved rolls, characters and names come
-// from the web page or the app.
+// up/down change the dice count, the chosen grid dice or the counter. One button counts in its own mode
+// ("Count with button"): click +1, hold -1, holding on to 5 s leaves it. Saved rolls, characters and names
+// come from the web page or the app.
 int diceSavedSel=0,diceCounterSel=0;uint32_t diceSeen=0;
 String diceTypeName(uint8_t type){return dice::typeNames[type<dice::TypeCount?type:dice::D6];}
 String diceModeName(uint8_t m){return m==dice::Rpg?String("RPG"):m==dice::Grid?String("Warhammer"):t("Counters","Счётчики");}
@@ -12,12 +13,30 @@ unsigned diceActions(Act* out){
  switch(s.mode){
  case dice::Rpg:out[n++]=ActDiceRoll;if(c.rolls){out[n++]=ActDiceSaved;if(c.rolls>1)out[n++]=ActDiceNextSaved;}out[n++]=ActDiceCount;out[n++]=ActDiceType;out[n++]=ActDiceMod;break;
  case dice::Grid:out[n++]=ActDiceRoll;out[n++]=ActDiceGridMore;out[n++]=ActDiceGridFive;out[n++]=ActDiceGridType;out[n++]=ActDiceThreshold;if(s.gridSize<dice::GridMax)out[n++]=ActDiceGridRow;break;
- default:if(c.counters){out[n++]=ActDicePlus1;out[n++]=ActDiceMinus1;out[n++]=ActDicePlus5;out[n++]=ActDiceMinus5;if(c.counters>1)out[n++]=ActDiceNextCounter;}if(c.counters<dice::Counters)out[n++]=ActDiceAddCounter;break;
+ default:if(c.counters){
+#if defined(MM_JOYSTICK)
+  out[n++]=ActDicePlus1;out[n++]=ActDiceMinus1;
+#else
+  out[n++]=ActDiceTap;
+#endif
+  out[n++]=ActDicePlus5;out[n++]=ActDiceMinus5;if(c.counters>1)out[n++]=ActDiceNextCounter;}if(c.counters<dice::Counters)out[n++]=ActDiceAddCounter;break;
  }
  if(s.characters>1)out[n++]=ActDiceHero;out[n++]=ActDiceMode;return n;
 }
-bool diceKeeps(Act a){return a!=ActDiceRoll&&a!=ActDiceSaved&&a!=ActDiceMode&&a!=ActDiceAddCounter;}
+bool diceKeeps(Act a){return a!=ActDiceRoll&&a!=ActDiceSaved&&a!=ActDiceMode&&a!=ActDiceAddCounter&&a!=ActDiceTap;}
 const dice::Counter* diceShownCounter(){const auto& c=dicer.hero();if(!c.counters)return nullptr;diceCounterSel=constrain(diceCounterSel,0,int(c.counters)-1);return &c.counter[diceCounterSel];}
+// Counting with the button. The hold's -1 comes at 1.2 s, before the button can tell a 5 s hold, so leaving
+// puts the value back as it was before that hold.
+bool diceTapping=false,diceTapUndo=false;int diceTapBefore=0;
+bool diceTapOn(){if(diceTapping&&(page!=DicePage||dicer.s.mode!=dice::Tally||!diceShownCounter()))diceTapping=false;return diceTapping;}
+bool diceTapKey(int key){
+ if(!diceTapOn())return false;
+ const dice::Counter* k=diceShownCounter();
+ if(key==13||key==0x82){diceTapUndo=false;dicer.changeCounter(diceCounterSel,1);}
+ else if(key==0xa3){diceTapUndo=true;diceTapBefore=k->value;dicer.changeCounter(diceCounterSel,-1);}
+ else if(key==0xa4){if(diceTapUndo)dicer.setCounter(diceCounterSel,diceTapBefore);diceTapUndo=diceTapping=false;notice(t("Counting done","Счёт завершён"));}
+ return true;
+}
 String diceActName(Act a){
  const auto& s=dicer.s;const auto& c=dicer.hero();const dice::Counter* k=diceShownCounter();String value=k?" ("+String(k->value)+")":String();
  switch(a){
@@ -36,6 +55,7 @@ String diceActName(Act a){
  case ActDicePlus1:return "+1"+value;case ActDiceMinus1:return "-1"+value;case ActDicePlus5:return "+5"+value;case ActDiceMinus5:return "-5"+value;
  case ActDiceNextCounter:return t("Next counter","Другой счётчик");
  case ActDiceAddCounter:return t("Add counter","Добавить счётчик");
+ case ActDiceTap:return t("Count with button","Считать кнопкой")+value;
  default:return "";
  }
 }
@@ -59,6 +79,7 @@ void diceRun(Act a){
  case ActDicePlus5:dicer.changeCounter(diceCounterSel,5);break;case ActDiceMinus5:dicer.changeCounter(diceCounterSel,-5);break;
  case ActDiceNextCounter:diceCounterSel=c.counters?(diceCounterSel+1)%c.counters:0;break;
  case ActDiceAddCounter:if(dicer.addCounter())diceCounterSel=c.counters-1;break;
+ case ActDiceTap:diceTapping=true;diceTapUndo=false;break;
  default:break;
  }
 }

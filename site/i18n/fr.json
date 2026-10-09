@@ -233,7 +233,7 @@
  "doc.pet": "Animal du réseau",
  "news.dice": "<b>Nouveau :</b> dés — le lanceur DIC3R pour le JdR et Warhammer sur toutes les cartes",
  "f.dice.t": "Dés",
- "f.dice.d": "Le lanceur de dés DIC3R sur toutes les cartes. JdR : une réserve comme 2d6+1 ou toute formule, chaque dé dans sa forme, la somme ; d66 et d%. Warhammer : une grille jusqu’à 50 dés, du plus fort au plus faible, avec seuil de réussite. Compteurs de vie et de ressources, personnages avec leurs jets enregistrés. L’appareil garde tout : l’écran, la page web et l’appli montrent les mêmes jets.",
+ "f.dice.d": "Le lanceur de dés DIC3R sur toutes les cartes. JdR : une réserve comme 2d6+1 ou toute formule, chaque dé dans sa forme, la somme ; d66 et d%. Warhammer : une grille jusqu’à 50 dés, du plus fort au plus faible, avec seuil de réussite. Compteurs de vie et de ressources, personnages avec leurs jets enregistrés. L’appareil garde tout : l’écran, la page web et l’appli montrent les mêmes jets. Sur une carte à un seul bouton, le bouton compte lui-même : clic +1, maintien −1, maintien 5 s pour sortir.",
  "shot.m9-dice-shapes": "Chaque dé dans sa forme : de d4 à d20",
  "shot.t114-dice-saved": "Un jet enregistré sur le T114",
  "shot.m9-dice-grid": "Warhammer : 8 réussites à 4+",

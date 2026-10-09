@@ -428,6 +428,9 @@ void draw(){
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
  if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}
+#if MM_DICE
+ else if(diceTapOn())footer({t("click: +1","клик: +1"),t("hold: -1","держ: -1"),t("5 s: exit","5 с: выход")});
+#endif
  else footer({clickHint(pageTitle(nextPage(page))),hint()});
  toast();hardware.flush();
 }

@@ -233,7 +233,7 @@
  "doc.pet": "Bichinho da rede",
  "news.dice": "<b>Novo:</b> dados — o rolador DIC3R para RPG e Warhammer em todas as placas",
  "f.dice.t": "Dados",
- "f.dice.d": "O rolador de dados DIC3R em todas as placas. RPG: uma parada como 2d6+1 ou qualquer fórmula, cada dado com seu formato, a soma; d66 e d%. Warhammer: uma grade de até 50 dados, do maior para o menor, com limiar de sucesso. Contadores de vida e recursos, personagens com suas rolagens salvas. O dispositivo guarda tudo: a tela, a página web e o app mostram as mesmas rolagens.",
+ "f.dice.d": "O rolador de dados DIC3R em todas as placas. RPG: uma parada como 2d6+1 ou qualquer fórmula, cada dado com seu formato, a soma; d66 e d%. Warhammer: uma grade de até 50 dados, do maior para o menor, com limiar de sucesso. Contadores de vida e recursos, personagens com suas rolagens salvas. O dispositivo guarda tudo: a tela, a página web e o app mostram as mesmas rolagens. Numa placa de um só botão, o próprio botão conta: clique +1, segurar −1, segurar 5 s para sair.",
  "shot.m9-dice-shapes": "Cada dado com seu formato: de d4 a d20",
  "shot.t114-dice-saved": "Uma rolagem salva no T114",
  "shot.m9-dice-grid": "Warhammer: 8 sucessos em 4+",

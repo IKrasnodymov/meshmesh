@@ -174,10 +174,11 @@ void Hardware::tick() {
   }
 }
 int Hardware::readKey() {
-  static bool held=false,longSent=false;static uint32_t down=0;
+  static bool held=false,longSent=false,veryLongSent=false;static uint32_t down=0;
   bool pressed=digitalRead(pins::button)==LOW;
-  if(pressed && !held) {held=true;longSent=false;down=millis();}
+  if(pressed && !held) {held=true;longSent=veryLongSent=false;down=millis();}
   if(pressed && held && !longSent && millis()-down>=1200) {longSent=true;keyCount++;lastKey=0xa3;return 0xa3;}
+  if(pressed && held && !veryLongSent && millis()-down>=5000) {veryLongSent=true;keyCount++;lastKey=0xa4;return 0xa4;} // still held at 5 s (after 0xa3)
   if(!pressed && held) {held=false;if(!longSent && millis()-down>30){keyCount++;lastKey=13;return 13;}}
   return 0;
 }

@@ -275,7 +275,7 @@ String radioHint(){
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
-  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
+  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
 constexpr unsigned MenuMax=10;
 #if MM_DICE
 #include "UiDiceCompact.inc"
@@ -484,13 +484,21 @@ String fitted(const String& value,int px,const uint8_t* f){
  return value.substring(0,cut)+"..";
 }
 void footer(const String& hint){
- auto& c=*hardware.canvas;int x=1;uint8_t cycle[AppsMax+1];unsigned n=pageCycle(cycle);for(unsigned i=0;i<n;i++){if(cycle[i]==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
+ auto& c=*hardware.canvas;int x=1;uint8_t cycle[AppsMax+1];unsigned n=pageCycle(cycle);
+#if MM_DICE
+ if(diceTapOn())n=0; // counting: the button does not change the screen, the hint takes the row
+#endif
+ for(unsigned i=0;i<n;i++){if(cycle[i]==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
  if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small));
 }
 #if defined(MM_JOYSTICK)
 String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return "<  >";return n==1?t("OK: ","OK: ")+actName(acts[0]):t("OK: menu  < >","OK: меню  < >");}
 #else
-String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return "";return n==1?t("hold: ","держ: ")+actName(acts[0]):t("hold: menu","держ: меню");}
+String hint(){
+#if MM_DICE
+ if(diceTapOn())return t("click+ hold- 5s:exit","клик+ держ- 5с:выход");
+#endif
+ Act acts[MenuMax];unsigned n=actions(acts);if(!n)return "";return n==1?t("hold: ","держ: ")+actName(acts[0]):t("hold: menu","держ: меню");}
 #endif
 void drawMenu(){
  auto& c=*hardware.canvas;Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}menuIndex%=n;int first=max(0,min(menuIndex-1,int(n)-3));
@@ -705,7 +713,11 @@ void joystickKey(int key){
 void uiKey(int key){
  if(powerOffPending())return; // the screen says it is turning off
  lastInput=millis();dirty=true;
- if(screenOff){screenOff=false;hardware.brightness(config.brightness);return;} // the first press only wakes the panel
+ if(screenOff){screenOff=false;hardware.brightness(config.brightness); // the first press only wakes the panel
+#if MM_DICE && !defined(MM_JOYSTICK)
+  if(!diceTapOn()) // ... but counts while counting with the button
+#endif
+  return;}
 #if defined(MM_JOYSTICK)
  if(radioEdit){radioJoystick(key==0xb5,key==0xb6,key==0xb4,key==0xb7,key==13||key==0xa3,key==0x86||key==0x82);return;}
  joystickKey(key);return;
@@ -726,6 +738,9 @@ void uiKey(int key){
 #if MM_CHESS
  if(page==Chess&&chessButton(key))return;
 #endif
+#if MM_DICE
+ if(diceTapKey(key))return;
+#endif
 #endif
  if(key==13||key==0x82){showPage(nextPage(page));return;}
  if(key==0xa3){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
@@ -742,7 +757,7 @@ String uiStatus(){StaticJsonDocument<640>d;d["action"]=millis()-actionAt<3500?ac
 #endif
 if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}
 #if MM_DICE
- if(page==DicePage){d["dice_counter"]=diceCounterSel;d["dice_saved"]=diceSavedSel;}
+ if(page==DicePage){d["dice_counter"]=diceCounterSel;d["dice_saved"]=diceSavedSel;d["dice_tapping"]=diceTapOn();}
 #endif
  String s;serializeJson(d,s);return s;}
 bool uiScreenOff(){return screenOff;}

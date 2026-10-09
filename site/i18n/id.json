@@ -233,7 +233,7 @@
  "doc.pet": "Peliharaan mesh",
  "news.dice": "<b>Baru:</b> dadu — pelempar DIC3R untuk RPG dan Warhammer di setiap papan",
  "f.dice.t": "Dadu",
- "f.dice.d": "Pelempar dadu DIC3R di setiap papan. RPG: kumpulan seperti 2d6+1 atau rumus apa pun, setiap dadu dengan bentuknya, jumlahnya; d66 dan d%. Warhammer: grid hingga 50 dadu, dari terbesar ke terkecil, dengan ambang sukses. Penghitung nyawa dan sumber daya, karakter dengan lemparan tersimpan sendiri. Perangkat menyimpan semuanya, jadi layar, halaman web, dan aplikasi menampilkan lemparan yang sama.",
+ "f.dice.d": "Pelempar dadu DIC3R di setiap papan. RPG: kumpulan seperti 2d6+1 atau rumus apa pun, setiap dadu dengan bentuknya, jumlahnya; d66 dan d%. Warhammer: grid hingga 50 dadu, dari terbesar ke terkecil, dengan ambang sukses. Penghitung nyawa dan sumber daya, karakter dengan lemparan tersimpan sendiri. Perangkat menyimpan semuanya, jadi layar, halaman web, dan aplikasi menampilkan lemparan yang sama. Di papan bertombol satu, tombol itu sendiri menghitung: klik +1, tahan −1, tahan 5 d untuk keluar.",
  "shot.m9-dice-shapes": "Setiap dadu dengan bentuknya: d4 sampai d20",
  "shot.t114-dice-saved": "Lemparan tersimpan di T114",
  "shot.m9-dice-grid": "Warhammer: 8 sukses pada 4+",

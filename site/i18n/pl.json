@@ -233,7 +233,7 @@
  "doc.pet": "Zwierzak sieci",
  "news.dice": "<b>Nowość:</b> kości — rzucacz DIC3R do RPG i Warhammera na każdej płytce",
  "f.dice.t": "Kości",
- "f.dice.d": "Rzucacz kośćmi DIC3R na każdej płytce. RPG: pula jak 2d6+1 lub dowolna formuła, każda kość w swoim kształcie, suma; d66 i d%. Warhammer: siatka do 50 kości, od najwyższej do najniższej, z progiem sukcesu. Liczniki życia i zasobów, postacie z własnymi zapisanymi rzutami. Urządzenie przechowuje wszystko, więc ekran, strona WWW i aplikacja pokazują te same rzuty.",
+ "f.dice.d": "Rzucacz kośćmi DIC3R na każdej płytce. RPG: pula jak 2d6+1 lub dowolna formuła, każda kość w swoim kształcie, suma; d66 i d%. Warhammer: siatka do 50 kości, od najwyższej do najniższej, z progiem sukcesu. Liczniki życia i zasobów, postacie z własnymi zapisanymi rzutami. Urządzenie przechowuje wszystko, więc ekran, strona WWW i aplikacja pokazują te same rzuty. Na płytce z jednym przyciskiem liczy sam przycisk: klik +1, przytrzymanie −1, przytrzymanie 5 s — wyjście.",
  "shot.m9-dice-shapes": "Każda kość w swoim kształcie: od d4 do d20",
  "shot.t114-dice-saved": "Zapisany rzut na T114",
  "shot.m9-dice-grid": "Warhammer: 8 sukcesów przy 4+",
