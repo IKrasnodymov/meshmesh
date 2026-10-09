@@ -49,6 +49,8 @@
  "uf2.note": "<b>Tanpa Chrome atau Edge:</b> unduh firmware.uf2, tekan RESET dua kali dan salin file ke drive yang muncul.",
  "esp.portBusy": "<b>“Failed to open serial port”</b> — program lain memakai port tersebut (Arduino IDE, serial monitor, tab lain) atau driver USB macet: tutup program itu dan colok ulang kabelnya.",
  "board.communityNote": "<b>Papan komunitas.</b> Build-nya sudah diperiksa di komputer, tapi belum ada yang menjalankannya di papan ini. Ceritakan di Issues apa yang berfungsi.",
+ "board.pick": "Pilih papan Anda di atas",
+ "board.pickNote": "Setiap papan punya firmware sendiri: image untuk papan lain tidak akan berjalan di papan Anda. Situs akan mengingat pilihan Anda di browser ini.",
  "good.title": "Perlu diketahui",
  "good.update": "<b>Memperbarui MeshMesh</b> mempertahankan kunci, kontak, pengaturan dan riwayat Anda — biarkan “Erase device” tidak dicentang.",
  "good.first": "<b>Instalasi pertama</b> di atas Meshtastic, MeshCore atau firmware lain — centang “Erase device”.",

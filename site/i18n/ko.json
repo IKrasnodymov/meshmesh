@@ -49,6 +49,8 @@
  "uf2.note": "<b>Chrome이나 Edge가 없다면:</b> firmware.uf2를 내려받고 RESET을 두 번 누른 뒤, 나타난 드라이브에 파일을 복사하세요.",
  "esp.portBusy": "<b>“Failed to open serial port”</b>: 다른 프로그램(Arduino IDE, 시리얼 모니터, 다른 탭)이 포트를 쓰고 있거나 USB 드라이버가 멈췄습니다. 프로그램을 닫고 케이블을 다시 꽂으세요.",
  "board.communityNote": "<b>커뮤니티 보드입니다.</b> 빌드는 컴퓨터에서 검증했지만, 아직 이 보드에서 실행해 본 사람은 없습니다. 무엇이 작동하는지 Issues에 알려 주세요.",
+ "board.pick": "위에서 보드를 선택하세요",
+ "board.pickNote": "보드마다 펌웨어가 다릅니다. 다른 보드의 이미지는 사용자의 보드에서 작동하지 않습니다. 선택은 이 브라우저에 저장됩니다.",
  "good.title": "알아 두면 좋은 점",
  "good.update": "<b>MeshMesh를 업데이트</b>해도 키, 연락처, 설정, 기록이 유지됩니다. “Erase”는 선택하지 마세요.",
  "good.first": "Meshtastic, MeshCore 등 다른 펌웨어 위에 <b>처음 설치</b>할 때는 “Erase device”를 선택하세요.",

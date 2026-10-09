@@ -49,6 +49,8 @@
  "uf2.note": "<b>没有 Chrome 或 Edge？</b>下载 firmware.uf2，按两次 RESET，然后把文件复制到出现的磁盘上。",
  "esp.portBusy": "<b>“Failed to open serial port”</b>——端口被其他程序占用（Arduino IDE、串口监视器、另一个标签页），或 USB 驱动卡住了：关闭该程序并重新插拔数据线。",
  "board.communityNote": "<b>社区开发板。</b>构建已在电脑上检查，但还没有人在这块板上实际运行过。请在 Issues 中告诉我们哪些功能可用。",
+ "board.pick": "请先在上方选择开发板",
+ "board.pickNote": "每块开发板都有自己的固件：其他开发板的镜像无法在您的板上运行。网站会在此浏览器中记住您的选择。",
  "good.title": "须知",
  "good.update": "<b>更新 MeshMesh</b> 会保留密钥、联系人、设置和历史记录——请不要勾选 “Erase device”。",
  "good.first": "<b>首次安装</b>（覆盖 Meshtastic、MeshCore 或其他固件）——请勾选 “Erase device”。",

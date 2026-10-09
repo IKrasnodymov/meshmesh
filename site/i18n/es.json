@@ -49,6 +49,8 @@
  "uf2.note": "<b>Sin Chrome ni Edge:</b> descarga firmware.uf2, pulsa RESET dos veces y copia el archivo a la unidad que aparece.",
  "esp.portBusy": "<b>“Failed to open serial port”</b>: otro programa ocupa el puerto (Arduino IDE, un monitor serie, otra pestaña) o el controlador USB se ha bloqueado. Ciérralo y vuelve a conectar el cable.",
  "board.communityNote": "<b>Placa de la comunidad.</b> La compilación se ha comprobado en un ordenador, pero nadie la ha probado aún en esta placa. Cuéntanos en Issues qué funciona.",
+ "board.pick": "Elige tu placa arriba",
+ "board.pickNote": "Cada placa tiene su propio firmware: la imagen de otra placa no funcionará en la tuya. El sitio recordará tu elección en este navegador.",
  "good.title": "Conviene saber",
  "good.update": "<b>Al actualizar MeshMesh</b> se conservan la clave, los contactos, los ajustes y el historial: deja “Erase” sin marcar.",
  "good.first": "<b>Primera instalación</b> sobre Meshtastic, MeshCore u otro firmware: marca “Erase device”.",

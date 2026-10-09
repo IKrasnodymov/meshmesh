@@ -144,6 +144,7 @@ nav a:hover{color:var(--ink);text-decoration:none}
 .chosen{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:18px}
 .chosen b{display:block}
 .chosen small{color:var(--dim)}
+.chosen.pick{border-color:var(--warn);background:rgba(233,177,59,.08)}
 .note{font-size:14px;color:var(--dim);padding:12px 14px;border-radius:10px;background:rgba(79,157,247,.08);border:1px solid rgba(79,157,247,.2);margin-top:16px}
 .note.warn{background:rgba(233,177,59,.08);border-color:rgba(233,177,59,.25)}
 .note.ok{background:rgba(31,194,174,.08);border-color:rgba(31,194,174,.3)}
@@ -367,7 +368,7 @@ footer a{color:var(--dim)}
   <div class="flash">
    <div class="panel">
     <h3 data-i18n="install.panel"></h3>
-    <div class="chosen"><div><b id="chosenName">—</b><small id="chosenInfo"></small></div><span class="tag" id="chosenTag"></span></div>
+    <div class="chosen" id="chosen"><div><b id="chosenName">—</b><small id="chosenInfo"></small></div><span class="tag" id="chosenTag"></span></div>
     <div class="fwlang"><label for="fwLang" data-i18n="lang.device"></label><select id="fwLang"></select><small data-i18n="lang.deviceNote"></small></div>
     <ol id="espSteps">
      <li><span data-i18n="esp.step1"></span></li>
@@ -379,10 +380,10 @@ footer a{color:var(--dim)}
      <li><span data-i18n="uf2.step2"></span></li>
      <li><span data-i18n="uf2.step3"></span></li>
     </ol>
-    <div class="row">
+    <div class="row" id="installRow">
      <button class="btn primary" id="nrfInstall" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="nrfLabel"><span data-i18n="btn.install"></span></span></button>
      <a class="btn" id="uf2" href="#" download hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span>firmware.uf2</span></a>
-     <esp-web-install-button id="installer" manifest="firmware/m9/manifest.json">
+     <esp-web-install-button id="installer">
       <button slot="activate" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="btn.install"></span></button>
       <span slot="unsupported" class="unsup"><span data-i18n="web.unsupported"></span></span>
       <span slot="not-allowed" class="unsup"><span data-i18n="web.https"></span></span>
@@ -572,7 +573,15 @@ let touchX=null;
 document.getElementById('lb').addEventListener('touchstart',e=>touchX=e.touches[0].clientX,{passive:true});
 document.getElementById('lb').addEventListener('touchend',e=>{if(touchX==null)return;const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>50)lbStep(dx<0?1:-1);touchX=null});
 // Boards and installer
-let BOARDS=[],board='m9';
+// No board is chosen by default: installing the image of another board is easy to miss (an M9 image on a Heltec V3).
+// The choice comes from ?board=<env> or the last one picked in this browser.
+let BOARDS=[],board=null;
+function pickBoard(){
+ const ok=e=>BOARDS.some(b=>b.env===e);
+ const q=new URLSearchParams(location.search).get('board');if(ok(q))return q;
+ try{const s=localStorage.getItem('mm-board');if(ok(s))return s}catch(e){}
+ return null;
+}
 const SUB=['heltec_t114','gat562_30s','m9','heltec_v4','heltec_v4_r8','tdeck'];
 // The device language: the site's unless the visitor picked another; ESP32 boards get the partition table
 // with it (firmware/<env>/manifest-<code>.json), nRF52 boards the image with that language, patched (nrf52 module below).
@@ -585,7 +594,17 @@ function renderBoards(){
  const card=b=>`<button class="board${b.env===board?' on':''}" data-b="${b.env}"><span class="radio"></span><span><b>${b.name}</b><small>${SUB.includes(b.env)?L('sub.'+b.env):`${b.chip} · ${b.flash}`}</small></span></button>`;
  box.innerHTML=`<h4><span class="tag ok">✓</span>${L('boards.verified')}</h4><div class="bg">${BOARDS.filter(b=>b.verified).map(card).join('')}</div>`
   +`<h4><span class="tag cm">β</span>${L('boards.beta')}</h4><div class="bg">${BOARDS.filter(b=>!b.verified).map(card).join('')}</div>`;
- const b=BOARDS.find(x=>x.env===board)||BOARDS[0];
+ const b=BOARDS.find(x=>x.env===board);
+ const chosen=document.getElementById('chosen');chosen.classList.toggle('pick',!b);
+ document.getElementById('installRow').hidden=!b;
+ if(!b){
+  for(const id of ['espSteps','uf2Steps','uf2Note','nrfStatus','communityNote','chosenTag'])document.getElementById(id).hidden=true;
+  for(const e of document.querySelectorAll('.esp-only'))e.style.display='none';
+  document.getElementById('chosenName').textContent=L('board.pick');
+  document.getElementById('chosenInfo').textContent=L('board.pickNote');
+  return;
+ }
+ document.getElementById('chosenTag').hidden=false;
  // nRF52 boards install by copying a UF2 file to the bootloader drive, not over Web Serial.
  const uf2=b.install==='uf2';
  document.getElementById('installer').style.display=uf2?'none':'';document.getElementById('espSteps').hidden=uf2;
@@ -599,12 +618,12 @@ function renderBoards(){
  tag.className='tag '+(b.verified?'ok':'cm');tag.textContent=b.verified?L('tag.verified'):L('tag.unverified');
  document.getElementById('communityNote').hidden=b.verified;
 }
-document.getElementById('boards').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(b){board=b.dataset.b;renderBoards()}});
+document.getElementById('boards').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(b){board=b.dataset.b;try{localStorage.setItem('mm-board',board)}catch(e){};renderBoards()}});
 for(const id of ['siteLang','fwLang'])document.getElementById(id).innerHTML=LANGS.map(([c,n])=>`<option value="${c}" lang="${c}">${n}</option>`).join('');
 document.getElementById('siteLang').addEventListener('change',e=>setLang(e.target.value,true));
 document.getElementById('fwLang').addEventListener('change',()=>{fwLangPicked=true;renderBoards()});
 let VERSION='';
-fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARDS=j.boards;document.getElementById('ver').textContent=j.version;renderBoards()}).catch(()=>{document.getElementById('boards').innerHTML=`<p class="unsup">${L('boards.publishing')}</p>`});
+fetch('firmware/boards.json').then(r=>r.json()).then(j=>{VERSION=j.version;BOARDS=j.boards;board=pickBoard();document.getElementById('ver').textContent=j.version;renderBoards()}).catch(()=>{document.getElementById('boards').innerHTML=`<p class="unsup">${L('boards.publishing')}</p>`});
 setLang(pickLang(),false).then(heroStart);
 setTimeout(()=>document.documentElement.classList.remove('loading'),2500); // never stay hidden
 </script>
@@ -620,7 +639,7 @@ window.nrfReset=()=>{el('nrfStatus').hidden=true;label(false);};
 const image=(b,code)=>b.lang_images&&b.lang_images[code]||{bin:b.dfu&&b.dfu.bin,dat:b.dfu&&b.dfu.dat,uf2:b.uf2};
 async function files(b){const get=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.arrayBuffer()}).then(a=>new Uint8Array(a));const i=image(b,fwLang());return Promise.all([get(i.bin),get(i.dat)]);}
 el('nrfInstall').addEventListener('click',async()=>{
- const b=BOARDS.find(x=>x.env===board)||BOARDS[0],btn=el('nrfInstall');
+ const b=BOARDS.find(x=>x.env===board),btn=el('nrfInstall');
  if(!b||!b.dfu)return;
  if(!('serial' in navigator)){say(T('nrf.noSerial'),'warn');return;}
  btn.disabled=true;

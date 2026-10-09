@@ -49,6 +49,8 @@
  "uf2.note": "<b>Chrome veya Edge yoksa:</b> firmware.uf2 dosyasını indirin, RESET'e iki kez basın ve dosyayı beliren sürücüye kopyalayın.",
  "esp.portBusy": "<b>“Failed to open serial port”</b> — portu başka bir program kullanıyor (Arduino IDE, seri monitör, başka bir sekme) ya da USB sürücüsü takıldı: programı kapatın ve kabloyu çıkarıp yeniden takın.",
  "board.communityNote": "<b>Topluluk kartı.</b> Derleme bilgisayarda doğrulandı, ancak bu kartta henüz kimse çalıştırmadı. Neyin çalıştığını Issues bölümünde bize yazın.",
+ "board.pick": "Yukarıdan kartınızı seçin",
+ "board.pickNote": "Her kartın kendi yazılımı vardır: başka bir kartın imajı sizinkinde çalışmaz. Site seçiminizi bu tarayıcıda hatırlar.",
  "good.title": "Bilmekte fayda var",
  "good.update": "<b>MeshMesh güncellemesi</b> anahtarınızı, kişilerinizi, ayarlarınızı ve geçmişinizi korur — “Erase device” kutusunu işaretlemeyin.",
  "good.first": "Meshtastic, MeshCore veya başka bir yazılımın üzerine <b>ilk yüklemede</b> “Erase device” kutusunu işaretleyin.",

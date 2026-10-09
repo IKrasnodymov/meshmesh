@@ -49,6 +49,8 @@
  "uf2.note": "<b>Chrome や Edge がない場合:</b> firmware.uf2 をダウンロードし、RESET を 2 回押して、現れたドライブにファイルをコピーしてください。",
  "esp.portBusy": "<b>“Failed to open serial port”</b> — 別のプログラム (Arduino IDE、シリアルモニター、別のタブ) がポートを使用中か、USB ドライバーが応答していません。プログラムを閉じてケーブルを挿し直してください。",
  "board.communityNote": "<b>コミュニティボード。</b> ビルドはパソコン上で確認済みですが、このボードの実機ではまだ誰も動かしていません。動作状況を Issues でお知らせください。",
+ "board.pick": "上でボードを選んでください",
+ "board.pickNote": "ボードごとにファームウェアが異なります。別のボードのイメージはお使いのボードでは動作しません。選択はこのブラウザに保存されます。",
  "good.title": "知っておきたいこと",
  "good.update": "<b>MeshMesh の更新</b>では鍵、連絡先、設定、履歴が保持されます。“Erase device” にはチェックを入れないでください。",
  "good.first": "Meshtastic、MeshCore など他のファームウェアからの<b>初回インストール</b>では “Erase device” にチェックを入れてください。",
