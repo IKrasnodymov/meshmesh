@@ -1,5 +1,17 @@
 # MeshMesh verification
 
+> **0.16.0: packet path** (9 October 2026, no full run). The history keeps the path hashes, SNR/RSSI and repeats of a
+> message; the "Packet path" page in the web and the app. All 15 targets build (T-Beam and T-LoRa after the history
+> moved to the heap; booting these images was not checked, QEMU is not installed); the Chinese T114 image has 41 KB
+> free. Heltec V4 (`tools/flash.py`, boots 218–221, finally revision `b586612`) and T114 (`tools/nrf52.py`, boot 3,
+> revision `640a05c` — the same firmware without the page fix); the T114 came back after a RESET by its owner, the
+> radio settings of both boards are kept. On the real network: a V4 message to a private channel was repeated 6 times
+> by 4 repeaters (kept after a restart); a T114 message to a shared private channel reached the V4 directly (0 hops,
+> SNR 12.25) and 3 more copies came from repeaters, the T114 heard 6 repeats, one of them by the V4. The V4 missed the
+> first T114 message (air). An incoming path with repeaters listed was not seen on hardware (no other messages during
+> the check). The page was checked in Chromium on mock data and on the JSON of these messages; RSSI 0 from the V4 on a
+> strong signal is hidden. M9 not connected; no phone check.
+
 > **0.15.0: MeshCore regions** (9 October 2026, no full run). A default region and per-channel regions, a search of the
 > regions nearby repeaters serve, companion commands 54/55/63/64, `region_scope` in channel links (`docs/en/regions.md`).
 > All 15 targets build (T-Beam and T-LoRa after the search buffers moved to the heap; the T-LoRa image boots in QEMU); the
