@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.18.0: count with the button** (9 October 2026, no full run). One-button boards and the T114 get "Count with
+> button" in the counters menu: click +1, hold −1, holding on to 5 s leaves and takes that hold's −1 back (new button
+> event 0xa4 in the Heltec V4, compact and T114 drivers). Package 7ee1118 is installed on the Heltec V4 (`E9687E8D…`,
+> boot 225, history 64 kept) and the T114 (`473A25E0…`, boot 7, history 45). On both, through USB key events (`uikey
+> 13/0xa3/0xa4`): entering from the menu, three clicks +3, a hold −1, a hold through 5 s restored the value and closed the
+> mode, the next click changes the screen again; the hint shows on OLED and TFT screenshots. The physical button (real
+> 1.2 and 5 s) and counting with the screen off were not checked; radio exchange with this build was not checked
+> separately (the network layer did not change). Built: V4, T114 (Chinese image 40 KB free, T114 without dice), GAT562,
+> Heltec V3.
+
 > **0.16.0: packet path** (9 October 2026, no full run). The history keeps the path hashes, SNR/RSSI and repeats of a
 > message; the "Packet path" page in the web and the app. All 15 targets build (T-Beam and T-LoRa after the history
 > moved to the heap; booting these images was not checked, QEMU is not installed); the Chinese T114 image has 41 KB
