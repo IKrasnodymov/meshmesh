@@ -26,8 +26,9 @@ removed first and Latin letters lowered (as WadaMesh and the MeshCore web client
 is open: anyone who knows or guesses the name can read it.
 
 **Link and QR code.** The MeshCore format (`docs.meshcore.io/qr_codes`):
-`meshcore://channel/add?name=<URL-encoded name>&secret=<32 hex>`. The `region_scope` parameter is accepted
-and not used yet. The link is found anywhere in a text, so a pasted piece of a conversation works too.
+`meshcore://channel/add?name=<URL-encoded name>&secret=<32 hex>`. The `region_scope` parameter (the channel's
+region, MeshCore App 1.47+) sets the region on joining since 0.15.0, and MeshMesh links carry it
+(`docs/en/regions.md`). The link is found anywhere in a text, so a pasted piece of a conversation works too.
 QR code: byte mode, error correction M, versions 1–10; the encoder is our own (`src/Channels.cpp`, its
 JavaScript copy is in `web/index.html`), checked bit for bit against python-qrcode and read by zxing.
 

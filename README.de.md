@@ -20,6 +20,7 @@ MeshCore-Knoten.
 - **Chats** — direkte und öffentliche Nachrichten, ✓✓-Zustellbestätigungen, Wiederholungen, Route bei jeder Nachricht.
 - **Kanäle** — bis zu 8 MeshCore-Kanäle: Beitritt per #Hashtag, `meshcore://`-Link oder QR-Code, Name und Schlüssel;
   einen privaten Kanal erstellen, Kontakte per Direktnachricht einladen, auf Sendung gehörte Kanäle finden. [docs/en/channels.md](docs/en/channels.md)
+- **Regionen** — Flood-Bereich von MeshCore: Standardregion und eigene Region je Kanal, Suche der Regionen naher Repeater; Repeater per `region`-Befehlen. [docs/en/regions.md](docs/en/regions.md)
 - **Offline-Karten** — OpenStreetMap-Kacheln auf der SD-Karte, GPS-Position und Knoten auf der Karte.
 - **Knoten in der Nähe** — Signal, Hops, Entfernung und Richtung; Kontakte, Repeater und Räume.
 - **Signalradar** — Wi-Fi, Bluetooth und LoRa in der Umgebung, mit Peilung nach „wärmer / kälter“.
@@ -91,7 +92,7 @@ Die Bildschirmoberfläche lässt sich ohne Board auf einem Computer rendern: `to
 
 ## Dokumentation
 
-Ausführliche Dokumentation auf Englisch: [Kanäle](docs/en/channels.md), [MeshCore-Kompatibilität](docs/en/meshcore-migration.md), [Boards](docs/en/boards.md),
+Ausführliche Dokumentation auf Englisch: [Kanäle](docs/en/channels.md), [Regionen](docs/en/regions.md), [MeshCore-Kompatibilität](docs/en/meshcore-migration.md), [Boards](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [Repeater- und Raummodus](docs/en/repeater.md),
 [Schachprotokoll](docs/en/chess.md), [Kartenformat](docs/en/maps-format.md), [Vergleich mit MeshCore](docs/en/feature-parity.md),
 [Prüfung auf Hardware](docs/en/verification.md). Die russischen Originale liegen in [docs/](docs/), die vollständige

@@ -7,6 +7,7 @@
 #include <helpers/BaseChatMesh.h>
 #include <helpers/StaticPoolPacketManager.h>
 #include <helpers/SimpleMeshTables.h>
+#include <helpers/TransportKeyStore.h>
 #include <Preferences.h>
 #include <LittleFS.h>
 #if defined(MM_NRF52)
@@ -31,6 +32,7 @@ static HistoryFs* historyFs(){return hardware.sdOk?static_cast<fs::FS*>(&SD):har
 #include "Power.h"
 #include "Companion.h"
 #include "Remote.h"
+#include "Regions.h"
 #include <CayenneLPP.h>
 #include <helpers/SensorManager.h>
 MeshRadio meshRadio;
@@ -51,9 +53,19 @@ bool onResponse(const ContactInfo& c,const uint8_t* data,uint8_t len);
 void onCli(const ContactInfo& c,const char* text);
 bool onTrace(const mesh::Packet* packet,uint32_t tag,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen);
 }
+// Region search (src/RegionSearch.inc): true when the packet answered it.
+namespace regions {
+bool onControl(const mesh::Packet* packet);
+bool onResponse(const ContactInfo& c,const uint8_t* data,uint8_t len);
+int peers(const uint8_t* hash,uint8_t* out,int max); // repeaters asked that are not contacts
+const uint8_t* peerKey(uint8_t i);
+bool onAnswer(const uint8_t* key,const uint8_t* data,uint8_t len);
+}
 namespace appLink {
 bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen); // true: an app's path discovery
 uint32_t confirm(uint32_t ack,uint64_t& destination); // the message ID of an app's send; 0: not one
+int scope(uint8_t key[16]); // the app's region for our floods: 0 - not set, 1 - none, 2 - key
+void control(const mesh::Packet* packet); // a zero-hop control packet (node discovery answers) for the app
 }
 #if defined(MM_RADIO_SX1262)
 constexpr uint32_t irqTxDone=RADIOLIB_SX126X_IRQ_TX_DONE,irqPreamble=RADIOLIB_SX126X_IRQ_PREAMBLE_DETECTED,irqRxDone=RADIOLIB_SX126X_IRQ_RX_DONE;
@@ -127,7 +139,7 @@ bool writeStored(const char* path,const char* temp,const void* data,size_t size)
  return LittleFS.rename(temp,path);
 }
 class MeshCoreBackend:public BaseChatMesh {
- friend struct CompanionCore;friend struct RemoteAccess;
+ friend struct CompanionCore;friend struct RemoteAccess;friend struct RegionAccess;
  MeshRadio& owner;
  uint32_t contactsDue=0;
  struct Forwarded {uint8_t hash[8]={};uint32_t at=0;} forwarded[32];unsigned nextForwarded=0;
@@ -198,9 +210,16 @@ class MeshCoreBackend:public BaseChatMesh {
   receiveMessage(aliasOf(c.id.pub_key),owner.nodeId,stamp,name,text,packet,hopsOf(c,packet));appLink::roomPost(c,packet,stamp,author,text);
  }
  uint32_t calcFloodTimeoutMillisFor(uint32_t airtime) const override{return 15000+airtime*4+config.hops*5000;}
- // Our flood packets (messages, ACKs, path returns, requests) carry the path hash size chosen in the settings.
- void sendFloodScoped(const ContactInfo&,mesh::Packet* p,uint32_t delay) override{sendFlood(p,delay,config.pathHash);}
- void sendFloodScoped(const mesh::GroupChannel&,mesh::Packet* p,uint32_t delay) override{sendFlood(p,delay,config.pathHash);}
+ // Our flood packets (messages, ACKs, path returns, requests, adverts) carry the path hash size chosen in the
+ // settings and the transport code of their region (MeshRadio::scopeKey), if any.
+ void floodKey(mesh::Packet* p,uint32_t delay,bool scoped,const uint8_t key[16]){
+  if(!scoped){sendFlood(p,delay,config.pathHash);return;}
+  TransportKey scope;memcpy(scope.key,key,16);uint16_t codes[2]={scope.calcTransportCode(p),0};sendFlood(p,codes,delay,config.pathHash);
+ }
+ void floodScoped(mesh::Packet* p,uint32_t delay,int channel=-1){uint8_t key[16];bool scoped=owner.scopeKey(channel,key);floodKey(p,delay,scoped,key);}
+ int channelOf(const mesh::GroupChannel& ch) const{for(unsigned i=0;i<owner.channelCount;i++)if(!memcmp(owner.channelList[i].secret,ch.secret,16))return i;return -1;}
+ void sendFloodScoped(const ContactInfo&,mesh::Packet* p,uint32_t delay) override{floodScoped(p,delay);}
+ void sendFloodScoped(const mesh::GroupChannel& ch,mesh::Packet* p,uint32_t delay) override{floodScoped(p,delay,channelOf(ch));}
  uint32_t calcDirectTimeoutMillisFor(uint32_t airtime,uint8_t path) const override{return 10000+airtime*4*(1+(path&63));}
  void onSendTimeout() override{} // Facade owns four pending sends and bounded retries.
  void onChannelMessageRecv(const mesh::GroupChannel& channel,mesh::Packet* packet,uint32_t stamp,const char* text) override{
@@ -211,7 +230,17 @@ class MeshCoreBackend:public BaseChatMesh {
   if(receiveMessage(source,dest,stamp,name.c_str(),split?split+2:text,packet,packet->isRouteFlood()?packet->getPathHashCount():255))appLink::channelMessage(owner.channelIndex(dest),packet,stamp,text);
  }
  uint8_t onContactRequest(const ContactInfo&,uint32_t,const uint8_t*,uint8_t,uint8_t*) override{return 0;}
- void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{if(!remote::onResponse(c,data,len))appLink::response(c,data,len);}
+ void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{if(!regions::onResponse(c,data,len)&&!remote::onResponse(c,data,len))appLink::response(c,data,len);}
+ void onControlDataRecv(mesh::Packet* p) override{if(!regions::onControl(p))appLink::control(p);} // zero-hop node discovery
+ // The region search asks repeaters that need not be contacts: their answers are matched after the contacts'.
+ int contactMatches=0;uint8_t regionPeers[MAX_SEARCH_RESULTS];
+ int searchPeersByHash(const uint8_t* hash) override{contactMatches=BaseChatMesh::searchPeersByHash(hash);return contactMatches+regions::peers(hash,regionPeers,MAX_SEARCH_RESULTS-contactMatches);}
+ void getPeerSharedSecret(uint8_t* secret,int i) override{if(i<contactMatches){BaseChatMesh::getPeerSharedSecret(secret,i);return;}if(const uint8_t* k=regions::peerKey(regionPeers[i-contactMatches]))self_id.calcSharedSecret(secret,k);}
+ void onPeerDataRecv(mesh::Packet* p,uint8_t type,int i,const uint8_t* secret,uint8_t* data,size_t len) override{
+  if(i<contactMatches){BaseChatMesh::onPeerDataRecv(p,type,i,secret,data,len);return;}
+  const uint8_t* k=regions::peerKey(regionPeers[i-contactMatches]);if(k&&type==PAYLOAD_TYPE_RESPONSE)regions::onAnswer(k,data,len);
+ }
+ bool onPeerPathRecv(mesh::Packet* p,int i,const uint8_t* secret,uint8_t* path,uint8_t pathLen,uint8_t extraType,uint8_t* extra,uint8_t extraLen) override{return i<contactMatches&&BaseChatMesh::onPeerPathRecv(p,i,secret,path,pathLen,extraType,extra,extraLen);}
  void onTraceRecv(mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen) override{if(!remote::onTrace(packet,tag,flags,snrs,hashes,pathLen))appLink::traced(packet,tag,auth,flags,snrs,hashes,pathLen);}
  // The answer to an app's path discovery reports both paths and is not stored as the route (as in stock MeshCore).
  bool onContactPathRecv(ContactInfo& c,uint8_t* inPath,uint8_t inLen,uint8_t* outPath,uint8_t outLen,uint8_t extraType,uint8_t* extra,uint8_t extraLen) override{
@@ -261,7 +290,7 @@ class MeshCoreBackend:public BaseChatMesh {
   owner.contactsSaved=saved;delete blob;contactsDue=0;}
  static bool validBlob(const ContactBlob& b){uint8_t digest[32];mesh::Utils::sha256(digest,32,(const uint8_t*)&b,offsetof(ContactBlob,hash));return b.version==1&&b.count<=24&&!memcmp(digest,b.hash,32);}
  bool reserveStamp(uint32_t stamp){Preferences p;if(!p.begin("meshmesh-mc",false))return false;bool saved=p.putUInt("last_tx",stamp)==4;p.end();return saved;}
- bool advertise(bool requirePosition=false,bool zeroHop=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved){p.putString("adv_name",config.name);p.putUChar("adv_type",ADV_TYPE_CHAT);}p.end();if(!saved){releasePacket(pkt);return false;}if(zeroHop)sendZeroHop(pkt);else sendFlood(pkt,0,config.pathHash);return true;}
+ bool advertise(bool requirePosition=false,bool zeroHop=false){if(!identitySaved||!config.bootCounter)return false;if(requirePosition&&!hardware.gpsFix())return false;coreRtc.setCurrentTime(coreRtc.getCurrentTimeUnique());auto* pkt=config.gps&&hardware.gpsFix()?createSelfAdvert(config.name,hardware.gps.location.lat(),hardware.gps.location.lng()):createSelfAdvert(config.name);if(!pkt)return false;uint32_t stamp=meshmesh::get32(pkt->payload+32);Preferences p;if(!p.begin("meshmesh-mc",false)){releasePacket(pkt);return false;}bool saved=p.putUInt("last_advert",stamp)==4;if(saved){p.putString("adv_name",config.name);p.putUChar("adv_type",ADV_TYPE_CHAT);}p.end();if(!saved){releasePacket(pkt);return false;}if(zeroHop)sendZeroHop(pkt);else floodScoped(pkt,0);return true;}
  // A relayed path came with a path return and is used as is (the retries flood). "Direct" holds only while the
  // node is heard without relays: within 30 minutes and 5 dB over the SF floor (nodes do not announce periodically).
  bool pathTrusted(const ContactInfo& c){
@@ -278,10 +307,10 @@ class MeshCoreBackend:public BaseChatMesh {
    // message and the receiver's flood reply carries the new path back.
    if(packet){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);uint32_t airtime=coreRadio.getEstAirtimeFor(packet->getRawLength());
     bool viaPath=!wire&&c->out_path_len!=OUT_PATH_UNKNOWN&&pathTrusted(*c);wait.route[attempt]=viaPath?ChatMessage::RouteDirect:ChatMessage::RouteFlood;wait.hops[attempt]=viaPath?c->out_path_len&63:255;
-    if(viaPath){sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcDirectTimeoutMillisFor(airtime,c->out_path_len);}else{sendFlood(packet,0,config.pathHash);wait.due=millis()+calcFloodTimeoutMillisFor(airtime);}}
+    if(viaPath){sendDirect(packet,c->out_path,c->out_path_len);wait.due=millis()+calcDirectTimeoutMillisFor(airtime,c->out_path_len);}else{floodKey(packet,0,wait.scoped,wait.scopeKey);wait.due=millis()+calcFloodTimeoutMillisFor(airtime);}}
   }
   if(!packet)return false;
-  if(::channels::isChannel(wait.message.destination)){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);wait.route[0]=ChatMessage::RouteFlood;wait.hops[0]=255;sendFlood(packet,0,config.pathHash);wait.due=millis()+45000;}
+  if(::channels::isChannel(wait.message.destination)){uint8_t hash[8];packet->calculatePacketHash(hash);memcpy(&wait.hash,hash,4);wait.route[0]=ChatMessage::RouteFlood;wait.hops[0]=255;floodKey(packet,0,wait.scoped,wait.scopeKey);wait.due=millis()+45000;}
   owner.track(wait,attempt);wait.started=true;wait.attempts++;return true;
  }
  // Path reset and removal are stock MeshCore contact operations; the next advert re-adds a removed node.
@@ -371,7 +400,7 @@ uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game){
  if(channels::isChannel(destination)){if(channelIndex(destination)<0){event="Not a joined channel";dirty=true;return false;}}
  else{auto* p=contact(destination);if(!p||(p->type!=ADV_TYPE_CHAT&&p->type!=ADV_TYPE_ROOM)){event="Send advert and discover chat contact first";dirty=true;return false;}} // a room takes posts
  Pending* slot=nullptr;for(auto& wait:pending)if(!wait.active){slot=&wait;break;}if(!slot){event="Waiting for ACKs";dirty=true;return false;}
- auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
+ auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.scoped=scopeKey(channels::isChannel(destination)?channelIndex(destination):-1,wait.scopeKey);wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
 void MeshRadio::status(uint32_t id,ChatMessage::Status value){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(!tour::net.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered)return;history[i].status=value;persist(history[i]);dirty=true;break;}}
 // Route of an outgoing message: the current attempt, or the one that got the ACK. Saved with the next status.
@@ -447,7 +476,7 @@ void MeshRadio::tick(){
  uint32_t now=millis();
  if(recalFailed){if(now-recalAt>=5000)recalibrate();return;} // retried until the transceiver answers again
  if(ready&&!busy()&&now-lastRxAt>=600000&&now-recalAt>=600000)recalibrate();
- if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();remote::tick();now=millis();
+ if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();remote::tick();regions::tick();now=millis();
  for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.app){p.active=false;continue;} // the app retries itself
   if(p.attempts>=3||channels::isChannel(p.message.destination)){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(!channels::isChannel(p.message.destination)){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
@@ -461,10 +490,19 @@ namespace {
 // version, count, 8 bytes of SHA-256 of the list, then name and key of each.
 struct SavedChannel {char name[channels::NameBytes+1];uint8_t secret[16];};
 struct ChannelHead {uint8_t version=2,count=0,hash[8]={};};
+// Channel regions (0.15.0) in a record of their own, so an older firmware still reads the list: the channel ID
+// (Public: ALL) and its region, for the channels with one.
+struct SavedRegion {uint64_t id;char region[31];};
+constexpr size_t RegionBytes=sizeof(channels::Channel::region);
 bool opens(const uint8_t key[16],const uint8_t* payload,size_t length){
  if(length<4)return false;uint8_t secret[32]={},plain[MAX_PACKET_PAYLOAD];memcpy(secret,key,16);
  return mesh::Utils::MACThenDecrypt(secret,plain,payload+1,length-1)>0;
 }
+}
+// A stored region: "*" or a valid name; anything else reads as "" (the default).
+static void storedRegion(char* dest,const char* raw){
+ char r[RegionBytes];memcpy(r,raw,sizeof(r));r[sizeof(r)-1]=0;
+ strcpy(dest,!strcmp(r,regions::Unscoped)||regions::normalize(r)==r?r:"");
 }
 void MeshRadio::loadChannels(){
  channelCount=1;channelList[0]={};strcpy(channelList[0].name,"Public");memcpy(channelList[0].secret,channels::publicSecret,16);channelList[0].id=meshmesh::Broadcast;
@@ -478,14 +516,34 @@ void MeshRadio::loadChannels(){
    auto& c=channelList[channelCount++];c={};strcpy(c.name,saved.name);memcpy(c.secret,saved.secret,16);c.id=channels::idOf(c.secret);
   }
   memset(bytes,0,sizeof(bytes));
- }p.end();
+ }
+ SavedRegion r[channels::Max];n=p.getBytesLength("ch_regions");
+ if(n&&n<=sizeof(r)&&n%sizeof(SavedRegion)==0&&p.getBytes("ch_regions",r,n)==n)for(size_t i=0;i<n/sizeof(SavedRegion);i++){int k=channelIndex(r[i].id);if(k>=0)storedRegion(channelList[k].region,r[i].region);}
+ p.end();
 }
 bool MeshRadio::saveChannels(){
  uint8_t bytes[sizeof(ChannelHead)+sizeof(SavedChannel)*(channels::Max-1)]={};ChannelHead head;head.count=channelCount-1;
  for(unsigned i=1;i<channelCount;i++){SavedChannel saved={};strlcpy(saved.name,channelList[i].name,sizeof(saved.name));memcpy(saved.secret,channelList[i].secret,16);memcpy(bytes+sizeof(head)+(i-1)*sizeof(saved),&saved,sizeof(saved));}
  size_t body=head.count*sizeof(SavedChannel);mesh::Utils::sha256(head.hash,8,bytes+sizeof(head),body);memcpy(bytes,&head,sizeof(head));
- Preferences p;bool saved=p.begin("meshmesh-mc",false)&&p.putBytes("channels",bytes,sizeof(head)+body)==sizeof(head)+body;p.end();
- memset(bytes,0,sizeof(bytes));return saved;
+ SavedRegion r[channels::Max]={};unsigned regionCount=0;
+ for(unsigned i=0;i<channelCount;i++)if(channelList[i].region[0]){r[regionCount].id=channelList[i].id;strlcpy(r[regionCount].region,channelList[i].region,RegionBytes);regionCount++;}
+ Preferences p;bool saved=p.begin("meshmesh-mc",false)&&p.putBytes("channels",bytes,sizeof(head)+body)==sizeof(head)+body;
+ if(saved)saved=regionCount?p.putBytes("ch_regions",r,regionCount*sizeof(SavedRegion))==regionCount*sizeof(SavedRegion):(!p.isKey("ch_regions")||p.remove("ch_regions"));
+ p.end();memset(bytes,0,sizeof(bytes));return saved;
+}
+bool MeshRadio::setChannelRegion(uint64_t id,const String& raw){
+ int i=channelIndex(id);if(i<0)return false;String r=raw;r.trim();
+ if(r.length()&&r!=regions::Unscoped){r=regions::normalize(r);if(!r.length())return false;}
+ char old[RegionBytes];strcpy(old,channelList[i].region);strlcpy(channelList[i].region,r.c_str(),RegionBytes);
+ if(!saveChannels()){strcpy(channelList[i].region,old);return false;}
+ event="Channel region: "+String(channelList[i].name)+" "+(r.length()?r:String("default"));dirty=true;return true;
+}
+bool MeshRadio::scopeKey(int channel,uint8_t key[16]) const{
+ int app=appLink::scope(key);if(app)return app==2; // the companion app's choice while it is linked
+ const char* r=channel>=0&&channel<int(channelCount)?channelList[channel].region:"";
+ if(!strcmp(r,regions::Unscoped))return false;
+ if(r[0]){regions::keyOf(r,key);return true;}
+ if(!config.region[0])return false;memcpy(key,config.regionKey,16);return true;
 }
 bool MeshRadio::sending(uint64_t id) const{for(auto& wait:pending)if(wait.active&&wait.message.destination==id)return true;return false;}
 const channels::Channel* MeshRadio::channel(uint64_t id) const{int i=channelIndex(id);return i<0?nullptr:&channelList[i];}
@@ -507,9 +565,11 @@ MeshRadio::ChannelResult MeshRadio::joinHashtag(const String& raw,uint64_t* id){
  String tag=channels::hashtag(raw);if(!tag.length())return ChannelBadName;uint8_t key[16];channels::hashtagSecret(tag,key);return addChannel(tag,key,id);
 }
 MeshRadio::ChannelResult MeshRadio::joinLink(const String& text,uint64_t* id){
- String name;uint8_t key[16];if(!channels::parseLink(text,name,key))return ChannelBadLink;
- // Public keeps its name; any other name is the sender's choice.
- return addChannel(channels::isPublic(key)?String("Public"):name,key,id);
+ String name,region;uint8_t key[16];if(!channels::parseLink(text,name,key,&region))return ChannelBadLink;
+ // Public keeps its name; any other name is the sender's choice. A newly joined channel takes the link's region.
+ uint64_t added;ChannelResult r=addChannel(channels::isPublic(key)?String("Public"):name,key,&added);if(id)*id=added;
+ if(r==ChannelAdded&&regions::normalize(region).length())setChannelRegion(added,region);
+ return r;
 }
 MeshRadio::ChannelResult MeshRadio::createChannel(const String& name,uint64_t* id){
  if(!channels::validName(name))return ChannelBadName;uint8_t key[16];
@@ -554,3 +614,4 @@ static_assert(MAX_GROUP_CHANNELS>=channels::Max,"MAX_GROUP_CHANNELS in platformi
 
 #include "Companion.inc"
 #include "Remote.inc"
+#include "RegionSearch.inc"

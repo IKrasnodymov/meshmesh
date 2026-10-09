@@ -16,6 +16,7 @@ class MeshCoreBackend;
 class MeshCoreRadioAdapter;
 struct CompanionCore;
 struct RemoteAccess;
+struct RegionAccess;
 struct ChatMessage {
   uint64_t source=0,destination=meshmesh::Broadcast;
   uint32_t session=0,id=0,timestamp=0;
@@ -65,6 +66,9 @@ class MeshRadio {
   int channelIndex(uint64_t id) const;
   bool sendInvite(uint64_t contact,uint64_t channel); // the channel link as a direct message
   int probeHashtag(const String& raw); // stored packets of unjoined channels this hashtag opens; -1: not a hashtag
+  bool setChannelRegion(uint64_t id,const String& region); // "", "*" or a region name (Regions.h); saved
+  // Region scope of a flood packet: false - none; channel: index in channelList, -1 for the other packets.
+  bool scopeKey(int channel,uint8_t key[16]) const;
   String event="Ready";bool dirty=true;
   MeshRadio():radio(new Module(pins::radioCs,pins::radioIrq,pins::radioReset,pins::radioBusy,SPI)) {}
   void begin();void tick();bool applyConfig();
@@ -88,11 +92,13 @@ class MeshRadio {
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
   String routeText(const ChatMessage& m,bool brief=false) const; // e.g. "via 2 rpt · 2/3"; empty when unknown
  private:
-  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;friend struct RemoteAccess;
+  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;friend struct RemoteAccess;friend struct RegionAccess;
   MeshCoreBackend* core=nullptr;
   struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};
   // app: sent for a companion app, which retries itself: one attempt with its timestamp and attempt byte.
-  bool app=false;uint8_t appAttempt=0;} pending[4];
+  bool app=false;uint8_t appAttempt=0;
+  // Its region, fixed when queued (an app may choose another right after): scoped - with scopeKey.
+  bool scoped=false;uint8_t scopeKey[16]={};} pending[4];
   uint32_t sequence=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;

@@ -248,5 +248,13 @@
  "shot.t114-ble-on": "T114: MeshCore-T114 dan PIN",
  "shot.heltec-ble-on": "OLED: nama dan PIN",
  "doc.companion": "Aplikasi MeshCore",
- "news.remote": "<b>Baru:</b> masuk ke repeater dan room, baca dan tulis posting room, serta lacak rute langsung dari layar"
+ "news.remote": "<b>Baru:</b> masuk ke repeater dan room, baca dan tulis posting room, serta lacak rute langsung dari layar",
+ "news.regions": "<b>Baru:</b> wilayah MeshCore — wilayah untuk pesan Anda dan tiap kanal, dicari dari repeater terdekat",
+ "f.regions.t": "Wilayah",
+ "f.regions.d": "Cakupan flood MeshCore: wilayah bawaan dan per kanal, pencarian wilayah repeater terdekat, perintah wilayah aplikasi MeshCore; repeater diatur dengan region def.",
+ "shot.m9-radio-regions": "Pengaturan radio: wilayah dan pencarian",
+ "shot.m9-channel-region": "Kartu kanal: wilayah sendiri",
+ "shot.heltec-radio-region": "Heltec: wilayah dari yang ditemukan",
+ "shot.t114-radio-find": "T114: cari wilayah",
+ "doc.regions": "Wilayah"
 }

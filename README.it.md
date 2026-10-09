@@ -20,6 +20,7 @@ nodi MeshCore.
 - **Chat** — messaggi diretti e pubblici, conferme di consegna ✓✓, reinvii, percorso mostrato per ogni messaggio.
 - **Canali** — fino a 8 canali MeshCore: entra con #hashtag, link `meshcore://` o codice QR, nome e chiave;
   creane uno privato, invita i contatti con un messaggio diretto, trova i canali sentiti in onda. [docs/en/channels.md](docs/en/channels.md)
+- **Regioni** — ambito dei flood MeshCore: regione predefinita e una per canale, ricerca delle regioni dei ripetitori vicini; ripetitori con i comandi `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Mappe offline** — tile OpenStreetMap sulla scheda SD, posizione GPS e nodi sulla mappa.
 - **Nodi vicini** — segnale, hop, distanza e direzione; contatti, ripetitori e stanze.
 - **Radar dei segnali** — Wi-Fi, Bluetooth e LoRa intorno a te, con ricerca “acqua / fuoco”.
@@ -91,7 +92,7 @@ L'interfaccia dello schermo si può renderizzare su un computer senza scheda: `t
 
 ## Documentazione
 
-Documentazione dettagliata in inglese: [canali](docs/en/channels.md), [compatibilità MeshCore](docs/en/meshcore-migration.md), [schede](docs/en/boards.md),
+Documentazione dettagliata in inglese: [canali](docs/en/channels.md), [regioni](docs/en/regions.md), [compatibilità MeshCore](docs/en/meshcore-migration.md), [schede](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modalità ripetitore e stanza](docs/en/repeater.md),
 [protocollo degli scacchi](docs/en/chess.md), [formato delle mappe](docs/en/maps-format.md), [confronto con MeshCore](docs/en/feature-parity.md),
 [verifica sull'hardware](docs/en/verification.md). Gli originali in russo sono in [docs/](docs/), con la guida

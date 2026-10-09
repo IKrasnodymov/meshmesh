@@ -1,5 +1,16 @@
 # MeshMesh verification
 
+> **0.15.0: MeshCore regions** (9 October 2026, no full run). A default region and per-channel regions, a search of the
+> regions nearby repeaters serve, companion commands 54/55/63/64, `region_scope` in channel links (`docs/en/regions.md`).
+> All 15 targets build (T-Beam and T-LoRa after the search buffers moved to the heap; the T-LoRa image boots in QEMU); the
+> Chinese T114 image has 42 KB free, GAT562 72 KB. The `tools/ui_preview` scenarios (M9, T-Deck, Heltec, GAT562, T114)
+> pass. Heltec V4: `tools/flash.py`, boots 211–215, settings, radio profile and history of 64 kept. `tools/region_check.py`
+> passes in full: the region codes of the `txframe` frames match an independent HMAC-SHA256. Search on a real network: a
+> third-party MeshCore repeater sent `ru`, `ru-ta`, `ru-ta-kazan` three times, about half of ~12 searches got no answer
+> (the stock repeater's limits and the air). The web page through the USB bridge checked through the DOM, no screenshot.
+> The M9 was not connected; the T114 hung before the install and stays on its earlier firmware. A repeater forwarding a
+> scoped packet and the MeshCore app's region menu were not checked.
+
 > **0.14.1: the Heltec V3 cause found** (9 October 2026). The V3 owner on 0.14.0: `driver gd dio`, `flashprobe`
 > `ok` and `rom ok` at every address, `FS OK` after an install with a full erase; writes were lost by builds with the
 > QIO driver libraries under a DIO header (fixed in 0.5.1). An NVS broken by earlier writes made Bluetooth abort

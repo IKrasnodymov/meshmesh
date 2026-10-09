@@ -253,7 +253,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <h3>Настройки</h3><div class="card" style="padding:4px 0" id="rptForm"></div><div class="btns" style="margin-top:8px"><button class="btn" id="rptAdvert"><svg class="ic violet"><use href="#i-tower"/></svg>Объявить узел всей сети</button></div>
 <div id="nbBox"><h3>Соседние репитеры</h3><div class="list" id="rptNeighbours"></div></div>
 <details class="more"><summary>Команды MeshCore (CLI)</summary><p class="muted small">Те же команды, что в приложении MeshCore после входа администратора: <code>get repeat</code>, <code>set flood.max 8</code>, <code>neighbors</code>, <code>stats-packets</code>, <code>ver</code>. Частота, полоса, SF, CR, мощность и имя общие с настройками MeshMesh.</p><form id="rptCli" class="two"><input id="rptLine" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="get repeat" maxlength="160"><button class="btn primary">Выполнить</button></form><pre id="rptOut"></pre></details></section>
-<section class="page" id="p-radio" hidden><div class="card" style="padding:4px 0" id="radioForm"></div><button class="btn save" id="radioSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px">Параметры радио должны совпадать у всех узлов сети. Применяются при сохранении; при ошибке радио возвращаются прежние.</p></section>
+<datalist id="regionNames"></datalist><section class="page" id="p-radio" hidden><div class="card" style="padding:4px 0" id="radioForm"></div><button class="btn save" id="radioSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px">Параметры радио должны совпадать у всех узлов сети. Применяются при сохранении; при ошибке радио возвращаются прежние.</p><h3 id="regionHead" hidden>Регионы</h3><div class="card pad" id="regionBox" hidden></div></section>
 <section class="page" id="p-apps" hidden><div class="card" style="padding:4px 0" id="appsList"></div><button class="btn save" id="appsSave" disabled>Нет изменений</button><button class="btn" id="appsDefault" style="width:100%;margin-top:8px">Порядок по умолчанию</button><p class="small faint" style="margin:10px 4px" id="appsNote"></p></section>
 <section class="page" id="p-device" hidden><div class="card" style="padding:4px 0" id="deviceForm"></div><button class="btn save" id="deviceSave" disabled>Нет изменений</button><p class="small faint" style="margin:10px 4px" id="deviceNote">Язык меню относится к экрану устройства. Радио продолжает работать при блокировке и погашенном экране.</p></section>
 <section class="page" id="p-help" hidden><div id="helpKeys"></div><div id="layoutHelp"><h3>Русский ввод: фонетический</h3><div class="layout" id="layout"></div><p class="small muted" style="margin:0 4px">2×пробел — RU/EN; Shift или → после буквы — заглавная.</p></div></section>
@@ -378,6 +378,7 @@ function enter(page,prev){
  if(page==='connect')loadConnections();
  if(page==='library'||page==='map')loadAreas();
  if(page==='radio'||page==='device')buildEditor(page);
+ if(page==='radio')loadChans().then(()=>route==='radio'&&renderRegions());
  if(page==='apps'){appsDraft=appsParse(config.apps);renderApps()}
  if(page==='help')renderHelp();
  if(page==='role'){roleChoice=null;renderRole()}
@@ -620,7 +621,7 @@ function hashtag(raw){const s=String(raw).trim().replace(/^#+/,'').replace(/\s/g
 // meshcore://channel/add?name=…&secret=<32 hex> anywhere in a text (an invitation is a direct message with the link).
 function parseLink(text){text=String(text||'');const at=text.toLowerCase().indexOf('meshcore://channel/add?');if(at<0)return null;const link=text.slice(at).split(/\s/)[0],p={};
  for(const kv of link.slice(link.indexOf('?')+1).split('&')){const e=kv.indexOf('=');if(e>0)try{p[kv.slice(0,e)]=decodeURIComponent(kv.slice(e+1).replace(/\+/g,' '))}catch{}}
- return /^[0-9a-f]{32}$/i.test(p.secret)?{link,name:(p.name||'').trim()||'Channel',secret:p.secret.toLowerCase()}:null}
+ return /^[0-9a-f]{32}$/i.test(p.secret)?{link,name:(p.name||'').trim()||'Channel',secret:p.secret.toLowerCase(),region:(p.region_scope||'').trim()}:null}
 // A joined channel with this key; without links (private keys over the home network) by name.
 function joinedBy(l){return chans?.channels?.find(c=>{const k=parseLink(c.link);return k?k.secret===l.secret:c.name===l.name})}
 function inviteCard(text,l){const c=joinedBy(l),rest=text.replace(l.link,'').trim();return `${rest?`<p>${esc(rest)}</p>`:''}<div class="inv">${ic(l.name.startsWith('#')?'hash':'lock','acc')}<b>Приглашение в канал «${esc(l.name)}»</b><button class="btn${c?'':' primary'}" data-join="${esc(c?c.id:l.link)}">${c?'Открыть':'Вступить'}</button></div><span class="mono">${esc(l.link)}</span>`}
@@ -642,7 +643,7 @@ function renderAddCh(){const c=chans||{channels:[],heard:[],max:8},heard=c.heard
  $('chCount').textContent=`Каналов: ${c.channels.length} из ${c.max}, считая Public`+(full?'. Удалите ненужный, чтобы добавить новый':'');
  $('chHeard').innerHTML=heard.length?heard.map(x=>`<div class="row"><span class="av" style="background:var(--bg);color:var(--dim)">${ic(x.name?'hash':'lock')}</span><span class="main"><b>${esc(x.name||'Хеш '+x.hash)}</b><small>${plural(x.packets,'пакет','пакета','пакетов')} · ${ago(x.age)}${x.name?'':' · имя и ключ неизвестны'}</small></span>${x.name?`<button class="btn primary" data-chjoin="${esc(x.name)}"${full?' disabled':''}>Вступить</button>`:''}</div>`).join(''):`<p class="small faint" style="margin:4px">Чужих каналов пока не слышно</p>`}
 function renderJoin(){const l=joinLink,c=l&&joinedBy(l);
- setHtml($('joinCard'),!l?`<div class="empty">${ic('hash')}Ссылки нет</div>`:`<div class="head"><span class="av" style="--s:52px;background:var(--deep);color:var(--accent)">${ic(l.name.startsWith('#')?'hash':'lock')}</span><div><span class="big">${esc(l.name)}</span><span class="small muted">Канал MeshCore по ссылке</span></div></div><div class="card" style="padding:0 12px"><div class="detail"><span>Ключ</span><span class="mono">${l.secret.slice(0,8)}…</span></div></div><p class="muted" style="margin:12px 4px">${c?'Вы уже в этом канале.':`Вступить в канал «${esc(l.name)}»? Устройство сохранит ключ и будет показывать сообщения канала.`}</p><div class="btns">${c?`<button class="btn primary" data-go="chat/${c.id}">Открыть</button>`:`<button class="btn primary" data-join="${esc(l.link)}">Вступить</button>`}<button class="btn" data-go="chats">Отмена</button></div>`)}
+ setHtml($('joinCard'),!l?`<div class="empty">${ic('hash')}Ссылки нет</div>`:`<div class="head"><span class="av" style="--s:52px;background:var(--deep);color:var(--accent)">${ic(l.name.startsWith('#')?'hash':'lock')}</span><div><span class="big">${esc(l.name)}</span><span class="small muted">Канал MeshCore по ссылке</span></div></div><div class="card" style="padding:0 12px"><div class="detail"><span>Ключ</span><span class="mono">${l.secret.slice(0,8)}…</span></div>${l.region?`<div class="detail"><span>Регион</span><span>${esc(l.region)}</span></div>`:''}</div><p class="muted" style="margin:12px 4px">${c?'Вы уже в этом канале.':`Вступить в канал «${esc(l.name)}»? Устройство сохранит ключ и будет показывать сообщения канала.`}</p><div class="btns">${c?`<button class="btn primary" data-go="chat/${c.id}">Открыть</button>`:`<button class="btn primary" data-join="${esc(l.link)}">Вступить</button>`}<button class="btn" data-go="chats">Отмена</button></div>`)}
 const qrSvgs={};
 function qrSvg(text){if(qrSvgs[text])return qrSvgs[text];const q=qrCode(text);if(!q)return'';let d='';
  for(let y=0;y<q.n;y++)for(let x=0;x<q.n;){let k=0;while(x+k<q.n&&q.m[y*q.n+x+k])k++;if(k){d+=`M${x} ${y}h${k}v1h-${k}z`;x+=k}else x++}
@@ -650,11 +651,14 @@ function qrSvg(text){if(qrSvgs[text])return qrSvgs[text];const q=qrCode(text);if
 function renderChanInfo(){const c=chan(param),el=$('chanCard');if(!c){setHtml(el,`<div class="empty">${ic('hash')}Канала нет на устройстве</div>`);return}
  const pub=c.kind==='public',stage=deleteArmed===c.id+1?1:deleteArmed===c.id+2?2:0,contacts=peers.filter(p=>p.type===1);
  let h=`<div class="head">${avatar(c.id,c.name,0,52)}<div><span class="big">${esc(c.name)}</span><span class="small muted">${chanKind(c)}</span></div></div><div class="card" style="padding:0 12px">${[['Ключ',pub?'известен всем узлам':c.kind==='hashtag'?'из имени канала':'случайный'],['Хеш в пакетах',c.hash],['Сообщений',history.filter(m=>matches(m,c.id)).length],['ID',c.id]].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}</div>`;
+ if(c.region!==undefined){fillRegionNames();const def=chans?.region;
+  h+=`<h3>Регион</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">Сообщения канала несут этот регион: репитеры с регионами пересылают их только в нём. Пусто — регион по умолчанию из настроек радио (${def?esc(def):'нет'}), * — без региона.</p><div style="display:flex;gap:8px"><input id="chRegion" list="regionNames" value="${esc(c.region)}" maxlength="30" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="по умолчанию" style="flex:1;min-width:0"><button class="btn" data-chregion="1">Сохранить</button></div></div>`}
  h+=c.link?`<h3>QR-код и ссылка</h3><div class="card pad"><div class="qrbox">${qrSvg(c.link)}</div><p class="mono" style="margin:0 0 8px">${esc(c.link)}</p><button class="btn save" style="margin:0" data-copy="${esc(c.link)}">Копировать ссылку</button><p class="small muted" style="margin:8px 0 0">${c.kind==='private'?'<span class="warn">Код и ссылка содержат ключ: показывайте их только участникам.</span> ':''}Отсканируйте код в MeshCore или в приложении MeshMesh, чтобы добавить канал.</p></div>`
   :`<h3>Ключ</h3><div class="card pad small muted">${ic('lock','warn')} Ключ закрытого канала показывается только через точку доступа устройства или в приложении: в домашней сети страница передаётся без шифрования.</div>`;
  if(!pub)h+=`<h3>Пригласить контакт</h3><p class="small muted" style="margin:0 4px 6px">Личное сообщение со ссылкой канала${c.kind==='private'?' и его ключом':''}; в MeshMesh у него будет кнопка «Вступить».</p><div class="list">${contacts.length?contacts.map(p=>`<div class="row">${avatar(p.id,p.name,p.type)}<span class="main"><b>${esc(p.name)}</b><small>${pathText(p)}</small></span><button class="btn" data-chinv="${p.id}">Пригласить</button></div>`).join(''):'<p class="small faint" style="margin:4px">Контакты появятся после объявлений узлов</p>'}</div>
   <div class="btns" style="margin-top:14px"><button class="btn danger${stage?' armed':''}" data-chdel="1">${['Удалить канал','Удалить? История останется',`Точно удалить «${esc(c.name)}»`][stage]}</button></div>`;
- setHtml(el,h)}
+ const typing=document.activeElement?.id==='chRegion'?document.activeElement.value:null;
+ setHtml(el,h);if(typing!==null&&document.activeElement?.id!=='chRegion'){const i=$('chRegion');if(i){i.value=typing;i.focus()}}}
 async function copyText(t){try{await navigator.clipboard.writeText(t)}catch{const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove()}notify('Ссылка скопирована','ok')}
 async function chanClick(d){
  if(d.chtab){chTab=d.chtab;renderAddCh();return}
@@ -662,6 +666,7 @@ async function chanClick(d){
  if(d.join){if(d.join.startsWith('meshcore'))chanAdd({link:d.join});else go('chat/'+d.join);return}
  if(d.copy){copyText(d.copy);return}
  const c=chan(param);if(!c)return;
+ if(d.chregion){try{await chanDo({action:'region',channel:c.id,region:$('chRegion').value.trim()});notify('Регион канала сохранён','ok');await loadChans();renderChanInfo()}catch(e){notify(/^ERR region/.test(e.message)?REGION_RULE+'; * — без региона':chanError(e),'bad')}return}
  if(d.chinv){try{await chanDo({action:'invite',channel:c.id,to:d.chinv});notify('Приглашение отправлено: '+nodeName(d.chinv),'ok');await refresh()}catch(e){notify(chanError(e),'bad')}return}
  const s=deleteArmed===c.id+1?1:deleteArmed===c.id+2?2:0;
  if(s<2){const a=deleteArmed=c.id+(s+1);notify(s?'Нажмите ещё раз, чтобы удалить канал':'Удаление канала: подтвердите ещё дважды','warn');setTimeout(()=>{if(deleteArmed===a){deleteArmed='';render()}},5000);renderChanInfo();return}
@@ -878,7 +883,8 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'power',n:'Мощность, dBm',h:`Настройка чипа, 0–${status.max_power||22} dBm`,t:'num',min:0,max:status.max_power||22,step:1},
  {k:'hops',n:'Предел наших пересылок',h:'Только пакеты, пересылаемые этим узлом',t:'num',min:0,max:7,step:1},
  {k:'relay',n:'Ретрансляция',h:'Пересылать чужие пакеты MeshCore',t:'sw'},
- ...config.path_hash===undefined?[]:[{k:'path_hash',n:'Размер хэша пути',h:'Байт на каждую пересылку в наших flood-пакетах; 2–3 реже путают узлы в большой сети, но старые прошивки MeshCore такие пакеты не пересылают',t:'sel',o:[[1,'1 байт'],[2,'2 байта'],[3,'3 байта']]}]]:[
+ ...config.path_hash===undefined?[]:[{k:'path_hash',n:'Размер хэша пути',h:'Байт на каждую пересылку в наших flood-пакетах; 2–3 реже путают узлы в большой сети, но старые прошивки MeshCore такие пакеты не пересылают',t:'sel',o:[[1,'1 байт'],[2,'2 байта'],[3,'3 байта']]}],
+ ...config.region===undefined?[]:[{k:'region',n:'Регион',h:'Регион наших flood-пакетов: репитеры с регионами пересылают их только в нём. Пусто — без региона; каналу можно задать свой',t:'text',max:30,list:'regionNames',ph:'нет'}]]:[
  {k:'name',n:'Имя',h:'1–24 байта UTF-8',t:'text'},
  config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:status.langs?'Язык меню устройства; другие языки — прошивка с этим языком с сайта':'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:status.langs?SCREEN_LANGS.filter(x=>status.langs.split(' ').includes(x[0])):SCREEN_LANGS},
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
@@ -895,17 +901,32 @@ function buildEditor(page){draft={...config};const form=$(page+'Form');
   if(f.t==='sel')c=`<select id="${id}" data-k="${f.k}">${f.o.map(([val,label])=>`<option value='${JSON.stringify(val)}'${same(f.k,val,v)?' selected':''}>${label}</option>`).join('')}</select>`;
   else if(f.t==='sw')c=`<button type="button" id="${id}" class="sw${v?' on':''}" data-k="${f.k}" role="switch" aria-checked="${!!v}"></button>`;
   else if(f.t==='range')c=`<input type="range" id="${id}" data-k="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${v}"><b style="width:34px;text-align:right" id="${id}-v">${v}</b>`;
-  else if(f.t==='text')c=`<input id="${id}" data-k="${f.k}" value="${esc(v)}" maxlength="24" autocomplete="off">`;
+  else if(f.t==='text')c=`<input id="${id}" data-k="${f.k}" value="${esc(v)}" maxlength="${f.max||24}" autocomplete="off"${f.list?` list="${f.list}" autocapitalize="none" spellcheck="false"`:''}${f.ph?` placeholder="${f.ph}"`:''}>`;
   else c=`<input type="number" id="${id}" data-k="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${f.k==='frequency'?Number(v).toFixed(3):v}" inputmode="decimal" style="width:110px">`;
   return `<div class="set" data-row="${f.k}"><span class="dot"></span><label class="name" for="${id}">${f.n}<small>${f.h}</small></label>${c}</div>`}).join('');
  editorState(page)}
-function editorValue(el){if(el.tagName==='SELECT')return JSON.parse(el.value);return el.dataset.k==='name'?el.value:Number(el.value)}
+function editorValue(el){if(el.tagName==='SELECT')return JSON.parse(el.value);return el.dataset.k==='name'?el.value:el.dataset.k==='region'?el.value.trim():Number(el.value)}
 function editorState(page){let changed=0;for(const f of fields(page)){const row=document.querySelector(`[data-row="${f.k}"]`),diff=!same(f.k,draft[f.k],config[f.k]);if(row)row.classList.toggle('changed',diff);changed+=diff}
  const b=$(page+'Save');b.disabled=!changed;b.className='btn save'+(changed?' primary':'');b.textContent=changed?'Сохранить изменения':'Нет изменений'}
 async function saveEditor(page){const changes={};for(const f of fields(page))if(!same(f.k,draft[f.k],config[f.k]))changes[f.k]=draft[f.k];
  if('name' in changes){const n=bytes(changes.name);if(!changes.name.trim()||n>24){notify('Имя: 1–24 байта UTF-8','bad');return}}
  if(changes.auto_lock&&changes.auto_lock<30){notify('Автоблокировка: 0 или 30–600 с','bad');return}if(changes.dim_after&&changes.dim_after<10){notify('Гасить экран: 0 или 10–600 с','bad');return}
- try{await request('/api/config',changes);notify('Настройки сохранены','ok');config=await request('/api/config');await refresh();go('settings')}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}}
+ try{await request('/api/config',changes);notify('Настройки сохранены','ok');config=await request('/api/config');await refresh();go('settings')}catch(e){notify(/^ERR region/.test(e.message)?REGION_RULE:e.message.replace(/^ERR /,''),'bad')}}
+// Regions (channels JSON "regions", firmware 0.15.0+): the repeaters that hear the device directly list the regions they pass on.
+const REGION_RULE='Регион: латинские буквы, цифры и «-», до 30 байт, как на репитерах';
+function fillRegionNames(){$('regionNames').innerHTML=['*',...(chans?.regions?.found||[]).map(r=>r.name)].map(n=>`<option value="${esc(n)}">`).join('')}
+function regionBusy(){const s=chans?.regions?.state;return s==='listening'||s==='asking'}
+function renderRegions(){const r=chans?.regions,show=!!r&&!serverRole(),box=$('regionBox');box.hidden=$('regionHead').hidden=!show;if(!show)return;fillRegionNames();
+ const busy=regionBusy(),found=r.found||[];
+ setHtml(box,`<p class="small muted" style="margin:0 0 8px">Регион ограничивает, куда репитеры пересылают flood-пакеты (MeshCore 1.10+). Поиск спросит репитеры, которые слышат устройство напрямую, какие регионы они обслуживают.</p>`+
+  (r.state==='idle'?'':busy?`<p class="small">${ic('radar','acc')} Поиск: репитеров ${r.repeaters}, ответили ${r.answered}</p>`
+  :found.length?`<div class="btns" style="flex-wrap:wrap;margin:0 0 6px">${found.map(f=>`<button class="btn" data-region="${esc(f.name)}" title="Репитеров: ${f.repeaters}">${esc(f.name)}</button>`).join('')}</div><p class="small faint" style="margin:0 0 8px">Ответили ${r.answered} из ${r.repeaters} репитеров · ${ago(r.age)}. Нажмите регион, чтобы выбрать его выше.</p>`
+  :`<p class="small faint" style="margin:0 0 8px">${!r.repeaters?'Репитеров рядом не найдено':r.answered?`Ответили ${r.answered} из ${r.repeaters} репитеров: регионы на них не настроены`:`Репитеры (${r.repeaters}) на запрос регионов не ответили`} · ${ago(r.age)}</p>`)+
+  `<button class="btn save" style="margin:0" id="regionFind"${busy?' disabled':''}>${busy?'Идёт поиск…':'Найти регионы'}</button>`)}
+async function findRegions(){try{await chanDo({action:'regions'})}catch(e){notify(e.message.replace(/^ERR \w+: /,''),'bad');return}
+ await loadChans();renderRegions();
+ for(let i=0;i<25&&regionBusy();i++){await new Promise(r=>setTimeout(r,2000));await loadChans();if(route==='radio')renderRegions()}
+ const n=chans?.regions?.found?.length||0;notify(n?'Найдено регионов: '+n:'Регионы не найдены',n?'ok':'warn')}
 function renderHelp(){
  const btn=status.button||'PRG',keys=btn==='joystick'?[['← →','страницы'],['↑ ↓','сообщения, узлы, сигналы, пункты меню'],['Центр','действие страницы или меню; в шахматах — фигура, затем клетка'],['Удерж. центр','в клавиатуре — отправить; в шахматах — меню партии'],['Назад','закрыть; в клавиатуре — стереть символ; иначе — главный экран'],['Удерж. назад','главный экран; закрыть клавиатуру']]:heltec()?[[btn,'короткое нажатие — следующая страница'],[btn,'удержание — действие страницы или меню действий']]:status.board==='tdeck'?[['Шар','перемещение по меню, спискам и карте'],['Нажатие','открыть / отправить'],['Удерж. шар','вход; в чате — русская раскладка'],['Enter','открыть / отправить'],['DEL','удалить; без текста — назад'],['2×пробел','в тексте: RU/EN'],['L','на карте: список карт'],['+ −','масштаб карты'],['P','узел на карте']]:[['MSG','Чаты'],['MAP','Карта; L — список карт'],['HOME','Главное меню'],['BACK','Предыдущий экран'],['CTRL','Настройки'],['ADV','Объявить узел; удержание — GPS вкл/выкл'],['@','функц. клавиша (не Sym+@): RU/EN в чате'],['MIC','Блокировка (микрофона нет)'],['OK','Открыть / отправить; удержание — вход'],['2×пробел','в тексте: RU/EN; → — заглавная']];
  $('layoutHelp').hidden=btn==='joystick'; // the joystick keyboard is on the screen
@@ -1280,8 +1301,8 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-arch],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
-  if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy){chanClick(d);return}
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-arch],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chregion],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+  if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy||d.chregion){chanClick(d);return}
   if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.ledger||d.arch||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);
   else if(d.sig){const x=radarData?.targets[+d.sig];if(x){scopeManual=true;scopeRef={ref:x.ref,kind:x.kind};renderScope()}}
@@ -1308,6 +1329,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
   else if(el.id==='tourRounds')f.rounds=+el.value;else if(el.id==='tourHours')f.hours=+el.value});
  $('chessArchive').addEventListener('toggle',()=>{if($('chessArchive').open)loadArchive()});
  $('chessToursView').addEventListener('input',e=>{if(e.target.id==='tourName'&&tourForm)tourForm.name=e.target.value});
+ $('regionBox').onclick=e=>{if(e.target.id==='regionFind'){findRegions();return}const b=e.target.closest('[data-region]'),f=$('set-region');if(b&&f){f.value=b.dataset.region;draft.region=b.dataset.region;editorState('radio');f.scrollIntoView({block:'center'})}};
  for(const page of ['radio','device']){$(page+'Form').addEventListener('input',e=>{const el=e.target.closest('[data-k]');if(!el)return;draft[el.dataset.k]=editorValue(el);if(el.type==='range')$(el.id+'-v').textContent=el.value;editorState(page)});
   $(page+'Form').addEventListener('click',e=>{const el=e.target.closest('.sw[data-k]');if(!el)return;const k=el.dataset.k;draft[k]=!draft[k];el.classList.toggle('on',draft[k]);el.setAttribute('aria-checked',draft[k]);editorState(page)});$(page+'Save').onclick=()=>saveEditor(page)}
  $('appsList').addEventListener('click',e=>{const m=e.target.closest('[data-mv]');if(m){const i=+m.dataset.mv,j=i+ +m.dataset.step;[appsDraft[i],appsDraft[j]]=[appsDraft[j],appsDraft[i]];renderApps();document.querySelector(`[data-mv="${j}"][data-step="${m.dataset.step}"]:not(:disabled)`)?.focus();return}

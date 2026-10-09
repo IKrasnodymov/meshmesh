@@ -5,7 +5,8 @@
 namespace channels {
 constexpr unsigned Max=8;      // Public and seven more (MAX_GROUP_CHANNELS)
 constexpr unsigned NameBytes=31;
-struct Channel {uint64_t id=0;char name[NameBytes+1]={};uint8_t secret[16]={};};
+// region: its flood scope (Regions.h) - "" the default region of the settings, "*" none, else a region name.
+struct Channel {uint64_t id=0;char name[NameBytes+1]={};uint8_t secret[16]={};char region[31]={};};
 // Public: the stock MeshCore channel every node knows; its messages keep the destination "ALL".
 extern const uint8_t publicSecret[16];
 // Channel destinations in the chat history: 0xFF in the top byte (node keys never start with it,
@@ -23,12 +24,12 @@ bool validName(const String& name); // 1..31 bytes of UTF-8 without control char
 // 32 hexadecimal digits or base64 of 16 bytes (MeshCore keys are 128-bit).
 bool parseKey(String text,uint8_t out[16]);
 String keyHex(const uint8_t secret[16]);
-// meshcore://channel/add?name=<url-encoded>&secret=<32 hex> (docs.meshcore.io/qr_codes), the format
+// meshcore://channel/add?name=<url-encoded>&secret=<32 hex>[&region_scope=<region>] (docs.meshcore.io/qr_codes), the format
 // of the MeshCore app; found anywhere in a text, so a received invitation works as well. compact keeps
 // non-ASCII letters as they are (a Cyrillic name takes a third of the room): for invitations that would
 // not fit a message otherwise; MeshMesh reads both.
 String link(const Channel& c,bool compact=false);
-bool parseLink(const String& text,String& name,uint8_t secret[16]);
+bool parseLink(const String& text,String& name,uint8_t secret[16],String* region=nullptr); // region: its region_scope, raw
 bool hasLink(const String& text);
 // Hashtags tried against heard packets of channels this node has not joined.
 extern const char* const commonTags[];

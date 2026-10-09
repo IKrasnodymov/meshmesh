@@ -248,5 +248,13 @@
  "shot.t114-ble-on": "La T114 : MeshCore-T114 et le PIN",
  "shot.heltec-ble-on": "L'OLED : le nom et le PIN",
  "doc.companion": "Applis MeshCore",
- "news.remote": "<b>Nouveau :</b> connexion aux répéteurs et salons, messages des salons et trace des routes depuis l'écran"
+ "news.remote": "<b>Nouveau :</b> connexion aux répéteurs et salons, messages des salons et trace des routes depuis l'écran",
+ "news.regions": "<b>Nouveau :</b> régions MeshCore — une région pour vos messages et pour chaque canal, trouvée auprès des répéteurs proches",
+ "f.regions.t": "Régions",
+ "f.regions.d": "Portée des floods MeshCore : région par défaut et une par canal, recherche des régions des répéteurs proches, commandes de région de l'app MeshCore ; répéteurs via region def.",
+ "shot.m9-radio-regions": "Réglages radio : région et recherche",
+ "shot.m9-channel-region": "Fiche du canal : sa propre région",
+ "shot.heltec-radio-region": "Heltec : région parmi celles trouvées",
+ "shot.t114-radio-find": "T114 : trouver les régions",
+ "doc.regions": "Régions"
 }

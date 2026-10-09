@@ -92,6 +92,7 @@ String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
 }
 // Device modes: a repeater or room server with made-up passwords and counts.
 #include "MeshServer.h"
+#include "Regions.h"
 MeshServer meshServer;
 bool MeshServer::room() const{return config.role==RoleRoom;}
 ServerView MeshServer::view(){ServerView v;v.running=config.role!=RoleNormal;v.room=room();v.forwarding=!v.room;v.password="48213906";v.guest=v.room?"garden":"";
@@ -115,6 +116,14 @@ MeshRadio::ChannelResult MeshRadio::joinLink(const String& text,uint64_t* id){St
 MeshRadio::ChannelResult MeshRadio::createChannel(const String& name,uint64_t* id){if(!channels::validName(name))return ChannelBadName;uint8_t k[16];for(int i=0;i<16;i++)k[i]=uint8_t(i*37+11);return addChannel(name,k,id);}
 bool MeshRadio::removeChannel(uint64_t id){int i=channelIndex(id);if(i<=0)return false;memmove(channelList+i,channelList+i+1,sizeof(channels::Channel)*(channelCount-i-1));channelCount--;return true;}
 bool MeshRadio::sendInvite(uint64_t contact,uint64_t id){const channels::Channel* c=channel(id);if(!c)return false;String l=channels::link(*c);if(l.length()>151)l=channels::link(*c,true);return sendMessage(l,contact);}
+bool MeshRadio::setChannelRegion(uint64_t id,const String& raw){int i=channelIndex(id);if(i<0)return false;String r=raw;r.trim();if(r.length()&&r!=regions::Unscoped){r=regions::normalize(r);if(!r.length())return false;}strncpy(channelList[i].region,r.c_str(),sizeof(channelList[i].region)-1);return true;}
+// Region search: the answer of two repeaters of the Moscow scheme (docs/regions.md), at once.
+namespace regions {
+Search search;
+bool find(){static Found list[MaxFound];search=Search();search.found=list;search.state=Search::Done;search.repeaters=search.answered=2;for(const char* n:{"ru","mow","msk","sao"}){strcpy(search.found[search.count].name,n);search.found[search.count++].repeaters=2;}return true;}
+void tick(){}
+String json(){return "{}";}
+}
 int MeshRadio::probeHashtag(const String& raw){String tag=channels::hashtag(raw);if(!tag.length())return -1;for(unsigned i=0;i<heardCount;i++)if(tag==heard[i].name)return heard[i].packets;return tag=="#test"?2:0;}
 // MeshMesh storage files: none in the preview (read marks fall back to the Preferences shim).
 bool readStored(const char*,const char*,void*,size_t){return false;}

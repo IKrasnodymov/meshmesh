@@ -1959,6 +1959,44 @@
    "other": "{n}个瓦片"
   }
  },
+ "31760903": {
+  "en": "Searching: ",
+  "ru": "Поиск: ",
+  "text": "搜索中: "
+ },
+ "adb18dd8": {
+  "en": {
+   "one": "repeater",
+   "other": "repeaters"
+  },
+  "ru": {
+   "one": "репитер",
+   "few": "репитера",
+   "many": "репитеров"
+  },
+  "forms": {
+   "other": "{n} 个中继"
+  }
+ },
+ "27ca04b5": {
+  "en": "OK: start",
+  "ru": "OK: начать",
+  "text": "OK: 开始"
+ },
+ "ff52d5a8": {
+  "en": {
+   "one": "region",
+   "other": "regions"
+  },
+  "ru": {
+   "one": "регион",
+   "few": "региона",
+   "many": "регионов"
+  },
+  "forms": {
+   "other": "{n} 个区域"
+  }
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -1998,6 +2036,16 @@
   "en": "Path hash size",
   "ru": "Размер хэша пути",
   "text": "路径哈希长度"
+ },
+ "00a80d35": {
+  "en": "Region",
+  "ru": "Регион",
+  "text": "区域"
+ },
+ "12df6dcb": {
+  "en": "Find regions",
+  "ru": "Найти регионы",
+  "text": "查找区域"
  },
  "055e7477": {
   "en": "Name",
@@ -2058,6 +2106,11 @@
   "en": " kHz",
   "ru": " кГц",
   "text": " kHz"
+ },
+ "41bbcfaf": {
+  "en": "None",
+  "ru": "Нет",
+  "text": "无"
  },
  "44398b47": {
   "en": {
@@ -2133,6 +2186,21 @@
   "ru": "На пересылку; старые MeshCore не пересылают 2-3",
   "text": "我们的泛洪包每跳字节数；旧版 MeshCore 丢弃 2-3"
  },
+ "6cb649a5": {
+  "en": "Repeaters pass on our floods by it; OK: type",
+  "ru": "По нему репитеры пересылают наши пакеты; OK: ввести",
+  "text": "中继器据此转发我们的包; OK: 输入"
+ },
+ "dfcdde20": {
+  "en": "Found: ",
+  "ru": "Найдены: ",
+  "text": "已找到: "
+ },
+ "26ba46ea": {
+  "en": "Asks repeaters that hear this device",
+  "ru": "Спросит репитеры, которые слышат устройство",
+  "text": "询问能听到本设备的中继器"
+ },
  "7c140ddc": {
   "en": "Applied to the radio when saved",
   "ru": "Применяется к радио при сохранении",
@@ -2207,6 +2275,21 @@
   "en": "Cancel",
   "ru": "Отмена",
   "text": "取消"
+ },
+ "a7cb76b8": {
+  "en": "Search",
+  "ru": "Искать",
+  "text": "搜索"
+ },
+ "3f7e1a1c": {
+  "en": "Found",
+  "ru": "Найденные",
+  "text": "已找到"
+ },
+ "9deec0c8": {
+  "en": "Type",
+  "ru": "Ввести",
+  "text": "输入"
  },
  "9a8267a9": {
   "en": "Change",
@@ -2667,6 +2750,11 @@
   "ru": "Имя питомца",
   "text": "宠物名字"
  },
+ "7b04c300": {
+  "en": "Region of the channel",
+  "ru": "Регион канала",
+  "text": "频道区域"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2691,6 +2779,16 @@
   "en": "As in the MeshCore app: ver, get name, neighbors...",
   "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
   "text": "与 MeshCore 应用相同：ver, get name, neighbors..."
+ },
+ "74df0d68": {
+  "en": "As on repeaters: msk, sao...; empty: none",
+  "ru": "Как на репитерах: msk, sao...; пусто - нет",
+  "text": "与中继器一致: msk, sao...; 空: 无"
+ },
+ "7b6f9672": {
+  "en": "As on repeaters: msk, sao...; empty: default",
+  "ru": "Как на репитерах: msk, sao...; пусто - по умолчанию",
+  "text": "与中继器一致: msk, sao...; 空: 默认"
  },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
@@ -2797,6 +2895,11 @@
   "ru": "Имя: 1-15 байт UTF-8",
   "text": "名字: 1-15 字节 UTF-8"
  },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "区域: 字母、数字、'-'"
+ },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
   "ru": "Пароль: 8-63 символа",
@@ -2876,6 +2979,16 @@
   "en": "Nothing to save",
   "ru": "Изменений нет",
   "text": "没有需要保存的"
+ },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "此模式下不可用"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "无线电不可用"
  },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
@@ -2997,6 +3110,21 @@
   "ru": "Выкл",
   "text": "关"
  },
+ "13c4173d": {
+  "en": "None",
+  "ru": "Без региона",
+  "text": "无区域"
+ },
+ "52dc749b": {
+  "en": "Default: ",
+  "ru": "По умолчанию: ",
+  "text": "默认: "
+ },
+ "f8ca4e16": {
+  "en": "Default: none",
+  "ru": "По умолчанию: нет",
+  "text": "默认: 无"
+ },
  "8baa6473": {
   "en": "Channel removed",
   "ru": "Канал удалён",
@@ -3032,6 +3160,11 @@
   "ru": "Вы уже в этом канале",
   "text": "已在此频道中"
  },
+ "5364d9de": {
+  "en": "Region · OK: save",
+  "ru": "Регион · OK: сохранить",
+  "text": "区域 · OK: 保存"
+ },
  "e029f399": {
   "en": "Invite",
   "ru": "Пригласить",
@@ -3052,15 +3185,25 @@
   "ru": "Покинуть канал",
   "text": "退出频道"
  },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "联系人"
+ },
  "b4ff4ddb": {
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "最多 8 个频道"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "联系人"
+ "34bbbe05": {
+  "en": "Region saved",
+  "ru": "Регион сохранён",
+  "text": "区域已保存"
+ },
+ "df759f29": {
+  "en": "Name: 1-31 bytes",
+  "ru": "Имя: 1-31 байт",
+  "text": "名称: 1-31 字节"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -3082,11 +3225,6 @@
   "ru": "История сохранится и вернётся при вступлении",
   "text": "历史会保留, 重新加入后显示"
  },
- "df759f29": {
-  "en": "Name: 1-31 bytes",
-  "ru": "Имя: 1-31 байт",
-  "text": "名称: 1-31 字节"
- },
  "0f1754aa": {
   "en": "Left ",
   "ru": "Покинут: ",
@@ -3106,11 +3244,6 @@
   "en": "Not a channel link",
   "ru": "Это не ссылка на канал",
   "text": "不是频道链接"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "此模式下不可用"
  },
  "8b52ceba": {
   "en": "Channel not saved",
@@ -3207,21 +3340,6 @@
   "ru": "Здесь появятся каналы, услышанные в эфире",
   "text": "空中收到的频道会显示在这里"
  },
- "7a0b46f9": {
-  "en": "Public channel of MeshCore",
-  "ru": "Общий канал MeshCore",
-  "text": "MeshCore 公开频道"
- },
- "437ffb06": {
-  "en": "Private channel",
-  "ru": "Закрытый канал",
-  "text": "私密频道"
- },
- "71c7250d": {
-  "en": "Hashtag channel",
-  "ru": "Канал-хештег",
-  "text": "#标签频道"
- },
  "42861984": {
   "en": "Channel name",
   "ru": "Название канала",
@@ -3251,6 +3369,21 @@
   "en": "Same #name, same channel as in MeshCore apps",
   "ru": "То же #имя — тот же канал, что в приложениях MeshCore",
   "text": "相同 #名称即 MeshCore 应用中的同一频道"
+ },
+ "7a0b46f9": {
+  "en": "Public channel of MeshCore",
+  "ru": "Общий канал MeshCore",
+  "text": "MeshCore 公开频道"
+ },
+ "437ffb06": {
+  "en": "Private channel",
+  "ru": "Закрытый канал",
+  "text": "私密频道"
+ },
+ "71c7250d": {
+  "en": "Hashtag channel",
+  "ru": "Канал-хештег",
+  "text": "#标签频道"
  },
  "a632f05f": {
   "en": "The key is made on this device",
@@ -4626,6 +4759,11 @@
   "ru": "Бросок первый в меню",
   "text": "掷骰是菜单首项"
  },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "74c2869f": {
   "en": "status: waiting",
   "ru": "статус: ждём",
@@ -4730,6 +4868,25 @@
   "en": "off",
   "ru": "выкл",
   "text": "关"
+ },
+ "b983ac8e": {
+  "en": " rpt...",
+  "ru": " ретр...",
+  "text": " 中继..."
+ },
+ "6ab0471b": {
+  "en": {
+   "one": "found",
+   "other": "found"
+  },
+  "ru": {
+   "one": "найден",
+   "few": "найдено",
+   "many": "найдено"
+  },
+  "forms": {
+   "other": "找到 {n}"
+  }
  },
  "a06fdf5a": {
   "en": "Radio busy, retry",
@@ -5635,11 +5792,6 @@
   "en": "trace: no answer",
   "ru": "трасса: нет ответа",
   "text": "追踪：无应答"
- },
- "60a11f70": {
-  "en": "SNR ",
-  "ru": "SNR ",
-  "text": "SNR "
  },
  "696ee294": {
   "en": "Optional",

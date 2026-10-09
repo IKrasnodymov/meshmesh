@@ -48,10 +48,15 @@ bool parseKey(String text,uint8_t out[16]){
  for(int i=0;i<16;i++)zero&=!out[i];return !zero;
 }
 String keyHex(const uint8_t secret[16]){String s;char b[3];for(int i=0;i<16;i++){snprintf(b,3,"%02x",secret[i]);s+=b;}return s;}
+static String encode(const char* text,bool compact){
+ String s;char b[4];
+ for(const char* p=text;*p;p++){char ch=*p;if(isalnum((unsigned char)ch)||ch=='-'||ch=='_'||ch=='.'||ch=='~'||(compact&&uint8_t(ch)>=0x80))s+=ch;else{snprintf(b,4,"%%%02X",uint8_t(ch));s+=b;}}
+ return s;
+}
 String link(const Channel& c,bool compact){
- String s="meshcore://channel/add?name=";char b[4];
- for(const char* p=c.name;*p;p++){char ch=*p;if(isalnum((unsigned char)ch)||ch=='-'||ch=='_'||ch=='.'||ch=='~'||(compact&&uint8_t(ch)>=0x80))s+=ch;else{snprintf(b,4,"%%%02X",uint8_t(ch));s+=b;}}
- return s+"&secret="+keyHex(c.secret);
+ String s="meshcore://channel/add?name="+encode(c.name,compact)+"&secret="+keyHex(c.secret);
+ if(c.region[0]&&strcmp(c.region,"*"))s+="&region_scope="+encode(c.region,compact); // MeshCore app 1.47+
+ return s;
 }
 static String decode(const String& v){
  String out;for(unsigned i=0;i<v.length();i++){char c=v[i];
@@ -60,13 +65,13 @@ static String decode(const String& v){
 }
 static int findLink(const String& text){String low=text;low.toLowerCase();return low.indexOf("meshcore://channel/add?");}
 bool hasLink(const String& text){return findLink(text)>=0;}
-bool parseLink(const String& text,String& name,uint8_t secret[16]){
+bool parseLink(const String& text,String& name,uint8_t secret[16],String* region){
  int at=findLink(text);if(at<0)return false;
  int end=at;while(end<int(text.length())&&uint8_t(text[end])>' ')end++;
  String query=text.substring(text.indexOf('?',at)+1,end);bool keyed=false;name="";
  while(query.length()){int amp=query.indexOf('&');String pair=amp<0?query:query.substring(0,amp);query=amp<0?String():query.substring(amp+1);
   int eq=pair.indexOf('=');if(eq<0)continue;String k=pair.substring(0,eq),v=decode(pair.substring(eq+1));
-  if(k=="name")name=v;else if(k=="secret"){if(v.length()!=32||!parseKey(v,secret))return false;keyed=true;}}
+  if(k=="name")name=v;else if(k=="region_scope"&&region)*region=v;else if(k=="secret"){if(v.length()!=32||!parseKey(v,secret))return false;keyed=true;}}
  name.trim();
  if(!validName(name)){ // too long: cut on a character boundary; nothing usable: a generic name
   while(name.length()>NameBytes){unsigned n=meshmesh::previousCharacter(name.c_str(),name.length());name.remove(n);}

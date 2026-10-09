@@ -18,7 +18,7 @@ from device import connect, command
 ROOT = Path(__file__).resolve().parents[1]
 GETS = {'/api/status': 'status', '/api/messages': 'messages', '/api/nodes': 'nodes', '/api/config': 'config',
         '/api/navigation': 'navigation', '/api/maps': 'map info', '/api/maps/areas': 'map areas',
-        '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice'}
+        '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice', '/api/channels': 'channels'}
 
 
 def main():
@@ -83,7 +83,8 @@ def main():
             line = (body.get('command') if path == '/api/command' else
                     'sendjson ' + json.dumps({'to': body.get('to'), 'text': body.get('text')}, ensure_ascii=False) if path == '/api/send' else
                     'set ' + json.dumps(body, ensure_ascii=False) if path == '/api/config' else
-                    'radar do ' + json.dumps(body) if path == '/api/radar' else None)
+                    'radar do ' + json.dumps(body) if path == '/api/radar' else
+                    'channel do ' + json.dumps(body, ensure_ascii=False) if path == '/api/channels' else None)
             if not line:
                 self.reply(404, 'Not found', 'text/plain')
                 return
@@ -91,7 +92,7 @@ def main():
                 answer = usb(line)
             except Exception as e:
                 answer = 'ERR ' + str(e)
-            ok = answer.startswith('OK') if path != '/api/command' else not answer.startswith('ERR')
+            ok = answer.startswith('OK') if path not in ('/api/command', '/api/channels') else not answer.startswith('ERR')  # a probe answers JSON
             self.reply(200 if ok else 400, answer)  # raw text and status code, as the device sends them
 
         def log_message(self, *args):

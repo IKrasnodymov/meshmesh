@@ -5,13 +5,15 @@
 #endif
 #include <bootloader_random.h>
 #include <Mm1Packet.h>
+#include "Regions.h"
 Config config;
 bool Config::valid() const {
   return isfinite(frequency) && frequency>=863.0f && frequency<=870.0f &&
     (bandwidth==62.5f || bandwidth==125.0f || bandwidth==250.0f || bandwidth==500.0f) &&
     sf>=7 && sf<=12 && cr>=5 && cr<=8 && power>=0 && power<=MM_MAX_POWER && hops<=7 && pathHash>=1 && pathHash<=3 && brightness>=10 &&
     (autoLock==0 || (autoLock>=30&&autoLock<=600)) && (dimAfter==0||(dimAfter>=10&&dimAfter<=600)) && utcOffset>=-720&&utcOffset<=840&&utcOffset%15==0 &&
-    strnlen(name,sizeof(name))>0 && strnlen(name,sizeof(name))<sizeof(name) &&
+    strnlen(name,sizeof(name))>0 && strnlen(name,sizeof(name))<sizeof(name) && strnlen(region,sizeof(region))<sizeof(region) &&
+    meshmesh::validUtf8((const uint8_t*)region,strlen(region)) &&
     meshmesh::validUtf8((const uint8_t*)name,strlen(name));
 }
 void Config::load() {
@@ -32,6 +34,8 @@ void Config::load() {
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);lockDetails=p.getBool("lock_txt",true);
   utcOffset=p.getShort("utc_offset",180);
   strlcpy(apps,p.getString("apps","").c_str(),sizeof apps);
+  strlcpy(region,p.getString("region","").c_str(),sizeof region);
+  if(!region[0])memset(regionKey,0,16);else if(p.getBytesLength("region_key")!=16||p.getBytes("region_key",regionKey,16)!=16)regions::keyOf(region,regionKey);
   // Language: "lang" since 0.3.7; older versions kept only "russian".
   lang=p.isKey("lang")?p.getUChar("lang",LangEn):p.getBool("russian",false)?LangRu:LangEn;
   if(!langAvailable(lang))lang=LangEn; // not in this image (nRF52): English until an image with it is installed
@@ -48,14 +52,15 @@ void Config::load() {
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}
   p.end();
-  if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=1;strcpy(name,"MeshMesh");}
+  if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=1;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
 }
 void Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return;
   p.putString("name",name); p.putFloat("freq",frequency); p.putFloat("bw",bandwidth);
   p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops); p.putUChar("path_hash",pathHash);
   p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putUChar("lang",lang);p.putBool("russian",lang==LangRu);
-  p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putString("apps",apps);p.putBytes("key",key,32);p.end();
+  p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putString("apps",apps);p.putBytes("key",key,32);
+  if(region[0]){p.putString("region",region);p.putBytes("region_key",regionKey,16);}else{p.remove("region");p.remove("region_key");}p.end();
 }
 bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role
 void Config::saveBle(bool on){if(bleOn==on)return;bleOn=on;Preferences p;if(p.begin("meshmesh",false)){p.putBool("ble_on",on);p.end();}}

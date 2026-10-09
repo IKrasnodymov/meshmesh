@@ -20,6 +20,7 @@
 #include "Pet.h"
 #include "Dice.h"
 #include "Power.h"
+#include "Regions.h"
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
 #include <nvs.h>
@@ -82,10 +83,12 @@ String channelsJson(bool secrets){
   DynamicJsonDocument d(6144);d["max"]=channels::Max;JsonArray a=d.createNestedArray("channels");
   for(unsigned i=0;i<meshRadio.channelCount;i++){const auto& c=meshRadio.channelList[i];JsonObject j=a.createNestedObject();bool open=!i||channels::isHashtag(c);
    j["id"]=meshRadio.idText(c.id);j["name"]=c.name;j["kind"]=!i?"public":open?"hashtag":"private";char hash[3];snprintf(hash,3,"%02X",channels::hashOf(c.secret));j["hash"]=hash;
-   if(secrets||open)j["link"]=channels::link(c);}
+   if(secrets||open)j["link"]=channels::link(c);j["region"]=c.region;}
   a=d.createNestedArray("heard");
   for(unsigned i=0;i<meshRadio.heardCount;i++){const auto& h=meshRadio.heard[i];JsonObject j=a.createNestedObject();char hash[3];snprintf(hash,3,"%02X",h.hash);j["hash"]=hash;j["packets"]=h.packets;j["age"]=(millis()-h.at)/1000;if(h.name[0])j["name"]=h.name;}
-  d["samples"]=meshRadio.heardSamples;String s;serializeJson(d,s);return s;
+  d["samples"]=meshRadio.heardSamples;d["region"]=config.region;
+  {StaticJsonDocument<1024> r;if(!deserializeJson(r,regions::json()))d["regions"]=r.as<JsonObjectConst>();} // the last region search
+  String s;serializeJson(d,s);return s;
 }
 // Replies: "OK channel added|exists ID", "OK ..." or "ERR <reason>: ..." (the page translates the reason).
 String channelCommand(JsonObjectConst v){
@@ -116,13 +119,16 @@ String channelCommand(JsonObjectConst v){
     return meshRadio.sendInvite(to,c)?"OK invitation queued":"ERR send: contact unknown, queue full or radio offline";}
   if(action=="probe"){String tag=channels::hashtag(v["hashtag"]|"");if(!tag.length())return "ERR name: 1-31 bytes of UTF-8";int n=meshRadio.probeHashtag(tag);uint8_t key[16];channels::hashtagSecret(tag,key);
     StaticJsonDocument<192>d;d["name"]=tag;char hash[3];snprintf(hash,3,"%02X",channels::hashOf(key));d["hash"]=hash;d["opened"]=n;d["samples"]=meshRadio.heardSamples;d["joined"]=meshRadio.channel(channels::idOf(key))!=nullptr;String s;serializeJson(d,s);return s;}
-  return "ERR channel action add|remove|invite|probe";
+  if(action=="region"){uint64_t c;if(!id(v["channel"],c)||!meshRadio.channel(c))return "ERR unknown channel";
+    return meshRadio.setChannelRegion(c,v["region"]|"")?"OK channel region saved":"ERR region: letters, digits and '-', up to 30 bytes; \"\" default, \"*\" none";}
+  if(action=="regions"){if(config.role!=RoleNormal)return "ERR mode: the region search needs the normal mode";return regions::find()?"OK region search started":"ERR radio: the region search needs a working radio";}
+  return "ERR channel action add|remove|invite|probe|region|regions";
 }
 String configJson(bool includeKey) {
   StaticJsonDocument<1024> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
   d["hops"]=config.hops;d["path_hash"]=config.pathHash;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;d["lock_details"]=config.lockDetails;
-  d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);
+  d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);d["region"]=config.region;
   String s;serializeJson(d,s);return s;
 }
 String applySettings(JsonObjectConst v) {
@@ -153,6 +159,10 @@ String applySettings(JsonObjectConst v) {
       uint8_t order[AppsMax];bool hidden[AppsMax];
       if(!value.is<const char*>()||!appsParse(value.as<const char*>(),order,hidden,true)){String all;for(uint8_t i=0;i<uiAppCount;i++)all+=String(i?" ":"")+uiApps[i];return "ERR apps: IDs separated by spaces, -ID hides: "+all;}
       String text=appsText(value.as<const char*>());if(text.length()>=sizeof next.apps)return "ERR apps: too long";strlcpy(next.apps,text.c_str(),sizeof next.apps);
+    } else if(name=="region") { // "" or "*": none; the same name keeps its key (an app may have set a private one)
+      if(!value.is<const char*>())return "ERR region: text";String raw=value.as<String>();raw.trim();
+      if(!raw.length()||raw==regions::Unscoped){next.region[0]=0;memset(next.regionKey,0,16);}
+      else if(raw!=config.region){String r=regions::normalize(raw);if(!r.length())return "ERR region: letters, digits and '-', up to 30 bytes";strlcpy(next.region,r.c_str(),sizeof next.region);regions::keyOf(r,next.regionKey);}
     } else if(name=="lang") {
       int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
       if(l<0||!langAvailable(l)){String all;for(int i=0;i<LangCount;i++)if(langAvailable(i))all+=String(all.length()?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;
@@ -207,6 +217,8 @@ String executeCommand(const String& input) {
   if(line=="messages")return messagesJson();
   if(line=="nodes")return nodesJson();
   if(line=="channels")return channelsJson(true); // USB and a paired BLE client: the private links too
+  if(line=="regions")return regions::json();
+  if(line=="regions find")return config.role!=RoleNormal?"ERR mode: the region search needs the normal mode":regions::find()?"OK region search started":"ERR radio offline";
   if(line.startsWith("channel do ")){StaticJsonDocument<512>d;if(deserializeJson(d,line.substring(11))||!d.is<JsonObject>())return "ERR channel do {JSON}";return channelCommand(d.as<JsonObjectConst>());}
   if(line=="hello")return meshRadio.sendHello()?"OK hello queued":"ERR hello failed";
   if(line=="position")return meshRadio.sendPosition()?"OK position queued":"ERR position needs GPS fix";
@@ -256,5 +268,5 @@ String executeCommand(const String& input) {
     StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

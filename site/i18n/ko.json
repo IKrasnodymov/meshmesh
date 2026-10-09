@@ -248,5 +248,13 @@
  "shot.t114-ble-on": "T114: MeshCore-T114와 PIN",
  "shot.heltec-ble-on": "OLED: 이름과 PIN",
  "doc.companion": "MeshCore 앱",
- "news.remote": "<b>새 기능:</b> 화면에서 바로 리피터와 룸에 로그인하고 룸 게시물을 읽고 쓰며 경로를 추적"
+ "news.remote": "<b>새 기능:</b> 화면에서 바로 리피터와 룸에 로그인하고 룸 게시물을 읽고 쓰며 경로를 추적",
+ "news.regions": "<b>새 기능:</b> MeshCore 지역 — 메시지와 채널마다 지역을 정하고 주변 리피터에서 찾기",
+ "f.regions.t": "지역",
+ "f.regions.d": "MeshCore flood 범위: 기본 지역과 채널별 지역, 주변 리피터가 맡은 지역 검색, MeshCore 앱의 지역 명령; 리피터는 region def로 설정.",
+ "shot.m9-radio-regions": "무선 설정: 지역과 검색",
+ "shot.m9-channel-region": "채널 카드: 채널 지역",
+ "shot.heltec-radio-region": "Heltec: 찾은 지역에서 선택",
+ "shot.t114-radio-find": "T114: 지역 찾기",
+ "doc.regions": "지역"
 }

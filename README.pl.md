@@ -20,6 +20,7 @@ węzłami MeshCore.
 - **Czaty** — wiadomości prywatne i publiczne, potwierdzenia doręczenia ✓✓, ponawianie, trasa widoczna przy każdej wiadomości.
 - **Kanały** — do 8 kanałów MeshCore: dołączanie przez #hashtag, link `meshcore://` lub kod QR, nazwę i klucz;
   tworzenie kanału prywatnego, zapraszanie kontaktów wiadomością prywatną, wyszukiwanie kanałów słyszanych w eterze. [docs/en/channels.md](docs/en/channels.md)
+- **Regiony** — zasięg floodów MeshCore: region domyślny i osobny dla kanału, wyszukiwanie regionów pobliskich przekaźników; przekaźniki ustawiane poleceniami `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Mapy offline** — kafelki OpenStreetMap na karcie SD, pozycja GPS i węzły na mapie.
 - **Węzły w pobliżu** — sygnał, skoki, odległość i kierunek; kontakty, repeatery i pokoje.
 - **Radar sygnałów** — Wi-Fi, Bluetooth i LoRa wokół ciebie, z namierzaniem „ciepło / zimno”.
@@ -91,7 +92,7 @@ Interfejs ekranu można wyrenderować na komputerze bez płytki: `tools/ui_previ
 
 ## Dokumentacja
 
-Szczegółowa dokumentacja po angielsku: [kanały](docs/en/channels.md), [zgodność z MeshCore](docs/en/meshcore-migration.md), [płytki](docs/en/boards.md),
+Szczegółowa dokumentacja po angielsku: [kanały](docs/en/channels.md), [regiony](docs/en/regions.md), [zgodność z MeshCore](docs/en/meshcore-migration.md), [płytki](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [tryby repeatera i pokoju](docs/en/repeater.md),
 [protokół szachów](docs/en/chess.md), [format map](docs/en/maps-format.md), [porównanie z MeshCore](docs/en/feature-parity.md),
 [weryfikacja na sprzęcie](docs/en/verification.md). Rosyjskie oryginały są w [docs/](docs/), a pełny

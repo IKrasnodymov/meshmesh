@@ -248,5 +248,13 @@
  "shot.t114-ble-on": "T114：MeshCore-T114 和 PIN",
  "shot.heltec-ble-on": "OLED：名称和 PIN",
  "doc.companion": "MeshCore 应用",
- "news.remote": "<b>新功能：</b>直接在屏幕上登录中继器和房间、读写房间帖子、追踪路由"
+ "news.remote": "<b>新功能：</b>直接在屏幕上登录中继器和房间、读写房间帖子、追踪路由",
+ "news.regions": "<b>新功能：</b>MeshCore 区域——为你的消息和每个频道设定区域，可在附近中继器中查找",
+ "f.regions.t": "区域",
+ "f.regions.d": "MeshCore 的 flood 范围：默认区域和每个频道的区域，查找附近中继器服务的区域，支持 MeshCore 应用的区域命令；中继器用 region def 设置。",
+ "shot.m9-radio-regions": "无线电设置：区域与查找",
+ "shot.m9-channel-region": "频道卡片：自己的区域",
+ "shot.heltec-radio-region": "Heltec：从找到的区域中选择",
+ "shot.t114-radio-find": "T114：查找区域",
+ "doc.regions": "区域"
 }

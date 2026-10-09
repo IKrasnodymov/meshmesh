@@ -2009,6 +2009,54 @@
    "other": "{n} بلاطة"
   }
  },
+ "31760903": {
+  "en": "Searching: ",
+  "ru": "Поиск: ",
+  "text": "جار البحث: "
+ },
+ "adb18dd8": {
+  "en": {
+   "one": "repeater",
+   "other": "repeaters"
+  },
+  "ru": {
+   "one": "репитер",
+   "few": "репитера",
+   "many": "репитеров"
+  },
+  "forms": {
+   "zero": "{n} مرحل",
+   "one": "مرحل واحد",
+   "two": "مرحلان",
+   "few": "{n} مرحلات",
+   "many": "{n} مرحلًا",
+   "other": "{n} مرحل"
+  }
+ },
+ "27ca04b5": {
+  "en": "OK: start",
+  "ru": "OK: начать",
+  "text": "OK: ابدأ"
+ },
+ "ff52d5a8": {
+  "en": {
+   "one": "region",
+   "other": "regions"
+  },
+  "ru": {
+   "one": "регион",
+   "few": "региона",
+   "many": "регионов"
+  },
+  "forms": {
+   "zero": "{n} منطقة",
+   "one": "منطقة واحدة",
+   "two": "منطقتان",
+   "few": "{n} مناطق",
+   "many": "{n} منطقة",
+   "other": "{n} منطقة"
+  }
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -2048,6 +2096,16 @@
   "en": "Path hash size",
   "ru": "Размер хэша пути",
   "text": "حجم تجزئة المسار"
+ },
+ "00a80d35": {
+  "en": "Region",
+  "ru": "Регион",
+  "text": "المنطقة"
+ },
+ "12df6dcb": {
+  "en": "Find regions",
+  "ru": "Найти регионы",
+  "text": "بحث عن مناطق"
  },
  "055e7477": {
   "en": "Name",
@@ -2108,6 +2166,11 @@
   "en": " kHz",
   "ru": " кГц",
   "text": " kHz"
+ },
+ "41bbcfaf": {
+  "en": "None",
+  "ru": "Нет",
+  "text": "لا شيء"
  },
  "44398b47": {
   "en": {
@@ -2188,6 +2251,21 @@
   "ru": "На пересылку; старые MeshCore не пересылают 2-3",
   "text": "لكل قفزة؛ MeshCore القديم يُسقط 2-3"
  },
+ "6cb649a5": {
+  "en": "Repeaters pass on our floods by it; OK: type",
+  "ru": "По нему репитеры пересылают наши пакеты; OK: ввести",
+  "text": "المرحلات تعيد الإرسال وفقها؛ OK: اكتب"
+ },
+ "dfcdde20": {
+  "en": "Found: ",
+  "ru": "Найдены: ",
+  "text": "الموجودة: "
+ },
+ "26ba46ea": {
+  "en": "Asks repeaters that hear this device",
+  "ru": "Спросит репитеры, которые слышат устройство",
+  "text": "يسأل المرحلات التي تسمع هذا الجهاز"
+ },
  "7c140ddc": {
   "en": "Applied to the radio when saved",
   "ru": "Применяется к радио при сохранении",
@@ -2262,6 +2340,21 @@
   "en": "Cancel",
   "ru": "Отмена",
   "text": "إلغاء"
+ },
+ "a7cb76b8": {
+  "en": "Search",
+  "ru": "Искать",
+  "text": "بحث"
+ },
+ "3f7e1a1c": {
+  "en": "Found",
+  "ru": "Найденные",
+  "text": "الموجودة"
+ },
+ "9deec0c8": {
+  "en": "Type",
+  "ru": "Ввести",
+  "text": "اكتب"
  },
  "9a8267a9": {
   "en": "Change",
@@ -2727,6 +2820,11 @@
   "ru": "Имя питомца",
   "text": "اسم الحيوان"
  },
+ "7b04c300": {
+  "en": "Region of the channel",
+  "ru": "Регион канала",
+  "text": "منطقة القناة"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2751,6 +2849,16 @@
   "en": "As in the MeshCore app: ver, get name, neighbors...",
   "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
   "text": "كما في تطبيق MeshCore: ver, get name, neighbors..."
+ },
+ "74df0d68": {
+  "en": "As on repeaters: msk, sao...; empty: none",
+  "ru": "Как на репитерах: msk, sao...; пусто - нет",
+  "text": "كما في المرحلات: msk, sao...؛ فارغ: لا شيء"
+ },
+ "7b6f9672": {
+  "en": "As on repeaters: msk, sao...; empty: default",
+  "ru": "Как на репитерах: msk, sao...; пусто - по умолчанию",
+  "text": "كما في المرحلات: msk, sao...؛ فارغ: الافتراضي"
  },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
@@ -2857,6 +2965,11 @@
   "ru": "Имя: 1-15 байт UTF-8",
   "text": "الاسم: 1-15 بايت UTF-8"
  },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "المنطقة: حروف وأرقام و'-'"
+ },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
   "ru": "Пароль: 8-63 символа",
@@ -2936,6 +3049,16 @@
   "en": "Nothing to save",
   "ru": "Изменений нет",
   "text": "لا شيء للحفظ"
+ },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "غير متاح في هذا الوضع"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "الراديو غير متاح"
  },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
@@ -3057,6 +3180,21 @@
   "ru": "Выкл",
   "text": "مطفأ"
  },
+ "13c4173d": {
+  "en": "None",
+  "ru": "Без региона",
+  "text": "بلا منطقة"
+ },
+ "52dc749b": {
+  "en": "Default: ",
+  "ru": "По умолчанию: ",
+  "text": "الافتراضي: "
+ },
+ "f8ca4e16": {
+  "en": "Default: none",
+  "ru": "По умолчанию: нет",
+  "text": "الافتراضي: لا شيء"
+ },
  "8baa6473": {
   "en": "Channel removed",
   "ru": "Канал удалён",
@@ -3092,6 +3230,11 @@
   "ru": "Вы уже в этом канале",
   "text": "أنت في هذه القناة بالفعل"
  },
+ "5364d9de": {
+  "en": "Region · OK: save",
+  "ru": "Регион · OK: сохранить",
+  "text": "المنطقة · OK: حفظ"
+ },
  "e029f399": {
   "en": "Invite",
   "ru": "Пригласить",
@@ -3112,15 +3255,25 @@
   "ru": "Покинуть канал",
   "text": "مغادرة القناة"
  },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "جهة اتصال"
+ },
  "b4ff4ddb": {
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "8 قنوات كحد أقصى"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "جهة اتصال"
+ "34bbbe05": {
+  "en": "Region saved",
+  "ru": "Регион сохранён",
+  "text": "تم حفظ المنطقة"
+ },
+ "df759f29": {
+  "en": "Name: 1-31 bytes",
+  "ru": "Имя: 1-31 байт",
+  "text": "الاسم: 1-31 بايت"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -3142,11 +3295,6 @@
   "ru": "История сохранится и вернётся при вступлении",
   "text": "يبقى السجل؛ يظهر عند الانضمام مجددا"
  },
- "df759f29": {
-  "en": "Name: 1-31 bytes",
-  "ru": "Имя: 1-31 байт",
-  "text": "الاسم: 1-31 بايت"
- },
  "0f1754aa": {
   "en": "Left ",
   "ru": "Покинут: ",
@@ -3166,11 +3314,6 @@
   "en": "Not a channel link",
   "ru": "Это не ссылка на канал",
   "text": "ليس رابط قناة"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "غير متاح في هذا الوضع"
  },
  "8b52ceba": {
   "en": "Channel not saved",
@@ -3267,21 +3410,6 @@
   "ru": "Здесь появятся каналы, услышанные в эфире",
   "text": "ستظهر هنا القنوات المسموعة في البث"
  },
- "7a0b46f9": {
-  "en": "Public channel of MeshCore",
-  "ru": "Общий канал MeshCore",
-  "text": "قناة MeshCore العامة"
- },
- "437ffb06": {
-  "en": "Private channel",
-  "ru": "Закрытый канал",
-  "text": "قناة خاصة"
- },
- "71c7250d": {
-  "en": "Hashtag channel",
-  "ru": "Канал-хештег",
-  "text": "قناة وسم"
- },
  "42861984": {
   "en": "Channel name",
   "ru": "Название канала",
@@ -3311,6 +3439,21 @@
   "en": "Same #name, same channel as in MeshCore apps",
   "ru": "То же #имя — тот же канал, что в приложениях MeshCore",
   "text": "نفس #الاسم، نفس القناة في تطبيقات MeshCore"
+ },
+ "7a0b46f9": {
+  "en": "Public channel of MeshCore",
+  "ru": "Общий канал MeshCore",
+  "text": "قناة MeshCore العامة"
+ },
+ "437ffb06": {
+  "en": "Private channel",
+  "ru": "Закрытый канал",
+  "text": "قناة خاصة"
+ },
+ "71c7250d": {
+  "en": "Hashtag channel",
+  "ru": "Канал-хештег",
+  "text": "قناة وسم"
  },
  "a632f05f": {
   "en": "The key is made on this device",
@@ -4716,6 +4859,11 @@
   "ru": "Бросок первый в меню",
   "text": "الرمي أول بند في القائمة"
  },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "74c2869f": {
   "en": "status: waiting",
   "ru": "статус: ждём",
@@ -4820,6 +4968,30 @@
   "en": "off",
   "ru": "выкл",
   "text": "مطفأ"
+ },
+ "b983ac8e": {
+  "en": " rpt...",
+  "ru": " ретр...",
+  "text": " مرحل..."
+ },
+ "6ab0471b": {
+  "en": {
+   "one": "found",
+   "other": "found"
+  },
+  "ru": {
+   "one": "найден",
+   "few": "найдено",
+   "many": "найдено"
+  },
+  "forms": {
+   "zero": "{n} موجودة",
+   "one": "واحدة",
+   "two": "اثنتان",
+   "few": "{n} موجودة",
+   "many": "{n} موجودة",
+   "other": "{n} موجودة"
+  }
  },
  "a06fdf5a": {
   "en": "Radio busy, retry",
@@ -5725,11 +5897,6 @@
   "en": "trace: no answer",
   "ru": "трасса: нет ответа",
   "text": "التتبّع: لا رد"
- },
- "60a11f70": {
-  "en": "SNR ",
-  "ru": "SNR ",
-  "text": "SNR "
  },
  "696ee294": {
   "en": "Optional",

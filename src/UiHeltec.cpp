@@ -12,6 +12,7 @@
 #include "Pet.h"
 #include "Dice.h"
 #include "Power.h"
+#include "Regions.h"
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
@@ -200,18 +201,23 @@ template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96
 // hold - change it (click - next value, hold - done); the frequency goes digit by digit (click - the
 // digit +1, hold - the next digit). Joystick: up/down - rows, left/right - values, OK on the frequency -
 // its digits (left/right - digit, up/down - value), back - leave without saving.
-enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowSave,RowCancel,RadioRows};
+// Region: the default one of our floods (Regions.h), chosen among the regions found; Find regions: asks the
+// repeaters that hear this node (hold).
+enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowRegion,RowFind,RowSave,RowCancel,RadioRows};
 bool radioEdit=false,radioEditing=false;int radioRow=0,radioDigit=0;Config radioDraft;
 void openRadio(){radioDraft=config;radioEdit=true;radioEditing=false;radioRow=0;radioDigit=0;dirty=true;}
 String radioName(int i){
  switch(i){case RowFreq:return t("Frequency","Частота");case RowBw:return t("Bandwidth","Полоса");case RowSf:return "SF";case RowCr:return "CR";
  case RowPower:return t("Power","Мощность");case RowHops:return t("Relay limit","Предел перес.");case RowRelay:return t("Relaying","Ретрансляция");case RowHash:return t("Path hash","Хэш пути");
+ case RowRegion:return t("Region","Регион");case RowFind:return t("Find regions","Найти регионы");
  case RowSave:return t("Save","Сохранить");default:return t("Cancel","Отмена");}
 }
 String radioValue(const Config& c,int i){
  switch(i){case RowFreq:return String(c.frequency,3);case RowBw:return String(c.bandwidth,1);case RowSf:return String(c.sf);case RowCr:return "4/"+String(c.cr);
  case RowPower:return String(c.power)+" dBm";case RowHops:return String(c.hops);case RowRelay:return c.relay?t("on","вкл"):t("off","выкл");
- case RowHash:return plural(c.pathHash,"byte","bytes","байт","байта","байт");}return "";
+ case RowHash:return plural(c.pathHash,"byte","bytes","байт","байта","байт");
+ case RowRegion:return c.region[0]?String(c.region):String(t("none","нет"));
+ case RowFind:{auto& s=regions::search;return regions::searching()?String(s.repeaters)+t(" rpt..."," ретр..."):s.state==regions::Search::Done?plural(s.count,"found","found","найден","найдено","найдено"):String("");}}return "";
 }
 bool radioChanged(){for(int i=0;i<RowSave;i++)if(radioValue(radioDraft,i)!=radioValue(config,i))return true;return false;}
 // The frequency digit being set: 0 - megahertz (863..870), 1..3 - the kilohertz digits.
@@ -230,11 +236,13 @@ void radioStep(int dir){
  case RowHops:d.hops=(d.hops+dir+8)%8;break;
  case RowRelay:d.relay=!d.relay;break;
  case RowHash:d.pathHash=1+(d.pathHash-1+dir+3)%3;break;
+ case RowRegion:strlcpy(d.region,regions::cycle(d.region,dir,false).c_str(),sizeof d.region);break;
+ case RowFind:if(!regions::find())notice(t("Radio offline","Радио недоступно"));break;
  }dirty=true;
 }
 void radioSave(){
  if(!radioChanged()){radioEdit=false;notice(t("Nothing to save","Изменений нет"));return;}
- StaticJsonDocument<256> j;auto& d=radioDraft;j["frequency"]=d.frequency;j["bandwidth"]=d.bandwidth;j["sf"]=int(d.sf);j["cr"]=int(d.cr);j["power"]=int(d.power);j["hops"]=int(d.hops);j["relay"]=d.relay;j["path_hash"]=int(d.pathHash);
+ StaticJsonDocument<256> j;auto& d=radioDraft;j["frequency"]=d.frequency;j["bandwidth"]=d.bandwidth;j["sf"]=int(d.sf);j["cr"]=int(d.cr);j["power"]=int(d.power);j["hops"]=int(d.hops);j["relay"]=d.relay;j["path_hash"]=int(d.pathHash);j["region"]=d.region;
  String r=applySettings(j.as<JsonObjectConst>());bool saved=r.startsWith("OK");if(saved)radioEdit=false;
  notice(saved?t("Settings saved","Настройки сохранены"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4));
 }
@@ -242,13 +250,13 @@ void radioButton(bool click,bool hold){
  if(radioEditing){if(click)radioStep(1);else if(hold){if(radioRow==RowFreq&&radioDigit<3)radioDigit++;else{radioEditing=false;radioDigit=0;}}return;}
  if(click){radioRow=(radioRow+1)%RadioRows;return;}
  if(!hold)return;
- if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowRelay)radioStep(1);else{radioEditing=true;radioDigit=0;}
+ if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowRelay||radioRow==RowFind)radioStep(1);else{radioEditing=true;radioDigit=0;}
 }
 #if defined(MM_JOYSTICK)
 void radioJoystick(bool up,bool down,bool left,bool right,bool ok,bool back){
  if(radioEditing){if(up||down)radioStep(up?1:-1);else if(left||right)radioDigit=constrain(radioDigit+(right?1:-1),0,3);else if(ok||back)radioEditing=false;return;}
  if(up||down){radioRow=(radioRow+(up?RadioRows-1:1))%RadioRows;return;}
- if(left||right){if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else if(radioRow<RowSave)radioStep(right?1:-1);return;}
+ if(left||right){if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else if(radioRow<RowSave&&radioRow!=RowFind)radioStep(right?1:-1);return;}
  if(ok){if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else radioStep(1);return;}
  if(back)radioEdit=false;
 }

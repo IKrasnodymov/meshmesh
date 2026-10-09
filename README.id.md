@@ -20,6 +20,7 @@ MeshCore standar.
 - **Chat** — pesan langsung dan publik, tanda terima ✓✓, pengiriman ulang, rute ditampilkan per pesan.
 - **Kanal** — hingga 8 kanal MeshCore: gabung lewat #hashtag, tautan `meshcore://` atau kode QR, nama dan kunci;
   buat kanal privat, undang kontak lewat pesan langsung, temukan kanal yang terdengar di udara. [docs/en/channels.md](docs/en/channels.md)
+- **Wilayah** — cakupan flood MeshCore: wilayah bawaan dan per kanal, pencarian wilayah repeater terdekat; repeater diatur dengan perintah `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Peta offline** — tile OpenStreetMap di kartu SD, posisi GPS dan node di peta.
 - **Node di sekitar** — sinyal, hop, jarak dan arah; kontak, repeater dan ruang.
 - **Radar sinyal** — Wi-Fi, Bluetooth dan LoRa di sekitar Anda, dengan pelacakan “panas / dingin”.
@@ -91,7 +92,7 @@ Antarmuka layar dapat dirender di komputer tanpa papan: `tools/ui_preview/build.
 
 ## Dokumentasi
 
-Dokumentasi terperinci dalam bahasa Inggris: [kanal](docs/en/channels.md), [kompatibilitas MeshCore](docs/en/meshcore-migration.md), [papan](docs/en/boards.md),
+Dokumentasi terperinci dalam bahasa Inggris: [kanal](docs/en/channels.md), [wilayah](docs/en/regions.md), [kompatibilitas MeshCore](docs/en/meshcore-migration.md), [papan](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [mode repeater dan ruang](docs/en/repeater.md),
 [protokol catur](docs/en/chess.md), [format peta](docs/en/maps-format.md), [perbandingan dengan MeshCore](docs/en/feature-parity.md),
 [verifikasi perangkat keras](docs/en/verification.md). Versi asli berbahasa Rusia ada di [docs/](docs/), dengan

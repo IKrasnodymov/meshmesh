@@ -23,6 +23,9 @@ struct Config {
   bool bleOn=false;  // Bluetooth on after boot: the last choice, else on in the normal role
   bool lockDetails=true; // the locked screen names chess opponents, moves and message senders
   char apps[112]=""; // screen menu: order of the apps, "-" hides one (App.h); empty = the default
+  // Default region of our flood packets (Regions.h): empty - none; the key is that of "#name" unless an app set
+  // another (a private region of the MeshCore app).
+  char region[31]="";uint8_t regionKey[16]={};
   void load();
   void save();
   bool valid() const;

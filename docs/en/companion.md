@@ -47,6 +47,11 @@ Protocol version 10 (`examples/companion_radio` of MeshCore companion-v1.17.1), 
 - Since 0.10.0, path trace through given repeaters (hashes and the SNR of each hop) and path discovery to
   a node (a flooded telemetry request; both paths go to the app and are not stored as the route). The
   board's own telemetry is its battery voltage.
+- Since 0.15.0, regions (`docs/en/regions.md`): the default region (`CMD_SET_DEFAULT_FLOOD_SCOPE` 63,
+  `CMD_GET_DEFAULT_FLOOD_SCOPE` 64; the same "Region" as in the board's radio settings), the session region
+  (`CMD_SET_FLOOD_SCOPE_KEY` 54: a key, a reset or the "unscoped" flag; it holds while the app is connected) and
+  zero-hop control packets (`CMD_SEND_CONTROL_DATA` 55, answers as `PUSH_CODE_CONTROL_DATA` 0x8E) for the app's
+  region search.
 
 The clock. A repeater or room drops a request whose time is not newer than the client's previous one
 (replay protection). The official apps set the board's clock when they connect; if the clock is not set
@@ -61,12 +66,12 @@ BW 62.5/125/250/500 kHz), the name up to 24 bytes of UTF-8, a channel name by th
 
 The board answers these commands with "unsupported" (`ERR_CODE_UNSUPPORTED_CMD`):
 
-- raw packets, channel data and control packets (neighbour discovery), data signing;
+- raw packets, channel data, data signing;
 - answers to other nodes' telemetry requests (as on stock firmware by default: "deny"), so a path
   discovery to a MeshMesh node in the normal mode gets no answer; repeaters and rooms answer;
 - coordinates for the advert set from the app (the position comes from the board's GPS), other
   parameters (telemetry mode, extra ACKs, manual contact adding), auto-add settings, receive delay,
-  flood scopes, PIN change;
+  PIN change;
 - exporting and importing the private key (answered "disabled", as on stock firmware without that option).
 
 Chess moves arriving over the radio are not passed to the app: they are service messages.

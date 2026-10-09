@@ -19,7 +19,7 @@ static void scenario(){
   for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"settings\"")<0;i++)key(0xb7);key(13);key(0xb6);key(13);expect("radio screen","\"page\":\"radio\"");shot("gat562-radio");
   key(13);key(0xb5);expect("MHz +1","\"radio_draft\":\"869.731\"");key(0xb7);key(0xb7);key(0xb5);key(0xb5);expect("10 kHz +2","\"radio_draft\":\"869.751\"");shot("gat562-radio-freq");
   key(13);key(0xb6);key(0xb6);key(0xb7);expect("SF9","\"radio_draft\":\"9\"");shot("gat562-radio-sf");
-  for(int i=0;i<6;i++)key(0xb6);expect("Save row","\"radio_row\":8");key(13);expect("saved and closed","\"page\":\"settings\"");
+  for(int i=0;i<8;i++)key(0xb6);expect("Save row","\"radio_row\":10");key(13);expect("saved and closed","\"page\":\"settings\"");
   key(13);key(0xb6);key(13);key(0x86);expect("back leaves","\"page\":\"settings\"");}
 #elif defined(MM_BOARD_TDECK)
  // Touch (uiTouch): each step checks the page the production UI reached.
@@ -113,7 +113,7 @@ static void scenario(){
  shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);
  // Channels: the list, a hashtag channel's card, a private channel and its card, adding one, an invitation.
  key(0xb6);shot("threads-channels");key(0xb7);shot("channel-hashtag");key(0x86);
- key(0xb6);key(0xb6);key(13);shot("chat-channel");key(0xb4);shot("channel-private");key(0xb6);key(13);shot("channel-leave");key(0x86);key(0x86);
+ key(0xb6);key(0xb6);key(13);shot("chat-channel");key(0xb4);shot("channel-private");key(0xb7);shot("channel-region");key(0xb4);key(0xb6);key(0xb6);key(13);shot("channel-leave");key(0x86);key(0x86);
  key(0xb6);key(0xb6);key(0xb6);key(13);shot("channel-add");key(13);key(0x83);for(char ch:std::string("test"))key(ch);shot("channel-add-tag");key(0x83);key(0x86);key(0x86);
  for(int i=0;i<4;i++)key(0xb6);key(13);shot("chat-invite");key(0xb4);shot("chat-invite-joined");key(0x86);
  if(!meshRadio.channel(channels::idOf(meshRadio.channelList[3].secret))||strcmp(meshRadio.channelList[3].name,"Походы")){printf("FAIL invitation not joined\n");exit(1);}
@@ -126,7 +126,7 @@ static void scenario(){
  {String want=String("\"selected_node\":\"")+meshRadio.idText(peerId(1))+"\"";for(int i=0;i<8&&uiStatus().indexOf(want)<0;i++)key(0xb6);
   if(uiStatus().indexOf(want)<0){printf("FAIL repeater not in the node list: %s\n",uiStatus().c_str());exit(1);}}
  key(13);shot("node-repeater");key(13);if(uiStatus().indexOf("\"page\":\"remote\"")<0){printf("FAIL server page: %s\n",uiStatus().c_str());exit(1);}shot("remote");key(0x86);key(0x86);key(0x86);
- key(0x82);key(0xb6);key(13);shot("sensors");key(0x90);shot("settings");key(13);key(0xb7);shot("radio");for(int i=0;i<7;i++)key(0xb6);key(0xb7);shot("radio-hash");key(0x86);key(0xb6);key(13);for(int i=0;i<8;i++)key(0xb6);key(0xb7);shot("display-battery");for(int i=0;i<8;i++)key(0xb5);shot("display");key(13);shot("display-name");key(0x86);key(0x86);
+ key(0x82);key(0xb6);key(13);shot("sensors");key(0x90);shot("settings");key(13);key(0xb7);shot("radio");for(int i=0;i<7;i++)key(0xb6);key(0xb7);shot("radio-hash");key(0xb6);key(0xb6);key(13);shot("radio-regions");key(0xb5);key(0xb7);key(0xb7);key(0xb7);shot("radio-region");key(13);for(int i=0;i<3;i++)key(8);for(char ch:std::string("sao"))key(ch);shot("radio-region-type");key(0x86);key(0x86);key(0xb6);key(13);for(int i=0;i<8;i++)key(0xb6);key(0xb7);shot("display-battery");for(int i=0;i<8;i++)key(0xb5);shot("display");key(13);shot("display-name");key(0x86);key(0x86);
  key(0x82);key(0xb6);key(0xb7);key(13);key(13);key(0xb6);key(13);shot("network");key(13);key(0xb6);key(13);key(0x83);shot("diagnostics");key(0x90);for(int i=0;i<5;i++)key(0xb6);key(13);shot("help");key(13);shot("help-layout");key(0x86);key(13);shot("help-layout");key(0x86);
  // Connections with Bluetooth on: the MeshCore- name the phone apps see, then off again.
  key(0x90);for(int i=0;i<3;i++)key(0xb6);key(13);key(0xb6);key(0xb6);key(13);
@@ -270,7 +270,9 @@ static void scenario(){
  key(0xa3);expect("settings menu","\"menu\":true");key(0xa3);expect("radio screen","\"page\":\"radio\"");shot("heltec-radio");
  key(0xa3);key(13);expect("MHz +1","\"radio_draft\":\"869.731\"");key(0xa3);key(0xa3);key(13);key(13);expect("10 kHz +2","\"radio_draft\":\"869.751\"");shot("heltec-radio-freq");
  key(0xa3);key(0xa3);expect("digits done","\"radio_editing\":false");key(13);key(13);key(0xa3);key(13);expect("SF9","\"radio_draft\":\"9\"");shot("heltec-radio-sf");key(0xa3);
- for(int i=0;i<6;i++)key(13);expect("Save row","\"radio_row\":8");shot("heltec-radio-save");key(0xa3);expect("saved and closed","\"page\":\"settings\"");
+ for(int i=0;i<7;i++)key(13);expect("Find row","\"radio_row\":9");key(0xa3);shot("heltec-radio-find");
+ for(int i=0;i<11;i++)key(13);expect("Region row","\"radio_row\":8");key(0xa3);key(13);key(13);key(13);key(0xa3);shot("heltec-radio-region");
+ for(int i=0;i<2;i++)key(13);expect("Save row","\"radio_row\":10");shot("heltec-radio-save");key(0xa3);expect("saved and closed","\"page\":\"settings\"");
 #else
  config.role=RoleRepeater;key(0x82);shot("repeater");key(0x86);
  config.role=RoleRoom;key(0x82);shot("room");key(13);for(char ch:std::string(config.lang==LangRu||config.lang==LangUk?"Vstre1a u vhoda posle obeda":"Meet at the gate after lunch"))key(ch);shot("room-post");key(0x86);

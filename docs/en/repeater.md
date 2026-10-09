@@ -71,6 +71,9 @@ stock `password`. It is shown on the screen and on the web page. The guest passw
 empty by default, as in the stock firmware. On the repeater, login with an empty password gives read-only guest
 access. On the room server, an empty password lets in members who can write.
 
+Regions (`region def`, `region put`, `region allowf` and the other MeshCore 1.17 commands) are set through the
+CLI; an example for the Moscow region scheme and the region search from a normal board are in `docs/en/regions.md`.
+
 Changes through the CLI are checked against the board's limits. This applies to `set radio`, `set freq`, `set tx` and
 `set name`. Limits: 863–870 MHz, BW 62.5/125/250/500, SF7–12, CR5–8, 0–MAX dBm, name 1–24 bytes.
 Out-of-range values are rejected with an `Error: …` message. Radio settings, as in the stock firmware, take effect

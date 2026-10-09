@@ -27,7 +27,9 @@ State of MeshMesh 0.3.2 from the sources as of 30 September 2026. Sources:
 | Trace path, path discovery, discover neighbours (CONTROL) | Trace from the screen and web page since 0.13.0; path discovery in the MeshCore app; neighbour discovery: no | `src/Remote.inc` |
 | Share contact (zero-hop), export/import, `meshcore://` | No | — |
 | Favourite contacts, manual add, auto-add settings | No | — |
-| Multi-ACK, flood scope/regions, path hash size, GRP_DATA, raw | No | — |
+| Regions (flood scope): default, per channel, search among repeaters, the app's commands ([regions.md](regions.md)) | Yes since 0.15.0 | `src/Regions.cpp`, `src/RegionSearch.inc` |
+| Path hash size | Yes since 0.11.0 | `src/MeshRadio.cpp` |
+| Multi-ACK, GRP_DATA, raw | No | — |
 | Companion API (the official app over BLE/USB/TCP) | Yes over BLE and USB; since 0.10.0 repeater and room logins, CLI, status, telemetry, trace and path discovery; no TCP ([companion.md](companion.md)) | `src/Companion.inc`, `src/Portal.cpp` |
 
 Consequences for exchange with third-party nodes: in normal mode MeshMesh sees
@@ -57,7 +59,7 @@ Missing compared with WadaMesh:
 - Room servers and repeaters: login, admin console, telemetry with charts,
   trace SNR, range test.
 - Radio: 21 regional presets, airtime factor, duty cycle indicator, spectrum
-  analyser, signal and traffic page, regions.
+  analyser, signal and traffic page.
 - Device: first-run wizard, day/high-contrast theme, interface size,
   keyboard backlight, “do not disturb”, control centre, battery graph and sleep,
   OTA, settings backup, 14 languages (we have RU/EN).

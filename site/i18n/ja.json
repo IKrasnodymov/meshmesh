@@ -248,5 +248,13 @@
  "shot.t114-ble-on": "T114：MeshCore-T114 と PIN",
  "shot.heltec-ble-on": "OLED：名前と PIN",
  "doc.companion": "MeshCore アプリ",
- "news.remote": "<b>新機能：</b>画面から直接リピーターやルームにログインし、ルームの投稿を読み書きし、経路をトレース"
+ "news.remote": "<b>新機能：</b>画面から直接リピーターやルームにログインし、ルームの投稿を読み書きし、経路をトレース",
+ "news.regions": "<b>新機能：</b>MeshCore の地域 — メッセージとチャンネルごとの地域を設定し、近くの中継器から検索",
+ "f.regions.t": "地域",
+ "f.regions.d": "MeshCore の flood 範囲：既定の地域とチャンネルごとの地域、近くの中継器が扱う地域の検索、MeshCore アプリの地域コマンド。中継器は region def で設定。",
+ "shot.m9-radio-regions": "無線設定：地域と検索",
+ "shot.m9-channel-region": "チャンネルカード：個別の地域",
+ "shot.heltec-radio-region": "Heltec：見つかった地域から選択",
+ "shot.t114-radio-find": "T114：地域を検索",
+ "doc.regions": "地域"
 }

@@ -1,18 +1,20 @@
 // MeshCore companion protocol (include/Companion.h), included at the end of MeshRadio.cpp: the frames of
 // examples/companion_radio/MyMesh.cpp, MeshCore companion-v1.17.1 (MIT), over this node's contacts, channels
 // and history, with logins to repeaters and rooms, their CLI, status, telemetry, room posts, path trace and path
-// discovery. Not here: raw data, signing and the private key; those commands answer "unsupported".
+// discovery, region scopes (the session's, the default) and zero-hop control data (node discovery). Not here: raw
+// data, signing and the private key; those commands answer "unsupported".
 #include "App.h"
 #include "Version.h"
 namespace {
 enum:uint8_t {CmdAppStart=1,CmdSendText,CmdSendChannelText,CmdGetContacts,CmdGetTime,CmdSetTime,CmdSendAdvert,CmdSetName,CmdAddContact,
  CmdSyncNext,CmdSetRadio,CmdSetPower,CmdResetPath,CmdSetPosition,CmdRemoveContact,CmdShareContact,CmdExportContact,CmdImportContact,CmdReboot,
  CmdBattery,CmdSetTuning,CmdDeviceQuery,CmdExportKey,CmdImportKey,CmdSendRaw,CmdLogin,CmdStatusReq,CmdHasConnection,CmdLogout,CmdContactByKey,
- CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdStats=56,CmdAnonReq,CmdGetAutoAdd=59,CmdSetPathHashMode=61};
+ CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdSetScope=54,CmdControlData,CmdStats,CmdAnonReq,CmdGetAutoAdd=59,CmdSetPathHashMode=61,
+ CmdSetDefaultScope=63,CmdGetDefaultScope};
 enum:uint8_t {RespOk,RespErr,RespContactsStart,RespContact,RespContactsEnd,RespSelfInfo,RespSent,RespContactMsgOld,RespChannelMsgOld,RespTime,
  RespNoMore,RespExport,RespBattery,RespDeviceInfo,RespDisabled=15,RespContactMsg,RespChannelMsg,RespChannelInfo,RespCustomVars=21,
- RespTuning=23,RespStats,RespAutoAdd};
-enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushLoginOk=0x85,PushLoginFail,PushStatus,PushTrace=0x89,PushNewAdvert,PushTelemetry,PushBinary,PushDiscovery};
+ RespTuning=23,RespStats,RespAutoAdd,RespDefaultScope=28};
+enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushLoginOk=0x85,PushLoginFail,PushStatus,PushTrace=0x89,PushNewAdvert,PushTelemetry,PushBinary,PushDiscovery,PushControl};
 enum:uint8_t {TextPlain=0,TextCli=1,TextSigned=2};
 constexpr uint8_t RequestTelemetry=0x03; // REQ_TYPE_GET_TELEMETRY_DATA of the companion
 enum:uint8_t {ErrUnsupported=1,ErrNotFound,ErrTableFull,ErrBadState,ErrFileIo,ErrIllegalArg};
@@ -28,6 +30,8 @@ struct CompanionCore {
  struct Sent {uint64_t to=0;uint32_t stamp=0,id=0,ack=0,at=0;} sent[8];unsigned nextSent=0;
  // The one request awaiting its answer, as in stock MeshCore: a login and a status by the server's key, the others by tag.
  uint32_t pendingLogin=0,pendingStatus=0,pendingTelemetry=0,pendingReq=0,pendingDiscovery=0;
+ // The app's region for our floods while it is linked (CMD_SET_FLOOD_SCOPE_KEY): 0 - not set, 1 - none, 2 - scopeKey.
+ uint8_t scope=0,scopeKey[16]={};
  void clearPending(){pendingLogin=pendingStatus=pendingTelemetry=pendingReq=pendingDiscovery=0;}
  uint8_t f[companion::MaxFrame];size_t n=0;
  MeshCoreBackend* core() const{return meshRadio.core;}
@@ -40,7 +44,7 @@ struct CompanionCore {
  void send(){if(outCount>=6)return;auto& o=out[(outHead+outCount++)%6];o.length=n;memcpy(o.data,f,n);}
  void ok(){start(RespOk);send();}
  void err(uint8_t code){start(RespErr);u8(code);send();}
- void clearLink(){outHead=outCount=0;listing=false;}
+ void clearLink(){outHead=outCount=0;listing=false;scope=0;}
  void contactFrame(uint8_t code,const ContactInfo& c){
   start(code);put(c.id.pub_key,32);u8(c.type);u8(c.flags);u8(c.out_path_len);put(c.out_path,MAX_PATH_SIZE);field(c.name,32);
   u32(c.last_advert_timestamp);u32(c.gps_lat);u32(c.gps_lon);u32(c.lastmod);
@@ -148,7 +152,7 @@ struct CompanionCore {
    sentReply(core()->sendCommandData(*c,coreRtc.getCurrentTimeUnique(),attempt,line,timeout),0,timeout);return;}
   MeshRadio::Pending* slot=nullptr;for(auto& w:r.pending)if(!w.active){slot=&w;break;}if(!slot){err(ErrTableFull);return;}
   Sent* again=nullptr;for(auto& s:sent)if(s.id&&s.to==to&&s.stamp==stamp){again=&s;break;}
-  auto& w=*slot;w={};w.active=true;w.app=true;w.appAttempt=attempt;w.wireTimestamp=stamp;
+  auto& w=*slot;w={};w.active=true;w.app=true;w.appAttempt=attempt;w.wireTimestamp=stamp;w.scoped=r.scopeKey(-1,w.scopeKey);
   auto& m=w.message;m.source=r.nodeId;m.destination=to;m.session=config.bootCounter;m.id=again?again->id:++r.sequence;m.timestamp=time(nullptr);m.outgoing=true;
   m.status=ChatMessage::Queued;strcpy(m.name,config.name);memcpy(m.text,text,size);m.text[size]=0;
   if(again)r.status(m.id,ChatMessage::Queued);else r.addMessage(m);
@@ -256,6 +260,15 @@ struct CompanionCore {
    case CmdStats:if(len<2)break;stats(frame[1]);return;
    case CmdSetPathHashMode:{if(len<3||frame[1])break;if(frame[2]>=3){err(ErrIllegalArg);return;}StaticJsonDocument<32> j;j["path_hash"]=frame[2]+1;settingsReply(apply(j));return;}
    case CmdGetAutoAdd:start(RespAutoAdd);u8(0x1F);u8(0);send();return; // every type, the oldest replaced when full
+   case CmdSetScope:{if(len<2||frame[1]>1)break;static const uint8_t none[16]={};
+    if(frame[1]==1)scope=1;else if(len>=18&&memcmp(frame+2,none,16)){memcpy(scopeKey,frame+2,16);scope=2;}else scope=0;ok();return;}
+   case CmdControlData:{if(len<2||!(frame[1]&0x80))break;if(!r.ready){err(ErrBadState);return;}
+    mesh::Packet* p=d->createControlData(frame+1,len-1);if(!p){err(ErrTableFull);return;}d->sendZeroHop(p);ok();return;}
+   case CmdSetDefaultScope:{ // name (31 bytes) and key; shorter: none
+    if(len>=1+31+16){char name[32]={};memcpy(name,frame+1,31);size_t k=strlen(name);if(!k||k>30||!meshmesh::validUtf8((const uint8_t*)name,k)){err(ErrIllegalArg);return;}
+     strcpy(config.region,name);memcpy(config.regionKey,frame+32,16);}else{config.region[0]=0;memset(config.regionKey,0,16);}
+    config.save();r.event="Settings saved";r.dirty=true;ok();return;}
+   case CmdGetDefaultScope:start(RespDefaultScope);if(config.region[0]){field(config.region,31);put(config.regionKey,16);}send();return;
   }
   err(cmd==CmdSendText||cmd==CmdAddContact||cmd==CmdSetChannel||cmd==CmdGetChannel?ErrIllegalArg:ErrUnsupported);
  }
@@ -268,7 +281,8 @@ struct CompanionCore {
  }
 };
 // On the heap at first use: the classic ESP32 boards have no static DRAM to spare for its 3.5 KB.
-static CompanionCore& app(){static CompanionCore* core=new CompanionCore;return *core;}
+static CompanionCore* appCore=nullptr;
+static CompanionCore& app(){if(!appCore)appCore=new CompanionCore;return *appCore;}
 namespace appLink {
 void contactMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t stamp,const char* text){app().message(false,from.id.pub_key,0,packet,stamp,text);}
 void channelMessage(int index,const mesh::Packet* packet,uint32_t stamp,const char* text){if(index>=0)app().message(true,nullptr,index,packet,stamp,text);}
@@ -283,6 +297,11 @@ void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,
 bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen){return app().discovered(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen);}
 void keyEvent(uint8_t code,const uint8_t* key){auto& a=app();if(!a.link)return;a.start(code);a.put(key,32);a.send();}
 uint32_t confirm(uint32_t ack,uint64_t& destination){return app().confirm(ack,destination);}
+int scope(uint8_t key[16]){if(!appCore||!appCore->link)return 0;if(appCore->scope==2)memcpy(key,appCore->scopeKey,16);return appCore->scope;}
+void control(const mesh::Packet* p){
+ if(!appCore||!appCore->link||p->payload_len+4>companion::MaxFrame)return;auto& a=*appCore;
+ a.start(PushControl);a.u8(uint8_t(int8_t(p->getSNR()*4)));a.u8(uint8_t(int8_t(meshRadio.lastRssi)));a.u8(p->path_len);a.put(p->payload,p->payload_len);a.send();
+}
 }
 namespace companion {
 void command(const uint8_t* frame,size_t length,Link from){

@@ -1959,6 +1959,44 @@
    "other": "타일 {n}"
   }
  },
+ "31760903": {
+  "en": "Searching: ",
+  "ru": "Поиск: ",
+  "text": "검색 중: "
+ },
+ "adb18dd8": {
+  "en": {
+   "one": "repeater",
+   "other": "repeaters"
+  },
+  "ru": {
+   "one": "репитер",
+   "few": "репитера",
+   "many": "репитеров"
+  },
+  "forms": {
+   "other": "리피터 {n}개"
+  }
+ },
+ "27ca04b5": {
+  "en": "OK: start",
+  "ru": "OK: начать",
+  "text": "OK: 시작"
+ },
+ "ff52d5a8": {
+  "en": {
+   "one": "region",
+   "other": "regions"
+  },
+  "ru": {
+   "one": "регион",
+   "few": "региона",
+   "many": "регионов"
+  },
+  "forms": {
+   "other": "지역 {n}개"
+  }
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -1998,6 +2036,16 @@
   "en": "Path hash size",
   "ru": "Размер хэша пути",
   "text": "경로 해시 크기"
+ },
+ "00a80d35": {
+  "en": "Region",
+  "ru": "Регион",
+  "text": "지역"
+ },
+ "12df6dcb": {
+  "en": "Find regions",
+  "ru": "Найти регионы",
+  "text": "지역 찾기"
  },
  "055e7477": {
   "en": "Name",
@@ -2058,6 +2106,11 @@
   "en": " kHz",
   "ru": " кГц",
   "text": " kHz"
+ },
+ "41bbcfaf": {
+  "en": "None",
+  "ru": "Нет",
+  "text": "없음"
  },
  "44398b47": {
   "en": {
@@ -2133,6 +2186,21 @@
   "ru": "На пересылку; старые MeshCore не пересылают 2-3",
   "text": "플러드 패킷 홉당 크기; 구 MeshCore는 2-3 폐기"
  },
+ "6cb649a5": {
+  "en": "Repeaters pass on our floods by it; OK: type",
+  "ru": "По нему репитеры пересылают наши пакеты; OK: ввести",
+  "text": "리피터가 이에 따라 전달; OK: 입력"
+ },
+ "dfcdde20": {
+  "en": "Found: ",
+  "ru": "Найдены: ",
+  "text": "찾음: "
+ },
+ "26ba46ea": {
+  "en": "Asks repeaters that hear this device",
+  "ru": "Спросит репитеры, которые слышат устройство",
+  "text": "이 기기를 듣는 리피터에 문의"
+ },
  "7c140ddc": {
   "en": "Applied to the radio when saved",
   "ru": "Применяется к радио при сохранении",
@@ -2207,6 +2275,21 @@
   "en": "Cancel",
   "ru": "Отмена",
   "text": "취소"
+ },
+ "a7cb76b8": {
+  "en": "Search",
+  "ru": "Искать",
+  "text": "검색"
+ },
+ "3f7e1a1c": {
+  "en": "Found",
+  "ru": "Найденные",
+  "text": "찾은 것"
+ },
+ "9deec0c8": {
+  "en": "Type",
+  "ru": "Ввести",
+  "text": "입력"
  },
  "9a8267a9": {
   "en": "Change",
@@ -2667,6 +2750,11 @@
   "ru": "Имя питомца",
   "text": "펫 이름"
  },
+ "7b04c300": {
+  "en": "Region of the channel",
+  "ru": "Регион канала",
+  "text": "채널 지역"
+ },
  "4b20829b": {
   "en": "Wi-Fi password: ",
   "ru": "Пароль Wi-Fi: ",
@@ -2691,6 +2779,16 @@
   "en": "As in the MeshCore app: ver, get name, neighbors...",
   "ru": "Как в приложении MeshCore: ver, get name, neighbors...",
   "text": "MeshCore 앱처럼: ver, get name, neighbors..."
+ },
+ "74df0d68": {
+  "en": "As on repeaters: msk, sao...; empty: none",
+  "ru": "Как на репитерах: msk, sao...; пусто - нет",
+  "text": "리피터와 같게: msk, sao...; 비움: 없음"
+ },
+ "7b6f9672": {
+  "en": "As on repeaters: msk, sao...; empty: default",
+  "ru": "Как на репитерах: msk, sao...; пусто - по умолчанию",
+  "text": "리피터와 같게: msk, sao...; 비움: 기본"
  },
  "60fa6a70": {
   "en": "8-63 characters; -> after a letter: capital",
@@ -2797,6 +2895,11 @@
   "ru": "Имя: 1-15 байт UTF-8",
   "text": "이름: 1-15 UTF-8 바이트"
  },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "지역: 문자, 숫자, '-'"
+ },
  "cb8d0572": {
   "en": "Password: 8-63 characters",
   "ru": "Пароль: 8-63 символа",
@@ -2876,6 +2979,16 @@
   "en": "Nothing to save",
   "ru": "Изменений нет",
   "text": "저장할 내용 없음"
+ },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "이 모드에서 불가"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "무선 사용 불가"
  },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
@@ -2997,6 +3110,21 @@
   "ru": "Выкл",
   "text": "끔"
  },
+ "13c4173d": {
+  "en": "None",
+  "ru": "Без региона",
+  "text": "지역 없음"
+ },
+ "52dc749b": {
+  "en": "Default: ",
+  "ru": "По умолчанию: ",
+  "text": "기본: "
+ },
+ "f8ca4e16": {
+  "en": "Default: none",
+  "ru": "По умолчанию: нет",
+  "text": "기본: 없음"
+ },
  "8baa6473": {
   "en": "Channel removed",
   "ru": "Канал удалён",
@@ -3032,6 +3160,11 @@
   "ru": "Вы уже в этом канале",
   "text": "이미 참여한 채널"
  },
+ "5364d9de": {
+  "en": "Region · OK: save",
+  "ru": "Регион · OK: сохранить",
+  "text": "지역 · OK: 저장"
+ },
  "e029f399": {
   "en": "Invite",
   "ru": "Пригласить",
@@ -3052,15 +3185,25 @@
   "ru": "Покинуть канал",
   "text": "채널 나가기"
  },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "연락처"
+ },
  "b4ff4ddb": {
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "채널은 최대 8개"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "연락처"
+ "34bbbe05": {
+  "en": "Region saved",
+  "ru": "Регион сохранён",
+  "text": "지역 저장됨"
+ },
+ "df759f29": {
+  "en": "Name: 1-31 bytes",
+  "ru": "Имя: 1-31 байт",
+  "text": "이름: 1-31 바이트"
  },
  "9c1eb940": {
   "en": "Discover a chat contact first: ADV",
@@ -3082,11 +3225,6 @@
   "ru": "История сохранится и вернётся при вступлении",
   "text": "기록은 유지, 다시 참여하면 표시"
  },
- "df759f29": {
-  "en": "Name: 1-31 bytes",
-  "ru": "Имя: 1-31 байт",
-  "text": "이름: 1-31 바이트"
- },
  "0f1754aa": {
   "en": "Left ",
   "ru": "Покинут: ",
@@ -3106,11 +3244,6 @@
   "en": "Not a channel link",
   "ru": "Это не ссылка на канал",
   "text": "채널 링크가 아님"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "이 모드에서 불가"
  },
  "8b52ceba": {
   "en": "Channel not saved",
@@ -3207,21 +3340,6 @@
   "ru": "Здесь появятся каналы, услышанные в эфире",
   "text": "수신된 채널이 여기에 표시됩니다"
  },
- "7a0b46f9": {
-  "en": "Public channel of MeshCore",
-  "ru": "Общий канал MeshCore",
-  "text": "MeshCore 공개 채널"
- },
- "437ffb06": {
-  "en": "Private channel",
-  "ru": "Закрытый канал",
-  "text": "비공개 채널"
- },
- "71c7250d": {
-  "en": "Hashtag channel",
-  "ru": "Канал-хештег",
-  "text": "해시태그 채널"
- },
  "42861984": {
   "en": "Channel name",
   "ru": "Название канала",
@@ -3251,6 +3369,21 @@
   "en": "Same #name, same channel as in MeshCore apps",
   "ru": "То же #имя — тот же канал, что в приложениях MeshCore",
   "text": "같은 #이름이면 MeshCore 앱과 같은 채널"
+ },
+ "7a0b46f9": {
+  "en": "Public channel of MeshCore",
+  "ru": "Общий канал MeshCore",
+  "text": "MeshCore 공개 채널"
+ },
+ "437ffb06": {
+  "en": "Private channel",
+  "ru": "Закрытый канал",
+  "text": "비공개 채널"
+ },
+ "71c7250d": {
+  "en": "Hashtag channel",
+  "ru": "Канал-хештег",
+  "text": "해시태그 채널"
  },
  "a632f05f": {
   "en": "The key is made on this device",
@@ -4626,6 +4759,11 @@
   "ru": "Бросок первый в меню",
   "text": "굴리기는 메뉴 첫 항목"
  },
+ "60a11f70": {
+  "en": "SNR ",
+  "ru": "SNR ",
+  "text": "SNR "
+ },
  "74c2869f": {
   "en": "status: waiting",
   "ru": "статус: ждём",
@@ -4730,6 +4868,25 @@
   "en": "off",
   "ru": "выкл",
   "text": "끔"
+ },
+ "b983ac8e": {
+  "en": " rpt...",
+  "ru": " ретр...",
+  "text": " 중계..."
+ },
+ "6ab0471b": {
+  "en": {
+   "one": "found",
+   "other": "found"
+  },
+  "ru": {
+   "one": "найден",
+   "few": "найдено",
+   "many": "найдено"
+  },
+  "forms": {
+   "other": "{n}개 찾음"
+  }
  },
  "a06fdf5a": {
   "en": "Radio busy, retry",
@@ -5635,11 +5792,6 @@
   "en": "trace: no answer",
   "ru": "трасса: нет ответа",
   "text": "추적: 응답 없음"
- },
- "60a11f70": {
-  "en": "SNR ",
-  "ru": "SNR ",
-  "text": "SNR "
  },
  "696ee294": {
   "en": "Optional",

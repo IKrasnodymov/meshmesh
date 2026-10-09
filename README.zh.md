@@ -19,6 +19,7 @@
 - **聊天**——私聊和公开消息，✓✓ 送达回执，自动重发，每条消息显示路由。
 - **频道**——最多 8 个 MeshCore 频道：通过 #话题标签、`meshcore://` 链接或二维码、名称和密钥加入；
   创建私密频道，通过私信邀请联系人，发现空中收到的频道。[docs/en/channels.md](docs/en/channels.md)
+- **区域** — MeshCore 的 flood 范围：默认区域和每个频道的区域，查找附近中继器服务的区域；中继器用 `region` 命令设置。[docs/en/regions.md](docs/en/regions.md)
 - **离线地图**——SD 卡上的 OpenStreetMap 瓦片，在地图上显示 GPS 位置和节点。
 - **附近节点**——信号、跳数、距离和方位；联系人、中继器和房间。
 - **信号雷达**——扫描周围的 Wi-Fi、Bluetooth 和 LoRa，支持“变强 / 变弱”测向。
@@ -89,7 +90,7 @@ Android 应用：`cd android && ./gradlew testDebugUnitTest assembleRelease`（[
 
 ## 文档
 
-英文详细文档：[频道](docs/en/channels.md)、[MeshCore 兼容性](docs/en/meshcore-migration.md)、[开发板](docs/en/boards.md)、
+英文详细文档：[频道](docs/en/channels.md)、[区域](docs/en/regions.md)、[MeshCore 兼容性](docs/en/meshcore-migration.md)、[开发板](docs/en/boards.md)、
 [GAT562](docs/en/gat562.md)、[Android](docs/en/android.md)、[中继器和房间模式](docs/en/repeater.md)、
 [国际象棋协议](docs/en/chess.md)、[地图格式](docs/en/maps-format.md)、[与 MeshCore 的对比](docs/en/feature-parity.md)、
 [硬件验证](docs/en/verification.md)。俄文原版位于 [docs/](docs/)，完整的操作与功能指南见
