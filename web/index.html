@@ -34,7 +34,7 @@ button.row:hover,button.row:focus-visible,.row.sel{background:var(--hi);outline:
 .row .main{flex:1;min-width:0}.row .main b,.row .main small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .main small{font-size:13px;color:var(--dim);margin-top:2px}.row .main small.new{color:var(--ink)}
 .row .side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:12px;color:var(--dim);flex:none}.row .go{color:var(--faint);font-size:14px}.row:hover .go{color:var(--accent)}
 .av{width:var(--s,36px);height:var(--s,36px);border-radius:50%;display:grid;place-items:center;flex:none;font-weight:700;color:var(--ink);font-size:calc(var(--s,36px)*.42)}.av .ic{font-size:calc(var(--s,36px)*.5)}.av.ring{background:var(--card);box-shadow:inset 0 0 0 1.5px currentColor}
-.pill{min-width:20px;height:18px;padding:0 6px;border-radius:9px;background:var(--accent);color:var(--bg);font-size:12px;font-weight:700;display:inline-grid;place-items:center}
+.pill{min-width:20px;height:18px;padding:0 6px;border-radius:9px;background:var(--accent);color:var(--bg);font-size:12px;font-weight:700;display:inline-grid;place-items:center}.pill.mute{background:var(--line);color:var(--dim)}.pill.at{background:var(--warn)}.pills{display:flex;gap:4px}.row .main b .ic{font-size:13px;margin-left:5px;vertical-align:-1px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.chips button{border:0;border-radius:14px;background:var(--card);color:var(--dim);padding:6px 11px;font-size:13px;font-weight:600}.chips button.on{background:var(--hi);color:var(--ink);box-shadow:inset 0 0 0 1px var(--accent)}.set input[type=time]{width:96px}.feedhead{margin:12px 4px 4px;font-size:12px;color:var(--faint);display:flex;justify-content:space-between}
 .sub{font-size:12px;color:var(--dim);padding:2px 4px 6px;display:flex;justify-content:space-between;gap:10px}
 .messages{display:flex;flex-direction:column;gap:6px;padding:4px 0 10px;min-height:40vh;overflow-x:clip}
 .bubble{align-self:flex-start;max-width:min(78%,520px);background:var(--in);border-radius:8px;padding:6px 10px 4px;overflow-wrap:anywhere}.bubble.out{align-self:flex-end;background:var(--out)}
@@ -166,6 +166,8 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <symbol id="i-sensor" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4.5a2 2 0 0 1 4 0v9a4.6 4.6 0 1 1-4 0z"/></symbol>
 <symbol id="i-person" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7.5" r="4.2"/><path d="M3.8 21.5a8.2 7.5 0 0 1 16.4 0z"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24" fill="currentColor"><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="5" y="11" width="14" height="10" rx="2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
+<symbol id="i-belloff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4M3 3l18 18"/></symbol>
 <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="1.5"/><path d="M3 6l9 7.5L21 6"/></symbol>
 <symbol id="i-hash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9.5 3L7.5 21M16.5 3l-2 18M4 8.5h17M3 15.5h17"/></symbol>
 <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12h5l3-7.5 5 15 3-7.5h5"/></symbol>
@@ -212,6 +214,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <form class="card pad" data-chform="air" hidden><p class="small muted" style="margin:0 0 8px">Пакеты каналов, в которых вас нет. Имя известно, если подошёл распространённый хештег. Остальные — закрытые каналы или редкие хештеги: вступить можно, только зная хештег или ключ.</p><div class="list" id="chHeard"></div><label class="field">Проверить хештег на услышанных пакетах<input id="chTry" placeholder="#ru" autocomplete="off" autocapitalize="off" spellcheck="false"></label><p class="small muted" id="chTryOut"></p><button class="btn primary save">Вступить</button></form>
 <p class="small faint" style="margin:10px 4px" id="chCount"></p></section>
 <section class="page" id="p-join" hidden><div id="joinCard"></div></section>
+<section class="page" id="p-alerts" hidden><div class="tabs"><button data-altab="feed">Лента</button><button data-altab="set">Настройки</button></div><div id="alertsView"></div></section>
 <section class="page" id="p-chinfo" hidden><div id="chanCard"></div></section>
 <section class="page" id="p-msg" hidden><div id="msgCard"></div></section>
 
@@ -325,9 +328,78 @@ function nodeName(id){return id==='ALL'?'Public':isChan(id)?chan(id)?.name||'К�
 function conversationIds(){const ids=['ALL',...(chans?.channels||[]).map(c=>c.id).filter(id=>id!=='ALL'),...new Set([...history].reverse().map(other).filter(id=>!isChan(id)))];if(route==='chat'&&!ids.includes(recipient))ids.push(recipient);return ids}
 let readMarks=store('read')||{};
 function unread(id){const at=readMarks[id]||0;return history.filter(m=>matches(m,id)&&!m.outgoing&&m.time>at).length}
-function unreadTotal(){return conversationIds().reduce((n,id)=>n+unread(id),0)}
+function unreadTotal(){return conversationIds().reduce((n,id)=>{const a=alertMode(id);return n+(a==='off'?0:a==='mention'?unreadMentions(id):unread(id))},0)}
+function unreadMentions(id){const at=readMarks[id]||0;return history.filter(m=>matches(m,id)&&!m.outgoing&&m.time>at&&mentioned(m)).length}
 function markRead(id=recipient){let at=0;for(const m of history)if(matches(m,id)&&!m.outgoing)at=Math.max(at,m.time);if(at>(readMarks[id]||0)){readMarks[id]=at;store('read',readMarks)}}
 function messageLimit(){return isChan(recipient)?(status.public_message_limit||134):151}
+
+// Notifications of the page and the app: per kind (direct, channels, Public) "all", "mention" (the "@[name]" of
+// MeshCore apps or a keyword) or "off", a conversation may override its kind. Kept in this browser; the app gets
+// a copy (MeshNative.setAlerts) for its notifications in the background (Alerts.kt applies the same rules).
+const ALERT_DEFAULT={dm:'all',chan:'all',pub:'mention',chess:true,nodes:false,lost:true,sound:true,system:false,words:[],quiet:false,from:'23:00',to:'07:00',per:{}};
+let alerts={...ALERT_DEFAULT,...store('alerts')};alerts.per={...alerts.per};alerts.words=[...alerts.words];let alertSeen=null,peersSeen=null,alertTab='feed',alertFilter='all',alertSort='new',alertLog=store('alert-log')||[];
+const ALERT_MODES={all:'Все',mention:'Упоминания',off:'Выключены'},alertKind=id=>id==='ALL'?'pub':isChan(id)?'chan':'dm';
+function saveAlerts(){store('alerts',alerts);try{window.MeshNative?.setAlerts?.(JSON.stringify(alerts))}catch{}}
+const alertMode=id=>alerts.per[id]||alerts[alertKind(id)];
+function mentioned(m){const t=String(m.text).toLowerCase(),n=String(config.name||status.name||'').toLowerCase();return !!n&&t.includes('@['+n+']')||alerts.words.some(w=>w&&t.includes(w.toLowerCase()))}
+// A received message: 'mention', 'message' or null (no notification).
+function alertFor(m){const a=alertMode(other(m));return a==='off'?null:mentioned(m)?'mention':a==='all'?'message':null}
+function quietNow(){if(!alerts.quiet)return false;const d=new Date(),n=d.getHours()*60+d.getMinutes(),p=s=>{const [h,m]=String(s).split(':').map(Number);return (h||0)*60+(m||0)},a=p(alerts.from),b=p(alerts.to);return a<=b?n>=a&&n<b:n>=a||n<b}
+const sysAlertsUsable=typeof Notification!=='undefined'&&window.isSecureContext&&!window.MeshHost;
+function alertCue(strong){if(!alerts.sound||quietNow()||window.MeshHost?.hidden)return; // the app in the background: Android notifies
+ chessBeep();try{navigator.vibrate?.(strong?[150,80,150,80,150]:[120])}catch{}}
+function systemAlert(title,body,to,tag){if(!sysAlertsUsable||!alerts.system||!document.hidden||Notification.permission!=='granted')return;try{const n=new Notification(title,{body,tag,silent:!alerts.sound||quietNow()});n.onclick=()=>{window.focus();go(to);n.close()}}catch{}}
+function logAlert(kind,title,text,to){alertLog.push({kind,title,text,go:to,t:Math.floor(deviceNow())||Math.floor(Date.now()/1000)});alertLog=alertLog.slice(-40);store('alert-log',alertLog)}
+// After each refresh: new incoming messages (at most 5 at once) and, when enabled, nodes heard for the first time.
+function alertScan(){const inc=history.filter(m=>!m.outgoing),keys=inc.map(m=>msgKey(m)+'.'+m.text.length);
+ if(alertSeen)for(const m of inc.filter((m,i)=>!alertSeen.has(keys[i])).slice(-5)){const id=other(m),how=alertFor(m);if(!how||route==='chat'&&recipient===id&&!document.hidden)continue;
+  const title=(how==='mention'?'@ ':'')+(isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id));notify(title+': '+cutBytes(m.text,90),how==='mention'?'warn':'accent');alertCue(how==='mention');systemAlert(title,m.text,'chat/'+id,'mm-'+id)}
+ alertSeen=new Set(keys);
+ const ids=peers.map(p=>p.id);if(peersSeen&&alerts.nodes)for(const p of peers.filter(p=>!peersSeen.has(p.id))){const t='Новый узел: '+p.name;notify(t,'info');logAlert('node',t,typeText(p.type),'node/'+p.id);systemAlert('Новый узел',p.name,'node/'+p.id,'mm-node')}
+ peersSeen=new Set(ids);const n=unreadTotal();document.title=(n?`(${n}) `:'')+'MeshMesh'}
+function alertSelect(attr,value,modes,extra=''){return `<select ${attr}>${extra}${modes.map(k=>`<option value="${k}"${k===value?' selected':''}>${ALERT_MODES[k]}</option>`).join('')}</select>`}
+const alertModesFor=id=>alertKind(id)==='dm'?['all','off']:['all','mention','off'];
+// One row for a conversation's own mode (channel card, node card, the settings list).
+function alertRow(id,name){return `<div class="set"><span class="name">${name||'Уведомления'}<small>${alerts.per[id]?'Своя настройка':'Как у всех: '+ALERT_MODES[alerts[alertKind(id)]].toLowerCase()}</small></span>${alertSelect(`data-alper="${esc(id)}"`,alerts.per[id]||'',alertModesFor(id),`<option value=""${alerts.per[id]?'':' selected'}>По умолчанию</option>`)}</div>`}
+function feedItems(){const f=alertFilter,items=[];
+ for(const m of history){if(m.outgoing)continue;const id=other(m),how=alertFor(m);if(!how)continue;const k=alertKind(id);
+  if(f==='mention'&&how!=='mention'||f==='dm'&&k!=='dm'||f==='chan'&&k==='dm'||f==='chess'||f==='node')continue;
+  items.push({id,t:m.time||0,title:isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id),text:m.text,go:'chat/'+id,at:how==='mention',fresh:m.time>(readMarks[id]||0)})}
+ for(const e of alertLog)if(f==='all'||f===e.kind)items.push({id:e.kind,t:e.t,title:e.title,text:e.text,go:e.go,log:e.kind});
+ return items}
+function feedRow(x){return `<button class="row" data-go="${esc(x.go)}">${x.log?`<span class="av" style="--s:36px;background:var(--card)">${ic(x.log==='chess'?'chess':'mesh','acc')}</span>`:avatar(x.id,nodeName(x.id),peer(x.id)?.type??-1)}<span class="main"><b>${esc(x.title)}</b><small class="${x.fresh?'new':''}">${esc(String(x.text).replace(/\n/g,' '))}</small></span><span class="side"><span>${timeText(x.t)}</span>${x.at?'<span class="pill at">@</span>':''}</span></button>`}
+function renderAlerts(){for(const b of document.querySelectorAll('[data-altab]'))b.classList.toggle('on',b.dataset.altab===alertTab);const v=$('alertsView');
+ if(alertTab==='feed'){let items=feedItems(),h=`<div class="chips">${[['all','Все'],['mention','Упоминания'],['dm','Личные'],['chan','Каналы'],['chess','Шахматы'],['node','Узлы']].map(([k,t])=>`<button data-alf="${k}" class="${alertFilter===k?'on':''}">${t}</button>`).join('')}</div>
+  <div class="set" style="padding:0 4px;min-height:40px"><span class="name small muted">Порядок</span><select id="alertSort">${[['new','Сначала новые'],['old','Сначала старые'],['chat','По чатам']].map(([k,t])=>`<option value="${k}"${alertSort===k?' selected':''}>${t}</option>`).join('')}</select></div>`;
+  items.sort((a,b)=>alertSort==='old'?a.t-b.t:b.t-a.t);
+  if(alertSort==='chat'){const g=new Map();for(const x of items){if(!g.has(x.id))g.set(x.id,[]);g.get(x.id).push(x)}
+   h+=[...g].map(([id,l])=>`<div class="feedhead"><span>${esc(l[0].log?{chess:'Шахматы',node:'Узлы'}[l[0].log]:nodeName(id))}</span><span>${l.length}</span></div><div class="list">${l.slice(0,20).map(feedRow).join('')}</div>`).join('')}
+  else h+=`<div class="list">${items.slice(0,100).map(feedRow).join('')}</div>`;
+  if(!items.length)h+=`<div class="empty">${ic('bell')}Уведомлений нет<small>${alertFilter==='mention'?'Упоминание — «@[имя]» в канале или ваше ключевое слово':'Здесь появятся сообщения, о которых сообщают уведомления'}</small></div>`;
+  setHtml(v,h);return}
+ if(['alertWords','alertFrom','alertTo'].includes(document.activeElement?.id)&&v._h)return; // a refresh does not disturb typing
+ const sw=(k,name,hint)=>`<div class="set"><span class="name">${name}${hint?`<small>${hint}</small>`:''}</span><button type="button" class="sw${alerts[k]?' on':''}" data-alsw="${k}" role="switch" aria-checked="${!!alerts[k]}" aria-label="${name}"></button></div>`;
+ const kind=(k,name,hint)=>`<div class="set"><span class="name">${name}<small>${hint}</small></span>${alertSelect(`data-al="${k}"`,alerts[k],k==='dm'?['all','off']:['all','mention','off'])}</div>`;
+ const own=Object.keys(alerts.per).filter(id=>alerts.per[id]),me=config.name||status.name||'';
+ let h=`<h3>Сообщения</h3><div class="card" style="padding:4px 0">${kind('dm','Личные','Сообщения вам')}${kind('chan','Каналы','Хештеги и закрытые каналы')}${kind('pub','Public','Открытый канал MeshCore')}</div>
+  <h3>Упоминания</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">${me?`Упоминание — «@[${esc(me)}]» (так отвечают приложения MeshCore) или одно из слов ниже, без учёта регистра. Оно уведомляет и в режиме «Упоминания».`:'Ключевые слова считаются упоминанием.'}</p><input id="alertWords" placeholder="Слова через запятую" value="${esc(alerts.words.join(', '))}" autocomplete="off" autocapitalize="none"></div>
+  <h3>Другое</h3><div class="card" style="padding:4px 0">${sw('chess','Шахматы','Вызовы, ходы соперника, итоги')}${sw('nodes','Новые узлы','Узел, услышанный впервые')}${window.MeshNative?sw('lost','Потеря связи','Устройство отключилось, пока приложение в фоне'):''}${sw('sound','Звук и вибрация',window.MeshNative?'Иначе уведомления приходят беззвучно':'Сигнал на этой странице')}${sysAlertsUsable?sw('system','Уведомления браузера',Notification.permission==='denied'?'Запрещены в настройках браузера':'Когда вкладка в фоне'):''}</div>
+  <h3>Тихие часы</h3><div class="card" style="padding:4px 0">${sw('quiet','Без звука и вибрации','По времени телефона или компьютера')}<div class="set"><span class="name">С</span><input type="time" id="alertFrom" value="${esc(alerts.from)}"></div><div class="set"><span class="name">До</span><input type="time" id="alertTo" value="${esc(alerts.to)}"></div></div>
+  <h3>Отдельные чаты</h3><div class="card" style="padding:4px 0">${conversationIds().map(id=>alertRow(id,esc(nodeName(id)))).join('')}</div>
+  ${own.length?'<button class="btn" id="alertReset" style="width:100%;margin-top:10px">Сбросить настройки чатов ('+own.length+')</button>':''}
+  <p class="small faint" style="margin:10px 4px">${window.MeshNative?'Настройки хранятся в приложении; когда оно в фоне, уведомления присылает Android.':'Настройки хранятся в этом браузере. Страница сообщает о событиях, пока открыта; в фоне — только с уведомлениями браузера, если они доступны.'}</p>`;
+ const keep=document.activeElement?.id;setHtml(v,h);if(keep&&$(keep))$(keep).focus()}
+async function alertSet(k,v){if(k==='system'&&v){if(Notification.permission!=='granted'&&await Notification.requestPermission()!=='granted'){notify('Браузер не разрешил уведомления','warn');v=false}}
+ alerts[k]=v;saveAlerts();if(k==='sound'&&v)alertCue(false);render()}
+function alertPer(id,v){if(v)alerts.per[id]=v;else delete alerts.per[id];saveAlerts();notify('Уведомления «'+nodeName(id)+'»: '+(v?ALERT_MODES[v]:'по умолчанию').toLowerCase(),'muted');render()}
+try{window.MeshNative?.setAlerts?.(JSON.stringify(alerts))}catch{} // the app's copy follows this page's settings
+document.addEventListener('click',e=>{const t=e.target.closest('[data-altab],[data-alf],[data-alsw],#alertReset');if(!t)return;const d=t.dataset;
+ if(d.altab){alertTab=d.altab;renderAlerts()}else if(d.alf){alertFilter=d.alf;renderAlerts()}else if(d.alsw)alertSet(d.alsw,!alerts[d.alsw]);
+ else{alerts.per={};saveAlerts();notify('Все чаты — по общим настройкам','muted');render()}});
+document.addEventListener('change',e=>{const t=e.target,d=t.dataset;
+ if(d.al){alerts[d.al]=t.value;saveAlerts();render()}else if(d.alper!==undefined)alertPer(d.alper,t.value);else if(t.id==='alertSort'){alertSort=t.value;renderAlerts()}
+ else if(t.id==='alertWords'){alerts.words=[...new Set(t.value.split(/[,;\n]+/).map(w=>w.trim()).filter(Boolean))].slice(0,20);saveAlerts();t.blur();render()}
+ else if(t.id==='alertFrom'||t.id==='alertTo'){if(/^\d\d:\d\d$/.test(t.value)){alerts[t.id==='alertFrom'?'from':'to']=t.value;saveAlerts()}}});
 
 // Avatars, signal and node labels.
 function hue(id){try{const v=BigInt('0x'+id);return HUES[Number((v^(v>>17n)^(v>>41n))%8n)]}catch{return HUES[0]}}
@@ -350,14 +422,14 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],msg:['Путь пакета','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],alerts:['Уведомления','chats'],msg:['Путь пакета','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
  if(!auth&&!standaloneMode)return;
  let [name,...rest]=(location.hash.slice(1)||'home').split('/');if(!PAGES[name]||standaloneMode&&name!=='map')name=standaloneMode?'map':'home';if(companion&&name!=='board')name='chess';
  const prev=route,next=name,arg=decodeURIComponent(rest.join('/'));
- if(prev==='settings'&&['nav','connect','modules','library'].includes(next))cameFrom[next]='settings';else if(prev==='home')delete cameFrom[next];
+ if(prev==='settings'&&['nav','connect','modules','library','alerts'].includes(next))cameFrom[next]='settings';else if(prev==='home')delete cameFrom[next];
  if(next==='msg'&&prev==='chat')cameFrom.msg='chat/'+param;
  if(next==='chat'&&prev==='node')cameFrom.chat='node/'+param;else if(next==='chat'&&prev!=='chat')delete cameFrom.chat;
  leave(prev,next);route=next;param=arg;
@@ -390,7 +462,7 @@ function enter(page,prev){
  if(page==='pet')enterPet();
  if(page==='dice')enterDice();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg,alerts:renderAlerts}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
@@ -578,10 +650,12 @@ document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.targ
 
 // Chats.
 function renderThreads(){const ids=conversationIds(),k=ids.findIndex(id=>!isChan(id));
- const rows=ids.map(id=>{const rows=history.filter(m=>matches(m,id)),last=rows.at(-1),n=unread(id),p=peer(id),l=last&&parseLink(last.text);
+ const rows=ids.map(id=>{const rows=history.filter(m=>matches(m,id)),last=rows.at(-1),n=unread(id),p=peer(id),l=last&&parseLink(last.text),a=alertMode(id),at=n&&a!=='off'&&unreadMentions(id);
   const preview=last?(last.outgoing?'Вы: ':isChan(id)?last.name+': ':'')+(l?`Приглашение в канал «${l.name}»`:last.text.replace(/\n/g,' ')):id==='ALL'?'Открытый канал MeshCore':isChan(id)?chanKind(chan(id)):'Сообщений ещё нет';
-  return `<button class="row" data-go="chat/${encodeURIComponent(id)}">${avatar(id,nodeName(id),p?p.type:-1)}<span class="main"><b>${esc(nodeName(id))}</b><small class="${n?'new':''}">${esc(preview)}</small></span><span class="side"><span>${last?timeText(last.time):''}</span>${n?`<span class="pill">${n}</span>`:''}</span></button>`});
+  return `<button class="row" data-go="chat/${encodeURIComponent(id)}">${avatar(id,nodeName(id),p?p.type:-1)}<span class="main"><b>${esc(nodeName(id))}${a==='off'?ic('belloff','faint'):a==='mention'?ic('bell','faint'):''}</b><small class="${n?'new':''}">${esc(preview)}</small></span><span class="side"><span>${last?timeText(last.time):''}</span>${n?`<span class="pills">${at?'<span class="pill at">@</span>':''}<span class="pill${a==='all'?'':' mute'}">${n}</span></span>`:''}</span></button>`});
  if(status.channels!==undefined)rows.splice(k<0?rows.length:k,0,`<button class="row" data-go="addch"><span class="av" style="background:var(--card);color:var(--accent);font-size:24px;font-weight:400">+</span><span class="main"><b>Добавить канал</b><small>Хештег, ссылка, QR или новый</small></span><span class="go">${ic('next')}</span></button>`);
+ const mentions=ids.reduce((n,id)=>n+(alertMode(id)==='off'?0:unreadMentions(id)),0);
+ rows.push(`<button class="row" data-go="alerts"><span class="av" style="--s:36px;background:var(--card);color:var(--warn)">${ic('bell')}</span><span class="main"><b>Уведомления</b><small>${mentions?plural(mentions,'новое упоминание','новых упоминания','новых упоминаний'):'Лента, упоминания, что и откуда присылать'}</small></span><span class="side">${mentions?'<span class="pill at">@</span>':''}</span></button>`);
  $('conversations').innerHTML=rows.join('')}
 function routeText(m){if(m.protocol===1||!m.route||m.outgoing&&(m.status===4||isChan(dest(m))))return'';const h=m.hops==null?'':m.hops===0?'напрямую':`через ${m.hops} ретр.`;let s=m.route==='direct'?(h||'по маршруту'):!m.outgoing?(h||'flood'):m.status===3&&h?'flood, '+h:'flood';if(m.outgoing&&m.tries>1)s+=m.status===3?' · попытка '+m.tries:` · ${m.tries}/3`;return s}
 function statusMark(s){const m=[null,['queued','faint','В очереди'],['sent','muted','Отправлено'],['delivered','acc','Доставлено: узел подтвердил'],['failed','bad','Нет подтверждения']][s];return m?`<span title="${m[2]}">${ic(m[0],m[1])}</span>`:''}
@@ -686,7 +760,7 @@ function renderMsg(){const m=history.find(x=>msgKey(x)===param),el=$('msgCard');
  setHtml(el,h)}
 function renderChanInfo(){const c=chan(param),el=$('chanCard');if(!c){setHtml(el,`<div class="empty">${ic('hash')}Канала нет на устройстве</div>`);return}
  const pub=c.kind==='public',stage=deleteArmed===c.id+1?1:deleteArmed===c.id+2?2:0,contacts=peers.filter(p=>p.type===1);
- let h=`<div class="head">${avatar(c.id,c.name,0,52)}<div><span class="big">${esc(c.name)}</span><span class="small muted">${chanKind(c)}</span></div></div><div class="card" style="padding:0 12px">${[['Ключ',pub?'известен всем узлам':c.kind==='hashtag'?'из имени канала':'случайный'],['Хеш в пакетах',c.hash],['Сообщений',history.filter(m=>matches(m,c.id)).length],['ID',c.id]].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}</div>`;
+ let h=`<div class="head">${avatar(c.id,c.name,0,52)}<div><span class="big">${esc(c.name)}</span><span class="small muted">${chanKind(c)}</span></div></div><div class="card" style="padding:0 12px">${[['Ключ',pub?'известен всем узлам':c.kind==='hashtag'?'из имени канала':'случайный'],['Хеш в пакетах',c.hash],['Сообщений',history.filter(m=>matches(m,c.id)).length],['ID',c.id]].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}</div><div class="card" style="padding:4px 0;margin-top:10px">${alertRow(c.id)}</div>`;
  if(c.region!==undefined){fillRegionNames();const def=chans?.region;
   h+=`<h3>Регион</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">Сообщения канала несут этот регион: репитеры с регионами пересылают их только в нём. Пусто — регион по умолчанию из настроек радио (${def?esc(def):'нет'}), * — без региона.</p><div style="display:flex;gap:8px"><input id="chRegion" list="regionNames" value="${esc(c.region)}" maxlength="30" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="по умолчанию" style="flex:1;min-width:0"><button class="btn" data-chregion="1">Сохранить</button></div></div>`}
  h+=c.link?`<h3>QR-код и ссылка</h3><div class="card pad"><div class="qrbox">${qrSvg(c.link)}</div><p class="mono" style="margin:0 0 8px">${esc(c.link)}</p><button class="btn save" style="margin:0" data-copy="${esc(c.link)}">Копировать ссылку</button><p class="small muted" style="margin:8px 0 0">${c.kind==='private'?'<span class="warn">Код и ссылка содержат ключ: показывайте их только участникам.</span> ':''}Отсканируйте код в MeshCore или в приложении MeshMesh, чтобы добавить канал.</p></div>`
@@ -773,7 +847,7 @@ function renderNode(){const p=peer(param);if(!p){$('nodeCard').innerHTML=`<div c
  const keep={pass:$('remotePass')?.value,cmd:$('remoteCmd')?.value,focus:document.activeElement?.id}; // a refresh keeps what is being typed
  const d=distance(p),rows=[['Последний приём',p.heard?(age(p)<60?'сейчас':ago(age(p))+' назад'):'после запуска не слышен'],['Сигнал',p.heard?`${Math.round(p.rssi)} dBm · SNR ${Number(p.snr).toFixed(1)}`:'—'],['Маршрут',pathText(p)+(p.path_length===255?' · flood':'')],['Позиция',d||(p.position?`${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}`:'не передана')],['ID',p.id]];
  const acts=[];if(p.type===1||p.type===3)acts.push(['write',p.type===3?'Комната':'Написать','primary']);if(p.position)acts.push(['map','На карте','']);if(p.path_length!==255)acts.push(['reset','Сброс пути','']);acts.push(['forget',deleteArmed===p.id?'Удалить?':'Удалить','danger'+(deleteArmed===p.id?' armed':'')]);
- $('nodeCard').innerHTML=`<div class="head">${avatar(p.id,p.name,p.type,52)}<div><span class="big">${esc(p.name)}</span><span class="${typeClass(p.type)} small">${typeText(p.type)}</span></div></div><div class="card" style="padding:0 12px">${rows.map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}<div class="detail"><span>Открытый ключ</span><span class="mono">${esc(p.public_key)}</span></div></div>${remoteCard(p)}<div class="btns" style="margin-top:12px">${acts.map(([a,t,c])=>`<button class="btn ${c}" data-node="${a}">${t}</button>`).join('')}</div>`;
+ $('nodeCard').innerHTML=`<div class="head">${avatar(p.id,p.name,p.type,52)}<div><span class="big">${esc(p.name)}</span><span class="${typeClass(p.type)} small">${typeText(p.type)}</span></div></div><div class="card" style="padding:0 12px">${rows.map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}<div class="detail"><span>Открытый ключ</span><span class="mono">${esc(p.public_key)}</span></div></div>${p.type===1||p.type===3?`<div class="card" style="padding:4px 0;margin-top:10px">${alertRow(p.id)}</div>`:''}${remoteCard(p)}<div class="btns" style="margin-top:12px">${acts.map(([a,t,c])=>`<button class="btn ${c}" data-node="${a}">${t}</button>`).join('')}</div>`;
  if($('remotePass')&&keep.pass)$('remotePass').value=keep.pass;if($('remoteCmd')&&keep.cmd)$('remoteCmd').value=keep.cmd;if(keep.focus&&$(keep.focus))$(keep.focus).focus()}
 async function nodeAction(a){const p=peer(param);if(!p)return;if(a!=='forget')deleteArmed='';
  if(a==='write'){go('chat/'+encodeURIComponent(p.id));return}
@@ -890,7 +964,7 @@ function langName(){const l=SCREEN_LANGS.find(x=>x[0]===config.lang);return l?l[
 function renderSettings(){
  const items=[['radio','radio','acc','Радио',`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info','Экран и устройство',`${heltec()?'Контраст':'Яркость'} ${config.brightness} · ${langName()}`],
   ...config.apps===undefined?[]:[['apps','cards','violet','Приложения на экране',(()=>{const a=appsParse(config.apps);return `${a.filter(x=>x.on).length} из ${a.length} в меню устройства`})()]],
-  ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['connect','wifi','info','Подключения',`${noWifi()?'':`Wi-Fi ${status.wifi?'вкл':'выкл'} · `}BLE ${status.ble?'вкл':'выкл'}`],
+  ['nav','compass','warn','GPS и компас',`GPS ${config.gps?'вкл':'выкл'} · ${navInfo.calibrated?'компас откалиброван':navInfo.available?'компас не откалиброван':'без компаса'}`],['alerts','bell','warn','Уведомления',`Личные: ${ALERT_MODES[alerts.dm].toLowerCase()} · Public: ${ALERT_MODES[alerts.pub].toLowerCase()}`],['connect','wifi','info','Подключения',`${noWifi()?'':`Wi-Fi ${status.wifi?'вкл':'выкл'} · `}BLE ${status.ble?'вкл':'выкл'}`],
   ['modules','pulse','ok','Состояние модулей',`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted','Клавиши и подсказки','Что делает каждая клавиша'],['library','pin','ok','Сохранённые карты',mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:'Карт нет'],['role','tower','violet','Режим работы',status.role==='repeater'?'Репитер MeshCore':status.role==='room'?'Комната MeshCore':'Обычный: чаты, карты, радар']];
  const off=status.power_on!==undefined;$('powerOff').hidden=$('powerOffHint').hidden=!off;if(off)$('powerOffHint').textContent=powerOnText();
  $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
@@ -1104,7 +1178,8 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  if(route==='server')await loadServer(false);
  if(status.channels!==undefined&&(!chans||chans.channels.length!==status.channels||['addch','chinfo','join'].includes(route)))await loadChans();
  if(!readInit){readInit=true;if(store('read')===null)for(const id of conversationIds())markRead(id)}
- const e=status.event;if(eventSeen!==null&&e!==eventSeen){if(route==='chat')notify(eventLabel(e),e.startsWith('Delivered')?'ok':/^No delivery|^Radio TX|^TX failed/.test(e)?'bad':'accent');else if(e.startsWith('New message from ')&&route!=='chats')notify(eventLabel(e))}eventSeen=e;
+ const e=status.event;if(eventSeen!==null&&e!==eventSeen&&route==='chat'&&!e.startsWith('New message from '))notify(eventLabel(e),e.startsWith('Delivered')?'ok':/^No delivery|^Radio TX|^TX failed/.test(e)?'bad':'accent');eventSeen=e;
+ alertScan(); // new messages: alertFor() decides
  if(mapState.follow&&status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};
  if(!mapState.center&&(mapInfo.center||status.gps_fix)){const f=mapInfo.follow!==false&&status.gps_fix;mapState={lat:f||!mapInfo.center?status.latitude:mapInfo.latitude,lon:f||!mapInfo.center?status.longitude:mapInfo.longitude,z:mapInfo.center?mapInfo.zoom:15,center:true,follow:f}}
  for(const v of document.querySelectorAll('.version'))v.textContent=String(status.firmware||'').replace(/^MeshMesh\s*/,'');
@@ -1179,7 +1254,8 @@ function chessBeep(test){
  catch{if(test)notify('Звук в этом браузере недоступен','warn')}}
 async function refreshChess(quiet,draw=true){
  let next;try{next=await request('/api/chess')}catch{return}
- if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games);if(news.text){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound)chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}
+ if(chessLoaded&&!quiet&&!chessQuiet){const news=chessNews(chess.games,next.games),here=route==='chess'||route==='board';if(news.text&&news.act&&alerts.chess&&!companion)logAlert('chess','Шахматы',news.text,news.game?'board/'+news.game:'chess');
+  if(news.text&&(alerts.chess||here||companion)){notify(news.text,news.act?'accent':'muted');if(news.act){if(chessSound&&!quietNow())chessBeep();try{navigator.vibrate?.([120,80,120])}catch{}}
   if(news.act&&chessAlerts&&document.hidden)try{const n=new Notification('Шахматы',{body:news.text,tag:'meshmesh-chess'});n.onclick=()=>{window.focus();if(news.game)go('board/'+news.game);n.close()}}catch{}}}
  chess=next;chessLoaded=true;
  if(chess.tours!==undefined&&route==='chess'&&(chessTab==='tours'||!tours)){try{tours=await request('/api/tour')}catch{}}

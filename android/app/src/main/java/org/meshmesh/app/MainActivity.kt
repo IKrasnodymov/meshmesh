@@ -188,8 +188,8 @@ class MainActivity : ComponentActivity() {
         return WebResourceResponse("text/html", "utf-8", ByteArrayInputStream(html.toByteArray()))
     }
 
-    override fun onResume() { super.onResume(); service?.uiVisible = true }
-    override fun onPause() { super.onPause(); service?.uiVisible = false }
+    override fun onResume() { super.onResume(); service?.uiVisible = true; js("(MeshHost.hidden=false)") }
+    override fun onPause() { super.onPause(); service?.uiVisible = false; js("(MeshHost.hidden=true)") }
 
     override fun onDestroy() {
         stopBleScan()
@@ -458,6 +458,8 @@ class MainActivity : ComponentActivity() {
         }
         @android.webkit.JavascriptInterface fun state(): String = service?.stateJson() ?: "{\"state\":\"idle\"}"
         @android.webkit.JavascriptInterface fun prefs(): String = Prefs(this@MainActivity).snapshot().toString()
+        /** The page's notification settings (web/index.html "alerts"), for MeshService in the background. */
+        @android.webkit.JavascriptInterface fun setAlerts(json: String) { Prefs(this@MainActivity).alerts = json }
         @android.webkit.JavascriptInterface fun scan(kind: String) = runOnUiThread {
             when (kind) {
                 "ble" -> startBleScan()

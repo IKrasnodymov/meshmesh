@@ -261,5 +261,10 @@
  "f.path.d": "Bir mesajın altındaki saate dokunun: geldiği tekrarlayıcılar, kişilerinizden ad ve konumlarıyla, SNR ve RSSI, gönderen ve alım saati, kaç kopya duyulduğu; kendi mesajlarınızda hangi tekrarlayıcıların onları ilettiği. Web arayüzünde ve Android uygulamasında.",
  "shot.web-msg-path": "Gelen: tekrarlayıcılar üzerinden atlamalar ve sinyal",
  "shot.web-msg-echoes": "Mesajınız: onu tekrarlayan tekrarlayıcılar",
- "news.path": "<b>Yeni:</b> paket yolu — mesajın hangi tekrarlayıcılardan geçtiği ve sizinkini kimin tekrarladığı"
+ "news.path": "<b>Yeni:</b> paket yolu — mesajın hangi tekrarlayıcılardan geçtiği ve sizinkini kimin tekrarladığı",
+ "f.alerts.t": "Bildirimler",
+ "f.alerts.d": "Neyin bildirileceğini seçin: özel mesajlar, kanallar ve Public — hepsi, yalnızca bahsetmeler ya da kapalı; her sohbet ayrı ayarlanabilir. Bahsetme, sizin @[ad]ınız ya da bir anahtar kelimedir. Ayrıca satranç, yeni düğümler, sessiz saatler ve filtreli, sıralanabilir bir akış. Web arayüzünde ve Android uygulamasında.",
+ "shot.web-alerts-feed": "Akış: bahsetmeler, filtreler ve sıra",
+ "shot.web-alerts-settings": "Ayarlar: türler, anahtar kelimeler, sessiz saatler",
+ "news.alerts": "<b>Yeni:</b> bildirimler — yalnızca bahsetmeler, sessiz sohbetler, anahtar kelimeler ve sessiz saatler"
 }

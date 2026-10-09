@@ -261,5 +261,10 @@
  "f.path.d": "Ketuk waktu di bawah pesan: repeater yang dilalui, dengan nama dan posisi dari kontak Anda, SNR dan RSSI, waktu pengirim dan penerimaan, berapa salinan yang terdengar; untuk pesan Anda sendiri, repeater mana yang meneruskannya. Di antarmuka web dan aplikasi Android.",
  "shot.web-msg-path": "Masuk: lompatan melalui repeater dan sinyal",
  "shot.web-msg-echoes": "Pesan Anda: repeater yang mengulanginya",
- "news.path": "<b>Baru:</b> jalur paket — repeater mana yang membawa pesan dan siapa yang mengulang pesan Anda"
+ "news.path": "<b>Baru:</b> jalur paket — repeater mana yang membawa pesan dan siapa yang mengulang pesan Anda",
+ "f.alerts.t": "Notifikasi",
+ "f.alerts.d": "Pilih apa yang diberitahukan: pesan pribadi, kanal, dan Public — semua, hanya sebutan, atau mati, dan setiap obrolan tersendiri. Sebutan adalah @[nama] Anda atau kata kunci. Juga catur, node baru, jam tenang, dan umpan dengan filter serta urutan. Di antarmuka web dan aplikasi Android.",
+ "shot.web-alerts-feed": "Umpan: sebutan, filter, dan urutan",
+ "shot.web-alerts-settings": "Pengaturan: jenis, kata kunci, jam tenang",
+ "news.alerts": "<b>Baru:</b> notifikasi — hanya sebutan, obrolan dibisukan, kata kunci, dan jam tenang"
 }

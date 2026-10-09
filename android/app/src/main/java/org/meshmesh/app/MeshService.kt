@@ -67,6 +67,8 @@ class MeshService : Service() {
         notifications = getSystemService(NotificationManager::class.java)
         notifications.createNotificationChannel(NotificationChannel(CHANNEL_LINK, getString(R.string.channel_link), NotificationManager.IMPORTANCE_LOW))
         notifications.createNotificationChannel(NotificationChannel(CHANNEL_MESSAGES, getString(R.string.channel_messages), NotificationManager.IMPORTANCE_HIGH))
+        // Quiet hours and "sound off" of the page's settings: the same notifications without sound and vibration.
+        notifications.createNotificationChannel(NotificationChannel(CHANNEL_QUIET, getString(R.string.channel_quiet), NotificationManager.IMPORTANCE_LOW))
     }
 
     override fun onBind(intent: Intent): IBinder = binder
@@ -218,7 +220,7 @@ class MeshService : Service() {
         which.close()
         stopLink()
         publish("lost", which.kind, reason)
-        if (!uiVisible) notify(ID_LOST, "Связь с устройством потеряна", reason, "")
+        if (!uiVisible && Alerts(Prefs(this).alerts).lost) notify(ID_LOST, "Связь с устройством потеряна", reason, "")
     }
 
     // Firmware from the site over the USB link (flash/FirmwareUpdate): the ROM loader takes the port,
@@ -320,14 +322,16 @@ class MeshService : Service() {
 
     // Background: the page is not polling, so the service does (every 8 s). A change of the RX counter
     // rereads the history and the chess games (else chess every 32 s); incoming messages after the last
-    // one seen and chess news (ChessNews) become notifications.
+    // one seen, chess news (ChessNews) and new nodes become notifications as the page's settings say (Alerts).
     private var lastRx = -1
     private var lastSeen: String? = null
     private var chessGames: JSONArray? = null
+    private var knownNodes: Set<String>? = null
+    private var channelNames = HashMap<String, String>()
 
     private fun schedulePolling() {
         background?.cancel(); background = null
-        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessGames = null; return }
+        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessGames = null; knownNodes = null; return }
         background = scope.launch {
             var round = 0
             while (isActive) {
@@ -361,14 +365,38 @@ class MeshService : Service() {
         if (first || incoming.isEmpty() || lastSeen == previous) return !first
         val start = incoming.indexOfLast { key(it) == previous } + 1
         val fresh = incoming.subList(start.coerceAtLeast(0), incoming.size).takeLast(5)
-        val node = status.optString("node")
+        val alerts = Alerts(Prefs(this).alerts)
+        val me = status.optString("name")
         for (m in fresh) {
-            val public = m.optString("destination") != node // Public channel, not addressed to this node
+            val id = Alerts.conversation(m)
+            val how = alerts.forMessage(id, m.optString("text"), me) ?: continue
             val from = m.optString("name").ifBlank { m.optString("source") }
-            val route = if (public) "chat/ALL" else "chat/" + m.optString("source")
-            notify(ID_MESSAGE + (key(m).hashCode() and 0xFFFF), if (public) "Public · $from" else from, m.optString("text"), route)
+            val title = (if (how == "mention") "@ " else "") + if (Alerts.isChannel(id)) "${channelName(api, id)} · $from" else from
+            notify(ID_MESSAGE + (key(m).hashCode() and 0xFFFF), title, m.optString("text"), "chat/$id", alerts)
         }
+        if (alerts.nodes) pollNodes(api, alerts) else knownNodes = null
         return true
+    }
+
+    private suspend fun channelName(api: DeviceApi, id: String): String {
+        if (id == "ALL") return "Public"
+        if (id !in channelNames) runCatching {
+            val list = JSONObject(api.request("GET", "/api/channels", null).body).optJSONArray("channels")
+            for (i in 0 until (list?.length() ?: 0)) list!!.getJSONObject(i).let { channelNames[it.optString("id")] = it.optString("name") }
+        }
+        return channelNames[id]?.ifBlank { null } ?: "Канал"
+    }
+
+    /** Nodes heard for the first time while the app is in the background (after a change of the RX counter). */
+    private suspend fun pollNodes(api: DeviceApi, alerts: Alerts) {
+        val reply = api.request("GET", "/api/nodes", null)
+        if (reply.status != 200) return
+        val a = JSONArray(reply.body)
+        val ids = (0 until a.length()).map { a.getJSONObject(it) }
+        val before = knownNodes
+        knownNodes = ids.map { it.optString("id") }.toSet()
+        if (before != null) for (p in ids.filter { it.optString("id") !in before })
+            notify(ID_NODE + (p.optString("id").hashCode() and 0xFFFF), "Новый узел", p.optString("name").ifBlank { p.optString("id") }, "node/" + p.optString("id"), alerts)
     }
 
     private suspend fun pollChess(api: DeviceApi) {
@@ -376,18 +404,19 @@ class MeshService : Service() {
         if (reply.status != 200) return
         val games = JSONObject(reply.body).optJSONArray("games") ?: return
         // One notification per game, replaced by its next news; a tap opens the board.
-        chessGames?.let { before ->
+        val alerts = Alerts(Prefs(this).alerts)
+        chessGames?.takeIf { alerts.chess }?.let { before ->
             for (n in ChessNews.between(before, games))
-                notify(ID_CHESS + (n.game.toIntOrNull(16) ?: 0), "Шахматы · ${n.title}", n.text, "board/${n.game}")
+                notify(ID_CHESS + (n.game.toIntOrNull(16) ?: 0), "Шахматы · ${n.title}", n.text, "board/${n.game}", alerts)
         }
         chessGames = games
     }
 
-    private fun notify(id: Int, title: String, text: String, route: String) {
+    private fun notify(id: Int, title: String, text: String, route: String, alerts: Alerts = Alerts(Prefs(this).alerts)) {
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) return
         val open = PendingIntent.getActivity(this, id, Intent(this, MainActivity::class.java).putExtra(MainActivity.EXTRA_ROUTE, route)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        notifications.notify(id, Notification.Builder(this, CHANNEL_MESSAGES)
+        notifications.notify(id, Notification.Builder(this, if (alerts.sound && !alerts.quietAt()) CHANNEL_MESSAGES else CHANNEL_QUIET)
             .setSmallIcon(R.drawable.ic_stat).setColor(0xFF1FC2AE.toInt())
             .setContentTitle(title).setContentText(text).setStyle(Notification.BigTextStyle().bigText(text))
             .setContentIntent(open).setAutoCancel(true).build())
@@ -397,10 +426,12 @@ class MeshService : Service() {
         const val ACTION_DISCONNECT = "org.meshmesh.app.DISCONNECT"
         const val CHANNEL_LINK = "link"
         const val CHANNEL_MESSAGES = "messages"
+        const val CHANNEL_QUIET = "quiet"
         const val ID_LINK = 1
         const val ID_MESSAGE = 1000 // + a hash of the message: one notification each
         const val ID_CHESS = 100000 // + the game number: one notification per game
         const val ID_LOST = 4
+        const val ID_NODE = 200000 // + a hash of the node ID
         val KIND_TEXT = mapOf("wifi" to "Wi-Fi", "ble" to "Bluetooth", "usb" to "USB", "tcp" to "USB через компьютер")
     }
 }

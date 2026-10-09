@@ -261,5 +261,10 @@
  "f.path.d": "Tippen Sie auf die Zeit unter einer Nachricht: die Repeater, über die sie kam, mit Namen und Position aus Ihren Kontakten, SNR und RSSI, Sende- und Empfangszeit, wie viele Kopien gehört wurden; bei eigenen Nachrichten, welche Repeater sie weitergegeben haben. In der Weboberfläche und der Android-App.",
  "shot.web-msg-path": "Eingehend: Hops über Repeater und das Signal",
  "shot.web-msg-echoes": "Ihre Nachricht: welche Repeater sie wiederholt haben",
- "news.path": "<b>Neu:</b> Paketpfad — über welche Repeater eine Nachricht kam und wer Ihre wiederholt hat"
+ "news.path": "<b>Neu:</b> Paketpfad — über welche Repeater eine Nachricht kam und wer Ihre wiederholt hat",
+ "f.alerts.t": "Benachrichtigungen",
+ "f.alerts.d": "Wählen Sie, worüber Sie informiert werden: Direktnachrichten, Kanäle und Public — alle, nur Erwähnungen oder aus, und jeder Chat für sich. Eine Erwähnung ist Ihr @[Name] oder ein Stichwort. Dazu Schach, neue Knoten, Ruhezeiten und ein Verlauf mit Filtern und Sortierung. In der Weboberfläche und der Android-App.",
+ "shot.web-alerts-feed": "Verlauf: Erwähnungen, Filter und Reihenfolge",
+ "shot.web-alerts-settings": "Einstellungen: Arten, Stichwörter, Ruhezeiten",
+ "news.alerts": "<b>Neu:</b> Benachrichtigungen — nur Erwähnungen, stumme Chats, Stichwörter und Ruhezeiten"
 }

@@ -39,6 +39,16 @@ WebView debugging is enabled (`chrome://inspect`).
   notifications (tapping opens the chat); one notification per chess game (the opponent's move, a
   challenge, a draw, the result; tapping opens the board), chess is checked right after the board
   receives something and at least every 32 s.
+- Notifications are set on the “Chats → Notifications” page (since 0.11.0; the same on the device web page):
+  direct — all or off; channels and Public — all, mentions only or off (Public defaults to mentions only);
+  any chat can have its own setting (there, or in the channel or contact card). A mention is
+  `@[board name]`, as MeshCore apps reply, or a keyword, case-insensitive; a muted chat stays silent even
+  when mentioned. Also: chess, new nodes, connection lost, sound and vibration, quiet hours by the phone's
+  clock (notifications go to the silent “Messages without sound” channel). The “Feed” tab lists the
+  messages notifications report, with a filter (mentions, direct, channels, chess, nodes) and an order:
+  newest, oldest, by chat. The page keeps the settings (`localStorage`) and passes a copy to the service
+  with `MeshNative.setAlerts`; the service's rules are `Alerts.kt`, matching the page's `alertFor()`. Muted
+  chats do not count towards the unread badge; a “mentions only” chat counts only its mentions.
 - The time in a chat is when the board received the message (sent, for your own), with the date
   for earlier days. If the board clock is unset (Heltec and other boards without an RTC after a
   restart), the app sets the phone's time once on connecting with the `clock` command; messages

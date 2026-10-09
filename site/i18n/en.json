@@ -261,5 +261,10 @@
  "f.path.d": "Tap the time under a message: the repeaters it came through, named and placed from your contacts, SNR and RSSI, the sender's and reception time, how many copies were heard; for your own messages, which repeaters passed them on. In the web interface and the Android app.",
  "shot.web-msg-path": "Incoming: hops through repeaters and the signal",
  "shot.web-msg-echoes": "Your message: the repeaters that repeated it",
- "news.path": "<b>New:</b> packet path — which repeaters carried a message and who repeated yours"
+ "news.path": "<b>New:</b> packet path — which repeaters carried a message and who repeated yours",
+ "f.alerts.t": "Notifications",
+ "f.alerts.d": "Choose what to be told about: direct messages, channels and Public — all, mentions only or off, and each chat on its own. A mention is your @[name] or a keyword. Also chess, new nodes, quiet hours, and a feed with filters and sorting. In the web interface and the Android app.",
+ "shot.web-alerts-feed": "Feed: mentions, filters and order",
+ "shot.web-alerts-settings": "Settings: kinds, keywords, quiet hours",
+ "news.alerts": "<b>New:</b> notifications — mentions only, muted chats, keywords and quiet hours"
 }

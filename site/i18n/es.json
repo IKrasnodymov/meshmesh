@@ -261,5 +261,10 @@
  "f.path.d": "Toque la hora bajo un mensaje: los repetidores por los que llegó, con nombre y posición de sus contactos, SNR y RSSI, la hora del remitente y de recepción, cuántas copias se oyeron; en sus propios mensajes, qué repetidores los retransmitieron. En la interfaz web y la app de Android.",
  "shot.web-msg-path": "Entrante: saltos por repetidores y la señal",
  "shot.web-msg-echoes": "Su mensaje: los repetidores que lo repitieron",
- "news.path": "<b>Nuevo:</b> ruta del paquete — por qué repetidores pasó un mensaje y quién repitió el suyo"
+ "news.path": "<b>Nuevo:</b> ruta del paquete — por qué repetidores pasó un mensaje y quién repitió el suyo",
+ "f.alerts.t": "Notificaciones",
+ "f.alerts.d": "Elige de qué te avisan: mensajes directos, canales y Public — todos, solo menciones o desactivados, y cada chat por separado. Una mención es tu @[nombre] o una palabra clave. Además ajedrez, nodos nuevos, horas de silencio y un historial con filtros y orden. En la interfaz web y la app de Android.",
+ "shot.web-alerts-feed": "Historial: menciones, filtros y orden",
+ "shot.web-alerts-settings": "Ajustes: tipos, palabras clave, horas de silencio",
+ "news.alerts": "<b>Nuevo:</b> notificaciones — solo menciones, chats silenciados, palabras clave y horas de silencio"
 }

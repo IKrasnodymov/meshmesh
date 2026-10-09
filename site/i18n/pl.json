@@ -261,5 +261,10 @@
  "f.path.d": "Dotknij godziny pod wiadomością: przekaźniki, przez które przyszła, z nazwami i położeniem z kontaktów, SNR i RSSI, czas nadawcy i odbioru, ile kopii usłyszano; przy własnych wiadomościach — które przekaźniki je powtórzyły. W interfejsie WWW i aplikacji na Androida.",
  "shot.web-msg-path": "Przychodząca: skoki przez przekaźniki i sygnał",
  "shot.web-msg-echoes": "Twoja wiadomość: przekaźniki, które ją powtórzyły",
- "news.path": "<b>Nowość:</b> ścieżka pakietu — przez które przekaźniki przeszła wiadomość i kto powtórzył twoją"
+ "news.path": "<b>Nowość:</b> ścieżka pakietu — przez które przekaźniki przeszła wiadomość i kto powtórzył twoją",
+ "f.alerts.t": "Powiadomienia",
+ "f.alerts.d": "Wybierz, o czym chcesz wiedzieć: wiadomości prywatne, kanały i Public — wszystkie, tylko wzmianki lub wyłączone, a każdy czat osobno. Wzmianka to Twoje @[imię] lub słowo kluczowe. Do tego szachy, nowe węzły, godziny ciszy i lista z filtrami i sortowaniem. W interfejsie WWW i aplikacji na Androida.",
+ "shot.web-alerts-feed": "Lista: wzmianki, filtry i kolejność",
+ "shot.web-alerts-settings": "Ustawienia: rodzaje, słowa kluczowe, godziny ciszy",
+ "news.alerts": "<b>Nowość:</b> powiadomienia — tylko wzmianki, wyciszone czaty, słowa kluczowe i godziny ciszy"
 }

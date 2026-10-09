@@ -22,6 +22,11 @@ class Prefs(context: Context) {
         get() = p.getString("bridge", "10.0.2.2:8771")!!
         set(value) { p.edit().putString("bridge", value).apply() }
 
+    /** Notification settings as the page keeps them (Alerts.parse). */
+    var alerts: String?
+        get() = p.getString("alerts", null)
+        set(value) { p.edit().putString("alerts", value).apply() }
+
     fun password(ssid: String): String? = p.getString("wifi:$ssid", null)
     fun savePassword(ssid: String, password: String) { p.edit().putString("wifi:$ssid", password).apply() }
 
