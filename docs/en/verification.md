@@ -1,5 +1,13 @@
 # MeshMesh verification
 
+> **0.14.1: the Heltec V3 cause found** (9 October 2026). The V3 owner on 0.14.0: `driver gd dio`, `flashprobe`
+> `ok` and `rom ok` at every address, `FS OK` after an install with a full erase; writes were lost by builds with the
+> QIO driver libraries under a DIO header (fixed in 0.5.1). An NVS broken by earlier writes made Bluetooth abort
+> (`NimBLEDevice::init`). In 0.14.1 such an NVS is erased at boot, `fsformat` needs no NVS without a move, and the
+> other community ESP32-S3 boards with a DIO header use the DIO libraries. All 15 targets build; in QEMU (T-LoRa) a
+> healthy NVS keeps the key and the boot counter, random bytes in NVS are repaired by the Arduino init already — the
+> `NOT_ENOUGH_SPACE` erase path was not reproduced. No boards were connected; not verified on the V3.
+
 > **0.14.0: order and hiding of the screen's apps** (8 October 2026, no full run). The `apps` setting (`set {JSON}`, the
 > web page, the app through `/api/config`). The M9, Heltec V4, T114, GAT562 and T-Deck build; the Chinese T114 image has
 > 49 KB free, GAT562 78 KB. The `tools/ui_preview` scenarios (M9, T-Deck, Heltec, T114, GAT562 with the joystick) check the

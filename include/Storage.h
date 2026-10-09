@@ -161,7 +161,7 @@ inline String formatStorage() {
   if(!storage::partition())return "ERR no littlefs partition";
   storage::point(storage::home());String note,failed=homeCheck(note);
   if(failed.isEmpty()){
-    if(!storage::remember({}))return "ERR NVS: the storage place not saved";
+    if(storage::moved().size&&!storage::remember({}))return "ERR NVS: the storage place not cleared"; // nothing recorded: NVS not needed
     if(!LittleFS.format())return "ERR littlefs format failed on a flash that passed the erase and write test";
     if(!LittleFS.begin(false,"/littlefs",10,"littlefs"))return "ERR littlefs mount after format";
     return "OK MeshMesh filesystem initialized"+note;

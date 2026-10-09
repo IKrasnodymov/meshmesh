@@ -115,6 +115,16 @@ region through the ROM functions (`rom ok`/`rom lost`) in the bootloader's mode,
 `rom ok`); in the release the ROM test is on ESP32-S3 only — the classic ESP32 builds have no IRAM to spare. Not
 verified on the V3.
 
+The reply on 0.5.1 and 0.14.0 (9 October) confirmed the cause: `driver gd dio`, `flashprobe` `ok` and `rom ok`
+at every address. Updating over the old firmware left a broken NVS (`ERR NVS unavailable`); Bluetooth got
+`ESP_ERR_NVS_NOT_ENOUGH_SPACE` at start and called `abort()` (restarts when switching screens), and `fsformat`
+refused because of NVS. After an install with a full erase: `FS OK`, `fs=1`. Since 0.14.1 an NVS that
+`nvs_flash_init` cannot open is erased at boot (key and settings are created anew — they cannot be read anyway),
+`fsformat` touches NVS only when the storage was moved, and the other community ESP32-S3 boards with a DIO
+header are also built with the DIO driver libraries (`dio_qspi`, with octal PSRAM `dio_opi`). The M9 and the
+Heltec V4 (verified on hardware) are unchanged. The NVS erase is checked by code only: in QEMU a broken NVS
+was already repaired by the Arduino init.
+
 The ESPFlash (Android) error `Firmware overlap: boot_app0.bin` means a wrong address: `boot_app0.bin` goes
 to `0xe000`, not `0xe0000` — with the extra zero it lands inside `firmware.bin` (`0x10000`, about 2 MB).
 It is simpler to write the single `…-factory.bin` at `0x0` (first install; erases the previous firmware's data).

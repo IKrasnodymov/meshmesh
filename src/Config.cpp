@@ -1,5 +1,8 @@
 #include "Config.h"
 #include <esp_system.h>
+#if !defined(MM_NRF52)
+#include <nvs_flash.h>
+#endif
 #include <bootloader_random.h>
 #include <Mm1Packet.h>
 Config config;
@@ -12,6 +15,13 @@ bool Config::valid() const {
     meshmesh::validUtf8((const uint8_t*)name,strlen(name));
 }
 void Config::load() {
+#if !defined(MM_NRF52)
+  // An NVS partition that nvs_flash_init cannot open holds nothing readable: erased, so the node gets a key and
+  // settings again. A Heltec V3 left one after writes lost under the QIO flash driver (before 0.5.1); NimBLE
+  // aborts on it when Bluetooth starts.
+  esp_err_t nvs=nvs_flash_init();
+  if(nvs!=ESP_OK){Serial.printf("NVS unreadable (%s); erased, settings and key start anew\n",esp_err_to_name(nvs));nvs_flash_erase();nvs_flash_init();}
+#endif
   Preferences p; if(!p.begin("meshmesh",false)) {bootCounter=0;Serial.println("ERR NVS unavailable; TX disabled");return;}
   p.getString("name",name,sizeof(name));
   if(!name[0]) strcpy(name,MM_NODE_NAME);

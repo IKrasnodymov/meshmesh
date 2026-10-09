@@ -19,6 +19,14 @@ signal radar and a web/Android interface. Install it from the browser on the sit
 
 Лицензия — [MIT](LICENSE). MeshCore в `lib/MeshCore` — под своей лицензией MIT.
 
+## 0.14.1 — flash и NVS на платах сообщества
+
+Heltec V3 пользователя (flash GigaDevice) с 0.5.1 записывает по всем адресам: причиной было несоответствие
+режима драйвера flash (QIO) заголовку образа (DIO). Теперь так же собраны остальные платы сообщества на
+ESP32-S3 с заголовком DIO: Wireless Tracker, T3-S3, T-Beam Supreme, ThinkNode M2, Station G2, T-Deck, XIAO.
+Раздел NVS, который не открывается, стирается при загрузке (плата получает новый ключ), а не роняет Bluetooth;
+`fsformat` больше не требует NVS, когда хранилище не переносилось ([docs/boards.md](docs/boards.md)).
+
 ## 0.14.0 — порядок приложений на экране
 
 На веб-странице и в приложении MeshMesh — «Настройки → Приложения на экране»: стрелками меняется порядок приложений
