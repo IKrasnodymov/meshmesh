@@ -375,10 +375,15 @@ static void scenario(){
   snap("dice-empty");key(hold);snap("dice-menu");key(run);must(dicer.resultCount==1&&uiStatus().indexOf("\"menu\":false")>=0,"hold, hold rolls the pool");snap("dice-rpg");
   dicer.roll("d20+5",ru?"Атака мечом":"Sword attack");snap("dice-saved");dicer.roll("d4+d6+d8+d10+d12");snap("dice-shapes");
   dicer.setMode(dice::Grid);dicer.gridChoose(10);dicer.gridSetThreshold(true,4);dicer.gridRoll();snap("dice-grid");
-  dicer.setMode(dice::Tally);snap("dice-counters");key(hold);key(run);must(dicer.hero().counter[0].value==25,"+1 from the menu");snap("dice-counter-menu");
+  dicer.setMode(dice::Tally);snap("dice-counters");key(hold);
 #if defined(MM_JOYSTICK)
+  key(run);must(dicer.hero().counter[0].value==25,"+1 from the menu");snap("dice-counter-menu");
   key(0x86);key(0xb5);must(dicer.hero().counter[0].value==26,"joystick up");
 #else
+  // Count with button: click +1, hold -1, a 5 s hold leaves and takes that hold's -1 back.
+  key(run);must(uiStatus().indexOf("\"dice_tapping\":true")>=0,"count with button opens");snap("dice-counting");
+  key(13);key(13);must(dicer.hero().counter[0].value==26,"click +1");key(0xa3);must(dicer.hero().counter[0].value==25,"hold -1");
+  key(0xa4);must(dicer.hero().counter[0].value==26&&uiStatus().indexOf("\"dice_tapping\":false")>=0,"5 s hold leaves, -1 taken back");
   for(int i=0;i<11;i++)tick();
 #endif
   dicer.setMode(dice::Rpg);
