@@ -658,7 +658,7 @@ function fullStamp(at){const d=local(at);return d?`${two(d.getUTCDate())}.${two(
 const hashMatch=(hash,f)=>peers.filter(p=>(p.public_key||'').toUpperCase().startsWith(hash.toUpperCase())&&f(p.type));
 const hashNodes=hash=>hashMatch(hash,t=>t===2||t===3);
 function km(a,b){const r=Math.PI/180,x=Math.sin((b.latitude-a.latitude)*r/2)**2+Math.cos(a.latitude*r)*Math.cos(b.latitude*r)*Math.sin((b.longitude-a.longitude)*r/2)**2,m=12742000*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));return m<1000?Math.round(m/10)*10+' м':(m/1000).toFixed(m<10000?1:0)+' км'}
-const snrText=(snr,rssi)=>`<span class="${snr>=0?'ok':snr>=-7?'warn':'bad'}">SNR ${+Number(snr).toFixed(2)} дБ</span>${rssi!=null?` · ${rssi} dBm`:''}`;
+const snrText=(snr,rssi)=>`<span class="${snr>=0?'ok':snr>=-7?'warn':'bad'}">SNR ${+Number(snr).toFixed(2)} дБ</span>${rssi<0?` · ${rssi} dBm`:''}`; // 0: the transceiver gave no RSSI (a very strong signal on the V4)
 function hopRow(hash,n,extra,prev){const ps=hashNodes(hash),p=ps.length===1?ps[0]:null;
  const where=p?.position?`${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}${prev?.position?' · '+km(prev,p)+' от предыдущего':''}`:p?'нет данных о местоположении':ps.length>1?'хеш подходит к: '+ps.map(x=>esc(x.name)).join(', '):(c=>c.length?'тот же хеш у чат-узла '+c.map(x=>esc(x.name)).join(', ')+': он мог переслать, если пересылка включена':'нет среди репитеров в контактах устройства')(hashMatch(hash,t=>t!==2&&t!==3));
  return {node:p,html:`<${p?`button data-go="node/${encodeURIComponent(p.id)}"`:'div'} class="row">${avatar(p?.id||hash,p?.name||'?',p?.type||2)}${n?`<span class="hopn">${n}</span>`:''}<span class="main"><b>${p?esc(p.name):ps.length>1?'Один из '+ps.length+' узлов':'Неизвестный репитер'}</b><small class="mono">${hash}</small><small>${where}</small>${extra?`<small>${extra}</small>`:''}</span></${p?'button':'div'}>`}}
@@ -666,7 +666,8 @@ function renderMsg(){const m=history.find(x=>msgKey(x)===param),el=$('msgCard');
  const to=dest(m),incoming=!m.outgoing,size=m.path_len!=null?(m.path_len>>6)+1:1,count=m.path_len!=null?m.path_len&63:0,hashes=(m.path||'').match(new RegExp(`.{${size*2}}`,'g'))||[],hops=m.hops??(m.path_len!=null?count:null);
  const route=m.route==='direct'?(incoming?'по маршруту (direct)':'по известному маршруту (direct)'):m.route==='flood'?'flood — через все репитеры':'—';
  const rows=[[incoming?'Отправитель':'Отправитель','<b>'+(incoming?esc(m.name):'Вы')+'</b>'],['Кому',esc(isChan(to)?'канал '+nodeName(to):to===status.node?'вам':nodeName(to))]];
- if(incoming&&m.session>1700000000)rows.push(['Время пакета',fullStamp(m.session)+' <span class="faint">(часы отправителя)</span>']);
+ // A sender without a set clock stamps the MeshCore floor (1 January 2025) plus its uptime.
+ if(incoming&&m.session>1700000000)rows.push(['Время пакета',m.session<1735776000?'часы отправителя не установлены':fullStamp(m.session)+' <span class="faint">(часы отправителя)</span>']);
  rows.push([incoming?'Получено':'Создано',fullStamp(m.time)]);
  if(m.outgoing)rows.push(['Статус',[null,'в очереди','отправлено',isChan(to)?'отправлено':'<span class="ok">доставлено: узел подтвердил</span>','<span class="bad">нет подтверждения</span>'][m.status]||'—']);
  rows.push(['Маршрут',route]);if(m.outgoing&&m.tries&&!isChan(to))rows.push(['Попытки',m.tries+' из 3']);
