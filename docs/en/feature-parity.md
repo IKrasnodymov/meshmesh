@@ -47,12 +47,17 @@ direct messages; a byte counter; a node card (write, on the map, path reset,
 delete); distance and bearing to the node with a fresh GPS fix; a map with nodes,
 compass heading and a scale bar; a lock screen with clock, date and
 an unread summary; key help; RU/EN input; since 0.3.2 — a Wi-Fi/LoRa signal
-radar with RSSI-based bearing (WadaMesh has none).
+radar with RSSI-based bearing (WadaMesh has none); since 0.16.0 — the packet path in the web interface
+and the app: tapping the time under a message shows the repeaters it came through (by the path hashes,
+named and placed from the contacts), SNR/RSSI, the sender's and reception time, the number of copies
+heard, and for your own messages the repeaters that repeated them, with SNR. The device keeps this for
+the 64 messages of the history and across restarts; a packet on a known (direct) route arrives without
+the list of repeaters, only its hop count is known.
 
 Missing compared with WadaMesh:
 
-- Messages: message menu (resend, copy, delete, hop/SNR
-  details), @-mentions, quick replies, emoji, links/QR.
+- Messages: message menu (resend, copy, delete; the packet path is only in
+  the web interface and the app), @-mentions, quick replies, emoji, links/QR.
 - Contacts: search, sorting and filters, favourites, blocking, a list of
   discovered nodes separate from contacts, bulk deletion.
 - Channels: creating/joining hashtag and private channels, mute, share via QR.
@@ -72,7 +77,7 @@ Missing compared with WadaMesh:
    a channel identifier in the history, web interface and storage.
 2. Room servers: password login and receiving SIGNED_PLAIN; then status and telemetry
    of repeaters and replies to telemetry requests.
-3. Message actions: resend an unconfirmed message, path details, delete.
+3. Message actions: resend an unconfirmed message, delete (the packet path is in the web and app since 0.16.0).
 4. Contacts: favourites, manual add by key, contact sharing,
    raising the 24 limit using PSRAM.
 5. Trace path and a link check with a selected node.

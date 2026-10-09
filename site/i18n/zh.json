@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "频道卡片：自己的区域",
  "shot.heltec-radio-region": "Heltec：从找到的区域中选择",
  "shot.t114-radio-find": "T114：查找区域",
- "doc.regions": "区域"
+ "doc.regions": "区域",
+ "f.path.t": "数据包路径",
+ "f.path.d": "点按消息下方的时间：查看它经过的中继器（名称和位置来自联系人）、SNR 和 RSSI、发送方时间与接收时间、听到的副本数；对于自己的消息，可看到哪些中继器转发了它。适用于网页界面和 Android 应用。",
+ "shot.web-msg-path": "收到的消息：经过中继器的跳数和信号",
+ "shot.web-msg-echoes": "你的消息：哪些中继器重复了它",
+ "news.path": "<b>新功能：</b>数据包路径——消息经过了哪些中继器，谁转发了你的消息"
 }

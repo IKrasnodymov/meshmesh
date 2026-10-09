@@ -244,7 +244,7 @@ footer a{color:var(--dim)}
     <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="cta.apk"></span></a>
     <a class="btn cta-more" href="#features"><span data-i18n="cta.more"></span></a>
    </div>
-   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.2 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/></svg></b><span data-i18n="news.regions"></span><i>→</i></a>
+   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.2 16.3 10.8 7.7M13.4 7.6l4.4 5.8"/></svg></b><span data-i18n="news.path"></span><i>→</i></a>
    <div class="facts">
     <div><b>14</b><span data-i18n="facts.boards"></span></div>
     <div><b>MeshCore</b><span data-i18n="facts.radio"></span></div>
@@ -457,10 +457,12 @@ const ICONS={
  pulse:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
  hash:'<path d="M5 9h15M4 15h15M10 3 8 21M16 3l-2 18"/>',
  region:'<path d="M12 21s-6.5-5.8-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.2 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/>',
+ route:'<circle cx="5" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.2 16.3 10.8 7.7M13.4 7.6l4.4 5.8"/>',
  tower:'<path d="M12 10 7 21M12 10l5 11M12 10v11M9 16h6"/><circle cx="12" cy="7.5" r="1.6"/><path d="M8.6 4a5 5 0 0 0 0 7M15.4 4a5 5 0 0 1 0 7"/>'
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png, web-* pages img/<name>.webp); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'path',ic:'route',c:'#1fc2ae',phone:true,shots:['web-msg-path','web-msg-echoes']},
  {id:'regions',ic:'region',c:'#38bdf8',shots:['m9-radio-regions','m9-channel-region','heltec-radio-region','t114-radio-find']},
  {id:'companion',ic:'phone',c:'#1fc2ae',shots:['m9-network-ble','t114-ble-on','heltec-ble-on']},
  {id:'dice',ic:'dice',c:'#e9b13b',shots:['m9-dice-shapes','t114-dice-saved','m9-dice-grid','m9-dice-counters','heltec-dice-grid','m9-dice-saved']},

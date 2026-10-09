@@ -69,9 +69,9 @@ String statusJson() {
 String messagesJson() {
   // Do not reserve a 32 KB JSON pool in addition to the serialized history on small nRF52 heaps.
   // Measure first so allocation failure is an explicit error, never a misleading empty array.
-  StaticJsonDocument<768> d;
+  StaticJsonDocument<1024> d;
   auto record=[&](unsigned i){d.clear();const auto& m=meshRadio.history[i];JsonObject j=d.to<JsonObject>();j["protocol"]=m.protocol;j["source"]=meshRadio.idText(m.source);j["destination"]=meshRadio.idText(m.destination);j["session"]=m.session;j["id"]=m.id;j["name"]=m.name;j["text"]=m.text;j["time"]=m.timestamp;j["outgoing"]=m.outgoing;j["status"]=int(m.status);
-   if(m.route){j["route"]=m.route==ChatMessage::RouteDirect?"direct":"flood";if(m.hops!=255)j["hops"]=m.hops;if(m.tries)j["tries"]=m.tries;}};
+   if(m.route){j["route"]=m.route==ChatMessage::RouteDirect?"direct":"flood";if(m.hops!=255)j["hops"]=m.hops;if(m.tries)j["tries"]=m.tries;}MeshRadio::pathJson(j,m);};
   size_t bytes=2;
   for(unsigned i=0;i<meshRadio.historyCount;i++){record(i);if(d.overflowed())return "ERR history JSON capacity";bytes+=measureJson(d)+(i?1:0);}
   String s;if(!s.reserve(bytes))return "ERR history response memory";s+='[';

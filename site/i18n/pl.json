@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Karta kanału: własny region",
  "shot.heltec-radio-region": "Heltec: region spośród znalezionych",
  "shot.t114-radio-find": "T114: szukaj regionów",
- "doc.regions": "Regiony"
+ "doc.regions": "Regiony",
+ "f.path.t": "Ścieżka pakietu",
+ "f.path.d": "Dotknij godziny pod wiadomością: przekaźniki, przez które przyszła, z nazwami i położeniem z kontaktów, SNR i RSSI, czas nadawcy i odbioru, ile kopii usłyszano; przy własnych wiadomościach — które przekaźniki je powtórzyły. W interfejsie WWW i aplikacji na Androida.",
+ "shot.web-msg-path": "Przychodząca: skoki przez przekaźniki i sygnał",
+ "shot.web-msg-echoes": "Twoja wiadomość: przekaźniki, które ją powtórzyły",
+ "news.path": "<b>Nowość:</b> ścieżka pakietu — przez które przekaźniki przeszła wiadomość i kto powtórzył twoją"
 }

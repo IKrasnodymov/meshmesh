@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Channel card: its own region",
  "shot.heltec-radio-region": "Heltec: region among the ones found",
  "shot.t114-radio-find": "T114: find regions",
- "doc.regions": "Regions"
+ "doc.regions": "Regions",
+ "f.path.t": "Packet path",
+ "f.path.d": "Tap the time under a message: the repeaters it came through, named and placed from your contacts, SNR and RSSI, the sender's and reception time, how many copies were heard; for your own messages, which repeaters passed them on. In the web interface and the Android app.",
+ "shot.web-msg-path": "Incoming: hops through repeaters and the signal",
+ "shot.web-msg-echoes": "Your message: the repeaters that repeated it",
+ "news.path": "<b>New:</b> packet path — which repeaters carried a message and who repeated yours"
 }

@@ -43,7 +43,8 @@ button.row:hover,button.row:focus-visible,.row.sel{background:var(--hi);outline:
 .bubble{position:relative;touch-action:pan-y}.bubble::after{content:"↩";position:absolute;right:-34px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--faint);opacity:var(--pull,0)}.bubble.armed::after{color:var(--accent)}
 .bubble .quote,.reply{display:block;border-left:3px solid var(--accent);border-radius:3px;background:rgba(127,127,127,.12);padding:2px 8px;margin:2px 0 4px;font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bubble .mention{color:var(--accent);font-weight:600}
 .reply{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:4px 4px 4px 10px}.reply span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.reply b{color:var(--ink)}.reply button{border:0;background:none;color:var(--dim);font-size:18px;width:32px;height:32px;flex:none}
-.meta{display:flex;justify-content:flex-end;align-items:center;gap:5px;font-size:11px;color:var(--dim)}.meta .ic{font-size:13px}
+.meta{display:flex;justify-content:flex-end;align-items:center;gap:5px;font-size:11px;color:var(--dim)}.meta .ic{font-size:13px}.meta[data-msg]{cursor:pointer}
+.hops{position:relative}.hops .row{min-height:52px}.hops.path .row:not(:last-child)::after{content:'';position:absolute;left:29px;top:46px;bottom:-8px;width:2px;background:var(--line,#3a4050);opacity:.6}.hops .row .main small{white-space:normal}.hopn{position:absolute;left:36px;top:6px;min-width:16px;height:16px;border-radius:8px;background:var(--accent);color:var(--bg,#000);font-size:10px;font-weight:700;display:grid;place-items:center;padding:0 3px}
 .empty{padding:48px 16px;text-align:center;color:var(--dim)}.empty .ic{font-size:40px;color:var(--faint);display:block;margin:0 auto 12px}.empty small{display:block;color:var(--faint);margin-top:4px}
 .composer{position:sticky;bottom:0;background:var(--bg);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
 .composer .box{display:flex;gap:8px;align-items:flex-end;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:6px 6px 6px 12px}.composer .box.typing{border-color:var(--accent)}
@@ -213,6 +214,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <p class="small faint" style="margin:10px 4px" id="chCount"></p></section>
 <section class="page" id="p-join" hidden><div id="joinCard"></div></section>
 <section class="page" id="p-chinfo" hidden><div id="chanCard"></div></section>
+<section class="page" id="p-msg" hidden><div id="msgCard"></div></section>
 
 <section class="page" id="p-nodes" hidden><div class="btns"><button class="btn" data-cmd="hello"><svg class="ic acc"><use href="#i-radio"/></svg>Объявить узел</button><button class="btn" data-cmd="position"><svg class="ic ok"><use href="#i-pin"/></svg>Передать позицию</button></div><h3>Узлы сети</h3><div class="list" id="nodeList"></div></section>
 
@@ -349,7 +351,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],msg:['Путь пакета','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -357,6 +359,7 @@ function show(){
  let [name,...rest]=(location.hash.slice(1)||'home').split('/');if(!PAGES[name]||standaloneMode&&name!=='map')name=standaloneMode?'map':'home';if(companion&&name!=='board')name='chess';
  const prev=route,next=name,arg=decodeURIComponent(rest.join('/'));
  if(prev==='settings'&&['nav','connect','modules','library'].includes(next))cameFrom[next]='settings';else if(prev==='home')delete cameFrom[next];
+ if(next==='msg'&&prev==='chat')cameFrom.msg='chat/'+param;
  if(next==='chat'&&prev==='node')cameFrom.chat='node/'+param;else if(next==='chat'&&prev!=='chat')delete cameFrom.chat;
  leave(prev,next);route=next;param=arg;
  for(const s of document.querySelectorAll('.page'))s.hidden=s.id!=='p-'+route;document.body.dataset.route=route;
@@ -388,7 +391,7 @@ function enter(page,prev){
  if(page==='pet')enterPet();
  if(page==='dice')enterDice();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
@@ -585,10 +588,10 @@ function routeText(m){if(m.protocol===1||!m.route||m.outgoing&&(m.status===4||is
 function statusMark(s){const m=[null,['queued','faint','В очереди'],['sent','muted','Отправлено'],['delivered','acc','Доставлено: узел подтвердил'],['failed','bad','Нет подтверждения']][s];return m?`<span title="${m[2]}">${ic(m[0],m[1])}</span>`:''}
 function renderChat(){
  const p=peer(recipient),c=chan(recipient);$('chatSub').textContent=isChan(recipient)?(chans&&!c?'Вы не в этом канале':(c?.kind==='private'?'Закрытый':'Открытый')+' канал · имена не проверены · без подтверждений'):p?`${typeText(p.type)} · ${pathText(p)}${p.heard?' · '+ago(age(p)):''}`:'Нет в контактах';
- $('chatHint').textContent=isChan(recipient)?'':'✓✓ — доставлено';
+ $('chatHint').textContent=(isChan(recipient)?'':'✓✓ — доставлено · ')+'время — путь пакета';
  const rows=history.filter(m=>matches(m,recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length;
  if(box.dataset.fingerprint!==fingerprint){const near=document.documentElement.scrollHeight-window.scrollY-window.innerHeight<120,first=!box.dataset.fingerprint;box.dataset.fingerprint=fingerprint;
-  chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&(isChan(recipient)||peer(recipient)?.type===3),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta">${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
+  chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&(isChan(recipient)||peer(recipient)?.type===3),l=parseLink(m.text);return `<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta"${m.protocol===2?` data-msg="${esc(msgKey(m))}" title="Путь пакета"`:''}>${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?'<span class="bad">не подтверждено</span>':''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m.status):''}</div></div>`}).join(''):`<div class="empty">${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет<small>Напишите текст и отправьте</small></div>`;
   if(near||first)window.scrollTo(0,document.body.scrollHeight)}
  if(route==='chat')markRead();byteCount()}
 function byteCount(){const n=bytes(replyPrefix()+$('text').value),l=messageLimit();$('byteCount').textContent=`${n} / ${l} байт`;$('byteCount').className='count '+(n>=l?'bad':n*10>=l*9?'warn':'');$('sendButton').disabled=!$('text').value.trim()||n>l;$('composeBox').classList.toggle('typing',n>0);return n}
@@ -648,6 +651,39 @@ const qrSvgs={};
 function qrSvg(text){if(qrSvgs[text])return qrSvgs[text];const q=qrCode(text);if(!q)return'';let d='';
  for(let y=0;y<q.n;y++)for(let x=0;x<q.n;){let k=0;while(x+k<q.n&&q.m[y*q.n+x+k])k++;if(k){d+=`M${x} ${y}h${k}v1h-${k}z`;x+=k}else x++}
  return qrSvgs[text]=`<svg viewBox="-4 -4 ${q.n+8} ${q.n+8}" shape-rendering="crispEdges" role="img" aria-label="QR-код канала"><path d="${d}"/></svg>`}
+// The path of a message (/api/messages: path, snr, rssi, heard, echoes): the repeaters by their key hashes,
+// named from the device's contacts; a hash fits several nodes or none (a repeater it has not heard).
+const msgKey=m=>`${m.source}.${m.session}.${m.id}`;
+function fullStamp(at){const d=local(at);return d?`${two(d.getUTCDate())}.${two(d.getUTCMonth()+1)}.${d.getUTCFullYear()} ${two(d.getUTCHours())}:${two(d.getUTCMinutes())}:${two(d.getUTCSeconds())}`:'часы не были установлены'}
+// Only repeaters and rooms pass packets on: a chat node with the same hash is not one of them.
+const hashMatch=(hash,f)=>peers.filter(p=>(p.public_key||'').toUpperCase().startsWith(hash.toUpperCase())&&f(p.type));
+const hashNodes=hash=>hashMatch(hash,t=>t===2||t===3);
+function km(a,b){const r=Math.PI/180,x=Math.sin((b.latitude-a.latitude)*r/2)**2+Math.cos(a.latitude*r)*Math.cos(b.latitude*r)*Math.sin((b.longitude-a.longitude)*r/2)**2,m=12742000*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));return m<1000?Math.round(m/10)*10+' м':(m/1000).toFixed(m<10000?1:0)+' км'}
+const snrText=(snr,rssi)=>`<span class="${snr>=0?'ok':snr>=-7?'warn':'bad'}">SNR ${+Number(snr).toFixed(2)} дБ</span>${rssi!=null?` · ${rssi} dBm`:''}`;
+function hopRow(hash,n,extra,prev){const ps=hashNodes(hash),p=ps.length===1?ps[0]:null;
+ const where=p?.position?`${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}${prev?.position?' · '+km(prev,p)+' от предыдущего':''}`:p?'нет данных о местоположении':ps.length>1?'хеш подходит к: '+ps.map(x=>esc(x.name)).join(', '):(c=>c.length?'тот же хеш у чат-узла '+c.map(x=>esc(x.name)).join(', ')+': он мог переслать, если пересылка включена':'нет среди репитеров в контактах устройства')(hashMatch(hash,t=>t!==2&&t!==3));
+ return {node:p,html:`<${p?`button data-go="node/${encodeURIComponent(p.id)}"`:'div'} class="row">${avatar(p?.id||hash,p?.name||'?',p?.type||2)}${n?`<span class="hopn">${n}</span>`:''}<span class="main"><b>${p?esc(p.name):ps.length>1?'Один из '+ps.length+' узлов':'Неизвестный репитер'}</b><small class="mono">${hash}</small><small>${where}</small>${extra?`<small>${extra}</small>`:''}</span></${p?'button':'div'}>`}}
+function renderMsg(){const m=history.find(x=>msgKey(x)===param),el=$('msgCard');if(!m){setHtml(el,`<div class="empty">${ic('chat')}Сообщения уже нет в истории<small>Устройство хранит последние 64</small></div>`);return}
+ const to=dest(m),incoming=!m.outgoing,size=m.path_len!=null?(m.path_len>>6)+1:1,count=m.path_len!=null?m.path_len&63:0,hashes=(m.path||'').match(new RegExp(`.{${size*2}}`,'g'))||[],hops=m.hops??(m.path_len!=null?count:null);
+ const route=m.route==='direct'?(incoming?'по маршруту (direct)':'по известному маршруту (direct)'):m.route==='flood'?'flood — через все репитеры':'—';
+ const rows=[[incoming?'Отправитель':'Отправитель','<b>'+(incoming?esc(m.name):'Вы')+'</b>'],['Кому',esc(isChan(to)?'канал '+nodeName(to):to===status.node?'вам':nodeName(to))]];
+ if(incoming&&m.session>1700000000)rows.push(['Время пакета',fullStamp(m.session)+' <span class="faint">(часы отправителя)</span>']);
+ rows.push([incoming?'Получено':'Создано',fullStamp(m.time)]);
+ if(m.outgoing)rows.push(['Статус',[null,'в очереди','отправлено',isChan(to)?'отправлено':'<span class="ok">доставлено: узел подтвердил</span>','<span class="bad">нет подтверждения</span>'][m.status]||'—']);
+ rows.push(['Маршрут',route]);if(m.outgoing&&m.tries&&!isChan(to))rows.push(['Попытки',m.tries+' из 3']);
+ if(incoming||hops!=null)rows.push(['Путь',hops==null?'неизвестен':hops===0?'напрямую, без репитеров':plural(hops,'хоп','хопа','хопов')]);
+ if(m.snr!=null)rows.push(['Сигнал',snrText(m.snr,m.rssi)+(hops?' <span class="faint">(последний участок)</span>':'')]);
+ if(m.heard!=null||m.route==='flood')rows.push([incoming?'Копий услышано':'Повторили репитеры',String(m.heard||0)]);
+ let h=`<div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b class="small muted">ДЕТАЛИ СООБЩЕНИЯ</b>${hops!=null?`<span class="small faint">→ ${hops?plural(hops,'хоп','хопа','хопов'):'напрямую'}</span>`:''}</div>${rows.map(([a,b])=>`<div class="detail"><span>${a}</span><span>${b}</span></div>`).join('')}</div>`;
+ if(hashes.length){let prev=null;const items=hashes.map((x,i)=>{const r=hopRow(x,i+1,incoming&&i===hashes.length-1&&m.snr!=null?'услышан вами: '+snrText(m.snr,m.rssi):'',prev);prev=r.node;return r.html});
+  h+=`<h3>${incoming?'Хопы через репитеры':m.status===3&&m.route==='flood'?'Маршрут к получателю (вернулся с подтверждением)':'Маршрут к получателю'}</h3><div class="list hops path">${items.join('')}</div>`;
+  if(count>hashes.length)h+=`<p class="small faint" style="margin:4px">Ещё ${count-hashes.length} не сохранено: хранятся первые 24 байта пути</p>`}
+ else if(incoming&&m.route==='direct')h+=`<p class="small muted" style="margin:12px 4px">Пакет по маршруту приходит без списка репитеров: каждый убирает себя из пути. Видно только число хопов известного маршрута.</p>`;
+ else if(incoming&&hops===0)h+=`<p class="small muted" style="margin:12px 4px">Пакет услышан напрямую от отправителя, без репитеров.</p>`;
+ if(m.echoes?.length)h+=`<h3>${incoming?'Другие копии':'Слышно от репитеров'}</h3><div class="list hops">${m.echoes.map(e=>hopRow(e.hash,0,snrText(e.snr)).html).join('')}</div>`;
+ else if(m.outgoing&&m.route==='flood'&&m.status>=2)h+=`<p class="small muted" style="margin:12px 4px">Устройство пока не слышало, чтобы репитеры повторили это сообщение.</p>`;
+ h+=`<p class="small faint" style="margin:12px 4px">Репитеры определяются по ${size} байт${size>1?'ам':'у'} их ключа среди контактов устройства (до 24 узлов); другие показаны как неизвестные.</p>`;
+ setHtml(el,h)}
 function renderChanInfo(){const c=chan(param),el=$('chanCard');if(!c){setHtml(el,`<div class="empty">${ic('hash')}Канала нет на устройстве</div>`);return}
  const pub=c.kind==='public',stage=deleteArmed===c.id+1?1:deleteArmed===c.id+2?2:0,contacts=peers.filter(p=>p.type===1);
  let h=`<div class="head">${avatar(c.id,c.name,0,52)}<div><span class="big">${esc(c.name)}</span><span class="small muted">${chanKind(c)}</span></div></div><div class="card" style="padding:0 12px">${[['Ключ',pub?'известен всем узлам':c.kind==='hashtag'?'из имени канала':'случайный'],['Хеш в пакетах',c.hash],['Сообщений',history.filter(m=>matches(m,c.id)).length],['ID',c.id]].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}</div>`;
@@ -1301,7 +1337,8 @@ async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
  $('back').onclick=()=>go(parent());
- document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-arch],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chregion],[data-chdel],[data-copy]');if(!t)return;const d=t.dataset;
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-cmd],[data-node],[data-toggle],[data-sig],[data-area],[data-csi],[data-sq],[data-chess],[data-invite],[data-chesscolor],[data-chessview],[data-chessrated],[data-tour],[data-ledger],[data-arch],[data-promo],[data-chtab],[data-chjoin],[data-join],[data-chinv],[data-chregion],[data-chdel],[data-copy],[data-msg]');if(!t)return;const d=t.dataset;
+  if(d.msg){go('msg/'+encodeURIComponent(d.msg));return}
   if(d.chtab||d.chjoin||d.join||d.chinv||d.chdel||d.copy||d.chregion){chanClick(d);return}
   if(d.sq!==undefined||d.chess||d.invite||d.chesscolor!==undefined||d.chessview||d.chessrated!==undefined||d.tour!==undefined||d.ledger||d.arch||d.promo){chessClick(d);return}
   if(d.go)go(d.go);else if(d.cmd)run(d.cmd,{hello:'Узел объявлен',position:'Позиция передана',selftest:'Проверка шифрования пройдена'}[d.cmd]);else if(d.node)nodeAction(d.node);else if(d.toggle)toggle(d.toggle);else if(d.area)selectArea(d.area);

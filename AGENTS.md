@@ -11,7 +11,8 @@
 `web/chess-companion.js`, `tools/chess_site.py`), питомец сети — тамагочи, который кормится эфиром,
 растёт и может умереть (`src/Pet.cpp`, экраны `src/UiPet.inc`, `src/UiPetCompact.inc`, T114 — `src/UiHires.inc`;
 `docs/pet.md`), кости — дайсер DIC3R: RPG-броски и формулы, сетка Warhammer, счётчики и персонажи на устройстве (`src/Dice.cpp`,
-экраны `src/UiDice.inc`, `src/UiDiceCompact.inc`, T114 — `src/UiHires.inc`; `docs/dice.md`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
+экраны `src/UiDice.inc`, `src/UiDiceCompact.inc`, T114 — `src/UiHires.inc`; `docs/dice.md`), путь пакета у сообщения в вебе и приложении (репитеры по хешам пути, SNR/RSSI, повторы своих сообщений —
+`MeshRadio::echo`, `renderMsg` в `web/index.html`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
 по-русски. Доводить согласованные изменения до сборки, установки и проверки,
 если устройства доступны. Различать реализованную функцию, успешную сборку,
 установленную прошивку и подтверждённую аппаратную работу.

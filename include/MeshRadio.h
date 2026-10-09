@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <RadioLib.h>
+#include <ArduinoJson.h>
 #include <Mm1Packet.h>
 #include "Board.h"
 #include "BoardPins.h"
@@ -29,6 +30,16 @@ struct ChatMessage {
   // Flood hops of a delivered message are those of the path returned with the ACK. 255: not known.
   enum Route:uint8_t { RouteNone,RouteDirect,RouteFlood } route=RouteNone;
   uint8_t hops=255,tries=0;
+  // The path (MeshCore path_len: hash size in the top bits, count below; 255: not kept): incoming flood - the
+  // repeaters from the sender to us; outgoing direct - the route used; delivered flood - the route returned.
+  // Hashes beyond 24 bytes are not kept.
+  uint8_t pathLen=255,path[24]={};
+  // Incoming: the packet as heard (SNR in quarter dB). heard: copies of the packet heard - incoming: all of them,
+  // outgoing: repeaters passing our flood packet on; echo: the last repeater of each copy (other ones, up to 4).
+  bool signal=false;int8_t snr=0;int16_t rssi=0;uint8_t heard=0,echoes=0;
+  struct Echo {uint8_t hash[3],size;int8_t snr;} echo[4]={};
+  uint32_t packet=0; // RAM only: the start of the MeshCore packet hash, to match the copies; 0: none
+  bool echoSaved=true; // RAM only: a copy heard since it was last saved
   // RAM only. uptime: the second of this boot it was recorded in while the clock was not set (timestamp 0);
   // the time is filled in when the clock is set. seen: an incoming one read on the screen.
   uint32_t uptime=0;bool seen=false;
@@ -49,7 +60,8 @@ class MeshRadio {
   uint64_t nodeId=0;uint32_t networkId=0,rxCount=0,txCount=0,rejected=0,relayed=0,replaced=0; // replaced: contacts overwritten by new nodes
   uint32_t received=0,delivered=0; // chat messages received and delivery ACKs since boot (the pet counts them)
   float lastRssi=0,lastSnr=0;uint32_t lastRxAt=0;
-  ChatMessage history[64];unsigned historyCount=0;
+  // On the heap: in static memory it does not fit the classic ESP32 boards (dram0 segment).
+  ChatMessage* const history=new ChatMessage[64];unsigned historyCount=0;
   Peer peers[24];unsigned peerCount=0;
   // Group channels: [0] is Public; the others are kept in NVS. Removing one keeps its history, joining it again shows it.
   channels::Channel channelList[channels::Max];unsigned channelCount=0;
@@ -91,6 +103,10 @@ class MeshRadio {
   bool learnContact(const uint8_t key[32],const char* name); // a chat contact from its key (a tournament opponent)
   unsigned messageLimit(uint64_t destination=meshmesh::Broadcast) const;
   String routeText(const ChatMessage& m,bool brief=false) const; // e.g. "via 2 rpt · 2/3"; empty when unknown
+  // A copy of a flood packet heard again (the mesh tables): a message of the history counts it as a repeat.
+  void echo(uint32_t packet,uint8_t pathLen,const uint8_t* path);
+  // The path, signal and repeats of a message in JSON (the history file and /api/messages); read back by pathRead.
+  static void pathJson(JsonObject j,const ChatMessage& m);static void pathRead(JsonObjectConst j,ChatMessage& m);
  private:
   friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;friend struct RemoteAccess;friend struct RegionAccess;
   MeshCoreBackend* core=nullptr;
@@ -104,7 +120,7 @@ class MeshRadio {
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);
   bool startRadio(bool quiet);int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
-  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false);void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
+  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false,uint8_t pathLen=255,const uint8_t* path=nullptr);uint32_t echoDue=0;void tickEchoes();void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
   Peer* contact(uint64_t id);
   struct Sample {uint8_t length=0,data[184]={};} samples[6];unsigned nextSample=0; // packets of unjoined channels
   uint32_t seenGroup[16]={};unsigned nextSeenGroup=0;

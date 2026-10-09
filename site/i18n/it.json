@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Scheda del canale: la sua regione",
  "shot.heltec-radio-region": "Heltec: regione tra quelle trovate",
  "shot.t114-radio-find": "T114: cerca regioni",
- "doc.regions": "Regioni"
+ "doc.regions": "Regioni",
+ "f.path.t": "Percorso del pacchetto",
+ "f.path.d": "Tocca l'ora sotto un messaggio: i ripetitori da cui è passato, con nome e posizione dai tuoi contatti, SNR e RSSI, l'ora del mittente e di ricezione, quante copie sono state sentite; per i tuoi messaggi, quali ripetitori li hanno inoltrati. Nell'interfaccia web e nell'app Android.",
+ "shot.web-msg-path": "In arrivo: salti tra ripetitori e segnale",
+ "shot.web-msg-echoes": "Il tuo messaggio: i ripetitori che lo hanno ripetuto",
+ "news.path": "<b>Novità:</b> percorso del pacchetto — da quali ripetitori è passato un messaggio e chi ha ripetuto il tuo"
 }

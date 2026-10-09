@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "채널 카드: 채널 지역",
  "shot.heltec-radio-region": "Heltec: 찾은 지역에서 선택",
  "shot.t114-radio-find": "T114: 지역 찾기",
- "doc.regions": "지역"
+ "doc.regions": "지역",
+ "f.path.t": "패킷 경로",
+ "f.path.d": "메시지 아래 시간을 누르세요: 거쳐 온 리피터(연락처의 이름과 위치), SNR 및 RSSI, 보낸 사람 시각과 수신 시각, 들린 사본 수; 내 메시지는 어떤 리피터가 전달했는지 보여 줍니다. 웹 인터페이스와 Android 앱에서.",
+ "shot.web-msg-path": "수신: 리피터를 거친 홉과 신호",
+ "shot.web-msg-echoes": "내 메시지: 이를 반복한 리피터",
+ "news.path": "<b>새 기능:</b> 패킷 경로 — 메시지가 어떤 리피터를 거쳤는지, 누가 내 메시지를 반복했는지"
 }

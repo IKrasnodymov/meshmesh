@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Kanalkarte: eigene Region",
  "shot.heltec-radio-region": "Heltec: Region aus den gefundenen",
  "shot.t114-radio-find": "T114: Regionen suchen",
- "doc.regions": "Regionen"
+ "doc.regions": "Regionen",
+ "f.path.t": "Paketpfad",
+ "f.path.d": "Tippen Sie auf die Zeit unter einer Nachricht: die Repeater, über die sie kam, mit Namen und Position aus Ihren Kontakten, SNR und RSSI, Sende- und Empfangszeit, wie viele Kopien gehört wurden; bei eigenen Nachrichten, welche Repeater sie weitergegeben haben. In der Weboberfläche und der Android-App.",
+ "shot.web-msg-path": "Eingehend: Hops über Repeater und das Signal",
+ "shot.web-msg-echoes": "Ihre Nachricht: welche Repeater sie wiederholt haben",
+ "news.path": "<b>Neu:</b> Paketpfad — über welche Repeater eine Nachricht kam und wer Ihre wiederholt hat"
 }

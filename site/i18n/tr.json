@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Kanal kartı: kendi bölgesi",
  "shot.heltec-radio-region": "Heltec: bulunanlardan bölge",
  "shot.t114-radio-find": "T114: bölge ara",
- "doc.regions": "Bölgeler"
+ "doc.regions": "Bölgeler",
+ "f.path.t": "Paket yolu",
+ "f.path.d": "Bir mesajın altındaki saate dokunun: geldiği tekrarlayıcılar, kişilerinizden ad ve konumlarıyla, SNR ve RSSI, gönderen ve alım saati, kaç kopya duyulduğu; kendi mesajlarınızda hangi tekrarlayıcıların onları ilettiği. Web arayüzünde ve Android uygulamasında.",
+ "shot.web-msg-path": "Gelen: tekrarlayıcılar üzerinden atlamalar ve sinyal",
+ "shot.web-msg-echoes": "Mesajınız: onu tekrarlayan tekrarlayıcılar",
+ "news.path": "<b>Yeni:</b> paket yolu — mesajın hangi tekrarlayıcılardan geçtiği ve sizinkini kimin tekrarladığı"
 }

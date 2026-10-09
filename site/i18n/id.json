@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "Kartu kanal: wilayah sendiri",
  "shot.heltec-radio-region": "Heltec: wilayah dari yang ditemukan",
  "shot.t114-radio-find": "T114: cari wilayah",
- "doc.regions": "Wilayah"
+ "doc.regions": "Wilayah",
+ "f.path.t": "Jalur paket",
+ "f.path.d": "Ketuk waktu di bawah pesan: repeater yang dilalui, dengan nama dan posisi dari kontak Anda, SNR dan RSSI, waktu pengirim dan penerimaan, berapa salinan yang terdengar; untuk pesan Anda sendiri, repeater mana yang meneruskannya. Di antarmuka web dan aplikasi Android.",
+ "shot.web-msg-path": "Masuk: lompatan melalui repeater dan sinyal",
+ "shot.web-msg-echoes": "Pesan Anda: repeater yang mengulanginya",
+ "news.path": "<b>Baru:</b> jalur paket — repeater mana yang membawa pesan dan siapa yang mengulang pesan Anda"
 }

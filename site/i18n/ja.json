@@ -256,5 +256,10 @@
  "shot.m9-channel-region": "チャンネルカード：個別の地域",
  "shot.heltec-radio-region": "Heltec：見つかった地域から選択",
  "shot.t114-radio-find": "T114：地域を検索",
- "doc.regions": "地域"
+ "doc.regions": "地域",
+ "f.path.t": "パケット経路",
+ "f.path.d": "メッセージの下の時刻をタップ：通過したリピーター（連絡先の名前と位置）、SNR と RSSI、送信者の時刻と受信時刻、聞こえたコピーの数。自分のメッセージでは、どのリピーターが中継したかを表示。Web インターフェースと Android アプリで。",
+ "shot.web-msg-path": "受信：リピーター経由のホップと信号",
+ "shot.web-msg-echoes": "あなたのメッセージ：中継したリピーター",
+ "news.path": "<b>新機能：</b>パケット経路 — メッセージがどのリピーターを通ったか、誰があなたのメッセージを中継したか"
 }
