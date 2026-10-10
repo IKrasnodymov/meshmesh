@@ -86,7 +86,7 @@ with ExitStack() as stack:
      time.sleep(.2)
     raise TimeoutError('temporary-channel RF receipt not observed')
    # Screen wake and pop-ups are independent, including per-channel inheritance.
-   apply(dev[1],{'apps':'-dice -quick -people','dim_after':10,'notify_wake':0,'notify_popup':0,'sound':False})
+   apply(dev[1],{'apps':'-dice -quick -people -wardrive','dim_after':10,'notify_wake':0,'notify_popup':0,'sound':False})
    command(dev[1],'uikey 134');command(dev[1],'uikey 134');do(dev[1],'channel',action='policy',channel=channel,wake=3,popup=3)
    time.sleep(12);assert read(dev[1],'ui')['screen_off']
    u=receive_quick('Notification off');assert u['screen_off'] and not u['popup']

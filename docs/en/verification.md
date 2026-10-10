@@ -1,9 +1,18 @@
 # MeshMesh verification
 
-> **0.20.0: wardriving, targeted check on M9 and V4** (10 October 2026, branch `feature/wardrive`, not
-> published). Packages 0.20.0 installed with `tools/flash.py`: M9 — `build_sha256=3394D5422378…`, boot 245;
+> **0.20.0 (0.19.1 + wardriving): final full run on M9 and V4** (10 October 2026). `finish_on_hardware.py` on the
+> packages of commit `9e83c2a` finished: `artifacts/release-check.json` — `passed_hardware_suite`. Installed: M9 —
+> `build_sha256=C6253E1CB252…`, boot 251; V4 — `8598F9967516…`, boot 258. The run went with `--resume`: the
+> `meshcore-stock` step failed twice — adverts gave no contacts within 12 s, then "stock clock far ahead" (the V4
+> GPS now receives spoofed dates: 4 September 2025, 1 October 2026) — and passed on the third try; `heltec-ui`
+> stopped on the new "Wardrive" screen the check did not know (now hidden there); `heltec-ble` failed to connect
+> once and passed on the retry. Afterwards interfaces were restored (M9 Wi-Fi/BLE off, V4 Wi-Fi off, BLE on), power
+> and relay unchanged. ESP32 classic builds (`tbeam`, `tlora_v2_1_6`, including the published 0.19.0) abort at
+> start in QEMU allocating the history (`new[]` in `MeshRadio`); not checked on hardware, unrelated to wardriving.
+
+> **0.20.0: wardriving, targeted check on M9 and V4** (10 October 2026, intermediate build). Packages 0.20.0 installed with `tools/flash.py`: M9 — `build_sha256=3394D5422378…`, boot 245;
 > V4 — `41C5A7944B0D…`, boot 252; revision `1321ce0-dirty` (worktree sources before the commit). Settings,
-> history (64) and keys kept, no restarts during the check. The full `finish_on_hardware.py` was not run.
+> history (64) and keys kept, no restarts during the check. The full run is the entry above.
 >
 > On air: M9, pinging every 50 m, sent 6 pings to `#wardrive`, all with echoes — V4 (`C99339`, SNR +16 dB) and
 > eight third-party repeaters of the mesh (AB, 77, D0, D5, D3, DA, C2, D2). Pings stayed out of the chat

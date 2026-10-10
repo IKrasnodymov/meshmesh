@@ -45,7 +45,7 @@ async def main():
   config=read('config')
   assert (await stock.commands.set_radio(round(config['frequency'],3),config['bandwidth'],config['sf'],config['cr'])).type==EventType.OK
   rtc=await stock.commands.get_time();assert rtc.type==EventType.CURRENT_TIME
-  assert rtc.payload['time']<=int(time.time())+60,'Stock clock is unexpectedly far ahead'
+  assert rtc.payload['time']<=int(time.time())+60,f"Stock clock is unexpectedly far ahead: {rtc.payload['time']} vs host {int(time.time())}"
   # Stock rejects backward corrections; its RTC can be slightly ahead of the host.
   assert (await stock.commands.set_time(max(int(time.time())+2,rtc.payload['time']+2))).type==EventType.OK
   assert command(m9,'hello').startswith('OK');assert (await stock.commands.send_advert(flood=True)).type==EventType.OK

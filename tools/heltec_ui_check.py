@@ -22,7 +22,7 @@ def main():
   before=[read(d,'status') for d in (m9,heltec)]
   apps=read(heltec,'config')['apps']
   try:
-   assert command(heltec,'set '+json.dumps({'apps':'chats nodes chess radar gps wifi ble settings health -pet -dice -quick -people'}),timeout=25).startswith('OK')
+   assert command(heltec,'set '+json.dumps({'apps':'chats nodes chess radar gps wifi ble settings health -pet -dice -quick -people -wardrive'}),timeout=25).startswith('OK')
    key(heltec,0x86)
    # Put a known incoming personal message last, so hold replies to the M9.
    delivery(m9,heltec,before[0]['node'],before[1]['node'],f'Проверка ответа кнопкой Heltec {time.time_ns()}')
