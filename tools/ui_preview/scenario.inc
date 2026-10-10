@@ -74,6 +74,13 @@ static void scenario(){
   touch('t',20,34);uint32_t rolls=dicer.rolls;touch('t',100,120);if(dicer.rolls!=rolls+1){printf("FAIL dice roll tap: %s\n",dicer.json().c_str());exit(1);}shot("tdeck-dice");
   dicer.setMode(dice::Tally);tick();touch('t',8+3+3*24+5,48+66);if(dicer.hero().counter[0].value!=25){printf("FAIL counter +5 tap: %s\n",dicer.json().c_str());exit(1);}
   touch('t',160,10);expect("dice back","\"page\":\"home\"");}
+ // Quick Send: the pinned recipient card and first/last templates use their own touch targets.
+ {strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;key(0x82);key(13);expect("Quick tile","\"page\":\"quick\"");shot("tdeck-quick");unsigned before=meshRadio.historyCount;
+  touch('t',160,45);expect("recipient card opens chooser","\"quick_targets\":true");shot("tdeck-quick-targets");if(meshRadio.historyCount!=before){printf("FAIL recipient card sent a template\n");exit(1);}
+  touch('t',160,10);expect("cancel returns to card","\"selected\":0");touch('t',160,45);touch('t',160,90);expect("recipient confirmation selects first preset","\"quick_index\":0");shot("tdeck-quick-preset");
+  touch('t',160,90);if(meshRadio.historyCount!=before+1||String(meshRadio.history[before].text)!=quickSend::state.text[0]||meshRadio.history[before].destination!=quickSend::state.to){printf("FAIL first Quick template touch\n");exit(1);}
+  key(0xb5);key(0xb5);shot("tdeck-quick-last");touch('t',160,190);if(meshRadio.historyCount!=before+2||String(meshRadio.history[before+1].text)!=quickSend::state.text[quickSend::Count-1]){printf("FAIL last Quick template touch\n");exit(1);}
+  touch('t',160,45);expect("pinned card after scrolling","\"quick_targets\":true");if(meshRadio.historyCount!=before+2){printf("FAIL pinned card sent a template\n");exit(1);}touch('t',160,10);touch('t',160,10);config.apps[0]=0;}
  printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
  auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
@@ -421,16 +428,22 @@ static void scenario(){
   strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;
 #if defined(MM_HELTEC_V4)
 #if defined(MM_JOYSTICK)
-  const int step=0xb7,hold=13;
+  const int step=0xb7,hold=13,choose=0xb6;
 #else
-  const int step=13,hold=0xa3;
+  const int step=13,hold=0xa3,choose=13;
 #endif
-  key(0x86);key(step);must(uiStatus().indexOf("\"page\":\"quick\"")>=0,"open Quick Send");shot("heltec-quick");unsigned sent=meshRadio.historyCount;key(hold);must(meshRadio.historyCount==sent+1,"template queued");
-  key(0x86);key(step);
+  key(0x86);key(step);must(uiStatus().indexOf("\"page\":\"quick\"")>=0&&uiStatus().indexOf("\"quick_row\":0")>=0,"open Quick Send on recipient card");shot("heltec-quick");unsigned sent=meshRadio.historyCount;key(hold);
+  must(uiStatus().indexOf("\"quick_targets\":true")>=0&&meshRadio.historyCount==sent,"recipient card opens chooser without sending");shot("heltec-quick-targets");key(0x86);
+  must(uiStatus().indexOf("\"page\":\"quick\"")>=0&&uiStatus().indexOf("\"quick_row\":0")>=0,"cancel returns to recipient card");key(hold);key(choose);uint64_t to=quickSend::target(1);key(hold);
+  must(quickSend::state.to==to&&uiStatus().indexOf("\"quick_index\":0")>=0&&meshRadio.historyCount==sent,"recipient confirmation selects first preset without sending");for(int i=0;i<4;i++)tick();shot("heltec-quick-preset");key(hold);
+  must(meshRadio.historyCount==sent+1&&String(meshRadio.history[sent].text)==quickSend::state.text[0]&&meshRadio.history[sent].destination==to,"first preset still sends its own text to chosen recipient");
+  for(unsigned i=1;i<quickSend::Count;i++)key(choose);for(int i=0;i<4;i++)tick();shot("heltec-quick-last");key(hold);
+  must(meshRadio.historyCount==sent+2&&String(meshRadio.history[sent+1].text)==quickSend::state.text[quickSend::Count-1]&&meshRadio.history[sent+1].destination==to,"last preset remains reachable and sends its own text");
 #if defined(MM_JOYSTICK)
+  key(0x86);key(step);key(0xb5);must(uiStatus().indexOf("\"quick_row\":11")>=0,"joystick up wraps to exit");key(0xb5);must(uiStatus().indexOf("\"quick_index\":9")>=0,"joystick up reaches last preset");key(0xb6);key(0xb6);must(uiStatus().indexOf("\"quick_row\":0")>=0,"joystick down wraps to recipient card");
   key(0x86);key(step);key(step);unsigned manual=people::settings.manual;key(0xb5);must(people::settings.manual==manual+1,"joystick up counts +1");key(0xb6);must(people::settings.manual==manual,"joystick down counts -1");
 #else
-  for(unsigned i=0;i<11;i++)key(13);key(hold);must(uiStatus().indexOf("\"page\":\"people\"")>=0,"Quick exit advances to counter");unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(hold);shot("heltec-people-menu");key(hold);must(people::settings.manual==manual,"manual -1 menu");
+  key(13);key(hold);must(uiStatus().indexOf("\"page\":\"people\"")>=0,"Quick exit advances to counter");unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(hold);shot("heltec-people-menu");key(hold);must(people::settings.manual==manual,"manual -1 menu");
 #endif
   shot("heltec-people");
 #if !defined(MM_JOYSTICK)
@@ -438,7 +451,14 @@ static void scenario(){
   dicer.setMode(dice::Rpg);unsigned rolls=dicer.rolls;key(13);must(dicer.rolls==rolls+1,"short press rolls");ChatMessage m;m.source=peerId(0);strcpy(m.name,"Preview");strcpy(m.text,"message while rolling");notifications::incoming(m);tick();must(uiStatus().indexOf("\"popup\":false")>=0,"message does not take the roll button");key(13);must(dicer.rolls==rolls+2,"next short press rolls again");config.dimAfter=10;fakeMillis+=12000;tick();must(uiScreenOff(),"dice screen dims");key(13);must(!uiScreenOff()&&dicer.rolls==rolls+3,"dark press wakes and rolls");key(hold);deserializeJson(d,uiStatus());n=d["menu_count"]|0;for(unsigned i=0;i<n-2;i++)key(13);key(hold);must(uiStatus().indexOf("\"page\":\"dice\"")<0,"exit through menu");
 #endif
 #else
-  key(0x82);key(13);must(uiStatus().indexOf("\"page\":\"quick\"")>=0,"open Quick Send");shot("quick");key(13);key(0x86);key(0xb7);key(13);unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(0xb6);must(people::settings.manual==manual,"manual -1");shot("people");key(0x86);
+  key(0x82);key(13);must(uiStatus().indexOf("\"page\":\"quick\"")>=0,"open Quick Send");shot("quick");
+  unsigned sent=meshRadio.historyCount;key(13);must(uiStatus().indexOf("\"quick_targets\":true")>=0&&meshRadio.historyCount==sent,"first row opens recipients without sending");shot("quick-targets");
+  key(0x86);must(uiStatus().indexOf("\"selected\":0")>=0,"cancel returns to recipient card");key(13);key(13);
+  must(uiStatus().indexOf("\"quick_index\":0")>=0,"recipient confirmation selects first preset");shot("quick-preset");key(13);
+  must(meshRadio.historyCount==sent+1&&String(meshRadio.history[sent].text)==quickSend::state.text[0],"first preset still sends its own text");
+  key(0xb5);key(0xb5);shot("quick-last");key(13);
+  must(meshRadio.historyCount==sent+2&&String(meshRadio.history[sent+1].text)==quickSend::state.text[quickSend::Count-1],"last preset remains reachable and sends its own text");
+  key(0x86);key(0xb7);key(13);unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(0xb6);must(people::settings.manual==manual,"manual -1");shot("people");key(0x86);
 #endif
   config.apps[0]=0;printf("wishlist UI checks passed\n");}
 // Power off last: the screens stop taking keys once it is requested.

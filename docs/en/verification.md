@@ -1,5 +1,35 @@
 # MeshMesh verification
 
+> **0.19.1: Quick Send recipient on all boards** (10 October 2026, builds and native UI).
+> The shared compact interface now starts with a pinned recipient card too:
+> OLED uses an outline, inversion and an arrow; T114 uses a colour card with a caption and name.
+> Opening and confirming a recipient do not send a preset. Cancel returns to the card;
+> confirmation saves the ID and selects the first preset. Exit remains after the ten presets.
+> All 15 targets build. Native M9, T-Deck, Heltec, GAT562 and T114 scenarios pass in ru/en/zh/ar:
+> open/cancel/confirm, first/last preset text and destination, navigation and scrolling;
+> T-Deck also checks taps on the pinned card and presets. Screen captures were reviewed.
+> Full Chinese GAT562 image: 671032 bytes (41672 free); T114: 702124 (10580 free).
+> Both boards also build and package without chess/pet/dice, including Chinese.
+> USB was not used in this check: the Wardrive session owns the devices. These images were not installed,
+> and their physical buttons/touch and radio exchange were not checked. The earlier M9 hardware check below
+> applies only to package 50B447386207…; its result was not transferred to new builds sharing the version.
+> Report: `artifacts/quick-recipient-all-check.json`; captures: `artifacts/quick-recipient-all-ui/`.
+
+> **0.19.1: M9/T-Deck Quick Send recipient** (10 October 2026, targeted check).
+> Recipient selection moves from the end of the list to a separate top card. The current channel/contact
+> is highlighted, and the card stays visible while scrolling all ten presets. Enter opens recipients without
+> sending; confirming saves the target ID and selects the first preset. M9/T-Deck builds pass; native M9
+> scenarios pass in ru/en/zh/ar, T-Deck in ru with touch checks. Initial and scrolled screenshots were reviewed.
+> M9 runs the separate `artifacts/quick-recipient-release/meshmesh-m9-0.19.1` package,
+> `build_sha256=50B447386207…`, boot 244, revision `1321ce0-dirty`.
+> Production USB key events tested opening/cancelling recipient selection, choosing Public, switching to V4,
+> and sending the first and last UTF-8 presets: physical LoRa, delivery ACK and one received copy on V4.
+> V4 remains on 0.19.0 (`BC6A4D591373…`, boot 251). Keys, identities, preferences, templates and the original
+> recipient are preserved; M9 Wi-Fi/BLE off, V4 Wi-Fi off/BLE on. No full 0.19.1 suite was run;
+> full 0.19.0 reports below retain their original image scope. Physical M9 keys and T-Deck hardware are untested.
+> An initial 25-second ACK window on the first local build timed out; ACK was observed later on the same boot.
+> This attempt is retained separately and is not counted as a pass. Final report: `artifacts/quick-recipient-check.json` (0600).
+
 > **0.19.0: final M9 and V4 installation** (10 October 2026). The full `finish_on_hardware.py`
 > suite passed: `artifacts/hardware-finish.json` reports `passed`, `artifacts/release-check.json`
 > reports `passed_hardware_suite`, with 16 check reports. Installed images match their packages exactly:

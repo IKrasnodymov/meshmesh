@@ -134,7 +134,7 @@ String wifiState(){
 #endif
  switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
-void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==QuickPage)quickTargets=false;if(page==Messages){messageOffset=0;unreadCount=0;}}
+void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==QuickPage){quickTargets=false;quickIndex=0;}if(page==Messages){messageOffset=0;unreadCount=0;}}
 // Server roles show the pages that still mean something: no chats, nodes or radar.
 bool pageShown(int p){
 #if defined(MM_NO_WIFI)
@@ -413,7 +413,7 @@ void run(Act a){
  if(a>=ActDiceRoll&&a<=ActDiceExit){diceRun(a);return;}
 #endif
  switch(a){
- case ActQuick:{const ChatMessage* m=shownMessage();if(m){quickReplyTo=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;quickReply=true;quickTargets=false;quickIndex=0;showPage(QuickPage);}break;}
+ case ActQuick:{const ChatMessage* m=shownMessage();if(m){quickReplyTo=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;quickReply=true;showPage(QuickPage);quickIndex=1;}break;}
  case ActNotify:showPage(NotifyPage);break;
  case ActNotifyLed:notice(applyOne("notify_led",(config.notifyLed+1)%3));break;
  case ActNotifyWake:notice(applyOne("notify_wake",(config.notifyWake+1)%3));break;
@@ -528,21 +528,23 @@ String hint(){
 #endif
 unsigned quickTargetCount(){return quickSend::targetCount();}
 uint64_t quickTarget(unsigned i){return quickSend::target(i);}
-String quickLabel(unsigned i){if(i<quickSend::Count)return quickSend::state.text[i][0]?String(quickSend::state.text[i]):String("--");return i==quickSend::Count?t("Choose recipient","Выберите получателя"):t("Exit","Выход");}
-bool quickKey(int key){if(page!=QuickPage)return false;if(key==0x86){quickReply=quickTargets=false;showPage(Home);return true;}bool click=key==13||key==0x82||key==0xb6,hold=key==0xa3;
+String quickName(uint64_t id){const auto* ch=meshRadio.channel(id);const Peer* p=meshRadio.findContact(id);return ch?String(ch->name):p?String(p->name):t("Choose recipient","Выберите получателя");}
+String quickLabel(unsigned i){if(!i)return t("Choose recipient","Выберите получателя");if(i<=quickSend::Count)return quickSend::state.text[i-1][0]?String(quickSend::state.text[i-1]):String("--");return t("Exit","Выход");}
+bool quickKey(int key){if(page!=QuickPage)return false;if(key==0x86){if(quickTargets){quickTargets=false;quickIndex=0;}else{quickReply=false;showPage(Home);}return true;}bool click=key==13||key==0x82||key==0xb6,hold=key==0xa3;
 #if defined(MM_JOYSTICK)
  click=key==0xb6;hold=key==13;if(key==0xb5){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+n-1)%n;}else quickIndex=(quickIndex+quickSend::Count+1)%(quickSend::Count+2);return true;}if(key==0xb4||key==0xb7){quickReply=quickTargets=false;showPage(key==0xb4?previousPage(page):nextPage(page));return true;}
 #endif
  if(click){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+1)%n;}else quickIndex=(quickIndex+1)%(quickSend::Count+2);}
- if(hold){if(quickTargets){if(!quickTargetCount()){notice(t("No recipients","Нет получателей"));quickTargets=false;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d["action"]="target";d["to"]=meshRadio.idText(quickTarget(quickTargetIndex));notice(quickSend::command(d.as<JsonObjectConst>()));quickReply=quickTargets=false;}
- else if(quickIndex==quickSend::Count){quickTargets=true;quickTargetIndex=0;}
+ if(hold){if(quickTargets){if(!quickTargetCount()){notice(t("No recipients","Нет получателей"));quickTargets=false;quickIndex=0;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d["action"]="target";d["to"]=meshRadio.idText(quickTarget(quickTargetIndex));String r=quickSend::command(d.as<JsonObjectConst>());notice(r);if(r.startsWith("OK")){quickReply=quickTargets=false;quickIndex=1;}}
+ else if(!quickIndex){quickTargets=true;quickTargetIndex=0;}
  else if(quickIndex>quickSend::Count){quickReply=false;showPage(nextPage(page));}
- else notice(quickSend::send(quickIndex,quickReply?quickReplyTo:0));}return true;}
-void drawQuickMono(){auto& c=*hardware.canvas;uint64_t to=quickReply?quickReplyTo:quickSend::state.to;const auto* ch=meshRadio.channel(to);const Peer* p=meshRadio.findContact(to);say(0,19,clipped(ch?String(ch->name):p?String(p->name):t("Choose recipient","Выберите получателя"),25),small);
- unsigned total=quickTargets?quickTargetCount():quickSend::Count+2,index=quickTargets?quickTargetIndex:quickIndex;int first=max(0,min(int(index)-1,int(total)-3));
- for(unsigned i=first;i<total&&i<unsigned(first+3);i++){int y=23+(i-first)*11;bool focus=i==index;if(focus)c.fillRect(0,y,128,11,1);String name;
- if(quickTargets){uint64_t id=quickTarget(i);const auto* ch=meshRadio.channel(id);const Peer* p=meshRadio.findContact(id);name=ch?String(ch->name):p?String(p->name):String("?");}else name=quickLabel(i);
- say(2,y+9,clipped(name,24),small,focus?0:1);}}
+ else notice(quickSend::send(quickIndex-1,quickReply?quickReplyTo:0));}return true;}
+void drawQuickMono(){auto& c=*hardware.canvas;
+ if(quickTargets){say(0,20,fitted(t("Choose recipient","Выберите получателя"),128,small),small);unsigned n=quickTargetCount();int first=max(0,min(int(quickTargetIndex)-1,int(n)-3));
+  for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=23+(i-first)*11;bool focus=i==quickTargetIndex;if(focus)c.fillRect(0,y,128,11,1);say(2,y+9,fitted(quickName(quickTarget(i)),124,small),small,focus?0:1);}return;}
+ bool focus=!quickIndex;c.drawRoundRect(0,12,128,17,3,1);if(focus)c.fillRoundRect(0,12,128,17,3,1);
+ say(3,25,fitted(quickName(quickReply?quickReplyTo:quickSend::state.to),112,body),body,focus?0:1);c.fillTriangle(119,17,119,23,123,20,focus?0:1);
+ int first=max(1,min(int(quickIndex)-1,int(quickSend::Count)));for(unsigned i=first;i<=quickSend::Count+1&&i<unsigned(first+2);i++){int y=31+(i-first)*13;bool selected=i==quickIndex;if(selected)c.fillRect(0,y,128,13,1);say(2,y+10,fitted(quickLabel(i),124,small),small,selected?0:1);}}
 
 void drawMenu(){
  auto& c=*hardware.canvas;Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}menuIndex%=n;int first=max(0,min(menuIndex-1,int(n)-3));
@@ -727,9 +729,9 @@ void draw(){
 #endif
  page==QuickPage?
 #if defined(MM_JOYSTICK)
- String("^v ")+t("choose","выбор")+" OK "+t("send","слать"):
+ String("^v ")+t("choose","выбор")+" OK "+(quickTargets||!quickIndex?t("select","выбрать"):quickIndex>quickSend::Count?t("exit","выход"):t("send","слать")):
 #else
- t("click-next hold-send","клик-выбор держ-слать"):
+ (quickTargets||!quickIndex||quickIndex>quickSend::Count?t("click-next hold-run","клик-далее держ-ОК"):t("click-next hold-send","клик-выбор держ-слать")):
 #endif
  hint());
  if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
@@ -814,7 +816,7 @@ void uiKey(int key){
 }
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_index"]=quickIndex;d["quick_targets"]=quickTargets;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_row"]=quickIndex;if(!quickTargets&&quickIndex&&quickIndex<=quickSend::Count)d["quick_index"]=quickIndex-1;d["quick_targets"]=quickTargets;if(quickTargets)d["quick_target_index"]=quickTargetIndex;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
 #if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}

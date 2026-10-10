@@ -115,7 +115,8 @@ with ExitStack() as stack:
   for d in dev:
    do(d,'people',action='change',delta=2);assert read(d,'people')['manual']>=2
    apply(d,{'apps':'quick people dice','dim_after':0,'notify_popup':0});command(d,'uikey 134');command(d,'uikey 13');assert read(d,'ui')['page']=='quick';command(d,'uikey 134');command(d,'uikey 13')
-   for _ in range((11-read(d,'ui')['quick_index'])%12):command(d,'uikey 13')
+   u=read(d,'ui');row=u['quick_row'] if 'quick_row' in u else u['quick_index']
+   for _ in range((11-row)%12):command(d,'uikey 13')
    command(d,'uikey 163');assert read(d,'ui')['page']=='people';old=read(d,'people')['manual'];command(d,'uikey 13');assert read(d,'people')['manual']==old+1
    command(d,'uikey 163');n=read(d,'ui')['menu_count']
    for _ in range(n-2):command(d,'uikey 13')

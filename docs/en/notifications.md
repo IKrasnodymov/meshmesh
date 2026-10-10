@@ -18,7 +18,9 @@ Web and Android notification settings separately control incoming banners (all, 
 
 Ten shared presets, a recipient and optional GPS attachment are stored on the board. Public is the initial recipient. A selected joined channel, chat contact or room is saved by ID; a removed recipient fails instead of silently falling back to Public. Edit and save presets in the app and use them on the device. The ↗ chat button opens quick reply to that conversation.
 
-One-button devices: click selects, hold sends; recipient and exit rows follow the presets. Exit advances to the next page. GAT562: up/down select, OK sends, left/right change page, back goes home. M9/T-Deck: arrows select, OK sends, back exits; right with an empty chat composer opens quick reply.
+Since 0.19.1, all supported boards keep recipient selection in a separate card above the presets, visible while scrolling. It shows the current channel or contact: colour on M9, T-Deck and T114, an outline and selected inversion on compact screens. Normal entry selects the card; confirming a recipient saves its ID and selects the first preset without sending. Cancelling the recipient list returns to the card.
+
+M9/T-Deck: arrows select, OK on the card opens recipients, OK on a preset sends, back exits. T-Deck also supports taps on the card, recipient and preset. Right with an empty chat composer opens quick reply. One-button devices: click selects; hold opens recipients, confirms the chosen recipient or sends a preset. The exit row remains at the end and advances to the next page. GAT562: up/down select, OK runs the selected action, left/right change page, back cancels recipient selection or goes home.
 
 Presets allow at most 160 UTF-8 bytes; sending also checks the recipient's smaller limit. BLE commands have a shared 255-byte encoded limit including JSON and escaping; longer quoted/multiline templates can be saved through USB or Wi-Fi. GPS attachment defaults off and requires a fresh trusted fix, trusted clock and no GPS conflict. Stale or conflicting coordinates produce an error.
 

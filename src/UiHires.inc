@@ -416,7 +416,9 @@ void draw(){
  String title=pageTitle(page);
  switch(page){
  case PeoplePage:{text(12,42,t("Manual: ","Вручную: ")+String(people::settings.manual),ColInk,bold);text(12,64,"BLE: "+String(people::count(false))+(people::saturated(false)?"+":""),ColAccent);text(12,84,"Wi-Fi: "+String(people::count(true))+(people::saturated(true)?"+":""),ColInfo);text(12,104,String(people::settings.window)+t("s window","с окно"),ColDim,small);break;}
- case QuickPage:{text(8,38,fit(quickReply?meshRadio.idText(quickReplyTo):quickSend::targetName(),224,bold),ColAccent,bold);unsigned n=quickTargets?quickTargetCount():quickSend::Count+2,index=quickTargets?quickTargetIndex:quickIndex;int first=max(0,min(int(index)-1,int(n)-3));for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=44+(i-first)*23;row(y,22,i==index);String name=quickLabel(i);if(quickTargets){uint64_t id=quickTarget(i);const auto* ch=meshRadio.channel(id);const Peer* p=meshRadio.findContact(id);name=ch?String(ch->name):p?String(p->name):String("?");}text(12,y+16,fit(name,216,small),ColInk,small);}break;}
+ case QuickPage:{if(quickTargets){text(8,38,fit(t("Choose recipient","Выберите получателя"),224,bold),ColAccent,bold);unsigned n=quickTargetCount();int first=max(0,min(int(quickTargetIndex)-1,int(n)-3));for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=44+(i-first)*23;row(y,22,i==quickTargetIndex);text(12,y+16,fit(quickName(quickTarget(i)),216,small),ColInk,small);}}
+  else{bool focus=!quickIndex;panel(4,25,232,38,focus?ColCardHi:ColCard,6);g().drawRoundRect(4,25,232,38,6,focus?ColAccent:ColLine);text(12,40,fit(t("Choose recipient","Выберите получателя"),200,tiny),ColDim,tiny);text(12,57,fit(quickName(quickReply?quickReplyTo:quickSend::state.to),200,bold),ColAccent,bold);g().fillTriangle(221,40,221,48,227,44,ColAccent);
+   int first=max(1,min(int(quickIndex)-1,int(quickSend::Count)));for(unsigned i=first;i<=quickSend::Count+1&&i<unsigned(first+2);i++){int y=67+(i-first)*23;row(y,22,i==quickIndex);text(12,y+16,fit(quickLabel(i),216,small),ColInk,small);}}break;}
  case NotifyPage:statusBar(t("Notifications","Уведомления"));lines(t("LED / screen / popup","LED / экран / окно"),10,60,220,18,2,ColInk);break;case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;
 #if MM_CHESS
  case Chess:chessList();break;
@@ -436,7 +438,7 @@ void draw(){
  else if(page==DicePage&&dicer.s.mode!=dice::Tally)footer({t("click: roll","клик: бросок"),t("hold: menu","держ: меню")});
  #endif
  else if(page==PeoplePage)footer({t("click: +1","клик: +1"),t("hold: menu","держ: меню")});
- else if(page==QuickPage)footer({t("click: choose","клик: выбор"),t("hold: send","держ: слать")});
+ else if(page==QuickPage)footer({t("click: choose","клик: выбор"),quickTargets||!quickIndex?t("hold: ","держ: ")+t("select","выбрать"):quickIndex>quickSend::Count?t("hold: ","держ: ")+t("exit","выход"):t("hold: send","держ: слать")});
  else footer({clickHint(pageTitle(nextPage(page))),hint()});
  toast();hardware.flush();
 }
