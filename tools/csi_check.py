@@ -10,6 +10,7 @@ from pathlib import Path
 from contextlib import ExitStack
 from device import connect,command
 from ports import M9_PORT,HELTEC_PORT
+from ui_navigation import compact_open,compact_home
 
 def read(d,c):
  # Read-only queries: native USB occasionally cuts a long line; ask again.
@@ -30,12 +31,7 @@ def heltec_action(d,index):
   for _ in range(index):heltec_key(d,13)
   heltec_key(d,0xa3)
  time.sleep(1)
-def heltec_radar(d):
- for _ in range(12):
-  ui=read(d,'ui')
-  if ui['page']=='radar' and not ui['menu']:return
-  heltec_key(d,13) if not ui['menu'] else time.sleep(11) # an open menu closes itself after 10 s
- raise RuntimeError('Heltec radar page not reached')
+def heltec_radar(d):compact_open(d,'radar','radar')
 def csi(d):return read(d,'radar')['csi']
 def listened(d,what):
  first=csi(d);time.sleep(6);last=csi(d)
@@ -77,9 +73,7 @@ def main():
   key(m9,0x86);assert read(m9,'ui')['page']=='home' and csi(m9)['role']=='off'
   if read(heltec,'ui')['menu']:time.sleep(11)
   heltec_action(heltec,1);assert csi(heltec)['role']=='off'
-  for _ in range(12):
-   if read(heltec,'ui')['page']=='home':break
-   heltec_key(heltec,13)
+  compact_home(heltec)
   for d,on in zip((m9,heltec),wifi):
    if on:assert command(d,'wifi').startswith('OK')
   after=[read(d,'status') for d in (m9,heltec)]

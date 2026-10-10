@@ -1,5 +1,6 @@
 #include "Power.h"
 #include "App.h"
+#include "People.h"
 #include "BoardPins.h"
 #include "MeshRadio.h"
 #include "Radar.h"
@@ -78,7 +79,7 @@ int powerOnWay(){return hardware.wakePin();}
 void powerOffTick(){
   if(!offAt||int32_t(millis()-offAt)<0)return;
   if(meshRadio.busy()&&millis()-offAt<5000)return;
-  meshRadio.flush();chessNet.flush();tour::net.flush();creature.flush();dicer.flush(); // counters wait 2 s before writing
+  people::flush();meshRadio.flush();chessNet.flush();tour::net.flush();creature.flush();dicer.flush(); // counters wait 2 s before writing
   Serial.println("OFF");Serial.flush();
   uiFarewell();uint32_t shown=millis();
   int pin=hardware.wakePin();
@@ -150,12 +151,14 @@ uint32_t powerSlowMs(){return 0;}
 #include <esp_bt.h>
 #include <WiFi.h>
 #include "App.h"
+#include "People.h"
 #include "Config.h"
 #include "BoardPins.h"
 #include "MeshRadio.h"
 #include "MeshServer.h"
 #include "Radar.h"
 #include "Internet.h"
+#include "People.h"
 #include "BleDiagnostics.h"
 #include "WifiDiagnostics.h"
 #if defined(MM_NATIVE_USB)

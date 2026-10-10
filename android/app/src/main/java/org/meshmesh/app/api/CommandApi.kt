@@ -117,6 +117,8 @@ class CommandApi(
                 return ok(run(command))
             }
             "/api/config" -> return ok(run("set " + JSONObject(body)))
+            "/api/people" -> return ok(run("people do " + JSONObject(body)))
+            "/api/quick" -> return ok(run("quick do " + JSONObject(body)))
             "/api/radar" -> return ok(run("radar do " + JSONObject(body)))
             "/api/channels" -> {
                 val reply = run("channel do " + JSONObject(body))
@@ -178,14 +180,15 @@ class CommandApi(
     companion object {
         const val TILE_STEP = 6144
         val GETS = mapOf(
-            "/api/status" to "status", "/api/messages" to "messages", "/api/nodes" to "nodes",
+            "/api/quick" to "quick",
+            "/api/people" to "people", "/api/status" to "status", "/api/messages" to "messages", "/api/nodes" to "nodes",
             "/api/config" to "config", "/api/key" to "key", "/api/navigation" to "navigation",
             "/api/maps" to "map info", "/api/maps/areas" to "map areas", "/api/clock" to "clock",
             "/api/connections" to "connections", "/api/channels" to "channels", "/api/pet" to "pet",
             "/api/dice" to "dice",
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
-        private val APP_COMMANDS = listOf("radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")
+        private val APP_COMMANDS = listOf("quick", "people", "radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")
         private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "tour", "map areas", "channels")
         private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy", "channels")
     }

@@ -8,3 +8,6 @@ __pycache__/
 .DS_Store
 .env
 .env.*
+
+# Kotlin compiler session cache
+android/.kotlin/

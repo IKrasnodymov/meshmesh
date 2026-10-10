@@ -74,7 +74,9 @@ bool Preferences::begin(const char* name,bool readOnly,const char*){
   size_t at=0;while(at<size){size_t k=data[at];if(at+1+k+2>size)break;size_t v=data[at+1+k]|data[at+2+k]<<8;if(at+3+k+v>size)break;at+=3+k+v;}size=at;
   open=true;return true;
 }
-void Preferences::end(){free(data);data=nullptr;size=0;open=false;}
+void Preferences::end(){free(data);data=nullptr;size=0;open=false;batched=changed=failed=false;}
+bool Preferences::beginBatch(){if(!open||!writable||batched)return false;batched=true;changed=failed=false;return true;}
+bool Preferences::commitBatch(){if(!batched)return false;batched=false;if(failed)return false;bool dirty=changed;changed=false;return !dirty||writeback();}
 int Preferences::find(const char* key) const{
   size_t length=strlen(key);
   for(size_t at=0;at<size;){size_t k=data[at],v=data[at+1+k]|data[at+2+k]<<8;if(k==length&&!memcmp(data+at+1,key,k))return at;at+=3+k+v;}
@@ -87,27 +89,30 @@ size_t Preferences::getString(const char* key,char* out,size_t max){int at=find(
 String Preferences::getString(const char* key,const String& d){int at=find(key);if(at<0)return d;size_t n=entryLength(at);String s;s.reserve(n);for(size_t i=0;i<n;i++)s+=char(data[at+3+data[at]+i]);return s;}
 bool Preferences::isKey(const char* key){return find(key)>=0;}
 bool Preferences::remove(const char* key){
-  if(!open||!writable)return false;int at=find(key);if(at<0)return true;
+  if(!open||!writable)return fail();int at=find(key);if(at<0)return true;
   size_t length=3+data[at]+entryLength(at);memmove(data+at,data+at+length,size-at-length);size-=length;return flush();
 }
-bool Preferences::clear(){if(!open||!writable)return false;size=0;return flush();}
+bool Preferences::clear(){if(!open||!writable)return fail();size=0;return flush();}
 bool Preferences::put(const char* key,const void* value,size_t n){
-  size_t k=strlen(key);if(!open||!writable||!k||k>15||n>8192)return false;
+  size_t k=strlen(key);if(!open||!writable||!k||k>15||n>8192)return fail();
   int at=find(key);
   if(at>=0&&entryLength(at)==n){if(!memcmp(data+at+3+k,value,n))return true;memcpy(data+at+3+k,value,n);return flush();}
   size_t keep=size;if(at>=0)keep-=3+k+entryLength(at);
-  uint8_t* next=(uint8_t*)malloc(keep+3+k+n);if(!next)return false;
+  uint8_t* next=(uint8_t*)malloc(keep+3+k+n);if(!next)return fail();
   size_t used=0;
   for(size_t i=0;i<size;){size_t kk=data[i],vv=data[i+1+kk]|data[i+2+kk]<<8;if(int(i)!=at){memcpy(next+used,data+i,3+kk+vv);used+=3+kk+vv;}i+=3+kk+vv;}
   next[used]=k;memcpy(next+used+1,key,k);next[used+1+k]=n&0xff;next[used+2+k]=n>>8;memcpy(next+used+3+k,value,n);used+=3+k+n;
   free(data);data=next;size=used;return flush();
 }
 bool Preferences::flush(){
+  if(batched){changed=true;return true;}return writeback();
+}
+bool Preferences::writeback(){
   char temporary[44];snprintf(temporary,sizeof(temporary),"%s.new",path);
   LittleFS.mkdir("/prefs");LittleFS.remove(temporary);
   File f=LittleFS.open(temporary,FILE_O_WRITE);if(!f)return false;
   bool ok=size==0||f.write(data,size)==size;f.close();if(!ok){LittleFS.remove(temporary);return false;}
-  if(LittleFS.exists(path)&&!LittleFS.remove(path))return false;
+  // littlefs rename replaces the destination atomically; keep it until that commit.
   return LittleFS.rename(temporary,path);
 }
 

@@ -4,7 +4,7 @@
 // up/down change the dice count, the chosen grid dice or the counter. One button counts in its own mode
 // ("Count with button"): click +1, hold -1, holding on to 5 s leaves it. Saved rolls, characters and names
 // come from the web page or the app.
-int diceSavedSel=0,diceCounterSel=0;uint32_t diceSeen=0;
+bool diceRepeatSaved=false;int diceSavedSel=0,diceCounterSel=0;uint32_t diceSeen=0;
 String diceTypeName(uint8_t type){return dice::typeNames[type<dice::TypeCount?type:dice::D6];}
 String diceModeName(uint8_t m){return m==dice::Rpg?String("RPG"):m==dice::Grid?String("Warhammer"):t("Counters","Счётчики");}
 String diceSigned(int v){return v>0?"+"+String(v):String(v);}
@@ -21,9 +21,9 @@ unsigned diceActions(Act* out){
 #endif
   out[n++]=ActDicePlus5;out[n++]=ActDiceMinus5;if(c.counters>1)out[n++]=ActDiceNextCounter;}if(c.counters<dice::Counters)out[n++]=ActDiceAddCounter;break;
  }
- if(s.characters>1)out[n++]=ActDiceHero;out[n++]=ActDiceMode;return n;
+ if(s.characters>1)out[n++]=ActDiceHero;out[n++]=ActDiceMode;out[n++]=ActDiceExit;return n;
 }
-bool diceKeeps(Act a){return a!=ActDiceRoll&&a!=ActDiceSaved&&a!=ActDiceMode&&a!=ActDiceAddCounter&&a!=ActDiceTap;}
+bool diceKeeps(Act a){return a!=ActDiceRoll&&a!=ActDiceSaved&&a!=ActDiceMode&&a!=ActDiceAddCounter&&a!=ActDiceTap&&a!=ActDiceExit;}
 const dice::Counter* diceShownCounter(){const auto& c=dicer.hero();if(!c.counters)return nullptr;diceCounterSel=constrain(diceCounterSel,0,int(c.counters)-1);return &c.counter[diceCounterSel];}
 // Counting with the button. The hold's -1 comes at 1.2 s, before the button can tell a 5 s hold, so leaving
 // puts the value back as it was before that hold.
@@ -40,6 +40,7 @@ bool diceTapKey(int key){
 String diceActName(Act a){
  const auto& s=dicer.s;const auto& c=dicer.hero();const dice::Counter* k=diceShownCounter();String value=k?" ("+String(k->value)+")":String();
  switch(a){
+ case ActDiceExit:return t("Exit dice","Выйти из костей");
  case ActDiceRoll:return t("Roll ","Бросить ")+(s.mode==dice::Grid?String(s.gridChosen)+"x"+diceTypeName(s.gridType):dicer.poolText());
  case ActDiceSaved:{diceSavedSel=c.rolls?diceSavedSel%c.rolls:0;return t("Roll: ","Бросок: ")+String(c.roll[diceSavedSel].name);}
  case ActDiceNextSaved:return t("Next saved roll","Другой бросок");
@@ -62,13 +63,14 @@ String diceActName(Act a){
 void diceRun(Act a){
  auto& s=dicer.s;const auto& c=dicer.hero();
  switch(a){
- case ActDiceRoll:if(s.mode==dice::Grid){if(!s.gridChosen){notice(t("Choose dice: Dice +1","Выберите: Кости +1"));break;}dicer.gridRoll();}else dicer.rollPool();break;
- case ActDiceSaved:dicer.rollSaved(diceSavedSel);break;
+ case ActDiceExit:diceTapping=false;showPage(nextPage(page));break;
+ case ActDiceRoll:diceRepeatSaved=false;if(s.mode==dice::Grid){if(!s.gridChosen){notice(t("Choose dice: Dice +1","Выберите: Кости +1"));break;}dicer.gridRoll();}else dicer.rollPool();break;
+ case ActDiceSaved:diceRepeatSaved=true;dicer.rollSaved(diceSavedSel);break;
  case ActDiceNextSaved:diceSavedSel=c.rolls?(diceSavedSel+1)%c.rolls:0;break;
- case ActDiceCount:dicer.setPool(s.count>=10?1:s.count+1,s.type,s.mod);break;
- case ActDiceType:dicer.setPool(s.count,(s.type+1)%dice::TypeCount,s.mod);break;
- case ActDiceMod:dicer.setPool(s.count,s.type,s.mod>=10?-5:s.mod+1);break;
- case ActDiceHero:dicer.useCharacter((s.character+1)%s.characters);diceCounterSel=diceSavedSel=0;break;
+ case ActDiceCount:diceRepeatSaved=false;dicer.setPool(s.count>=10?1:s.count+1,s.type,s.mod);break;
+ case ActDiceType:diceRepeatSaved=false;dicer.setPool(s.count,(s.type+1)%dice::TypeCount,s.mod);break;
+ case ActDiceMod:diceRepeatSaved=false;dicer.setPool(s.count,s.type,s.mod>=10?-5:s.mod+1);break;
+ case ActDiceHero:diceRepeatSaved=false;dicer.useCharacter((s.character+1)%s.characters);diceCounterSel=diceSavedSel=0;break;
  case ActDiceMode:dicer.setMode((s.mode+1)%dice::ModeCount);break;
  case ActDiceGridMore:dicer.gridChoose(s.gridChosen>=s.gridSize?1:s.gridChosen+1);break;
  case ActDiceGridFive:dicer.gridChoose(s.gridChosen>=s.gridSize?0:min<int>(s.gridSize,s.gridChosen+5));break;
@@ -83,6 +85,8 @@ void diceRun(Act a){
  default:break;
  }
 }
+// In the roll modes every short press repeats the chosen pool or preset; the hold opens options.
+bool diceRollKey(int key){if(page!=DicePage||dicer.s.mode==dice::Tally||(key!=13&&key!=0x82))return false;if(dicer.s.mode==dice::Grid)dicer.gridRoll();else if(diceRepeatSaved&&dicer.hero().rolls)dicer.rollSaved(diceSavedSel%dicer.hero().rolls);else dicer.rollPool();return true;}
 // Joystick up/down inside the page.
 void diceScroll(int step){
  auto& s=dicer.s;
@@ -115,7 +119,7 @@ void drawDiceMono(){
   say(0,24,clipped(k->name,21),bold);String v=String(k->value);say(64-width(v,u8g2_font_10x20_t_cyrillic)/2,45,v,u8g2_font_10x20_t_cyrillic);
   const auto& h=dicer.hero();String all;for(unsigned i=0;i<h.counters;i++)all+=(i?" ":"")+String(h.counter[i].value);if(h.counters>1)say(0,55,clipped(all,13),small);return;}
  const dice::Result* r=dicer.last();
- if(!r){say(0,30,t("No rolls yet","Бросков ещё нет"));say(0,44,t("Roll is first in the menu","Бросок первый в меню"),small);return;}
+ if(!r){say(0,30,t("No rolls yet","Бросков ещё нет"));say(0,44,t("Click to roll","Клик - бросить"),small);return;}
  say(0,20,clipped(r->label[0]?String(r->label)+" "+r->formula:String(r->formula),21),small);
  int x=0;if(!r->special){String total=String(r->total);say(0,44,total,u8g2_font_10x20_t_cyrillic);x=width(total,u8g2_font_10x20_t_cyrillic)+6;}
  String rows[3];unsigned n=diceRows(dicer.resultText(*r,false),rows,r->special?3:2,(128-x)/5);

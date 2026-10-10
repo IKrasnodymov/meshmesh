@@ -61,7 +61,9 @@ void probe(void*) {
     auto found=scan->start(5,false);bool matched=false;NimBLEAddress address;
     for(int i=0;i<found.getCount();i++) {
       auto device=found.getDevice(i);
-      if(device.getName()==state.name && device.isAdvertisingService(NimBLEUUID(serviceId))) {address=device.getAddress();matched=true;break;}
+      const auto mark=device.getManufacturerData();
+      bool ours=device.isAdvertisingService(NimBLEUUID(serviceId))||(mark.size()>=4&&mark.compare(0,4,std::string("\xff\xffMM",4))==0);
+      if(device.getName()==state.name && ours) {address=device.getAddress();matched=true;break;}
     }
     if(!matched) {error("MeshMesh peer not found");break;}
     portENTER_CRITICAL(&guard);strlcpy(state.address,address.toString().c_str(),sizeof(state.address));portEXIT_CRITICAL(&guard);
@@ -112,9 +114,10 @@ String startBleProbe(JsonObjectConst options) {
   if(!options["name"].is<const char*>() || !options["pin"].is<uint32_t>())return "ERR bleprobe needs name and PIN";
   String name=options["name"].as<String>(),message=options["message"]|"";
   uint32_t pin=options["pin"].as<uint32_t>();
-  if(!name.startsWith("MeshMesh ") || name.length()>31 || pin>999999 || message.length()>151 ||
+  if((!name.startsWith("MeshMesh ")&&!name.startsWith("MeshCore-")) || name.length()>31 || pin>999999 || message.length()>151 ||
      !meshmesh::validUtf8((const uint8_t*)message.c_str(),message.length()))return "ERR probe parameters";
   if(!bleActive())bleToggle();if(!bleActive())return "ERR BLE unavailable";
+  radar.releaseBle(); // stop the background counter's scanner before the probe task starts it
   portENTER_CRITICAL(&guard);state=State();state.running=true;state.pin=pin;
   strlcpy(state.name,name.c_str(),sizeof(state.name));strlcpy(state.message,message.c_str(),sizeof(state.message));portEXIT_CRITICAL(&guard);
   state.frequency=config.frequency;state.bandwidth=config.bandwidth;state.sf=config.sf;state.cr=config.cr;state.power=config.power;state.hops=config.hops;

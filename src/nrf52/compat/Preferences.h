@@ -2,12 +2,15 @@
 // ESP32 Preferences (NVS) on nRF52: one file per namespace in MeshMesh storage (/prefs/<name>).
 // Every put rewrites the file through a temporary copy and a rename, so a reset keeps either the
 // old or the new set; put* returns the stored size only after the file is written.
+// An explicit batch stages changes in RAM until commitBatch(); end() discards an
+// uncommitted batch. Ordinary puts (including radio timestamp reservations) stay durable.
 #include <Arduino.h>
 class Preferences {
  public:
   ~Preferences(){end();}
   bool begin(const char* name,bool readOnly=false,const char* partition=nullptr);
   void end();
+  bool beginBatch();bool commitBatch();
   bool clear();bool remove(const char* key);bool isKey(const char* key);
   size_t putBool(const char* k,bool v){uint8_t b=v;return put(k,&b,1)?1:0;}
   size_t putUChar(const char* k,uint8_t v){return put(k,&v,1)?1:0;}
@@ -35,10 +38,11 @@ class Preferences {
   size_t getString(const char* k,char* out,size_t max);
   String getString(const char* k,const String& d=String());
  private:
-  char path[40]={};bool open=false,writable=false;
+  char path[40]={};bool open=false,writable=false,batched=false,changed=false,failed=false;
   uint8_t* data=nullptr;size_t size=0; // records: key length, key, value length (2 bytes LE), value
   int find(const char* key) const;size_t entryLength(int at) const;
   bool get(const char* key,void* out,size_t n);
   bool put(const char* key,const void* value,size_t n);
   bool flush();
+  bool writeback();bool fail(){if(batched)failed=true;return false;}
 };

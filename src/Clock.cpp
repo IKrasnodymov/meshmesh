@@ -10,7 +10,7 @@ static uint32_t buildFloor(){
   y-=m<=2;int era=y/400,yoe=y-era*400,doy=(153*(m+(m>2?-3:9))+2)/5+day-1,doe=yoe*365+yoe/4-yoe/100+doy;
   return uint32_t(era*146097+doe-719468-1)*86400U;
 }
-#ifndef MM_NRF52
+#if !defined(MM_NRF52) && !defined(MM_UI_PREVIEW)
 #include <esp_attr.h>
 // The ESP32 keeps the system time over a reset (not over a power cycle). Its source is kept beside it:
 // a time of an unknown source (a firmware before this one) or before the build is not kept.
@@ -18,7 +18,7 @@ RTC_NOINIT_ATTR static uint32_t keptMagic;RTC_NOINIT_ATTR static char keptSource
 static constexpr uint32_t KeptMagic=0x4d4d4b31;
 #endif
 void Hardware::beginClock(){Preferences p;if(p.begin("meshmesh-clock",true)){clockTrusted=p.getBool("trusted",false);p.end();}
-#ifndef MM_NRF52
+#if !defined(MM_NRF52) && !defined(MM_UI_PREVIEW)
   if(time(nullptr)>=1735689600){
     if(keptMagic==KeptMagic&&memchr(keptSource,0,sizeof keptSource)&&keptSource[0]&&uint32_t(time(nullptr))>=buildFloor()){clockSource=keptSource;utc=time(nullptr);}
     else{timeval tv={0,0};settimeofday(&tv,nullptr);}
@@ -33,9 +33,15 @@ bool Hardware::setUtc(uint32_t epoch,const char* source,bool persist){
   // clock set from the phone or NTP; the position of such a receiver is not used either (gpsFix).
   if((gnss||!strcmp(source,"RTC"))&&epoch<buildFloor()){if(gnss)clockConflict=true;return false;}
   if(gnss&&(clockTrusted||clockSource=="manual"||clockSource=="NTP")&&current>=1735689600){int64_t delta=int64_t(epoch)-current;if(delta>300||delta<-300){clockConflict=true;return false;}}
-  timeval tv={time_t(epoch),0};if(settimeofday(&tv,nullptr))return false;
+  timeval tv={time_t(epoch),0};
+#if !defined(MM_UI_PREVIEW)
+  if(settimeofday(&tv,nullptr))return false;
+#endif
   utc=epoch;clockSource=source;clockConflict=false;
-#ifndef MM_NRF52
+  // A fresh phone/NTP sync must not briefly make an already conflicting GPS position usable.
+  if(!gnss&&gpsTime()){DateTime fix(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());int64_t delta=int64_t(fix.unixtime())-epoch;clockConflict=fix.unixtime()<buildFloor()||delta>300||delta<-300;}
+  clockSyncAt=millis()?millis():1;
+#if !defined(MM_NRF52) && !defined(MM_UI_PREVIEW)
   strlcpy(keptSource,source,sizeof keptSource);keptMagic=KeptMagic;
 #endif
   if(persist){clockTrusted=true;if(rtcOk){rtc.adjust(DateTime(epoch));rtcValid=true;Preferences p;if(p.begin("meshmesh-clock",false)){p.putBool("trusted",true);p.end();}}}

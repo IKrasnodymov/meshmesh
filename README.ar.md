@@ -122,3 +122,5 @@ python3 -m venv .venv
 متتبع RSSI وواجهات الرادار التي صممها [Stevee87](https://github.com/Stevee87).
 
 </div>
+
+[الإشعارات والإرسال السريع وسجل القنوات ومزامنة NTP الدورية وعدّاد الأشخاص](docs/en/notifications.md).

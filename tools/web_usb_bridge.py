@@ -18,7 +18,7 @@ from device import connect, command
 ROOT = Path(__file__).resolve().parents[1]
 GETS = {'/api/status': 'status', '/api/messages': 'messages', '/api/nodes': 'nodes', '/api/config': 'config',
         '/api/navigation': 'navigation', '/api/maps': 'map info', '/api/maps/areas': 'map areas',
-        '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice', '/api/channels': 'channels'}
+        '/api/quick': 'quick', '/api/people': 'people', '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice', '/api/channels': 'channels'}
 
 
 def main():
@@ -84,7 +84,9 @@ def main():
                     'sendjson ' + json.dumps({'to': body.get('to'), 'text': body.get('text')}, ensure_ascii=False) if path == '/api/send' else
                     'set ' + json.dumps(body, ensure_ascii=False) if path == '/api/config' else
                     'radar do ' + json.dumps(body) if path == '/api/radar' else
-                    'channel do ' + json.dumps(body, ensure_ascii=False) if path == '/api/channels' else None)
+                    'channel do ' + json.dumps(body, ensure_ascii=False) if path == '/api/channels' else
+                    'quick do ' + json.dumps(body, ensure_ascii=False) if path == '/api/quick' else
+                    'people do ' + json.dumps(body, ensure_ascii=False) if path == '/api/people' else None)
             if not line:
                 self.reply(404, 'Not found', 'text/plain')
                 return

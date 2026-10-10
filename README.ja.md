@@ -106,3 +106,5 @@ Android アプリ: `cd android && ./gradlew testDebugUnitTest assembleRelease` (
 [MIT](LICENSE)。同梱の MeshCore (`lib/MeshCore`) は独自の MIT ライセンスを維持しています。地図データ ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors。レーダーのアイデアは
 [Stevee87](https://github.com/Stevee87) による RSSI トラッカーとレーダー HUD を参考にしています。
+
+[通知、クイック送信、チャンネル履歴、定期 NTP と人数カウンター](docs/en/notifications.md).

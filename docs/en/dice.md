@@ -46,8 +46,8 @@ the number of dice (up/down by ten), `OK` rolls, `A` adds five dice, `R` resets 
 new, `N` name, `C` colour, `DEL` twice deletes. On the T-Deck all of it also takes taps: tabs, the pool's die,
 the roll card, grid cells, the ±1/±5 buttons.
 
-**One-button boards, GAT562, T114.** A hold (OK on the joystick) opens the menu with the roll first: hold,
-hold rolls. The RPG menu has the saved roll and the next one, the number of dice, the die, the modifier;
+**One-button boards, GAT562, T114.** On one-button boards a short press repeats the RPG or grid roll;
+a hold opens the menu with presets, parameters and exit. Joystick OK opens the menu with roll first. The RPG menu has the saved roll and the next one, the number of dice, the die, the modifier;
 Warhammer "Dice +1", "Dice +5", the die, the threshold, "Add 5 dice"; counters "Count with button" (±1 on the
 joystick instead), ±5, next, new; each has the character (when there are several) and the mode. Joystick up/down
 change the number of dice, the chosen grid dice or the counter. Names and formulas are easier to set on the web
@@ -55,7 +55,7 @@ page or in the app.
 
 **Count with button** (one-button boards and the T114). The item opens counting for the chosen counter: click +1,
 hold (1.2 s) −1, keep holding to 5 s to leave (that hold's −1 is taken back, the value returns). While counting,
-a press with the screen off counts at once; messages and pop-ups close with a click as usual. Counting also ends
+a press with the screen off counts at once; incoming messages do not open an overlapping pop-up or consume the button. Counting also ends
 when the web page changes the dice mode or deletes the counters.
 
 **Web page and app.** The "Кости" (Dice) section: mode tabs, the character, the pool with ±/R buttons, the

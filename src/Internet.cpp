@@ -1,9 +1,10 @@
 #include "Internet.h"
 Internet internet;
-#if !defined(MM_COMPACT)
+#if !defined(MM_NO_WIFI)
 #include "App.h"
 #include "Hardware.h"
 #include "Radar.h"
+#include "People.h"
 #include "Version.h"
 #include "WifiDiagnostics.h"
 #include "RootCerts.h"
@@ -20,6 +21,10 @@ namespace {
 const char* DefaultTiles="https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 // OSM tile policy: identify the application; tiles are cached on SD.
 const char* Agent="MeshMesh/" MESHMM_VERSION " (ESP32-S3 ThinkNode M9 map viewer)";
+char tileTemplate[160]="";
+volatile uint32_t ntpReceived=0;
+void ntpReady(struct timeval* tv){ntpReceived=uint32_t(tv->tv_sec);}
+#if !defined(MM_COMPACT)
 const size_t BodyMax=768*1024;
 // Worker hand-off: the loop fills a job and sets Busy; the worker sets Done;
 // the loop reads the result and sets Idle. Buffers belong to whoever holds the phase.
@@ -28,7 +33,7 @@ enum Kind {JobTile,JobLocate};
 struct Job {Kind kind;int z,x,y;bool ok;int code;double lat,lon;uint32_t bytes;char error[64];char url[192];};
 volatile Phase phase=Idle;Job job;portMUX_TYPE guard=portMUX_INITIALIZER_UNLOCKED;
 TaskHandle_t worker=nullptr;uint16_t* pixels=nullptr;uint8_t* body=nullptr;
-char tileTemplate[160]="";
+
 Phase current(){taskENTER_CRITICAL(&guard);Phase p=phase;taskEXIT_CRITICAL(&guard);return p;}
 void setPhase(Phase p){taskENTER_CRITICAL(&guard);phase=p;taskEXIT_CRITICAL(&guard);}
 // Collects a response body in PSRAM; HTTPClient handles chunked encoding.
@@ -80,16 +85,20 @@ void work(void*){
     job=j;setPhase(Done);
   }
 }
+#endif
 String urlFor(int z,int x,int y){String u=tileTemplate;u.replace("{z}",String(z));u.replace("{x}",String(x));u.replace("{y}",String(y));return u;}
 esp_err_t scanStart(){WiFi.scanDelete();wifi_scan_config_t c={};c.show_hidden=false;c.scan_type=WIFI_SCAN_TYPE_ACTIVE;c.scan_time.active.min=100;c.scan_time.active.max=300;return esp_wifi_scan_start(&c,false);}
 bool othersUseWifi(){return portalActive()||radar.active||wifiProbeActive();}
 }
 void Internet::begin(){
-  loadNames();Preferences p;if(p.begin("mm-wifi",true)){enabled=p.getBool("on",false);preferred=p.getString("pref","");String t=p.getString("tiles","");strlcpy(tileTemplate,t.length()?t.c_str():DefaultTiles,sizeof tileTemplate);p.end();}
+  loadNames();Preferences p;if(p.begin("mm-wifi",true)){enabled=p.getBool("on",false)&&config.role==RoleNormal;ntpEnabled=p.getBool("ntp",false);preferred=p.getString("pref","");String t=p.getString("tiles","");strlcpy(tileTemplate,t.length()?t.c_str():DefaultTiles,sizeof tileTemplate);p.end();}
   else strlcpy(tileTemplate,DefaultTiles,sizeof tileTemplate);
+  sntp_set_time_sync_notification_cb(ntpReady);ntpDue=millis()+60000;
+#if !defined(MM_COMPACT)
   pixels=(uint16_t*)heap_caps_malloc(256*256*2,MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);body=(uint8_t*)heap_caps_malloc(BodyMax,MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
   // Core 0 beside the Wi-Fi stack, below its priority; the loop (LoRa, UI, SD) keeps core 1.
   if(!pixels||!body||xTaskCreatePinnedToCore(work,"internet",12288,nullptr,1,&worker,0)!=pdPASS){free(pixels);free(body);pixels=nullptr;body=nullptr;worker=nullptr;error="Internet task RAM";}
+#endif
 }
 void Internet::load(unsigned i,String& name,String& password){Preferences p;name="";password="";if(p.begin("mm-wifi",true)){name=p.getString(("s"+String(i)).c_str(),"");password=p.getString(("p"+String(i)).c_str(),"");p.end();}}
 void Internet::loadNames(){Preferences p;bool open=p.begin("mm-wifi",true);for(unsigned i=0;i<MaxSaved;i++)names[i]=open?p.getString(("s"+String(i)).c_str(),""):String();if(open)p.end();}
@@ -120,8 +129,9 @@ bool Internet::forget(const String& name){
   if(owned&&ssid==name&&(state==Online||state==Connecting)){WiFi.disconnect();ssid="";state=Scanning;startScan();}
   dirty=true;return true;
 }
+void Internet::setPeriodic(bool on){ntpEnabled=on;ntpDue=millis();Preferences p;if(p.begin("mm-wifi",false)){p.putBool("ntp",on);p.end();}if(!on&&temporary){sntp_stop();temporary=false;stop(true);}dirty=true;}
 void Internet::setEnabled(bool on){
-  enabled=on;Preferences p;if(p.begin("mm-wifi",false)){p.putBool("on",on);p.end();}
+  enabled=on;if(on)temporary=false;Preferences p;if(p.begin("mm-wifi",false)){p.putBool("on",on);p.end();}
   if(!on&&owned)stop(true);dirty=true;
 }
 void Internet::rescan(){retryAt=0;if(owned&&(state==Online||state==NoNetwork))startScan();}
@@ -166,13 +176,18 @@ void Internet::stop(bool radioOff){
   WiFi.disconnect();if(radioOff&&!othersUseWifi())WiFi.mode(WIFI_OFF);
   owned=false;ssid="";state=enabled?Paused:Off;dirty=true;
 }
-void Internet::yieldRadio(){if(owned){stop(false);state=Paused;}}
+void Internet::yieldRadio(){if(owned){stop(false);state=Paused;}if(temporary){sntp_stop();temporary=false;ntpDue=millis()+60000;}}
 void Internet::tick(){
   uint32_t now=millis();
-  if(!enabled){if(owned)stop(true);if(state!=Off){state=Off;dirty=true;}return;}
+  if(ntpReceived){uint32_t stamp=ntpReceived;ntpReceived=0;timeSynced=hardware.setUtc(stamp,"NTP",true);if(timeSynced){ntpFailures=0;ntpDue=now+3600000;}dirty=true;}
+  if(temporary&&(timeSynced||hardware.clockAge()<3600000||now-temporaryAt>=45000||!ntpEnabled)){bool success=timeSynced||hardware.clockAge()<3600000;temporary=false;sntp_stop();stop(true);if(!success){ntpFailures=min<unsigned>(ntpFailures+1,4);ntpDue=now+min<uint32_t>(3600000u,300000u<<ntpFailures);error="NTP connection/sync timed out";}return;}
+  if(!enabled&&!temporary){
+    if(!ntpEnabled||!savedCount()||int32_t(now-ntpDue)<0||hardware.clockAge()<3600000||othersUseWifi()){if(owned)stop(true);if(state!=Off){state=Off;dirty=true;}return;}
+    temporary=true;temporaryAt=now;timeSynced=false;
+  }
   if(othersUseWifi()){if(owned){owned=false;scanning=false;ssid="";}if(state!=Paused){state=Paused;dirty=true;}return;}
   if(!owned){
-    if(!WiFi.mode(WIFI_STA)){error="Wi-Fi start failed";return;}
+    people::releaseWifi();if(!WiFi.mode(WIFI_STA)){error="Wi-Fi start failed";return;}
     WiFi.setSleep(true); // required with BLE on ESP32-S3; see AGENTS.md
     owned=true;state=Scanning;error="";startScan();return;
   }
@@ -192,9 +207,10 @@ void Internet::tick(){
     if(link==WL_CONNECTED)lostAt=0;
     else if(!lostAt)lostAt=now;
     else if(now-lostAt>15000){error="Connection lost";ssid="";state=Scanning;dirty=true;WiFi.disconnect();startScan();}
-    if(!timeSynced&&sntp_get_sync_status()==SNTP_SYNC_STATUS_COMPLETED){timeSynced=true;hardware.setUtc(time(nullptr),"NTP",true);dirty=true;}
+
   }
 }
+#if !defined(MM_COMPACT)
 bool Internet::idle(){return worker&&current()==Idle;}
 bool Internet::backingOff(){return int32_t(millis()-backoffUntil)<0;}
 bool Internet::fetchTile(int z,int x,int y){
@@ -210,6 +226,9 @@ Internet::Result Internet::result(int& z,int& x,int& y,const uint16_t*& out,doub
   if(job.ok)tiles++;else tileErrors++;return job.ok?TileOk:TileFailed;
 }
 void Internet::release(){if(current()==Done)setPhase(Idle);}
+#else
+bool Internet::idle(){return false;}bool Internet::backingOff(){return false;}bool Internet::fetchTile(int,int,int){return false;}bool Internet::locate(){return false;}Internet::Result Internet::result(int&,int&,int&,const uint16_t*&,double&,double&){return None;}void Internet::release(){}
+#endif
 String Internet::tileUrl(){return tileTemplate;}
 bool Internet::setTileUrl(const String& value){
   String v=value=="default"?String(DefaultTiles):value;
@@ -234,15 +253,21 @@ String Internet::info(){
   if(online()){d["ip"]=WiFi.localIP().toString();d["rssi"]=WiFi.RSSI();}
   d["time_synced"]=timeSynced;d["clock_source"]=hardware.clockSource;d["visible"]=seenCount;d["scan_age"]=scannedAt?int32_t((millis()-scannedAt)/1000):-1;
   JsonArray a=d.createNestedArray("saved");for(unsigned i=0;i<MaxSaved;i++){String n=savedName(i);if(!n.length())continue;JsonObject o=a.createNestedObject();o["ssid"]=n;bool inRange=false;for(unsigned k=0;k<seenCount;k++)if(n==seen[k].ssid)inRange=true;o["in_range"]=inRange;}
-  d["preferred"]=preferred;d["tile_url"]=tileTemplate;d["tiles"]=tiles;d["tile_errors"]=tileErrors;d["bytes"]=bytes;d["worker"]=worker!=nullptr;d["busy"]=worker&&current()!=Idle;d["backoff"]=backingOff();
+  d["ntp_enabled"]=ntpEnabled;d["ntp_active"]=temporary;d["ntp_retry_seconds"]=int32_t(ntpDue-millis())>0?(ntpDue-millis())/1000:0;d["clock_age_seconds"]=hardware.clockAge()/1000;
+  d["preferred"]=preferred;
+#if !defined(MM_COMPACT)
+  d["tile_url"]=tileTemplate;d["tiles"]=tiles;d["tile_errors"]=tileErrors;d["bytes"]=bytes;d["worker"]=worker!=nullptr;d["busy"]=worker&&current()!=Idle;d["backoff"]=backingOff();
+#endif
   d["heap"]=ESP.getFreeHeap();d["heap_min_block"]=heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT);
   String s;serializeJson(d,s);return s;
 }
 String Internet::command(const String& line){
   if(line=="internet"||line=="internet info")return info();
+  if(line=="internet ntp on"||line=="internet ntp off"){setPeriodic(line.endsWith("on"));return "OK periodic NTP set";}
   if(line=="internet on"){setEnabled(true);return "OK internet on";}
   if(line=="internet off"){setEnabled(false);return "OK internet off";}
   if(line=="internet scan"){if(!enabled)return "ERR internet off";rescan();return "OK scan requested";}
+  if(line.startsWith("internet save ")){StaticJsonDocument<256>d;if(deserializeJson(d,line.substring(14))||!d["ssid"].is<const char*>())return "ERR internet save JSON";return save(d["ssid"],d["password"]|"")?"OK network saved":"ERR "+error;}
   if(line.startsWith("internet add ")){StaticJsonDocument<256>d;if(deserializeJson(d,line.substring(13))||!d["ssid"].is<const char*>())return "ERR internet add JSON";
     String name=d["ssid"].as<String>(),password=d["password"]|"";if(!save(name,password))return "ERR "+error;connectTo(name);return "OK network saved";}
   if(line.startsWith("internet forget "))return forget(line.substring(16))?"OK network forgotten":"ERR network not saved";

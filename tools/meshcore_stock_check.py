@@ -7,12 +7,32 @@ meshcore==2.3.14. The user-owned third device is not needed or modified.
 import asyncio,json,time,hashlib
 from pathlib import Path
 from meshcore import MeshCore,EventType
+from meshcore.serial_cx import SerialConnection
+import serial_asyncio_fast
 from device import connect,command
 from ports import M9_PORT, HELTEC_PORT
 
+class StableUsbConnection(SerialConnection):
+ async def connect(self,timeout=10):
+  # Native ESP USB must have DTR/RTS set before open, as in device.py.
+  # The library's default serial_for_url opens with RTS asserted first.
+  self._connected_event.clear()
+  serial=connect(self.port)
+  try:
+   transport,_=await serial_asyncio_fast.connection_for_serial(asyncio.get_running_loop(),lambda:self.MCSerialClientProtocol(self),serial)
+   await asyncio.wait_for(self._connected_event.wait(),timeout)
+  except BaseException:
+   serial.close();raise
+  return self.port
+
 async def main():
- stock=await MeshCore.create_serial(HELTEC_PORT,default_timeout=8)
- if stock is None:raise RuntimeError('Independent MeshCore companion not responding')
+ deadline=time.monotonic()+150
+ while True:
+  stock=MeshCore(StableUsbConnection(HELTEC_PORT,115200),default_timeout=8)
+  if await stock.connect() is not None:break
+  await stock.disconnect()
+  if time.monotonic()>=deadline:raise RuntimeError('Independent MeshCore companion not responding after startup timeout')
+  await asyncio.sleep(5)
  m9=connect(M9_PORT)
  def read(name):return json.loads(command(m9,name))
  events=[]
@@ -22,6 +42,12 @@ async def main():
   info=await stock.commands.send_appstart();assert info.type==EventType.SELF_INFO
   key=info.payload['public_key'];node=key[:16].upper();mine=before['public_key'].lower()
   device=await stock.commands.send_device_query();assert device.payload['ver']=='v1.17.1'
+  config=read('config')
+  assert (await stock.commands.set_radio(round(config['frequency'],3),config['bandwidth'],config['sf'],config['cr'])).type==EventType.OK
+  rtc=await stock.commands.get_time();assert rtc.type==EventType.CURRENT_TIME
+  assert rtc.payload['time']<=int(time.time())+60,'Stock clock is unexpectedly far ahead'
+  # Stock rejects backward corrections; its RTC can be slightly ahead of the host.
+  assert (await stock.commands.set_time(max(int(time.time())+2,rtc.payload['time']+2))).type==EventType.OK
   assert command(m9,'hello').startswith('OK');assert (await stock.commands.send_advert(flood=True)).type==EventType.OK
   contacts={}
   for _ in range(25):
@@ -74,7 +100,7 @@ async def main():
   checks.append({'check':'Public channel both directions','ack_claimed':False,'passed':True})
   after=read('status');assert before['boot']==after['boot'] and before['diagnostic_rx']==after['diagnostic_rx']
   assert after['rx']>before['rx'] and after['tx']>before['tx']
-  report={'result':'passed','transport':'physical LoRa; no USB RF packet injection','meshmesh':before['firmware'],'meshmesh_build_sha256':before.get('build_sha256'),'stock':device.payload,'self':info.payload,'checks':checks,'before':before,'after':after,'stock_build':'official companion-v1.17.1 with MeshMesh board JSON, DIO and existing partition table; protocol sources unchanged'}
+  report={'result':'passed','transport':'physical LoRa; no USB RF packet injection','meshmesh':before['firmware'],'meshmesh_build_sha256':before.get('build_sha256'),'stock':device.payload,'self':info.payload,'checks':checks,'before':before,'after':after,'stock_build':'official companion-v1.17.1 with MeshMesh board JSON, DIO, matching bootloader and identical partition offsets/sizes with the SPIFFS label; protocol sources unchanged'}
   p=Path('artifacts/meshcore-stock-check.json');p.touch(mode=0o600,exist_ok=True);p.chmod(0o600);p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
   print('PASS independent official MeshCore: advertisements, contacts, repeated direct messages/ACKs and Public in both directions',flush=True)
  finally:

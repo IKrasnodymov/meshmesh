@@ -76,6 +76,7 @@ class MeshRadio {
   bool sending(uint64_t id) const; // a message to it waits to be sent
   const channels::Channel* channel(uint64_t id) const;
   int channelIndex(uint64_t id) const;
+  const Peer* findContact(uint64_t id) const {for(unsigned i=0;i<peerCount;i++)if(peers[i].id==id)return &peers[i];return nullptr;}
   bool sendInvite(uint64_t contact,uint64_t channel); // the channel link as a direct message
   int probeHashtag(const String& raw); // stored packets of unjoined channels this hashtag opens; -1: not a hashtag
   bool setChannelRegion(uint64_t id,const String& region); // "", "*" or a region name (Regions.h); saved
@@ -93,7 +94,7 @@ class MeshRadio {
   uint32_t sendGame(const String& text,uint64_t destination); // message ID for delivery, 0 when refused
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
-  uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();
+  uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();void trimHistory();
   static bool clockSet();
   bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;
@@ -120,8 +121,10 @@ class MeshRadio {
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
   uint32_t queue(const String& text,uint64_t destination,bool game);
   bool startRadio(bool quiet);int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
-  void status(uint32_t id,ChatMessage::Status value);void track(const Pending& wait,unsigned attempt,bool delivered=false,uint8_t pathLen=255,const uint8_t* path=nullptr);uint32_t echoDue=0;void tickEchoes();void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
+  void status(uint32_t id,ChatMessage::Status value,bool txError=false);void track(const Pending& wait,unsigned attempt,bool delivered=false,uint8_t pathLen=255,const uint8_t* path=nullptr);uint32_t echoDue=0;void tickEchoes();void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
   Peer* contact(uint64_t id);
+  bool historyProtected(const ChatMessage& m) const;void historyErase(unsigned index);void compactHistoryTick();
+  uint32_t historyGeneration=0;bool compactRequested=false;
   struct Sample {uint8_t length=0,data[184]={};} samples[6];unsigned nextSample=0; // packets of unjoined channels
   uint32_t seenGroup[16]={};unsigned nextSeenGroup=0;
   void loadChannels();bool saveChannels();void noteChannel(const uint8_t* payload,size_t length,uint32_t packetHash);

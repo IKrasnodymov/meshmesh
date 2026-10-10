@@ -11,6 +11,7 @@
 #include "WifiDiagnostics.h"
 #include "Radar.h"
 #include "Internet.h"
+#include "People.h"
 #include "ChessNet.h"
 #include "ChessTour.h"
 #include "Companion.h"
@@ -134,12 +135,17 @@ void portalBegin() {
   // Channels: the private keys only over the access point, as /api/key (the home network carries plain HTTP).
   server.on("/api/channels",HTTP_GET,[]{if(authorized())answer(channelsJson(wifiOn));});
   server.on("/api/channels",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<512>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=channelCommand(d.as<JsonObjectConst>());answer(reply,!reply.startsWith("ERR"));});
+  server.on("/api/people",HTTP_GET,[]{if(authorized())server.send(200,"application/json",executeCommand("people"));});
+  server.on("/api/people",HTTP_POST,[]{if(authorized()){String reply=executeCommand("people do "+server.arg("plain"));server.send(reply.startsWith("ERR")?400:200,"text/plain",reply);}});
+  server.on("/api/quick",HTTP_GET,[]{if(authorized())answer(executeCommand("quick"));});
+  server.on("/api/quick",HTTP_POST,[]{if(authorized()){String reply=executeCommand("quick do "+server.arg("plain"));answer(reply,!reply.startsWith("ERR"));}});
   server.on("/api/messages",HTTP_GET,[]{if(authorized())answer(messagesJson());});
   server.on("/api/config",HTTP_GET,[]{if(authorized())answer(configJson());});
   // The private key only over the access point: on the home network the page is plain HTTP.
   server.on("/api/key",HTTP_GET,[]{if(!authorized())return;if(!wifiOn){answer("ERR the key is given out on the device access point only",false);return;}answer(configJson(true));});
-  server.on("/api/config",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=applySettings(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
-  server.on("/api/command",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<2048>d;if(deserializeJson(d,server.arg("plain"))||!d["command"].is<const char*>()){answer("Invalid command",false);return;}if(d["command"]=="wifi"){wifiOffPending=true;answer("OK Wi-Fi off after this reply");return;}String reply=executeCommand(d["command"].as<String>());answer(reply,!reply.startsWith("ERR"));});
+  server.on("/api/config",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<2048>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=applySettings(d.as<JsonObjectConst>());answer(reply,reply.startsWith("OK"));});
+  // Commands can enter SD/FAT while the WebServer call chain is on the loop stack.
+  server.on("/api/command",HTTP_POST,[]{if(!authorized())return;DynamicJsonDocument d(2048);if(deserializeJson(d,server.arg("plain"))||!d["command"].is<const char*>()){answer("Invalid command",false);return;}if(d["command"]=="wifi"){wifiOffPending=true;answer("OK Wi-Fi off after this reply");return;}String reply=executeCommand(d["command"].as<String>());answer(reply,!reply.startsWith("ERR"));});
   server.on("/api/send",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<1024>d;if(deserializeJson(d,server.arg("plain"))||!d["text"].is<const char*>()||!d["to"].is<const char*>()){answer("Invalid message",false);return;}String reply=executeCommand("send "+d["to"].as<String>()+" "+d["text"].as<String>());answer(reply,reply.startsWith("OK"));});
   server.onNotFound([]{server.send(404,"text/plain","Not found");});
 }
@@ -149,7 +155,7 @@ void portalToggle() {
   if(wifiOn) {server.stop();serving=false;WiFi.softAPdisconnect(true);WiFi.mode(WIFI_OFF);wifiOn=false;webRadarRelease();meshRadio.event="Wi-Fi off";}
   else {
     server.stop();serving=false; // portalTick starts it again on the access point
-    internet.yieldRadio(); // the Wi-Fi client resumes when the access point is off
+    people::releaseWifi();internet.yieldRadio(); // the Wi-Fi client resumes when the access point is off
     String ssid="MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);WiFi.mode(WIFI_AP);
     wifiOn=WiFi.softAP(ssid.c_str(),password.c_str(),1,false,2);meshRadio.event=wifiOn?"Wi-Fi: 192.168.4.1":"Wi-Fi failed";
   }

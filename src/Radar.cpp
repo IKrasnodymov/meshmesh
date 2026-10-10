@@ -1,4 +1,5 @@
 #include "Radar.h"
+#include "People.h"
 #include "App.h"
 #include "MeshRadio.h"
 #include "WifiDiagnostics.h"
@@ -27,7 +28,7 @@ esp_err_t startScan(){WiFi.scanDelete();wifi_scan_config_t c={};c.show_hidden=tr
 uint64_t macId(const uint8_t* m){uint64_t v=0;for(int i=0;i<6;i++)v=v<<8|m[i];return v;}
 // Bluetooth advertisements arrive on the NimBLE host task; the loop drains this ring.
 struct Heard{uint64_t address;int8_t rssi;RadarTarget::Device device;uint16_t vendor;char name[33];};
-Heard heard[32];unsigned heardHead=0,heardTail=0;
+Heard heard[32];unsigned heardHead=0,heardTail=0,heardDropped=0;
 class Scanner:public NimBLEAdvertisedDeviceCallbacks{
  void onResult(NimBLEAdvertisedDevice* d) override{
   Heard h{};const uint8_t* a=d->getAddress().getNative();for(int i=5;i>=0;i--)h.address=h.address<<8|a[i];h.rssi=constrain(d->getRSSI(),-127,0);
@@ -35,7 +36,7 @@ class Scanner:public NimBLEAdvertisedDeviceCallbacks{
   h.device=Radar::classify(d->haveAppearance()?d->getAppearance():0,(const uint8_t*)maker.data(),maker.size());h.vendor=maker.size()>=2?uint8_t(maker[0])|uint8_t(maker[1])<<8:0xffff;
   if(d->haveName()){std::string n=d->getName();size_t len=min(n.size(),sizeof(h.name)-1);memcpy(h.name,n.data(),len);
    if(!meshmesh::validUtf8((const uint8_t*)h.name,len))for(size_t k=0;k<len;k++)if(uint8_t(h.name[k])>=0x80)h.name[k]='?';}
-  taskENTER_CRITICAL(&guard);unsigned next=(heardHead+1)%32;if(next!=heardTail){heard[heardHead]=h;heardHead=next;}taskEXIT_CRITICAL(&guard);
+  taskENTER_CRITICAL(&guard);unsigned next=(heardHead+1)%32;if(next!=heardTail){heard[heardHead]=h;heardHead=next;}else heardDropped++;taskEXIT_CRITICAL(&guard);
  }
 } scanner;
 }
@@ -62,7 +63,7 @@ void Radar::releaseBle(){
 }
 // The radar never shares Wi-Fi with the access point or the USB Wi-Fi probe.
 void Radar::wifiStart(){
- internet.yieldRadio(); // scans, homing and CSI need the radio off any access point
+ people::releaseWifi();internet.yieldRadio(); // scans, homing and CSI need the radio off any access point
  if(!WiFi.mode(WIFI_STA)){wifi=WifiFailed;return;}
  WiFi.setSleep(true); // required for Wi-Fi/BLE coexistence on ESP32-S3; see AGENTS.md
  if(!scanHandler)scanHandler=esp_event_handler_register(WIFI_EVENT,WIFI_EVENT_SCAN_DONE,onScanDone,nullptr)==ESP_OK;
@@ -98,9 +99,11 @@ void Radar::refreshLora(uint32_t now){
   strlcpy(t->name,p.name,sizeof(t->name));t->rssi=constrain(int(p.rssi),-127,0);t->seen=p.seen;}
 }
 void Radar::drainBle(uint32_t now){
+ taskENTER_CRITICAL(&guard);unsigned lost=heardDropped;heardDropped=0;taskEXIT_CRITICAL(&guard);people::noteDropped(false,lost);
  bool homing=tracking&&focus.kind==RadarTarget::Ble;
  for(unsigned k=0;k<32;k++){
   Heard h;taskENTER_CRITICAL(&guard);bool any=heardTail!=heardHead;if(any){h=heard[heardTail];heardTail=(heardTail+1)%32;}taskEXIT_CRITICAL(&guard);if(!any)break;
+  people::hear(false,h.address,h.rssi,(h.device==RadarTarget::Phone||h.device==RadarTarget::Watch||h.device==RadarTarget::Personal));if(!active)continue;
   if(homing&&h.address==focus.id){windowSum+=h.rssi;windowCount++;rateFrames++;}
   RadarTarget* t=upsert(RadarTarget::Ble,h.address);if(!t)continue;
   if(h.name[0])strlcpy(t->name,h.name,sizeof(t->name));if(h.device!=RadarTarget::Unknown)t->device=h.device;if(h.vendor!=0xffff)t->vendor=h.vendor;
@@ -116,7 +119,7 @@ void Radar::bleTick(uint32_t now){
  if(!NimBLEDevice::getInitialized()){NimBLEDevice::init("");bleScanning=false;} // stays up for the rest of the boot
  ble=BleReady;NimBLEScan* s=NimBLEDevice::getScan();
  if(!bleScanning||!s->isScanning()){
-  s->setAdvertisedDeviceCallbacks(&scanner,true);s->setMaxResults(0);s->setDuplicateFilter(false);s->setActiveScan(true);s->setInterval(100);s->setWindow(90);
+  s->setAdvertisedDeviceCallbacks(&scanner,true);s->setMaxResults(0);s->setDuplicateFilter(false);s->setActiveScan(active);s->setInterval(100);s->setWindow(active?90:30);
   bleScanning=s->start(0,nullptr,false);if(!bleScanning){ble=BleFailed;dirty=true;}
  }
  drainBle(now);
@@ -130,7 +133,7 @@ bool Radar::track(unsigned index){
 }
 void Radar::untrack(){if(!tracking)return;sniff(false);tracking=false;reset();lastSweep=0;dirty=true;}
 void Radar::tick(){
- if(!active)return;uint32_t now=millis();
+ if(!active){if(people::settings.ble)bleTick(millis());else if(bleScanning)releaseBle();return;}uint32_t now=millis();
  WifiState want=portalActive()?WifiPortal:wifiProbeActive()?WifiBusy:WifiReady;
  if(want!=WifiReady){if(wifi==WifiReady)release();if(wifi!=want)dirty=true;wifi=want;}
  else if(wifi!=WifiReady&&wifi!=WifiFailed)wifiStart();

@@ -2,7 +2,7 @@
 
 `versions.properties` is the single source of public versions: `firmware` for all boards and
 `android` for the app. They are independent `MAJOR.MINOR.PATCH` values: incompatible behaviour,
-compatible features, then fixes. Current releases are firmware 0.18.0 and Android 0.11.0. This does not change
+compatible features, then fixes. Current releases are firmware 0.19.0 and Android 0.12.0. This does not change
 the MeshCore wire protocol version.
 
 Before a release, bump the affected component and run:
@@ -18,10 +18,10 @@ reports `version`, Git `revision` (with `-dirty` for local changes) and the imag
 A matching version never replaces a hash check. Package `manifest.json` includes the version and
 revision; site generation rejects packages from different revisions.
 
-Android displays `0.8.0+<versionCode>`. Published codes are
+Android displays `0.12.0+<versionCode>`. Published codes are
 `1000000 + github.run_number * 100 + github.run_attempt`, passed as `MM_VERSION_CODE`.
 Each retry increases the code, and the next run is higher (attempt must be below 100). These
-codes exceed the old run-number-only scheme. Local builds use `0.8.0+local`, code 1000000 and,
+codes exceed the old run-number-only scheme. Local builds use `0.12.0+local`, code 1000000 and,
 without the project key, a debug signature. They cannot replace a signed published APK in place;
 a local release update requires the same key and a higher code. `tools/app_release.py` reads
 Gradle's actual `output-metadata.json`, publishes a uniquely named APK and `app/version.json`

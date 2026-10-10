@@ -42,7 +42,7 @@ PLURALS = {
 # Interface families: the 320x240 keyboard interface and the 128x64 one; shared files go to both.
 FULL = ['src/Ui.cpp', 'src/UiServer.inc', 'src/UiSolitaire.inc', 'src/UiChess.inc', 'src/UiTour.inc', 'src/UiChannels.inc', 'src/UiPet.inc', 'src/UiDice.inc', 'src/UiRemote.inc']
 COMPACT = ['src/UiHeltec.cpp', 'src/UiCompose.inc', 'src/UiChessCompact.inc', 'src/UiPetCompact.inc', 'src/UiDiceCompact.inc', 'src/UiHires.inc']
-SHARED = ['src/ChessNet.cpp', 'src/ChessTour.cpp', 'src/ChessSync.cpp', 'src/MeshRadio.cpp', 'src/Internet.cpp', 'src/MeshServer.cpp', 'src/App.cpp', 'src/Pet.cpp', 'src/Dice.cpp']
+SHARED = ['src/ChessNet.cpp', 'src/ChessTour.cpp', 'src/ChessSync.cpp', 'src/MeshRadio.cpp', 'src/Internet.cpp', 'src/MeshServer.cpp', 'src/App.cpp', 'src/Pet.cpp', 'src/Dice.cpp', 'src/QuickSend.cpp']
 
 LIT = r'"(?:[^"\\\n]|\\.)*"'
 TEXT = re.compile(r'(?<![A-Za-z0-9_.>])(?:t|tr)\(\s*(' + LIT + r')\s*,\s*(' + LIT + r')\s*\)')

@@ -106,3 +106,5 @@ python3 -m venv .venv
 [MIT](LICENSE). Вбудована MeshCore (`lib/MeshCore`) зберігає власну ліцензію MIT. Картографічні дані ©
 учасники [OpenStreetMap](https://www.openstreetmap.org/copyright). Ідея радара спирається на
 RSSI-трекер і радарні HUD від [Stevee87](https://github.com/Stevee87).
+
+[Сповіщення, швидке надсилання, історія каналів, періодичний NTP і лічильник людей](docs/en/notifications.md).

@@ -6,6 +6,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from version import VERSION
 from ports import M9_PORT, HELTEC_PORT
@@ -18,7 +19,10 @@ def main():
     p.add_argument('--backup',type=Path,default=ROOT/'backups/m9-original-20260929.bin')
     p.add_argument('--package',type=Path,default=ROOT/f'artifacts/meshmesh-m9-{VERSION}')
     p.add_argument('--restore',action='store_true')
+    p.add_argument('--chunk-size',type=int,default=0,help='Write the application in separate sector-aligned blocks for unreliable USB bridges')
     p.add_argument('--check',action='store_true',help='Validate backup and package files without accessing USB');a=p.parse_args()
+    if a.chunk_size and (a.chunk_size<4096 or a.chunk_size%4096 or a.restore):
+        p.error('--chunk-size must be a positive multiple of 4096 and is only for installation')
     info=json.loads(a.backup.with_suffix('.json').read_text());data=a.backup.read_bytes()
     if not info.get('verified') or len(data)!=16777216 or hashlib.sha256(data).hexdigest()!=info['sha256']:
         raise SystemExit('Full original backup is missing, unverified or corrupted')
@@ -41,7 +45,22 @@ def main():
     if a.restore:
         subprocess.run(base+['write-flash','0x0',str(a.backup)],check=True)
         return
-    args=base+['write-flash','--flash-mode','dio','--flash-freq','80m','--flash-size','16MB']
+    options=['write-flash','--flash-mode','dio','--flash-freq','80m','--flash-size','16MB']
+    if a.chunk_size:
+        args=base+['--after','no-reset']+options
+        for offset,name in components[:-1]:args+=[offset,str(a.package/name)]
+        subprocess.run(args,check=True)
+        firmware=(a.package/'firmware.bin').read_bytes()
+        with tempfile.TemporaryDirectory(prefix='meshmesh-flash-') as temporary:
+            chunk=Path(temporary)/'application.bin'
+            for start in range(0,len(firmware),a.chunk_size):
+                chunk.write_bytes(firmware[start:start+a.chunk_size])
+                print(f'Application block {start//a.chunk_size+1}/{(len(firmware)+a.chunk_size-1)//a.chunk_size}',flush=True)
+                subprocess.run(base+['--after','no-reset']+options+[hex(0x10000+start),str(chunk)],check=True)
+        # Check the complete application on flash before allowing it to boot.
+        subprocess.run(base+['verify-flash','0x10000',str(a.package/'firmware.bin')],check=True)
+        return
+    args=base+options
     for offset,name in components:args+=[offset,str(a.package/name)]
     subprocess.run(args,check=True)
 

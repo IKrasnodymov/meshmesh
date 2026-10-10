@@ -13,6 +13,9 @@
 #include "Dice.h"
 #include "Power.h"
 #include "Regions.h"
+#include "Notifications.h"
+#include "QuickSend.h"
+#include "People.h"
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
@@ -28,12 +31,14 @@
 // the menu, the centre runs the action or opens the menu, Back closes and goes home; messages are
 // written on an on-screen keyboard (UiCompose.inc).
 namespace {
-enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,PageCount};
-const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules"};
+enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,NotifyPage,QuickPage,PeoplePage,PageCount};
+const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules","notifications","quick","people"};
+unsigned quickIndex=0,quickTargetIndex=0;bool quickTargets=false,quickReply=false;uint64_t quickReplyTo=0;
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
 uint32_t chessPopupAt=0,chessSeen=0,tourSeen=0;String chessPopupText; // chess and tournament news
+ChatMessage incomingPopup{};uint8_t ledPattern=0;
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
 const uint8_t* const small=u8g2_font_5x8_t_cyrillic;const uint8_t* const body=u8g2_font_6x13_t_cyrillic;const uint8_t* const bold=u8g2_font_6x13B_t_cyrillic;
@@ -129,7 +134,7 @@ String wifiState(){
 #endif
  switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
-void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==Messages){messageOffset=0;unreadCount=0;}}
+void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==QuickPage)quickTargets=false;if(page==Messages){messageOffset=0;unreadCount=0;}}
 // Server roles show the pages that still mean something: no chats, nodes or radar.
 bool pageShown(int p){
 #if defined(MM_NO_WIFI)
@@ -154,7 +159,7 @@ const char* const uiApps[]={"chats","nodes",
 #if MM_DICE
  "dice",
 #endif
- "radar","gps",MM_WIFI_APP("wifi")"ble","settings","health"};
+ "quick","people","radar","gps",MM_WIFI_APP("wifi")"ble","settings","health"};
 const uint8_t uiAppCount=sizeof uiApps/sizeof *uiApps;
 namespace {
 const uint8_t appPages[]={Messages,Nodes,
@@ -167,7 +172,7 @@ const uint8_t appPages[]={Messages,Nodes,
 #if MM_DICE
  DicePage,
 #endif
- Signals,Gps,MM_WIFI_APP(Wifi)Ble,Settings,Modules};
+ QuickPage,PeoplePage,Signals,Gps,MM_WIFI_APP(Wifi)Ble,Settings,Modules};
 static_assert(sizeof appPages==sizeof uiApps/sizeof *uiApps,"a page for every app ID");
 // What a click goes through: Home, then the shown apps in the chosen order.
 unsigned pageCycle(uint8_t* cycle){unsigned n=0;cycle[n++]=Home;uint8_t order[AppsMax];unsigned k=appsShown(order);for(unsigned i=0;i<k;i++)if(pageShown(appPages[order[i]]))cycle[n++]=appPages[order[i]];return n;}
@@ -274,9 +279,9 @@ String radioHint(){
 
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
-  ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
-  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
-constexpr unsigned MenuMax=10;
+  ActPeopleMinus,ActPeopleReset,ActPeopleBle,ActPeopleWifi,ActPeopleWindow,ActPeopleRssi,ActPeoplePersonal,ActPeopleClear,ActPeopleExit,ActQuick,ActNotify,ActNotifyLed,ActNotifyWake,ActNotifyPopup,ActNotifyFailed,ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
+  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
+constexpr unsigned MenuMax=12;
 #if MM_DICE
 #include "UiDiceCompact.inc"
 #endif
@@ -301,7 +306,7 @@ unsigned actions(Act* out){
 #if defined(MM_JOYSTICK)
   out[n++]=ActWrite;
 #endif
-  if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;}break;
+  if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;out[n++]=ActQuick;}break;
  case Nodes:if(Peer* p=shownNode()){
 #if defined(MM_JOYSTICK)
   if(p->type==1){out[n++]=ActWrite;if(MM_CHESS)out[n++]=ActChess;}
@@ -341,21 +346,34 @@ unsigned actions(Act* out){
 #if defined(MM_JOYSTICK)
   out[n++]=ActSound; // the GAT562 buzzer
 #endif
-  out[n++]=ActRadio;out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;break;
+  out[n++]=ActRadio;out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;out[n++]=ActNotify;break;
+ case PeoplePage:out[n++]=ActPeopleMinus;out[n++]=ActPeopleReset;out[n++]=ActPeopleBle;
+#if !defined(MM_NO_WIFI)
+ out[n++]=ActPeopleWifi;
+#endif
+ out[n++]=ActPeopleWindow;out[n++]=ActPeopleRssi;out[n++]=ActPeoplePersonal;out[n++]=ActPeopleClear;out[n++]=ActPeopleExit;break;
+ case NotifyPage:if(pins::led>=0)out[n++]=ActNotifyLed;out[n++]=ActNotifyWake;out[n++]=ActNotifyPopup;out[n++]=ActNotifyFailed;break;
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
 }
 bool keepsMenu(Act a){
 #if MM_DICE
- if(a>=ActDiceRoll&&a<ActClose)return diceKeeps(a);
+ if(a>=ActDiceRoll&&a<=ActDiceExit)return diceKeeps(a);
 #endif
  return a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
+String flag(bool value){return value?t("On","Вкл"):t("Off","Выкл");}
 String actName(Act a){
+ if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return "-1";case ActPeopleReset:return t("Reset manual count","Сбросить ручной счёт");case ActPeopleBle:return "BLE: "+flag(people::settings.ble);case ActPeopleWifi:return "Wi-Fi: "+flag(people::settings.wifi);case ActPeopleWindow:return t("Window: ","Окно: ")+String(people::settings.window)+"s";case ActPeopleRssi:return "RSSI: "+String(people::settings.rssi);case ActPeoplePersonal:return t("Phones/watches only: ","Только телефоны/часы: ")+flag(people::settings.personal);case ActPeopleClear:return t("Clear device window","Сбросить окно устройств");default:return t("Exit","Выход");}}
+
 #if MM_DICE
- if(a>=ActDiceRoll&&a<ActClose)return diceActName(a);
+ if(a>=ActDiceRoll&&a<=ActDiceExit)return diceActName(a);
 #endif
  const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
+ case ActQuick:return t("Quick send","Быстрая отправка");
+ case ActNotify:return t("Notifications","Уведомления");
+ case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String("LED: "):a==ActNotifyWake?t("Wake: ","Экран: "):t("Popup: ","Окно: "))+(mode==0?t("off","выкл."):mode==1?t("all","все"):String("@"));}
+ case ActNotifyFailed:return t("TX alert: ","Ошибка TX: ")+(config.notifyFailed?t("on","вкл."):t("off","выкл."));
  case ActWrite:return page==Nodes?t("Write message...","Написать...")
   :page==Messages&&m&&!publicChat?t("Write reply...","Ответить текстом..."):t("Write to channel...","Написать в канал...");
  case ActFormat:return t("Create storage...","Создать хранилище...");
@@ -389,10 +407,18 @@ String actName(Act a){
 }
 void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadio.sendMessage(text,to);notice(sent?t("Reply ","Ответ ")+text+t(" queued"," в очереди"):t("Reply not queued","Ответ не отправлен"));}
 void run(Act a){
+ if(a>=ActPeopleMinus&&a<=ActPeopleExit){if(a==ActPeopleMinus){people::change(-1);return;}if(a==ActPeopleExit){showPage(nextPage(page));return;}StaticJsonDocument<128>d;d["action"]=a==ActPeopleReset?"reset":a==ActPeopleClear?"window_reset":"settings";if(a==ActPeopleBle)d["ble"]=!people::settings.ble;if(a==ActPeopleWifi)d["wifi"]=!people::settings.wifi;if(a==ActPeopleWindow)d["window"]=people::settings.window==30?60:people::settings.window==60?300:30;if(a==ActPeopleRssi)d["rssi"]=people::settings.rssi>=-40?-100:people::settings.rssi+5;if(a==ActPeoplePersonal)d["personal_only"]=!people::settings.personal;notice(people::command(d.as<JsonObjectConst>()));return;}
+
 #if MM_DICE
- if(a>=ActDiceRoll&&a<ActClose){diceRun(a);return;}
+ if(a>=ActDiceRoll&&a<=ActDiceExit){diceRun(a);return;}
 #endif
  switch(a){
+ case ActQuick:{const ChatMessage* m=shownMessage();if(m){quickReplyTo=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;quickReply=true;quickTargets=false;quickIndex=0;showPage(QuickPage);}break;}
+ case ActNotify:showPage(NotifyPage);break;
+ case ActNotifyLed:notice(applyOne("notify_led",(config.notifyLed+1)%3));break;
+ case ActNotifyWake:notice(applyOne("notify_wake",(config.notifyWake+1)%3));break;
+ case ActNotifyPopup:notice(applyOne("notify_popup",(config.notifyPopup+1)%3));break;
+ case ActNotifyFailed:notice(applyOne("notify_failed",!config.notifyFailed));break;
  case ActFormat:{static uint32_t armed=0;
 #if defined(MM_JOYSTICK)
   if(!armed||millis()-armed>5000){armed=millis();notice(t("OK again: erase old data","Ещё раз OK: стереть"));break;}
@@ -500,6 +526,24 @@ String hint(){
 #endif
  Act acts[MenuMax];unsigned n=actions(acts);if(!n)return "";return n==1?t("hold: ","держ: ")+actName(acts[0]):t("hold: menu","держ: меню");}
 #endif
+unsigned quickTargetCount(){return quickSend::targetCount();}
+uint64_t quickTarget(unsigned i){return quickSend::target(i);}
+String quickLabel(unsigned i){if(i<quickSend::Count)return quickSend::state.text[i][0]?String(quickSend::state.text[i]):String("--");return i==quickSend::Count?t("Choose recipient","Выберите получателя"):t("Exit","Выход");}
+bool quickKey(int key){if(page!=QuickPage)return false;if(key==0x86){quickReply=quickTargets=false;showPage(Home);return true;}bool click=key==13||key==0x82||key==0xb6,hold=key==0xa3;
+#if defined(MM_JOYSTICK)
+ click=key==0xb6;hold=key==13;if(key==0xb5){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+n-1)%n;}else quickIndex=(quickIndex+quickSend::Count+1)%(quickSend::Count+2);return true;}if(key==0xb4||key==0xb7){quickReply=quickTargets=false;showPage(key==0xb4?previousPage(page):nextPage(page));return true;}
+#endif
+ if(click){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+1)%n;}else quickIndex=(quickIndex+1)%(quickSend::Count+2);}
+ if(hold){if(quickTargets){if(!quickTargetCount()){notice(t("No recipients","Нет получателей"));quickTargets=false;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d["action"]="target";d["to"]=meshRadio.idText(quickTarget(quickTargetIndex));notice(quickSend::command(d.as<JsonObjectConst>()));quickReply=quickTargets=false;}
+ else if(quickIndex==quickSend::Count){quickTargets=true;quickTargetIndex=0;}
+ else if(quickIndex>quickSend::Count){quickReply=false;showPage(nextPage(page));}
+ else notice(quickSend::send(quickIndex,quickReply?quickReplyTo:0));}return true;}
+void drawQuickMono(){auto& c=*hardware.canvas;uint64_t to=quickReply?quickReplyTo:quickSend::state.to;const auto* ch=meshRadio.channel(to);const Peer* p=meshRadio.findContact(to);say(0,19,clipped(ch?String(ch->name):p?String(p->name):t("Choose recipient","Выберите получателя"),25),small);
+ unsigned total=quickTargets?quickTargetCount():quickSend::Count+2,index=quickTargets?quickTargetIndex:quickIndex;int first=max(0,min(int(index)-1,int(total)-3));
+ for(unsigned i=first;i<total&&i<unsigned(first+3);i++){int y=23+(i-first)*11;bool focus=i==index;if(focus)c.fillRect(0,y,128,11,1);String name;
+ if(quickTargets){uint64_t id=quickTarget(i);const auto* ch=meshRadio.channel(id);const Peer* p=meshRadio.findContact(id);name=ch?String(ch->name):p?String(p->name):String("?");}else name=quickLabel(i);
+ say(2,y+9,clipped(name,24),small,focus?0:1);}}
+
 void drawMenu(){
  auto& c=*hardware.canvas;Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}menuIndex%=n;int first=max(0,min(menuIndex-1,int(n)-3));
  c.fillRect(0,12,128,45,0);c.drawRect(0,12,128,45,1);
@@ -512,7 +556,7 @@ void drawMenu(){
 #endif
 }
 void drawPopup(const ChatMessage& m){
- auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
+ auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
  say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t("click: close","клик: закрыть"));
 }
 void drawChessPopup(){
@@ -585,12 +629,15 @@ void draw(){
 #if defined(MM_JOYSTICK)
  if(composing){drawCompose();return;}
 #endif
- c.fillScreen(0);const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
+ c.fillScreen(0);const ChatMessage* last=&incomingPopup;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){drawPopup(*last);hardware.flush();return;}
  popupAt=0;
  if(chessPopupAt&&millis()-chessPopupAt<8000){drawChessPopup();hardware.flush();return;}
  chessPopupAt=0;String title;
  switch(page){
+ case PeoplePage:title=t("People counter","Счётчик людей");say(0,21,t("Manual: ","Вручную: ")+String(people::settings.manual),bold);say(0,35,"BLE "+String(people::count(false))+(people::saturated(false)?"+":"")+"  Wi-Fi "+String(people::count(true))+(people::saturated(true)?"+":""),small);say(0,46,String(people::settings.window)+t("s window","с окно"),small);break;
+ case QuickPage:title=t("Quick send","Быстрая отправка");drawQuickMono();break;
+ case NotifyPage:title=t("Notifications","Уведомления");say(0,28,t("LED / screen / popup","LED / экран / окно"),small);say(0,42,t("hold: menu","держ: меню"),small);break;
  case Home:{title=config.name;if(config.role!=RoleNormal){drawServerHome();break;}say(0,31,clockText(time(nullptr)),u8g2_font_10x20_t_cyrillic);
   if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(" MHz"," МГц"));sayRight(128,30,"SF"+String(config.sf)+" BW"+String(config.bandwidth,1));}else sayRight(128,24,t("Radio error ","Ошибка радио ")+String(meshRadio.radioError));
   unsigned near=0;for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
@@ -669,7 +716,22 @@ void draw(){
   say(0,48,t("up ","работа ")+ago(millis())+t("  boot ","  загр. ")+String(config.bootCounter),small);
  }
  header(title);
- if(menuOpen)drawMenu();else footer(hint());
+ if(menuOpen)drawMenu();else footer(page==PeoplePage?
+#if defined(MM_JOYSTICK)
+ t("OK: menu  < >","OK: меню  < >"):
+#else
+ t("click +1 hold-menu","клик +1 держ-меню"):
+#endif
+#if MM_DICE
+ page==DicePage&&dicer.s.mode!=dice::Tally?t("click-roll hold-menu","клик-бросок держ-меню"):
+#endif
+ page==QuickPage?
+#if defined(MM_JOYSTICK)
+ String("^v ")+t("choose","выбор")+" OK "+t("send","слать"):
+#else
+ t("click-next hold-send","клик-выбор держ-слать"):
+#endif
+ hint());
  if(action.length()&&millis()-actionAt<3500){c.fillRect(0,36,128,20,0);c.drawRect(0,36,128,20,1);say(3,50,clipped(action,20));}
  hardware.flush();
 }
@@ -678,6 +740,7 @@ void draw(){
 // Up/down inside a screen: older/newer message, previous/next node or signal.
 void scroll(int step){
  if(page==Messages){messageOffset=max(0,messageOffset-step);shownMessage();}
+ else if(page==PeoplePage)people::change(-step);
  else if(page==Nodes){unsigned n=meshRadio.peerCount;if(n)nodeIndex=(nodeIndex+n+step)%n;}
 #if MM_DICE
  else if(page==DicePage)diceScroll(step);
@@ -697,6 +760,7 @@ void joystickKey(int key){
  ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
 #endif
  }return;}
+ if(quickKey(key))return;
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(up||down){menuIndex=(menuIndex+(up?n-1:1))%n;return;}
   if(ok){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;return;}
@@ -714,8 +778,8 @@ void uiKey(int key){
  if(powerOffPending())return; // the screen says it is turning off
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness); // the first press only wakes the panel
-#if MM_DICE && !defined(MM_JOYSTICK)
-  if(!diceTapOn()) // ... but counts while counting with the button
+#if !defined(MM_JOYSTICK)
+  if(page!=DicePage&&page!=PeoplePage) // a dice/count press also acts after waking
 #endif
   return;}
 #if defined(MM_JOYSTICK)
@@ -723,14 +787,15 @@ void uiKey(int key){
  joystickKey(key);return;
 #endif
  if(radioEdit){radioButton(key==13||key==0x82,key==0xa3);return;}
- if(rolePick){if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
+ if(rolePick){if(key==0x86){rolePick=false;return;}if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
   if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;}return;}
  if(popupAt){popupAt=0;if(key==13)return;}
- if(chessPopupAt){chessPopupAt=0;if(key==0xa3&&config.role==RoleNormal){
+ if(chessPopupAt&&page!=DicePage){chessPopupAt=0;if(key==0xa3&&config.role==RoleNormal){
 #if MM_CHESS
  ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
 #endif
  }return;}
+ if(quickKey(key))return;
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(key==13||key==0x82){menuIndex=(menuIndex+1)%n;return;}
   if(key==0xa3){Act a=acts[menuIndex%n];run(a);if(!keepsMenu(a))menuOpen=false;}return;}
@@ -739,15 +804,17 @@ void uiKey(int key){
  if(page==Chess&&chessButton(key))return;
 #endif
 #if MM_DICE
- if(diceTapKey(key))return;
+ if(diceTapKey(key)||diceRollKey(key))return;
 #endif
 #endif
+ if(page==PeoplePage&&(key==13||key==0x82)){people::change(1);return;}
+ if(key==0x86){showPage(Home);return;}
  if(key==13||key==0x82){showPage(nextPage(page));return;}
  if(key==0xa3){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<640>d;d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_index"]=quickIndex;d["quick_targets"]=quickTargets;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
 #if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}
@@ -765,17 +832,30 @@ void uiFarewell(){farewell=true;screenOff=false;hardware.brightness(config.brigh
 void uiTick(){
  uint32_t now=millis();
  if(powerOffPending()){static bool shown=false;if(!shown){shown=true;screenOff=false;hardware.brightness(config.brightness);draw();}return;} // drawn once: the board turns off
- // New incoming message: popup, wake the panel and blink the LED three times.
- if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];if(m.source!=newest.source||m.session!=newest.session||m.id!=newest.id){newest={m.source,m.session,m.id};if(!m.outgoing){if(page!=Messages)unreadCount++;popupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
- if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=now;ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+ notifications::Event receivedEvent;
+ while(notifications::take(receivedEvent)){
+  const auto& e=receivedEvent;bool wake=false;
+  if(e.kind==notifications::Incoming){if(page!=Messages)unreadCount++;incomingPopup=e.message;
+   if(notifications::enabled(notifications::mode(e.message,config.notifyLed,0),e.mention)){ledAt=now;ledPattern=e.mention?2:1;}
+   wake=notifications::enabled(notifications::mode(e.message,config.notifyWake,1),e.mention);
+   bool counting=page==PeoplePage;
+#if MM_DICE
+   counting=counting||page==DicePage;
+#endif
+   if(!counting&&notifications::enabled(notifications::mode(e.message,config.notifyPopup,2),e.mention)){popupAt=now;menuOpen=false;}
+   hardware.beep();dirty=true;
+  }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t("Radio TX error","Ошибка передачи"):channels::isChannel(e.message.destination)?t("No repeat heard","Повтор не услышан"):t("Delivery not confirmed","Доставка не подтверждена"));}
+  if(wake){if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;}
+ }
+ if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=page==DicePage||page==PeoplePage?0:now;ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){
   // News of the game on the screen updates the board instead of covering it.
   
 #if MM_CHESS
   if(page==Chess&&chessOpen&&chessNet.eventMatch==chessOpen&&!menuOpen)chessNet.viewed(*chessOpen);else
 #endif
-  {chessPopupText=chessNet.event;chessPopupAt=now;}ledAt=now;menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
- if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/250)%2==0);if(e>=1500){ledAt=0;led(false);}}
+  {chessPopupText=chessNet.event;chessPopupAt=page==DicePage||page==PeoplePage?0:now;}ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+ if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/(ledPattern==2?125:ledPattern==3?100:250))%2==0);if(e>=1500){ledAt=0;led(false);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;
   if(fresh&&radar.focus.kind==RadarTarget::Lora){if(radar.samples!=pingedSamples){pingedSamples=radar.samples;pingAt=now;}}

@@ -12,7 +12,7 @@ def read(d,name):return json.loads(command(d,name))
 def load(name):return json.loads(Path('artifacts',name+'.json').read_text())
 def main():
  receipt=load('hardware-finish')
- required=['flash-m9','clock','persistence','map-ui','flash-heltec','radio','m9-ui','concurrency','heltec-ui','radar','csi','m9-wifi','m9-ble','heltec-wifi','heltec-ble']
+ required=['flash-m9','clock','persistence','map-ui','gps-serial','meshcore-stock','flash-heltec','radio','m9-ui','concurrency','heltec-ui','radar','csi','m9-wifi','m9-ble','heltec-wifi','heltec-ble']
  assert all(step in receipt['completed'] for step in required),'Run finish_on_hardware.py to install and verify the final packages'
  for board,folder in [('m9',f'meshmesh-m9-{VERSION}'),('heltec_v4',f'meshmesh-heltec-v4-{VERSION}')]:
   manifest=Path('artifacts',folder,'manifest.json')
@@ -54,8 +54,9 @@ def main():
     assert data['delivery']=='DELIVERED'
    reports[name]='PASS'
   maps=load('map-ui-check');assert maps['after'][0]['boot']==status[0]['boot'];reports['map-ui-check']='PASS'
+  gps=load('gps-serial-check');assert gps['result']=='passed' and gps['preference_restored'] and gps['after']['boot']==status[0]['boot'];reports['gps-serial-check']='PASS'
   persistence=load('persistence-0.3-check');assert persistence['boot']==status[0]['boot'];reports['persistence-0.3-check']='PASS'
-  interoperability=load('meshcore-stock-check');assert interoperability['result']=='passed' and interoperability['meshmesh_build_sha256']==status[0]['build_sha256'];reports['meshcore-stock-check']='PASS'
+  interoperability=load('meshcore-stock-check');assert interoperability['result']=='passed' and interoperability['meshmesh_build_sha256']==status[0]['build_sha256'] and interoperability['after']['boot']==status[0]['boot'];reports['meshcore-stock-check']='PASS'
   clock=load('clock-check');assert clock['boot']==status[0]['boot'];reports['clock-check']='PASS'
   clocks=[read(d,'clock') for d in devices]
   assert clocks[0]['trusted'] and clocks[0]['rtc_valid']

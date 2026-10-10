@@ -559,6 +559,51 @@
   "ru": " больше нет",
   "text": " ist fort"
  },
+ "045e058e": {
+  "en": "On my way",
+  "ru": "Иду",
+  "text": "Bin unterwegs"
+ },
+ "4e9e6845": {
+  "en": "Arrived",
+  "ru": "На месте",
+  "text": "Angekommen"
+ },
+ "82fbb60b": {
+  "en": "Need help",
+  "ru": "Нужна помощь",
+  "text": "Brauche Hilfe"
+ },
+ "ca70ac89": {
+  "en": "Wait for me",
+  "ru": "Подождите меня",
+  "text": "Wartet auf mich"
+ },
+ "329b4519": {
+  "en": "All clear",
+  "ru": "Всё в порядке",
+  "text": "Alles in Ordnung"
+ },
+ "6ec2b53a": {
+  "en": "Running late",
+  "ru": "Опаздываю",
+  "text": "Komme später"
+ },
+ "3193d86a": {
+  "en": "Battery low",
+  "ru": "Батарея садится",
+  "text": "Akku schwach"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "An"
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Aus"
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -888,6 +933,16 @@
   "en": "Dice",
   "ru": "Кости",
   "text": "Würfel"
+ },
+ "de059adf": {
+  "en": "People counter",
+  "ru": "Счётчик людей",
+  "text": "Personenzähler"
+ },
+ "cfde1dc9": {
+  "en": "Quick send",
+  "ru": "Быстрая отправка",
+  "text": "Schnell senden"
  },
  "c1c1a690": {
   "en": "Server and route",
@@ -2109,6 +2164,16 @@
   "ru": "Экран блокировки",
   "text": "Sperrbildschirm"
  },
+ "0b3dc82d": {
+  "en": "Wake on message",
+  "ru": "Будить сообщением",
+  "text": "Bei Nachricht aufwecken"
+ },
+ "dde482b5": {
+  "en": "Message popup",
+  "ru": "Окно сообщения",
+  "text": "Nachrichtenfenster"
+ },
  "f53b39c9": {
   "en": " MHz",
   "ru": " МГц",
@@ -2158,6 +2223,16 @@
   "en": "Hidden",
   "ru": "Скрыто",
   "text": "Verborgen"
+ },
+ "5d9d441e": {
+  "en": "All",
+  "ru": "Все",
+  "text": "Alle"
+ },
+ "850b89a5": {
+  "en": "Mentions",
+  "ru": "Упоминания",
+  "text": "Erwähnungen"
  },
  "e1f39c44": {
   "en": "1 kHz steps; must match every node",
@@ -2268,6 +2343,61 @@
   "en": "Stored in device memory",
   "ru": "Сохраняется в памяти устройства",
   "text": "Im Gerätespeicher gesichert"
+ },
+ "be55afe3": {
+  "en": "Manual: ",
+  "ru": "Вручную: ",
+  "text": "Manuell: "
+ },
+ "8467b4ea": {
+  "en": "s window",
+  "ru": "с окно",
+  "text": "s Zeitfenster"
+ },
+ "6205b8b3": {
+  "en": "Devices nearby are an estimate",
+  "ru": "Устройства рядом - приблизительная оценка",
+  "text": "Geräte in der Nähe sind eine Schätzung"
+ },
+ "78c4e048": {
+  "en": "More options in the app",
+  "ru": "Остальные настройки в приложении",
+  "text": "Weitere Optionen in der App"
+ },
+ "e9009af6": {
+  "en": "+1",
+  "ru": "+1",
+  "text": "+1"
+ },
+ "a33a15e0": {
+  "en": "+1 / -1",
+  "ru": "+1 / -1",
+  "text": "+1 / -1"
+ },
+ "997f20d4": {
+  "en": "exit",
+  "ru": "выход",
+  "text": "beenden"
+ },
+ "8aba8c5e": {
+  "en": "Choose recipient",
+  "ru": "Выберите получателя",
+  "text": "Empfänger wählen"
+ },
+ "c7bed36b": {
+  "en": "choose",
+  "ru": "выбор",
+  "text": "wählen"
+ },
+ "f26a580c": {
+  "en": "select",
+  "ru": "выбрать",
+  "text": "auswählen"
+ },
+ "2c480101": {
+  "en": "send",
+  "ru": "слать",
+  "text": "senden"
  },
  "bf27012a": {
   "en": "Save changes",
@@ -3114,15 +3244,15 @@
   "ru": "Ошибка передачи по радио",
   "text": "Funk-Sendefehler"
  },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "An"
+ "ddebda8a": {
+  "en": "No repeat heard",
+  "ru": "Повтор не услышан",
+  "text": "Keine Wiederholung gehört"
  },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "Aus"
+ "ad42f13e": {
+  "en": "No delivery ACK",
+  "ru": "Нет подтверждения доставки",
+  "text": "Kein Zustell-ACK"
  },
  "13c4173d": {
   "en": "None",
@@ -4674,6 +4804,11 @@
   "ru": "A: добавить",
   "text": "A: hinzufügen"
  },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "Würfel "
+ },
  "61af3343": {
   "en": "No counters",
   "ru": "Счётчиков нет",
@@ -4689,15 +4824,20 @@
   "ru": "Бросков ещё нет",
   "text": "Noch keine Würfe"
  },
- "609941b9": {
-  "en": "Roll is first in the menu",
-  "ru": "Бросок первый в меню",
-  "text": "Würfeln steht oben im Menü"
+ "79045ac6": {
+  "en": "Click to roll",
+  "ru": "Клик - бросить",
+  "text": "Klick zum Würfeln"
  },
  "fc25f0c0": {
   "en": "Counting done",
   "ru": "Счёт завершён",
   "text": "Zählen beendet"
+ },
+ "c594495d": {
+  "en": "Exit dice",
+  "ru": "Выйти из костей",
+  "text": "Würfel verlassen"
  },
  "c9d0bbdd": {
   "en": "Roll ",
@@ -4754,11 +4894,6 @@
   "ru": "Порог: ",
   "text": "Schwelle: "
  },
- "bb24022c": {
-  "en": "off",
-  "ru": "выкл.",
-  "text": "aus"
- },
  "c1eb04c4": {
   "en": "Add 5 dice",
   "ru": "Ещё 5 костей",
@@ -4784,10 +4919,15 @@
   "ru": "Выберите: Кости +1",
   "text": "Wählen: Würfel +1"
  },
- "07a7234e": {
-  "en": "Dice ",
-  "ru": "Кости ",
-  "text": "Würfel "
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "Trace: warten"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "Trace: keine Antwort"
  },
  "60a11f70": {
   "en": "SNR ",
@@ -4983,6 +5123,66 @@
   "en": "Not joined",
   "ru": "Не удалось вступить",
   "text": "Nicht beigetreten"
+ },
+ "24a94503": {
+  "en": "Reset manual count",
+  "ru": "Сбросить ручной счёт",
+  "text": "Manuellen Zähler zurücksetzen"
+ },
+ "b1475adf": {
+  "en": "Window: ",
+  "ru": "Окно: ",
+  "text": "Zeitfenster: "
+ },
+ "dd581e9a": {
+  "en": "Phones/watches only: ",
+  "ru": "Только телефоны/часы: ",
+  "text": "Nur Telefone/Uhren: "
+ },
+ "729f3467": {
+  "en": "Clear device window",
+  "ru": "Сбросить окно устройств",
+  "text": "Gerätefenster leeren"
+ },
+ "4fb7bcd4": {
+  "en": "Exit",
+  "ru": "Выход",
+  "text": "Beenden"
+ },
+ "6f228773": {
+  "en": "Notifications",
+  "ru": "Уведомления",
+  "text": "Benachrichtigungen"
+ },
+ "4fb02329": {
+  "en": "Wake: ",
+  "ru": "Экран: ",
+  "text": "Aufwecken: "
+ },
+ "f1c2685f": {
+  "en": "Popup: ",
+  "ru": "Окно: ",
+  "text": "Fenster: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "aus"
+ },
+ "c30a161e": {
+  "en": "all",
+  "ru": "все",
+  "text": "alle"
+ },
+ "d89a56da": {
+  "en": "TX alert: ",
+  "ru": "Ошибка TX: ",
+  "text": "TX-Warnung: "
+ },
+ "1f4a8e16": {
+  "en": "on",
+  "ru": "вкл.",
+  "text": "läuft"
  },
  "93d18358": {
   "en": "Write message...",
@@ -5389,6 +5589,11 @@
   "ru": "держ: меню",
   "text": "halten: Menü"
  },
+ "2f6171e3": {
+  "en": "No recipients",
+  "ru": "Нет получателей",
+  "text": "Keine Empfänger"
+ },
  "a66a5c3b": {
   "en": "up/down, OK, back",
   "ru": "выбор, OK, назад",
@@ -5483,6 +5688,11 @@
   "en": "  no fwd",
   "ru": "  без перес.",
   "text": "  keine Weit."
+ },
+ "328a09d5": {
+  "en": "LED / screen / popup",
+  "ru": "LED / экран / окно",
+  "text": "LED / Bildschirm / Fenster"
  },
  "3132d9df": {
   "en": "  near ",
@@ -5749,6 +5959,31 @@
   "ru": "  загр. ",
   "text": "  Start "
  },
+ "d4fa9ef2": {
+  "en": "click +1 hold-menu",
+  "ru": "клик +1 держ-меню",
+  "text": "Klick +1 halten-Menü"
+ },
+ "a8a8a9c7": {
+  "en": "click-roll hold-menu",
+  "ru": "клик-бросок держ-меню",
+  "text": "Klick-Wurf halten-Menü"
+ },
+ "c48efc8e": {
+  "en": "click-next hold-send",
+  "ru": "клик-выбор держ-слать",
+  "text": "Klick-Wahl halten-Senden"
+ },
+ "dde5c0b7": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи",
+  "text": "Funk-Sendefehler"
+ },
+ "93a5052f": {
+  "en": "Delivery not confirmed",
+  "ru": "Доставка не подтверждена",
+  "text": "Zustellung unbestätigt"
+ },
  "7854f1f9": {
   "en": "s",
   "ru": "с",
@@ -5819,16 +6054,6 @@
   "ru": "вход: нет ответа",
   "text": "Login: keine Antwort"
  },
- "ea571ac8": {
-  "en": "trace: waiting",
-  "ru": "трасса: ждём",
-  "text": "Trace: warten"
- },
- "21df9772": {
-  "en": "trace: no answer",
-  "ru": "трасса: нет ответа",
-  "text": "Trace: keine Antwort"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5853,6 +6078,21 @@
   "en": "5 s: exit",
   "ru": "5 с: выход",
   "text": "5 s: Ende"
+ },
+ "04a16d8e": {
+  "en": "click: roll",
+  "ru": "клик: бросок",
+  "text": "Klick: würfeln"
+ },
+ "29d4d54c": {
+  "en": "click: choose",
+  "ru": "клик: выбор",
+  "text": "Klick: wählen"
+ },
+ "be7691a6": {
+  "en": "hold: send",
+  "ru": "держ: слать",
+  "text": "halten: senden"
  },
  "ccdb9efa": {
   "en": "No pet",

@@ -1,11 +1,12 @@
 #pragma once
 #include <Arduino.h>
+#include "Board.h"
 // Wi-Fi client with internet access (M9): saved networks, NTP time, web map tiles
 // and approximate location by IP. It yields the Wi-Fi radio to the access point,
 // the radar and the USB Wi-Fi probe, and reconnects when they release it.
 // Network I/O and PNG decoding run on a worker task; SD stays on the loop task
 // because SD, display and LoRa share one SPI bus.
-#if defined(MM_COMPACT)
+#if defined(MM_NO_WIFI)
 class Internet {
  public:
   bool online() const {return false;}
@@ -18,7 +19,8 @@ class Internet {
   enum State {Off,NoNetwork,Scanning,Connecting,Online,Paused};
   static const unsigned MaxSaved=5,MaxSeen=16;
   struct Seen {char ssid[33];int8_t rssi;bool open,saved;};
-  State state=Off;bool enabled=false,dirty=false,timeSynced=false;
+  State state=Off;bool enabled=false,ntpEnabled=false,dirty=false,timeSynced=false;
+  void setPeriodic(bool on);bool periodicActive() const {return temporary;}
   String ssid,error;
   Seen seen[MaxSeen];unsigned seenCount=0;uint32_t scannedAt=0;
   uint32_t tiles=0,tileErrors=0,bytes=0;
@@ -41,6 +43,7 @@ class Internet {
   String tileUrl();bool setTileUrl(const String& value);
   bool backingOff();
  private:
+  bool temporary=false;uint32_t temporaryAt=0,ntpDue=0;uint8_t ntpFailures=0;
   bool owned=false,scanning=false;uint32_t stateAt=0,retryAt=0,lostAt=0,backoffUntil=0;
   unsigned candidate=0;char candidates[MaxSaved][33]={};unsigned candidateCount=0;String preferred;
   void startScan();void finishScan();void nextCandidate();void stop(bool radioOff);

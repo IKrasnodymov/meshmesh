@@ -1,6 +1,7 @@
 #if defined(MM_NRF52)
 #pragma GCC optimize("Os") // 1 MB flash: the USB and web commands and their JSON are not speed-critical (the rest of the nRF52 image is -O2)
 #endif
+#include "HistoryJson.h"
 #include "Version.h"
 #include <Utils.h>
 #include <esp_ota_ops.h>
@@ -21,6 +22,10 @@
 #include "Dice.h"
 #include "Power.h"
 #include "Regions.h"
+#include "Notifications.h"
+#include "ChannelPolicy.h"
+#include "QuickSend.h"
+#include "People.h"
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
 #include <nvs.h>
@@ -38,7 +43,7 @@ String statusJson() {
 #endif
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;
-  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["channels"]=meshRadio.channelCount;d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();d["cpu_mhz"]=powerMhz();d["sleeps"]=powerSleeps();d["sleep_ms"]=powerSleptMs();d["slow_ms"]=powerSlowMs();
+  char buildHash[65];mesh::Utils::toHex(buildHash,esp_ota_get_app_description()->app_elf_sha256,32);d["build_sha256"]=buildHash;d["protocol"]="MeshCore";d["public_key"]=meshRadio.publicKeyText();d["channel"]="Public";d["channels"]=meshRadio.channelCount;d["public_message_limit"]=meshRadio.messageLimit();d["unix_time"]=int64_t(time(nullptr));d["clock_source"]=hardware.clockSource;d["clock_age_seconds"]=hardware.clockAge()/1000;d["clock_conflict"]=hardware.clockConflict;d["uptime"]=millis()/1000;d["boot"]=config.bootCounter;d["reset_reason"]=int(esp_reset_reason());d["heap"]=ESP.getFreeHeap();d["psram"]=ESP.getFreePsram();d["cpu_mhz"]=powerMhz();d["sleeps"]=powerSleeps();d["sleep_ms"]=powerSleptMs();d["slow_ms"]=powerSlowMs();
   d["history_count"]=meshRadio.historyCount;d["idle_waits"]=powerIdleWaits();d["idle_wait_ms"]=powerIdleMs();d["idle_radio_events"]=powerRadioEvents();
   {int way=powerOnWay();d["power_on"]=way>=0?"button":way==-2?"power_key":"reset";
 #if defined(MM_BOARD_TDECK)
@@ -58,6 +63,12 @@ String statusJson() {
 #if !defined(MM_NRF52)
   {nvs_stats_t nvs;if(nvs_get_stats(nullptr,&nvs)==ESP_OK){d["nvs_used"]=nvs.used_entries;d["nvs_free"]=nvs.free_entries;}} // 32-byte entries; the contacts no longer live there
 #endif
+  d["quick_send"]=true;d["people_counter"]=true;d["notification_dropped"]=notifications::dropped();
+#if defined(MM_COMPACT)
+  d["notification_led"]=pins::led>=0;
+#else
+  d["notification_led"]=false;
+#endif
   d["event"]=meshRadio.event;d["wifi"]=portalActive();
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
@@ -70,8 +81,7 @@ String messagesJson() {
   // Do not reserve a 32 KB JSON pool in addition to the serialized history on small nRF52 heaps.
   // Measure first so allocation failure is an explicit error, never a misleading empty array.
   StaticJsonDocument<1024> d;
-  auto record=[&](unsigned i){d.clear();const auto& m=meshRadio.history[i];JsonObject j=d.to<JsonObject>();j["protocol"]=m.protocol;j["source"]=meshRadio.idText(m.source);j["destination"]=meshRadio.idText(m.destination);j["session"]=m.session;j["id"]=m.id;j["name"]=m.name;j["text"]=m.text;j["time"]=m.timestamp;j["outgoing"]=m.outgoing;j["status"]=int(m.status);
-   if(m.route){j["route"]=m.route==ChatMessage::RouteDirect?"direct":"flood";if(m.hops!=255)j["hops"]=m.hops;if(m.tries)j["tries"]=m.tries;}MeshRadio::pathJson(j,m);};
+  auto record=[&](unsigned i){historyJsonRecord(d,meshRadio.history[i]);};
   size_t bytes=2;
   for(unsigned i=0;i<meshRadio.historyCount;i++){record(i);if(d.overflowed())return "ERR history JSON capacity";bytes+=measureJson(d)+(i?1:0);}
   String s;if(!s.reserve(bytes))return "ERR history response memory";s+='[';
@@ -83,7 +93,7 @@ String channelsJson(bool secrets){
   DynamicJsonDocument d(6144);d["max"]=channels::Max;JsonArray a=d.createNestedArray("channels");
   for(unsigned i=0;i<meshRadio.channelCount;i++){const auto& c=meshRadio.channelList[i];JsonObject j=a.createNestedObject();bool open=!i||channels::isHashtag(c);
    j["id"]=meshRadio.idText(c.id);j["name"]=c.name;j["kind"]=!i?"public":open?"hashtag":"private";char hash[3];snprintf(hash,3,"%02X",channels::hashOf(c.secret));j["hash"]=hash;
-   if(secrets||open)j["link"]=channels::link(c);j["region"]=c.region;}
+   if(secrets||open)j["link"]=channels::link(c);j["region"]=c.region;JsonObject policy=j.createNestedObject("policy");policy["led"]=c.policy.led;policy["wake"]=c.policy.wake;policy["popup"]=c.policy.popup;policy["priority"]=c.policy.priority;policy["device_limit"]=c.policy.deviceLimit;policy["app_limit"]=c.policy.appLimit;}
   a=d.createNestedArray("heard");
   for(unsigned i=0;i<meshRadio.heardCount;i++){const auto& h=meshRadio.heard[i];JsonObject j=a.createNestedObject();char hash[3];snprintf(hash,3,"%02X",h.hash);j["hash"]=hash;j["packets"]=h.packets;j["age"]=(millis()-h.at)/1000;if(h.name[0])j["name"]=h.name;}
   d["samples"]=meshRadio.heardSamples;d["region"]=config.region;
@@ -113,6 +123,7 @@ String channelCommand(JsonObjectConst v){
     default:return "ERR storage: channel not saved";
     }
   }
+  if(action=="policy"){uint64_t c;if(!id(v["channel"],c))return "ERR channel ID";return channelPolicy::set(c,v);}
   if(action=="remove"){uint64_t c;if(!id(v["channel"],c))return "ERR channel ID";if(c==meshmesh::Broadcast)return "ERR public: Public stays";if(!meshRadio.channel(c))return "ERR unknown channel";if(meshRadio.sending(c))return "ERR busy: a message to this channel is being sent";return meshRadio.removeChannel(c)?"OK channel removed":"ERR storage: channel list not saved";}
   if(action=="invite"){uint64_t c,to;if(!id(v["channel"],c)||!meshRadio.channel(c))return "ERR unknown channel";if(!id(v["to"],to)||channels::isChannel(to))return "ERR node ID";
     if(channels::link(*meshRadio.channel(c),true).length()>meshRadio.messageLimit(to))return "ERR long: the channel name is too long for an invitation";
@@ -122,17 +133,18 @@ String channelCommand(JsonObjectConst v){
   if(action=="region"){uint64_t c;if(!id(v["channel"],c)||!meshRadio.channel(c))return "ERR unknown channel";
     return meshRadio.setChannelRegion(c,v["region"]|"")?"OK channel region saved":"ERR region: letters, digits and '-', up to 30 bytes; \"\" default, \"*\" none";}
   if(action=="regions"){if(config.role!=RoleNormal)return "ERR mode: the region search needs the normal mode";return regions::find()?"OK region search started":"ERR radio: the region search needs a working radio";}
-  return "ERR channel action add|remove|invite|probe|region|regions";
+  return "ERR channel action add|remove|invite|probe|policy|region|regions";
 }
 String configJson(bool includeKey) {
-  StaticJsonDocument<1024> d;d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
+  DynamicJsonDocument d(2048);d["name"]=config.name;d["frequency"]=config.frequency;d["bandwidth"]=config.bandwidth;d["sf"]=config.sf;d["cr"]=config.cr;d["power"]=config.power;
   d["hops"]=config.hops;d["path_hash"]=config.pathHash;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;d["lock_details"]=config.lockDetails;
+  d["notify_led"]=config.notifyLed;d["notify_wake"]=config.notifyWake;d["notify_popup"]=config.notifyPopup;d["notify_failed"]=config.notifyFailed;d["notify_words"]=config.notifyWords;
   d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);d["region"]=config.region;
   String s;serializeJson(d,s);return s;
 }
 String applySettings(JsonObjectConst v) {
-  if(meshRadio.busy())return "ERR radio busy; retry";
+
   Config next=config;
   for(JsonPairConst kv:v) {
     String name=kv.key().c_str();JsonVariantConst value=kv.value();
@@ -149,6 +161,11 @@ String applySettings(JsonObjectConst v) {
       if(name=="hops") {if(n<0||n>7)return "ERR hops 0..7";next.hops=n;}
       if(name=="path_hash") {if(n<1||n>3)return "ERR path_hash 1..3 bytes";next.pathHash=n;}
       if(name=="brightness") {if(n<10||n>255)return "ERR brightness 10..255";next.brightness=n;}
+    } else if(name=="notify_led"||name=="notify_wake"||name=="notify_popup") {
+      if(!value.is<int>()||value.as<int>()<0||value.as<int>()>2)return "ERR notification mode 0 off, 1 all, 2 mentions";
+      if(name=="notify_led")next.notifyLed=value.as<int>();if(name=="notify_wake")next.notifyWake=value.as<int>();if(name=="notify_popup")next.notifyPopup=value.as<int>();
+    } else if(name=="notify_words") {
+      if(!value.is<const char*>()||value.as<String>().length()>96)return "ERR notify_words: up to 96 UTF-8 bytes";strlcpy(next.notifyWords,value.as<const char*>(),sizeof next.notifyWords);
     } else if(name=="utc_offset") {
       if(!value.is<int>())return "ERR integer UTC offset required";int n=value.as<int>();if(n<-720||n>840||n%15)return "ERR UTC offset minutes: -720..840, step 15";next.utcOffset=n;
     } else if(name=="auto_lock"||name=="dim_after") {
@@ -166,16 +183,19 @@ String applySettings(JsonObjectConst v) {
     } else if(name=="lang") {
       int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
       if(l<0||!langAvailable(l)){String all;for(int i=0;i<LangCount;i++)if(langAvailable(i))all+=String(all.length()?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;
-    } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian"||name=="battery_volts"||name=="lock_details") {
+    } else if(name=="relay"||name=="gps"||name=="sound"||name=="russian"||name=="battery_volts"||name=="lock_details"||name=="notify_failed") {
       if(!value.is<bool>())return "ERR boolean required";bool n=value.as<bool>();
-      if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="battery_volts")next.batteryVolts=n;if(name=="lock_details")next.lockDetails=n;
+      if(name=="notify_failed")next.notifyFailed=n;if(name=="relay")next.relay=n;if(name=="gps")next.gps=n;if(name=="sound")next.sound=n;if(name=="battery_volts")next.batteryVolts=n;if(name=="lock_details")next.lockDetails=n;
       if(name=="russian"&&!v.containsKey("lang")&&(n||next.lang==LangRu))next.lang=n?LangRu:LangEn; // pages from before "lang": false leaves other languages alone
     } else return "ERR unknown setting: "+name;
   }
   if(!next.valid())return "ERR invalid settings; M9 868 MHz range is 863..870";
   Config old=config;config=next;
-  if(!meshRadio.applyConfig()) {config=old;meshRadio.applyConfig();return "ERR radio rejected settings; restored previous";}
-  config.save();meshServer.configChanged();if(strcmp(old.name,config.name))bleRename();hardware.brightness(config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
+  bool radioChanged=old.frequency!=config.frequency||old.bandwidth!=config.bandwidth||old.sf!=config.sf||old.cr!=config.cr||old.power!=config.power||old.hops!=config.hops||old.pathHash!=config.pathHash||old.relay!=config.relay||memcmp(old.key,config.key,sizeof old.key)||memcmp(old.regionKey,config.regionKey,sizeof old.regionKey);
+  if(radioChanged&&meshRadio.busy()){config=old;return "ERR radio busy; retry";}
+  if(radioChanged&&!meshRadio.applyConfig()) {config=old;meshRadio.applyConfig();return "ERR radio rejected settings; restored previous";}
+  if(!config.save()){config=old;if(radioChanged)meshRadio.applyConfig();return "ERR settings storage; restored previous";}
+  meshServer.configChanged();if(strcmp(old.name,config.name))bleRename();if(old.brightness!=config.brightness)hardware.brightness(uiScreenOff()?0:config.brightness);if(old.gps!=config.gps)hardware.setGps(config.gps);
   meshRadio.event="Settings saved";meshRadio.dirty=true;return "OK settings saved";
 }
 namespace {uint32_t restartAt=0;}
@@ -188,7 +208,7 @@ void restartTick(){if(restartAt&&int32_t(millis()-restartAt)>=0)ESP.restart();}
 String executeCommand(const String& input) {
   String line=input;line.trim();
   if(line.startsWith("map "))return maps.command(line);
-#if !defined(MM_COMPACT)
+#if !defined(MM_NO_WIFI)
   if(line=="internet"||line.startsWith("internet "))return internet.command(line);
 #endif
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
@@ -203,7 +223,7 @@ String executeCommand(const String& input) {
   if(line=="calibrate start"){if(!hardware.compassOk)return "ERR compass unavailable";navigation.start();return "OK rotate device in all directions for at least 20 seconds";}
   if(line=="calibrate finish")return navigation.finish()?"OK compass calibration saved":"ERR calibration needs 20 samples and wider rotation";
   if(line=="clock")return hardware.clockInfo();
-  if(line.startsWith("clock ")){StaticJsonDocument<128>d;if(deserializeJson(d,line.substring(6))||!d["unix"].is<uint32_t>())return "ERR clock JSON unix seconds";return hardware.setUtc(d["unix"],"manual",true)?"OK UTC clock synchronized":"ERR clock range 2025..2038";}
+  if(line.startsWith("clock ")){StaticJsonDocument<128>d;if(deserializeJson(d,line.substring(6))||!d["unix"].is<uint32_t>())return "ERR clock JSON unix seconds";return hardware.setUtc(d["unix"],d["source"]=="phone"?"phone":"manual",true)?"OK UTC clock synchronized":"ERR clock range 2025..2038";}
   if(line=="status")return statusJson();
   if(line=="role")return String("{\"role\":\"")+roleName(config.role)+"\",\"roles\":[\"normal\",\"repeater\",\"room\"]}";
   if(line.startsWith("role ")){String r=line.substring(5);return setRole(r=="normal"?RoleNormal:r=="repeater"?RoleRepeater:r=="room"?RoleRoom:RoleCount);}
@@ -214,6 +234,10 @@ String executeCommand(const String& input) {
   if(line.startsWith("server post ")){if(!meshServer.room())return "ERR room server role is not running";return meshServer.post(line.substring(12))?"OK post stored":"ERR post: 1-151 UTF-8 bytes";}
   if(line=="config")return configJson();
   if(line=="key")return configJson(true); // explicitly requested; never put in ordinary diagnostics
+  if(line=="people")return people::json();
+  if(line.startsWith("people do ")){StaticJsonDocument<256>d;if(deserializeJson(d,line.substring(10))||!d.is<JsonObject>())return "ERR people JSON";return people::command(d.as<JsonObjectConst>());}
+  if(line=="quick")return quickSend::json();
+  if(line.startsWith("quick do ")){StaticJsonDocument<512>d;if(deserializeJson(d,line.substring(9))||!d.is<JsonObject>())return "ERR quick do {JSON}";return quickSend::command(d.as<JsonObjectConst>());}
   if(line=="messages")return messagesJson();
   if(line=="nodes")return nodesJson();
   if(line=="channels")return channelsJson(true); // USB and a paired BLE client: the private links too
@@ -252,7 +276,7 @@ String executeCommand(const String& input) {
   }
   if(line.startsWith("resetpath ")||line.startsWith("forget ")) { // node card actions, as on the M9 screen
     bool reset=line.startsWith("resetpath ");String hex=line.substring(reset?10:7);char* end=nullptr;uint64_t id=strtoull(hex.c_str(),&end,16);
-    if(!id||!end||*end||hex.length()>16)return "ERR node ID";if(meshRadio.busy())return "ERR radio busy; retry";
+    if(!id||!end||*end||hex.length()>16)return "ERR node ID";
     if(reset)return meshRadio.resetPath(id)?"OK path reset; next message floods":"ERR path reset failed";
     return meshRadio.removeContact(id)?"OK contact removed; its next advert adds it again":"ERR contact not removed";
   }
@@ -265,8 +289,8 @@ String executeCommand(const String& input) {
     return meshRadio.sendMessage(line.substring(at+1),id)?"OK message queued":"ERR message rejected";
   }
   if(line.startsWith("set ")) {
-    StaticJsonDocument<1024> d;if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
+    DynamicJsonDocument d(2048);if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, quick, quick do {JSON}, people, people do {JSON}, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

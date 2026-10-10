@@ -559,6 +559,51 @@
   "ru": " больше нет",
   "text": " odszedł"
  },
+ "045e058e": {
+  "en": "On my way",
+  "ru": "Иду",
+  "text": "Jestem w drodze"
+ },
+ "4e9e6845": {
+  "en": "Arrived",
+  "ru": "На месте",
+  "text": "Na miejscu"
+ },
+ "82fbb60b": {
+  "en": "Need help",
+  "ru": "Нужна помощь",
+  "text": "Potrzebuję pomocy"
+ },
+ "ca70ac89": {
+  "en": "Wait for me",
+  "ru": "Подождите меня",
+  "text": "Poczekajcie na mnie"
+ },
+ "329b4519": {
+  "en": "All clear",
+  "ru": "Всё в порядке",
+  "text": "Wszystko w porządku"
+ },
+ "6ec2b53a": {
+  "en": "Running late",
+  "ru": "Опаздываю",
+  "text": "Spóźnię się"
+ },
+ "3193d86a": {
+  "en": "Battery low",
+  "ru": "Батарея садится",
+  "text": "Słaba bateria"
+ },
+ "84949ebc": {
+  "en": "On",
+  "ru": "Вкл",
+  "text": "Wł."
+ },
+ "f97b258a": {
+  "en": "Off",
+  "ru": "Выкл",
+  "text": "Wył."
+ },
  "30b1f47d": {
   "en": "Channel",
   "ru": "Канал",
@@ -889,6 +934,16 @@
   "en": "Dice",
   "ru": "Кости",
   "text": "Kości"
+ },
+ "de059adf": {
+  "en": "People counter",
+  "ru": "Счётчик людей",
+  "text": "Licznik osób"
+ },
+ "cfde1dc9": {
+  "en": "Quick send",
+  "ru": "Быстрая отправка",
+  "text": "Szybkie wysyłanie"
  },
  "c1c1a690": {
   "en": "Server and route",
@@ -2121,6 +2176,16 @@
   "ru": "Экран блокировки",
   "text": "Ekran blokady"
  },
+ "0b3dc82d": {
+  "en": "Wake on message",
+  "ru": "Будить сообщением",
+  "text": "Wybudź wiadomością"
+ },
+ "dde482b5": {
+  "en": "Message popup",
+  "ru": "Окно сообщения",
+  "text": "Okno wiadomości"
+ },
  "f53b39c9": {
   "en": " MHz",
   "ru": " МГц",
@@ -2171,6 +2236,16 @@
   "en": "Hidden",
   "ru": "Скрыто",
   "text": "Ukryte"
+ },
+ "5d9d441e": {
+  "en": "All",
+  "ru": "Все",
+  "text": "Wszystkie"
+ },
+ "850b89a5": {
+  "en": "Mentions",
+  "ru": "Упоминания",
+  "text": "Wzmianki"
  },
  "e1f39c44": {
   "en": "1 kHz steps; must match every node",
@@ -2281,6 +2356,61 @@
   "en": "Stored in device memory",
   "ru": "Сохраняется в памяти устройства",
   "text": "Zapisywane w pamięci urządzenia"
+ },
+ "be55afe3": {
+  "en": "Manual: ",
+  "ru": "Вручную: ",
+  "text": "Ręcznie: "
+ },
+ "8467b4ea": {
+  "en": "s window",
+  "ru": "с окно",
+  "text": "s okna"
+ },
+ "6205b8b3": {
+  "en": "Devices nearby are an estimate",
+  "ru": "Устройства рядом - приблизительная оценка",
+  "text": "Urządzenia w pobliżu to szacunek"
+ },
+ "78c4e048": {
+  "en": "More options in the app",
+  "ru": "Остальные настройки в приложении",
+  "text": "Więcej opcji w aplikacji"
+ },
+ "e9009af6": {
+  "en": "+1",
+  "ru": "+1",
+  "text": "+1"
+ },
+ "a33a15e0": {
+  "en": "+1 / -1",
+  "ru": "+1 / -1",
+  "text": "+1 / -1"
+ },
+ "997f20d4": {
+  "en": "exit",
+  "ru": "выход",
+  "text": "wyjdź"
+ },
+ "8aba8c5e": {
+  "en": "Choose recipient",
+  "ru": "Выберите получателя",
+  "text": "Wybierz odbiorcę"
+ },
+ "c7bed36b": {
+  "en": "choose",
+  "ru": "выбор",
+  "text": "wybór"
+ },
+ "f26a580c": {
+  "en": "select",
+  "ru": "выбрать",
+  "text": "wybierz"
+ },
+ "2c480101": {
+  "en": "send",
+  "ru": "слать",
+  "text": "wyślij"
  },
  "bf27012a": {
   "en": "Save changes",
@@ -3128,15 +3258,15 @@
   "ru": "Ошибка передачи по радио",
   "text": "Błąd nadawania radia"
  },
- "84949ebc": {
-  "en": "On",
-  "ru": "Вкл",
-  "text": "Wł."
+ "ddebda8a": {
+  "en": "No repeat heard",
+  "ru": "Повтор не услышан",
+  "text": "Nie usłyszano powtórzenia"
  },
- "f97b258a": {
-  "en": "Off",
-  "ru": "Выкл",
-  "text": "Wył."
+ "ad42f13e": {
+  "en": "No delivery ACK",
+  "ru": "Нет подтверждения доставки",
+  "text": "Odbiorca nie potwierdził"
  },
  "13c4173d": {
   "en": "None",
@@ -4694,6 +4824,11 @@
   "ru": "A: добавить",
   "text": "A: dodaj"
  },
+ "07a7234e": {
+  "en": "Dice ",
+  "ru": "Кости ",
+  "text": "Kości "
+ },
  "61af3343": {
   "en": "No counters",
   "ru": "Счётчиков нет",
@@ -4709,15 +4844,20 @@
   "ru": "Бросков ещё нет",
   "text": "Brak rzutów"
  },
- "609941b9": {
-  "en": "Roll is first in the menu",
-  "ru": "Бросок первый в меню",
-  "text": "Rzut jest pierwszy w menu"
+ "79045ac6": {
+  "en": "Click to roll",
+  "ru": "Клик - бросить",
+  "text": "Kliknij, by rzucić"
  },
  "fc25f0c0": {
   "en": "Counting done",
   "ru": "Счёт завершён",
   "text": "Koniec liczenia"
+ },
+ "c594495d": {
+  "en": "Exit dice",
+  "ru": "Выйти из костей",
+  "text": "Wyjdź z kości"
  },
  "c9d0bbdd": {
   "en": "Roll ",
@@ -4774,11 +4914,6 @@
   "ru": "Порог: ",
   "text": "Próg: "
  },
- "bb24022c": {
-  "en": "off",
-  "ru": "выкл.",
-  "text": "wył."
- },
  "c1eb04c4": {
   "en": "Add 5 dice",
   "ru": "Ещё 5 костей",
@@ -4804,10 +4939,15 @@
   "ru": "Выберите: Кости +1",
   "text": "Wybierz: Kości +1"
  },
- "07a7234e": {
-  "en": "Dice ",
-  "ru": "Кости ",
-  "text": "Kości "
+ "ea571ac8": {
+  "en": "trace: waiting",
+  "ru": "трасса: ждём",
+  "text": "trasa: czekamy"
+ },
+ "21df9772": {
+  "en": "trace: no answer",
+  "ru": "трасса: нет ответа",
+  "text": "trasa: brak odpowiedzi"
  },
  "60a11f70": {
   "en": "SNR ",
@@ -5004,6 +5144,66 @@
   "en": "Not joined",
   "ru": "Не удалось вступить",
   "text": "Nie dołączono"
+ },
+ "24a94503": {
+  "en": "Reset manual count",
+  "ru": "Сбросить ручной счёт",
+  "text": "Wyzeruj licznik ręczny"
+ },
+ "b1475adf": {
+  "en": "Window: ",
+  "ru": "Окно: ",
+  "text": "Okno: "
+ },
+ "dd581e9a": {
+  "en": "Phones/watches only: ",
+  "ru": "Только телефоны/часы: ",
+  "text": "Tylko telefony/zegarki: "
+ },
+ "729f3467": {
+  "en": "Clear device window",
+  "ru": "Сбросить окно устройств",
+  "text": "Wyczyść okno urządzeń"
+ },
+ "4fb7bcd4": {
+  "en": "Exit",
+  "ru": "Выход",
+  "text": "Wyjdź"
+ },
+ "6f228773": {
+  "en": "Notifications",
+  "ru": "Уведомления",
+  "text": "Powiadomienia"
+ },
+ "4fb02329": {
+  "en": "Wake: ",
+  "ru": "Экран: ",
+  "text": "Wybudź: "
+ },
+ "f1c2685f": {
+  "en": "Popup: ",
+  "ru": "Окно: ",
+  "text": "Okno: "
+ },
+ "bb24022c": {
+  "en": "off",
+  "ru": "выкл.",
+  "text": "wył."
+ },
+ "c30a161e": {
+  "en": "all",
+  "ru": "все",
+  "text": "wszystkie"
+ },
+ "d89a56da": {
+  "en": "TX alert: ",
+  "ru": "Ошибка TX: ",
+  "text": "Alert TX: "
+ },
+ "1f4a8e16": {
+  "en": "on",
+  "ru": "вкл.",
+  "text": "trwa"
  },
  "93d18358": {
   "en": "Write message...",
@@ -5410,6 +5610,11 @@
   "ru": "держ: меню",
   "text": "trzym: menu"
  },
+ "2f6171e3": {
+  "en": "No recipients",
+  "ru": "Нет получателей",
+  "text": "Brak odbiorców"
+ },
  "a66a5c3b": {
   "en": "up/down, OK, back",
   "ru": "выбор, OK, назад",
@@ -5504,6 +5709,11 @@
   "en": "  no fwd",
   "ru": "  без перес.",
   "text": "  bez przek."
+ },
+ "328a09d5": {
+  "en": "LED / screen / popup",
+  "ru": "LED / экран / окно",
+  "text": "LED / ekran / okno"
  },
  "3132d9df": {
   "en": "  near ",
@@ -5770,6 +5980,31 @@
   "ru": "  загр. ",
   "text": "  start "
  },
+ "d4fa9ef2": {
+  "en": "click +1 hold-menu",
+  "ru": "клик +1 держ-меню",
+  "text": "klik +1 trzymaj-menu"
+ },
+ "a8a8a9c7": {
+  "en": "click-roll hold-menu",
+  "ru": "клик-бросок держ-меню",
+  "text": "klik-rzut trzymaj-menu"
+ },
+ "c48efc8e": {
+  "en": "click-next hold-send",
+  "ru": "клик-выбор держ-слать",
+  "text": "klik-wybór trzymaj-wyślij"
+ },
+ "dde5c0b7": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи",
+  "text": "Błąd nadawania radia"
+ },
+ "93a5052f": {
+  "en": "Delivery not confirmed",
+  "ru": "Доставка не подтверждена",
+  "text": "Dostawa niepotwierdzona"
+ },
  "7854f1f9": {
   "en": "s",
   "ru": "с",
@@ -5840,16 +6075,6 @@
   "ru": "вход: нет ответа",
   "text": "login: brak odpowiedzi"
  },
- "ea571ac8": {
-  "en": "trace: waiting",
-  "ru": "трасса: ждём",
-  "text": "trasa: czekamy"
- },
- "21df9772": {
-  "en": "trace: no answer",
-  "ru": "трасса: нет ответа",
-  "text": "trasa: brak odpowiedzi"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -5874,6 +6099,21 @@
   "en": "5 s: exit",
   "ru": "5 с: выход",
   "text": "5 s: wyjdź"
+ },
+ "04a16d8e": {
+  "en": "click: roll",
+  "ru": "клик: бросок",
+  "text": "klik: rzut"
+ },
+ "29d4d54c": {
+  "en": "click: choose",
+  "ru": "клик: выбор",
+  "text": "klik: wybór"
+ },
+ "be7691a6": {
+  "en": "hold: send",
+  "ru": "держ: слать",
+  "text": "trzymaj: wyślij"
  },
  "ccdb9efa": {
   "en": "No pet",

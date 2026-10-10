@@ -12,6 +12,7 @@ bool Config::valid() const {
     (bandwidth==62.5f || bandwidth==125.0f || bandwidth==250.0f || bandwidth==500.0f) &&
     sf>=7 && sf<=12 && cr>=5 && cr<=8 && power>=0 && power<=MM_MAX_POWER && hops<=7 && pathHash>=1 && pathHash<=3 && brightness>=10 &&
     (autoLock==0 || (autoLock>=30&&autoLock<=600)) && (dimAfter==0||(dimAfter>=10&&dimAfter<=600)) && utcOffset>=-720&&utcOffset<=840&&utcOffset%15==0 &&
+    notifyLed<=2 && notifyWake<=2 && notifyPopup<=2 && strnlen(notifyWords,sizeof notifyWords)<sizeof notifyWords && meshmesh::validUtf8((const uint8_t*)notifyWords,strlen(notifyWords)) &&
     strnlen(name,sizeof(name))>0 && strnlen(name,sizeof(name))<sizeof(name) && strnlen(region,sizeof(region))<sizeof(region) &&
     meshmesh::validUtf8((const uint8_t*)region,strlen(region)) &&
     meshmesh::validUtf8((const uint8_t*)name,strlen(name));
@@ -32,6 +33,10 @@ void Config::load() {
   hops=p.getUChar("hops",3); pathHash=p.getUChar("path_hash",1); relay=p.getBool("relay",true); gps=p.getBool("gps",MM_GPS_DEFAULT);
   sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);lockDetails=p.getBool("lock_txt",true);
+  notifyLed=p.getUChar("n_led",notifyLed);if(notifyLed>2)notifyLed=1;
+  notifyWake=p.getUChar("n_wake",notifyWake);if(notifyWake>2)notifyWake=0;
+  notifyPopup=p.getUChar("n_popup",notifyPopup);if(notifyPopup>2)notifyPopup=1;
+  notifyFailed=p.getBool("n_failed",false);p.getString("n_words",notifyWords,sizeof notifyWords);if(!meshmesh::validUtf8((const uint8_t*)notifyWords,strlen(notifyWords)))notifyWords[0]=0;
   utcOffset=p.getShort("utc_offset",180);
   strlcpy(apps,p.getString("apps","").c_str(),sizeof apps);
   strlcpy(region,p.getString("region","").c_str(),sizeof region);
@@ -54,13 +59,22 @@ void Config::load() {
   p.end();
   if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=1;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
 }
-void Config::save() {
-  Preferences p; if(!p.begin("meshmesh",false)) return;
+bool Config::save() {
+  Preferences p; if(!p.begin("meshmesh",false)) return false;
+#if defined(MM_NRF52)
+  if(!p.beginBatch())return false;
+#endif
+  p.putUChar("n_led",notifyLed);p.putUChar("n_wake",notifyWake);p.putUChar("n_popup",notifyPopup);p.putBool("n_failed",notifyFailed);p.putString("n_words",notifyWords);
   p.putString("name",name); p.putFloat("freq",frequency); p.putFloat("bw",bandwidth);
   p.putUChar("sf",sf); p.putUChar("cr",cr); p.putChar("power",power); p.putUChar("hops",hops); p.putUChar("path_hash",pathHash);
   p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putUChar("lang",lang);p.putBool("russian",lang==LangRu);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putString("apps",apps);p.putBytes("key",key,32);
-  if(region[0]){p.putString("region",region);p.putBytes("region_key",regionKey,16);}else{p.remove("region");p.remove("region_key");}p.end();
+  if(region[0]){p.putString("region",region);p.putBytes("region_key",regionKey,16);}else{p.remove("region");p.remove("region_key");}
+  bool saved=true;
+#if defined(MM_NRF52)
+  saved=p.commitBatch();
+#endif
+  p.end();return saved;
 }
 bool Config::saveRole(uint8_t next){if(next>=RoleCount)return false;Preferences p;if(!p.begin("meshmesh",false))return false;bool saved=p.putUChar("role",next)==1;p.end();return saved;} // config.role keeps the running role
 void Config::saveBle(bool on){if(bleOn==on)return;bleOn=on;Preferences p;if(p.begin("meshmesh",false)){p.putBool("ble_on",on);p.end();}}

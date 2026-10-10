@@ -2,6 +2,11 @@
 // (or src/UiHeltec.cpp) against in-memory state and writes PPM frames, so
 // layout can be reviewed without a device. It is not a hardware check.
 #include "App.h"
+#include "HistoryReply.h"
+#include "Notifications.h"
+#include "QuickSend.h"
+#include "People.h"
+#include "BlobStore.h"
 #include "Hardware.h"
 #include "Palette.h"
 #include "MeshRadio.h"
@@ -19,7 +24,7 @@ size_t Print::print(const String& s){return write((const uint8_t*)s.c_str(),s.le
 static uint32_t fakeMillis=100000;
 uint32_t millis(){return fakeMillis;}
 Config config;Hardware hardware;MeshRadio meshRadio;Maps maps;Navigation navigation;
-void Config::load(){}void Config::save(){}bool Config::valid() const{return true;}
+void Config::load(){}bool Config::save(){return true;}bool Config::valid() const{return true;}
 String Config::keyHex() const{return String("00");}bool Config::setKey(const String&){return false;}
 static bool wifiOn=false,bleOn=false;
 bool portalActive(){return wifiOn;}String portalPassword(){return "preview-pass";}void portalToggle(){wifiOn=!wifiOn;}
@@ -34,7 +39,6 @@ String bleName(){return String("MeshCore-")+config.name+" 5EA1";}void bleRename(
 String configJson(bool){return "{}";}
 String applySettings(JsonObjectConst){return "OK settings saved";}
 // Hardware
-bool Hardware::gpsFix(){return gps.location.isValid();}
 void Hardware::brightness(uint8_t){}void Hardware::beep(){}void Hardware::setGps(bool){}
 void Hardware::flush(){}
 void Hardware::text(int x,int y,const String& v,uint16_t color){font.setForegroundColor(color);font.setCursor(x,y);font.print(v);}
@@ -47,7 +51,7 @@ void Hardware::line(int y,const String& v,uint16_t color){text(
 ,y,v,color);}
 // Radio
 static uint32_t nextId=900;
-bool MeshRadio::sendMessage(const String& text,uint64_t destination){ChatMessage m;m.source=nodeId;m.destination=destination;m.outgoing=true;m.status=ChatMessage::Queued;m.timestamp=time(nullptr);m.id=++nextId;strncpy(m.name,"M9",24);strncpy(m.text,text.c_str(),160);addMessage(m,false);event="Queued: waiting for delivery";return true;}
+bool MeshRadio::sendMessage(const String& text,uint64_t destination){ChatMessage m;m.source=nodeId;m.destination=destination;m.outgoing=true;m.status=ChatMessage::Queued;m.timestamp=time(nullptr);m.id=++nextId;strncpy(m.name,"M9",24);strncpy(m.text,text.c_str(),160);addMessage(m,true);event="Queued: waiting for delivery";return true;}
 bool MeshRadio::sendHello(){txCount++;return true;}
 bool MeshRadio::sendPosition(){return hardware.gpsFix();}
 bool MeshRadio::selfTest(){return true;}
@@ -55,7 +59,9 @@ bool MeshRadio::busy() const{return false;}
 String MeshRadio::idText(uint64_t id) const{if(id==meshmesh::Broadcast)return "ALL";char b[17];snprintf(b,sizeof b,"%012llX",(unsigned long long)id);return b;}
 String MeshRadio::publicKeyText() const{return "5a1f0c9e77d24b0e8a41c3f2d9b6e0717a3c55e2b1d04f86c9e2a7b3d1f06e44";}
 unsigned MeshRadio::messageLimit(uint64_t d) const{return d==meshmesh::Broadcast?151-4:151;}
-void MeshRadio::addMessage(const ChatMessage& m,bool){if(historyCount==64){memmove(history,history+1,sizeof(ChatMessage)*63);historyCount=63;}history[historyCount++]=m;dirty=true;}
+void MeshRadio::tick(){compactHistoryTick();}
+void MeshRadio::pathJson(JsonObject,const ChatMessage&){}
+void MeshRadio::pathRead(JsonObjectConst,ChatMessage&){}
 Peer* MeshRadio::contact(uint64_t id){for(unsigned i=0;i<peerCount;i++)if(peers[i].id==id)return &peers[i];return nullptr;}
 #include "preview_hooks.inc"
 // Maps: a synthetic street grid instead of SD tiles.
@@ -101,6 +107,7 @@ static void shot(const char* name){tick();std::string n=name;
  save(outDir+"/"+n+".ppm");printf("%s\n",n.c_str());}
 static uint64_t peerId(int i){return (uint64_t(0x1F+i*0x2B)<<56)|0xB2C3D4E5F600ULL|uint64_t(i*0x1111);} // 8-byte IDs as MeshCore keys give
 static void scenario();
+#include "wishlist_checks.inc"
 int main(int argc,char** argv){
  outDir=argc>1?argv[1]:".";
  config.lang=argc>2?max(0,langFromCode(argv[2])):LangRu; // a language code, Russian by default
@@ -146,6 +153,8 @@ int main(int argc,char** argv){
   add(peerId(5),meshRadio.nodeId,"Марат",channels::link(invite).c_str(),false,ChatMessage::Received,200);}
  maps.available=true;maps.tileCount=1240;maps.title="Казань";maps.zoom=15;maps.center(55.7963,49.1088);
  navigation.headingValid=true;navigation.heading=37;navigation.calibrated=true;
- uiBegin();scenario();return 0;
+ quickSend::begin();people::begin();wishlistChecks();uiBegin();scenario();return 0;
 }
 #include "scenario.inc"
+
+namespace people {void wifiTick(){}void releaseWifi(){}bool wifiRunning(){return false;}const char* wifiState(){return "off";}}

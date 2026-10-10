@@ -106,3 +106,5 @@ terceiro repetidor. Não implementado: voz, planejamento de rotas, atualizaçõe
 [MIT](LICENSE). O MeshCore incluído (`lib/MeshCore`) mantém sua própria licença MIT. Dados de mapa ©
 colaboradores do [OpenStreetMap](https://www.openstreetmap.org/copyright). A ideia do radar segue
 o rastreador RSSI e os HUDs de radar de [Stevee87](https://github.com/Stevee87).
+
+[Notificações, envio rápido, histórico de canais, NTP periódico e contador de pessoas](docs/en/notifications.md).

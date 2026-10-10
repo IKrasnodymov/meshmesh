@@ -24,7 +24,7 @@ def command(s,text,timeout=8):
     deadline=time.monotonic()+timeout
     pending=bytearray()
     last_line=''
-    json_response=text in ('status','config','key','messages','nodes','ui','navigation','connections','clock','bleprobe','wifiprobe','map info','map areas','radar','radar web','internet','chess','chess web','chess rating','chess archive','tour','role','server','server secrets','channels','regions','pet','dice','remote') or text.startswith(('chess show ','chess pgn ','chess archive ')) or (text.startswith('channel do ') and '"probe"' in text)
+    json_response=text in ('status','config','key','messages','nodes','ui','navigation','connections','clock','bleprobe','wifiprobe','map info','map areas','radar','radar web','internet','chess','chess web','chess rating','chess archive','tour','role','server','server secrets','channels','regions','pet','dice','remote','quick','people') or text.startswith(('chess show ','chess pgn ','chess archive ')) or (text.startswith('channel do ') and '"probe"' in text)
     ping_at=time.monotonic()+.4
     while time.monotonic()<deadline:
         pending.extend(s.read(max(1,min(4096,s.in_waiting))))

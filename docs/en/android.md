@@ -199,3 +199,7 @@ channel commands (the page's JSON on one line, the `probe` answer, older firmwar
 - The QR scanner and `meshcore://` links were checked in the emulator (camera prompt, refusal, the
   scanner opening, a link before and after the page loads); reading a real QR code with a phone
   camera has not been checked.
+
+## Firmware 0.19.0 / Android 0.12.0 settings
+
+[Notifications, quick replies, channel priority and retention, periodic time and counting](notifications.md).

@@ -106,3 +106,5 @@ Henüz doğrulanmadı: LoRa menzili, açık havada GPS doğruluğu, pusula doğr
 [MIT](LICENSE). Pakete dahil MeshCore (`lib/MeshCore`) kendi MIT lisansını korur. Harita verileri ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıcıları. Radar fikri,
 [Stevee87](https://github.com/Stevee87) tarafından geliştirilen RSSI izleyici ve radar HUD'larından esinlenmiştir.
+
+[Bildirimler, hızlı gönderim, kanal geçmişi, düzenli NTP ve kişi sayacı](docs/en/notifications.md).

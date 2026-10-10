@@ -23,8 +23,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import org.meshmesh.app.api.ArchiveApi
 import org.meshmesh.app.api.ApiReply
 import org.meshmesh.app.api.CommandApi
 import org.meshmesh.app.api.DeviceApi
@@ -155,12 +157,15 @@ class MeshService : Service() {
             val stage: (String) -> Unit = { publish("connecting", kind, it) }
             var opened: DeviceApi? = null
             try {
-                val (api, transport) = open(stage)
-                opened = api
+                val (rawApi, transport) = open(stage)
+                opened = rawApi
                 stage("Чтение состояния…")
-                val status = api.request("GET", "/api/status", null)
+                val status = rawApi.request("GET", "/api/status", null)
                 if (status.status != 200) throw IOException(status.body.ifBlank { "Устройство не ответило на status" })
                 val s = JSONObject(status.body)
+                val key = s.optString("public_key")
+                val api = if (key.matches(Regex("[a-fA-F0-9]{64}"))) withContext(Dispatchers.IO) { ArchiveApi(rawApi, File(filesDir, "messages"), key) } else rawApi
+                opened = api
                 val board = s.optString("board_name").ifBlank { if (s.optString("board") == "heltec_v4") "Heltec V4" else "ThinkNode M9" }
                 val node = s.optString("node").takeLast(6)
                 val label = "$board · ${s.optString("name").ifBlank { node }}"
@@ -324,7 +329,7 @@ class MeshService : Service() {
     // rereads the history and the chess games (else chess every 32 s); incoming messages after the last
     // one seen, chess news (ChessNews) and new nodes become notifications as the page's settings say (Alerts).
     private var lastRx = -1
-    private var lastSeen: String? = null
+    private var lastSeen: Set<String>? = null
     private var chessGames: JSONArray? = null
     private var knownNodes: Set<String>? = null
     private var channelNames = HashMap<String, String>()
@@ -361,10 +366,9 @@ class MeshService : Service() {
         // Without the time: the board fills it in later for messages received before its clock was set.
         val key = { m: JSONObject -> "${m.optLong("session")}|${m.optString("source")}|${m.optLong("id")}|${m.optString("text").hashCode()}" }
         val previous = lastSeen
-        lastSeen = incoming.lastOrNull()?.let(key) ?: previous
-        if (first || incoming.isEmpty() || lastSeen == previous) return !first
-        val start = incoming.indexOfLast { key(it) == previous } + 1
-        val fresh = incoming.subList(start.coerceAtLeast(0), incoming.size).takeLast(5)
+        lastSeen = incoming.map(key).toSet()
+        if (first || previous == null) return !first
+        val fresh = incoming.filter { key(it) !in previous }.takeLast(5)
         val alerts = Alerts(Prefs(this).alerts)
         val me = status.optString("name")
         for (m in fresh) {

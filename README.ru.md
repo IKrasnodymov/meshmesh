@@ -694,3 +694,5 @@ USB-события клавиш, сохраняет настройки и про
 `nodes`, `ui`, `clock`, `clock {"unix":SECONDS}`, `navigation`, `calibrate start`, `calibrate finish`.
 `tools/wifi_probe.py` проверяет настоящий Wi-Fi Heltec → M9, пароль,
 веб-API, запись тайла и точное чтение его обратно.
+
+[Уведомления, быстрая отправка, история каналов, периодический NTP и счётчик](docs/notifications.md).

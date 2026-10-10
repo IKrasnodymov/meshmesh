@@ -86,7 +86,7 @@ def main():
     os.chdir(ROOT)
     os.umask(0o077)
     (ROOT / 'logs').mkdir(exist_ok=True)
-    flash_m9 = ['tools/flash.py']
+    flash_m9 = ['tools/flash.py', '--chunk-size', '131072']
     flash_heltec = ['tools/flash.py', '--port', HELTEC, '--backup',
                    'backups/heltec-v4-original-20260929.bin', '--package', str(PACKAGES['heltec_v4'])]
     for step in [flash_m9, flash_heltec]:
@@ -101,16 +101,27 @@ def main():
             json.loads(command(device, 'status'))
     if args.resume:
         receipt=json.loads(RECEIPT.read_text())
-        if receipt['status']!='failed' or receipt['package_manifest_sha256']!=package_identity() or 'radio' not in receipt['completed']:
-            raise RuntimeError('Cannot resume without unchanged packages and a passed radio stage')
-        reference=json.loads((ROOT/'artifacts/radio-check.json').read_text())['after']
+        if receipt['status']!='failed' or receipt['package_manifest_sha256']!=package_identity():
+            raise RuntimeError('Cannot resume without unchanged packages')
+        before_final_v4=(receipt.get('active_step')=='meshcore-stock' and 'map-ui' in receipt['completed'] and 'flash-heltec' not in receipt['completed'])
+        if before_final_v4:
+            reference=json.loads((ROOT/'artifacts/map-ui-check.json').read_text())['after']
+        elif 'radio' in receipt['completed'] and 'meshcore-stock' in receipt['completed']:
+            reference=json.loads((ROOT/'artifacts/radio-check.json').read_text())['after']
+        else:
+            raise RuntimeError('Cannot resume without verified device boots for the completed stages')
         for board,port,previous in zip(['m9','heltec_v4'],[M9,HELTEC],reference):
             with connect(port) as device:state=json.loads(command(device,'status'))
             manifest=json.loads((PACKAGES[board]/'manifest.json').read_text())
-            if state['node']!=previous['node'] or state['boot']!=previous['boot'] or state['build_sha256']!=manifest['app_elf_sha256']:
+            boot_matches=state['boot']==previous['boot'] or (before_final_v4 and board=='heltec_v4')
+            # Before final V4 installation its restored snapshot may be the
+            # earlier image recorded by the map stage, rather than the new package.
+            expected_build=previous['build_sha256'] if before_final_v4 and board=='heltec_v4' else manifest['app_elf_sha256']
+            if state['node']!=previous['node'] or not boot_matches or state['build_sha256']!=expected_build:
                 raise RuntimeError('Device or firmware changed; full installation suite required')
         receipt['status']='running';receipt.pop('error_type',None)
         receipt.setdefault('notes',[]).append(
+            'Resumed on verified unchanged M9 firmware and boot before final V4 installation.' if before_final_v4 else
             'Resumed on unchanged firmware and boots; completed stages retain their recorded evidence.')
     else:
         archive = ROOT / 'artifacts/evidence-before-finish' / time.strftime('%Y%m%d-%H%M%S')
@@ -151,6 +162,10 @@ def main():
         run('clock', 'tools/clock_check.py')
         run('persistence', 'tools/persistence_check.py')
         run('map-ui', 'tools/map_ui_check.py')
+        run('gps-serial', 'tools/gps_serial_check.py')
+        # release_check requires independent protocol evidence for this exact M9 image.
+        # Restore V4's entire flash before its final MeshMesh installation and boot.
+        run('meshcore-stock', 'tools/stock_roundtrip.py')
         # User requested the Heltec update after completing M9.
         run('flash-heltec', *flash_heltec)
         ready(HELTEC, 'heltec_v4')

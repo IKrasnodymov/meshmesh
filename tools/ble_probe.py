@@ -9,7 +9,7 @@ from device import connect, command
 from ports import M9_PORT, HELTEC_PORT
 
 def read(device, name):
-    return json.loads(command(device, name))
+    return json.loads(command(device, name, timeout=25 if name == 'messages' else 8))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

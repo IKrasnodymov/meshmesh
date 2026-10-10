@@ -19,17 +19,33 @@
 #include "Board.h"
 #include "Power.h"
 #include "Companion.h"
+#include "QuickSend.h"
+#include "Notifications.h"
+#include "People.h"
 #include <Wire.h>
 #include <esp_system.h>
+#include <memory>
+#include <new>
+#include <utility>
 #if defined(MM_NATIVE_USB)
 #include <hal/usb_serial_jtag_ll.h>
 #endif
 #if defined(MM_NRF52)
 #include <LittleFS.h>
+#include "HistoryReply.h"
 bool mountStorage();
 #endif
 namespace {
 uint8_t* usbBytes=nullptr;
+std::unique_ptr<String> usbText;
+#if defined(MM_NRF52)
+std::unique_ptr<HistoryReply> usbHistory;
+#endif
+bool usbBusy(){return usbBytes||usbText
+#if defined(MM_NRF52)
+ ||usbHistory
+#endif
+;}
 size_t usbSize=0,usbOffset=0;
 unsigned usbBaud=115200,pendingBaud=0;uint32_t baudExpires=0;
 // MeshCore companion apps over USB: '<', a 16-bit length and the frame in; '>', the length and the frame out.
@@ -39,10 +55,11 @@ void usbFrame(const uint8_t* frame,size_t length) {
   usbSize=length+3;usbOffset=0;usbBytes=(uint8_t*)malloc(usbSize);if(!usbBytes){usbSize=0;return;}
   usbBytes[0]='>';usbBytes[1]=length&255;usbBytes[2]=length>>8;memcpy(usbBytes+3,frame,length);
 }
-void usbLine(const String& value) {
-  usbSize=value.length()+1;usbOffset=0;usbBytes=(uint8_t*)malloc(usbSize);
-  if(!usbBytes) {usbSize=0;Serial.println("ERR USB output allocation");return;}
-  memcpy(usbBytes,value.c_str(),value.length());usbBytes[usbSize-1]='\n';
+void usbLine(String value) {
+  // Own the command's existing string instead of allocating a second full JSON reply.
+  usbText.reset(new(std::nothrow) String(std::move(value)));usbOffset=0;
+  if(!usbText){usbSize=0;Serial.println("ERR USB output allocation");return;}
+  usbSize=usbText->length()+1; // newline is sent separately, without growing the buffer
 }
 #if defined(MM_HIRES)
 // Screenshot of the TFT: usbBytes holds the header and the palette indices (32 KB; RGB565 would
@@ -76,9 +93,21 @@ void usbTick() {
   // check briefly reports disconnection. Kick the FIFO without clearing it.
   if(HWCDC::isPlugged()&&Serial.availableForWrite()<2048){usb_serial_jtag_ll_txfifo_flush();usb_serial_jtag_ll_ena_intr_mask(USB_SERIAL_JTAG_INTR_SERIAL_IN_EMPTY);}
 #endif
-  if(!usbBytes)return;
+  if(!usbBusy())return;
   int available=Serial.availableForWrite();if(available<=0)return;
-  size_t count=min(size_t(available),min(size_t(256),usbSize-usbOffset));
+  size_t count=usbSize>=usbOffset?min(size_t(available),min(size_t(256),usbSize-usbOffset)):0;
+#if defined(MM_NRF52)
+  if(usbHistory){
+    size_t length=0;const uint8_t* bytes=usbHistory->peek(length);
+    if(length)usbHistory->advance(Serial.write(bytes,min(size_t(available),min(length,size_t(256)))));
+    if(usbHistory->finished()){bool okay=usbHistory->okay();usbHistory.reset();if(!okay)usbLine("\nERR history stream memory");}return;
+  }
+#endif
+  if(usbText){
+    if(usbOffset<usbText->length())usbOffset+=Serial.write((const uint8_t*)usbText->c_str()+usbOffset,min(count,size_t(usbText->length()-usbOffset)));
+    else usbOffset+=Serial.write(uint8_t('\n'));
+    if(usbOffset==usbSize){usbText.reset();usbSize=usbOffset=0;}return;
+  }
 #if defined(MM_HIRES)
   if(usbHead) {
     uint8_t chunk[256];
@@ -127,10 +156,10 @@ void appSetup() {
   Serial.printf("\n" MESHMM_FIRMWARE " / " MM_BOARD_NAME " / reset=%d\n",esp_reset_reason());
   BOOT("config");config.load();BOOT("clock");hardware.beginClock();BOOT("hardware");hardware.begin();
   BOOT("chess");chessNet.begin();tour::net.begin();BOOT("radio");meshRadio.begin();BOOT("pet");creature.begin();BOOT("dice");dicer.begin();BOOT("maps");maps.begin();
-#if !defined(MM_COMPACT)
-  if(config.role==RoleNormal)internet.begin(); // a server keeps Wi-Fi for the device page only
+#if !defined(MM_NO_WIFI)
+  internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
-  BOOT("navigation");navigation.begin();BOOT("portal");portalBegin();BOOT("ui");uiBegin();
+  quickSend::begin();people::begin();BOOT("navigation");navigation.begin();BOOT("portal");portalBegin();BOOT("ui");uiBegin();
   // Bluetooth left on comes back after a restart (power, RESET, auto-reset of a USB-UART bridge), unless the restart was a crash.
 #if !defined(MM_EMULATOR) // QEMU has no radio
   {esp_reset_reason_t r=esp_reset_reason();if(config.bleOn&&r!=ESP_RST_PANIC&&r!=ESP_RST_INT_WDT&&r!=ESP_RST_TASK_WDT&&r!=ESP_RST_WDT){BOOT("ble");bleToggle();}}
@@ -141,18 +170,18 @@ void appSetup() {
 }
 void appLoop() {
   hardware.tick();meshRadio.tick();if(config.role==RoleNormal){chessNet.tick();tour::net.tick();ledger::exchange.tick();} // games wait for the normal mode
-#if !defined(MM_COMPACT)
+#if !defined(MM_NO_WIFI)
   internet.tick();
 #endif
-  maps.tick();navigation.tick();radar.tick();creature.tick();dicer.tick();
+  maps.tick();navigation.tick();radar.tick();people::tick();notifications::tick();creature.tick();dicer.tick();
   int key=hardware.readKey();if(key){powerWake();uiKey(key);}
 #if defined(MM_BOARD_TDECK)
   {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch){powerWake();uiTouch(touch,x,y);}}
 #endif
   static String command;
   unsigned budget=256;
-  if(!usbBytes&&Serial.available())powerWake();
-  while(!usbBytes && Serial.available() && budget--) {
+  if(!usbBusy()&&Serial.available())powerWake();
+  while(!usbBusy() && Serial.available() && budget--) {
     char c=Serial.read();baudExpires=millis()+10000;
     if(appState>=0) {
       uint8_t b=c;
@@ -203,22 +232,25 @@ void appLoop() {
       // "uitouch t|h X Y" or "uitouch u|d|l|r": the T-Deck touch gestures, for checks without a finger.
       else if(command.startsWith("uitouch ")&&command.length()>8&&strchr("thudlr",command[8])) {int x=0,y=0;sscanf(command.c_str()+9,"%d %d",&x,&y);uiTouch(command[8],x,y);usbLine("OK UI touch");}
 #endif
+#if defined(MM_NRF52)
+      else if(command=="messages"){usbHistory.reset(new(std::nothrow) HistoryReply);if(!usbHistory||!usbHistory->begin()){usbHistory.reset();usbLine("ERR history snapshot memory");}}
+#endif
       else usbLine(executeCommand(command));command="";
     }
     else if(c!='\r' && command.length()<1024)command+=c;
     else if(command.length()>=1024) {command="";usbLine("ERR command too long");}
   }
   portalTick();uiTick();usbTick();
-  if(!usbBytes){uint8_t frame[companion::MaxFrame];size_t length=companion::next(frame,companion::LinkUsb);if(length)usbFrame(frame,length);}
+  if(!usbBusy()){uint8_t frame[companion::MaxFrame];size_t length=companion::next(frame,companion::LinkUsb);if(length)usbFrame(frame,length);}
   restartTick();powerOffTick();
-  if(radar.csiStream&&!usbBytes){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
+  if(radar.csiStream&&!usbBusy()){String line;for(int i=0;i<8&&Serial.availableForWrite()>=240&&radar.streamLine(line);i++)Serial.println(line);}
 #if !defined(MM_NATIVE_USB) && !defined(MM_NRF52)
-  if(!usbBytes&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
+  if(!usbBusy()&&(pendingBaud||(usbBaud!=115200&&int32_t(millis()-baudExpires)>=0))){Serial.flush();usbBaud=pendingBaud?pendingBaud:115200;pendingBaud=0;Serial.updateBaudRate(usbBaud);baudExpires=millis()+10000;}
 #endif
 #if defined(MM_NATIVE_USB) || defined(MM_NRF52)
-  powerTick(!usbBytes);
+  powerTick(!usbBusy());
 #else
-  powerTick(!usbBytes&&!pendingBaud&&usbBaud==115200);
+  powerTick(!usbBusy()&&!pendingBaud&&usbBaud==115200);
 #endif
 }
 #if defined(MM_NRF52)

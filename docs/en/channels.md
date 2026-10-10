@@ -78,3 +78,7 @@ is joined again. Public cannot be removed.
 - Channels have no delivery acknowledgements (as in MeshCore); the sender's name is part of the text and is not verified.
 - Channels are not added in the repeater and room server modes.
 - What has been checked on devices: [verification.md](verification.md).
+
+## Firmware 0.19.0 / Android 0.12.0 settings
+
+[Notifications, quick replies, channel priority and retention, periodic time and counting](notifications.md).

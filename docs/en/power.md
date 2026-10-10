@@ -58,3 +58,7 @@ RadioLib's `tone()`, which only AFSK uses. The current while off has not been me
 work. RXPS (duty-cycled LoRa reception) and scheduled GPS power cycling are not implemented.
 LoRa reception remains continuous. MeshMesh current and battery-life gains are unmeasured;
 other firmware's measurements do not establish our results. Community boards need owner testing.
+
+## Firmware 0.19.0 / Android 0.12.0 settings
+
+[Notifications, quick replies, channel priority and retention, periodic time and counting](notifications.md).

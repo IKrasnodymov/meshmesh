@@ -104,3 +104,5 @@ Android 应用：`cd android && ./gradlew testDebugUnitTest assembleRelease`（[
 [MIT](LICENSE)。内置的 MeshCore（`lib/MeshCore`）保留其自身的 MIT 许可证。地图数据 ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献者。雷达的设计思路借鉴了
 [Stevee87](https://github.com/Stevee87) 的 RSSI 追踪器和雷达 HUD。
+
+[通知、快速发送、频道历史、定期 NTP 和人数计数器](docs/en/notifications.md).

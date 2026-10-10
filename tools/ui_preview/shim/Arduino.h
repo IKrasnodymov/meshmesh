@@ -67,7 +67,7 @@ class String {
   void replace(const String& a,const String& b){if(a.s.empty())return;size_t at=0;while((at=s.find(a.s,at))!=std::string::npos){s.replace(at,a.s.size(),b.s);at+=b.s.size();}}
   void toLowerCase(){for(auto& c:s)if(c>='A'&&c<='Z')c+=32;}
   void trim(){size_t a=s.find_first_not_of(" \t\r\n");size_t b=s.find_last_not_of(" \t\r\n");s=a==std::string::npos?"":s.substr(a,b-a+1);}
-  void reserve(unsigned n){s.reserve(n);}
+  bool reserve(unsigned n){s.reserve(n);return true;}
   long toInt() const{return atol(s.c_str());}
   float toFloat() const{return atof(s.c_str());}
   bool concat(const char* v){s+=v;return true;}

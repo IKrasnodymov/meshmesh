@@ -12,6 +12,7 @@ from pathlib import Path
 from contextlib import ExitStack
 from device import connect,command,screenshot
 from ports import M9_PORT,HELTEC_PORT
+from ui_navigation import compact_open,compact_home
 
 def read(d,c):return json.loads(command(d,c))
 def key(d,c):assert command(d,f'uikey {c}').startswith('OK')
@@ -72,10 +73,7 @@ def main():
   assert not read(m9,'radar')['active'] and read(m9,'status')['wifi']
   switch(m9,'wifi',m9_wifi)
   # Heltec: open the radar page, then make the M9 a directly heard LoRa node.
-  for _ in range(12):
-   if read(heltec,'ui')['page']=='radar':break
-   key(heltec,13)
-  assert read(heltec,'ui')['page']=='radar'
+  compact_open(heltec,'radar','radar')
   assert command(m9,'hello').startswith('OK')
   mine=lambda t:t['kind']=='lora' and t.get('node')==m9_node
   heard=wait('Heltec radar did not list the M9 over LoRa',30,lambda:(r:=read(heltec,'radar'))['active'] and any(mine(t) for t in r['strongest']) and r)
@@ -98,10 +96,8 @@ def main():
   screenshot(heltec,'artifacts/heltec-homing.ppm')
   key(heltec,0xa3);assert read(heltec,'ui')['menu'];key(heltec,0xa3) # menu item 1: stop homing
   assert not read(heltec,'radar')['tracking']
-  for _ in range(12):
-   if read(heltec,'ui')['page']=='home':break
-   key(heltec,13)
-  assert read(heltec,'ui')['page']=='home' and not read(heltec,'radar')['active']
+  compact_home(heltec)
+  assert not read(heltec,'radar')['active']
   switch(heltec,'wifi',heltec_wifi);switch(heltec,'ble',heltec_ble)
   after=[read(d,'status') for d in (m9,heltec)]
   for a,b in zip(before,after):assert a['boot']==b['boot'] and a['diagnostic_rx']==b['diagnostic_rx'],'reboot or USB-injected frame during radar check'

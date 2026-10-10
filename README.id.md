@@ -106,3 +106,5 @@ repeater ketiga. Belum diimplementasikan: suara, perencanaan rute, pembaruan OTA
 [MIT](LICENSE). MeshCore yang disertakan (`lib/MeshCore`) mempertahankan lisensi MIT-nya sendiri. Data peta ©
 kontributor [OpenStreetMap](https://www.openstreetmap.org/copyright). Ide radar terinspirasi dari
 pelacak RSSI dan HUD radar karya [Stevee87](https://github.com/Stevee87).
+
+[Notifikasi, kirim cepat, riwayat kanal, NTP berkala dan penghitung orang](docs/en/notifications.md).

@@ -102,7 +102,7 @@ String pageTitle(int p){
  case DicePage:return diceTitle();
 #endif
  case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
- case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
+ case PeoplePage:return t("People counter","Счётчик людей");case QuickPage:return t("Quick send","Быстрая отправка");case NotifyPage:return t("Notifications","Уведомления");case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
  return t("Modules","Модули");
 }
 // The click hint names the next screen: "click: Nodes".
@@ -331,7 +331,7 @@ void modules(){
 }
 // New message and chess news over the page.
 void popup(const ChatMessage& m){
- bool channel=channels::isChannel(m.destination);panel(4,25,232,89,ColCard,8);g().drawRoundRect(4,25,232,89,8,ColLine);
+ bool channel=channels::isChannel(m.destination);panel(4,25,232,89,ColCard,8);
  avatar(21,43,12,channel?m.destination:m.source,m.name);
  text(39,49,fit(String(m.name)+(channel?channelTag(m.destination):String()),190,bold),ColInk,bold);
  lines(messageText(m),10,72,220,17,3,ColInk);
@@ -404,7 +404,7 @@ void draw(){
  if(rolePick){rolePage();hardware.flush();return;}
  if(radioEdit){radioPage();hardware.flush();return;}
  d.fillScreen(ColBack);
- const ChatMessage* last=meshRadio.historyCount?&meshRadio.history[meshRadio.historyCount-1]:nullptr;
+ const ChatMessage* last=&incomingPopup;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){statusBar(t("Messages","Сообщения"));popup(*last);footer({t("click: close","клик: закрыть")});hardware.flush();return;}
  popupAt=0;
  if(chessPopupAt&&millis()-chessPopupAt<8000){statusBar(t("Chess","Шахматы"));chessPopup();footer({config.role==RoleNormal?t("hold: open the game","держ: открыть партию"):String()});hardware.flush();return;}
@@ -414,7 +414,10 @@ void draw(){
  if(page==Chess)chessOpen=nullptr;
 #endif
  String title=pageTitle(page);
- switch(page){case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;
+ switch(page){
+ case PeoplePage:{text(12,42,t("Manual: ","Вручную: ")+String(people::settings.manual),ColInk,bold);text(12,64,"BLE: "+String(people::count(false))+(people::saturated(false)?"+":""),ColAccent);text(12,84,"Wi-Fi: "+String(people::count(true))+(people::saturated(true)?"+":""),ColInfo);text(12,104,String(people::settings.window)+t("s window","с окно"),ColDim,small);break;}
+ case QuickPage:{text(8,38,fit(quickReply?meshRadio.idText(quickReplyTo):quickSend::targetName(),224,bold),ColAccent,bold);unsigned n=quickTargets?quickTargetCount():quickSend::Count+2,index=quickTargets?quickTargetIndex:quickIndex;int first=max(0,min(int(index)-1,int(n)-3));for(unsigned i=first;i<n&&i<unsigned(first+3);i++){int y=44+(i-first)*23;row(y,22,i==index);String name=quickLabel(i);if(quickTargets){uint64_t id=quickTarget(i);const auto* ch=meshRadio.channel(id);const Peer* p=meshRadio.findContact(id);name=ch?String(ch->name):p?String(p->name):String("?");}text(12,y+16,fit(name,216,small),ColInk,small);}break;}
+ case NotifyPage:statusBar(t("Notifications","Уведомления"));lines(t("LED / screen / popup","LED / экран / окно"),10,60,220,18,2,ColInk);break;case Home:home();break;case Messages:messages();break;case Nodes:nodes();break;
 #if MM_CHESS
  case Chess:chessList();break;
 #endif
@@ -430,7 +433,10 @@ void draw(){
  if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}
 #if MM_DICE
  else if(diceTapOn())footer({t("click: +1","клик: +1"),t("hold: -1","держ: -1"),t("5 s: exit","5 с: выход")});
-#endif
+ else if(page==DicePage&&dicer.s.mode!=dice::Tally)footer({t("click: roll","клик: бросок"),t("hold: menu","держ: меню")});
+ #endif
+ else if(page==PeoplePage)footer({t("click: +1","клик: +1"),t("hold: menu","держ: меню")});
+ else if(page==QuickPage)footer({t("click: choose","клик: выбор"),t("hold: send","держ: слать")});
  else footer({clickHint(pageTitle(nextPage(page))),hint()});
  toast();hardware.flush();
 }

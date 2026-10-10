@@ -79,8 +79,8 @@ static void scenario(){
  auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
  shot("heltec-role");for(int i=0;i<5;i++)tick(); // the boot choice times out
  // Each screen is reached by name: an open menu times out first, then clicks step through the screens.
- auto go=[&](const char* n){std::string want=std::string("\"page\":\"")+n+"\"";for(int i=0;i<11&&uiStatus().indexOf("\"menu\":true")>=0;i++)tick();
-  for(int i=0;i<12&&uiStatus().indexOf(want.c_str())<0;i++)key(13);expect(n,want.c_str());};
+ auto go=[&](const char* n){char savedApps[sizeof config.apps];strlcpy(savedApps,config.apps,sizeof savedApps);strlcpy(config.apps,"-dice -quick -people",sizeof config.apps);std::string want=std::string("\"page\":\"")+n+"\"";for(int i=0;i<11&&uiStatus().indexOf("\"menu\":true")>=0;i++)tick();
+  for(int i=0;i<60&&uiStatus().indexOf(want.c_str())<0;i++){if(uiStatus().indexOf("\"page\":\"quick\"")>=0||uiStatus().indexOf("\"page\":\"dice\"")>=0||uiStatus().indexOf("\"page\":\"people\"")>=0)key(0x86);else key(13);}expect(n,want.c_str());strlcpy(config.apps,savedApps,sizeof config.apps);};
  for(const char* n:{"home","messages","nodes","chess","radar","gps","wifi","ble","settings","modules"}){
 #if defined(MM_NO_WIFI)
   if(!strcmp(n,"wifi"))continue; // nRF52 (T114): no Wi-Fi screen
@@ -88,7 +88,7 @@ static void scenario(){
   go(n);shot((std::string("heltec-")+n).c_str());if(!strcmp(n,"radar")){key(0xa3);shot("heltec-radar-menu");key(13);key(13);key(0xa3);for(int i=0;i<4;i++)tick();shot("heltec-homing");key(0xa3);key(0xa3);}if(!strcmp(n,"messages")){key(0xa3);shot("heltec-messages-menu");key(13);key(13);key(0xa3);shot("heltec-messages-older");key(13);key(13);key(0xa3);}if(!strcmp(n,"wifi")){key(0xa3);shot("heltec-wifi-on");}
   if(!strcmp(n,"ble")){for(int i=0;i<2&&!bleActive();i++)key(0xa3);if(!bleActive()){printf("FAIL BLE on\n");exit(1);}if(uiStatus().indexOf("\"menu\":true")>=0)key(0x86);shot("heltec-ble-on");for(int i=0;i<2&&bleActive();i++)key(0xa3);if(uiStatus().indexOf("\"menu\":true")>=0)key(0x86);} // the MeshCore- name and the PIN
   key(13);}
- {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;}shot("heltec-popup");
+ {ChatMessage m;m.source=0xA1B2C3D40000ULL;m.destination=meshRadio.nodeId;strcpy(m.name,"Heltec V4");strcpy(m.text,"Как слышно? Жду на точке через 5 минут");m.timestamp=time(nullptr);m.id=77;meshRadio.history[meshRadio.historyCount++]=m;notifications::incoming(m);}shot("heltec-popup");
  // Chess with one button: hold on the list opens the game; click steps through the pieces that can move,
  // hold picks one, click steps through its squares (then "Cancel"), hold plays. Each step checks the UI state.
  {auto sayId=[](unsigned id,const char* body){char t[64];snprintf(t,sizeof t,"\xe2\x99\x9f%04X %s",id,body);chessNet.receive(peerId(0),"Heltec V4",t);};
@@ -251,7 +251,7 @@ static void scenario(){
  // Device modes: the repeater and room pages, the mode choice from Settings.
 #if defined(MM_JOYSTICK)
 #elif defined(MM_HELTEC_V4)
- auto home=[]{for(int i=0;i<12&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(13);};
+ auto home=[]{for(int i=0;i<11&&uiStatus().indexOf("\"menu\":true")>=0;i++)tick();for(int i=0;i<4&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(0x86);};
  for(int i=0;i<9;i++)tick(); // the message popup closes
  config.role=RoleRepeater;home();shot("heltec-repeater");key(0xa3);shot("heltec-repeater-menu");key(0x82);key(0x82);key(0xa3);shot("heltec-role-menu");key(0xa3); // holding the current mode closes the list
  config.role=RoleRoom;home();tick();tick();shot("heltec-room");config.role=RoleNormal;
@@ -266,7 +266,7 @@ static void scenario(){
  hardware.fsOk=false;home();previewCommands="";key(0xa3);shot("heltec-format-menu");key(0xa3);shot("heltec-format-armed");key(0xa3);
  if(previewCommands!="fsformat;restart;"){printf("FAIL create storage: %s\n",previewCommands.c_str());exit(1);}hardware.fsOk=true;
  // Radio settings with one button: hold on "Radio...", the frequency digit by digit (click +1, hold next), SF, Save.
- for(int i=0;i<11;i++)tick();for(int i=0;i<12&&uiStatus().indexOf("\"page\":\"settings\"")<0;i++)key(13);
+ for(int i=0;i<11;i++)tick();go("settings");
  key(0xa3);expect("settings menu","\"menu\":true");key(0xa3);expect("radio screen","\"page\":\"radio\"");shot("heltec-radio");
  key(0xa3);key(13);expect("MHz +1","\"radio_draft\":\"869.731\"");key(0xa3);key(0xa3);key(13);key(13);expect("10 kHz +2","\"radio_draft\":\"869.751\"");shot("heltec-radio-freq");
  key(0xa3);key(0xa3);expect("digits done","\"radio_editing\":false");key(13);key(13);key(0xa3);key(13);expect("SF9","\"radio_draft\":\"9\"");shot("heltec-radio-sf");key(0xa3);
@@ -402,7 +402,7 @@ static void scenario(){
   config.dimAfter=dim;config.autoLock=lock;printf("dice checks passed\n");}
 // Apps in the chosen order ("apps" setting): hidden ones get no tile and no click.
  {auto page=[](const char* want){std::string w=std::string("\"page\":\"")+want+"\"";if(uiStatus().indexOf(w.c_str())<0){printf("FAIL apps order, want %s: %s\n",want,uiStatus().c_str());exit(1);}};
-  strlcpy(config.apps,"settings -chats -nodes map",sizeof config.apps);
+  strlcpy(config.apps,"settings -chats -nodes map -dice -quick -people",sizeof config.apps);
 #if defined(MM_HELTEC_V4)
   const int next=
 #if defined(MM_JOYSTICK)
@@ -410,12 +410,37 @@ static void scenario(){
 #else
    13;
 #endif
-  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(next);page("home");shot("heltec-apps-home");key(next);page("settings");key(next);page(MM_CHESS?"chess":"pet");
+  for(int i=0;i<4&&uiStatus().indexOf("\"page\":\"home\"")<0;i++)key(0x86);page("home");shot("heltec-apps-home");key(next);page("settings");key(next);page(MM_CHESS?"chess":"pet");
   for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"home\"")<0;i++){key(next);if(uiStatus().indexOf("\"page\":\"messages\"")>=0||uiStatus().indexOf("\"page\":\"nodes\"")>=0){printf("FAIL hidden page shown\n");exit(1);}}page("home");
 #else
   key(0x82);shot("home-apps");key(13);page("settings");key(0x82);key(0xb7);key(13);page("map");key(0x82);
 #endif
   config.apps[0]=0;printf("apps order checks passed\n");}
+// Quick Send, manual counting and a persistent roll mode: the production key paths.
+ {auto must=[](bool ok,const char* why){if(!ok){printf("FAIL wishlist UI %s: %s\n",why,uiStatus().c_str());exit(1);}};
+  strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;
+#if defined(MM_HELTEC_V4)
+#if defined(MM_JOYSTICK)
+  const int step=0xb7,hold=13;
+#else
+  const int step=13,hold=0xa3;
+#endif
+  key(0x86);key(step);must(uiStatus().indexOf("\"page\":\"quick\"")>=0,"open Quick Send");shot("heltec-quick");unsigned sent=meshRadio.historyCount;key(hold);must(meshRadio.historyCount==sent+1,"template queued");
+  key(0x86);key(step);
+#if defined(MM_JOYSTICK)
+  key(0x86);key(step);key(step);unsigned manual=people::settings.manual;key(0xb5);must(people::settings.manual==manual+1,"joystick up counts +1");key(0xb6);must(people::settings.manual==manual,"joystick down counts -1");
+#else
+  for(unsigned i=0;i<11;i++)key(13);key(hold);must(uiStatus().indexOf("\"page\":\"people\"")>=0,"Quick exit advances to counter");unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(hold);shot("heltec-people-menu");key(hold);must(people::settings.manual==manual,"manual -1 menu");
+#endif
+  shot("heltec-people");
+#if !defined(MM_JOYSTICK)
+  key(hold);StaticJsonDocument<768>d;deserializeJson(d,uiStatus());unsigned n=d["menu_count"]|0;must(n>=3,"counter exit menu");for(unsigned i=0;i<n-2;i++)key(13);key(hold);must(uiStatus().indexOf("\"page\":\"dice\"")>=0,"counter exit advances to dice");
+  dicer.setMode(dice::Rpg);unsigned rolls=dicer.rolls;key(13);must(dicer.rolls==rolls+1,"short press rolls");ChatMessage m;m.source=peerId(0);strcpy(m.name,"Preview");strcpy(m.text,"message while rolling");notifications::incoming(m);tick();must(uiStatus().indexOf("\"popup\":false")>=0,"message does not take the roll button");key(13);must(dicer.rolls==rolls+2,"next short press rolls again");config.dimAfter=10;fakeMillis+=12000;tick();must(uiScreenOff(),"dice screen dims");key(13);must(!uiScreenOff()&&dicer.rolls==rolls+3,"dark press wakes and rolls");key(hold);deserializeJson(d,uiStatus());n=d["menu_count"]|0;for(unsigned i=0;i<n-2;i++)key(13);key(hold);must(uiStatus().indexOf("\"page\":\"dice\"")<0,"exit through menu");
+#endif
+#else
+  key(0x82);key(13);must(uiStatus().indexOf("\"page\":\"quick\"")>=0,"open Quick Send");shot("quick");key(13);key(0x86);key(0xb7);key(13);unsigned manual=people::settings.manual;key(13);must(people::settings.manual==manual+1,"manual +1");key(0xb6);must(people::settings.manual==manual,"manual -1");shot("people");key(0x86);
+#endif
+  config.apps[0]=0;printf("wishlist UI checks passed\n");}
 // Power off last: the screens stop taking keys once it is requested.
 #if defined(MM_HELTEC_V4)
  powerOff();shot("heltec-poweroff");uiFarewell();shot("heltec-poweroff-done");

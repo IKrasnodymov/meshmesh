@@ -106,3 +106,5 @@ dritten Repeater. Nicht implementiert: Sprachübertragung, Routenplanung, OTA-Up
 [MIT](LICENSE). Das mitgelieferte MeshCore (`lib/MeshCore`) behält seine eigene MIT-Lizenz. Kartendaten ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright)-Mitwirkende. Die Radar-Idee folgt
 dem RSSI-Tracker und den Radar-HUDs von [Stevee87](https://github.com/Stevee87).
+
+[Benachrichtigungen, Schnellversand, Kanalverlauf, regelmäßiges NTP und Personenzähler](docs/en/notifications.md).

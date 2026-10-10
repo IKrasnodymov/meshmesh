@@ -8,6 +8,9 @@
 #include "Companion.h"
 #include <bluefruit.h>
 #include <esp_system.h>
+#include "HistoryReply.h"
+#include <memory>
+#include <new>
 
 namespace {
 // UUIDs in the little-endian byte order Bluefruit takes: 7a9e000x-98bd-4d56-89a8-c4eab4179010.
@@ -27,7 +30,7 @@ uint32_t pinCode=123456;
 struct BleCommand {char text[256];};
 QueueHandle_t commands=nullptr;
 uint16_t client=BLE_CONN_HANDLE_INVALID;
-String bleResponse;unsigned bleOffset=0;uint32_t nextNotification=0;
+std::unique_ptr<String> bleResponse;std::unique_ptr<HistoryReply> bleHistory;unsigned bleOffset=0;uint32_t nextNotification=0;
 bool webRadar=false;uint32_t webRadarAt=0;
 void webRadarRelease(){if(!webRadar)return;webRadar=false;if(!uiRadarPage())radar.close();}
 int radarIndex(uint32_t ref,const String& kind){const char* kinds[]={"wifi","ble","lora"};for(unsigned i=0;i<radar.count;i++)if(Radar::placement(radar.targets[i])==ref&&kind==kinds[radar.targets[i].kind])return i;return -1;}
@@ -49,7 +52,7 @@ void onAppWrite(uint16_t,BLECharacteristic*,uint8_t* data,uint16_t size){
   if(!bluetoothOn||!appFrames||!size||size>companion::MaxFrame)return;AppFrame f{};f.length=size;memcpy(f.data,data,size);xQueueSend(appFrames,&f,0);
 }
 void onConnect(uint16_t handle){client=handle;}
-void onDisconnect(uint16_t handle,uint8_t){if(handle==client){client=BLE_CONN_HANDLE_INVALID;bleResponse="";bleOffset=0;companion::disconnected(companion::LinkBle);}}
+void onDisconnect(uint16_t handle,uint8_t){if(handle==client){client=BLE_CONN_HANDLE_INVALID;companion::disconnected(companion::LinkBle);}}
 // The advert of stock MeshCore (its service, "MeshCore-<name>" in the scan response): MeshCore apps find the board
 // by the name. The MeshMesh app finds it by the "MM" mark in the manufacturer data (company ID 0xFFFF: no company);
 // our own service still answers.
@@ -109,7 +112,7 @@ void bleToggle(){
   if(bluetoothOn){
     Bluefruit.Advertising.restartOnDisconnect(false);Bluefruit.Advertising.stop();
     if(client!=BLE_CONN_HANDLE_INVALID)Bluefruit.disconnect(client);
-    bluetoothOn=false;bleResponse="";bleOffset=0;xQueueReset(commands);xQueueReset(appFrames);companion::disconnected(companion::LinkBle);meshRadio.event="BLE off";
+    bluetoothOn=false;bleResponse.reset();bleHistory.reset();bleOffset=0;xQueueReset(commands);xQueueReset(appFrames);companion::disconnected(companion::LinkBle);meshRadio.event="BLE off";
   } else {
     Bluefruit.Advertising.restartOnDisconnect(true);Bluefruit.Advertising.start(0);bluetoothOn=true;meshRadio.event="BLE PIN: "+String(pinCode);
   }
@@ -133,14 +136,25 @@ void portalTick(){
     if(!heldLength)heldLength=companion::next(held,companion::LinkBle);
     if(heldLength){if(appTx.notify(client,held,heldLength)){heldLength=0;nextApp=millis()+2;}else nextApp=millis()+10;}
   }
-  if(commands&&!bleResponse.length()){BleCommand c;if(xQueueReceive(commands,&c,0)==pdTRUE){powerWake();bleResponse=executeCommand(c.text)+'\n';bleOffset=0;nextNotification=millis();}}
-  if(bleResponse.length()&&int32_t(millis()-nextNotification)>=0){
+  if(client==BLE_CONN_HANDLE_INVALID){bleResponse.reset();bleHistory.reset();bleOffset=0;}
+  if(commands&&!bleResponse&&!bleHistory){BleCommand c;if(xQueueReceive(commands,&c,0)==pdTRUE){powerWake();String line=c.text;line.trim();
+    if(line=="messages"){bleHistory.reset(new(std::nothrow) HistoryReply);if(!bleHistory||!bleHistory->begin()){bleHistory.reset();bleResponse.reset(new(std::nothrow) String("ERR history snapshot memory"));}}
+    else bleResponse.reset(new(std::nothrow) String(executeCommand(line)));bleOffset=0;nextNotification=millis();}}
+  if(bleHistory&&int32_t(millis()-nextNotification)>=0){
     BLEConnection* link=client!=BLE_CONN_HANDLE_INVALID?Bluefruit.Connection(client):nullptr;
-    if(!link||!tx.notifyEnabled(client)){bleResponse="";bleOffset=0;return;}
+    if(!link||!tx.notifyEnabled(client)){bleHistory.reset();return;}
+    unsigned room=min(244u,unsigned(max(23,int(link->getMtu())))-3);size_t length=0;const uint8_t* bytes=bleHistory->peek(length);
+    if(length&&tx.notify(client,bytes,min(size_t(room),length))){bleHistory->advance(min(size_t(room),length));nextNotification=millis()+2;}else nextNotification=millis()+10;
+    if(bleHistory->finished()){bool okay=bleHistory->okay();bleHistory.reset();if(!okay){bleResponse.reset(new(std::nothrow) String("\nERR history stream memory"));bleOffset=0;}}return;
+  }
+  if(bleResponse&&int32_t(millis()-nextNotification)>=0){
+    BLEConnection* link=client!=BLE_CONN_HANDLE_INVALID?Bluefruit.Connection(client):nullptr;
+    if(!link||!tx.notifyEnabled(client)){bleResponse.reset();bleHistory.reset();bleOffset=0;return;}
     unsigned room=min(244u,unsigned(max(23,int(link->getMtu())))-3);
-    unsigned length=min(room,bleResponse.length()-bleOffset);
+    unsigned length=bleOffset<bleResponse->length()?min(room,bleResponse->length()-bleOffset):1;
+    const uint8_t newline='\n';const uint8_t* bytes=bleOffset<bleResponse->length()?(const uint8_t*)bleResponse->c_str()+bleOffset:&newline;
     // notify() waits for a free SoftDevice buffer; a refusal is retried shortly, never skipped.
-    if(tx.notify(client,(const uint8_t*)bleResponse.c_str()+bleOffset,length)){bleOffset+=length;nextNotification=millis()+2;}else nextNotification=millis()+10;
-    if(bleOffset==bleResponse.length()){bleResponse="";bleOffset=0;}
+    if(tx.notify(client,bytes,length)){bleOffset+=length;nextNotification=millis()+2;}else nextNotification=millis()+10;
+    if(bleOffset==bleResponse->length()+1){bleResponse.reset();bleHistory.reset();bleOffset=0;}
   }
 }

@@ -1,5 +1,92 @@
 # MeshMesh verification
 
+> **0.19.0: final M9 and V4 installation** (10 October 2026). The full `finish_on_hardware.py`
+> suite passed: `artifacts/hardware-finish.json` reports `passed`, `artifacts/release-check.json`
+> reports `passed_hardware_suite`, with 16 check reports. Installed images match their packages exactly:
+> M9 — `build_sha256=189E200C9C56…`, boot 242; V4 — `BC6A4D591373…`, boot 251,
+> revision `19fead4-dirty`. Matching version numbers were not used to carry evidence across images.
+>
+> Confirmed physical bidirectional LoRa with ACK and one received copy; final M9 interoperability with
+> official MeshCore companion v1.17.1 (adverts, direct messages/ACK and Public both ways); a chess game;
+> M9/OLED interfaces; radio during a UART screenshot; radar and bidirectional CSI;
+> Wi-Fi/HTTP/API and exact map-tile readback on both boards; authenticated BLE with PIN,
+> complete history reads and BLE → LoRa with ACK in both directions. GPS validation only establishes
+> fresh UART bytes and NMEA sentences; the original disabled preference was restored, without proving
+> a fresh fix. CSI establishes changing data and a working stream; no human motion test was performed.
+>
+> Additional production-UI checks on these same images and boots sent UTF-8 Quick Send messages on
+> both boards with radio ACK and one received copy, and passed manual counting +1/−1.
+> Actual M9 screenshots of the new screens were visually reviewed. Keys were injected over USB;
+> physical buttons were not tested. Private reports: `artifacts/wishlist/m9-extra.json`,
+> `v4-final-extra.json`, `final-restoration.json` (0600). Network keys, MeshCore identities,
+> existing preferences, maps and calibration are preserved. Original interfaces are restored:
+> M9 Wi-Fi/BLE off; V4 Wi-Fi off, BLE on. Test messages occupy the bounded history window;
+> original histories remain in backups.
+>
+> M9 debugging fixed two `loopTask` stack overflows by moving UI draft and HTTP command JSON buffers
+> to checked dynamic allocations. All 13 ESP32 targets were rebuilt and repackaged after the last
+> source change; the two nRF52 builds from the preceding phase are unchanged. The interrupted M9 USB
+> write was recovered after reconnection, using verified 128-KiB application chunks and complete flash
+> verification before boot; the update did not erase NVS/LittleFS. Temporary official V4 firmware was
+> restored byte-for-byte from a full 16-MB backup before installing the final MeshMesh image.
+> The suite resumed after test navigation/setup fixes without changing the final images. The first
+> M9 BLE connection attempt failed; a retry on the same boot passed. Failed attempts remain in private
+> logs and were not counted as successful checks.
+>
+> Android 0.12.0 APK is built but not installed on a phone. Physical buttons, visible LED colours/blinks,
+> successful NTP on an available network, fresh GPS, outdoor range and third-node relay remain unverified.
+> Earlier targeted V4/T114 evidence below retains its own image-hash scope.
+
+> **0.19.0 / Android 0.12.0: first targeted V4/T114 phase** (10 October 2026; the full
+> `finish_on_hardware.py` run was not performed during this phase). Independent LED/wake/message-popup modes and channel overrides,
+> mentions, missing-ACK/repeat warnings, toast settings; Quick Send with ten templates, stable recipient IDs and GPS
+> validation; channel priority/history limits and a separate Android archive; periodic NTP on ESP32; repeated rolls
+> in the single-button interface; independent manual and BLE/Wi-Fi counters — [notifications.md](notifications.md).
+> Single LEDs use different blink patterns; no heard repeat does not prove non-delivery, and device observations
+> are not a count of people.
+>
+> All 15 targets build. Native M9, Heltec, GAT562 and T114 scenarios pass in ru/en/zh/ar, including the notification
+> queue, mentions, bounded channels in full history, failed writes/renames and recovery, immutable history snapshots
+> sent in small chunks, Quick Send and button controls. Chinese nRF52 packages: T114 — 701452 bytes, 11252 free;
+> GAT562 — 670424 bytes, 42280 free. Builds without chess/dice/pet pass and retain the counter. Android
+> `testDebugUnitTest` and `assembleRelease` pass, including four archive tests. JavaScript checks (64-message chats,
+> compressed maps/corruption, 2632 chess-translation checks), version and web-header checks pass; firmware
+> translations: 1438 strings, zero errors and 82 length warnings. Packages and original ESP32 backups pass
+> `finish_on_hardware.py --check`; the local `0.12.0+local` APK was built and was not installed on a phone.
+>
+> Hardware debugging fixed a V4 double exception when saving a large template (drafts/JSON moved to heap),
+> starvation of a new low-priority channel in full history, and contiguous-allocation failures exporting 64 T114
+> messages: USB/BLE now stream an immutable snapshot one JSON record at a time. Five T114 settings under BLE
+> scanning now use one atomic commit: 1.50 s to save, 2.02 s to restore, replacing an initial timeout at 11.4 s.
+> On this phase's images, physical authenticated BLE with PIN from V4 to T114 passed selftest, status/config,
+> the complete 17705-byte history and a T114 → V4 LoRa send with delivery ACK, while the T114 BLE counter was
+> scanning; there were no reboots or USB packet injections.
+>
+> During this phase Heltec V4 was installed with `build_sha256=4F071425B1BF…`, T114 with `E798B587599A…`; both match their local
+> packages exactly, revision `19fead4-dirty`. Targeted checks passed in two stages on these same images: physical
+> LoRa both ways with ACK/one received copy, notifications off/mentions/channel override, 18 private-channel
+> messages and limits 16/8; then Quick Send, manual counting, four repeated rolls per board (including screen-off
+> and incoming RF), history/settings across reboot and an explicit error for a removed recipient without Public
+> fallback. These are production UI events over USB, not physical button presses.
+> V4 observed four Wi-Fi devices with BLE enabled; LoRa/ACK worked both with the counter and during an NTP attempt.
+> Fresh phone time defers NTP; an unavailable test network ends the attempt within 45 seconds and schedules a
+> retry in ten minutes. Final V4/T114 boot counts are 239/15: only two/one planned restarts; radio remains healthy,
+> USB injection counters did not change. The checker was corrected for slow flash commits and a retained Quick
+> Send selection; results were not transferred from a different image hash.
+>
+> The browser connected to this V4 through a USB bridge (412×915) passed template saving and counter +1/−1,
+> with no horizontal overflow. Five complete T114 USB replies: 64 records, 19247 bytes each, 0.46–0.47 seconds;
+> heap 51720 → 51720. Keys and existing settings are preserved, the original menu order is retained with
+> quick/people added; the temporary channel and Wi-Fi network were removed, templates/recipient/GPS, manual
+> count, dice mode and test settings restored. The USB bridge was stopped. Full image hashes are in local
+> `artifacts/wishlist/verification.json`, `hardware.json`, `ble-counter.json`, `usb-memory.json`, `restoration.json`
+> (0600); histories/secrets remain in ignored backups, outside Git.
+>
+> During this phase M9, GAT562 and community boards were not connected: installation and hardware operation of these new features
+> are not confirmed on them. Physical buttons, LED colour/visible blink patterns, Android on a phone and a
+> successful NTP sync on an available network were not tested. The earlier full hardware report is not treated
+> as validation of these images; the known Arabic OLED font limitation remains, and native-speaker review is absent.
+
 > **0.18.0: count with the button** (9 October 2026, no full run). One-button boards and the T114 get "Count with
 > button" in the counters menu: click +1, hold −1, holding on to 5 s leaves and takes that hold's −1 back (new button
 > event 0xa4 in the Heltec V4, compact and T114 drivers). Package 7ee1118 is installed on the Heltec V4 (`E9687E8D…`,

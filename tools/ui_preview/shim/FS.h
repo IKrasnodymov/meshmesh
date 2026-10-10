@@ -1,4 +1,3 @@
 #pragma once
-#include "Arduino.h"
-class File{public:explicit operator bool() const{return false;}};
+#include "LittleFS.h"
 namespace fs{class FS{};}

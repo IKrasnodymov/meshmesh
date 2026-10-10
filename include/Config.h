@@ -22,12 +22,19 @@ struct Config {
   uint32_t blePin=0; // pairing PIN, made once: a restart (e.g. a USB-UART reset) keeps it
   bool bleOn=false;  // Bluetooth on after boot: the last choice, else on in the normal role
   bool lockDetails=true; // the locked screen names chess opponents, moves and message senders
-  char apps[112]=""; // screen menu: order of the apps, "-" hides one (App.h); empty = the default
+  uint8_t notifyLed=1,notifyPopup=1;
+#if defined(MM_COMPACT)
+  uint8_t notifyWake=1;
+#else
+  uint8_t notifyWake=0; // preserve the keyboard boards' existing screen-off behaviour
+#endif
+  bool notifyFailed=false;char notifyWords[97]="";
+  char apps[160]=""; // screen menu: order of the apps, "-" hides one (App.h); empty = the default
   // Default region of our flood packets (Regions.h): empty - none; the key is that of "#name" unless an app set
   // another (a private region of the MeshCore app).
   char region[31]="";uint8_t regionKey[16]={};
   void load();
-  void save();
+  bool save();
   bool valid() const;
   String keyHex() const;
   bool setKey(const String& text);

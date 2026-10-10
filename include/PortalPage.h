@@ -1,5 +1,6 @@
 #pragma once
 const char portalPage[] PROGMEM=R"MMPAGE(<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><title>MeshMesh</title><style>
+.quick-fields label,.people-fields label{display:block;margin:10px 0}.quick-fields textarea{display:block;width:100%;min-height:64px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:6px;outline-color:var(--accent)}.quick-fields input[type=checkbox],.people-fields input[type=checkbox]{width:20px;flex:none}.quick-fields label.two,.people-fields label.two{display:flex;align-items:center;justify-content:space-between;gap:12px}.quick-fields .btns .btn:first-child{background:var(--hi)}
 /* The palette and shapes of the M9 screen (src/Ui.cpp): neutral dark surfaces, colour for focus and state. */
 :root{--bg:#080c11;--bar:#000;--card:#131a22;--hi:#1c2835;--line:#2a3542;--grid:#223040;--ink:#e4e9ee;--dim:#8d99a6;--faint:#56626e;--accent:#1fc2ae;--deep:#14524b;--ok:#4cc26b;--warn:#e9b13b;--bad:#e5564d;--info:#4f9df7;--violet:#a78bfa;--pink:#f472b6;--out:#103a35;--in:#1a232d;color-scheme:dark;font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);min-height:100vh;-webkit-tap-highlight-color:transparent}
@@ -192,7 +193,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <symbol id="i-up" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5l7 10H5z"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24" fill="currentColor"><path d="M12 19L5 9h14z"/></symbol>
 </defs></svg>
-<header class="hud"><button class="back" id="back" hidden aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button><b id="title" class="home">MeshMesh</b><button class="back" id="chanInfo" hidden aria-label="О канале" style="font-size:18px"><svg class="ic"><use href="#i-next"/></svg></button><div class="icons" id="icons"></div></header>
+<header class="hud"><button class="back" id="back" hidden aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button><b id="title" class="home">MeshMesh</b><button id="quickReply" class="back" aria-label="Быстрый ответ" title="Быстрый ответ" hidden>↗</button><button class="back" id="chanInfo" hidden aria-label="О канале" style="font-size:18px"><svg class="ic"><use href="#i-next"/></svg></button><div class="icons" id="icons"></div></header>
 
 <main class="login" id="login"><div class="brand"><svg class="ic"><use href="#i-radio"/></svg><b>MESHMESH</b><small>Ваши люди. Ваша сеть.</small></div>
 <form class="card pad" id="loginForm"><label class="field">Пароль Wi-Fi<input id="password" type="password" autocomplete="current-password" required></label><p class="small muted">Пароль показан на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</p><button class="btn primary save">Подключиться</button></form>
@@ -272,6 +273,8 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div><div id="chessToursView" hidden></div></section>
 
 <section class="page" id="p-pet" hidden><div id="petView"></div></section>
+<section class="page" id="p-people" hidden><div id="peopleView" class="people-fields"></div></section>
+<section class="page" id="p-quick" hidden><div id="quickView" class="quick-fields"></div></section>
 <section class="page" id="p-dice" hidden><div id="diceView"></div></section>
 
 <section class="page" id="p-board" hidden><div class="chessgrid"><div><div class="card pside" id="cTop"></div><div class="bwrap"><div class="board" id="board"></div><div class="promo" id="cPromo" hidden></div></div><div class="card pside" id="cBottom" style="margin:8px 0 0"></div></div>
@@ -287,7 +290,7 @@ let route='home',param='',fetchedAt=Date.now(),clockBase={unix:0,at:0},refreshin
 // The site's chess page talks to a stock MeshCore companion instead of a board (web/chess-companion.js).
 let companion=null;
 let recipient='ALL',eventSeen=null,readInit=false,trackAt=0,deleteArmed='',wifiArmed=0,scopeRef=null,scopeManual=false,radarTimer=null,radarBusy=false;
-let chans=null,joinLink=null,chTab='tag',probeTimer=0,clockSynced=false;
+let chans=null,joinLink=null,chTab='tag',probeTimer=0,clockSynced=0;
 let mapState={lat:0,lon:0,z:14,center:false,follow:false};const tileCache=new Map(),tilePending=new Set(),drafts=new Map(),cameFrom={};let chatRows=[],replyTo=null;
 const HUES=['#2f7d6f','#3f6fb5','#8a5cc2','#b5693f','#4f8a3a','#a8466a','#3a8aa0','#8f7a2e'];
 // Board family: 'compact' (128x64 screen, one button) or 'full' (320x240 screen and keyboard). Older firmware: board only.
@@ -302,7 +305,10 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const ic=(name,cls='')=>`<svg class="ic ${cls}"><use href="#i-${name}"/></svg>`;
 function plural(n,a,b,c){const m=n%100,d=n%10;return n+' '+(m>=11&&m<=14?c:d===1?a:d>=2&&d<=4?b:c)}
 const bytes=s=>new TextEncoder().encode(s).length;
-function notify(text,tone='accent'){const n=$('notice');n.textContent=text;n.style.setProperty('--tone',`var(--${tone})`);clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.textContent='',4000)}
+function notify(text,tone='accent',kind='action'){
+ const prefs=typeof alerts==='undefined'?{}:alerts,show=kind==='incoming'?prefs.banners!=='off'&&(prefs.banners!=='mention'||tone==='warn'):prefs.actions!=='off'&&(prefs.actions!=='errors'||tone==='bad');
+ if(!show){if(tone==='bad'){const page=document.querySelector('.page:not([hidden])')||$('login');let e=page.querySelector('.inline-error');if(!e){e=document.createElement('p');e.className='inline-error bad small';e.setAttribute('role','alert');page.prepend(e)}e.textContent=text}return}
+ const n=$('notice');n.textContent=text;n.style.setProperty('--tone',`var(--${tone})`);clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.textContent='',4000)}
 async function request(path,data){if(companion)return companion.request(path,data);const r=await fetch(path,{method:data===undefined?'GET':'POST',headers:{Authorization:auth,'Content-Type':data instanceof Uint8Array?'application/octet-stream':'application/json'},body:data===undefined?undefined:data instanceof Uint8Array?data:JSON.stringify(data)});const text=await r.text();if(!r.ok)throw Error(text||r.status);try{return JSON.parse(text)}catch{return text}}
 async function command(line){const r=await request('/api/command',{command:line});if(typeof r==='string'&&r.startsWith('ERR'))throw Error(r);return r}
 async function run(line,ok,tone='ok'){try{const r=await command(line);notify(ok||r,tone);await refresh()}catch(e){notify(e.message,'bad')}}
@@ -337,7 +343,7 @@ function messageLimit(){return isChan(recipient)?(status.public_message_limit||1
 // Notifications of the page and the app: per kind (direct, channels, Public) "all", "mention" (the "@[name]" of
 // MeshCore apps or a keyword) or "off", a conversation may override its kind. Kept in this browser; the app gets
 // a copy (MeshNative.setAlerts) for its notifications in the background (Alerts.kt applies the same rules).
-const ALERT_DEFAULT={dm:'all',chan:'all',pub:'mention',chess:true,nodes:false,lost:true,sound:true,system:false,words:[],quiet:false,from:'23:00',to:'07:00',per:{}};
+const ALERT_DEFAULT={banners:'all',actions:'all',dm:'all',chan:'all',pub:'mention',chess:true,nodes:false,lost:true,sound:true,system:false,words:[],quiet:false,from:'23:00',to:'07:00',per:{}};
 let alerts={...ALERT_DEFAULT,...store('alerts')};alerts.per={...alerts.per};alerts.words=[...alerts.words];let alertSeen=null,peersSeen=null,alertTab='feed',alertFilter='all',alertSort='new',alertLog=store('alert-log')||[];
 const ALERT_MODES={all:'Все',mention:'Упоминания',off:'Выключены'},alertKind=id=>id==='ALL'?'pub':isChan(id)?'chan':'dm';
 function saveAlerts(){store('alerts',alerts);try{window.MeshNative?.setAlerts?.(JSON.stringify(alerts))}catch{}}
@@ -354,7 +360,7 @@ function logAlert(kind,title,text,to){alertLog.push({kind,title,text,go:to,t:Mat
 // After each refresh: new incoming messages (at most 5 at once) and, when enabled, nodes heard for the first time.
 function alertScan(){const inc=history.filter(m=>!m.outgoing),keys=inc.map(m=>msgKey(m)+'.'+m.text.length);
  if(alertSeen)for(const m of inc.filter((m,i)=>!alertSeen.has(keys[i])).slice(-5)){const id=other(m),how=alertFor(m);if(!how||route==='chat'&&recipient===id&&!document.hidden)continue;
-  const title=(how==='mention'?'@ ':'')+(isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id));notify(title+': '+cutBytes(m.text,90),how==='mention'?'warn':'accent');alertCue(how==='mention');systemAlert(title,m.text,'chat/'+id,'mm-'+id)}
+  const title=(how==='mention'?'@ ':'')+(isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id));notify(title+': '+cutBytes(m.text,90),how==='mention'?'warn':'accent','incoming');alertCue(how==='mention');systemAlert(title,m.text,'chat/'+id,'mm-'+id)}
  alertSeen=new Set(keys);
  const ids=peers.map(p=>p.id);if(peersSeen&&alerts.nodes)for(const p of peers.filter(p=>!peersSeen.has(p.id))){const t='Новый узел: '+p.name;notify(t,'info');logAlert('node',t,typeText(p.type),'node/'+p.id);systemAlert('Новый узел',p.name,'node/'+p.id,'mm-node')}
  peersSeen=new Set(ids);const n=unreadTotal();document.title=(n?`(${n}) `:'')+'MeshMesh'}
@@ -384,7 +390,8 @@ function renderAlerts(){for(const b of document.querySelectorAll('[data-altab]')
  const own=Object.keys(alerts.per).filter(id=>alerts.per[id]),me=config.name||status.name||'';
  let h=`<h3>Сообщения</h3><div class="card" style="padding:4px 0">${kind('dm','Личные','Сообщения вам')}${kind('chan','Каналы','Хештеги и закрытые каналы')}${kind('pub','Public','Открытый канал MeshCore')}</div>
   <h3>Упоминания</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">${me?`Упоминание — «@[${esc(me)}]» (так отвечают приложения MeshCore) или одно из слов ниже, без учёта регистра. Оно уведомляет и в режиме «Упоминания».`:'Ключевые слова считаются упоминанием.'}</p><input id="alertWords" placeholder="Слова через запятую" value="${esc(alerts.words.join(', '))}" autocomplete="off" autocapitalize="none"></div>
-  <h3>Другое</h3><div class="card" style="padding:4px 0">${sw('chess','Шахматы','Вызовы, ходы соперника, итоги')}${sw('nodes','Новые узлы','Узел, услышанный впервые')}${window.MeshNative?sw('lost','Потеря связи','Устройство отключилось, пока приложение в фоне'):''}${sw('sound','Звук и вибрация',window.MeshNative?'Иначе уведомления приходят беззвучно':'Сигнал на этой странице')}${sysAlertsUsable?sw('system','Уведомления браузера',Notification.permission==='denied'?'Запрещены в настройках браузера':'Когда вкладка в фоне'):''}</div>
+  <h3>Всплывающие сообщения</h3><div class="card" style="padding:4px 0"><div class="set"><span class="name">Входящие сообщения<small>Звук и системные уведомления настраиваются отдельно</small></span>${alertSelect('data-al="banners"',alerts.banners,['all','mention','off'])}</div><div class="set"><span class="name">Результаты действий<small>При выключенных баннерах ошибки остаются на странице</small></span><select data-al="actions">${[['all','Все'],['errors','Только ошибки'],['off','Выключены']].map(([k,v])=>`<option value="${k}"${alerts.actions===k?' selected':''}>${v}</option>`).join('')}</select></div></div>
+  <h3>Другое</h3><div class="card style="padding:4px 0">${sw('chess','Шахматы','Вызовы, ходы соперника, итоги')}${sw('nodes','Новые узлы','Узел, услышанный впервые')}${window.MeshNative?sw('lost','Потеря связи','Устройство отключилось, пока приложение в фоне'):''}${sw('sound','Звук и вибрация',window.MeshNative?'Иначе уведомления приходят беззвучно':'Сигнал на этой странице')}${sysAlertsUsable?sw('system','Уведомления браузера',Notification.permission==='denied'?'Запрещены в настройках браузера':'Когда вкладка в фоне'):''}</div>
   <h3>Тихие часы</h3><div class="card" style="padding:4px 0">${sw('quiet','Без звука и вибрации','По времени телефона или компьютера')}<div class="set"><span class="name">С</span><input type="time" id="alertFrom" value="${esc(alerts.from)}"></div><div class="set"><span class="name">До</span><input type="time" id="alertTo" value="${esc(alerts.to)}"></div></div>
   <h3>Отдельные чаты</h3><div class="card" style="padding:4px 0">${conversationIds().map(id=>alertRow(id,esc(nodeName(id)))).join('')}</div>
   ${own.length?'<button class="btn" id="alertReset" style="width:100%;margin-top:10px">Сбросить настройки чатов ('+own.length+')</button>':''}
@@ -423,7 +430,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return'Сообщение от '+v.slice(17);if(v.startsWith('Delivered to '))return'Доставлено: '+v.slice(13);return {'Queued: waiting for delivery':'Ожидание подтверждения','Queued: broadcast':'Сообщение в общем чате отправляется','No delivery ACK':'Получатель не подтвердил доставку','Settings saved':'Настройки сохранены'}[v]||(/^Radio TX error|^TX failed/.test(v)?'Ошибка передачи по радио':v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],alerts:['Уведомления','chats'],msg:['Путь пакета','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home']};
+const PAGES={home:['MeshMesh'],chats:['Чаты','home'],chat:[null,'chats'],addch:['Новый канал','chats'],join:['Канал по ссылке','chats'],chinfo:['Канал','chats'],alerts:['Уведомления','chats'],msg:['Путь пакета','chats'],map:['Карта','home'],library:['Сохранённые карты','map'],nodes:['Узлы','home'],node:[null,'nodes'],nav:['Навигация','home'],connect:['Подключения','home'],radar:['Радар','home'],homing:['Пеленг','radar'],motion:['Движение (CSI)','home'],modules:['Модули','home'],settings:['Настройки','home'],radio:['Радио','settings'],device:['Экран','settings'],apps:['Приложения','settings'],help:['Клавиши','settings'],role:['Режим работы','settings'],server:['Репитер','home'],game:['Косынка','home'],chess:['Шахматы','home'],board:[null,'chess'],pet:['Питомец','home'],dice:['Кости','home'],quick:['Быстрая отправка','home'],people:['Счётчик людей','home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -440,6 +447,7 @@ function parent(){return cameFrom[route]||(route==='chinfo'?'chat/'+param:PAGES[
 function leave(prev,next){
  if(prev==='chat'){drafts.set(recipient,$('text').value);setReply(null)}
  if(prev==='join')joinLink=null;
+ if(prev==='people'&&next!=='people'){clearTimeout(peopleTimer);peopleTimer=null;}
  if(RADAR_PAGES.includes(prev)&&!RADAR_PAGES.includes(next))stopRadar();
  else if(prev==='motion'&&next!=='motion'&&radarData?.csi?.role!=='off')radarAction({action:'csi',role:'off'});
  else if(prev==='homing'&&next==='radar')radarAction({action:'untrack'});
@@ -462,13 +470,15 @@ function enter(page,prev){
  if(page==='board')enterBoard();
  if(page==='pet')enterPet();
  if(page==='dice')enterDice();
+ if(page==='quick')loadQuick();
+ if(page==='people')loadPeople();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg,alerts:renderAlerts}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,quick:renderQuick,people:renderPeople,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg,alerts:renderAlerts}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
  const t=standaloneMode?'Подготовка карты':PAGES[route][0]??(route==='chat'?nodeName(recipient):route==='board'?'Шахматы · '+(chessGame(param)?.name||''):peer(param)?.name||'Узел');
- $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode||!!companion&&route==='chess';$('chanInfo').hidden=!(route==='chat'&&chan(recipient));
+ $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode||!!companion&&route==='chess';$('chanInfo').hidden=!(route==='chat'&&chan(recipient));$('quickReply').hidden=!(route==='chat'&&status.quick_send);
  if(!auth){$('icons').innerHTML='';return}
  if(companion){$('icons').innerHTML=companion.icons();return}
  let h='';const n=route==='chats'||route==='chat'?0:unreadTotal();
@@ -493,8 +503,28 @@ function renderHome(){
   ['nav','compass','warn','Навигация',status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?'GPS: поиск':'GPS выключен'],
   ['connect','wifi','info','Связь',links],['radar','radar','acc','Радар',noWifi()?'BLE, LoRa':'Wi-Fi, BLE, LoRa'],
   ['modules','pulse',f?'bad':'ok','Модули',f?plural(f,'ошибка','ошибки','ошибок'):'Всё в норме'],
-  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],...(hasModule('chess')?[['chess','chess','','Шахматы',chessTileText(),chess.waiting]]:[]),...petTile(),...diceTile()];
+  ['settings','gear','muted','Настройки','Радио, экран'],['game','cards','warn','Косынка',gameDetail()],...(hasModule('chess')?[['chess','chess','','Шахматы',chessTileText(),chess.waiting]]:[]),...petTile(),...diceTile(),...(status.quick_send?[['quick','chat','acc','Быстрая отправка','Шаблоны и получатель']]:[]),...(status.people_counter?[['people','mesh','acc','Счётчик людей','Вручную, BLE и Wi-Fi']]:[])];
  $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
+
+let peopleData=null,peopleTimer=null,peopleBusy=false;
+async function loadPeople(){if(peopleBusy)return;peopleBusy=true;try{peopleData=await request('/api/people');if(route==='people')renderPeople()}catch(e){notify(e.message,'bad')}finally{peopleBusy=false;if(route==='people'){clearTimeout(peopleTimer);peopleTimer=setTimeout(loadPeople,2000)}}}
+function renderPeople(){if($('peopleView').contains(document.activeElement)&&['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;const d=peopleData;if(!d){$('peopleView').textContent='Загрузка…';return}const state={off:'выключен',listening:'слушает',paused:'пауза: радио занято',failed:'ошибка запуска',unsupported:'нет Wi-Fi'};
+ $('peopleView').innerHTML=`<div class="card pad"><p class="muted">Ручной счёт людей</p><div class="big" style="font-size:36px">${d.manual}</div><div class="btns" style="margin-top:10px"><button class="btn" data-people-delta="-1" ${d.manual?'':'disabled'}>−1</button><button class="btn primary" data-people-delta="1">+1</button><button class="btn" data-people-act="reset">Сбросить</button></div></div><h3>Устройства рядом</h3><div class="card pad"><div class="detail"><span>BLE</span><b>${d.ble_saturated?'≥':''}${d.ble_devices} · ${state[d.ble_state]||d.ble_state}</b></div>${d.wifi_supported?`<div class="detail"><span>Wi-Fi-клиенты</span><b>${d.wifi_saturated?'≥':''}${d.wifi_devices} · ${state[d.wifi_state]||d.wifi_state}</b></div>`:''}<p class="small muted">Это оценка числа устройств. Один человек может иметь несколько устройств; случайные адреса меняются. Значения BLE, Wi-Fi и ручной счёт показываются отдельно.</p><label class="two"><span>Сканировать BLE</span><input type="checkbox" data-people-setting="ble" ${d.ble?'checked':''}></label>${d.wifi_supported?`<label class="two"><span>Слушать Wi-Fi-клиентов</span><input type="checkbox" data-people-setting="wifi" ${d.wifi?'checked':''}></label>`:''}<label class="two"><span>BLE: только распознанные телефоны и часы</span><input type="checkbox" data-people-setting="personal_only" ${d.personal_only?'checked':''}></label><label>Окно подсчёта<select data-people-setting="window">${[[30,'30 секунд'],[60,'1 минута'],[300,'5 минут']].map(([k,v])=>`<option value="${k}" ${d.window===k?'selected':''}>${v}</option>`).join('')}</select></label><label>Минимальный RSSI (dBm)<input type="number" min="-100" max="-30" value="${d.rssi}" data-people-setting="rssi"></label><p class="small faint">Wi-Fi слушает клиентские кадры и уступает радио точке доступа, NTP, радару и CSI. MAC-адреса не сохраняются.</p><button class="btn" data-people-act="window_reset">Начать новое окно</button>${d.ble_dropped||d.wifi_dropped?`<p class="warn small">Часть устройств могла не попасть в счёт: буфер заполнен.</p>`:''}</div>`}
+async function peopleDo(body){try{await request('/api/people',body);await loadPeople()}catch(e){notify(e.message,'bad')}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-people-delta],[data-people-act]');if(!b)return;if(b.dataset.peopleDelta!==undefined)peopleDo({action:'change',delta:Number(b.dataset.peopleDelta)});else peopleDo({action:b.dataset.peopleAct})});
+document.addEventListener('change',e=>{const k=e.target.dataset.peopleSetting;if(k)peopleDo({action:'settings',[k]:e.target.type==='checkbox'?e.target.checked:Number(e.target.value)})});
+
+document.addEventListener('click',e=>{if(e.target.closest('#quickReply'))go('quick/'+recipient)});
+document.addEventListener('input',e=>{const form=e.target.closest('[data-quick-form]');if(!form||!quick)return;const b=form.querySelector('[data-quick-send]'),changed=e.target.value!==quick.presets[Number(form.dataset.quickForm)];b.disabled=changed||!e.target.value;b.title=changed?'Сначала сохраните шаблон':''});
+// One device owns these presets; every transport uses the same command API.
+let quick=null,quickBusy=false;
+async function loadQuick(){try{quick=await request('/api/quick');await loadChans();if(route==='quick')renderQuick()}catch(e){notify(e.message,'bad')}}
+function renderQuick(){if(!quick){$('quickView').textContent='Загрузка…';return}const targets=[...(chans?.channels||[]).map(c=>({id:c.id,name:c.name})),...peers.filter(p=>[1,3].includes(p.type)).map(p=>({id:p.id,name:p.name}))];
+ const active=param||quick.to,valid=targets.some(t=>t.id===active);$('quickView').innerHTML=`<div class="card pad"><label>Получатель<select id="quickTarget">${valid?'':`<option value="" selected>Выберите получателя</option>`}${targets.map(p=>`<option value="${esc(p.id)}" ${p.id===active?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label><label class="two" style="margin-top:12px"><span>Добавлять GPS-позицию</span><input type="checkbox" id="quickGps" ${quick.gps?'checked':''}></label><p class="small faint">Позиция доступна при GPS-фиксе и доверенном времени. Лимит для получателя: ${isChan(active)?(status.public_message_limit||quick.limit):151} байт UTF-8, включая позицию.</p></div><h3>Шаблоны</h3>${quick.presets.map((text,i)=>`<form class="card pad" data-quick-form="${i}" style="margin-bottom:8px"><label>${i+1}<textarea name="text" rows="2" maxlength="160">${esc(text)}</textarea></label><div class="btns" style="margin-top:8px"><button class="btn" type="submit">Сохранить</button><button class="btn primary" type="button" data-quick-send="${i}" ${valid&&text?'':'disabled'}>Отправить</button></div></form>`).join('')}`}
+async function quickDo(body){if(quickBusy)return;quickBusy=true;try{const r=await request('/api/quick',body);notify(body.action==='send'?'Сообщение в очереди':'Шаблоны сохранены','ok');if(body.action==='send')await refresh();else await loadQuick();return r}catch(e){notify(e.message,'bad')}finally{quickBusy=false}}
+document.addEventListener('submit',e=>{const i=e.target.dataset.quickForm;if(i===undefined)return;e.preventDefault();const text=e.target.elements.text.value;if(new TextEncoder().encode(text).length>160){notify('Шаблон: не больше 160 байт UTF-8','bad');return}quickDo({action:'set',index:Number(i),text})});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-quick-send]');if(b)quickDo({action:'send',index:Number(b.dataset.quickSend),...(param?{to:param}:{})})});
+document.addEventListener('change',e=>{if(e.target.id==='quickTarget'&&e.target.value){param='';window.history.replaceState(null,'','#quick');quickDo({action:'target',to:e.target.value})}if(e.target.id==='quickGps')quickDo({action:'gps',enabled:e.target.checked})});
 
 // Mesh pet (firmware "pet", docs/pet.md): its look comes as 256 inks (one digit a pixel) and the page draws
 // them in the colours of its species, as the M9 does. Optional: without one the page offers to start it.
@@ -762,6 +792,9 @@ function renderMsg(){const m=history.find(x=>msgKey(x)===param),el=$('msgCard');
 function renderChanInfo(){const c=chan(param),el=$('chanCard');if(!c){setHtml(el,`<div class="empty">${ic('hash')}Канала нет на устройстве</div>`);return}
  const pub=c.kind==='public',stage=deleteArmed===c.id+1?1:deleteArmed===c.id+2?2:0,contacts=peers.filter(p=>p.type===1);
  let h=`<div class="head">${avatar(c.id,c.name,0,52)}<div><span class="big">${esc(c.name)}</span><span class="small muted">${chanKind(c)}</span></div></div><div class="card" style="padding:0 12px">${[['Ключ',pub?'известен всем узлам':c.kind==='hashtag'?'из имени канала':'случайный'],['Хеш в пакетах',c.hash],['Сообщений',history.filter(m=>matches(m,c.id)).length],['ID',c.id]].map(([a,b])=>`<div class="detail"><span>${a}</span><span>${esc(b)}</span></div>`).join('')}</div><div class="card" style="padding:4px 0;margin-top:10px">${alertRow(c.id)}</div>`;
+ const policy=c.policy||{};h+=`<h3>История канала</h3><div class="card pad">${[['priority','Приоритет',[[0,'Низкий'],[1,'Обычный'],[2,'Высокий']]],['device_limit','На устройстве',[[0,'Автоматически'],[8,'8 сообщений'],[16,'16 сообщений']]],['app_limit','В Android',[[0,'Автоматически'],[8,'8 сообщений'],[16,'16 сообщений'],[32,'32 сообщения']]]].map(([key,label,options])=>`<label>${label}<select data-chpolicy="${key}" data-channel="${esc(c.id)}">${options.map(([value,name])=>`<option value="${value}" ${(policy[key]??(key==='priority'?1:0))===value?'selected':''}>${name}</option>`).join('')}</select></label>`).join('')}<p class="small faint">Низкий приоритет по умолчанию: 16 сообщений на плате, 32 в Android. Общий буфер платы — 64; первыми освобождаются каналы с низким приоритетом.</p></div>`;
+
+ if(c.policy){const modes=[[3,'По общим настройкам'],[0,'Выключено'],[1,'Все сообщения'],[2,'Упоминания']];h+=`<h3>Уведомления платы</h3><div class="card" style="padding:4px 0">${[['led','Диод'],['wake','Включать экран'],['popup','Всплывающее окно']].map(([k,n])=>`<div class="set"><span class="name">${n}</span><select data-chpolicy="${k}" data-channel="${c.id}">${modes.map(([v,n])=>`<option value="${v}"${c.policy[k]===v?' selected':''}>${n}</option>`).join('')}</select></div>`).join('')}</div>`;}
  if(c.region!==undefined){fillRegionNames();const def=chans?.region;
   h+=`<h3>Регион</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">Сообщения канала несут этот регион: репитеры с регионами пересылают их только в нём. Пусто — регион по умолчанию из настроек радио (${def?esc(def):'нет'}), * — без региона.</p><div style="display:flex;gap:8px"><input id="chRegion" list="regionNames" value="${esc(c.region)}" maxlength="30" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="по умолчанию" style="flex:1;min-width:0"><button class="btn" data-chregion="1">Сохранить</button></div></div>`}
  h+=c.link?`<h3>QR-код и ссылка</h3><div class="card pad"><div class="qrbox">${qrSvg(c.link)}</div><p class="mono" style="margin:0 0 8px">${esc(c.link)}</p><button class="btn save" style="margin:0" data-copy="${esc(c.link)}">Копировать ссылку</button><p class="small muted" style="margin:8px 0 0">${c.kind==='private'?'<span class="warn">Код и ссылка содержат ключ: показывайте их только участникам.</span> ':''}Отсканируйте код в MeshCore или в приложении MeshMesh, чтобы добавить канал.</p></div>`
@@ -874,12 +907,18 @@ function renderNav(){
  $('navNote').hidden=!navInfo.available}
 
 // Connections: access point, Bluetooth and the MeshCore identity.
-async function loadConnections(){try{conn=await request('/api/connections')}catch(e){notify(e.message,'bad')}if(route==='connect')renderConnect()}
+let internetInfo=null;
+async function loadConnections(){try{conn=await request('/api/connections');if(!noWifi())internetInfo=await command('internet info')}catch(e){notify(e.message,'bad')}if(route==='connect')renderConnect()}
 function renderConnect(){const c=conn||{},wifi=status.wifi,ble=status.ble;
  const card=(id,icon,on,name,state,extra)=>`<div class="card conn"><div class="top"><span class="icbox">${ic(icon,on?'info':'faint')}</span><div><b>${name}</b><small>${state}</small></div>${id?`<button class="sw${on?' on':''}" data-toggle="${id}" role="switch" aria-checked="${on}" aria-label="${name}"></button>`:''}</div>${extra?`<div class="extra">${extra}</div>`:''}</div>`;
  $('connList').innerHTML=(noWifi()?'':card('wifi','wifi',wifi,'Точка доступа Wi-Fi',wifi?'Веб-чат и загрузка карт':'Выключена',wifi&&c.ssid?`<b class="acc">${esc(c.ssid)}</b><div>Пароль: <span class="mono" style="font-size:14px">${esc(c.password)}</span></div><small class="muted">${esc(c.ip)} · выключение прервёт эту страницу</small>`:''))
   +card('ble','ble',ble,'Bluetooth LE',ble?'Приложения MeshMesh и MeshCore':'Выключен',ble&&c.pin?`<b class="acc">PIN ${esc(c.pin)}</b><div class="small muted">${esc(c.ble_name||'')}</div>`:'')
-  +card('','key',true,'Ключ MeshCore','Открытый ключ этого узла',`<div class="mono" id="pubkey" style="user-select:all">${esc(status.public_key)}</div>`)}
+  +card('','key',true,'Ключ MeshCore','Открытый ключ этого узла',`<div class="mono" id="pubkey" style="user-select:all">${esc(status.public_key)}</div>`)+internetCard()}
+function internetCard(){const d=internetInfo;if(noWifi()||!d||typeof d!=='object')return '';return `<h3>Время и интернет по Wi-Fi</h3><div class="card pad"><p class="small muted">${esc(d.state)}${d.ssid?' · '+esc(d.ssid):''}${d.error?' · '+esc(d.error):''}</p><label class="two"><span>Периодическая синхронизация времени</span><input type="checkbox" id="ntpPeriodic" ${d.ntp_enabled?'checked':''}></label><p class="small faint">При устаревшем времени плата подключается примерно раз в час, получает NTP и выключает Wi-Fi. Попытка занимает не больше 45 секунд. Свежее время от телефона позволяет пропустить включение.</p><label class="two"><span>Постоянное подключение</span><input type="checkbox" id="internetAlways" ${d.enabled?'checked':''}></label><h3>Сохранённые сети</h3>${(d.saved||[]).map(n=>`<div class="two"><span>${esc(n.ssid)}</span><button class="btn" data-net-forget="${esc(n.ssid)}">Удалить</button></div>`).join('')}<form id="internetAdd"><label>SSID<input name="ssid" maxlength="32" required autocomplete="off"></label><label>Пароль<input name="password" type="password" maxlength="63" autocomplete="new-password"></label><button class="btn" type="submit">Сохранить сеть</button></form></div>`}
+async function internetDo(line){try{await command(line);await loadConnections()}catch(e){notify(e.message,'bad')}}
+document.addEventListener('change',e=>{if(e.target.id==='ntpPeriodic')internetDo('internet ntp '+(e.target.checked?'on':'off'));if(e.target.id==='internetAlways')internetDo('internet '+(e.target.checked?'on':'off'))});
+document.addEventListener('submit',async e=>{if(e.target.id!=='internetAdd')return;e.preventDefault();const f=e.target;await internetDo('internet save '+JSON.stringify({ssid:f.elements.ssid.value,password:f.elements.password.value}));f.reset()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-net-forget]');if(b)internetDo('internet forget '+b.dataset.netForget)});
 async function toggle(which){
  if(which==='wifi'){if(Date.now()-wifiArmed>5000){wifiArmed=Date.now();notify('Нажмите ещё раз: страница потеряет связь, включить Wi-Fi снова можно только на устройстве','warn');return}
   try{await command('wifi');notify('Точка доступа выключается','warn');clearInterval(timer);stopRadar()}catch(e){notify(e.message,'bad')}return}
@@ -1000,11 +1039,18 @@ function fields(page){const h=heltec();return page==='radio'?[
  config.lang===undefined?{k:'russian',n:'Язык экрана',h:'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:[[true,'Русский'],[false,'English']]}:{k:'lang',n:'Язык экрана',h:status.langs?'Язык меню устройства; другие языки — прошивка с этим языком с сайта':'Язык меню устройства; раскладка ввода — клавиша @',t:'sel',o:status.langs?SCREEN_LANGS.filter(x=>status.langs.split(' ').includes(x[0])):SCREEN_LANGS},
  {k:'brightness',n:h?'Контраст':'Яркость',h:'10–255',t:'range',min:10,max:255,step:1},
  ...h?[]:[{k:'sound',n:'Звуки',h:'Сигнал о сообщениях и подтверждениях',t:'sw'},{k:'auto_lock',n:'Автоблокировка, с',h:'0 = выкл, 30–600 с',t:'num',min:0,max:600,step:30}],
+ ...config.notify_wake===undefined?[]:[
+ {k:'notify_led',n:'Диод при сообщении',h:status.notification_led===false?'На этой плате программно управляемого диода нет':'Режим индикации входящих сообщений',t:'sel',o:[[0,'Выключен'],[1,'Все сообщения'],[2,'Только упоминания']]},
+ {k:'notify_wake',n:'Включать экран',h:'Входящие сообщения; независимо от диода и всплывающего окна',t:'sel',o:[[0,'Не включать'],[1,'Все сообщения'],[2,'Только упоминания']]},
+ {k:'notify_popup',n:'Окно на экране платы',h:'Показывать входящее сообщение поверх текущего экрана',t:'sel',o:[[0,'Выключено'],[1,'Все сообщения'],[2,'Только упоминания']]},
+ {k:'notify_failed',n:'Сигнал о проблеме отправки',h:'Ошибка передатчика или отсутствие ACK личного сообщения',t:'sw'},
+ {k:'notify_words',n:'Ключевые слова платы',h:'Считаются упоминанием; через запятую, до 96 байт UTF-8',t:'text',max:96}],
  {k:'dim_after',n:'Гасить экран, с',h:'0 = выкл, 10–600 с',t:'num',min:0,max:600,step:10},
  ...h||config.lock_details===undefined?[]:[{k:'lock_details',n:'Экран блокировки',h:'Соперник и ход в шахматах, отправитель сообщения',t:'sel',o:[[true,'Подробно'],[false,'Скрыто']]}],
  ...absent(5)?[]:[{k:'gps',n:extGps()?'Внешний GPS':'Приёмник GPS',h:'Питание приёмника',t:'sw'}],
  {k:'utc_offset',n:'Смещение UTC',h:'Местное время, шаг 15 минут',t:'sel',o:utcOptions()},
  {k:'battery_volts',n:'Батарея в строке',h:'Заряд батареи узла: на экране платы и в строке этой страницы',t:'sel',o:[[false,'Проценты'],[true,'Вольты']]}]}
+document.addEventListener('change',async e=>{const k=e.target.dataset.chpolicy;if(!k)return;try{await chanDo({action:'policy',channel:e.target.dataset.channel,[k]:Number(e.target.value)});await loadChans();render()}catch(error){notify(error.message,'bad')}});
 let draft={};
 const same=(k,a,b)=>k==='frequency'?Math.abs(a-b)<.0005:a===b;
 function buildEditor(page){draft={...config};const form=$(page+'Form');
@@ -1171,7 +1217,7 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
  // In the app the phone's clock sets an unset device clock once, so new messages get their reception time.
- if(window.MeshNative&&!clockSynced&&!(status.unix_time>=1735689600)){clockSynced=true;const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
+ if(window.MeshNative&&(!clockSynced||Date.now()-clockSynced>1800000)){clockSynced=Date.now();const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now,source:'phone'}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
  await refreshChess(false,false);
  if(pet===null||route==='home'&&Date.now()-petAt>60000)await loadPet(); // the home tile; the pet page polls itself
  if(dice===null||route==='home'&&Date.now()-diceAt>60000)await loadDice();
