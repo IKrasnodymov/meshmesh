@@ -475,6 +475,12 @@ class MainActivity : ComponentActivity() {
             saveType = type.ifBlank { "application/octet-stream" }
             saveFile.launch(name)
         }
+        /** The phone's position for the board's wardrive log (MeshService.wardriveLocation); location is asked for here. */
+        @android.webkit.JavascriptInterface fun wardriveLocation(on: Boolean) = runOnUiThread {
+            if (!on) service?.wardriveLocation(false)
+            else need(listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), { service?.wardriveLocation(true) }, "Нет доступа к геопозиции")
+        }
+        @android.webkit.JavascriptInterface fun wardriveLocationState(): String = service?.wardriveState() ?: "{}"
         @android.webkit.JavascriptInterface fun scanQr() = runOnUiThread { this@MainActivity.scanQr() }
         @android.webkit.JavascriptInterface fun version(): String = BuildConfig.VERSION_NAME
         @android.webkit.JavascriptInterface fun updateInfo(): String = updateInfo.toString()

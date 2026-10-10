@@ -22,6 +22,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
   非公開チャンネルを作成し、個人メッセージで連絡先を招待し、電波で受信したチャンネルを見つけられます。[docs/en/channels.md](docs/en/channels.md)
 - **地域** — MeshCore の flood 範囲：既定の地域とチャンネルごとの地域、近くの中継器が扱う地域の検索。中継器は `region` コマンドで設定。[docs/en/regions.md](docs/en/regions.md)
 - **オフライン地図** — SD カード上の OpenStreetMap タイル、地図上の GPS 位置とノード。
+- **ウォードライブ** — メッシュのカバー地図：受信したパケットとチャンネルへの ping を、それを中継したリピーターとともに、信頼できる GPS またはスマホの位置で記録。ESP32 では Wi-Fi と Bluetooth も記録し、CSV、GeoJSON、KML、WiGLE に書き出せます。[docs/en/wardrive.md](docs/en/wardrive.md)
 - **周辺のノード** — 信号強度、ホップ数、距離と方位。連絡先、リピーター、ルーム。
 - **信号レーダー** — 周囲の Wi-Fi、Bluetooth、LoRa を表示し、「近い / 遠い」で発信源を探せます。
 - **モーションセンサー** — 2 台のボードの間を人が歩くと検知します (Wi-Fi CSI)。

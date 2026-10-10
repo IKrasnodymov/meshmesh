@@ -25,6 +25,7 @@
 #include "Companion.h"
 #include "Remote.h"
 #include "Regions.h"
+#include "Wardrive.h"
 #include <CayenneLPP.h>
 #include <helpers/SensorManager.h>
 MeshRadio meshRadio;
@@ -254,7 +255,7 @@ class MeshCoreBackend:public BaseChatMesh {
  int calcRxDelay(float,uint32_t) const override{return 0;}
  void logTx(mesh::Packet* packet,int) override{
   owner.txCount++;uint8_t hash[8];packet->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);
-  bool own=false;for(auto& p:owner.pending)if(p.active&&p.started&&p.hash==id){owner.status(p.message.id,ChatMessage::Sent);own=true;if(::channels::isChannel(p.message.destination))p.active=false;}
+  bool own=false;for(auto& p:owner.pending)if(p.active&&p.started&&p.hash==id){if(p.probe)wardrive::probeSent(p.message.id,id);owner.status(p.message.id,ChatMessage::Sent);own=true;if(::channels::isChannel(p.message.destination))p.active=false;}
   if(!own)for(auto& f:forwarded)if(f.at&&millis()-f.at<60000&&!memcmp(f.hash,hash,8)){owner.relayed++;f.at=0;break;}owner.dirty=true;
  }
  void logTxFail(mesh::Packet* packet,int) override{uint8_t hash[8];packet->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);for(auto& p:owner.pending)if(p.active&&p.hash==id){p.active=false;owner.status(p.message.id,ChatMessage::Failed,true);}owner.radioError=owner.radioError?owner.radioError:RADIOLIB_ERR_TX_TIMEOUT;owner.event="Radio TX error "+String(owner.radioError);owner.dirty=true;}
@@ -264,6 +265,9 @@ class MeshCoreBackend:public BaseChatMesh {
  }
  mesh::DispatcherAction onRecvPacket(mesh::Packet* pkt) override{
   uint8_t type=pkt->getPayloadType();
+#if MM_WARDRIVE
+  if(wardrive::running()){uint8_t hash[MAX_HASH_SIZE];pkt->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);wardrive::heard(id,type,pkt->isRouteFlood(),pkt->path_len,pkt->path,pkt->payload,pkt->payload_len,owner.lastSnr,owner.lastRssi);}
+#endif
   if((type==PAYLOAD_TYPE_GRP_TXT||type==PAYLOAD_TYPE_GRP_DATA)&&pkt->payload_len>3){mesh::GroupChannel found[1];if(!searchChannelsByHash(pkt->payload,found,1)){uint8_t hash[8];pkt->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);owner.noteChannel(pkt->payload,pkt->payload_len,id);}}
   return BaseChatMesh::onRecvPacket(pkt);
  }
@@ -399,14 +403,15 @@ bool MeshRadio::sendHello(){return ready&&(core?core->advertise():meshServer.adv
 bool MeshRadio::sendPosition(){if(!config.gps||!hardware.gpsFix()){event="GPS: waiting for fix";dirty=true;return false;}return sendHello();}
 bool MeshRadio::sendMessage(const String& text,uint64_t destination){return queue(text,destination,false);}
 uint32_t MeshRadio::sendGame(const String& text,uint64_t destination){return channels::isChannel(destination)?0:queue(text,destination,true);}
-uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game){
+uint32_t MeshRadio::sendProbe(const String& text,uint64_t channel){return channels::isChannel(channel)?queue(text,channel,true,true):0;}
+uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game,bool probe){
  size_t n=text.length();if(!ready||!core||!config.bootCounter||!n||n>messageLimit(destination)||!meshmesh::validUtf8((const uint8_t*)text.c_str(),n)||!destination||destination==nodeId){event="Message: invalid or radio offline";dirty=true;return false;}
  if(channels::isChannel(destination)){if(channelIndex(destination)<0){event="Not a joined channel";dirty=true;return false;}}
  else{auto* p=contact(destination);if(!p||(p->type!=ADV_TYPE_CHAT&&p->type!=ADV_TYPE_ROOM)){event="Send advert and discover chat contact first";dirty=true;return false;}} // a room takes posts
  Pending* slot=nullptr;for(auto& wait:pending)if(!wait.active){slot=&wait;break;}if(!slot){event="Waiting for ACKs";dirty=true;return false;}
- auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.scoped=scopeKey(channels::isChannel(destination)?channelIndex(destination):-1,wait.scopeKey);wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
+ auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.probe=probe;wait.scoped=scopeKey(channels::isChannel(destination)?channelIndex(destination):-1,wait.scopeKey);wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
-void MeshRadio::status(uint32_t id,ChatMessage::Status value,bool txError){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(!tour::net.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered||history[i].status==value)return;history[i].status=value;notifications::emit(txError?notifications::TxError:value==ChatMessage::Delivered?notifications::Confirmed:value==ChatMessage::Failed?notifications::Unconfirmed:notifications::Transmitted,history[i]);persist(history[i]);dirty=true;break;}}
+void MeshRadio::status(uint32_t id,ChatMessage::Status value,bool txError){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(p.probe){if(value==ChatMessage::Failed)wardrive::probeFailed(id);return;}if(!tour::net.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered||history[i].status==value)return;history[i].status=value;notifications::emit(txError?notifications::TxError:value==ChatMessage::Delivered?notifications::Confirmed:value==ChatMessage::Failed?notifications::Unconfirmed:notifications::Transmitted,history[i]);persist(history[i]);dirty=true;break;}}
 // Route of an outgoing message: the current attempt, or the one that got the ACK. Saved with the next status.
 // The path: the route of a direct attempt, the one returned with a flood delivery; copies match the attempt's packet.
 void MeshRadio::track(const Pending& wait,unsigned attempt,bool delivered,uint8_t pathLen,const uint8_t* path){
@@ -429,6 +434,9 @@ String MeshRadio::routeText(const ChatMessage& m,bool brief) const{
 }
 void MeshRadio::echo(uint32_t packet,uint8_t pathLen,const uint8_t* path){
  if(!packet||!mesh::Packet::isValidPathLen(pathLen))return;
+#if MM_WARDRIVE
+ wardrive::echo(packet,pathLen,path,lastSnr);
+#endif
  notifications::repeatPacket(packet);
  for(unsigned i=0;i<historyCount;i++){auto& m=history[i];if(m.packet!=packet)continue;
   if(m.heard<255)m.heard++;if(m.outgoing)notifications::emit(notifications::Repeat,m);uint8_t size=(pathLen>>6)+1,count=pathLen&63;

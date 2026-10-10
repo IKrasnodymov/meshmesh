@@ -74,6 +74,7 @@ class CommandApi(
             "/api/tour" -> "tour"
             "/api/chess" -> if (query.containsKey("rating")) "chess rating" else query["id"]?.let { "chess show $it" } ?: "chess web"
             "/api/radar" -> "radar web"
+            "/api/wardrive/log" -> "wardrive log " + (if (query["kind"] == "nets") "nets" else "mesh") + " " + (query["from"]?.toIntOrNull()?.coerceAtLeast(0) ?: 0)
             else -> GETS[route] ?: return ApiReply(404, "Not found")
         }
         val reply = cached(command)
@@ -120,6 +121,7 @@ class CommandApi(
             "/api/people" -> return ok(run("people do " + JSONObject(body)))
             "/api/quick" -> return ok(run("quick do " + JSONObject(body)))
             "/api/radar" -> return ok(run("radar do " + JSONObject(body)))
+            "/api/wardrive" -> return ok(run("wardrive do " + JSONObject(body)))
             "/api/channels" -> {
                 val reply = run("channel do " + JSONObject(body))
                 return ApiReply(if (reply.startsWith("ERR")) 400 else 200, reply) // "probe" answers JSON
@@ -185,10 +187,10 @@ class CommandApi(
             "/api/config" to "config", "/api/key" to "key", "/api/navigation" to "navigation",
             "/api/maps" to "map info", "/api/maps/areas" to "map areas", "/api/clock" to "clock",
             "/api/connections" to "connections", "/api/channels" to "channels", "/api/pet" to "pet",
-            "/api/dice" to "dice",
+            "/api/dice" to "dice", "/api/wardrive" to "wardrive",
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
-        private val APP_COMMANDS = listOf("quick", "people", "radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ")
+        private val APP_COMMANDS = listOf("quick", "people", "radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ", "wardrive")
         private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "tour", "map areas", "channels")
         private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy", "channels")
     }

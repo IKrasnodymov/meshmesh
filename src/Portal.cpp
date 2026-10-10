@@ -12,6 +12,7 @@
 #include "Radar.h"
 #include "Internet.h"
 #include "People.h"
+#include "Wardrive.h"
 #include "ChessNet.h"
 #include "ChessTour.h"
 #include "Companion.h"
@@ -45,7 +46,7 @@ uint32_t nextAppNotification=0;
 // The web radar page holds the radar while it polls; the screen may hold it too (uiRadarPage).
 bool webRadar=false;uint32_t webRadarAt=0;
 bool wifiOffPending=false; // the web page turns the access point off after its reply is sent
-void webRadarRelease(){if(!webRadar)return;webRadar=false;if(!uiRadarPage())radar.close();}
+void webRadarRelease(){if(!webRadar)return;webRadar=false;if(!uiRadarPage()&&!wardrive::holdsRadar())radar.close();}
 int radarIndex(uint32_t ref,const String& kind){const char* kinds[]={"wifi","ble","lora"};for(unsigned i=0;i<radar.count;i++)if(Radar::placement(radar.targets[i])==ref&&kind==kinds[radar.targets[i].kind])return i;return -1;}
 String radarAction(JsonObjectConst v){
   String action=v["action"]|"";
@@ -135,6 +136,9 @@ void portalBegin() {
   // Channels: the private keys only over the access point, as /api/key (the home network carries plain HTTP).
   server.on("/api/channels",HTTP_GET,[]{if(authorized())answer(channelsJson(wifiOn));});
   server.on("/api/channels",HTTP_POST,[]{if(!authorized())return;StaticJsonDocument<512>d;if(deserializeJson(d,server.arg("plain"))||!d.is<JsonObject>()){answer("Invalid JSON",false);return;}String reply=channelCommand(d.as<JsonObjectConst>());answer(reply,!reply.startsWith("ERR"));});
+  server.on("/api/wardrive",HTTP_GET,[]{if(authorized())answer(executeCommand("wardrive"));});
+  server.on("/api/wardrive",HTTP_POST,[]{if(authorized()){String reply=executeCommand("wardrive do "+server.arg("plain"));answer(reply,!reply.startsWith("ERR"));}});
+  server.on("/api/wardrive/log",HTTP_GET,[]{if(authorized()){String reply=executeCommand("wardrive log "+server.arg("kind")+" "+String(server.arg("from").toInt()));answer(reply,!reply.startsWith("ERR"));}});
   server.on("/api/people",HTTP_GET,[]{if(authorized())server.send(200,"application/json",executeCommand("people"));});
   server.on("/api/people",HTTP_POST,[]{if(authorized()){String reply=executeCommand("people do "+server.arg("plain"));server.send(reply.startsWith("ERR")?400:200,"text/plain",reply);}});
   server.on("/api/quick",HTTP_GET,[]{if(authorized())answer(executeCommand("quick"));});

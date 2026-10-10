@@ -7,7 +7,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.bluetooth.BluetoothDevice
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.SystemClock
 import android.content.pm.ServiceInfo
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -176,6 +182,7 @@ class MeshService : Service() {
                 rememberCredentials(api, s)
                 goForeground()
                 schedulePolling()
+                applyWardrive()
                 if (kind == "usb" && transport != null) keepAliveUsb(api, transport)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 if (opened !== api) opened?.close() // cancelled while connecting
@@ -291,6 +298,7 @@ class MeshService : Service() {
     }
 
     private fun stopLink() {
+        stopWardrive()
         background?.cancel(); background = null
         keepAlive?.cancel(); keepAlive = null
         wifi?.release(); wifi = null
@@ -317,12 +325,64 @@ class MeshService : Service() {
             .setContentIntent(open).setOngoing(true)
             .addAction(Notification.Action.Builder(null, getString(R.string.disconnect), stop).build())
             .build()
+        // The phone's position for the wardrive log keeps coming with the screen off: a location service as well.
+        val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE or (if (fixWanted()) ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION else 0)
         try {
-            startForeground(ID_LINK, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+            startForeground(ID_LINK, n, type)
             foreground = true
         } catch (_: Exception) {
             // Not allowed from the background on this Android: the link still works while the app is open.
         }
+    }
+
+    // The phone's position for the board's wardrive log (docs/wardrive.md): while it is on and the link is up, GPS
+    // fixes of 50 m or better go to the board every 5 s ("fix"); the board uses each one for 30 s.
+    private var fixJob: Job? = null
+    private var fix: Location? = null
+    private var fixAt = 0L
+    private var fixSentAt = 0L
+    private val fixListener = LocationListener { fix = it; fixAt = SystemClock.elapsedRealtime() }
+
+    private fun fixAllowed() = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    private fun fixWanted() = Prefs(this).wardriveFix && fixAllowed()
+
+    fun wardriveLocation(on: Boolean) {
+        Prefs(this).wardriveFix = on
+        applyWardrive()
+        if (foreground) showForeground()
+    }
+
+    fun wardriveState(): String {
+        val f = fix
+        val o = JSONObject().put("on", Prefs(this).wardriveFix).put("permission", fixAllowed())
+        if (f != null) o.put("accuracy", f.accuracy.toDouble()).put("fix_age", (SystemClock.elapsedRealtime() - fixAt) / 1000)
+        if (fixSentAt > 0) o.put("age", (SystemClock.elapsedRealtime() - fixSentAt) / 1000)
+        return o.toString()
+    }
+
+    @SuppressLint("MissingPermission") // fixWanted checks it
+    private fun applyWardrive() {
+        stopWardrive()
+        if (!fixWanted() || api == null) return
+        val manager = getSystemService(LocationManager::class.java) ?: return
+        runCatching { manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 0f, fixListener, mainLooper) }
+        fixJob = scope.launch {
+            while (isActive) {
+                val f = fix
+                val api = api
+                if (api != null && f != null && SystemClock.elapsedRealtime() - fixAt < 10_000 && f.hasAccuracy() && f.accuracy <= 50f) {
+                    val body = JSONObject().put("action", "fix").put("lat", f.latitude).put("lon", f.longitude).put("accuracy", f.accuracy.toDouble())
+                    if (runCatching { api.request("POST", "/api/wardrive", body.toString()).status }.getOrDefault(0) == 200) fixSentAt = SystemClock.elapsedRealtime()
+                }
+                delay(5000)
+            }
+        }
+    }
+
+    private fun stopWardrive() {
+        fixJob?.cancel(); fixJob = null
+        runCatching { getSystemService(LocationManager::class.java)?.removeUpdates(fixListener) }
+        fix = null
     }
 
     // Background: the page is not polling, so the service does (every 8 s). A change of the RX counter

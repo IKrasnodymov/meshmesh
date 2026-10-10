@@ -10,7 +10,7 @@ import argparse
 import base64
 import json
 import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from device import connect, command
@@ -18,7 +18,7 @@ from device import connect, command
 ROOT = Path(__file__).resolve().parents[1]
 GETS = {'/api/status': 'status', '/api/messages': 'messages', '/api/nodes': 'nodes', '/api/config': 'config',
         '/api/navigation': 'navigation', '/api/maps': 'map info', '/api/maps/areas': 'map areas',
-        '/api/quick': 'quick', '/api/people': 'people', '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice', '/api/channels': 'channels'}
+        '/api/quick': 'quick', '/api/people': 'people', '/api/clock': 'clock', '/api/key': 'key', '/api/pet': 'pet', '/api/dice': 'dice', '/api/channels': 'channels', '/api/wardrive': 'wardrive'}
 
 
 def main():
@@ -55,6 +55,10 @@ def main():
                     self.reply(200, usb('tour'))
                 elif url.path == '/api/connections':
                     self.reply(200, usb('connections'))
+                elif url.path == '/api/wardrive/log':
+                    q = parse_qs(url.query)
+                    kind = 'nets' if q.get('kind', ['mesh'])[0] == 'nets' else 'mesh'
+                    self.reply(200, usb(f"wardrive log {kind} {int(q.get('from', ['0'])[0] or 0)}"))
                 elif url.path == '/api/radar':
                     self.reply(200, usb('radar web'))  # holds the radar open, as the device's own page does
                 elif url.path == '/api/maps/tile':
@@ -86,7 +90,8 @@ def main():
                     'radar do ' + json.dumps(body) if path == '/api/radar' else
                     'channel do ' + json.dumps(body, ensure_ascii=False) if path == '/api/channels' else
                     'quick do ' + json.dumps(body, ensure_ascii=False) if path == '/api/quick' else
-                    'people do ' + json.dumps(body, ensure_ascii=False) if path == '/api/people' else None)
+                    'people do ' + json.dumps(body, ensure_ascii=False) if path == '/api/people' else
+                    'wardrive do ' + json.dumps(body) if path == '/api/wardrive' else None)
             if not line:
                 self.reply(404, 'Not found', 'text/plain')
                 return
@@ -101,7 +106,7 @@ def main():
             pass
 
     print(f'http://{a.host}:{a.http}/ -> {a.port}', flush=True)
-    HTTPServer((a.host, a.http), Handler).serve_forever()
+    ThreadingHTTPServer((a.host, a.http), Handler).serve_forever()  # a browser may hold an idle connection open; the lock keeps USB serial
 
 
 if __name__ == '__main__':

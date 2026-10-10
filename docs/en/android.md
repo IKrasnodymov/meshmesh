@@ -179,6 +179,13 @@ Wi-Fi driver log line, a late command response after a timeout, the 255-byte BLE
 uploading a map, a newline in a message, response codes, tile assembly, the BLE list cache and the
 channel commands (the page's JSON on one line, the `probe` answer, older firmware).
 
+## The phone's position for wardriving (0.13.0)
+
+In the "Wardrive" section the "Send the phone's position" switch asks for precise location and, while the board
+is connected, sends it the phone's GPS fix every 5 s when it is 50 m or better (`wardrive do {"action":"fix"}`).
+The app's service then also runs as a location service, so the position keeps coming with the screen off.
+Details: [wardrive.md](wardrive.md).
+
 ## Limitations
 
 - An nRF52 board (GAT562) that the phone was paired with under the previous firmware comes with

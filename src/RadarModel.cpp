@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: not speed-critical (AGENTS.md, "Языки")
+#endif
 #include "Radar.h"
 #include <ArduinoJson.h>
 // Target table and homing statistics. No radio access here, so the host UI preview links this file.

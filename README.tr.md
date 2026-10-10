@@ -22,6 +22,7 @@ MeshCore düğümleriyle haberleşir.
   özel kanal oluşturma, kişileri doğrudan mesajla davet etme, havada duyulan kanalları bulma. [docs/en/channels.md](docs/en/channels.md)
 - **Bölgeler** — MeshCore flood kapsamı: varsayılan bölge ve kanal başına bölge, yakındaki rölelerin bölgelerini arama; röleler `region` komutlarıyla. [docs/en/regions.md](docs/en/regions.md)
 - **Çevrimdışı haritalar** — SD kartta OpenStreetMap karoları, haritada GPS konumu ve düğümler.
+- **Wardriving** — ağın kapsama haritası: duyulan paketler ve bir kanala atılan pingler, onları ileten rölelerle, güvenilir GPS ya da telefon konumuyla; ESP32’de ayrıca Wi-Fi ve Bluetooth; CSV, GeoJSON, KML ve WiGLE’a aktarma. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Yakındaki düğümler** — sinyal, atlama sayısı, mesafe ve yön; kişiler, tekrarlayıcılar ve odalar.
 - **Sinyal radarı** — çevrenizdeki Wi-Fi, Bluetooth ve LoRa, “sıcak / soğuk” yön bulmayla.
 - **Hareket sensörü** — iki kart, aralarından geçen bir insanı algılar (Wi-Fi CSI).

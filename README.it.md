@@ -22,6 +22,7 @@ nodi MeshCore.
   creane uno privato, invita i contatti con un messaggio diretto, trova i canali sentiti in onda. [docs/en/channels.md](docs/en/channels.md)
 - **Regioni** — ambito dei flood MeshCore: regione predefinita e una per canale, ricerca delle regioni dei ripetitori vicini; ripetitori con i comandi `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Mappe offline** — tile OpenStreetMap sulla scheda SD, posizione GPS e nodi sulla mappa.
+- **Wardriving** — una mappa di copertura della rete: pacchetti sentiti e ping a un canale con i ripetitori che li inoltrano, con posizione GPS o del telefono affidabile; su ESP32 anche Wi-Fi e Bluetooth; esportazione in CSV, GeoJSON, KML e WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nodi vicini** — segnale, hop, distanza e direzione; contatti, ripetitori e stanze.
 - **Radar dei segnali** — Wi-Fi, Bluetooth e LoRa intorno a te, con ricerca “acqua / fuoco”.
 - **Sensore di movimento** — due schede rilevano una persona che cammina tra loro (Wi-Fi CSI).

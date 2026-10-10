@@ -268,5 +268,9 @@
  "f.alerts.d": "Pilih apa yang diberitahukan: pesan pribadi, kanal, dan Public — semua, hanya sebutan, atau mati, dan setiap obrolan tersendiri. Sebutan adalah @[nama] Anda atau kata kunci. Juga catur, node baru, jam tenang, dan umpan dengan filter serta urutan. Di antarmuka web dan aplikasi Android.",
  "shot.web-alerts-feed": "Umpan: sebutan, filter, dan urutan",
  "shot.web-alerts-settings": "Pengaturan: jenis, kata kunci, jam tenang",
- "news.alerts": "<b>Baru:</b> notifikasi — hanya sebutan, obrolan dibisukan, kata kunci, dan jam tenang"
+ "news.alerts": "<b>Baru:</b> notifikasi — hanya sebutan, obrolan dibisukan, kata kunci, dan jam tenang",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Peta jangkauan jaringan Anda. Saat bergerak, node mencatat paket yang didengar beserta repeater dan sinyalnya, lalu mengirim ping ke kanal: repeater yang meneruskan ping menunjukkan di mana jaringan menjangkau Anda dan di mana tidak. Titik muncul di peta dengan warna menurut SNR; papan ESP32 juga mencatat titik akses Wi-Fi dan perangkat Bluetooth. Posisi berasal dari fix GPS tepercaya atau dari ponsel di aplikasi. Ekspor ke CSV, GeoJSON, KML, dan WiGLE.",
+ "news.wardrive": "<b>Baru:</b> wardriving — peta jangkauan jaringan: di mana repeater mendengar Anda dan di mana tidak",
+ "doc.wardrive": "Wardriving"
 }

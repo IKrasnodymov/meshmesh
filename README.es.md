@@ -22,6 +22,7 @@ MeshCore estándar.
   crea uno privado, invita a tus contactos por mensaje directo y encuentra canales oídos en el aire. [docs/en/channels.md](docs/en/channels.md)
 - **Regiones** — ámbito de flood de MeshCore: región predeterminada y una por canal, búsqueda de las regiones de los repetidores cercanos; repetidores con los comandos `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Mapas sin conexión**: teselas de OpenStreetMap en la tarjeta SD, posición GPS y nodos en el mapa.
+- **Wardriving** — un mapa de cobertura de la red: paquetes oídos y pings a un canal con los repetidores que los reenvían, con una posición GPS o del teléfono fiable; en ESP32 también Wi-Fi y Bluetooth; exportación a CSV, GeoJSON, KML y WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nodos cercanos**: señal, saltos, distancia y rumbo; contactos, repetidores y salas.
 - **Radar de señales**: Wi-Fi, Bluetooth y LoRa a tu alrededor, con rastreo tipo “frío / caliente”.
 - **Sensor de movimiento**: dos placas detectan a una persona que camina entre ellas (Wi-Fi CSI).

@@ -22,6 +22,7 @@ MeshCore 노드와 통신합니다.
   비공개 채널을 만들고, 개인 메시지로 연락처를 초대하고, 전파에서 수신된 채널을 찾을 수 있습니다. [docs/en/channels.md](docs/en/channels.md)
 - **지역** — MeshCore flood 범위: 기본 지역과 채널별 지역, 주변 리피터가 맡은 지역 검색; 리피터는 `region` 명령으로 설정. [docs/en/regions.md](docs/en/regions.md)
 - **오프라인 지도** — SD 카드의 OpenStreetMap 타일, 지도 위의 GPS 위치와 노드.
+- **워드라이빙** — 메시 커버리지 지도: 수신한 패킷과 채널 핑을 이를 전달한 리피터와 함께, 신뢰할 수 있는 GPS 또는 휴대폰 위치로 기록합니다. ESP32에서는 Wi-Fi와 Bluetooth도 기록하며 CSV, GeoJSON, KML, WiGLE로 내보냅니다. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **주변 노드** — 신호, 홉, 거리, 방향; 연락처, 리피터, 룸.
 - **신호 레이더** — 주변의 Wi-Fi, Bluetooth, LoRa를 보여 주고 “가까워짐 / 멀어짐” 방식으로 추적합니다.
 - **움직임 센서** — 두 보드가 그 사이를 지나가는 사람을 감지합니다(Wi-Fi CSI).

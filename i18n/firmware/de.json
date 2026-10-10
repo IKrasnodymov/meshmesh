@@ -734,6 +734,11 @@
   "ru": " д",
   "text": " Tg."
  },
+ "28541715": {
+  "en": " dB",
+  "ru": " дБ",
+  "text": " dB"
+ },
  "d0ba0a93": {
   "en": "path unknown",
   "ru": "путь неизвестен",
@@ -939,6 +944,11 @@
   "ru": "Счётчик людей",
   "text": "Personenzähler"
  },
+ "d108e9cf": {
+  "en": "Wardrive",
+  "ru": "Вардрайв",
+  "text": "Wardriving"
+ },
  "cfde1dc9": {
   "en": "Quick send",
   "ru": "Быстрая отправка",
@@ -1113,6 +1123,26 @@
   "en": "Solitaire",
   "ru": "Косынка",
   "text": "Solitär"
+ },
+ "3efed7d9": {
+  "en": "Off",
+  "ru": "Выключен",
+  "text": "Aus"
+ },
+ "15c8d462": {
+  "en": {
+   "one": "point",
+   "other": "points"
+  },
+  "ru": {
+   "one": "точка",
+   "few": "точки",
+   "many": "точек"
+  },
+  "forms": {
+   "one": "{n} Punkt",
+   "other": "{n} Punkte"
+  }
  },
  "b784e416": {
   "en": "Open",
@@ -2379,6 +2409,121 @@
   "ru": "выход",
   "text": "beenden"
  },
+ "d2d3074d": {
+  "en": "Listening",
+  "ru": "Приём",
+  "text": "Empfang"
+ },
+ "c0667420": {
+  "en": "pings",
+  "ru": "пинги",
+  "text": "Pings"
+ },
+ "485dbeaf": {
+  "en": "Phone: ",
+  "ru": "Телефон: ",
+  "text": "Telefon: "
+ },
+ "4840b592": {
+  "en": "No position: GPS fix or phone app",
+  "ru": "Нет позиции: GPS или телефон",
+  "text": "Keine Position: GPS oder Telefon"
+ },
+ "bd70ba45": {
+  "en": "Ping sent, listening for repeaters...",
+  "ru": "Пинг отправлен, слушаю ретрансляторы...",
+  "text": "Ping gesendet, warte auf Repeater..."
+ },
+ "62691fd9": {
+  "en": "No pings yet: P sends one",
+  "ru": "Пингов пока нет: P отправит пинг",
+  "text": "Noch keine Pings: P sendet einen"
+ },
+ "4f430bf3": {
+  "en": "Last ping: ",
+  "ru": "Пинг: ",
+  "text": "Letzter Ping: "
+ },
+ "0ce4368f": {
+  "en": "Last ping: no repeater heard it",
+  "ru": "Пинг: ни один ретранслятор не ответил",
+  "text": "Letzter Ping: kein Repeater hörte ihn"
+ },
+ "2d5e5812": {
+  "en": {
+   "one": "repeater",
+   "other": "repeaters"
+  },
+  "ru": {
+   "one": "ретранслятор",
+   "few": "ретранслятора",
+   "many": "ретрансляторов"
+  },
+  "forms": {
+   "one": "{n} Repeater",
+   "other": "{n} Repeater"
+  }
+ },
+ "5a6be0e7": {
+  "en": "No repeaters heard yet",
+  "ru": "Ретрансляторов пока не слышно",
+  "text": "Noch keine Repeater gehört"
+ },
+ "2655c924": {
+  "en": "OK starts listening and pings",
+  "ru": "OK: начать приём и пинги",
+  "text": "OK startet Empfang und Pings"
+ },
+ "8c3d1688": {
+  "en": "rx ",
+  "ru": "приём ",
+  "text": "rx "
+ },
+ "b86ced7d": {
+  "en": " · echo ",
+  "ru": " · эхо ",
+  "text": " · Echo "
+ },
+ "e578bf19": {
+  "en": "Stop",
+  "ru": "Стоп",
+  "text": "Stopp"
+ },
+ "75a854aa": {
+  "en": "Start",
+  "ru": "Старт",
+  "text": "Start"
+ },
+ "ecb5c89d": {
+  "en": "Ping",
+  "ru": "Пинг",
+  "text": "Ping"
+ },
+ "958b6e2d": {
+  "en": "Wardrive on",
+  "ru": "Вардрайв включён",
+  "text": "Wardriving an"
+ },
+ "814ab30e": {
+  "en": "Wardrive off",
+  "ru": "Вардрайв выключен",
+  "text": "Wardriving aus"
+ },
+ "7953d271": {
+  "en": "Ping queued",
+  "ru": "Пинг в очереди",
+  "text": "Ping eingereiht"
+ },
+ "0e557dad": {
+  "en": "No position yet",
+  "ru": "Позиции пока нет",
+  "text": "Noch keine Position"
+ },
+ "3c785031": {
+  "en": "Wait: a ping is under way",
+  "ru": "Подождите: пинг уже идёт",
+  "text": "Warten: ein Ping läuft"
+ },
  "8aba8c5e": {
   "en": "Choose recipient",
   "ru": "Выберите получателя",
@@ -2468,11 +2613,6 @@
   "en": "Password ",
   "ru": "Пароль ",
   "text": "Passwort "
- },
- "3efed7d9": {
-  "en": "Off",
-  "ru": "Выключен",
-  "text": "Aus"
  },
  "061557aa": {
   "en": "MeshCore identity",
@@ -4919,6 +5059,26 @@
   "ru": "Выберите: Кости +1",
   "text": "Wählen: Würfel +1"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "Login: warten"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "Login: Admin"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "Login abgelehnt"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "Login: keine Antwort"
+ },
  "ea571ac8": {
   "en": "trace: waiting",
   "ru": "трасса: ждём",
@@ -5104,6 +5264,41 @@
   "ru": "клик-далее держ-изм.",
   "text": "Klick-vor Halten-ändern"
  },
+ "340e70af": {
+  "en": "No position: GPS/phone",
+  "ru": "Нет позиции: GPS/тел.",
+  "text": "Keine Pos.: GPS/Tel."
+ },
+ "aeb8ed7c": {
+  "en": "Phone ",
+  "ru": "Тел. ",
+  "text": "Tel. "
+ },
+ "9d57b52f": {
+  "en": "Ping: listening...",
+  "ru": "Пинг: слушаю...",
+  "text": "Ping: lausche..."
+ },
+ "b9f235e5": {
+  "en": "No pings yet",
+  "ru": "Пингов пока нет",
+  "text": "Noch keine Pings"
+ },
+ "296d9b70": {
+  "en": "Ping: nobody repeated",
+  "ru": "Пинг: никто не ответил",
+  "text": "Ping: keine Antwort"
+ },
+ "d3e82775": {
+  "en": "Ping: ",
+  "ru": "Пинг: ",
+  "text": "Ping: "
+ },
+ "75c4a3a6": {
+  "en": " rpt, ",
+  "ru": " ретр., ",
+  "text": " Rep., "
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -5148,6 +5343,31 @@
   "en": "Exit",
   "ru": "Выход",
   "text": "Beenden"
+ },
+ "75ea9303": {
+  "en": "Stop wardrive",
+  "ru": "Остановить вардрайв",
+  "text": "Wardriving stoppen"
+ },
+ "c13252bc": {
+  "en": "Start: listen + ping",
+  "ru": "Старт: приём + пинги",
+  "text": "Start: Empfang + Ping"
+ },
+ "9bb3e8ef": {
+  "en": "Ping now",
+  "ru": "Пинг сейчас",
+  "text": "Ping jetzt"
+ },
+ "b6367d0d": {
+  "en": "Show summary",
+  "ru": "Показать сводку",
+  "text": "Übersicht zeigen"
+ },
+ "1e25191d": {
+  "en": "Repeaters heard",
+  "ru": "Слышимые ретрансляторы",
+  "text": "Gehörte Repeater"
  },
  "6f228773": {
   "en": "Notifications",
@@ -5459,6 +5679,11 @@
   "ru": "Ответ не отправлен",
   "text": "Antwort nicht gesendet"
  },
+ "29271733": {
+  "en": "A ping is under way",
+  "ru": "Пинг уже идёт",
+  "text": "Ping läuft"
+ },
  "58702a65": {
   "en": "Hold again: erase",
   "ru": "Удерж. ещё: стереть",
@@ -5688,6 +5913,16 @@
   "en": "  no fwd",
   "ru": "  без перес.",
   "text": "  keine Weit."
+ },
+ "ef717bee": {
+  "en": "No repeaters yet",
+  "ru": "Ретрансляторов нет",
+  "text": "Keine Repeater"
+ },
+ "339828cc": {
+  "en": "dB echo ",
+  "ru": "дБ эхо ",
+  "text": "dB Echo "
  },
  "328a09d5": {
   "en": "LED / screen / popup",
@@ -6034,26 +6269,6 @@
   "ru": "чат",
   "text": "Chat"
  },
- "5e7a953c": {
-  "en": "login: waiting",
-  "ru": "вход: ждём",
-  "text": "Login: warten"
- },
- "e11722db": {
-  "en": "logged in: admin",
-  "ru": "вход: админ",
-  "text": "Login: Admin"
- },
- "155ccfe5": {
-  "en": "login refused",
-  "ru": "вход: отказ",
-  "text": "Login abgelehnt"
- },
- "0936e82e": {
-  "en": "login: no answer",
-  "ru": "вход: нет ответа",
-  "text": "Login: keine Antwort"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -6063,6 +6278,16 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Zuvor"
+ },
+ "9b345e63": {
+  "en": "No repeaters yet",
+  "ru": "Ретрансляторов пока нет",
+  "text": "Noch keine Repeater"
+ },
+ "f2176011": {
+  "en": "echo ",
+  "ru": "эхо ",
+  "text": "Echo "
  },
  "f0e4f1f9": {
   "en": "click: +1",

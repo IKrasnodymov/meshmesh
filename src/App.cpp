@@ -26,6 +26,7 @@
 #include "ChannelPolicy.h"
 #include "QuickSend.h"
 #include "People.h"
+#include "Wardrive.h"
 #include <LittleFS.h>
 #if !defined(MM_NRF52)
 #include <nvs.h>
@@ -63,7 +64,7 @@ String statusJson() {
 #if !defined(MM_NRF52)
   {nvs_stats_t nvs;if(nvs_get_stats(nullptr,&nvs)==ESP_OK){d["nvs_used"]=nvs.used_entries;d["nvs_free"]=nvs.free_entries;}} // 32-byte entries; the contacts no longer live there
 #endif
-  d["quick_send"]=true;d["people_counter"]=true;d["notification_dropped"]=notifications::dropped();
+  d["quick_send"]=true;d["people_counter"]=true;d["wardrive"]=bool(MM_WARDRIVE);d["notification_dropped"]=notifications::dropped();
 #if defined(MM_COMPACT)
   d["notification_led"]=pins::led>=0;
 #else
@@ -73,7 +74,7 @@ String statusJson() {
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
   {String l;for(int i=0;i<LangCount;i++)if(langAvailable(i))l+=String(l.length()?" ":"")+langCodes[i];d["langs"]=l;} // the screen languages of this image
-  {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";d["modules"]=m;} // optional modules in this image (Modules.h)
+  {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";if(MM_WARDRIVE)m+=String(m.length()?" ":"")+"wardrive";d["modules"]=m;} // optional modules in this image (Modules.h)
 #endif
   d["internet"]=internet.online();d["ble"]=bleActive();d["companion"]=companion::connected();String s;serializeJson(d,s);return s;
 }
@@ -234,6 +235,9 @@ String executeCommand(const String& input) {
   if(line.startsWith("server post ")){if(!meshServer.room())return "ERR room server role is not running";return meshServer.post(line.substring(12))?"OK post stored":"ERR post: 1-151 UTF-8 bytes";}
   if(line=="config")return configJson();
   if(line=="key")return configJson(true); // explicitly requested; never put in ordinary diagnostics
+  if(line=="wardrive")return wardrive::json();
+  if(line.startsWith("wardrive do ")){StaticJsonDocument<512>d;if(deserializeJson(d,line.substring(12))||!d.is<JsonObject>())return "ERR wardrive do {JSON}";return wardrive::command(d.as<JsonObjectConst>());}
+  if(line.startsWith("wardrive log "))return wardrive::log(line.substring(13));
   if(line=="people")return people::json();
   if(line.startsWith("people do ")){StaticJsonDocument<256>d;if(deserializeJson(d,line.substring(10))||!d.is<JsonObject>())return "ERR people JSON";return people::command(d.as<JsonObjectConst>());}
   if(line=="quick")return quickSend::json();
@@ -292,5 +296,5 @@ String executeCommand(const String& input) {
     DynamicJsonDocument d(2048);if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, quick, quick do {JSON}, people, people do {JSON}, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, quick, quick do {JSON}, people, people do {JSON}, wardrive, wardrive do {JSON}, wardrive log mesh|nets FROM, radar, radar web, radar do {JSON}, set {JSON}, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

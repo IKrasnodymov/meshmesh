@@ -27,6 +27,11 @@ class Prefs(context: Context) {
         get() = p.getString("alerts", null)
         set(value) { p.edit().putString("alerts", value).apply() }
 
+    /** The phone's position goes to the board's wardrive log while connected (MeshService.wardriveLocation). */
+    var wardriveFix: Boolean
+        get() = p.getBoolean("wardrive_fix", false)
+        set(value) { p.edit().putBoolean("wardrive_fix", value).apply() }
+
     fun password(ssid: String): String? = p.getString("wifi:$ssid", null)
     fun savePassword(ssid: String, password: String) { p.edit().putString("wifi:$ssid", password).apply() }
 

@@ -10,6 +10,7 @@
 #include "Hardware.h"
 #include "Palette.h"
 #include "MeshRadio.h"
+#include "Wardrive.h"
 #include "Remote.h"
 #include "Maps.h"
 #include "Pet.h"
@@ -53,6 +54,8 @@ void Hardware::line(int y,const String& v,uint16_t color){text(
 static uint32_t nextId=900;
 bool MeshRadio::sendMessage(const String& text,uint64_t destination){ChatMessage m;m.source=nodeId;m.destination=destination;m.outgoing=true;m.status=ChatMessage::Queued;m.timestamp=time(nullptr);m.id=++nextId;strncpy(m.name,"M9",24);strncpy(m.text,text.c_str(),160);addMessage(m,true);event="Queued: waiting for delivery";return true;}
 bool MeshRadio::sendHello(){txCount++;return true;}
+static uint32_t previewProbe=0;
+uint32_t MeshRadio::sendProbe(const String&,uint64_t channel){txCount++;return channels::isChannel(channel)?++previewProbe:0;}
 bool MeshRadio::sendPosition(){return hardware.gpsFix();}
 bool MeshRadio::selfTest(){return true;}
 bool MeshRadio::busy() const{return false;}
@@ -99,6 +102,17 @@ static void save(const std::string& path){
 }
 static std::string outDir;
 static void tick(){fakeMillis+=1000;radar.tick();uiTick();}
+// Wardrive along a street: packets heard through repeater 3A and a zero-hop advert, pings repeated by C7 and 3A,
+// the middle one by nobody.
+static void wardriveData(){
+ const double track[][2]={{55.7963,49.1088},{55.7968,49.1112},{55.7973,49.1137},{55.7979,49.1161},{55.7984,49.1186}};
+ const uint8_t viaA[]={0x3A},viaB[]={0x3A,0xC7},advert[]={0xB2,0x41,0x09};auto saved=hardware.gps.location;
+ for(unsigned i=0;i<5;i++){hardware.gps.location.la=track[i][0];hardware.gps.location.lo=track[i][1];
+  wardrive::heard(0x1000+i,5,true,1,viaA,nullptr,0,6.5f-i*3,-92-int(i)*4);wardrive::heard(0x2000+i,4,true,0,nullptr,advert,3,-2.0f,-104);
+  fakeMillis+=130000;
+  if(wardrive::ping()){wardrive::probeSent(previewProbe,0x5000+i);if(i!=2)wardrive::echo(0x5000+i,2,viaB,9.0f-i*3);if(i!=2&&i!=3)wardrive::echo(0x5000+i,1,viaA,3.0f);fakeMillis+=31000;wardrive::tick();}}
+ hardware.gps.location=saved;
+}
 static void key(int k){uiKey(k);tick();}
 static void shot(const char* name){tick();std::string n=name;
 #if defined(MM_HIRES)
@@ -153,7 +167,7 @@ int main(int argc,char** argv){
   add(peerId(5),meshRadio.nodeId,"Марат",channels::link(invite).c_str(),false,ChatMessage::Received,200);}
  maps.available=true;maps.tileCount=1240;maps.title="Казань";maps.zoom=15;maps.center(55.7963,49.1088);
  navigation.headingValid=true;navigation.heading=37;navigation.calibrated=true;
- quickSend::begin();people::begin();wishlistChecks();uiBegin();scenario();return 0;
+ quickSend::begin();people::begin();wardrive::begin();wishlistChecks();uiBegin();scenario();return 0;
 }
 #include "scenario.inc"
 

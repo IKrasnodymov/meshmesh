@@ -5,6 +5,7 @@
 #include "WifiDiagnostics.h"
 #include "BleDiagnostics.h"
 #include "Internet.h"
+#include "Wardrive.h"
 #include <Mm1Packet.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
@@ -89,6 +90,7 @@ void Radar::mergeScan(int n){
   strlcpy(t->name,ssid.c_str(),sizeof(t->name));size_t len=strlen(t->name);
   if(!meshmesh::validUtf8((const uint8_t*)t->name,len))for(size_t k=0;k<len;k++)if(uint8_t(t->name[k])>=0x80)t->name[k]='?';
   t->channel=channel;t->open=security==WIFI_AUTH_OPEN;t->rssi=constrain(rssi,-127,0);t->seen=now;
+  wardrive::wifi(mac,t->name,channel,security,rssi);
  }
 }
 // LoRa strength means the node itself only for packets heard directly (zero hops).
@@ -104,6 +106,7 @@ void Radar::drainBle(uint32_t now){
  for(unsigned k=0;k<32;k++){
   Heard h;taskENTER_CRITICAL(&guard);bool any=heardTail!=heardHead;if(any){h=heard[heardTail];heardTail=(heardTail+1)%32;}taskEXIT_CRITICAL(&guard);if(!any)break;
   people::hear(false,h.address,h.rssi,(h.device==RadarTarget::Phone||h.device==RadarTarget::Watch||h.device==RadarTarget::Personal));if(!active)continue;
+  wardrive::ble(h.address,h.name,h.rssi);
   if(homing&&h.address==focus.id){windowSum+=h.rssi;windowCount++;rateFrames++;}
   RadarTarget* t=upsert(RadarTarget::Ble,h.address);if(!t)continue;
   if(h.name[0])strlcpy(t->name,h.name,sizeof(t->name));if(h.device!=RadarTarget::Unknown)t->device=h.device;if(h.vendor!=0xffff)t->vendor=h.vendor;

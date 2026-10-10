@@ -92,6 +92,8 @@ class MeshRadio {
   void flush();void sleep();
   bool sendMessage(const String& text,uint64_t destination=meshmesh::Broadcast);
   uint32_t sendGame(const String& text,uint64_t destination); // message ID for delivery, 0 when refused
+  // A wardrive ping (Wardrive.h): a channel message kept out of the history; its packet hash goes to wardrive.
+  uint32_t sendProbe(const String& text,uint64_t channel);
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();void trimHistory();
@@ -114,12 +116,13 @@ class MeshRadio {
   struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};
   // app: sent for a companion app, which retries itself: one attempt with its timestamp and attempt byte.
   bool app=false;uint8_t appAttempt=0;
+  bool probe=false; // a wardrive ping
   // Its region, fixed when queued (an app may choose another right after): scoped - with scopeKey.
   bool scoped=false;uint8_t scopeKey[16]={};} pending[4];
   uint32_t sequence=0,autoHelloDue=0;
   bool transmitting=false;
   uint8_t lastFrame[255]={};size_t lastFrameSize=0;
-  uint32_t queue(const String& text,uint64_t destination,bool game);
+  uint32_t queue(const String& text,uint64_t destination,bool game,bool probe=false);
   bool startRadio(bool quiet);int16_t startReceiving();void addMessage(const ChatMessage& m,bool persist=true);
   void status(uint32_t id,ChatMessage::Status value,bool txError=false);void track(const Pending& wait,unsigned attempt,bool delivered=false,uint8_t pathLen=255,const uint8_t* path=nullptr);uint32_t echoDue=0;void tickEchoes();void persist(const ChatMessage& m);void stampLate();unsigned unstamped=0;
   Peer* contact(uint64_t id);

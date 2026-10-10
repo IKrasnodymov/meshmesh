@@ -20,20 +20,22 @@
 #include "Notifications.h"
 #include "QuickSend.h"
 #include "People.h"
+#include "Wardrive.h"
 #include <Preferences.h>
 #include <Mm1Packet.h>
 #include <time.h>
 #include <math.h>
 #include <initializer_list>
+#include <algorithm>
 // Defined in U8g2_for_Adafruit_GFX.cpp; used to fall back to Latin-1 and placeholders for missing glyphs.
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
 int8_t u8g2_GetGlyphWidth(u8g2_font_t* u8g2,uint16_t encoding);
 // The home tiles, in drawHome() order; the chosen order and the hidden ones: config.apps (App.h).
-const char* const uiApps[]={"chats","map","nodes","nav","connect","radar","health","settings","solitaire","chess","pet","dice","quick","people"};
+const char* const uiApps[]={"chats","map","nodes","nav","connect","radar","health","settings","solitaire","chess","pet","dice","quick","people","wardrive"};
 const uint8_t uiAppCount=sizeof uiApps/sizeof *uiApps;
 namespace {
-enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing,Motion,Game,NetList,ChessList,ChessPick,ChessBoard,RolePick,ServerHome,ChannelAdd,ChannelInfo,ChessTour,ChessTourNew,PetView,DiceView,Remote,QuickView,PeopleView};
-const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing","motion","solitaire","internet","chess","chess_pick","chess_board","role","server","channel_add","channel","chess_tour","chess_tour_new","pet","dice","remote","quick","people"};
+enum Page {Home,Threads,Chat,Map,Nodes,Sensors,Settings,Radio,Display,Network,Diagnostics,Help,Library,Node,Scope,Homing,Motion,Game,NetList,ChessList,ChessPick,ChessBoard,RolePick,ServerHome,ChannelAdd,ChannelInfo,ChessTour,ChessTourNew,PetView,DiceView,Remote,QuickView,PeopleView,WardriveView};
+const char* pageNames[]={"home","threads","chat","map","nodes","sensors","settings","radio","display","network","diagnostics","help","library","node","radar","homing","motion","solitaire","internet","chess","chess_pick","chess_board","role","server","channel_add","channel","chess_tour","chess_tour_new","pet","dice","remote","quick","people","wardrive"};
 enum Key {Enter=13,Erase=8,KeyMsg=0x81,KeyHome=0x82,KeyAt=0x83,KeyAdv=0x84,KeyMap=0x85,KeyBack=0x86,KeyGps=0x87,KeyMic=0x88,KeySet=0x90,KeyHold=0xa3,KeyLeft=0xb4,KeyUp=0xb5,KeyDown=0xb6,KeyRight=0xb7};
 Page page=Home,chatReturn=Threads;
 bool quickTargets=false;uint64_t quickReplyTo=0;
@@ -197,8 +199,8 @@ void sortNodes(){
 }
 Peer* focusedPeer(){return peerOf(focusNode);}
 String netError();String petTileDetail();String diceTileDetail();String diceEditTitle();unsigned diceEditLimit();String diceEditHint();String diceEditOk();bool diceEditRaw();void gameOpen();void gameLeave();String gameTitle();String gameTileDetail();String chessTileDetail();String chessTitle();String tourTitle();
-// Leaving the radar pages keeps the radar running while the web page holds it (webRadarActive).
-void change(Page next){if(page==Game&&next!=Game)gameLeave();if(next==Game&&page!=Game)gameOpen();if(page==Chat&&next!=Chat)rememberComposer();bool radarPage=next==Scope||next==Homing||next==Motion;if(radarPage&&page!=Scope&&page!=Homing&&page!=Motion)scopeManual=false;if(radarPage)radar.open();else if(!webRadarActive())radar.close();if(radarPage||!webRadarActive())radar.setCsi(next!=Motion?Radar::CsiOff:csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();if(next==NetList)internet.rescan();}
+// Leaving the radar pages keeps the radar running while the web page or the wardrive nets log holds it.
+void change(Page next){if(page==Game&&next!=Game)gameLeave();if(next==Game&&page!=Game)gameOpen();if(page==Chat&&next!=Chat)rememberComposer();bool radarPage=next==Scope||next==Homing||next==Motion;if(radarPage&&page!=Scope&&page!=Homing&&page!=Motion)scopeManual=false;if(radarPage)radar.open();else if(!webRadarActive()&&!wardrive::holdsRadar())radar.close();if(radarPage||!webRadarActive())radar.setCsi(next!=Motion?Radar::CsiOff:csiBeaconRole?Radar::CsiBeacon:Radar::CsiSensor);if(next==Scope)radar.untrack();page=next;selected=0;chatOffset=0;action=0;editing=false;deleteArmed=false;dirty=true;if(next==Radio||next==Display)draft=config;if(next==Threads)threads();if(next==Chat){composer=restoredComposer();markRead();}if(next==Library)deserializeJson(library,maps.areas());if(next==Nodes)sortNodes();if(next==NetList)internet.rescan();}
 
 // Time, distances and short labels.
 bool localTime(time_t at,tm& out){if(at<1700000000)return false;at+=config.utcOffset*60;out=*gmtime(&at);return true;}
@@ -211,6 +213,10 @@ String dateText(){tm v;if(!localTime(time(nullptr),v))return t("Clock not set","
  String s=t("{weekday}, {month} {day}","{weekday}, {day} {month}");s.replace("{weekday}",days[v.tm_wday]);s.replace("{month}",months[v.tm_mon]);s.replace("{day}",String(v.tm_mday));return s;
 }
 String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return t("now","сейчас");if(s<3600)return String(s/60)+t(" min"," мин");if(s<86400)return String(s/3600)+t(" h"," ч");return String(s/86400)+t(" d"," д");}
+// Wardrive signal: a path hash, SNR in quarter dB and its colour (Wardrive.h).
+String hashText(const uint8_t* h,uint8_t size){String s;char b[3];for(uint8_t i=0;i<size&&i<3;i++){snprintf(b,3,"%02X",h[i]);s+=b;}return s;}
+String snrText(int8_t q){return String(q/4.0f,1)+t(" dB"," дБ");}
+uint16_t snrColor(int8_t q){return q==-128?bad:q>=20?ok:q>=-20?warn:rgb(0xf08a4b);} // quarter dB: 5 dB and over, -5 dB and over, weaker; -128 nobody
 String pathText(const Peer& p){if(p.pathLength==255)return t("path unknown","путь неизвестен");if(!(p.pathLength&63))return t("direct","напрямую");return count(p.pathLength&63,"hop","hops","хоп","хопа","хопов");}
 String typeText(uint8_t type){switch(type){case 1:return t("Chat node","Чат-узел");case 2:return t("Repeater","Ретранслятор");case 3:return t("Room server","Сервер комнаты");case 4:return t("Sensor","Датчик");}return t("Node","Узел");}
 uint16_t typeColor(uint8_t type){return type==2?violet:type==3?warn:type==4?info:accent;}
@@ -226,7 +232,7 @@ unsigned batteryPercent(){static const uint16_t mv[]={3300,3500,3600,3700,3800,3
 String title(){
  if(locked)return config.name;
  switch(page){case Home:return "MeshMesh";case Threads:return t("Chats","Чаты");case Chat:return nameOf(recipient);case Map:return t("Map","Карта");case Nodes:return t("Nodes","Узлы");case Node:{Peer* p=focusedPeer();return p?String(p->name):t("Node","Узел");}
- case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Radar: signals","Радар: сигналы");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Radar: motion (CSI)","Радар: движение (CSI)");case NetList:return t("Internet over Wi-Fi","Интернет по Wi-Fi");case ChessList:return t("Chess","Шахматы")+" · ELO "+String(rating::book.myElo());case ChessPick:return t("New chess game","Новая партия");case ChessBoard:return chessTitle();case ChessTour:return tourTitle();case ChessTourNew:return t("New tournament","Новый турнир");case PetView:return t("Pet","Питомец");case DiceView:return t("Dice","Кости");case PeopleView:return t("People counter","Счётчик людей");case QuickView:return t("Quick send","Быстрая отправка");case Remote:return t("Server and route","Сервер и маршрут");case RolePick:return t("Device mode","Режим работы");case ChannelAdd:return t("Add a channel","Добавить канал");case ChannelInfo:return nameOf(focusChannel);case ServerHome:return config.role==RoleRoom?t("Room server","Комната"):t("Repeater","Репитер");}return "";
+ case Sensors:return t("Navigation","Навигация");case Settings:return t("Settings","Настройки");case Radio:return t("Radio","Радио");case Display:return t("Screen & device","Экран и устройство");case Network:return t("Connections","Подключения");case Diagnostics:return t("Module health","Состояние модулей");case Help:return t("Keys","Клавиши");case Library:return t("Saved maps","Сохранённые карты");case Scope:return t("Radar: signals","Радар: сигналы");case Homing:return t("Homing","Пеленг");case Game:return gameTitle();case Motion:return t("Radar: motion (CSI)","Радар: движение (CSI)");case NetList:return t("Internet over Wi-Fi","Интернет по Wi-Fi");case ChessList:return t("Chess","Шахматы")+" · ELO "+String(rating::book.myElo());case ChessPick:return t("New chess game","Новая партия");case ChessBoard:return chessTitle();case ChessTour:return tourTitle();case ChessTourNew:return t("New tournament","Новый турнир");case PetView:return t("Pet","Питомец");case DiceView:return t("Dice","Кости");case PeopleView:return t("People counter","Счётчик людей");case WardriveView:return t("Wardrive","Вардрайв");case QuickView:return t("Quick send","Быстрая отправка");case Remote:return t("Server and route","Сервер и маршрут");case RolePick:return t("Device mode","Режим работы");case ChannelAdd:return t("Add a channel","Добавить канал");case ChannelInfo:return nameOf(focusChannel);case ServerHome:return config.role==RoleRoom?t("Room server","Комната"):t("Repeater","Репитер");}return "";
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;
@@ -279,7 +285,8 @@ void drawHome(){
   {IcChess,ink,t("Chess","Шахматы"),chessTileDetail(),chessNet.waiting()},
   {IcPaw,creature.needsCare()?warn:creature.has()?rgb(0xf472b6):dim,t("Pet","Питомец"),petTileDetail(),0},
   {IcDice,dicer.last()?warn:dim,t("Dice","Кости"),diceTileDetail(),0},
-  {IcChat,accent,t("Quick send","Быстрая отправка"),quickSend::targetName(),0},{IcMesh,accent,t("People counter","Счётчик людей"),String(people::settings.manual),0}};
+  {IcChat,accent,t("Quick send","Быстрая отправка"),quickSend::targetName(),0},{IcMesh,accent,t("People counter","Счётчик людей"),String(people::settings.manual),0},
+  {IcTower,wardrive::running()?ok:dim,t("Wardrive","Вардрайв"),wardrive::running()?count(wardrive::points(),"point","points","точка","точки","точек"):t("Off","Выключен"),0}};
  static_assert(sizeof tiles/sizeof *tiles==sizeof uiApps/sizeof *uiApps,"a tile for every app ID");
  uint8_t order[AppsMax];int shown=appsShown(order);selected=constrain(selected,0,shown-1);int firstRow=max(0,selected/tileColumns-1);
  for(int i=firstRow*tileColumns;i<shown&&i<(firstRow+2)*tileColumns;i++){
@@ -364,6 +371,8 @@ void drawMap(){
   double scale=256.0*(1UL<<maps.zoom);
   auto yy=[&](double l){double r=l*M_PI/180;return (1-log(tan(r)+1/cos(r))/M_PI)/2*scale;};
   auto point=[&](double lat,double lon,int& x,int& y){if(!isfinite(lat)||!isfinite(lon)||fabs(lat)>85.05112878)return false;x=160+int((lon-maps.longitude)/360*scale);y=120+int(yy(lat)-yy(maps.latitude));return x>=6&&x<314&&y>=26&&y<216;};
+  {const wardrive::Recent* pts;unsigned n=wardrive::recent(pts);for(unsigned i=0;i<n;i++){int x,y;if(!point(pts[i].lat/1e6,pts[i].lon/1e6,x,y))continue; // the wardrive log: pings larger
+    if(pts[i].kind==wardrive::Ping){d.fillCircle(x,y,5,bar);d.fillCircle(x,y,3,snrColor(pts[i].snr));}else d.fillCircle(x,y,2,snrColor(pts[i].snr));}}
   for(unsigned i=0;i<meshRadio.peerCount;i++){auto& p=meshRadio.peers[i];int x,y;if(!p.position||!point(p.latitude,p.longitude,x,y))continue;
    d.fillCircle(x,y,6,bar);d.fillCircle(x,y,4,typeColor(p.type));String name=fit(p.name,80,small);int w=measure(name,small)+6,lx=constrain(x+8,2,316-w);d.fillRoundRect(lx,y-6,w,11,3,bar);text(lx+3,y+2,name,ink,small);}
   if(hardware.gpsFix()){int x,y;if(point(hardware.gps.location.lat(),hardware.gps.location.lng(),x,y)){
@@ -599,6 +608,35 @@ String settingHint(int i){
 }
 bool draftChanged(){for(int i=0;i<settingRows()-1;i++)if(settingValue(draft,i)!=settingValue(config,i))return true;return false;}
 void drawPeople(){panel(8,28,304,178,card);text(18,52,t("Manual: ","Вручную: ")+String(people::settings.manual),ink,big);text(18,85,"BLE: "+String(people::count(false))+(people::saturated(false)?"+":""),accent,bold);text(18,112,"Wi-Fi: "+String(people::count(true))+(people::saturated(true)?"+":""),info,bold);text(18,140,String(people::settings.window)+t("s window","с окно")+" · RSSI "+String(people::settings.rssi),dim);text(18,166,t("Devices nearby are an estimate","Устройства рядом - приблизительная оценка"),dim,small);text(18,186,t("More options in the app","Остальные настройки в приложении"),dim,small);footer({{"OK",t("+1","+1")},{"^v",t("+1 / -1","+1 / -1")},{"HOLD","BLE"},{"BACK",t("exit","выход")}});}
+// Wardrive (Wardrive.h): what it logs, the position it uses, the last ping and the repeaters heard.
+String wardriveMode(){if(!wardrive::running())return t("Off","Выключен");String s;if(wardrive::settings.passive)s=t("Listening","Приём");if(wardrive::settings.ping)s+=String(s.length()?" + ":"")+t("pings","пинги");if(wardrive::settings.nets)s+=String(s.length()?" + ":"")+"Wi-Fi/BLE";return s;}
+void drawWardrive(){
+ int32_t lat,lon;bool phone,fix=wardrive::position(lat,lon,phone),on=wardrive::running();
+ panel(8,26,304,44,card,8);icon(IcTower,26,48,9,on?ok:faint,card);
+ text(44,44,fit(wardriveMode(),256,bold),on?ink:dim,bold);
+ text(44,61,fit(fix?(phone?t("Phone: ","Телефон: "):"GPS: ")+String(lat/1e6,5)+", "+String(lon/1e6,5):t("No position: GPS fix or phone app","Нет позиции: GPS или телефон"),256,small),fix?dim:warn,small);
+ panel(8,74,304,42,card,8);
+ String counts=count(wardrive::points(),"point","points","точка","точки","точек");if(wardrive::settings.nets||wardrive::nets())counts+=" · Wi-Fi/BLE "+String(wardrive::nets());
+ text(18,90,fit(counts,288,small),ink,small);
+ const auto& r=wardrive::last();String last=wardrive::pinging()?t("Ping sent, listening for repeaters...","Пинг отправлен, слушаю ретрансляторы..."):!r.done?t("No pings yet: P sends one","Пингов пока нет: P отправит пинг"):
+  r.count?t("Last ping: ","Пинг: ")+count(r.count,"repeater","repeaters","ретранслятор","ретранслятора","ретрансляторов")+", "+hashText(r.hash,r.size)+" "+snrText(r.snr)+" · "+ago(millis()-r.at):t("Last ping: no repeater heard it","Пинг: ни один ретранслятор не ответил")+String(" · ")+ago(millis()-r.at);
+ text(18,107,fit(last,288,small),wardrive::pinging()?accent:r.done&&!r.count?bad:dim,small);
+ const wardrive::Repeater* list;unsigned n=wardrive::repeaters(list),order[24];for(unsigned i=0;i<n;i++)order[i]=i;
+ std::sort(order,order+n,[&](unsigned a,unsigned b){unsigned x=list[a].echoes*4+list[a].rx,y=list[b].echoes*4+list[b].rx;return x!=y?x>y:list[a].snr>list[b].snr;});
+ if(!n)textCenter(160,150,on?t("No repeaters heard yet","Ретрансляторов пока не слышно"):t("OK starts listening and pings","OK: начать приём и пинги"),faint,small);
+ for(unsigned i=0;i<n&&i<5;i++){auto& e=list[order[i]];int y=132+i*17;
+  text(18,y,hashText(e.hash,e.size),ink,bold);text(80,y,snrText(e.snr),snrColor(e.snr),small);
+  text(150,y,t("rx ","приём ")+String(e.rx)+t(" · echo "," · эхо ")+String(e.echoes),dim,small);textRight(306,y,ago(millis()-e.at),faint,small);}
+ footer({{"OK",on?t("Stop","Стоп"):t("Start","Старт")},{"P",t("Ping","Пинг")},{"N","Wi-Fi/BLE"},{"BACK",t("Back","Назад")}});
+}
+// OK starts (listening and pings) or stops; P pings now; N switches the Wi-Fi/BLE log.
+bool wardriveKey(int key){
+ StaticJsonDocument<128>d;d["action"]="settings";
+ if(key==Enter){if(wardrive::running()){d["action"]="stop";}else{d["passive"]=true;d["ping"]=true;}String r=wardrive::command(d.as<JsonObjectConst>());if(r.startsWith("ERR"))notice(r,bad);else notice(wardrive::running()?t("Wardrive on","Вардрайв включён"):t("Wardrive off","Вардрайв выключен"),wardrive::running()?ok:dim);return true;}
+ if(key=='p'||key=='P'){int32_t lat,lon;bool phone;notice(wardrive::ping()?t("Ping queued","Пинг в очереди"):!wardrive::position(lat,lon,phone)?t("No position yet","Позиции пока нет"):t("Wait: a ping is under way","Подождите: пинг уже идёт"),wardrive::pinging()?accent:warn);return true;}
+ if(key=='n'||key=='N'){d["nets"]=!wardrive::settings.nets;String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith("ERR")?r:"Wi-Fi/BLE: "+flag(wardrive::settings.nets),r.startsWith("ERR")?bad:ok);return true;}
+ return false;
+}
 String quickName(uint64_t id){if(auto* c=meshRadio.channel(id))return c->name;if(const Peer* p=meshRadio.findContact(id))return p->name;return t("Choose recipient","Выберите получателя");}
 void drawQuick(){unsigned n=quickTargets?quickSend::targetCount():quickSend::Count+1;selected=constrain(selected,0,max(0,int(n)-1));
  if(quickTargets){
@@ -765,7 +803,7 @@ void draw(){
  case Radio:case Display:drawEditor();break;case Network:drawNetwork();break;case NetList:drawNetList();break;case Diagnostics:drawDiagnostics();break;case Help:drawHelp();break;
  case Scope:drawScope();break;case Homing:drawHoming();break;case Game:drawGame();break;case Motion:drawMotion();break;
  case ChessList:drawChessList();break;case ChessPick:drawChessPick();break;case ChessBoard:drawChessBoard();break;case ChessTour:drawTourCard();break;case ChessTourNew:drawTourNew();break;
- case RolePick:drawRolePick();break;case ServerHome:drawServer();break;case PetView:drawPet();break;case DiceView:drawDice();break;case QuickView:drawQuick();break;case PeopleView:drawPeople();break;
+ case RolePick:drawRolePick();break;case ServerHome:drawServer();break;case PetView:drawPet();break;case DiceView:drawDice();break;case QuickView:drawQuick();break;case PeopleView:drawPeople();break;case WardriveView:drawWardrive();break;
  case ChannelAdd:drawChannelAdd();break;case ChannelInfo:drawChannelInfo();break;case Remote:drawRemote();break;
  }
  statusBar();if(editing&&!locked)drawEditing();if(layoutHelp&&!locked)drawLayoutHelp();drawToast();hardware.flush();
@@ -860,6 +898,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(page==Home&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){uint8_t order[AppsMax];int tileCount=appsShown(order),tileRows=(tileCount+tileColumns-1)/tileColumns;selected=constrain(selected,0,tileCount-1);int col=selected%tileColumns,row=selected/tileColumns,n=min(tileColumns,tileCount-row*tileColumns);if(key==KeyLeft)col=(col+n-1)%n;if(key==KeyRight)col=(col+1)%n;if(key==KeyUp)row=(row+tileRows-1)%tileRows;if(key==KeyDown)row=(row+1)%tileRows;selected=min(row*tileColumns+col,tileCount-1);return;}
  if(page==Node&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){Peer* p=focusedPeer();if(!p)return;NodeAction acts[5];int n=nodeActions(*p,acts);action=(action+(key==KeyLeft||key==KeyUp?-1:1)+n)%n;return;}
  if(page==Sensors&&(key==KeyLeft||key==KeyRight)){selected^=1;return;}
+ if(page==WardriveView&&wardriveKey(key))return;
  if(page==Scope&&(key==KeyUp||key==KeyDown)){int i=scopeSelected();scopeManual=true;if(radar.count)scopeSelect((i+(key==KeyUp?-1:1)+radar.count)%radar.count);return;}
  if(page==Scope&&(key==KeyLeft||key==KeyRight)){change(Motion);return;}
  if(page==Motion&&(key==KeyLeft||key==KeyRight)){change(Scope);return;}
@@ -868,7 +907,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(key==KeyUp||key==KeyDown){if(page==Threads)threads();if(page==Nodes)sortNodes();int total=page==Threads?conversationCount:page==ChannelAdd?addRows():page==Nodes?nodeTotal:page==Settings?settingsCount:page==Radio||page==Display?settingRows():page==Network?4:page==NetList?1+int(netCount()):page==Sensors?2:page==Library?int(library.size()):1;selected=total?(selected+(key==KeyUp?-1:1)+total)%total:0;if(page==Nodes&&nodeTotal)focusNode=meshRadio.peers[nodeOrder[selected]].id;return;}
  if((page==Radio||page==Display)&&(key==KeyLeft||key==KeyRight)){alter(key==KeyLeft?-1:1);return;}
  if(key!=Enter&&key!=KeyHold)return;
- if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Scope,Diagnostics,Settings,Game,ChessList,PetView,DiceView,QuickView,PeopleView};uint8_t order[AppsMax];int n=appsShown(order);if(selected>=0&&selected<n){if(pages[order[selected]]==QuickView){quickReplyTo=0;quickTargets=false;}change(pages[order[selected]]);}}
+ if(page==Home){Page pages[]={Threads,Map,Nodes,Sensors,Network,Scope,Diagnostics,Settings,Game,ChessList,PetView,DiceView,QuickView,PeopleView,WardriveView};uint8_t order[AppsMax];int n=appsShown(order);if(selected>=0&&selected<n){if(pages[order[selected]]==QuickView){quickReplyTo=0;quickTargets=false;}change(pages[order[selected]]);}}
  else if(page==Library&&library.size()){if(maps.selectArea(library[selected]["id"].as<String>()))change(Map);else notice(t("Map unavailable","Карта недоступна"),bad);}
  else if(page==Threads){threads();if(!conversations[selected]){change(ChannelAdd);return;}recipient=conversations[selected];chatReturn=Threads;composer="";change(Chat);}
  else if(page==ChannelAdd)channelAddEnter();

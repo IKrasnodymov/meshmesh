@@ -39,6 +39,7 @@ eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/Notifications.cpp" -o "$
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/ChannelPolicy.cpp" -o "$B/policy.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/QuickSend.cpp" -o "$B/quick.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/People.cpp" -o "$B/people.o"
+eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/Wardrive.cpp" -o "$B/wardrive.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/History.cpp" -o "$B/history.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/HistoryStorage.cpp" -o "$B/history-storage.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/HistoryReply.cpp" -o "$B/history-reply.o"

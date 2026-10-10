@@ -16,6 +16,8 @@
 #include "Notifications.h"
 #include "QuickSend.h"
 #include "People.h"
+#include "Wardrive.h"
+#include <algorithm>
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
@@ -31,8 +33,8 @@
 // the menu, the centre runs the action or opens the menu, Back closes and goes home; messages are
 // written on an on-screen keyboard (UiCompose.inc).
 namespace {
-enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,NotifyPage,QuickPage,PeoplePage,PageCount};
-const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules","notifications","quick","people"};
+enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,NotifyPage,QuickPage,PeoplePage,WardrivePage,PageCount};
+const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules","notifications","quick","people","wardrive"};
 unsigned quickIndex=0,quickTargetIndex=0;bool quickTargets=false,quickReply=false;uint64_t quickReplyTo=0;
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
@@ -134,9 +136,10 @@ String wifiState(){
 #endif
  switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
-void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive())radar.close();if(page==QuickPage){quickTargets=false;quickIndex=0;}if(page==Messages){messageOffset=0;unreadCount=0;}}
+void showPage(int next){page=next;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive()&&!wardrive::holdsRadar())radar.close();if(page==QuickPage){quickTargets=false;quickIndex=0;}if(page==Messages){messageOffset=0;unreadCount=0;}}
 // Server roles show the pages that still mean something: no chats, nodes or radar.
 bool pageShown(int p){
+ if(p==WardrivePage&&!MM_WARDRIVE)return false;
 #if defined(MM_NO_WIFI)
  if(p==Wifi)return false; // no Wi-Fi radio
 #endif
@@ -159,7 +162,11 @@ const char* const uiApps[]={"chats","nodes",
 #if MM_DICE
  "dice",
 #endif
- "quick","people","radar","gps",MM_WIFI_APP("wifi")"ble","settings","health"};
+ "quick","people",
+#if MM_WARDRIVE
+ "wardrive",
+#endif
+ "radar","gps",MM_WIFI_APP("wifi")"ble","settings","health"};
 const uint8_t uiAppCount=sizeof uiApps/sizeof *uiApps;
 namespace {
 const uint8_t appPages[]={Messages,Nodes,
@@ -172,7 +179,11 @@ const uint8_t appPages[]={Messages,Nodes,
 #if MM_DICE
  DicePage,
 #endif
- QuickPage,PeoplePage,Signals,Gps,MM_WIFI_APP(Wifi)Ble,Settings,Modules};
+ QuickPage,PeoplePage,
+#if MM_WARDRIVE
+ WardrivePage,
+#endif
+ Signals,Gps,MM_WIFI_APP(Wifi)Ble,Settings,Modules};
 static_assert(sizeof appPages==sizeof uiApps/sizeof *uiApps,"a page for every app ID");
 // What a click goes through: Home, then the shown apps in the chosen order.
 unsigned pageCycle(uint8_t* cycle){unsigned n=0;cycle[n++]=Home;uint8_t order[AppsMax];unsigned k=appsShown(order);for(unsigned i=0;i<k;i++)if(pageShown(appPages[order[i]]))cycle[n++]=appPages[order[i]];return n;}
@@ -277,10 +288,22 @@ String radioHint(){
 #endif
 }
 
+#if MM_WARDRIVE
+// Wardrive (Wardrive.h): its summary or the repeaters heard (wardriveList); hold opens the menu.
+bool wardriveList=false;
+String wdHash(const uint8_t* h,uint8_t size){String s;char b[3];for(uint8_t i=0;i<size&&i<3;i++){snprintf(b,3,"%02X",h[i]);s+=b;}return s;}
+String wdSnr(int8_t q){char b[12];snprintf(b,sizeof b,"%+.1f",q/4.0f);return b;}
+String wdMode(){if(!wardrive::running())return t("Off","Выключен");String s;if(wardrive::settings.passive)s=t("Listening","Приём");if(wardrive::settings.ping)s+=String(s.length()?" + ":"")+t("pings","пинги");if(wardrive::settings.nets)s+=String(s.length()?" + ":"")+"Wi-Fi";return s;}
+String wdPosition(){int32_t lat,lon;bool phone;if(!wardrive::position(lat,lon,phone))return t("No position: GPS/phone","Нет позиции: GPS/тел.");return String(phone?t("Phone ","Тел. "):"GPS ")+String(lat/1e6,5)+" "+String(lon/1e6,5);}
+String wdCounts(){String s=plural(wardrive::points(),"point","points","точка","точки","точек");if(wardrive::settings.nets||wardrive::nets())s+=" · Wi-Fi "+String(wardrive::nets());return s;}
+String wdLast(){const auto& r=wardrive::last();if(wardrive::pinging())return t("Ping: listening...","Пинг: слушаю...");if(!r.done)return t("No pings yet","Пингов пока нет");if(!r.count)return t("Ping: nobody repeated","Пинг: никто не ответил");return t("Ping: ","Пинг: ")+String(r.count)+t(" rpt, "," ретр., ")+wdHash(r.hash,r.size)+" "+wdSnr(r.snr);}
+unsigned wdOrder(unsigned* order,const wardrive::Repeater*& list){unsigned n=wardrive::repeaters(list);for(unsigned i=0;i<n;i++)order[i]=i;
+ std::sort(order,order+n,[&](unsigned a,unsigned b){unsigned x=list[a].echoes*4+list[a].rx,y=list[b].echoes*4+list[b].rx;return x!=y?x>y:list[a].snr>list[b].snr;});return n;}
+#endif
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPeopleMinus,ActPeopleReset,ActPeopleBle,ActPeopleWifi,ActPeopleWindow,ActPeopleRssi,ActPeoplePersonal,ActPeopleClear,ActPeopleExit,ActQuick,ActNotify,ActNotifyLed,ActNotifyWake,ActNotifyPopup,ActNotifyFailed,ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
-  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActClose};
+  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActWardriveRun,ActWardrivePing,ActWardriveView,ActWardriveNets,ActClose};
 constexpr unsigned MenuMax=12;
 #if MM_DICE
 #include "UiDiceCompact.inc"
@@ -352,6 +375,13 @@ unsigned actions(Act* out){
  out[n++]=ActPeopleWifi;
 #endif
  out[n++]=ActPeopleWindow;out[n++]=ActPeopleRssi;out[n++]=ActPeoplePersonal;out[n++]=ActPeopleClear;out[n++]=ActPeopleExit;break;
+ #if MM_WARDRIVE
+ case WardrivePage:out[n++]=ActWardriveRun;if(wardrive::running())out[n++]=ActWardrivePing;out[n++]=ActWardriveView;
+#if !defined(MM_NO_WIFI)
+  out[n++]=ActWardriveNets;
+#endif
+  break;
+#endif
  case NotifyPage:if(pins::led>=0)out[n++]=ActNotifyLed;out[n++]=ActNotifyWake;out[n++]=ActNotifyPopup;out[n++]=ActNotifyFailed;break;
  case Modules:if(!hardware.fsOk)out[n++]=ActFormat;out[n++]=ActSelfTest;break; // FS ERR is shown here
  }if(n>1)out[n++]=ActClose;return n;
@@ -371,6 +401,12 @@ String actName(Act a){
  const ChatMessage* m=shownMessage();bool publicChat=m&&channels::isChannel(m->destination);
  switch(a){
  case ActQuick:return t("Quick send","Быстрая отправка");
+#if MM_WARDRIVE
+ case ActWardriveRun:return wardrive::running()?t("Stop wardrive","Остановить вардрайв"):t("Start: listen + ping","Старт: приём + пинги");
+ case ActWardrivePing:return t("Ping now","Пинг сейчас");
+ case ActWardriveView:return wardriveList?t("Show summary","Показать сводку"):t("Repeaters heard","Слышимые ретрансляторы");
+ case ActWardriveNets:return "Wi-Fi/BLE: "+flag(wardrive::settings.nets);
+#endif
  case ActNotify:return t("Notifications","Уведомления");
  case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String("LED: "):a==ActNotifyWake?t("Wake: ","Экран: "):t("Popup: ","Окно: "))+(mode==0?t("off","выкл."):mode==1?t("all","все"):String("@"));}
  case ActNotifyFailed:return t("TX alert: ","Ошибка TX: ")+(config.notifyFailed?t("on","вкл."):t("off","выкл."));
@@ -415,6 +451,12 @@ void run(Act a){
  switch(a){
  case ActQuick:{const ChatMessage* m=shownMessage();if(m){quickReplyTo=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;quickReply=true;showPage(QuickPage);quickIndex=1;}break;}
  case ActNotify:showPage(NotifyPage);break;
+#if MM_WARDRIVE
+ case ActWardriveRun:case ActWardriveNets:{StaticJsonDocument<128>d;d["action"]=a==ActWardriveRun&&wardrive::running()?"stop":"settings";if(a==ActWardriveNets)d["nets"]=!wardrive::settings.nets;else if(!wardrive::running()){d["passive"]=true;d["ping"]=true;}
+  String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith("ERR")?r:a==ActWardriveNets?"Wi-Fi/BLE: "+flag(wardrive::settings.nets):wardrive::running()?t("Wardrive on","Вардрайв включён"):t("Wardrive off","Вардрайв выключен"));break;}
+ case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t("Ping queued","Пинг в очереди"):!wardrive::position(lat,lon,phone)?t("No position yet","Позиции пока нет"):t("A ping is under way","Пинг уже идёт"));break;}
+ case ActWardriveView:wardriveList=!wardriveList;break;
+#endif
  case ActNotifyLed:notice(applyOne("notify_led",(config.notifyLed+1)%3));break;
  case ActNotifyWake:notice(applyOne("notify_wake",(config.notifyWake+1)%3));break;
  case ActNotifyPopup:notice(applyOne("notify_popup",(config.notifyPopup+1)%3));break;
@@ -639,6 +681,12 @@ void draw(){
  switch(page){
  case PeoplePage:title=t("People counter","Счётчик людей");say(0,21,t("Manual: ","Вручную: ")+String(people::settings.manual),bold);say(0,35,"BLE "+String(people::count(false))+(people::saturated(false)?"+":"")+"  Wi-Fi "+String(people::count(true))+(people::saturated(true)?"+":""),small);say(0,46,String(people::settings.window)+t("s window","с окно"),small);break;
  case QuickPage:title=t("Quick send","Быстрая отправка");drawQuickMono();break;
+#if MM_WARDRIVE
+ case WardrivePage:title=t("Wardrive","Вардрайв");
+  if(wardriveList){unsigned order[24];const wardrive::Repeater* l;unsigned n=wdOrder(order,l);if(!n)say(0,30,t("No repeaters yet","Ретрансляторов нет"),small);
+   for(unsigned i=0;i<n&&i<4;i++){auto& e=l[order[i]];say(0,20+i*9,clipped(wdHash(e.hash,e.size)+" "+wdSnr(e.snr)+t("dB echo ","дБ эхо ")+String(e.echoes)+" rx "+String(e.rx),25),small);}}
+  else{say(0,21,clipped(wdMode(),21),bold);say(0,32,clipped(wdPosition(),25),small);say(0,41,clipped(wdCounts(),25),small);say(0,50,clipped(wdLast(),25),small);}break;
+#endif
  case NotifyPage:title=t("Notifications","Уведомления");say(0,28,t("LED / screen / popup","LED / экран / окно"),small);say(0,42,t("hold: menu","держ: меню"),small);break;
  case Home:{title=config.name;if(config.role!=RoleNormal){drawServerHome();break;}say(0,31,clockText(time(nullptr)),u8g2_font_10x20_t_cyrillic);
   if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(" MHz"," МГц"));sayRight(128,30,"SF"+String(config.sf)+" BW"+String(config.bandwidth,1));}else sayRight(128,24,t("Radio error ","Ошибка радио ")+String(meshRadio.radioError));

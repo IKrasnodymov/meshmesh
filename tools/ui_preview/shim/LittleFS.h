@@ -18,6 +18,7 @@ class File {
  size_t write(uint8_t byte){return write(&byte,1);}
  size_t print(const String& value){return write((const uint8_t*)value.c_str(),value.length());}
  size_t println(const String& value){return print(value)+write(uint8_t('\n'));}
+ bool seek(size_t pos){if(!open||pos>size())return false;at=pos;return true;}
  bool available() const{return open&&at<size();}
  String readStringUntil(char delimiter){String value;uint8_t c;while(read(&c,1)){if(c==uint8_t(delimiter))break;value+=char(c);}return value;}
  void close(){open=false;}

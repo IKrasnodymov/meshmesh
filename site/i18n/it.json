@@ -268,5 +268,9 @@
  "f.alerts.d": "Scegli di cosa essere avvisato: messaggi diretti, canali e Public — tutti, solo menzioni o disattivati, e ogni chat per conto suo. Una menzione è il tuo @[nome] o una parola chiave. Inoltre scacchi, nuovi nodi, ore di silenzio e un elenco con filtri e ordinamento. Nell'interfaccia web e nell'app Android.",
  "shot.web-alerts-feed": "Elenco: menzioni, filtri e ordine",
  "shot.web-alerts-settings": "Impostazioni: tipi, parole chiave, ore di silenzio",
- "news.alerts": "<b>Novità:</b> notifiche — solo menzioni, chat silenziate, parole chiave e ore di silenzio"
+ "news.alerts": "<b>Novità:</b> notifiche — solo menzioni, chat silenziate, parole chiave e ore di silenzio",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Una mappa di copertura della tua rete. In movimento il nodo registra i pacchetti che sente con il ripetitore e il segnale, e invia ping a un canale: i ripetitori che inoltrano il ping mostrano dove la rete ti raggiunge e dove no. I punti compaiono sulla mappa colorati secondo l’SNR; le schede ESP32 registrano anche punti di accesso Wi-Fi e dispositivi Bluetooth. La posizione viene da un fix GPS affidabile o dal telefono nell’app. Esportazione in CSV, GeoJSON, KML e WiGLE.",
+ "news.wardrive": "<b>Novità:</b> wardriving — una mappa di copertura della rete: dove i ripetitori ti sentono e dove no",
+ "doc.wardrive": "Wardriving"
 }

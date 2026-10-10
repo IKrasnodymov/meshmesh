@@ -268,5 +268,9 @@
  "f.alerts.d": "Choisissez ce qui vous est signalé : messages directs, canaux et Public — tout, mentions seulement ou rien, et chaque discussion à part. Une mention, c'est votre @[nom] ou un mot-clé. Aussi les échecs, les nouveaux nœuds, les heures calmes et un fil avec filtres et tri. Dans l'interface web et l'application Android.",
  "shot.web-alerts-feed": "Fil : mentions, filtres et ordre",
  "shot.web-alerts-settings": "Réglages : types, mots-clés, heures calmes",
- "news.alerts": "<b>Nouveau :</b> notifications — mentions seulement, discussions muettes, mots-clés et heures calmes"
+ "news.alerts": "<b>Nouveau :</b> notifications — mentions seulement, discussions muettes, mots-clés et heures calmes",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Une carte de couverture de votre réseau. En déplacement, le nœud enregistre les paquets qu’il entend avec le répéteur et le signal, et envoie des pings à un canal : les répéteurs qui relaient le ping montrent où le réseau vous atteint et où il ne vous atteint pas. Les points s’affichent sur la carte, colorés selon le SNR ; les cartes ESP32 enregistrent aussi les points d’accès Wi-Fi et les appareils Bluetooth. La position vient d’un fix GPS fiable ou du téléphone dans l’application. Export en CSV, GeoJSON, KML et WiGLE.",
+ "news.wardrive": "<b>Nouveau :</b> wardriving — une carte de couverture du réseau : où les répéteurs vous entendent et où non",
+ "doc.wardrive": "Wardriving"
 }

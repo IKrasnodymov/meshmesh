@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """nRF52 boards (GAT562 30S, Heltec T114): package, back up and install through the Adafruit UF2 bootloader.
 
-  package ENV [--without chess,pet,dice] [--lang CODE]
+  package ENV [--without chess,pet,dice,wardrive] [--lang CODE]
                      firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
                      English and Russian, and in lang/<code>/ the image of English and that language
                      (1 MB flash: one image does not hold every language; tools/pio_lang.py).
@@ -91,7 +91,7 @@ def dfu_package(data, base_zip, out):
         z.writestr('manifest.json', json.dumps(manifest, indent=4))
 
 
-MODULES = ('chess', 'pet', 'dice')  # optional modules (include/Modules.h)
+MODULES = ('chess', 'pet', 'dice', 'wardrive')  # optional modules (include/Modules.h)
 WITHOUT = ()  # the modules this run leaves out (package --without)
 
 

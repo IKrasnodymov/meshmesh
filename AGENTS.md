@@ -12,7 +12,7 @@
 растёт и может умереть (`src/Pet.cpp`, экраны `src/UiPet.inc`, `src/UiPetCompact.inc`, T114 — `src/UiHires.inc`;
 `docs/pet.md`), кости — дайсер DIC3R: RPG-броски и формулы, сетка Warhammer, счётчики и персонажи на устройстве (`src/Dice.cpp`,
 экраны `src/UiDice.inc`, `src/UiDiceCompact.inc`, T114 — `src/UiHires.inc`; `docs/dice.md`), путь пакета у сообщения в вебе и приложении (репитеры по хешам пути, SNR/RSSI, повторы своих сообщений —
-`MeshRadio::echo`, `renderMsg` в `web/index.html`), уведомления веба и приложения (виды, упоминания, настройка чата, тихие часы, лента — `alertFor` в `web/index.html`, `android/.../Alerts.kt`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
+`MeshRadio::echo`, `renderMsg` в `web/index.html`), уведомления веба и приложения (виды, упоминания, настройка чата, тихие часы, лента — `alertFor` в `web/index.html`, `android/.../Alerts.kt`), режимы репитера и комнаты MeshCore (выбор при загрузке, `src/MeshServer.cpp`, `docs/repeater.md`), вардрайв — карта покрытия сети: журнал принятых пакетов с позицией, пинги в `#wardrive` с эхом ретрансляторов, Wi-Fi/BLE радара на ESP32, экспорт CSV/GeoJSON/KML/WiGLE, позиция телефона из приложения (`src/Wardrive.cpp`, `docs/wardrive.md`; запись только с доверенной позицией `gpsFix` или `fix` из приложения, отключаемый модуль nRF52 `MM_NO_WARDRIVE`), диагностика, интерфейс экранов и сайт на 15 языках (раздел «Языки») и приложение для Android (`android/`, `docs/android.md`). Общаться с пользователем
 по-русски. Доводить согласованные изменения до сборки, установки и проверки,
 если устройства доступны. Различать реализованную функцию, успешную сборку,
 установленную прошивку и подтверждённую аппаратную работу.
@@ -158,9 +158,9 @@ Gradle `output-metadata.json`, не вычисляет их из версии п
 поле `MMLANG:` в образе (`site/nrf52dfu.js`); метка применяется один раз. GAT562 и T114 (1 МБ flash) получают
 образ «английский + русский» или «английский + выбранный язык» без русских строк (`lang/<код>/`, `MM_LANG`,
 `MM_NO_RU`, `tools/pio_lang.py`; ключ перевода `tr()` считается при компиляции, `include/I18n.h`; `docs/gat562.md`):
-размер проверять по самому большому, китайскому (`tools/nrf52.py package`). На nRF52 `UiHeltec.cpp`, `Dice.cpp`
+размер проверять по самому большому, китайскому (`tools/nrf52.py package`). На nRF52 `UiHeltec.cpp`, `Dice.cpp`, `Wardrive.cpp`, `Clock.cpp`, `Config.cpp`, `Navigation.cpp`, `RadarModel.cpp`, `nrf52/PortalNrf.cpp`
 и `MeshRadio.cpp` (с протоколом companion), а также `App.cpp`, шахматы, `Pet.cpp`, `Channels.cpp` и `MeshServer.cpp` собираются с `-Os` (прагма в файле, остальное `-O2`): иначе китайский образ T114 не помещался.
-Шахматы, питомец и кости на nRF52 — отключаемые модули (`include/Modules.h`, `MM_NO_CHESS|PET|DICE`,
+Шахматы, питомец, кости и вардрайв на nRF52 — отключаемые модули (`include/Modules.h`, `MM_NO_CHESS|PET|DICE|WARDRIVE`,
 `tools/nrf52.py package ENV --without …`, `docs/gat562.md`); сайт и приложение ставят полный набор. Новые
 обращения к этим модулям из общего кода и компактного интерфейса обёртывать `#if MM_CHESS` и т. п. и проверять
 сборку без них. Кириллические шрифты остаются во всех

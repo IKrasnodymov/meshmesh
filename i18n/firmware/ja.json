@@ -734,6 +734,11 @@
   "ru": " д",
   "text": " 日"
  },
+ "28541715": {
+  "en": " dB",
+  "ru": " дБ",
+  "text": " dB"
+ },
  "d0ba0a93": {
   "en": "path unknown",
   "ru": "путь неизвестен",
@@ -938,6 +943,11 @@
   "ru": "Счётчик людей",
   "text": "人数カウンター"
  },
+ "d108e9cf": {
+  "en": "Wardrive",
+  "ru": "Вардрайв",
+  "text": "電波マップ"
+ },
  "cfde1dc9": {
   "en": "Quick send",
   "ru": "Быстрая отправка",
@@ -1108,6 +1118,25 @@
   "en": "Solitaire",
   "ru": "Косынка",
   "text": "ソリティア"
+ },
+ "3efed7d9": {
+  "en": "Off",
+  "ru": "Выключен",
+  "text": "オフ"
+ },
+ "15c8d462": {
+  "en": {
+   "one": "point",
+   "other": "points"
+  },
+  "ru": {
+   "one": "точка",
+   "few": "точки",
+   "many": "точек"
+  },
+  "forms": {
+   "other": "{n} 地点"
+  }
  },
  "b784e416": {
   "en": "Open",
@@ -2366,6 +2395,120 @@
   "ru": "выход",
   "text": "終了"
  },
+ "d2d3074d": {
+  "en": "Listening",
+  "ru": "Приём",
+  "text": "受信"
+ },
+ "c0667420": {
+  "en": "pings",
+  "ru": "пинги",
+  "text": "ping"
+ },
+ "485dbeaf": {
+  "en": "Phone: ",
+  "ru": "Телефон: ",
+  "text": "スマホ: "
+ },
+ "4840b592": {
+  "en": "No position: GPS fix or phone app",
+  "ru": "Нет позиции: GPS или телефон",
+  "text": "位置なし: GPS かスマホ"
+ },
+ "bd70ba45": {
+  "en": "Ping sent, listening for repeaters...",
+  "ru": "Пинг отправлен, слушаю ретрансляторы...",
+  "text": "ping 送信済み、リピーター待ち..."
+ },
+ "62691fd9": {
+  "en": "No pings yet: P sends one",
+  "ru": "Пингов пока нет: P отправит пинг",
+  "text": "ping なし: P で送信"
+ },
+ "4f430bf3": {
+  "en": "Last ping: ",
+  "ru": "Пинг: ",
+  "text": "前回 ping: "
+ },
+ "0ce4368f": {
+  "en": "Last ping: no repeater heard it",
+  "ru": "Пинг: ни один ретранслятор не ответил",
+  "text": "前回 ping: 応答したリピーターなし"
+ },
+ "2d5e5812": {
+  "en": {
+   "one": "repeater",
+   "other": "repeaters"
+  },
+  "ru": {
+   "one": "ретранслятор",
+   "few": "ретранслятора",
+   "many": "ретрансляторов"
+  },
+  "forms": {
+   "other": "リピーター {n} 台"
+  }
+ },
+ "5a6be0e7": {
+  "en": "No repeaters heard yet",
+  "ru": "Ретрансляторов пока не слышно",
+  "text": "リピーターはまだ聞こえません"
+ },
+ "2655c924": {
+  "en": "OK starts listening and pings",
+  "ru": "OK: начать приём и пинги",
+  "text": "OK で受信と ping を開始"
+ },
+ "8c3d1688": {
+  "en": "rx ",
+  "ru": "приём ",
+  "text": "受信 "
+ },
+ "b86ced7d": {
+  "en": " · echo ",
+  "ru": " · эхо ",
+  "text": " · エコー "
+ },
+ "e578bf19": {
+  "en": "Stop",
+  "ru": "Стоп",
+  "text": "停止"
+ },
+ "75a854aa": {
+  "en": "Start",
+  "ru": "Старт",
+  "text": "開始"
+ },
+ "ecb5c89d": {
+  "en": "Ping",
+  "ru": "Пинг",
+  "text": "Ping"
+ },
+ "958b6e2d": {
+  "en": "Wardrive on",
+  "ru": "Вардрайв включён",
+  "text": "電波マップ開始"
+ },
+ "814ab30e": {
+  "en": "Wardrive off",
+  "ru": "Вардрайв выключен",
+  "text": "電波マップ停止"
+ },
+ "7953d271": {
+  "en": "Ping queued",
+  "ru": "Пинг в очереди",
+  "text": "ping を送信待ち"
+ },
+ "0e557dad": {
+  "en": "No position yet",
+  "ru": "Позиции пока нет",
+  "text": "位置はまだありません"
+ },
+ "3c785031": {
+  "en": "Wait: a ping is under way",
+  "ru": "Подождите: пинг уже идёт",
+  "text": "待機: ping 送信中"
+ },
  "8aba8c5e": {
   "en": "Choose recipient",
   "ru": "Выберите получателя",
@@ -2455,11 +2598,6 @@
   "en": "Password ",
   "ru": "Пароль ",
   "text": "パスワード "
- },
- "3efed7d9": {
-  "en": "Off",
-  "ru": "Выключен",
-  "text": "オフ"
  },
  "061557aa": {
   "en": "MeshCore identity",
@@ -4899,6 +5037,26 @@
   "ru": "Выберите: Кости +1",
   "text": "選択: ダイス +1"
  },
+ "5e7a953c": {
+  "en": "login: waiting",
+  "ru": "вход: ждём",
+  "text": "ログイン：待機中"
+ },
+ "e11722db": {
+  "en": "logged in: admin",
+  "ru": "вход: админ",
+  "text": "ログイン：管理者"
+ },
+ "155ccfe5": {
+  "en": "login refused",
+  "ru": "вход: отказ",
+  "text": "ログイン拒否"
+ },
+ "0936e82e": {
+  "en": "login: no answer",
+  "ru": "вход: нет ответа",
+  "text": "ログイン：応答なし"
+ },
  "ea571ac8": {
   "en": "trace: waiting",
   "ru": "трасса: ждём",
@@ -5083,6 +5241,41 @@
   "ru": "клик-далее держ-изм.",
   "text": "押す:次 長押し:変更"
  },
+ "340e70af": {
+  "en": "No position: GPS/phone",
+  "ru": "Нет позиции: GPS/тел.",
+  "text": "位置なし: GPS/スマホ"
+ },
+ "aeb8ed7c": {
+  "en": "Phone ",
+  "ru": "Тел. ",
+  "text": "スマホ "
+ },
+ "9d57b52f": {
+  "en": "Ping: listening...",
+  "ru": "Пинг: слушаю...",
+  "text": "ping: 受信待ち..."
+ },
+ "b9f235e5": {
+  "en": "No pings yet",
+  "ru": "Пингов пока нет",
+  "text": "ping なし"
+ },
+ "296d9b70": {
+  "en": "Ping: nobody repeated",
+  "ru": "Пинг: никто не ответил",
+  "text": "ping: 応答なし"
+ },
+ "d3e82775": {
+  "en": "Ping: ",
+  "ru": "Пинг: ",
+  "text": "ping: "
+ },
+ "75c4a3a6": {
+  "en": " rpt, ",
+  "ru": " ретр., ",
+  "text": " 中継, "
+ },
  "c50372df": {
   "en": "Invitation to channel ",
   "ru": "Приглашение в канал ",
@@ -5127,6 +5320,31 @@
   "en": "Exit",
   "ru": "Выход",
   "text": "終了"
+ },
+ "75ea9303": {
+  "en": "Stop wardrive",
+  "ru": "Остановить вардрайв",
+  "text": "電波マップ停止"
+ },
+ "c13252bc": {
+  "en": "Start: listen + ping",
+  "ru": "Старт: приём + пинги",
+  "text": "開始: 受信 + ping"
+ },
+ "9bb3e8ef": {
+  "en": "Ping now",
+  "ru": "Пинг сейчас",
+  "text": "今すぐ ping"
+ },
+ "b6367d0d": {
+  "en": "Show summary",
+  "ru": "Показать сводку",
+  "text": "概要を表示"
+ },
+ "1e25191d": {
+  "en": "Repeaters heard",
+  "ru": "Слышимые ретрансляторы",
+  "text": "聞こえたリピーター"
  },
  "6f228773": {
   "en": "Notifications",
@@ -5438,6 +5656,11 @@
   "ru": "Ответ не отправлен",
   "text": "返信を送信できず"
  },
+ "29271733": {
+  "en": "A ping is under way",
+  "ru": "Пинг уже идёт",
+  "text": "ping 送信中"
+ },
  "58702a65": {
   "en": "Hold again: erase",
   "ru": "Удерж. ещё: стереть",
@@ -5667,6 +5890,16 @@
   "en": "  no fwd",
   "ru": "  без перес.",
   "text": "  中継なし"
+ },
+ "ef717bee": {
+  "en": "No repeaters yet",
+  "ru": "Ретрансляторов нет",
+  "text": "リピーターなし"
+ },
+ "339828cc": {
+  "en": "dB echo ",
+  "ru": "дБ эхо ",
+  "text": "dB エコー "
  },
  "328a09d5": {
   "en": "LED / screen / popup",
@@ -6013,26 +6246,6 @@
   "ru": "чат",
   "text": "チャット"
  },
- "5e7a953c": {
-  "en": "login: waiting",
-  "ru": "вход: ждём",
-  "text": "ログイン：待機中"
- },
- "e11722db": {
-  "en": "logged in: admin",
-  "ru": "вход: админ",
-  "text": "ログイン：管理者"
- },
- "155ccfe5": {
-  "en": "login refused",
-  "ru": "вход: отказ",
-  "text": "ログイン拒否"
- },
- "0936e82e": {
-  "en": "login: no answer",
-  "ru": "вход: нет ответа",
-  "text": "ログイン：応答なし"
- },
  "696ee294": {
   "en": "Optional",
   "ru": "Заводить по желанию",
@@ -6042,6 +6255,16 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "前回"
+ },
+ "9b345e63": {
+  "en": "No repeaters yet",
+  "ru": "Ретрансляторов пока нет",
+  "text": "リピーターはまだなし"
+ },
+ "f2176011": {
+  "en": "echo ",
+  "ru": "эхо ",
+  "text": "エコー "
  },
  "f0e4f1f9": {
   "en": "click: +1",

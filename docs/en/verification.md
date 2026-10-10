@@ -1,5 +1,21 @@
 # MeshMesh verification
 
+> **0.20.0: wardriving, targeted check on M9 and V4** (10 October 2026, branch `feature/wardrive`, not
+> published). Packages 0.20.0 installed with `tools/flash.py`: M9 — `build_sha256=3394D5422378…`, boot 245;
+> V4 — `41C5A7944B0D…`, boot 252; revision `1321ce0-dirty` (worktree sources before the commit). Settings,
+> history (64) and keys kept, no restarts during the check. The full `finish_on_hardware.py` was not run.
+>
+> On air: M9, pinging every 50 m, sent 6 pings to `#wardrive`, all with echoes — V4 (`C99339`, SNR +16 dB) and
+> eight third-party repeaters of the mesh (AB, 77, D0, D5, D3, DA, C2, D2). Pings stayed out of the chat
+> history. The passive log of M9 recorded V4's advert directly (key `C99339`) and its copies via DA, D3, D0;
+> V4 logged 16 points and 411 Wi-Fi/BLE radar records. M9's position came from the `fix` command over USB (the
+> app's path), not from a phone; V4 used its own GPS: the fix date, 10 October 2026, matched the clock with 9
+> satellites, so it was accepted. The web page (USB bridge, browser) showed the section, the points on the map
+> and the CSV, GeoJSON, KML and WiGLE exports. The M9's own screen was captured over USB. Afterwards
+> wardriving was switched off, the test log of M9 deleted; M9 stays in `#wardrive`; interfaces as before
+> (M9 Wi-Fi/BLE off, V4 Wi-Fi off, BLE on). Not checked: T114, GAT562 and community boards on hardware (only
+> builds, all language packages and the preview), the position from the app on a phone, a drive with a real
+> GPS fix, physical buttons.
 > **0.19.1: Quick Send recipient on all boards** (10 October 2026, builds and native UI).
 > The shared compact interface now starts with a pinned recipient card too:
 > OLED uses an outline, inversion and an arrow; T114 uses a colour card with a caption and name.

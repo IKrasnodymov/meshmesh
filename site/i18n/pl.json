@@ -268,5 +268,9 @@
  "f.alerts.d": "Wybierz, o czym chcesz wiedzieć: wiadomości prywatne, kanały i Public — wszystkie, tylko wzmianki lub wyłączone, a każdy czat osobno. Wzmianka to Twoje @[imię] lub słowo kluczowe. Do tego szachy, nowe węzły, godziny ciszy i lista z filtrami i sortowaniem. W interfejsie WWW i aplikacji na Androida.",
  "shot.web-alerts-feed": "Lista: wzmianki, filtry i kolejność",
  "shot.web-alerts-settings": "Ustawienia: rodzaje, słowa kluczowe, godziny ciszy",
- "news.alerts": "<b>Nowość:</b> powiadomienia — tylko wzmianki, wyciszone czaty, słowa kluczowe i godziny ciszy"
+ "news.alerts": "<b>Nowość:</b> powiadomienia — tylko wzmianki, wyciszone czaty, słowa kluczowe i godziny ciszy",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Mapa zasięgu twojej sieci. W drodze węzeł zapisuje odebrane pakiety z przekaźnikiem i sygnałem oraz wysyła pingi na kanał: przekaźniki, które przekazały ping, pokazują, gdzie sieć cię słyszy, a gdzie nie. Punkty pojawiają się na mapie w kolorze według SNR; płytki ESP32 zapisują też punkty dostępu Wi-Fi i urządzenia Bluetooth. Pozycja pochodzi z zaufanego fixu GPS albo z telefonu w aplikacji. Eksport do CSV, GeoJSON, KML i WiGLE.",
+ "news.wardrive": "<b>Nowość:</b> wardriving — mapa zasięgu sieci: gdzie przekaźniki cię słyszą, a gdzie nie",
+ "doc.wardrive": "Wardriving"
 }

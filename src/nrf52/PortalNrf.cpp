@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash: not speed-critical (AGENTS.md, "Языки")
+#endif
 // nRF52 boards: no Wi-Fi, so the device page reaches the phone over Bluetooth (the Android app) or
 // USB. The BLE service is the one of src/Portal.cpp: commands written to 7a9e0002, replies with a
 // trailing newline notified on 7a9e0003, both behind MITM pairing with the PIN shown on the screen.

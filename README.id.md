@@ -22,6 +22,7 @@ MeshCore standar.
   buat kanal privat, undang kontak lewat pesan langsung, temukan kanal yang terdengar di udara. [docs/en/channels.md](docs/en/channels.md)
 - **Wilayah** — cakupan flood MeshCore: wilayah bawaan dan per kanal, pencarian wilayah repeater terdekat; repeater diatur dengan perintah `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Peta offline** — tile OpenStreetMap di kartu SD, posisi GPS dan node di peta.
+- **Wardriving** — peta jangkauan jaringan: paket yang didengar dan ping ke kanal beserta repeater yang meneruskannya, dengan posisi GPS atau ponsel yang tepercaya; di ESP32 juga Wi-Fi dan Bluetooth; ekspor ke CSV, GeoJSON, KML, dan WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Node di sekitar** — sinyal, hop, jarak dan arah; kontak, repeater dan ruang.
 - **Radar sinyal** — Wi-Fi, Bluetooth dan LoRa di sekitar Anda, dengan pelacakan “panas / dingin”.
 - **Sensor gerak** — dua papan mendeteksi orang yang berjalan di antaranya (Wi-Fi CSI).

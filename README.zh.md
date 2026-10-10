@@ -21,6 +21,7 @@
   创建私密频道，通过私信邀请联系人，发现空中收到的频道。[docs/en/channels.md](docs/en/channels.md)
 - **区域** — MeshCore 的 flood 范围：默认区域和每个频道的区域，查找附近中继器服务的区域；中继器用 `region` 命令设置。[docs/en/regions.md](docs/en/regions.md)
 - **离线地图**——SD 卡上的 OpenStreetMap 瓦片，在地图上显示 GPS 位置和节点。
+- **扫街测绘** — 网络覆盖地图：收到的数据包和发往频道的 ping，以及转发它们的中继，并带有可信的 GPS 或手机位置；ESP32 上还记录 Wi-Fi 和蓝牙；可导出为 CSV、GeoJSON、KML 和 WiGLE。[docs/en/wardrive.md](docs/en/wardrive.md)
 - **附近节点**——信号、跳数、距离和方位；联系人、中继器和房间。
 - **信号雷达**——扫描周围的 Wi-Fi、Bluetooth 和 LoRa，支持“变强 / 变弱”测向。
 - **移动传感器**——两块开发板可检测到有人从它们之间走过（Wi-Fi CSI）。

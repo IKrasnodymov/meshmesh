@@ -102,7 +102,7 @@ String pageTitle(int p){
  case DicePage:return diceTitle();
 #endif
  case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
- case PeoplePage:return t("People counter","Счётчик людей");case QuickPage:return t("Quick send","Быстрая отправка");case NotifyPage:return t("Notifications","Уведомления");case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
+ case PeoplePage:return t("People counter","Счётчик людей");case WardrivePage:return t("Wardrive","Вардрайв");case QuickPage:return t("Quick send","Быстрая отправка");case NotifyPage:return t("Notifications","Уведомления");case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
  return t("Modules","Модули");
 }
 // The click hint names the next screen: "click: Nodes".
@@ -397,6 +397,17 @@ void radioPage(){
  for(auto& s:parts){int dash=s.indexOf('-');if(dash>0)s=s.substring(0,dash)+": "+s.substring(dash+1);}footer({parts[0],parts[1]});
  toast();
 }
+#if MM_WARDRIVE
+// Wardrive: mode, position, counts and the last ping; or the repeaters heard (SNR in dB), the busiest first.
+void wardrivePage(){
+ if(wardriveList){unsigned order[24];const wardrive::Repeater* l;unsigned n=wdOrder(order,l);if(!n){empty(IcTower,t("No repeaters yet","Ретрансляторов пока нет"),t("hold: menu","держ: меню"));return;}
+  for(unsigned i=0;i<n&&i<4;i++){auto& e=l[order[i]];int y=42+i*19;text(12,y,wdHash(e.hash,e.size),ColInk,bold);text(84,y,wdSnr(e.snr),e.snr>=20?ColGood:e.snr>=-20?ColWarn:ColBad,small);right(230,y,t("echo ","эхо ")+String(e.echoes)+" · rx "+String(e.rx),ColDim,small);}return;}
+ int32_t lat,lon;bool phone,fix=wardrive::position(lat,lon,phone),on=wardrive::running();const auto& r=wardrive::last();
+ icon(IcTower,20,40,8,on?ColGood:ColFaint);text(36,46,fit(wdMode(),196,bold),on?ColInk:ColDim,bold);
+ text(12,66,fit(wdPosition(),220,small),fix?ColDim:ColWarn,small);text(12,84,fit(wdCounts(),220,small),ColInk,small);
+ text(12,102,fit(wdLast(),220,small),wardrive::pinging()?ColAccent:r.done&&!r.count?ColBad:ColDim,small);
+}
+#endif
 void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),ColInk,bold);center(120,106,t("To turn on:","Включить:")+" "+powerOnHint(),ColDim,small);}
 void draw(){
  auto& d=g();
@@ -430,6 +441,9 @@ void draw(){
  case DicePage:dicePage();break;
 #endif
  case Signals:signals(title);break;
+#if MM_WARDRIVE
+ case WardrivePage:wardrivePage();break;
+#endif
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
  if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}

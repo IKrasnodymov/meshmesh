@@ -268,5 +268,9 @@
  "f.alerts.d": "Neyin bildirileceğini seçin: özel mesajlar, kanallar ve Public — hepsi, yalnızca bahsetmeler ya da kapalı; her sohbet ayrı ayarlanabilir. Bahsetme, sizin @[ad]ınız ya da bir anahtar kelimedir. Ayrıca satranç, yeni düğümler, sessiz saatler ve filtreli, sıralanabilir bir akış. Web arayüzünde ve Android uygulamasında.",
  "shot.web-alerts-feed": "Akış: bahsetmeler, filtreler ve sıra",
  "shot.web-alerts-settings": "Ayarlar: türler, anahtar kelimeler, sessiz saatler",
- "news.alerts": "<b>Yeni:</b> bildirimler — yalnızca bahsetmeler, sessiz sohbetler, anahtar kelimeler ve sessiz saatler"
+ "news.alerts": "<b>Yeni:</b> bildirimler — yalnızca bahsetmeler, sessiz sohbetler, anahtar kelimeler ve sessiz saatler",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Ağınızın kapsama haritası. Yolda düğüm duyduğu paketleri röle ve sinyalle kaydeder ve bir kanala ping atar: pingi ileten röleler ağın size nerede ulaştığını, nerede ulaşmadığını gösterir. Noktalar haritada SNR’ye göre renklenir; ESP32 kartlar ayrıca Wi-Fi erişim noktalarını ve Bluetooth cihazlarını kaydeder. Konum güvenilir bir GPS fix’inden ya da uygulamadaki telefondan gelir. CSV, GeoJSON, KML ve WiGLE’a aktarma.",
+ "news.wardrive": "<b>Yeni:</b> wardriving — ağınızın kapsama haritası: rölelerin sizi nerede duyup nerede duymadığı",
+ "doc.wardrive": "Wardriving"
 }

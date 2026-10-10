@@ -22,6 +22,7 @@
 #include "QuickSend.h"
 #include "Notifications.h"
 #include "People.h"
+#include "Wardrive.h"
 #include <Wire.h>
 #include <esp_system.h>
 #include <memory>
@@ -159,7 +160,7 @@ void appSetup() {
 #if !defined(MM_NO_WIFI)
   internet.begin(); // a server keeps Wi-Fi for the device page only
 #endif
-  quickSend::begin();people::begin();BOOT("navigation");navigation.begin();BOOT("portal");portalBegin();BOOT("ui");uiBegin();
+  quickSend::begin();people::begin();wardrive::begin();BOOT("navigation");navigation.begin();BOOT("portal");portalBegin();BOOT("ui");uiBegin();
   // Bluetooth left on comes back after a restart (power, RESET, auto-reset of a USB-UART bridge), unless the restart was a crash.
 #if !defined(MM_EMULATOR) // QEMU has no radio
   {esp_reset_reason_t r=esp_reset_reason();if(config.bleOn&&r!=ESP_RST_PANIC&&r!=ESP_RST_INT_WDT&&r!=ESP_RST_TASK_WDT&&r!=ESP_RST_WDT){BOOT("ble");bleToggle();}}
@@ -173,7 +174,7 @@ void appLoop() {
 #if !defined(MM_NO_WIFI)
   internet.tick();
 #endif
-  maps.tick();navigation.tick();radar.tick();people::tick();notifications::tick();creature.tick();dicer.tick();
+  maps.tick();navigation.tick();radar.tick();people::tick();wardrive::tick();notifications::tick();creature.tick();dicer.tick();
   int key=hardware.readKey();if(key){powerWake();uiKey(key);}
 #if defined(MM_BOARD_TDECK)
   {int x=0,y=0;char touch=hardware.readTouch(x,y);if(touch){powerWake();uiTouch(touch,x,y);}}

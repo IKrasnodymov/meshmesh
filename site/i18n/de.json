@@ -268,5 +268,9 @@
  "f.alerts.d": "Wählen Sie, worüber Sie informiert werden: Direktnachrichten, Kanäle und Public — alle, nur Erwähnungen oder aus, und jeder Chat für sich. Eine Erwähnung ist Ihr @[Name] oder ein Stichwort. Dazu Schach, neue Knoten, Ruhezeiten und ein Verlauf mit Filtern und Sortierung. In der Weboberfläche und der Android-App.",
  "shot.web-alerts-feed": "Verlauf: Erwähnungen, Filter und Reihenfolge",
  "shot.web-alerts-settings": "Einstellungen: Arten, Stichwörter, Ruhezeiten",
- "news.alerts": "<b>Neu:</b> Benachrichtigungen — nur Erwähnungen, stumme Chats, Stichwörter und Ruhezeiten"
+ "news.alerts": "<b>Neu:</b> Benachrichtigungen — nur Erwähnungen, stumme Chats, Stichwörter und Ruhezeiten",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "Eine Abdeckungskarte Ihres Netzes. Unterwegs zeichnet der Knoten empfangene Pakete mit Repeater und Signal auf und pingt einen Kanal an: Die Repeater, die den Ping weitergeben, zeigen, wo das Netz Sie erreicht und wo nicht. Die Punkte erscheinen auf der Karte, nach SNR eingefärbt; ESP32-Boards erfassen zusätzlich WLAN-Zugangspunkte und Bluetooth-Geräte. Die Position stammt aus einem vertrauenswürdigen GPS-Fix oder vom Telefon in der App. Export als CSV, GeoJSON, KML und für WiGLE.",
+ "news.wardrive": "<b>Neu:</b> Wardriving — eine Abdeckungskarte Ihres Netzes: wo Repeater Sie hören und wo nicht",
+ "doc.wardrive": "Wardriving"
 }

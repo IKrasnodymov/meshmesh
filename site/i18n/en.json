@@ -268,5 +268,9 @@
  "f.alerts.d": "Choose what to be told about: direct messages, channels and Public — all, mentions only or off, and each chat on its own. A mention is your @[name] or a keyword. Also chess, new nodes, quiet hours, and a feed with filters and sorting. In the web interface and the Android app.",
  "shot.web-alerts-feed": "Feed: mentions, filters and order",
  "shot.web-alerts-settings": "Settings: kinds, keywords, quiet hours",
- "news.alerts": "<b>New:</b> notifications — mentions only, muted chats, keywords and quiet hours"
+ "news.alerts": "<b>New:</b> notifications — mentions only, muted chats, keywords and quiet hours",
+ "f.wardrive.t": "Wardriving",
+ "f.wardrive.d": "A coverage map of your mesh. On the move the node logs the packets it hears with the repeater and signal, and pings a channel: the repeaters that pass the ping on show where the mesh reaches you and where it does not. Points appear on the map in colour by SNR; ESP32 boards also log Wi-Fi access points and Bluetooth devices. The position comes from a trusted GPS fix or from the phone in the app. Export to CSV, GeoJSON, KML and WiGLE.",
+ "news.wardrive": "<b>New:</b> wardriving — a coverage map of your mesh: where repeaters hear you and where not",
+ "doc.wardrive": "Wardriving"
 }
