@@ -132,8 +132,10 @@ is set separately, 2 bytes by default.
 - Website: the choice survives a page reload.
 - M9: the `radio …` commands, the test rollback on a restart, the screen row, writing over the companion protocol by USB
   (as the site does) and the page with the real board (through `tools/web_usb_bridge.py`). Details: `docs/verification.md`.
-- 0.29.0, network search: firmware built; screens in `tools/ui_preview` (M9, T-Deck, Heltec, GAT562, T114), the page
-  with `tools/web_demo.py`. The search on real boards, repeaters answering on another profile and the automatic search
-  by GPS are not checked.
+- 0.29.0, network search: firmware built for every board; screens in `tools/ui_preview` (M9, T-Deck, Heltec, GAT562,
+  T114), the page with `tools/web_demo.py`. On the T114: the search of all 25 profiles (a real repeater answered on the
+  current profile and on the one next to it in frequency), the search by coordinates, stopping, the profile coming back,
+  a test of a profile found and its rollback. Not checked: finding another network, the automatic search by GPS or the
+  phone, the screens on boards, the other boards.
 - Not checked: other boards, writing from a real browser over Web Serial/Bluetooth, stock MeshCore, repeaters answering
   "Check" and the phone position in the app.
