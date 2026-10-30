@@ -10,7 +10,7 @@
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include <NimBLEDevice.h>
-Radar radar;
+Radar& radar=*new Radar; // on the heap: its start values would otherwise take flash (.data)
 namespace {
 // Homing frames arrive on the Wi-Fi task; the loop drains them in 100 ms windows.
 portMUX_TYPE guard=portMUX_INITIALIZER_UNLOCKED;

@@ -36,7 +36,7 @@ bool ask(uint8_t i,uint8_t attempt){
 }
 }
 bool find(){
- auto* d=core();if(!d||!meshRadio.ready||!config.bootCounter)return false;
+ auto* d=core();if(!d||!meshRadio.ready||!config.bootCounter||netfind::running())return false;
  if(search.state==Search::Listening||search.state==Search::Asking)return true;
  if(!scan){scan=new(std::nothrow) Scan;search.found=new(std::nothrow) Found[MaxFound];if(!scan||!search.found){delete scan;scan=nullptr;delete[] search.found;search.found=nullptr;return false;}}
  Found* list=search.found;search=Search();search.found=list;memset(scan,0,sizeof(Scan));asked=0;doneAt=0;rediscovered=false;

@@ -5,7 +5,8 @@
 #include "Config.h"
 #include "I18n.h"
 namespace notifications {
-namespace {struct AwaitEcho {uint32_t due=0;ChatMessage message;};AwaitEcho echoWait[8];Event queue[8];unsigned head=0,size=0;uint32_t lost=0;
+// On the heap: with the defaults of ChatMessage static arrays would keep a copy of their start values in flash.
+namespace {struct AwaitEcho {uint32_t due=0;ChatMessage message;};AwaitEcho (&echoWait)[8]=*new AwaitEcho[1][8];Event (&queue)[8]=*new Event[1][8];unsigned head=0,size=0;uint32_t lost=0;
 // UTF-8 case folding for Latin and Cyrillic names; other scripts retain their code points.
 String lower(const char* text){String s=text,out;for(unsigned i=0;i<s.length();){uint32_t c=utf8Next(s,i);
  if(c>='A'&&c<='Z')c+=32;else if(c>=0x410&&c<=0x42f)c+=32;else if(c==0x401)c=0x451;else if(c>=0xc0&&c<=0xde&&c!=0xd7)c+=32;

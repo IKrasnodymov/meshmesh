@@ -72,4 +72,4 @@ class Radar {
   void wifiStart();void sniff(bool on);void mergeScan(int n);void refreshLora(uint32_t now);
   void bleTick(uint32_t now);void drainBle(uint32_t now);
 };
-extern Radar radar;
+extern Radar& radar;

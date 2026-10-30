@@ -1019,6 +1019,56 @@
   "ru": "Батарея садится",
   "text": "배터리 부족"
  },
+ "47cf8db9": {
+  "en": "New message from ",
+  "ru": "Сообщение от ",
+  "text": "새 메시지: "
+ },
+ "2d151551": {
+  "en": "Delivered to ",
+  "ru": "Доставлено: ",
+  "text": "전달됨: "
+ },
+ "53c958eb": {
+  "en": "Queued: waiting for delivery",
+  "ru": "Ожидание подтверждения",
+  "text": "대기: 전달 확인 대기 중"
+ },
+ "25fb6d11": {
+  "en": "Queued: broadcast",
+  "ru": "Сообщение в общем чате отправляется",
+  "text": "대기: 전체 채널로 전송 중"
+ },
+ "404ceb1a": {
+  "en": "No delivery ACK",
+  "ru": "Получатель не подтвердил доставку",
+  "text": "전달 ACK 없음"
+ },
+ "35b6fabd": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи по радио",
+  "text": "무선 송신 오류"
+ },
+ "ddebda8a": {
+  "en": "No repeat heard",
+  "ru": "Повтор не услышан",
+  "text": "재전송 수신 안 됨"
+ },
+ "ad42f13e": {
+  "en": "No delivery ACK",
+  "ru": "Нет подтверждения доставки",
+  "text": "전달 ACK 없음"
+ },
+ "f27689ea": {
+  "en": "Network nearby: ",
+  "ru": "Рядом сеть: ",
+  "text": "근처 네트워크: "
+ },
+ "ee53d4ee": {
+  "en": " · Settings > Radio",
+  "ru": " · Настройки › Радио",
+  "text": " · 설정 › 무선"
+ },
  "84949ebc": {
   "en": "On",
   "ru": "Вкл",
@@ -2521,6 +2571,36 @@
    "other": "지역 {n}개"
   }
  },
+ "e61484ed": {
+  "en": "Listening ",
+  "ru": "Слушаю ",
+  "text": "수신 중 "
+ },
+ "d403fe3b": {
+  "en": "Nothing new",
+  "ru": "Новых нет",
+  "text": "새 항목 없음"
+ },
+ "121d540b": {
+  "en": "OK: test ",
+  "ru": "OK: тест ",
+  "text": "OK: 테스트 "
+ },
+ "4f9df271": {
+  "en": "Current profile: ",
+  "ru": "Текущий профиль: ",
+  "text": "현재 프로필: "
+ },
+ "716e3778": {
+  "en": "; <>: all profiles",
+  "ru": "; <>: все профили",
+  "text": "; <>: 모든 프로필"
+ },
+ "5ca89fd0": {
+  "en": "Profiles of the city catalogue; <>: all of them",
+  "ru": "Профили справочника городов; <>: все",
+  "text": "도시 목록의 프로필; <>: 전체"
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -2570,6 +2650,11 @@
   "en": "Find regions",
   "ru": "Найти регионы",
   "text": "지역 찾기"
+ },
+ "511c0119": {
+  "en": "Find network",
+  "ru": "Найти сеть",
+  "text": "네트워크 찾기"
  },
  "5b044f98": {
   "en": "Radio test",
@@ -2998,6 +3083,11 @@
   "en": "Return",
   "ru": "Вернуть",
   "text": "되돌리기"
+ },
+ "c2d572ce": {
+  "en": "Test",
+  "ru": "Тест",
+  "text": "테스트"
  },
  "a7cb76b8": {
   "en": "Search",
@@ -3563,6 +3653,26 @@
   "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
   "text": "스페이스 2번: RU/EN   글자 뒤 Shift나 ->: 대문자"
  },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "이 모드에서 불가"
+ },
+ "56bf77d2": {
+  "en": "Radio test: a restart returns the saved one",
+  "ru": "Тест радио: перезапуск вернёт сохранённое",
+  "text": "무선 테스트: 재시작하면 저장값 복원"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "무선 사용 중, 재시도"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "무선 사용 불가"
+ },
  "2ae7cabc": {
   "en": "Settings saved",
   "ru": "Настройки сохранены",
@@ -3708,21 +3818,6 @@
   "ru": "Настройки радио изменены",
   "text": "무선 설정 변경됨"
  },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "무선 사용 중, 재시도"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "이 모드에서 불가"
- },
- "19b6c4b1": {
-  "en": "Radio offline",
-  "ru": "Радио недоступно",
-  "text": "무선 사용 불가"
- },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
   "ru": "Интернет по Wi-Fi выключен в этом режиме",
@@ -3802,46 +3897,6 @@
   "en": "Encryption test failed",
   "ru": "Ошибка шифрования",
   "text": "암호화 테스트 실패"
- },
- "47cf8db9": {
-  "en": "New message from ",
-  "ru": "Сообщение от ",
-  "text": "새 메시지: "
- },
- "2d151551": {
-  "en": "Delivered to ",
-  "ru": "Доставлено: ",
-  "text": "전달됨: "
- },
- "53c958eb": {
-  "en": "Queued: waiting for delivery",
-  "ru": "Ожидание подтверждения",
-  "text": "대기: 전달 확인 대기 중"
- },
- "25fb6d11": {
-  "en": "Queued: broadcast",
-  "ru": "Сообщение в общем чате отправляется",
-  "text": "대기: 전체 채널로 전송 중"
- },
- "404ceb1a": {
-  "en": "No delivery ACK",
-  "ru": "Получатель не подтвердил доставку",
-  "text": "전달 ACK 없음"
- },
- "35b6fabd": {
-  "en": "Radio TX error",
-  "ru": "Ошибка передачи по радио",
-  "text": "무선 송신 오류"
- },
- "ddebda8a": {
-  "en": "No repeat heard",
-  "ru": "Повтор не услышан",
-  "text": "재전송 수신 안 됨"
- },
- "ad42f13e": {
-  "en": "No delivery ACK",
-  "ru": "Нет подтверждения доставки",
-  "text": "전달 ACK 없음"
  },
  "13c4173d": {
   "en": "None",
@@ -6023,11 +6078,6 @@
   "ru": "Хэш пути",
   "text": "경로 해시"
  },
- "c2d572ce": {
-  "en": "Test",
-  "ru": "Тест",
-  "text": "테스트"
- },
  "180b9f58": {
   "en": "Previous",
   "ru": "Прежние",
@@ -6066,6 +6116,11 @@
   "forms": {
    "other": "{n}개 찾음"
   }
+ },
+ "9de29985": {
+  "en": "Radio test: restart returns",
+  "ru": "Тест: перезапуск вернёт",
+  "text": "테스트: 재시작 시 복원"
  },
  "d7a4d1f0": {
   "en": "<> digit, up/down value",

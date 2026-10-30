@@ -117,7 +117,7 @@ CONFIG = {
     'name': 'M9', 'frequency': 869.618, 'bandwidth': 62.5, 'sf': 8, 'cr': 8, 'power': 14, 'hops': 3, 'path_hash': 2,
     'relay': False, 'gps': True, 'sound': True, 'battery_volts': False, 'lang': 'en', 'russian': False, 'brightness': 180,
     'auto_lock': 120, 'dim_after': 30, 'lock_details': False, 'notify_led': 1, 'notify_wake': 1, 'notify_popup': 1,
-    'notify_failed': True, 'notify_words': '', 'utc_offset': 120, 'region': '',
+    'notify_failed': True, 'notify_words': '', 'utc_offset': 120, 'region': '', 'net_auto': True,
     'apps': 'chats quick nodes nav map radar wardrive people chess pet dice solitaire connect health settings',
 }
 CHANNELS = {'max': 8, 'channels': [
@@ -211,6 +211,27 @@ def radio_command(line):
     if line == 'radio previous':
         return radio_set(CONFIG['radio_prev']) if 'radio_prev' in CONFIG else 'ERR radio: no previous settings'
     return 'ERR radio try {JSON}|keep|revert|previous'
+
+
+# The network search of the board (netfind): a finished one, the Moscow profile answered by three repeaters.
+NETFIND = {'state': 'done', 'auto': False, 'located': True, 'step': 3, 'total': 3, 'best': 1, 'found': 0, 'enabled': True,
+           'catalogue': '2026-10-29', 'results': [
+               {'frequency': 869.618, 'bandwidth': 62.5, 'sf': 8, 'cr': 8, 'current': True, 'done': True, 'repeaters': 0, 'packets': 0},
+               {'frequency': 868.731, 'bandwidth': 62.5, 'sf': 7, 'cr': 7, 'place': 'Москва и Московская область', 'done': True,
+                'repeaters': 3, 'packets': 4, 'snr': 6.5},
+               {'frequency': 868.731, 'bandwidth': 62.5, 'sf': 8, 'cr': 8, 'place': 'Москва и Московская область', 'done': True,
+                'repeaters': 0, 'packets': 0}]}
+
+
+def netfind_command(line):
+    if line == 'netfind':
+        return json.dumps(NETFIND, ensure_ascii=False)
+    if line == 'netfind stop' or line.startswith('netfind start'):
+        return 'OK network search started' if line.startswith('netfind start') else 'OK network search stopped'
+    if line.startswith('netfind use '):
+        r = NETFIND['results'][int(line[12:])]
+        return radio_set({k: r[k] for k in ('frequency', 'bandwidth', 'sf', 'cr')}, 'try')
+    return 'ERR netfind start [all|LAT LON]|stop|use N'
 
 
 def answer(path, query):
@@ -327,6 +348,8 @@ class Handler(BaseHTTPRequestHandler):
             reply = radio_set(body)
         elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('radio '):
             reply = radio_command(body['command'])
+        elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('netfind'):
+            reply = netfind_command(body['command'])
         self.send(400 if reply.startswith('ERR') else 200, reply, 'text/plain')
 
 

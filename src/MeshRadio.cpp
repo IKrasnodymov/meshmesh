@@ -26,6 +26,7 @@
 #include "Companion.h"
 #include "Remote.h"
 #include "Regions.h"
+#include "NetFind.h"
 #include "Wardrive.h"
 #include <CayenneLPP.h>
 #include <helpers/SensorManager.h>
@@ -55,6 +56,8 @@ int peers(const uint8_t* hash,uint8_t* out,int max); // repeaters asked that are
 const uint8_t* peerKey(uint8_t i);
 bool onAnswer(const uint8_t* key,const uint8_t* data,uint8_t len);
 }
+// Network search (src/NetFind.inc): true when the packet answered its node discovery.
+namespace netfind {bool onControl(const mesh::Packet* packet);}
 namespace appLink {
 bool discovered(const ContactInfo& c,const uint8_t* inPath,uint8_t inLen,const uint8_t* outPath,uint8_t outLen,uint8_t extraType,const uint8_t* extra,uint8_t extraLen); // true: an app's path discovery
 uint32_t confirm(uint32_t ack,uint64_t& destination); // the message ID of an app's send; 0: not one
@@ -236,7 +239,7 @@ class MeshCoreBackend:public BaseChatMesh {
  }
  uint8_t onContactRequest(const ContactInfo&,uint32_t,const uint8_t*,uint8_t,uint8_t*) override{return 0;}
  void onContactResponse(const ContactInfo& c,const uint8_t* data,uint8_t len) override{if(!regions::onResponse(c,data,len)&&!remote::onResponse(c,data,len))appLink::response(c,data,len);}
- void onControlDataRecv(mesh::Packet* p) override{if(!regions::onControl(p))appLink::control(p);} // zero-hop node discovery
+ void onControlDataRecv(mesh::Packet* p) override{if(!netfind::onControl(p)&&!regions::onControl(p))appLink::control(p);} // zero-hop node discovery
  // The region search asks repeaters that need not be contacts: their answers are matched after the contacts'.
  int contactMatches=0;uint8_t regionPeers[MAX_SEARCH_RESULTS];
  int searchPeersByHash(const uint8_t* hash) override{contactMatches=BaseChatMesh::searchPeersByHash(hash);return contactMatches+regions::peers(hash,regionPeers,MAX_SEARCH_RESULTS-contactMatches);}
@@ -252,7 +255,7 @@ class MeshCoreBackend:public BaseChatMesh {
   if(appLink::discovered(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen))return false;
   return BaseChatMesh::onContactPathRecv(c,inPath,inLen,outPath,outLen,extraType,extra,extraLen);
  }
- bool allowPacketForward(const mesh::Packet* p) override{bool allowed=config.relay&&config.hops>0&&p->getPathHashCount()<config.hops;if(allowed){auto& f=forwarded[nextForwarded];p->calculatePacketHash(f.hash);f.at=millis();nextForwarded=(nextForwarded+1)%32;}return allowed;}
+ bool allowPacketForward(const mesh::Packet* p) override{bool allowed=config.relay&&config.hops>0&&!netfind::running()&&p->getPathHashCount()<config.hops;if(allowed){auto& f=forwarded[nextForwarded];p->calculatePacketHash(f.hash);f.at=millis();nextForwarded=(nextForwarded+1)%32;}return allowed;}
  int calcRxDelay(float,uint32_t) const override{return 0;}
  void logTx(mesh::Packet* packet,int) override{
   owner.txCount++;uint8_t hash[8];packet->calculatePacketHash(hash);uint32_t id;memcpy(&id,hash,4);
@@ -367,20 +370,21 @@ void MeshRadio::sleep(){if(ready)radio.sleep();ready=false;}
 void MeshRadio::cancelPending(){for(auto& p:pending)if(p.active){status(p.message.id,ChatMessage::Failed);p.active=false;}while(corePool.getOutboundTotal()){auto* packet=corePool.removeOutboundByIdx(0);corePool.free(packet);}}
 namespace {uint32_t recalAt=0;bool recalFailed=false;}
 bool MeshRadio::applyConfig(){
- if(transmitting)return false;cancelPending();return startRadio(false);
+ if(transmitting)return false;netfind::cancel();tuned=RadioProfile();cancelPending();return startRadio(false);
 }
+bool MeshRadio::tune(const RadioProfile& profile){if(transmitting)return false;tuned=profile;return startRadio(true);}
 bool MeshRadio::recalibrate(){
  if(transmitting||radioIrq||(ready&&(radio.getIrqFlags()&(irqPreamble|irqRxDone))))return false; // not in the middle of a packet
  recalAt=millis();recalibrations++;recalFailed=!startRadio(true);return !recalFailed;
 }
 bool MeshRadio::startRadio(bool quiet){
- uint16_t preamble=config.sf<=8?32:16;
+ const RadioProfile r=tuned.set()?tuned:config.radio();uint16_t preamble=r.sf<=8?32:16;
 #if defined(MM_RADIO_SX1276)
- radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);
- if(radioError){delay(150);radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);}ready=radioError==0;
+ radioError=radio.begin(r.frequency,r.bandwidth,r.sf,r.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);
+ if(radioError){delay(150);radioError=radio.begin(r.frequency,r.bandwidth,r.sf,r.cr,RADIOLIB_SX127X_SYNC_WORD,config.power,preamble,0);}ready=radioError==0;
 #else
- radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);
- if(radioError){delay(150);radioError=radio.begin(config.frequency,config.bandwidth,config.sf,config.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);}ready=radioError==0;
+ radioError=radio.begin(r.frequency,r.bandwidth,r.sf,r.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);
+ if(radioError){delay(150);radioError=radio.begin(r.frequency,r.bandwidth,r.sf,r.cr,RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,config.power,preamble,pins::radioTcxo);}ready=radioError==0;
 #endif
  if(ready){
 #if defined(MM_HELTEC_V4)
@@ -481,7 +485,8 @@ void MeshRadio::tick(){
  uint32_t now=millis();
  if(recalFailed){if(now-recalAt>=5000)recalibrate();return;} // retried until the transceiver answers again
  if(ready&&!busy()&&now-lastRxAt>=600000&&now-recalAt>=600000)recalibrate();
- if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();remote::tick();regions::tick();now=millis();
+ if(!ready)return;if(meshServer.running()){meshServer.tick();return;}if(!core)return;core->tick();remote::tick();regions::tick();netfind::tick();now=millis();
+ if(netfind::running())return; // our messages wait for the saved profile
  for(auto& p:pending)if(p.active){if(!p.started){if(!busy()&&!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}break;}if(int32_t(now-p.due)>=0&&!busy()){if(p.app){p.active=false;continue;} // the app retries itself
   if(p.attempts>=3||channels::isChannel(p.message.destination)){p.active=false;status(p.message.id,ChatMessage::Failed);if(!p.message.game)event="No delivery ACK";if(!channels::isChannel(p.message.destination)){Peer* c=contact(p.message.destination);if(c&&c->pathLength!=255)resetPath(c->id);}}else if(!core->startMessage(p)){p.active=false;status(p.message.id,ChatMessage::Failed);}}}
  if(autoHelloDue&&int32_t(now-autoHelloDue)>=0&&!busy()){if(sendHello())autoHelloDue=0;else autoHelloDue=now+5000;}
@@ -620,3 +625,4 @@ static_assert(MAX_GROUP_CHANNELS>=channels::Max,"MAX_GROUP_CHANNELS in platformi
 #include "Companion.inc"
 #include "Remote.inc"
 #include "RegionSearch.inc"
+#include "NetFind.inc"

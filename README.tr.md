@@ -21,7 +21,7 @@ MeshCore düğümleriyle haberleşir.
 - **Kanallar** — en fazla 8 MeshCore kanalı: #hashtag, `meshcore://` bağlantısı veya QR kodu, ad ve anahtarla katılma;
   özel kanal oluşturma, kişileri doğrudan mesajla davet etme, havada duyulan kanalları bulma. [docs/en/channels.md](docs/en/channels.md)
 - **Bölgeler** — MeshCore flood kapsamı: varsayılan bölge ve kanal başına bölge, yakındaki rölelerin bölgelerini arama; röleler `region` komutlarıyla. [docs/en/regions.md](docs/en/regions.md)
-- **Şehrinizin ağı** — yerel bir MeshCore ağının frekansı, bant genişliği, SF ve CR'si topluluk kataloğundan; web sitesinden yazılır (orijinal MeshCore'lu kartlara da) ya da uygulamada test, Tut, Geri al ve önceki ayarlara dönüşle uygulanır. [docs/en/networks.md](docs/en/networks.md)
+- **Şehrinizin ağı** — yerel bir MeshCore ağının frekansı, bant genişliği, SF ve CR'si topluluk kataloğundan; web sitesinden yazılır (orijinal MeshCore'lu kartlara da) ya da uygulamada test, Tut, Geri al ve önceki ayarlara dönüşle uygulanır. Kart ağı havada da bulur: katalog profillerini dinler ve yakındaki tekrarlayıcılara sorar, başka bir şehre yakınken bunu kendiliğinden yapar (0.29.0). [docs/en/networks.md](docs/en/networks.md)
 - **Çevrimdışı haritalar** — rölyef ve eş yükselti eğrileriyle OpenStreetMap, telefonda (uygulama) veya cihazın SD kartında; düğümler, doğrudan bağlantılar ve GPS haritada, her kartla.
 - **Wardriving** — ağın kapsama haritası: duyulan paketler ve bir kanala atılan pingler, onları ileten rölelerle, güvenilir GPS ya da telefon konumuyla; ESP32’de ayrıca Wi-Fi ve Bluetooth; CSV, GeoJSON, KML ve WiGLE’a aktarma. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Yakındaki düğümler** — sinyal, atlama sayısı, mesafe ve yön; kişiler, tekrarlayıcılar ve odalar.

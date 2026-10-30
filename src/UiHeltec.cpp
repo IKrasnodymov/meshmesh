@@ -13,6 +13,7 @@
 #include "Dice.h"
 #include "Power.h"
 #include "Regions.h"
+#include "NetFind.h"
 #include "Notifications.h"
 #include "QuickSend.h"
 #include "People.h"
@@ -231,14 +232,15 @@ template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96
 // Region: the default one of our floods (Regions.h), chosen among the regions found; Find regions: asks the
 // repeaters that hear this node (hold). Previous: the profile before the last change of frequency, BW, SF or CR (hold
 // returns to it); during a test of a network profile from the page or app it is the test (hold keeps it, a restart
-// returns the saved one).
-enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowRegion,RowFind,RowPrev,RowSave,RowCancel,RadioRows};
+// returns the saved one). Network: the network search (NetFind.h): hold starts it near the position (or stops it),
+// and once a network is found tests it (radio try).
+enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowRegion,RowFind,RowPrev,RowNet,RowSave,RowCancel,RadioRows};
 bool radioEdit=false,radioEditing=false;int radioRow=0,radioDigit=0;Config radioDraft;
 void openRadio(){radioDraft=config;radioEdit=true;radioEditing=false;radioRow=0;radioDigit=0;dirty=true;}
 String radioName(int i){
  switch(i){case RowFreq:return t("Frequency","Частота");case RowBw:return t("Bandwidth","Полоса");case RowSf:return "SF";case RowCr:return "CR";
  case RowPower:return t("Power","Мощность");case RowHops:return t("Relay limit","Предел перес.");case RowRelay:return t("Relaying","Ретрансляция");case RowHash:return t("Path hash","Хэш пути");
- case RowRegion:return t("Region","Регион");case RowFind:return t("Find regions","Найти регионы");
+ case RowRegion:return t("Region","Регион");case RowFind:return t("Find regions","Найти регионы");case RowNet:return t("Find network","Найти сеть");
  case RowPrev:return config.trial.set()?t("Test","Тест"):t("Previous","Прежние");
  case RowSave:return t("Save","Сохранить");default:return t("Cancel","Отмена");}
 }
@@ -248,6 +250,8 @@ String radioValue(const Config& c,int i){
  case RowHash:return plural(c.pathHash,"byte","bytes","байт","байта","байт");
  case RowRegion:return c.region[0]?String(c.region):String(t("none","нет"));
  case RowPrev:return config.trial.set()?t("keep","оставить"):config.previous.set()?String(config.previous.frequency,3)+"/"+String(config.previous.sf):String("-");
+ case RowNet:{auto& s=netfind::state;if(netfind::running())return String(s.step+1)+"/"+String(s.count);
+  return s.phase==netfind::State::Done?(s.best!=255?"SF"+String(s.results[s.best].radio.sf)+" "+String(s.results[s.best].radio.frequency,3):String("-")):String("");}
  case RowFind:{auto& s=regions::search;return regions::searching()?String(s.repeaters)+t(" rpt..."," ретр..."):s.state==regions::Search::Done?plural(s.count,"found","found","найден","найдено","найдено"):String("");}}return "";
 }
 bool radioChanged(){for(int i=0;i<RowSave;i++)if(radioValue(radioDraft,i)!=radioValue(config,i))return true;return false;}
@@ -269,6 +273,10 @@ void radioStep(int dir){
  case RowHash:d.pathHash=1+(d.pathHash-1+dir+3)%3;break;
  case RowRegion:strlcpy(d.region,regions::cycle(d.region,dir,false).c_str(),sizeof d.region);break;
  case RowFind:if(!regions::find())notice(t("Radio offline","Радио недоступно"));break;
+ case RowNet:{auto& s=netfind::state;if(netfind::running()){netfind::stop();break;}
+  if(s.phase==netfind::State::Done&&s.best!=255&&!config.sameRadio(s.results[s.best].radio)){String r=netfind::use(s.best);bool done=r.startsWith("OK");if(done)radioDraft.setRadio(config.radio());
+   notice(done?t("Radio test: restart returns","Тест: перезапуск вернёт"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4));break;}
+  if(!netfind::start(false))notice(meshRadio.busy()||regions::searching()?t("Radio busy, retry","Радио занято, повторите"):t("Radio offline","Радио недоступно"));break;}
  case RowPrev:{if(!config.trial.set()&&!config.previous.set()){notice(t("No previous settings","Прежних настроек нет"));break;}
   String r=executeCommand(config.trial.set()?"radio keep":"radio previous");bool done=r.startsWith("OK");if(done)radioDraft.setRadio(config.radio());
   notice(done?t("Radio settings changed","Настройки радио изменены"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4));break;}
@@ -284,13 +292,13 @@ void radioButton(bool click,bool hold){
  if(radioEditing){if(click)radioStep(1);else if(hold){if(radioRow==RowFreq&&radioDigit<3)radioDigit++;else{radioEditing=false;radioDigit=0;}}return;}
  if(click){radioRow=(radioRow+1)%RadioRows;return;}
  if(!hold)return;
- if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowRelay||radioRow==RowFind||radioRow==RowPrev)radioStep(1);else{radioEditing=true;radioDigit=0;}
+ if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowRelay||radioRow==RowFind||radioRow==RowPrev||radioRow==RowNet)radioStep(1);else{radioEditing=true;radioDigit=0;}
 }
 #if defined(MM_JOYSTICK)
 void radioJoystick(bool up,bool down,bool left,bool right,bool ok,bool back){
  if(radioEditing){if(up||down)radioStep(up?1:-1);else if(left||right)radioDigit=constrain(radioDigit+(right?1:-1),0,3);else if(ok||back)radioEditing=false;return;}
  if(up||down){radioRow=(radioRow+(up?RadioRows-1:1))%RadioRows;return;}
- if(left||right){if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else if(radioRow<RowSave&&radioRow!=RowFind&&radioRow!=RowPrev)radioStep(right?1:-1);return;}
+ if(left||right){if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else if(radioRow<RowSave&&radioRow!=RowFind&&radioRow!=RowPrev&&radioRow!=RowNet)radioStep(right?1:-1);return;}
  if(ok){if(radioRow==RowSave)radioSave();else if(radioRow==RowCancel)radioEdit=false;else if(radioRow==RowFreq){radioEditing=true;radioDigit=0;}else radioStep(1);return;}
  if(back)radioEdit=false;
 }
@@ -931,6 +939,10 @@ void uiTick(){
   }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t("Radio TX error","Ошибка передачи"):channels::isChannel(e.message.destination)?t("No repeat heard","Повтор не услышан"):t("Delivery not confirmed","Доставка не подтверждена"));}
   if(wake){if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;}
  }
+ // A network found by the automatic search (NetFind.h): told once, the screen wakes.
+ {static uint16_t netSeen=0;auto& s=netfind::state;if(s.found!=netSeen){netSeen=s.found;if(s.best!=255){auto& r=s.results[s.best];
+  notice(t("Network nearby: ","Рядом сеть: ")+(r.place!=255?netfind::placeName(r.place)+" ":String())+"SF"+String(r.radio.sf));ledAt=now;ledPattern=1;
+  if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
  if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=page==DicePage||page==PeoplePage?0:now;ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
  if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){
   // News of the game on the screen updates the board instead of covering it.

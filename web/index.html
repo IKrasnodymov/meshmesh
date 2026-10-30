@@ -522,7 +522,7 @@ function enter(page,prev){
  if(page==='connect')loadConnections();
  if(page==='library'||page==='map')loadAreas();
  if(page==='radio'||page==='device')buildEditor(page);
- if(page==='radio'){loadChans().then(()=>route==='radio'&&renderRegions());renderNet(true);if(netPick.open)netLoad().then(()=>route==='radio'&&renderNet(true))}
+ if(page==='radio'){loadChans().then(()=>route==='radio'&&renderRegions());renderNet(true);netScanLoad();if(netPick.open)netLoad().then(()=>route==='radio'&&renderNet(true))}
  if(page==='apps'){appsDraft=appsParse(config.apps);renderApps()}
  if(page==='help')renderHelp();
  if(page==='role'){roleChoice=null;renderRole()}
@@ -1432,10 +1432,29 @@ function renderNet(full){const box=$('netBox');if(!box)return;const trial=config
   <div class="btns" style="margin-bottom:8px"><button class="btn primary" data-net-do="keep">${L('Оставить')}</button><button class="btn" data-net-do="revert">${L('Вернуть')}</button>${serverRole()?'':`<button class="btn" data-net-do="check"${ch?.busy?' disabled':''}>${L('Проверить')}</button>`}</div>`;
  else if(prev)head=`<p class="small" style="margin:0 0 8px">${L`Прежние: ${netText(prev)}`}</p><div class="btns" style="margin-bottom:8px"><button class="btn" data-net-do="previous">${L('Вернуть прежние')}</button></div>`;
  if(full||!box.querySelector('#netList')){
-  box.innerHTML=`<div id="netHead"></div>`+(netPick.open?`<div style="display:flex;gap:8px;margin:0 0 6px"><input id="netQ" value="${esc(netPick.q)}" placeholder="${L('Город или регион')}" autocomplete="off" style="flex:1;min-width:0"><button class="btn" data-net-do="locate">${ic('pin','acc')} ${L('Рядом')}</button></div><p class="small faint" id="netPos" style="margin:0"></p><div id="netList"></div>
+  box.innerHTML=`<div id="netHead"></div><div id="netScan"></div>`+(netPick.open?`<div style="display:flex;gap:8px;margin:0 0 6px"><input id="netQ" value="${esc(netPick.q)}" placeholder="${L('Город или регион')}" autocomplete="off" style="flex:1;min-width:0"><button class="btn" data-net-do="locate">${ic('pin','acc')} ${L('Рядом')}</button></div><p class="small faint" id="netPos" style="margin:0"></p><div id="netList"></div>
    <p class="small faint" style="margin:10px 0 0">${netCat?L`Справочник от ${netCat.updated}: ${plural(netCat.locations.length,'территория','территории','территорий')}. `:''}<a href="${NET_SOURCE}" target="_blank" rel="noopener">VoxMesh/meshcore-local-networks</a></p><div class="btns" style="margin-top:6px"><button class="btn" id="netUpdate" data-net-do="update">${L('Обновить справочник')}</button><button class="btn" data-net-do="hide">${L('Скрыть')}</button></div>`
    :`<button class="btn save" style="margin:0" data-net-do="open">${ic('pin','acc')} ${L('Выбрать сеть по городу')}</button>`)}
- setHtml($('netHead'),head);const pos=$('netPos');if(pos)pos.textContent=netPick.posNote;renderNetList()}
+ setHtml($('netHead'),head);renderNetScan();const pos=$('netPos');if(pos)pos.textContent=netPick.posNote;renderNetList()}
+// Network search of the board (firmware 0.29.0+, "netfind"): the profiles of its built-in catalogue one by one, the
+// repeaters within reach answer; a profile found is applied as a test. The board also searches by itself near
+// another city (net_auto: its GPS or the phone's position from the app).
+let netScan=null,netScanTimer=0;
+const netScanOn=()=>fwSince('0.29.0')&&!serverRole();
+async function netScanLoad(){if(!netScanOn())return;clearTimeout(netScanTimer);
+ try{const r=await command('netfind');netScan=typeof r==='string'?JSON.parse(r):r}catch{netScan=null}
+ if(route!=='radio')return;renderNetScan();if(netScan?.state==='running')netScanTimer=setTimeout(netScanLoad,2000)}
+function renderNetScan(){const box=$('netScan');if(!box)return;if(!netScanOn()){box.innerHTML='';return}const s=netScan,run=s?.state==='running';
+ const rows=(s?.results||[]).filter(r=>r.done||r.current).map((r,i)=>({r,i})).filter(({r})=>r.current||r.repeaters||r.packets);
+ const quiet=(s?.results||[]).filter(r=>r.done&&!r.current&&!r.repeaters&&!r.packets).length;
+ setHtml(box,`<p style="margin:0 0 4px"><b>${L('Поиск сети в эфире')}</b></p><p class="small faint" style="margin:0 0 8px">${L('Плата по очереди слушает профили справочника и спрашивает репитеры рядом, около 8 с на профиль. Пока идёт поиск, сообщения ждут.')}</p>
+  ${run?`<p class="small" style="margin:0 0 8px">${L`Слушаю ${s.step+1} из ${s.total}: ${s.now||''}`}</p>`:''}
+  ${s&&s.state!=='idle'?rows.map(({r,i})=>`<div class="detail"><span>${esc(r.place||'')}${r.place?'<br>':''}<small class="muted">${esc(netText(r))}${r.current?' · '+L('сейчас'):''}</small></span><span style="text-align:end">${r.repeaters?L`репитеров: ${r.repeaters}`:r.done?'':'…'}${r.packets?`<br><small class="muted">${L`пакетов: ${r.packets}`}</small>`:''}${r.snr!=null?`<br><small class="muted">SNR ${r.snr}</small>`:''}${!r.current&&!run&&r.done?`<br><button class="btn${i===s.best?' primary':''}" data-net-do="scanuse" data-i="${i}" style="margin-top:4px">${L('Тест')}</button>`:''}</span></div>`).join('')+
+   (quiet?`<p class="small faint" style="margin:6px 0">${L`Без ответа: ${plural(quiet,'профиль','профиля','профилей')}`}</p>`:''):''}
+  ${s&&s.state==='done'&&s.best<0&&!run?`<p class="small warn" style="margin:6px 0">${L('Других сетей рядом не найдено')}</p>`:''}
+  <div class="btns" style="margin:8px 0">${run?`<button class="btn" data-net-do="scanstop">${L('Остановить')}</button>`:`<button class="btn primary" data-net-do="scan">${L('Искать рядом')}</button><button class="btn" data-net-do="scanall">${L('Все профили')}</button>`}</div>
+  <label class="small" style="display:flex;align-items:center;gap:8px;margin:0 0 10px"><input type="checkbox" id="netAuto"${config.net_auto!==false?' checked':''} style="width:20px;flex:none">${L('Искать самой рядом с другим городом (по GPS платы или телефона)')}</label>`);
+ const a=$('netAuto');if(a)a.onchange=async()=>{try{await request('/api/config',{net_auto:a.checked});config.net_auto=a.checked}catch(e){a.checked=!a.checked;notify(e.message,'bad')}}}
 async function netReload(){config=await request('/api/config');buildEditor('radio');renderNet(true)}
 async function netAction(a,b){
  if(a==='open'){netPick.open=true;await netLoad();renderNet(true);return}
@@ -1444,6 +1463,10 @@ async function netAction(a,b){
  if(a==='more'){netPick.shown+=10;renderNetList();return}
  if(a==='locate'){netLocate();return}
  if(a==='update'){netUpdate();return}
+ if(a==='scan'||a==='scanall'){const p=netPick.pos,line='netfind start'+(a==='scanall'?' all':p?` ${p.lat.toFixed(5)} ${p.lon.toFixed(5)}`:'');b.disabled=true;
+  try{await command(line);notify(L('Поиск сети начат'),'ok')}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}netScanLoad();return}
+ if(a==='scanstop'){try{await command('netfind stop')}catch(e){notify(e.message,'bad')}setTimeout(netScanLoad,600);return}
+ if(a==='scanuse'){b.disabled=true;try{await command('netfind use '+b.dataset.i);await netReload();notify(L('Тест: нажмите «Оставить» или «Вернуть»'),'ok')}catch(e){b.disabled=false;notify(e.message.replace(/^ERR (radio: |netfind: )?/,''),'bad')}return}
  if(a==='check'){netPick.check={busy:true};renderNet();try{await chanDo({action:'regions'});await loadChans();for(let i=0;i<25&&regionBusy();i++){await new Promise(r=>setTimeout(r,2000));await loadChans()}netPick.check={n:chans?.regions?.repeaters||0}}catch(e){netPick.check=null;notify(e.message.replace(/^ERR \w+: /,''),'bad')}renderNet();if(route==='radio')renderRegions();return}
  if(a==='apply'){const x=netFind(netPick.net);if(!x)return;if(!netPick.armed||Date.now()-netPick.armed>5000){netPick.armed=Date.now();renderNetList();setTimeout(()=>{if(netPick.armed&&Date.now()-netPick.armed>=5000){netPick.armed=0;renderNetList()}},5100);return}
   netPick.armed=0;b.disabled=true;const r=netRadio(x.n),test=netPick.test&&fwSince('0.27.0');

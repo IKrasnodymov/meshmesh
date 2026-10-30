@@ -77,6 +77,54 @@ count too.
 - On the screen: M9 and T-Deck have "Previous radio" / "Radio test" in the radio settings (OK returns or keeps it).
   One-button boards, GAT562 and T114 have "Previous" / "Test" in the radio editor (hold).
 
+## Network search on air (0.29.0)
+
+The board finds by itself which catalogue profile can be heard nearby (`src/NetFind.inc`, `include/NetFind.h`). The
+firmware carries an extract of the catalogue: the places and the profiles of the 863–870 MHz band
+(`include/NetCatalog.h`). `tools/networks.py update` writes it together with `site/networks.json`, and
+`tools/networks.py check` compares it with the copy.
+
+How the search goes:
+
+1. The current profile is heard first, then the candidates. With a known position these are the networks of the places
+   within 150 km, nearest first (with the networks of the parent territory). Without a position, or with "All profiles",
+   the board goes through every profile of the catalogue, the most common first. Profiles with the same frequency,
+   bandwidth and SF are checked once: CR does not stop reception.
+2. On each profile the board retunes the transceiver without writing the settings (`MeshRadio::tune`), sends a zero-hop
+   discovery request for repeaters (the one of the region search) and listens for 8 s. It counts the repeaters that
+   answered (with the best SNR) and the other packets received.
+3. After the last profile the saved one comes back. The best profile is the one with more repeaters, then with more
+   packets. If it is better than the current one, the board offers it.
+4. Only a person applies the network found, and only as a test (`radio try`): "Keep" saves it, a restart brings back
+   the previous one.
+
+While the search runs (10 s to 4–5 minutes) our messages wait in the queue, relaying is off and the network of the
+saved profile is not heard. Packets received on another profile are handled as usual: node adverts add the nodes to
+the contacts. The search works in the normal mode only, not together with the region search. A change of the radio
+settings meanwhile ends it.
+
+A stock repeater answers at most 4 discovery requests per 2 minutes from all nodes together. Only repeaters in direct
+reach answer. A network of companions without repeaters shows only by the packets received.
+
+**By itself** (`net_auto`, on by default). Every 30 s the board checks its position: a fresh GPS fix (dated not before
+the build) or the phone's position from the app. If the nearest catalogue place is within 150 km and the current profile
+is not one of its networks, the board searches the networks of the nearest places once per boot for that place. The
+screen tells about a network found: "Network nearby: Moscow… SF7". No automatic search starts during a radio test.
+
+Where to find it:
+
+- M9 and T-Deck: "Settings → Radio → Find network". OK starts the search (or stops it), and after a find starts the
+  test of the network found; ← → searches all profiles.
+- One-button boards, GAT562 and T114: the "Find network" row of the radio editor (hold does what OK does).
+- Device page and app: the "Network search on air" box in "Settings → Radio": "Search nearby" (with the position found
+  by "Nearby"), "All profiles", the table of answers with "Test" at each profile, the switch "Search by itself near
+  another city".
+- USB/BLE/HTTP: `netfind` (state and results in JSON), `netfind start`, `netfind start all`, `netfind start LAT LON`,
+  `netfind stop`, `netfind use N` (test result N); `set {"net_auto":false}`.
+
+The firmware does not apply the catalogue field `path_hash_bytes` (the path hash size of a network) yet: the path hash
+is set separately, 2 bytes by default.
+
 ## Checked
 
 - Firmware built for M9, Heltec V4, Heltec V3, T-Deck, GAT562 and T114; the radio screens checked in `tools/ui_preview`.
@@ -84,5 +132,8 @@ count too.
 - Website: the choice survives a page reload.
 - M9: the `radio …` commands, the test rollback on a restart, the screen row, writing over the companion protocol by USB
   (as the site does) and the page with the real board (through `tools/web_usb_bridge.py`). Details: `docs/verification.md`.
+- 0.29.0, network search: firmware built; screens in `tools/ui_preview` (M9, T-Deck, Heltec, GAT562, T114), the page
+  with `tools/web_demo.py`. The search on real boards, repeaters answering on another profile and the automatic search
+  by GPS are not checked.
 - Not checked: other boards, writing from a real browser over Web Serial/Bluetooth, stock MeshCore, repeaters answering
   "Check" and the phone position in the app.

@@ -1019,6 +1019,56 @@
   "ru": "Батарея садится",
   "text": "Akku schwach"
  },
+ "47cf8db9": {
+  "en": "New message from ",
+  "ru": "Сообщение от ",
+  "text": "Nachricht von "
+ },
+ "2d151551": {
+  "en": "Delivered to ",
+  "ru": "Доставлено: ",
+  "text": "Zugestellt an "
+ },
+ "53c958eb": {
+  "en": "Queued: waiting for delivery",
+  "ru": "Ожидание подтверждения",
+  "text": "Warteschlange: wartet auf Zustellung"
+ },
+ "25fb6d11": {
+  "en": "Queued: broadcast",
+  "ru": "Сообщение в общем чате отправляется",
+  "text": "Warteschlange: Rundsendung"
+ },
+ "404ceb1a": {
+  "en": "No delivery ACK",
+  "ru": "Получатель не подтвердил доставку",
+  "text": "Kein Zustell-ACK"
+ },
+ "35b6fabd": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи по радио",
+  "text": "Funk-Sendefehler"
+ },
+ "ddebda8a": {
+  "en": "No repeat heard",
+  "ru": "Повтор не услышан",
+  "text": "Keine Wiederholung gehört"
+ },
+ "ad42f13e": {
+  "en": "No delivery ACK",
+  "ru": "Нет подтверждения доставки",
+  "text": "Kein Zustell-ACK"
+ },
+ "f27689ea": {
+  "en": "Network nearby: ",
+  "ru": "Рядом сеть: ",
+  "text": "Netz in der Nähe: "
+ },
+ "ee53d4ee": {
+  "en": " · Settings > Radio",
+  "ru": " · Настройки › Радио",
+  "text": " · Einstellungen › Funk"
+ },
  "84949ebc": {
   "en": "On",
   "ru": "Вкл",
@@ -2534,6 +2584,36 @@
    "other": "{n} Regionen"
   }
  },
+ "e61484ed": {
+  "en": "Listening ",
+  "ru": "Слушаю ",
+  "text": "Höre "
+ },
+ "d403fe3b": {
+  "en": "Nothing new",
+  "ru": "Новых нет",
+  "text": "Nichts Neues"
+ },
+ "121d540b": {
+  "en": "OK: test ",
+  "ru": "OK: тест ",
+  "text": "OK: testen "
+ },
+ "4f9df271": {
+  "en": "Current profile: ",
+  "ru": "Текущий профиль: ",
+  "text": "Aktuelles Profil: "
+ },
+ "716e3778": {
+  "en": "; <>: all profiles",
+  "ru": "; <>: все профили",
+  "text": "; <>: alle Profile"
+ },
+ "5ca89fd0": {
+  "en": "Profiles of the city catalogue; <>: all of them",
+  "ru": "Профили справочника городов; <>: все",
+  "text": "Profile des Städtekatalogs; <>: alle"
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -2583,6 +2663,11 @@
   "en": "Find regions",
   "ru": "Найти регионы",
   "text": "Regionen suchen"
+ },
+ "511c0119": {
+  "en": "Find network",
+  "ru": "Найти сеть",
+  "text": "Netz suchen"
  },
  "5b044f98": {
   "en": "Radio test",
@@ -3013,6 +3098,11 @@
   "en": "Return",
   "ru": "Вернуть",
   "text": "Zurück"
+ },
+ "c2d572ce": {
+  "en": "Test",
+  "ru": "Тест",
+  "text": "Test"
  },
  "a7cb76b8": {
   "en": "Search",
@@ -3579,6 +3669,26 @@
   "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
   "text": "2×Leertaste: RU/EN   Shift oder Rechts nach Buchstabe: groß"
  },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "Nicht in diesem Modus"
+ },
+ "56bf77d2": {
+  "en": "Radio test: a restart returns the saved one",
+  "ru": "Тест радио: перезапуск вернёт сохранённое",
+  "text": "Funktest: Neustart stellt Gespeichertes her"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Funk belegt, erneut"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "Funk nicht bereit"
+ },
  "2ae7cabc": {
   "en": "Settings saved",
   "ru": "Настройки сохранены",
@@ -3724,21 +3834,6 @@
   "ru": "Настройки радио изменены",
   "text": "Funkeinstellungen geändert"
  },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Funk belegt, erneut"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "Nicht in diesem Modus"
- },
- "19b6c4b1": {
-  "en": "Radio offline",
-  "ru": "Радио недоступно",
-  "text": "Funk nicht bereit"
- },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
   "ru": "Интернет по Wi-Fi выключен в этом режиме",
@@ -3818,46 +3913,6 @@
   "en": "Encryption test failed",
   "ru": "Ошибка шифрования",
   "text": "Kryptotest fehlgeschlagen"
- },
- "47cf8db9": {
-  "en": "New message from ",
-  "ru": "Сообщение от ",
-  "text": "Nachricht von "
- },
- "2d151551": {
-  "en": "Delivered to ",
-  "ru": "Доставлено: ",
-  "text": "Zugestellt an "
- },
- "53c958eb": {
-  "en": "Queued: waiting for delivery",
-  "ru": "Ожидание подтверждения",
-  "text": "Warteschlange: wartet auf Zustellung"
- },
- "25fb6d11": {
-  "en": "Queued: broadcast",
-  "ru": "Сообщение в общем чате отправляется",
-  "text": "Warteschlange: Rundsendung"
- },
- "404ceb1a": {
-  "en": "No delivery ACK",
-  "ru": "Получатель не подтвердил доставку",
-  "text": "Kein Zustell-ACK"
- },
- "35b6fabd": {
-  "en": "Radio TX error",
-  "ru": "Ошибка передачи по радио",
-  "text": "Funk-Sendefehler"
- },
- "ddebda8a": {
-  "en": "No repeat heard",
-  "ru": "Повтор не услышан",
-  "text": "Keine Wiederholung gehört"
- },
- "ad42f13e": {
-  "en": "No delivery ACK",
-  "ru": "Нет подтверждения доставки",
-  "text": "Kein Zustell-ACK"
  },
  "13c4173d": {
   "en": "None",
@@ -6044,11 +6099,6 @@
   "ru": "Хэш пути",
   "text": "Pfad-Hash"
  },
- "c2d572ce": {
-  "en": "Test",
-  "ru": "Тест",
-  "text": "Test"
- },
  "180b9f58": {
   "en": "Previous",
   "ru": "Прежние",
@@ -6088,6 +6138,11 @@
    "one": "{n} gefunden",
    "other": "{n} gefunden"
   }
+ },
+ "9de29985": {
+  "en": "Radio test: restart returns",
+  "ru": "Тест: перезапуск вернёт",
+  "text": "Test: Neustart setzt zurück"
  },
  "d7a4d1f0": {
   "en": "<> digit, up/down value",

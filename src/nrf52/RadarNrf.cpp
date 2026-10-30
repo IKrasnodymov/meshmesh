@@ -10,7 +10,7 @@
 #include "MeshRadio.h"
 #include <Mm1Packet.h>
 #include <bluefruit.h>
-Radar radar;
+Radar& radar=*new Radar; // on the heap: its start values would otherwise take flash (.data)
 bool bleStack(); // PortalNrf.cpp: starts the SoftDevice once
 namespace {
 // Advertisements arrive on the Bluefruit task; the loop drains this ring.

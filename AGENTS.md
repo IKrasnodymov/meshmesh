@@ -5,7 +5,7 @@
 Проект — прошивка для Elecrow ThinkNode M9, Heltec V4, GAT562 30S и Heltec T114 (nRF52840): автономный интерфейс,
 чаты и каналы MeshCore (хештег, ссылка/QR, ключ, приглашения; `docs/channels.md`, `src/Channels.cpp`), регионы MeshCore
 (регион по умолчанию и у канала, поиск у соседних репитеров, команды companion 54/55/63/64; `docs/regions.md`, `src/Regions.cpp`,
-`src/RegionSearch.inc`, проверка `tools/region_check.py`), сеть города — радиопрофиль по справочнику сообщества (`site/networks.json`, `tools/networks.py`; сайт `site/netpick.js` (свёрнутый блок, только русская версия сайта) пишет его по companion, страница/приложение — `renderNet` в `web/index.html`, тест и прежний профиль на плате — `radio try|keep|revert|previous`, `docs/networks.md`), LoRa, офлайн-карты (SD устройства или память телефона в приложении — `android/.../api/MapStore.kt`; рельеф и горизонтали по Terrain Tiles при подготовке; карта узлов без подложки — `drawMap` в `web/index.html`; `docs/maps-format.md`), Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
+`src/RegionSearch.inc`, проверка `tools/region_check.py`), сеть города — радиопрофиль по справочнику сообщества (`site/networks.json`, `tools/networks.py`; сайт `site/netpick.js` (свёрнутый блок, только русская версия сайта) пишет его по companion, страница/приложение — `renderNet` в `web/index.html`, тест и прежний профиль на плате — `radio try|keep|revert|previous`, поиск сети в эфире — `netfind`, `src/NetFind.inc`, выжимка справочника `include/NetCatalog.h`, `docs/networks.md`), LoRa, офлайн-карты (SD устройства или память телефона в приложении — `android/.../api/MapStore.kt`; рельеф и горизонтали по Terrain Tiles при подготовке; карта узлов без подложки — `drawMap` в `web/index.html`; `docs/maps-format.md`), Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
 шахматы с контактами (экран M9 и веб обеих плат, личные сообщения MeshCore,
 партии на рейтинг ELO с результатом, подписанным ключами обоих узлов, — `src/ChessRating.cpp`, турниры по швейцарской системе — `src/ChessTour.cpp`; `docs/chess.md`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
 `web/chess-companion.js`, `tools/chess_site.py`), питомец сети — тамагочи, который кормится эфиром,
@@ -107,7 +107,7 @@ WadaMesh использует ядро MeshCore; справочные исход
 
 - `src/`, `include/` — приложение и драйверы; `lib/MeshProtocol/` — MM/1.
 - `web/index.html` — исходник веб-интерфейса. Прошивка ESP32 отдаёт его и словари сжатыми (gzip):
-  `tools/pio_web.py` при сборке делает `PortalWeb.h` в папке сборки, в Git его нет. Текст страницы —
+  `tools/pio_web.py` при сборке делает `PortalWeb.h` в папке сборки, в Git его нет. С 0.29.0 русские ключи словарей хранятся один раз (`/i18n/keys.js`), а `/i18n/<lang>.js` несёт переводы по порядку и собирает `MeshMeshWebDict` (около 300 КБ flash меньше; страница и приложение не менялись). Текст страницы —
   `L('…')`/`` L`…${x}` `` и `plural(n,…)` (раздел «Языки»). Демо без платы — `tools/web_demo.py`.
 - `boards/`, `platformio.ini`, `partitions.csv` — аппаратные цели и сборка.
 - `android/` — приложение: WebView с `web/index.html` (копируется при сборке) и каналы
@@ -422,3 +422,18 @@ Web Serial/Bluetooth из браузера, штатная MeshCore, полож�
 nRF52 с 0.27.0 не запускается без USB при батарее ниже 3,4 В и выключается после 30 с ниже 3,3 В (`src/Power.cpp`,
 `docs/power.md`): сброс на пустой батарее посреди перезаписи первой страницы хранилища, вероятно, дважды стёр хранилище T114.
 Срабатывание на разряженной батарее не проверено; китайский образ T114 — 712108 байт (`Platform.cpp`, `Power.cpp` с `-Os`).
+
+## Поиск сети в эфире (0.29.0 / Android 0.20.0)
+
+`src/NetFind.inc` (в `MeshRadio.cpp`), `include/NetFind.h`: плата перебирает профили встроенной выжимки справочника
+(`include/NetCatalog.h`; пишет `tools/networks.py update`, сверяет `check` в Pages): текущий, затем места в 150 км от
+доверенной позиции (GPS-фикс или телефон из приложения через `wardrive::position`), без позиции — все профили. На каждом —
+`MeshRadio::tune` (трансивер без записи настроек, `applyConfig` возвращает настройки и прекращает поиск), zero-hop запрос
+обнаружения репитеров и 8 с приёма; затем сохранённый профиль. Пока идёт поиск, наши сообщения ждут, relay выключен.
+Найденное применяется только человеком как `radio try` (`netfind use N`, строка «Найти сеть» на экранах, блок на странице).
+`net_auto` (NVS `net_auto`, по умолчанию вкл.): рядом с местом, в сетях которого нет текущего профиля, поиск запускается сам
+раз за загрузку для этого места; экран сообщает «Рядом сеть». Страница и приложение — `netScan`/`renderNetScan` в
+`web/index.html` (через `/api/command`, Kotlin не менялся). Чтобы китайский образ T114 поместился, очереди уведомлений и
+радар создаются в куче (раньше их начальные значения занимали ~9,7 КБ flash в .data), `Chess.cpp` на nRF52 — `-Os`.
+Проверено: сборка, экраны в `tools/ui_preview`, страница с `tools/web_demo.py`. Поиск на платах, ответы репитеров на чужом
+профиле и автоматический запуск по GPS не проверены.

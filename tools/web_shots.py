@@ -44,6 +44,8 @@ SHOTS = {
     # The networks catalogue: a network chosen in the list, then a test that runs (state of the page only).
     'web-networks': ('radio', '', "netAction('open').then(()=>{netPick.net='mow-01';renderNetList()})", False),
     'web-networks-test': ('radio', '', "config.radio_trial={frequency:config.frequency,bandwidth:config.bandwidth,sf:config.sf,cr:config.cr};Object.assign(config,{frequency:868.731,sf:7,cr:7});netPick.check={n:3};buildEditor('radio');renderNet(true)", False),
+    # The network search of the board: the answers of the demo (tools/web_demo.py NETFIND).
+    'web-netfind': ('radio', '', "netScanLoad().then(()=>{$('netScan').scrollIntoView({block:'start'});scrollBy(0,-120)})", False),
     'web-msg-path': ('msg/' + key(ANNA), '', '', False),
     'web-msg-echoes': ('msg/' + key(MINE), '', '', False),
     'web-alerts-feed': ('alerts', '', '', False),

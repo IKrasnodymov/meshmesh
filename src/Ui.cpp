@@ -17,6 +17,7 @@
 #include "Dice.h"
 #include "Power.h"
 #include "Regions.h"
+#include "NetFind.h"
 #include "Notifications.h"
 #include "QuickSend.h"
 #include "People.h"
@@ -594,28 +595,43 @@ void drawSettings(){
   g().fillRoundRect(16,y+4,22,22,5,card);icon(icons[i],27,y+15,7,hues[i],card);text(46,y+14,names[i],ink,bold);text(46,y+26,fit(details[i],250,small),dim,small);tri(302,y+15,1,4,focus?accent:faint);}
  scrollbar(first,6,settingsCount,24,190);footer({{"OK",t("Open","Открыть")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
 }
-int settingRows(){return page==Radio?12:13;} // Radio: 8 values, the region, its search and the previous profile; Display: 10 values; then Save
+int settingRows(){return page==Radio?13:13;} // Radio: 8 values, the region, its search, the previous profile and the network search; Display: 10 values; then Save
 // Radio rows 8 and 9: the default region of our floods (OK types one, <> the regions found) and the region search;
 // row 10: the profile before the last change of frequency, BW, SF or CR (OK returns to it), or during a test of a
 // network profile (radio try from the page or app) the test (OK keeps it; a restart returns the saved one).
-const int RowRegion=8,RowFind=9,RowPrev=10;
+// Row 11: the network search (NetFind.h): OK starts it near the position (or stops it), and once a network is found
+// tests it (radio try); <> searches every profile of the catalogue.
+const int RowRegion=8,RowFind=9,RowPrev=10,RowNet=11;
 String profileText(const RadioProfile& r){return String(r.frequency,3)+" SF"+String(r.sf)+" BW"+String(r.bandwidth,1)+" CR"+String(r.cr);}
 String regionSearchText(){
  auto& s=regions::search;if(regions::searching())return t("Searching: ","Поиск: ")+count(s.repeaters,"repeater","repeaters","репитер","репитера","репитеров");
  return s.state==regions::Search::Done?count(s.count,"region","regions","регион","региона","регионов"):t("OK: start","OK: начать");
 }
+String netValue(){
+ auto& s=netfind::state;if(netfind::running())return t("Listening ","Слушаю ")+String(s.step+1)+"/"+String(s.count);
+ if(s.phase==netfind::State::Done&&s.best!=255){auto& r=s.results[s.best];return "SF"+String(r.radio.sf)+" · "+count(r.repeaters,"repeater","repeaters","репитер","репитера","репитеров");}
+ return s.phase==netfind::State::Done?t("Nothing new","Новых нет"):t("OK: start","OK: начать");
+}
+String netHint(){
+ auto& s=netfind::state;
+ if(netfind::running()){auto& r=s.results[s.step];return netfind::profileText(r.radio)+(r.place!=255?" · "+netfind::placeName(r.place):String());}
+ if(s.phase==netfind::State::Done&&s.best!=255){auto& r=s.results[s.best];return t("OK: test ","OK: тест ")+netfind::profileText(r.radio)+(r.place!=255?" · "+netfind::placeName(r.place):String());}
+ if(s.phase==netfind::State::Done){unsigned n=0;for(unsigned i=0;i<s.count;i++)if(s.results[i].current)n=s.results[i].repeaters;return t("Current profile: ","Текущий профиль: ")+count(n,"repeater","repeaters","репитер","репитера","репитеров")+t("; <>: all profiles","; <>: все профили");}
+ return t("Profiles of the city catalogue; <>: all of them","Профили справочника городов; <>: все");
+}
 String regionsFound(){String n;for(unsigned i=0;i<regions::search.count;i++)n+=String(i?", ":"")+regions::search.found[i].name;return n;}
 String settingName(int i){
- if(page==Radio){const char* names[]={tr("Frequency","Частота"),tr("Bandwidth","Полоса"),tr("Spreading factor","Фактор SF"),tr("Coding rate","Кодирование CR"),tr("TX power","Мощность"),tr("Relay hop limit","Предел ретрансляции"),tr("Relay packets","Ретрансляция"),tr("Path hash size","Размер хэша пути"),tr("Region","Регион"),tr("Find regions","Найти регионы")};if(i==RowPrev)return config.trial.set()?t("Radio test","Тест радио"):t("Previous radio","Прежнее радио");return i<10?names[i]:"";}
+ if(page==Radio){const char* names[]={tr("Frequency","Частота"),tr("Bandwidth","Полоса"),tr("Spreading factor","Фактор SF"),tr("Coding rate","Кодирование CR"),tr("TX power","Мощность"),tr("Relay hop limit","Предел ретрансляции"),tr("Relay packets","Ретрансляция"),tr("Path hash size","Размер хэша пути"),tr("Region","Регион"),tr("Find regions","Найти регионы")};if(i==RowNet)return t("Find network","Найти сеть");if(i==RowPrev)return config.trial.set()?t("Radio test","Тест радио"):t("Previous radio","Прежнее радио");return i<10?names[i]:"";}
  const char* names[]={tr("Name","Имя"),tr("Language","Язык"),tr("Brightness","Яркость"),tr("Sounds","Звуки"),tr("Auto lock","Автоблокировка"),tr("Dim screen","Гасить экран"),tr("GPS receiver","Приёмник GPS"),tr("UTC offset","Смещение UTC"),tr("Battery shows","Батарея в строке"),tr("Lock screen","Экран блокировки"),tr("Wake on message","Будить сообщением"),tr("Message popup","Окно сообщения")};return i<12?names[i]:"";
 }
 String settingValue(const Config& c,int i){
- if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(" MHz"," МГц");case 1:return String(c.bandwidth,1)+t(" kHz"," кГц");case 2:return "SF"+String(c.sf);case 3:return "4/"+String(c.cr);case 4:return String(c.power)+" dBm";case 5:return String(c.hops);case 6:return flag(c.relay);case 7:return count(c.pathHash,"byte","bytes","байт","байта","байт");case RowRegion:return c.region[0]?String(c.region):String(t("None","Нет"));case RowFind:return regionSearchText();case RowPrev:return config.trial.set()?t("OK: keep","OK: оставить"):config.previous.set()?profileText(config.previous):t("None","Нет");}return "";}
+ if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(" MHz"," МГц");case 1:return String(c.bandwidth,1)+t(" kHz"," кГц");case 2:return "SF"+String(c.sf);case 3:return "4/"+String(c.cr);case 4:return String(c.power)+" dBm";case 5:return String(c.hops);case 6:return flag(c.relay);case 7:return count(c.pathHash,"byte","bytes","байт","байта","байт");case RowRegion:return c.region[0]?String(c.region):String(t("None","Нет"));case RowFind:return regionSearchText();case RowNet:return netValue();case RowPrev:return config.trial.set()?t("OK: keep","OK: оставить"):config.previous.set()?profileText(config.previous):t("None","Нет");}return "";}
  switch(i){case 0:return c.name;case 1:return langNames[c.lang<LangCount?c.lang:0];case 2:return String(c.brightness);case 3:return flag(c.sound);case 4:return c.autoLock?String(c.autoLock)+t(" s"," с"):t("Off","Выкл");case 5:return c.dimAfter?String(c.dimAfter)+t(" s"," с"):t("Off","Выкл");case 6:return flag(c.gps);case 7:{int m=abs(c.utcOffset);char b[12];snprintf(b,sizeof b,"%c%02d:%02d",c.utcOffset<0?'-':'+',m/60,m%60);return b;}case 8:return c.batteryVolts?t("Volts","Вольты"):t("Percent","Проценты");case 9:return c.lockDetails?t("Details","Подробно"):t("Hidden","Скрыто");case 10:case 11:{unsigned mode=i==10?c.notifyWake:c.notifyPopup;return mode==0?t("Off","Выкл"):mode==1?t("All","Все"):t("Mentions","Упоминания");}}return "";
 }
 String settingHint(int i){
  if(page==Radio){switch(i){case 0:return t("1 kHz steps; must match every node","Шаг 1 кГц; должна совпадать у всех узлов");case 1:return t("62.5 / 125 / 250 / 500 kHz","62.5 / 125 / 250 / 500 кГц");case 2:return t("Higher SF: longer range, slower","Больше SF - дальше, но медленнее");case 3:return t("Error correction 4/5 to 4/8","Избыточность кода 4/5 ... 4/8");case 4:return t("Radio chip setting, 0-22 dBm","Настройка чипа, 0-22 dBm");case 5:return t("Relay packets with fewer hops than this","Пересылать пакеты, у которых пересылок меньше");case 6:return t("Forward other nodes' MeshCore packets","Пересылать чужие пакеты MeshCore");case 7:return t("Per hop in our floods; older MeshCore drops 2-3","На пересылку; старые MeshCore не пересылают 2-3");
   case RowRegion:return t("Repeaters pass on our floods by it; OK: type","По нему репитеры пересылают наши пакеты; OK: ввести");
+  case RowNet:return netHint();
   case RowFind:return regions::search.count?t("Found: ","Найдены: ")+regionsFound():t("Asks repeaters that hear this device","Спросит репитеры, которые слышат устройство");
   case RowPrev:return config.trial.set()?t("A restart returns ","Перезапуск вернёт ")+profileText(config.trial):config.previous.set()?t("OK: return to it","OK: вернуться к нему"):t("Kept on a change of frequency, BW, SF or CR","Запоминается при смене частоты, BW, SF или CR");}return t("Applied to the radio when saved","Применяется к радио при сохранении");}
  switch(i){case 0:return t("OK: edit, 1-24 UTF-8 bytes","OK: изменить, 1-24 байта UTF-8");case 1:return t("Menu language; typing layout is the @ key","Язык меню; раскладка ввода - клавиша @");case 2:return "10-255";case 3:return t("Tone for messages and ACKs","Сигнал о сообщениях и подтверждениях");case 4:return t("0 = off, 30-600 s","0 = выкл, 30-600 с");case 5:return t("0 = off, 10-600 s","0 = выкл, 10-600 с");case 6:return t("Receiver power","Питание приёмника");case 7:return t("Local time, 15 minute steps","Местное время, шаг 15 минут");case 8:return t("Status bar: charge estimate or measured voltage","Строка состояния: оценка заряда или измеренное напряжение");case 9:return t("Chess moves and message senders while locked","Ходы шахмат и отправители при блокировке");}return t("Stored in device memory","Сохраняется в памяти устройства");
@@ -674,12 +690,13 @@ void drawEditor(){
   if(i==rows-1){panel(8,y,304,21,changed?(focus?accent:rgb(0x14524b)):card,6);if(focus&&!changed)ring(8,y,304,21,6,line);textCenter(160,y+15,changed?t("Save changes","Сохранить изменения"):t("No changes","Нет изменений"),changed?(focus?bg:ink):dim,bold);continue;}
   listRow(y,21,focus);String value=settingValue(draft,i);bool diff=value!=settingValue(config,i);
   if(diff)g().fillCircle(17,y+10,2,accent);text(24,y+15,settingName(i),focus?ink:dim);
-  if(focus&&!(page==Display&&i==0)&&!(page==Radio&&(i==RowFind||i==RowPrev))){int w=measure(value,bold);tri(300,y+10,1,4,accent);text(292-w,y+15,value,accent,bold);tri(284-w,y+10,3,4,accent);}
-  else textRight((page==Display&&i==0)||(page==Radio&&(i==RowFind||i==RowPrev))?306:300,y+15,fit(value,150),diff?accent:ink,focus?bold:body);
+  if(focus&&!(page==Display&&i==0)&&!(page==Radio&&(i==RowFind||i==RowPrev||i==RowNet))){int w=measure(value,bold);tri(300,y+10,1,4,accent);text(292-w,y+15,value,accent,bold);tri(284-w,y+10,3,4,accent);}
+  else textRight((page==Display&&i==0)||(page==Radio&&(i==RowFind||i==RowPrev||i==RowNet))?306:300,y+15,fit(value,150),diff?accent:ink,focus?bold:body);
  }
  scrollbar(first,7,rows,25,160);text(10,207,fit(settingHint(selected),300,small),faint,small);
  if(page==Display&&selected==0)footer({{"OK",t("Edit name","Изменить имя")},{"^v",t("Select","Выбор")},{"BACK",t("Cancel","Отмена")}});
  else if(page==Radio&&selected==RowPrev)footer({{"OK",config.trial.set()?t("Keep","Оставить"):t("Return","Вернуть")},{"^v",t("Select","Выбор")},{"BACK",t("Cancel","Отмена")}});
+ else if(page==Radio&&selected==RowNet){auto& s=netfind::state;footer({{"OK",netfind::running()?t("Stop","Стоп"):s.phase==netfind::State::Done&&s.best!=255?t("Test","Тест"):t("Search","Искать")},{"<>",t("All","Все")},{"BACK",t("Cancel","Отмена")}});}
  else if(page==Radio&&selected==RowFind)footer({{"OK",t("Search","Искать")},{"^v",t("Select","Выбор")},{"BACK",t("Cancel","Отмена")}});
  else if(page==Radio&&selected==RowRegion)footer({{"<>",t("Found","Найденные")},{"OK",t("Type","Ввести")},{"BACK",t("Cancel","Отмена")}});
  else footer({{"<>",t("Change","Изменить")},{"OK",selected==rows-1?t("Save","Сохранить"):t("Next value","Дальше")},{"BACK",t("Cancel","Отмена")}});
@@ -856,7 +873,15 @@ void drawLayoutHelp(){
  text(16,208,t("2x space: RU/EN   Shift or Right after a letter: capital","2×пробел: RU/EN   Shift или -> после буквы: заглавная"),dim,small);
 }
 
-void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;case 7:draft.pathHash=constrain(int(draft.pathHash)+dir,1,3);break;case RowRegion:strlcpy(draft.region,regions::cycle(draft.region,dir,false).c_str(),sizeof draft.region);break;}}else switch(selected){case 1:draft.lang=langStep(draft.lang,dir);break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;case 9:draft.lockDetails=!draft.lockDetails;break;case 10:draft.notifyWake=(draft.notifyWake+dir+3)%3;break;case 11:draft.notifyPopup=(draft.notifyPopup+dir+3)%3;break;}dirty=true;}
+// The network search row: stop a search, test the network found, or search (all: every profile).
+void netAction(bool all){
+ auto& s=netfind::state;if(config.role!=RoleNormal){notice(t("Not in this mode","Недоступно в этом режиме"),warn);return;}
+ if(netfind::running()){netfind::stop();return;}
+ if(!all&&s.phase==netfind::State::Done&&s.best!=255&&!config.sameRadio(s.results[s.best].radio)){String r=netfind::use(s.best);bool done=r.startsWith("OK");if(done)draft=config;
+  notice(done?t("Radio test: a restart returns the saved one","Тест радио: перезапуск вернёт сохранённое"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4),done?ok:bad);return;}
+ if(!netfind::start(all))notice(meshRadio.busy()||regions::searching()?t("Radio busy, retry","Радио занято, повторите"):t("Radio offline","Радио недоступно"),bad);
+}
+void alter(int dir){if(page==Radio){switch(selected){case 0:draft.frequency=constrain(roundf((draft.frequency+dir*.001f)*1000)/1000,863.f,870.f);break;case 1:{float bw[]={62.5,125,250,500};int i=0;while(i<3&&draft.bandwidth!=bw[i])i++;draft.bandwidth=bw[(i+dir+4)%4];break;}case 2:draft.sf=constrain(int(draft.sf)+dir,7,12);break;case 3:draft.cr=constrain(int(draft.cr)+dir,5,8);break;case 4:draft.power=constrain(int(draft.power)+dir,0,MM_MAX_POWER);break;case 5:draft.hops=constrain(int(draft.hops)+dir,0,7);break;case 6:draft.relay=!draft.relay;break;case 7:draft.pathHash=constrain(int(draft.pathHash)+dir,1,3);break;case RowRegion:strlcpy(draft.region,regions::cycle(draft.region,dir,false).c_str(),sizeof draft.region);break;case RowNet:netAction(true);break;}}else switch(selected){case 1:draft.lang=langStep(draft.lang,dir);break;case 2:draft.brightness=constrain(int(draft.brightness)+dir*15,10,255);break;case 3:draft.sound=!draft.sound;break;case 4:draft.autoLock=constrain(int(draft.autoLock)+dir*30,0,600);break;case 5:draft.dimAfter=constrain(int(draft.dimAfter)+dir*10,0,600);break;case 6:draft.gps=!draft.gps;break;case 7:draft.utcOffset=constrain(int(draft.utcOffset)+dir*15,-720,840);break;case 8:draft.batteryVolts=!draft.batteryVolts;break;case 9:draft.lockDetails=!draft.lockDetails;break;case 10:draft.notifyWake=(draft.notifyWake+dir+3)%3;break;case 11:draft.notifyPopup=(draft.notifyPopup+dir+3)%3;break;}dirty=true;}
 // Keep the settings JSON off uiKey's stack: the saved-map library also needs SD/JSON stack space.
 void saveDraft(){DynamicJsonDocument d(4096);auto error=deserializeJson(d,configJson());if(error){notice(error.c_str(),bad);return;}if(page==Radio){d["frequency"]=draft.frequency;d["bandwidth"]=draft.bandwidth;d["sf"]=int(draft.sf);d["cr"]=int(draft.cr);d["power"]=int(draft.power);d["hops"]=int(draft.hops);d["relay"]=draft.relay;d["path_hash"]=int(draft.pathHash);d["region"]=draft.region;}else{d["name"]=draft.name;d["lang"]=langCodes[draft.lang];d.remove("russian");d["brightness"]=int(draft.brightness);d["sound"]=draft.sound;d["gps"]=draft.gps;d["auto_lock"]=int(draft.autoLock);d["dim_after"]=int(draft.dimAfter);d["utc_offset"]=int(draft.utcOffset);d["battery_volts"]=draft.batteryVolts;d["lock_details"]=draft.lockDetails;d["notify_wake"]=draft.notifyWake;d["notify_popup"]=draft.notifyPopup;}String reply=applySettings(d.as<JsonObjectConst>());bool saved=reply.startsWith("OK");notice(saved?t("Settings saved","Настройки сохранены"):reply,saved?ok:bad);if(saved)change(Settings);}
 // Navigation, hold ADV and the screen settings turn the GPS on and off; an open settings draft follows.
@@ -940,6 +965,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
   else if(page==Radio&&selected==RowPrev){if(!config.trial.set()&&!config.previous.set()){notice(t("No previous settings","Прежних настроек нет"),dim);return;}
    String r=executeCommand(config.trial.set()?"radio keep":"radio previous");bool done=r.startsWith("OK");if(done)draft=config;
    notice(done?t("Radio settings changed","Настройки радио изменены"):r.startsWith("ERR radio busy")?t("Radio busy, retry","Радио занято, повторите"):r.substring(4),done?ok:bad);}
+  else if(page==Radio&&selected==RowNet)netAction(false);
   else if(page==Radio&&selected==RowFind){if(config.role!=RoleNormal)notice(t("Not in this mode","Недоступно в этом режиме"),warn);else if(!regions::find())notice(t("Radio offline","Радио недоступно"),bad);}
   else alter(1);}
  else if(page==Network){if(selected==0)portalToggle();if(selected==1){if(config.role!=RoleNormal)notice(t("Internet over Wi-Fi is off in this mode","Интернет по Wi-Fi выключен в этом режиме"),warn);else change(NetList);}if(selected==2)bleToggle();if(selected==3)notice(t("Public key: ","Открытый ключ: ")+meshRadio.publicKeyText().substring(0,16));}
@@ -988,6 +1014,10 @@ void uiTick(){uint32_t now=millis();
  if(dicer.rolls!=diceRolls){diceRolls=dicer.rolls;if(page==DiceView)diceRollAt=sheetRollAt=now;}
  if(page==DiceView&&dicer.events!=diceSeen){diceSeen=dicer.events;dirty=true;}
  if(dicer.notes!=diceNotes){diceNotes=dicer.notes;notice(dicer.note,dicer.out.failed?warn:accent);} // a sheet sent or received
+ // A network found by the automatic search (NetFind.h): told once, the screen wakes.
+ {static uint16_t netSeen=0;auto& s=netfind::state;if(s.found!=netSeen){netSeen=s.found;if(s.best!=255){auto& r=s.results[s.best];
+  notice(t("Network nearby: ","Рядом сеть: ")+(r.place!=255?netfind::placeName(r.place)+" ":String())+"SF"+String(r.radio.sf)+t(" · Settings > Radio"," · Настройки › Радио"),info);
+  hardware.beep();wakeOnly=false;hardware.brightness(config.brightness);lastInput=now;}}}
  chessTick();tourTick();
  // Homing is used while walking without pressing keys: the screen stays on and unlocked.
  if((page==Homing||page==Motion)&&!locked)lastInput=now;

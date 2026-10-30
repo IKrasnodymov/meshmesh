@@ -1,3 +1,6 @@
+#if defined(MM_NRF52)
+#pragma GCC optimize("Os") // 1 MB flash (AGENTS.md, "Языки"): the rules only, no engine search
+#endif
 #include "Chess.h"
 #include "Modules.h"
 #if MM_CHESS // the rules; the stand-in of ChessNet.cpp needs none of them

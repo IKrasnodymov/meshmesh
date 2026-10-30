@@ -1019,6 +1019,56 @@
   "ru": "Батарея садится",
   "text": "Batterie faible"
  },
+ "47cf8db9": {
+  "en": "New message from ",
+  "ru": "Сообщение от ",
+  "text": "Message de "
+ },
+ "2d151551": {
+  "en": "Delivered to ",
+  "ru": "Доставлено: ",
+  "text": "Remis à "
+ },
+ "53c958eb": {
+  "en": "Queued: waiting for delivery",
+  "ru": "Ожидание подтверждения",
+  "text": "En file : attente de remise"
+ },
+ "25fb6d11": {
+  "en": "Queued: broadcast",
+  "ru": "Сообщение в общем чате отправляется",
+  "text": "En file : diffusion"
+ },
+ "404ceb1a": {
+  "en": "No delivery ACK",
+  "ru": "Получатель не подтвердил доставку",
+  "text": "Pas d'ACK de remise"
+ },
+ "35b6fabd": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи по радио",
+  "text": "Erreur d'émission radio"
+ },
+ "ddebda8a": {
+  "en": "No repeat heard",
+  "ru": "Повтор не услышан",
+  "text": "Répétition non entendue"
+ },
+ "ad42f13e": {
+  "en": "No delivery ACK",
+  "ru": "Нет подтверждения доставки",
+  "text": "Pas d'ACK de remise"
+ },
+ "f27689ea": {
+  "en": "Network nearby: ",
+  "ru": "Рядом сеть: ",
+  "text": "Réseau proche : "
+ },
+ "ee53d4ee": {
+  "en": " · Settings > Radio",
+  "ru": " · Настройки › Радио",
+  "text": " · Réglages › Radio"
+ },
  "84949ebc": {
   "en": "On",
   "ru": "Вкл",
@@ -2534,6 +2584,36 @@
    "other": "{n} régions"
   }
  },
+ "e61484ed": {
+  "en": "Listening ",
+  "ru": "Слушаю ",
+  "text": "Écoute "
+ },
+ "d403fe3b": {
+  "en": "Nothing new",
+  "ru": "Новых нет",
+  "text": "Rien de nouveau"
+ },
+ "121d540b": {
+  "en": "OK: test ",
+  "ru": "OK: тест ",
+  "text": "OK : tester "
+ },
+ "4f9df271": {
+  "en": "Current profile: ",
+  "ru": "Текущий профиль: ",
+  "text": "Profil actuel : "
+ },
+ "716e3778": {
+  "en": "; <>: all profiles",
+  "ru": "; <>: все профили",
+  "text": "; <> : tous les profils"
+ },
+ "5ca89fd0": {
+  "en": "Profiles of the city catalogue; <>: all of them",
+  "ru": "Профили справочника городов; <>: все",
+  "text": "Profils du catalogue des villes ; <> : tous"
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -2583,6 +2663,11 @@
   "en": "Find regions",
   "ru": "Найти регионы",
   "text": "Trouver régions"
+ },
+ "511c0119": {
+  "en": "Find network",
+  "ru": "Найти сеть",
+  "text": "Chercher réseau"
  },
  "5b044f98": {
   "en": "Radio test",
@@ -3013,6 +3098,11 @@
   "en": "Return",
   "ru": "Вернуть",
   "text": "Revenir"
+ },
+ "c2d572ce": {
+  "en": "Test",
+  "ru": "Тест",
+  "text": "Test"
  },
  "a7cb76b8": {
   "en": "Search",
@@ -3579,6 +3669,26 @@
   "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
   "text": "2x espace : RU/EN   Shift ou -> après une lettre : maj."
  },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "Indisponible dans ce mode"
+ },
+ "56bf77d2": {
+  "en": "Radio test: a restart returns the saved one",
+  "ru": "Тест радио: перезапуск вернёт сохранённое",
+  "text": "Test radio : un redémarrage rétablit l’enregistré"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Radio occupée, réessayer"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "Radio indisponible"
+ },
  "2ae7cabc": {
   "en": "Settings saved",
   "ru": "Настройки сохранены",
@@ -3724,21 +3834,6 @@
   "ru": "Настройки радио изменены",
   "text": "Réglages radio modifiés"
  },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Radio occupée, réessayer"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "Indisponible dans ce mode"
- },
- "19b6c4b1": {
-  "en": "Radio offline",
-  "ru": "Радио недоступно",
-  "text": "Radio indisponible"
- },
  "0a9fb2e4": {
   "en": "Internet over Wi-Fi is off in this mode",
   "ru": "Интернет по Wi-Fi выключен в этом режиме",
@@ -3818,46 +3913,6 @@
   "en": "Encryption test failed",
   "ru": "Ошибка шифрования",
   "text": "Échec du test de chiffrement"
- },
- "47cf8db9": {
-  "en": "New message from ",
-  "ru": "Сообщение от ",
-  "text": "Message de "
- },
- "2d151551": {
-  "en": "Delivered to ",
-  "ru": "Доставлено: ",
-  "text": "Remis à "
- },
- "53c958eb": {
-  "en": "Queued: waiting for delivery",
-  "ru": "Ожидание подтверждения",
-  "text": "En file : attente de remise"
- },
- "25fb6d11": {
-  "en": "Queued: broadcast",
-  "ru": "Сообщение в общем чате отправляется",
-  "text": "En file : diffusion"
- },
- "404ceb1a": {
-  "en": "No delivery ACK",
-  "ru": "Получатель не подтвердил доставку",
-  "text": "Pas d'ACK de remise"
- },
- "35b6fabd": {
-  "en": "Radio TX error",
-  "ru": "Ошибка передачи по радио",
-  "text": "Erreur d'émission radio"
- },
- "ddebda8a": {
-  "en": "No repeat heard",
-  "ru": "Повтор не услышан",
-  "text": "Répétition non entendue"
- },
- "ad42f13e": {
-  "en": "No delivery ACK",
-  "ru": "Нет подтверждения доставки",
-  "text": "Pas d'ACK de remise"
  },
  "13c4173d": {
   "en": "None",
@@ -6044,11 +6099,6 @@
   "ru": "Хэш пути",
   "text": "Hash chemin"
  },
- "c2d572ce": {
-  "en": "Test",
-  "ru": "Тест",
-  "text": "Test"
- },
  "180b9f58": {
   "en": "Previous",
   "ru": "Прежние",
@@ -6088,6 +6138,11 @@
    "one": "{n} trouvée",
    "other": "{n} trouvées"
   }
+ },
+ "9de29985": {
+  "en": "Radio test: restart returns",
+  "ru": "Тест: перезапуск вернёт",
+  "text": "Test : redémarrage rétablit"
  },
  "d7a4d1f0": {
   "en": "<> digit, up/down value",

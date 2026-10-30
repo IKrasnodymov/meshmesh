@@ -4,7 +4,7 @@ bool MeshRadio::removeContact(uint64_t id){Peer* p=contact(id);if(!p)return fals
 void Hardware::ping(uint16_t,uint16_t){}
 // Signal radar: synthetic sweep results; the table and trend logic are the real src/RadarModel.cpp.
 #include "Radar.h"
-Radar radar;
+Radar& radar=*new Radar;
 void Radar::open(){if(active)return;active=true;wifi=WifiReady;sweeps=3;count=0;
 #if defined(MM_NO_WIFI)
  wifi=WifiOff;
@@ -123,6 +123,21 @@ Search search;
 bool find(){static Found list[MaxFound];search=Search();search.found=list;search.state=Search::Done;search.repeaters=search.answered=2;for(const char* n:{"ru","mow","msk","sao"}){strcpy(search.found[search.count].name,n);search.found[search.count++].repeaters=2;}return true;}
 void tick(){}
 String json(){return "{}";}
+}
+// Network search: the answer near Moscow with a Kazan profile on the board, at once (src/NetFind.inc on the boards).
+#include "NetFind.h"
+namespace netfind {
+State state;
+bool start(bool,const float*,const float*){static Result list[MaxResults];uint16_t found=state.found;state=State();state.found=found;state.results=list;
+ RadioProfile here=config.radio(),near=here;near.sf=7;near.cr=7;
+ list[0]=Result();list[0].radio=here;list[0].current=true;list[0].done=true;
+ list[1]=Result();list[1].radio=near;list[1].place=1;list[1].repeaters=3;list[1].packets=5;list[1].snr=26;list[1].done=true;
+ state.count=2;state.best=1;state.located=true;state.phase=State::Done;return true;}
+void stop(){}void cancel(){}void tick(){}
+String json(){return "{}";}
+String placeName(uint8_t place){return place==1?"Москва и Московская область":"";}
+String profileText(const RadioProfile& r){return String(r.frequency,3)+" SF"+String(r.sf)+" BW"+String(r.bandwidth,1);}
+String use(uint8_t){return "OK radio test";}
 }
 int MeshRadio::probeHashtag(const String& raw){String tag=channels::hashtag(raw);if(!tag.length())return -1;for(unsigned i=0;i<heardCount;i++)if(tag==heard[i].name)return heard[i].packets;return tag=="#test"?2:0;}
 // MeshMesh storage files: none in the preview (read marks fall back to the Preferences shim).

@@ -6,6 +6,7 @@
 #include "Board.h"
 #include "BoardPins.h"
 #include "Channels.h"
+#include "Config.h"
 #if defined(MM_RADIO_SX1262)
 using DeviceRadio=SX1262;
 #elif defined(MM_RADIO_SX1276)
@@ -85,6 +86,9 @@ class MeshRadio {
   String event="Ready";bool dirty=true;
   MeshRadio():radio(new Module(pins::radioCs,pins::radioIrq,pins::radioReset,pins::radioBusy,SPI)) {}
   void begin();void tick();bool applyConfig();
+  // The network search (NetFind.h): the transceiver on another profile, the settings unchanged; an unset profile
+  // returns to the settings. applyConfig ends the search.
+  bool tune(const RadioProfile& profile);RadioProfile tuned;
   // Deaf receiver guard: the transceiver is set up again as at boot (reset, calibration, settings)
   // after 10 min without a packet, or by the server's agc.reset.interval; the queue is kept.
   bool recalibrate();uint32_t recalibrations=0;
@@ -111,7 +115,7 @@ class MeshRadio {
   // The path, signal and repeats of a message in JSON (the history file and /api/messages); read back by pathRead.
   static void pathJson(JsonObject j,const ChatMessage& m);static void pathRead(JsonObjectConst j,ChatMessage& m);
  private:
-  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;friend struct RemoteAccess;friend struct RegionAccess;
+  friend class MeshCoreBackend;friend class MeshCoreRadioAdapter;friend struct CompanionCore;friend struct RemoteAccess;friend struct RegionAccess;friend struct NetFindAccess;struct NetFindAccess;
   MeshCoreBackend* core=nullptr;
   struct Pending {bool active=false,started=false;ChatMessage message;uint32_t due=0,ack[3]={},hash=0,wireTimestamp=0;uint8_t attempts=0,route[3]={},hops[3]={};
   // app: sent for a companion app, which retries itself: one attempt with its timestamp and attempt byte.
