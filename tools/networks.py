@@ -42,6 +42,8 @@ def problems(c):
             url = n.get('community_url')
             if url is not None and not (isinstance(url, str) and url.startswith(('https://', 'http://'))):
                 out.append(f'{nid}: community_url must be http(s)')
+            if n.get('path_hash_bytes') not in (None, 1, 2, 3):
+                out.append(f"{nid}: path_hash_bytes must be 1, 2 or 3, not {n['path_hash_bytes']!r}")
     for l in c['locations']:
         if l.get('parent_id') is not None and l['parent_id'] not in places:
             out.append(f"{l.get('id')}: unknown parent_id {l['parent_id']}")

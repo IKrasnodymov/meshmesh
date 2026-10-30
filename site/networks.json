@@ -1,6 +1,6 @@
 {
  "schema_version": 2,
- "updated": "2026-10-14",
+ "updated": "2026-10-29",
  "locations": [
   {
    "id": "ru-ta-kazan",
@@ -20,6 +20,7 @@
       "sf": 8,
       "cr": 6
      },
+     "path_hash_bytes": 2,
      "updated": "2026-10-14",
      "community_url": "https://t.me/Meshcore_KZN"
     }
@@ -43,6 +44,7 @@
       "sf": 7,
       "cr": 7
      },
+     "path_hash_bytes": 2,
      "updated": "2026-10-14",
      "community_url": "https://t.me/meshcore_rulang/1252/"
     },
@@ -80,6 +82,7 @@
       "sf": 8,
       "cr": 6
      },
+     "path_hash_bytes": 2,
      "updated": "2026-10-14",
      "community_url": "https://t.me/Meshcore_NN"
     },
@@ -93,6 +96,7 @@
       "sf": 8,
       "cr": 8
      },
+     "path_hash_bytes": 2,
      "updated": "2026-10-14",
      "community_url": "https://t.me/Meshcore_NN"
     }
@@ -394,8 +398,7 @@
       "cr": 8
      },
      "updated": "2026-10-15",
-     "community_url": "https://t.me/meshcore_iwa",
-     "note": "Справочная точка города по координатам Википедии."
+     "community_url": "https://t.me/meshcore_iwa"
     }
    ]
   },
@@ -1077,6 +1080,30 @@
      },
      "updated": "2026-10-14",
      "community_url": "https://t.me/meshcoreVRN"
+    }
+   ]
+  },
+  {
+   "id": "ru-dnr-donetsk",
+   "name": "Донецк",
+   "country": "RU",
+   "region": "Донецкая Народная Республика",
+   "lat": 48.023,
+   "lon": 37.8022,
+   "networks": [
+    {
+     "id": "ru-dnr-donetsk-01",
+     "name": "Местный профиль",
+     "band": "868",
+     "radio": {
+      "frequency_hz": 868731000,
+      "bandwidth_hz": 62500,
+      "sf": 9,
+      "cr": 7
+     },
+     "path_hash_bytes": 2,
+     "updated": "2026-10-29",
+     "community_url": "https://t.me/meshcore_dnr"
     }
    ]
   }
