@@ -46,6 +46,13 @@ SHOTS = {
     'web-networks-test': ('radio', '', "config.radio_trial={frequency:config.frequency,bandwidth:config.bandwidth,sf:config.sf,cr:config.cr};Object.assign(config,{frequency:868.731,sf:7,cr:7});netPick.check={n:3};buildEditor('radio');renderNet(true)", False),
     # The network search of the board: the answers of the demo (tools/web_demo.py NETFIND).
     'web-netfind': ('radio', '', "netScanLoad().then(()=>{$('netScan').scrollIntoView({block:'start'});scrollBy(0,-120)})", False),
+    # Backup (docs/backup.md): the save card, then the preview of a restore from a made-up copy of this demo board.
+    'web-backup': ('backup', '', '', False),
+    'web-backup-restore': ('backup', '', "request('/api/config').then(c=>backupOpen({files:[new File([JSON.stringify({format:'meshmesh-backup',version:1,"
+                           "created:'2026-11-01T18:20:00Z',board:status.board,board_name:boardName(),node:{name:c.name},settings:{...c,sf:9,dim_after:60},"
+                           "contacts:[{key:'ab'.repeat(32),name:'Lena',type:1}],quick:{to:'ALL',gps:true,presets:['OK','👍','🚶','','','','','','','']},"
+                           "identity:{private_key:'00'.repeat(64),public_key:'77'+'0'.repeat(62)}})],'meshmesh-backup-M9.json')]})).then(()=>{"
+                           "$('bkRestore').scrollIntoView({block:'start'});scrollBy(0,-70)})", False),
     'web-msg-path': ('msg/' + key(ANNA), '', '', False),
     'web-msg-echoes': ('msg/' + key(MINE), '', '', False),
     'web-alerts-feed': ('alerts', '', '', False),

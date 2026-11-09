@@ -22,6 +22,7 @@ MeshCore nodes.
   create a private one, invite contacts by direct message, find channels heard on air. [docs/en/channels.md](docs/en/channels.md)
 - **Regions** — MeshCore flood scope: a default region and one per channel, a search of the regions nearby repeaters serve; repeaters set up with the `region` commands. [docs/en/regions.md](docs/en/regions.md)
 - **Network of your city** — the frequency, bandwidth, SF and CR of a local MeshCore network from the community catalogue, written from the website (stock MeshCore boards too) or applied in the app with a test, Keep, Revert and a way back to the previous settings. The board can also find the network on air: it listens to the catalogue profiles and asks the repeaters nearby, and does it by itself near another city (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Backup** — settings, channels with keys, contacts, Quick Send, counters, character sheets and, optionally, the node key in one JSON file from the device page or the app; a restore shows what will change and writes only what you tick, to the same or another board (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Offline maps** — OpenStreetMap with relief and contour lines, kept on the phone (app) or the device SD card; nodes, direct links and GPS on the map, with any board.
 - **Wardriving** — a coverage map of the mesh: packets heard and channel pings with the repeaters that pass them on, logged with a trusted GPS or phone position; Wi-Fi and Bluetooth too on ESP32; export to CSV, GeoJSON, KML and WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nearby nodes** — signal, hops, distance and bearing; contacts, repeaters and rooms.
@@ -94,7 +95,7 @@ The screen UI can be rendered on a computer without a board: `tools/ui_preview/b
 
 ## Documentation
 
-Detailed documentation in English: [channels](docs/en/channels.md), [regions](docs/en/regions.md), [network of your city](docs/en/networks.md), [MeshCore compatibility](docs/en/meshcore-migration.md), [boards](docs/en/boards.md),
+Detailed documentation in English: [channels](docs/en/channels.md), [regions](docs/en/regions.md), [network of your city](docs/en/networks.md), [backup](docs/en/backup.md), [MeshCore compatibility](docs/en/meshcore-migration.md), [boards](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [repeater and room modes](docs/en/repeater.md),
 [chess protocol](docs/en/chess.md), [mesh pet](docs/en/pet.md), [dice](docs/en/dice.md), [map format](docs/en/maps-format.md), [comparison with MeshCore](docs/en/feature-parity.md),
 [hardware verification](docs/en/verification.md). The Russian originals are in [docs/](docs/), with the full

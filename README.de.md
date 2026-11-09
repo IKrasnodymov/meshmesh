@@ -22,6 +22,7 @@ MeshCore-Knoten.
   einen privaten Kanal erstellen, Kontakte per Direktnachricht einladen, auf Sendung gehörte Kanäle finden. [docs/en/channels.md](docs/en/channels.md)
 - **Regionen** — Flood-Bereich von MeshCore: Standardregion und eigene Region je Kanal, Suche der Regionen naher Repeater; Repeater per `region`-Befehlen. [docs/en/regions.md](docs/en/regions.md)
 - **Netz Ihrer Stadt** — Frequenz, Bandbreite, SF und CR eines lokalen MeshCore-Netzes aus dem Verzeichnis der Community, von der Website geschrieben (auch auf Boards mit originalem MeshCore) oder in der App mit Test, Behalten, Zurücksetzen und Rückkehr zu den vorigen Einstellungen angewendet. Die Platine findet das Netz auch selbst über Funk: Sie hört die Profile des Verzeichnisses ab und fragt Repeater in der Nähe, in der Nähe einer anderen Stadt von selbst (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Sicherung** — Einstellungen, Kanäle mit Schlüsseln, Kontakte, Quick Send, Zähler, Charakterbögen und auf Wunsch der Knotenschlüssel in einer JSON-Datei von der Geräteseite oder aus der App; die Wiederherstellung zeigt, was sich ändert, und schreibt nur das Ausgewählte, auf dasselbe oder ein anderes Board (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Offline-Karten** — OpenStreetMap mit Relief und Höhenlinien, auf dem Telefon (App) oder der SD-Karte des Geräts; Knoten, direkte Verbindungen und GPS auf der Karte mit jedem Board.
 - **Wardriving** — eine Abdeckungskarte des Netzes: empfangene Pakete und Pings an einen Kanal mit den Repeatern, die sie weitergeben, mit vertrauenswürdiger GPS- oder Telefonposition; auf ESP32 auch WLAN und Bluetooth; Export als CSV, GeoJSON, KML und für WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Knoten in der Nähe** — Signal, Hops, Entfernung und Richtung; Kontakte, Repeater und Räume.
@@ -94,7 +95,7 @@ Die Bildschirmoberfläche lässt sich ohne Board auf einem Computer rendern: `to
 
 ## Dokumentation
 
-Ausführliche Dokumentation auf Englisch: [Kanäle](docs/en/channels.md), [Regionen](docs/en/regions.md), [Netz Ihrer Stadt](docs/en/networks.md), [MeshCore-Kompatibilität](docs/en/meshcore-migration.md), [Boards](docs/en/boards.md),
+Ausführliche Dokumentation auf Englisch: [Kanäle](docs/en/channels.md), [Regionen](docs/en/regions.md), [Netz Ihrer Stadt](docs/en/networks.md), [Sicherung](docs/en/backup.md), [MeshCore-Kompatibilität](docs/en/meshcore-migration.md), [Boards](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [Repeater- und Raummodus](docs/en/repeater.md),
 [Schachprotokoll](docs/en/chess.md), [Kartenformat](docs/en/maps-format.md), [Vergleich mit MeshCore](docs/en/feature-parity.md),
 [Prüfung auf Hardware](docs/en/verification.md). Die russischen Originale liegen in [docs/](docs/), die vollständige

@@ -1,5 +1,14 @@
 # MeshMesh verification
 
+> **0.30.0 / Android 0.21.0: backup** (9 November 2026, `docs/en/backup.md`). All 18 targets built; the Chinese T114
+> image is 709672 bytes (about 3 KB free: the MeshCore receive delay uses `powf`, the double `pow` is no longer linked).
+> The page with `tools/web_demo.py` in a browser (390×844): saving the file (sections, node key), the restore preview
+> (changed settings, unticked ones for another board's copy, unknown settings, new channels, contacts, templates,
+> counters, sheets, node key), the order and content of the commands sent, the 14 dictionaries, the Android tests and
+> the release APK 0.21.0+local with the page. **Not checked:** no boards were connected — the `identity`, `identity set`
+> and `contact add` commands and the access-point-only key on hardware, moving a copy to another board, a restore over
+> BLE from the app and on nRF52.
+
 > **0.23.2: T114/GAT562 restarted after a foreign littlefs** (14 October 2026). User report: a T114 V2 without GPS
 > after WhisperOS 1.2.5 (based on MeshCore) restarted endlessly with 0.23.0 from the site and by UF2. Its bootloader is
 > ours (0.9.0-2-g836c8dc, S140 6.1.1). Cause: a foreign filesystem mounted and ended, then still called by the modules

@@ -21,6 +21,7 @@
   创建私密频道，通过私信邀请联系人，发现空中收到的频道。[docs/en/channels.md](docs/en/channels.md)
 - **区域** — MeshCore 的 flood 范围：默认区域和每个频道的区域，查找附近中继器服务的区域；中继器用 `region` 命令设置。[docs/en/regions.md](docs/en/regions.md)
 - **你所在城市的网络** — 从社区目录获取本地 MeshCore 网络的频率、带宽、SF 和 CR，可在网站上写入（包括原版 MeshCore 开发板），或在应用中应用，支持测试、保留、还原和恢复原设置。设备还能在空中自行查找网络：依次监听目录中的配置并询问附近的中继，靠近其他城市时会自动进行（0.29.0）。[docs/en/networks.md](docs/en/networks.md)
+- **备份** — 设置、带密钥的频道、联系人、快速发送、计数器、角色卡以及可选的节点密钥，从设备网页或应用保存为一个 JSON 文件；恢复时显示将更改的内容，只把勾选的项写入同一块或另一块板子 (0.30.0)。 [docs/en/backup.md](docs/en/backup.md)
 - **离线地图**——带地形和等高线的 OpenStreetMap，保存在手机（应用）或设备 SD 卡上；任何开发板都能在地图上显示节点、直连链路和 GPS。
 - **扫街测绘** — 网络覆盖地图：收到的数据包和发往频道的 ping，以及转发它们的中继，并带有可信的 GPS 或手机位置；ESP32 上还记录 Wi-Fi 和蓝牙；可导出为 CSV、GeoJSON、KML 和 WiGLE。[docs/en/wardrive.md](docs/en/wardrive.md)
 - **附近节点**——信号、跳数、距离和方位；联系人、中继器和房间。
@@ -92,7 +93,7 @@ Android 应用：`cd android && ./gradlew testDebugUnitTest assembleRelease`（[
 
 ## 文档
 
-英文详细文档：[频道](docs/en/channels.md)、[区域](docs/en/regions.md)、[城市网络](docs/en/networks.md)、[MeshCore 兼容性](docs/en/meshcore-migration.md)、[开发板](docs/en/boards.md)、
+英文详细文档：[频道](docs/en/channels.md)、[区域](docs/en/regions.md)、[城市网络](docs/en/networks.md)、[备份](docs/en/backup.md)、[MeshCore 兼容性](docs/en/meshcore-migration.md)、[开发板](docs/en/boards.md)、
 [GAT562](docs/en/gat562.md)、[Android](docs/en/android.md)、[中继器和房间模式](docs/en/repeater.md)、
 [国际象棋协议](docs/en/chess.md)、[地图格式](docs/en/maps-format.md)、[与 MeshCore 的对比](docs/en/feature-parity.md)、
 [硬件验证](docs/en/verification.md)。俄文原版位于 [docs/](docs/)，完整的操作与功能指南见

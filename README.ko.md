@@ -22,6 +22,7 @@ MeshCore 노드와 통신합니다.
   비공개 채널을 만들고, 개인 메시지로 연락처를 초대하고, 전파에서 수신된 채널을 찾을 수 있습니다. [docs/en/channels.md](docs/en/channels.md)
 - **지역** — MeshCore flood 범위: 기본 지역과 채널별 지역, 주변 리피터가 맡은 지역 검색; 리피터는 `region` 명령으로 설정. [docs/en/regions.md](docs/en/regions.md)
 - **우리 도시의 네트워크** — 커뮤니티 카탈로그의 지역 MeshCore 네트워크 주파수, 대역폭, SF, CR을 웹사이트에서 쓰거나(정품 MeshCore 보드 포함) 앱에서 테스트, 유지, 되돌리기, 이전 설정 복귀와 함께 적용. 보드는 무선으로 네트워크를 직접 찾을 수도 있습니다. 목록의 프로필을 차례로 수신하며 근처 중계기에 묻고, 다른 도시 근처에서는 자동으로 합니다(0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **백업** — 설정, 키가 포함된 채널, 연락처, 빠른 전송, 카운터, 캐릭터 시트, 원하면 노드 키까지 기기 페이지나 앱에서 JSON 파일 하나로 저장; 복원할 때 바뀔 내용을 보여 주고 선택한 것만 같은 보드나 다른 보드에 씁니다 (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **오프라인 지도** — 지형과 등고선이 있는 OpenStreetMap을 휴대폰(앱)이나 기기 SD 카드에 저장; 어떤 보드로도 지도에 노드, 직접 링크, GPS 표시.
 - **워드라이빙** — 메시 커버리지 지도: 수신한 패킷과 채널 핑을 이를 전달한 리피터와 함께, 신뢰할 수 있는 GPS 또는 휴대폰 위치로 기록합니다. ESP32에서는 Wi-Fi와 Bluetooth도 기록하며 CSV, GeoJSON, KML, WiGLE로 내보냅니다. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **주변 노드** — 신호, 홉, 거리, 방향; 연락처, 리피터, 룸.
@@ -94,7 +95,7 @@ Android 앱: `cd android && ./gradlew testDebugUnitTest assembleRelease` ([docs/
 
 ## 문서
 
-영어로 된 자세한 문서: [채널](docs/en/channels.md), [지역](docs/en/regions.md), [도시 네트워크](docs/en/networks.md), [MeshCore 호환성](docs/en/meshcore-migration.md), [보드](docs/en/boards.md),
+영어로 된 자세한 문서: [채널](docs/en/channels.md), [지역](docs/en/regions.md), [도시 네트워크](docs/en/networks.md), [백업](docs/en/backup.md), [MeshCore 호환성](docs/en/meshcore-migration.md), [보드](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [리피터와 룸 모드](docs/en/repeater.md),
 [체스 프로토콜](docs/en/chess.md), [지도 형식](docs/en/maps-format.md), [MeshCore와 비교](docs/en/feature-parity.md),
 [하드웨어 검증](docs/en/verification.md). 러시아어 원문은 [docs/](docs/)에 있으며, 조작법과 기능 전체 안내는

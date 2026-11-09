@@ -293,6 +293,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 
 <section class="page" id="p-settings" hidden><div class="list" id="settingsList"></div><label class="field" style="margin-top:12px">Язык страницы<select data-pagelang aria-label="Language"></select></label><button class="btn" id="powerOff" style="margin-top:12px;width:100%" hidden>Выключить устройство</button><p class="small faint" id="powerOffHint" style="margin:10px 4px" hidden></p></section>
 <section class="page" id="p-role" hidden><div class="list" style="gap:8px" id="roleList"></div><button class="btn save" id="roleApply" disabled>Режим не изменён</button><p class="small faint" style="margin:10px 4px">Смена режима перезапускает устройство. Сообщения, контакты, карты и настройки сохраняются, ключ узла остаётся прежним. После перезапуска точку доступа Wi-Fi нужно включить снова, у неё будет новый пароль. На экране M9 режим выбирается в первые 5 секунд после включения.</p></section>
+<section class="page" id="p-backup" hidden><h3>Сохранить</h3><div class="card pad" id="bkSave"></div><h3>Восстановить</h3><div class="card pad" id="bkRestore"></div></section>
 <section class="page" id="p-server" hidden><div class="card" style="margin-bottom:8px"><div class="cells" id="rptStats"></div></div>
 <div id="roomBox" hidden><h3>Посты комнаты</h3><form id="roomPost" class="composer" style="position:static;margin:0 0 8px"><div class="box"><textarea id="roomText" rows="1" placeholder="Пост от имени комнаты…" maxlength="151"></textarea><button class="send" aria-label="Отправить"><svg class="ic"><use href="#i-send"/></svg></button></div></form><div class="list" id="roomPosts"></div></div>
 <h3>Настройки</h3><div class="card" style="padding:4px 0" id="rptForm"></div><div class="btns" style="margin-top:8px"><button class="btn" id="rptAdvert"><svg class="ic violet"><use href="#i-tower"/></svg>Объявить узел всей сети</button></div>
@@ -489,7 +490,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return L`Сообщение от ${v.slice(17)}`;if(v.startsWith('Delivered to '))return L`Доставлено: ${v.slice(13)}`;return {'Queued: waiting for delivery':L('Ожидание подтверждения'),'Queued: broadcast':L('Сообщение в общем чате отправляется'),'No delivery ACK':L('Получатель не подтвердил доставку'),'Settings saved':L('Настройки сохранены')}[v]||(/^Radio TX error|^TX failed/.test(v)?L('Ошибка передачи по радио'):v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:[L('Чаты'),'home'],chat:[null,'chats'],addch:[L('Новый канал'),'chats'],join:[L('Канал по ссылке'),'chats'],chinfo:[L('Канал'),'chats'],alerts:[L('Уведомления'),'chats'],msg:[L('Путь пакета'),'chats'],map:[L('Карта'),'home'],library:[L('Сохранённые карты'),'map'],nodes:[L('Узлы'),'home'],node:[null,'nodes'],nav:[L('Навигация'),'home'],connect:[L('Подключения'),'home'],radar:[L('Радар'),'home'],homing:[L('Пеленг'),'radar'],motion:[L('Движение (CSI)'),'home'],modules:[L('Модули'),'home'],settings:[L('Настройки'),'home'],radio:[L('Радио'),'settings'],device:[L('Экран'),'settings'],apps:[L('Приложения'),'settings'],help:[L('Клавиши'),'settings'],role:[L('Режим работы'),'settings'],server:[L('Репитер'),'home'],game:[L('Косынка'),'home'],chess:[L('Шахматы'),'home'],board:[null,'chess'],pet:[L('Питомец'),'home'],dice:[L('Кости'),'home'],quick:[L('Быстрая отправка'),'home'],people:[L('Быстрый счётчик'),'home'],wardrive:[L('Вардрайв'),'home']};
+const PAGES={home:['MeshMesh'],chats:[L('Чаты'),'home'],chat:[null,'chats'],addch:[L('Новый канал'),'chats'],join:[L('Канал по ссылке'),'chats'],chinfo:[L('Канал'),'chats'],alerts:[L('Уведомления'),'chats'],msg:[L('Путь пакета'),'chats'],map:[L('Карта'),'home'],library:[L('Сохранённые карты'),'map'],nodes:[L('Узлы'),'home'],node:[null,'nodes'],nav:[L('Навигация'),'home'],connect:[L('Подключения'),'home'],radar:[L('Радар'),'home'],homing:[L('Пеленг'),'radar'],motion:[L('Движение (CSI)'),'home'],modules:[L('Модули'),'home'],settings:[L('Настройки'),'home'],radio:[L('Радио'),'settings'],device:[L('Экран'),'settings'],apps:[L('Приложения'),'settings'],help:[L('Клавиши'),'settings'],role:[L('Режим работы'),'settings'],backup:[L('Резервная копия'),'settings'],server:[L('Репитер'),'home'],game:[L('Косынка'),'home'],chess:[L('Шахматы'),'home'],board:[null,'chess'],pet:[L('Питомец'),'home'],dice:[L('Кости'),'home'],quick:[L('Быстрая отправка'),'home'],people:[L('Быстрый счётчик'),'home'],wardrive:[L('Вардрайв'),'home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -526,6 +527,7 @@ function enter(page,prev){
  if(page==='apps'){appsDraft=appsParse(config.apps);renderApps()}
  if(page==='help')renderHelp();
  if(page==='role'){roleChoice=null;renderRole()}
+ if(page==='backup'){backupFile=null;renderBackup()}
  if(page==='server'){rptFormBuilt=false;loadServer(true)}
  if(page==='game')enterGame();
  if(page==='board')enterBoard();
@@ -870,7 +872,7 @@ function diceSheet(d){
  return tools+panel+last+(s.blocks.length?`<div class="dsheet">${blocks}</div>`:`<div class="empty">${ic('dice')}${L`Лист пуст`}<small>${L`Откройте конструктор: блоки или шаблон D&D, Р.Э.Т.`}</small></div>`)+add}
 // Pieces of at most 180 bytes ("dice sheet put K/N TEXT"): a BLE write carries 255.
 async function sheetUpload(text){
- const enc=new TextEncoder(),pieces=[];let cur='';for(const ch of text){if(enc.encode(cur+ch).length>180){const sp=cur.match(/ +$/)?.[0]||'';if(sp.length<cur.length){pieces.push(cur.slice(0,cur.length-sp.length));cur=sp}else{pieces.push(cur);cur=''}}cur+=ch}if(cur)pieces.push(cur); // a command line loses a trailing space
+ const pieces=sheetPieces(text);
  diceQueue=diceQueue.then(async()=>{try{let r='';for(let k=0;k<pieces.length;k++)r=await command(`dice sheet put ${k+1}/${pieces.length} ${pieces[k]}`);
   const j=r.indexOf('{');if(j>=0)dice=JSON.parse(r.slice(j));await command('dice mode sheet').then(r=>{const j=r.indexOf('{');if(j>=0)dice=JSON.parse(r.slice(j))});sheetPanel='';await sheetSync();notify(L('Персонаж добавлен'),'ok')}
   catch(e){notify(e.message.replace(/^ERR /,''),'bad')}if(route==='dice')renderDice()});return diceQueue}
@@ -1295,7 +1297,7 @@ function renderSettings(){
  const items=[['radio','radio','acc',L('Радио'),L`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info',L('Экран и устройство'),`${heltec()?L('Контраст'):L('Яркость')} ${config.brightness} · ${langName()}`],
   ...config.apps===undefined?[]:[['apps','cards','violet',L('Приложения на экране'),(()=>{const a=appsParse(config.apps);return L`${a.filter(x=>x.on).length} из ${a.length} в меню устройства`})()]],
   ['nav','compass','warn',L('GPS и компас'),`GPS ${config.gps?L('вкл'):L('выкл')} · ${navInfo.calibrated?L('компас откалиброван'):navInfo.available?L('компас не откалиброван'):L('без компаса')}`],['alerts','bell','warn',L('Уведомления'),L`Личные: ${ALERT_MODES[alerts.dm].toLowerCase()} · Public: ${ALERT_MODES[alerts.pub].toLowerCase()}`],['connect','wifi','info',L('Подключения'),`${noWifi()?'':`Wi-Fi ${status.wifi?L('вкл'):L('выкл')} · `}BLE ${status.ble?L('вкл'):L('выкл')}`],
-  ['modules','pulse','ok',L('Состояние модулей'),L`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted',L('Клавиши и подсказки'),L('Что делает каждая клавиша')],['library','pin','ok',L('Сохранённые карты'),mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:L('Карт нет')],['role','tower','violet',L('Режим работы'),status.role==='repeater'?L('Репитер MeshCore'):status.role==='room'?L('Комната MeshCore'):L('Обычный: чаты, карты, радар')]];
+  ['modules','pulse','ok',L('Состояние модулей'),L`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted',L('Клавиши и подсказки'),L('Что делает каждая клавиша')],['library','pin','ok',L('Сохранённые карты'),mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:L('Карт нет')],['role','tower','violet',L('Режим работы'),status.role==='repeater'?L('Репитер MeshCore'):status.role==='room'?L('Комната MeshCore'):L('Обычный: чаты, карты, радар')],['backup','down','info',L('Резервная копия'),L('Сохранить настройки в файл или вернуть их')]];
  const off=status.power_on!==undefined;$('powerOff').hidden=$('powerOffHint').hidden=!off;if(off)$('powerOffHint').textContent=powerOnText();
  $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
 // Apps of the device's screen menu (firmware "apps" setting): their order, "-" before an ID hides it.
@@ -1314,6 +1316,114 @@ function powerOnText(){const b=status.power_button;return status.power_on==='but
 // Two presses, as the device screens confirm erasing: the first arms the button for 5 s.
 async function powerOffDevice(){const b=$('powerOff');if(!powerOffDevice.armed){powerOffDevice.armed=true;b.textContent=L('Нажмите ещё раз — устройство выключится');b.className='btn primary';setTimeout(()=>{powerOffDevice.armed=false;b.textContent=L('Выключить устройство');b.className='btn'},5000);return}
  powerOffDevice.armed=false;b.disabled=true;try{await command('poweroff');notify(L`Устройство выключается. ${powerOnText()}`,'ok')}catch(e){notify(e.message,'bad')}finally{setTimeout(()=>{b.disabled=false;b.textContent=L('Выключить устройство');b.className='btn'},5000)}}
+// Backup (docs/backup.md): one JSON file of the settings, the node key, channels, contacts, Quick Send, counters and
+// character sheets, read with the ordinary commands. Restore writes back only what is ticked, the node key last (a restart).
+let backupFile=null,backupBusy=false;
+const BK_SKIP=['radio_prev','radio_trial','russian','key'],BK_RADIO=['frequency','bandwidth','sf','cr'],BK_BOARD=['power','brightness','apps','gps','battery_volts'];
+const bkJson=r=>{if(typeof r!=='string')return r;const a=[r.indexOf('{'),r.indexOf('[')].filter(i=>i>=0);return JSON.parse(r.slice(Math.min(...a)))};
+async function bkCommand(line){const r=await command(line);if(typeof r==='string'&&r.startsWith('Commands:'))throw Error(L('Нужна прошивка 0.30.0 или новее'));return r}
+const bkErr=e=>String(e.message||e).replace(/^ERR /,'');
+// Text pieces of "dice sheet put K/N": 180 bytes each, a piece does not end with a space (a command line loses it).
+function sheetPieces(text){const enc=new TextEncoder(),pieces=[];let cur='';for(const ch of text){if(enc.encode(cur+ch).length>180){const sp=cur.match(/ +$/)?.[0]||'';if(sp.length<cur.length){pieces.push(cur.slice(0,cur.length-sp.length));cur=sp}else{pieces.push(cur);cur=''}}cur+=ch}if(cur)pieces.push(cur);return pieces}
+function bkLabels(){const l={apps:L('Приложения на экране'),net_auto:L('Искать самой рядом с другим городом (по GPS платы или телефона)')};for(const p of ['radio','device'])for(const f of fields(p))if(f&&f.k)l[f.k]=f.n;return l}
+const bkValue=v=>v===true?L('вкл'):v===false?L('выкл'):v===''||v==null?'—':String(v);
+function renderBackup(){
+ const key=!noWifi()&&!status.wifi&&!window.MeshNative;
+ $('bkSave').innerHTML=`<p class="small muted" style="margin:0 0 8px">${L('Файл JSON: настройки, каналы с ключами, контакты, шаблоны быстрой отправки, счётчики и листы персонажей. Сообщения, карты, журнал вардрайва, питомец и шахматы в копию не входят.')}</p>
+  <label class="small" style="display:flex;align-items:center;gap:8px;margin:0 0 6px"><input type="checkbox" id="bkKey" checked style="width:20px;flex:none">${L('Ключ узла: восстановленная плата останется тем же узлом для контактов')}</label>
+  <p class="small ${key?'warn':'faint'}" style="margin:0 0 8px">${key?L('Ключ узла выдаётся только через точку доступа устройства, приложение или USB: по домашней сети копия сохранится без него.'):L('Храните файл как пароль: по ключам из него можно читать ваши личные сообщения и закрытые каналы.')}</p>
+  <div class="btns"><button class="btn primary" id="bkDo">${L('Сохранить копию')}</button></div><p class="small muted" id="bkTask"></p>`;
+ $('bkDo').onclick=backupSave;renderBackupFile()}
+async function backupSave(){
+ if(backupBusy)return;backupBusy=true;const task=t=>{const e=$('bkTask');if(e)e.textContent=t},normal=!serverRole();$('bkDo').disabled=true;
+ try{
+  const b={format:'meshmesh-backup',version:1,created:new Date().toISOString(),firmware:status.version,board:status.board,board_name:boardName(),role:status.role,node:{id:status.node,name:config.name,public_key:status.public_key}};
+  task(L('Настройки…'));const c=await request('/api/config');b.settings={};for(const k in c)if(!BK_SKIP.includes(k))b.settings[k]=c[k];
+  if($('bkKey').checked){task(L('Ключ узла…'));try{b.identity=bkJson(await bkCommand('identity'))}catch(e){b.identity_error=bkErr(e)}}
+  if(normal){task(L('Каналы…'));b.channels=bkJson(await command('channels')).channels.map(x=>({id:x.id,name:x.name,kind:x.kind,link:x.link,region:x.region,policy:x.policy}));
+   task(L('Контакты…'));b.contacts=bkJson(await command('nodes')).filter(p=>p.public_key&&p.type).map(p=>({key:p.public_key,name:p.name,type:p.type,...p.position?{lat:p.latitude,lon:p.longitude}:{}}))}
+  if(status.quick_send){task(L('Быстрая отправка…'));const q=bkJson(await command('quick'));b.quick={to:q.to,gps:q.gps,presets:q.presets}}
+  if(status.people_counter){task(L('Счётчики…'));const p=bkJson(await command('people'));b.counters={current:p.current,counters:p.counters,settings:{ble:p.ble,...p.wifi_supported?{wifi:p.wifi}:{},personal_only:p.personal_only,window:p.window,rssi:p.rssi}}}
+  if(hasModule('dice')){const d=diceJson(await command('dice')),now=d.character;b.sheets=[];
+   try{for(let i=0;i<d.characters.length;i++){task(L`Листы персонажей: ${i+1} из ${d.characters.length}`);await command('dice char use '+i);b.sheets.push({name:d.characters[i],general:!i,text:diceJson(await command('dice sheet export')).text})}}
+   finally{await command('dice char use '+now).catch(()=>{})}}
+  const stamp=b.created.slice(0,16).replace(/[:T]/g,'-'),file=`meshmesh-backup-${String(config.name||status.node||'').replace(/[^\p{L}\p{N}_-]+/gu,'_')}-${stamp}.json`;
+  download(JSON.stringify(b,null,1),file,'application/json');
+  task(b.identity_error?L`Копия сохранена без ключа узла: ${b.identity_error}`:L`Копия сохранена: ${file}`);notify(L('Копия сохранена'),b.identity_error?'warn':'ok')
+ }catch(e){task(bkErr(e));notify(bkErr(e),'bad')}finally{backupBusy=false;const x=$('bkDo');if(x)x.disabled=false}}
+async function backupOpen(input){
+ const f=input.files&&input.files[0];if(!f)return;
+ try{const b=JSON.parse(await f.text());if(b.format!=='meshmesh-backup'||!b.settings)throw Error(L('Это не резервная копия MeshMesh'));
+  const normal=!serverRole(),cur={chans:[],nodes:[],quick:null,people:null,dice:null};
+  if(normal){cur.chans=bkJson(await command('channels')).channels;cur.nodes=bkJson(await command('nodes'))}
+  if(status.quick_send&&b.quick)cur.quick=bkJson(await command('quick'));
+  if(status.people_counter&&b.counters)cur.people=bkJson(await command('people'));
+  if(hasModule('dice')&&b.sheets)cur.dice=diceJson(await command('dice'));
+  config=await request('/api/config');backupFile={b,cur,name:f.name};renderBackupFile()}
+ catch(e){backupFile=null;notify(e instanceof SyntaxError?L('Это не резервная копия MeshMesh'):bkErr(e),'bad');renderBackupFile()}}
+function renderBackupFile(){
+ const box=$('bkRestore');if(!backupFile){box.innerHTML=`<p class="small muted" style="margin:0 0 8px">${L('Выберите файл копии: перед записью будет видно, что изменится.')}</p><input type="file" id="bkFile" accept=".json,application/json">`;$('bkFile').onchange=e=>backupOpen(e.target);return}
+ const {b,cur}=backupFile,labels=bkLabels(),other=b.board&&b.board!==status.board,normal=!serverRole(),rows=[];
+ const sect=(k,title,detail,on=true,extra='')=>rows.push(`<div style="padding:10px 0;border-top:1px solid var(--line)"><label style="display:flex;align-items:center;gap:8px;margin:0"><input type="checkbox" data-bk="${k}"${on?' checked':''} style="width:20px;flex:none"><b>${title}</b></label><p class="small muted" style="margin:4px 0 0 28px">${detail}</p>${extra}</div>`);
+ const diff=Object.keys(b.settings).filter(k=>k in config&&!BK_SKIP.includes(k)&&JSON.stringify(b.settings[k])!==JSON.stringify(config[k])),unknown=Object.keys(b.settings).filter(k=>!(k in config)&&!BK_SKIP.includes(k));
+ if(diff.length)sect('settings',L('Настройки'),L`Изменится: ${diff.length}`,true,`<div style="margin:6px 0 0 28px">${diff.map(k=>`<label class="small" style="display:flex;align-items:center;gap:8px;margin:4px 0"><input type="checkbox" data-bkset="${esc(k)}"${other&&BK_BOARD.includes(k)?'':' checked'} style="width:18px;flex:none"><span>${esc(labels[k]||k)}: ${esc(bkValue(config[k]))} → <b>${esc(bkValue(b.settings[k]))}</b></span></label>`).join('')}${other?`<p class="small warn" style="margin:4px 0">${L`Копия другой платы (${b.board_name||b.board}): мощность, яркость, меню и GPS не отмечены.`}</p>`:''}${diff.some(k=>BK_RADIO.includes(k))?`<p class="small warn" style="margin:4px 0">${L('Радиопрофиль изменится: узлы с прежним профилем перестанут быть слышны.')}</p>`:''}${unknown.length?`<p class="small faint" style="margin:4px 0">${L`Эта прошивка не знает: ${unknown.join(', ')}`}</p>`:''}</div>`);
+ const ids=new Set(cur.chans.map(c=>c.id)),chans=(b.channels||[]).filter(c=>c.kind!=='public'&&c.link),newCh=chans.filter(c=>!ids.has(c.id));
+ const curCh=new Map(cur.chans.map(c=>[c.id,c])),chDiff=(b.channels||[]).filter(c=>{const o=curCh.get(c.kind==='public'?'ALL':c.id);return o&&(o.region!==c.region||JSON.stringify(o.policy)!==JSON.stringify(c.policy))});
+ if(b.channels&&normal&&(newCh.length||chDiff.length))sect('channels',L('Каналы'),newCh.length?L`Новых: ${newCh.map(c=>c.name).join(', ')}; у остальных — регион и уведомления из копии`:L`Регион и уведомления из копии: ${chDiff.map(c=>c.name).join(', ')}`);
+ const keys=new Set(cur.nodes.map(p=>p.public_key)),contacts=(b.contacts||[]).filter(p=>!keys.has(p.key)&&p.key!==status.public_key);
+ if(b.contacts&&normal&&contacts.length)sect('contacts',L('Контакты'),L`Новых: ${contacts.length}. Путь к ним найдётся заново: первое сообщение уйдёт через всю сеть.`);
+ if(b.quick&&cur.quick){const n=b.quick.presets.filter((t,i)=>t!==cur.quick.presets[i]).length;if(n||b.quick.to!==cur.quick.to||b.quick.gps!==cur.quick.gps)sect('quick',L('Быстрая отправка'),L`Шаблонов изменится: ${n}; получатель ${b.quick.to}`)}
+ const tally=x=>JSON.stringify([x.current,x.counters.map(c=>[c.name,c.value,c.color])]);
+ if(b.counters&&cur.people&&tally(b.counters)!==tally(cur.people))sect('counters',L('Быстрый счётчик'),b.counters.counters.map(c=>`${esc(c.name||L('Счётчик'))}: ${c.value}`).join(' · '));
+ const have=new Set(cur.dice?cur.dice.characters:[]),sheets=(b.sheets||[]).filter(s=>!s.general&&!have.has(s.name));
+ if(cur.dice&&sheets.length)sect('sheets',L('Листы персонажей'),L`Добавятся: ${sheets.map(s=>s.name).join(', ')}`);
+ if(b.identity&&b.identity.private_key&&b.identity.public_key!==status.public_key)sect('identity',L('Ключ узла'),L`Узел ${b.identity.public_key.slice(0,8)}… вместо ${String(status.public_key||'').slice(0,8)}…: контакты узнают эту плату как прежний узел. Плата перезапустится. Не включайте две платы с одним ключом.`,true);
+ const note=b.identity_error?`<p class="small warn">${L`Ключа узла в копии нет: ${b.identity_error}`}</p>`:'';
+ box.innerHTML=`<p class="small muted" style="margin:0 0 8px">${esc(backupFile.name)} · ${esc(b.node?.name||'')} · ${esc(b.board_name||b.board||'')} · ${esc(String(b.created||'').slice(0,16).replace('T',' '))}</p>${note}${rows.length?rows.join('')+`<div class="btns"><button class="btn primary" id="bkApply">${L('Восстановить отмеченное')}</button><button class="btn" id="bkCancel">${L('Другой файл')}</button></div>`:`<p class="small ok">${L('Всё из копии уже есть на устройстве.')}</p><div class="btns"><button class="btn" id="bkCancel">${L('Другой файл')}</button></div>`}<div id="bkLog" class="small" style="margin-top:8px"></div>`;
+ $('bkCancel').onclick=()=>{backupFile=null;renderBackupFile()};if($('bkApply'))$('bkApply').onclick=()=>backupRestore({chans,contacts,sheets})}
+async function backupRestore(todo){
+ const {b,cur}=backupFile,on=k=>$('bkRestore').querySelector(`[data-bk="${k}"]`)?.checked,log=[],labels=bkLabels();
+ if(backupBusy||![...$('bkRestore').querySelectorAll('[data-bk]')].some(e=>e.checked))return;
+ if(!confirm(L('Записать отмеченное из копии на устройство?')))return;
+ backupBusy=true;$('bkApply').disabled=$('bkCancel').disabled=true;let restart=false;
+ const say=(ok,text)=>{log.push(`<div class="${ok?'ok':'bad'}">${ok?'✓':'✕'} ${esc(text)}</div>`);$('bkLog').innerHTML=log.join('')};
+ try{
+  if(on('settings')){const keys=[...$('bkRestore').querySelectorAll('[data-bkset]:checked')].map(e=>e.dataset.bkset),radio=keys.filter(k=>BK_RADIO.includes(k)),batches=[];let set={},done=0,failed=[];
+   if(radio.length)batches.push(Object.fromEntries(BK_RADIO.map(k=>[k,keys.includes(k)?b.settings[k]:config[k]])));
+   for(const k of keys.filter(k=>!BK_RADIO.includes(k))){const next={...set,[k]:b.settings[k]};if(Object.keys(set).length&&bytes('set '+JSON.stringify(next))>200){batches.push(set);set={[k]:b.settings[k]}}else set=next}
+   if(Object.keys(set).length)batches.push(set);
+   for(const s of batches){const ks=Object.keys(s),radioSet=ks.length===4&&BK_RADIO.every(k=>k in s);
+    try{await command('set '+JSON.stringify(s));done+=radioSet?radio.length:ks.length}
+    catch(e){if(radioSet){failed.push(L('Радиопрофиль')+': '+bkErr(e));continue}for(const k of ks)try{await command('set '+JSON.stringify({[k]:s[k]}));done++}catch(e2){failed.push((labels[k]||k)+': '+bkErr(e2))}}}
+   say(!failed.length,L`Настройки: ${done} из ${keys.length}`);for(const f of failed)say(false,f)}
+  if(on('channels')){const have=new Map(cur.chans.map(c=>[c.id,c]));let added=0,failed=0;
+   for(const c of (b.channels||[])){let id=c.kind==='public'?'ALL':c.id;
+    try{if(c.kind!=='public'){if(!c.link)continue;const r=await command('channel do '+JSON.stringify({action:'add',link:c.link}));if(/added/.test(r))added++;id=String(r).trim().split(' ').pop()}
+     const old=have.get(id)||have.get(c.id);if(c.region!==undefined&&(!old||old.region!==c.region))await command('channel do '+JSON.stringify({action:'region',channel:id,region:c.region}));
+     if(c.policy&&(!old||JSON.stringify(old.policy)!==JSON.stringify(c.policy)))await command('channel do '+JSON.stringify({action:'policy',channel:id,...c.policy}))}
+    catch(e){failed++;say(false,`${c.name}: ${bkErr(e)}`)}}
+   say(!failed,L`Каналы: добавлено ${added}`);chans=null}
+  if(on('contacts')){let n=0;for(const p of todo.contacts)try{await bkCommand('contact add '+JSON.stringify({key:p.key,name:p.name,type:p.type,...p.lat!==undefined?{lat:p.lat,lon:p.lon}:{}}));n++}catch(e){say(false,`${p.name}: ${bkErr(e)}`)}
+   say(n===todo.contacts.length,L`Контакты: ${n} из ${todo.contacts.length}`)}
+  if(on('quick')){const q=b.quick,failed=[];
+   for(let i=0;i<q.presets.length;i++)if(q.presets[i]!==cur.quick.presets[i])try{await command('quick do '+JSON.stringify({action:'set',index:i,text:q.presets[i]}))}catch(e){failed.push(bkErr(e))}
+   if(q.gps!==cur.quick.gps)try{await command('quick do '+JSON.stringify({action:'gps',enabled:q.gps}))}catch(e){failed.push(bkErr(e))}
+   if(q.to!==cur.quick.to)try{await command('quick do '+JSON.stringify({action:'target',to:q.to}))}catch(e){failed.push(L`Получатель ${q.to}: ${bkErr(e)}`)}
+   say(!failed.length,L('Быстрая отправка'));for(const f of failed)say(false,f)}
+  if(on('counters')){const c=b.counters,act=a=>command('people do '+JSON.stringify(a));let failed=[];
+   try{let have=cur.people.counters.length;
+    for(let i=0;i<c.counters.length;i++){const x=c.counters[i],old=i<have?cur.people.counters[i]:{name:x.name,value:0,color:-1};if(i>=have){await act({action:'add',name:x.name});have++}else if(old.name!==x.name)await act({action:'rename',index:i,name:x.name});if(old.color!==x.color)await act({action:'color',index:i,color:x.color});if(old.value!==x.value)await act({action:'set',index:i,value:x.value})}
+    for(let i=have-1;i>=c.counters.length;i--)await act({action:'delete',index:i});
+    if(c.current<c.counters.length&&(c.current!==cur.people.current||have>cur.people.counters.length))await act({action:'select',index:c.current})}catch(e){failed.push(bkErr(e))}
+   if(c.settings&&Object.keys(c.settings).some(k=>c.settings[k]!==cur.people[k]))try{await act({action:'settings',...c.settings})}catch(e){failed.push(bkErr(e))}
+   say(!failed.length,L('Быстрый счётчик'));for(const f of failed)say(false,f)}
+  if(on('sheets')){const now=cur.dice.character;let n=0;
+   for(const s of todo.sheets)try{const pieces=sheetPieces(s.text);for(let k=0;k<pieces.length;k++)await command(`dice sheet put ${k+1}/${pieces.length} ${pieces[k]}`);n++}catch(e){say(false,`${s.name}: ${bkErr(e)}`)}
+   await command('dice char use '+now).catch(()=>{});say(n===todo.sheets.length,L`Листы персонажей: ${n} из ${todo.sheets.length}`)}
+  if(on('identity'))try{const r=await bkCommand('identity set '+b.identity.private_key);restart=/restarting/.test(r);say(true,restart?L('Ключ узла записан; плата перезапускается. Подключитесь к ней снова, у точки доступа Wi-Fi будет новый пароль.'):L('Ключ узла уже тот же'))}catch(e){say(false,L('Ключ узла')+': '+bkErr(e))}
+  notify(L('Восстановление закончено'),'ok');
+ }finally{backupBusy=false;const a=$('bkApply'),x=$('bkCancel');if(a)a.disabled=true;if(x)x.disabled=false}
+ if(!restart){try{config=await request('/api/config')}catch{}refresh()}}
 function utcOptions(){const o=[];for(let m=-720;m<=840;m+=15){const a=Math.abs(m);o.push([m,(m<0?'−':'+')+two(a/60|0)+':'+two(a%60)])}return o}
 function fields(page){const h=heltec();return page==='radio'?[
  {k:'frequency',n:L('Частота, МГц'),h:L('Шаг 1 кГц; должна совпадать у всех узлов'),t:'num',min:863,max:870,step:.001},

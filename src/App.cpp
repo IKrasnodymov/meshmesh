@@ -245,7 +245,7 @@ String setRole(uint8_t role){
   if(role>=RoleCount)return "ERR role normal|repeater|room";if(role==config.role)return String("OK role ")+roleName(role)+" already running";
   if(!config.saveRole(role))return "ERR role not saved";restartAt=millis()+1500;return String("OK role ")+roleName(role)+"; restarting";
 }
-void restartTick(){if(restartAt&&int32_t(millis()-restartAt)>=0)ESP.restart();}
+void restartTick(){if(restartAt&&int32_t(millis()-restartAt)>=0){meshRadio.flush();ESP.restart();}} // contacts saved a moment later are written first
 String executeCommand(const String& input) {
   String line=input;line.trim();
   if(line.startsWith("map "))return maps.command(line);
@@ -276,6 +276,13 @@ String executeCommand(const String& input) {
   if(line=="config")return configJson();
   if(line.startsWith("radio "))return radioCommand(line);
   if(line=="key")return configJson(true); // explicitly requested; never put in ordinary diagnostics
+  // Backup (docs/backup.md): the node key (USB, a paired BLE client, the access point: Portal.cpp) and a contact of a backup.
+  if(line=="identity"){String k=meshRadio.privateKeyText();return k.length()?"{\"private_key\":\""+k+"\",\"public_key\":\""+meshRadio.publicKeyText()+"\"}":"ERR identity unavailable";}
+  if(line.startsWith("identity set ")){int r=meshRadio.restoreKey(line.substring(13));if(r==1)restartAt=millis()+1500;
+    return r==1?"OK identity saved; restarting":r==0?"OK identity unchanged":r==-1?"ERR identity: 128 hexadecimal digits of a MeshCore private key":"ERR identity storage";}
+  if(line.startsWith("contact add ")){StaticJsonDocument<384>d;uint8_t key[32];const char* k=nullptr;bool ok=!deserializeJson(d,line.substring(12))&&(k=d["key"])&&strlen(k)==64;for(int i=0;ok&&i<64;i++)ok=isxdigit((unsigned char)k[i]);
+    if(!ok||!mesh::Utils::fromHex(key,32,k))return "ERR contact add {key,name[,type,lat,lon]}";
+    return meshRadio.learnContact(key,d["name"]|"",d["type"]|1,lroundf((d["lat"]|0.0f)*1e6f),lroundf((d["lon"]|0.0f)*1e6f))?"OK contact saved":"ERR contact: the normal mode, type 1..4";}
   if(line=="wardrive")return wardrive::json();
   if(line.startsWith("wardrive do ")){StaticJsonDocument<512>d;if(deserializeJson(d,line.substring(12))||!d.is<JsonObject>())return "ERR wardrive do {JSON}";return wardrive::command(d.as<JsonObjectConst>());}
   if(line.startsWith("wardrive log "))return wardrive::log(line.substring(13));
@@ -349,5 +356,5 @@ String executeCommand(const String& input) {
     DynamicJsonDocument d(2048);if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, connections, messages, quick, quick do {JSON}, people, people do {JSON}, wardrive, wardrive do {JSON}, wardrive log mesh|nets FROM, radar, radar web, radar do {JSON}, set {JSON}, radio try {JSON}|keep|revert|previous, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, netfind, netfind start [all|LAT LON]|stop|use N, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, identity, identity set HEX, contact add {JSON}, connections, messages, quick, quick do {JSON}, people, people do {JSON}, wardrive, wardrive do {JSON}, wardrive log mesh|nets FROM, radar, radar web, radar do {JSON}, set {JSON}, radio try {JSON}|keep|revert|previous, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, netfind, netfind start [all|LAT LON]|stop|use N, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

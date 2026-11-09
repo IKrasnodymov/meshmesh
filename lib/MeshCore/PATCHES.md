@@ -5,4 +5,6 @@ Local bounds fixes (wire format unchanged):
 
 - CommonCLI::handleCommand copies command arguments into its 132-byte work buffer with StrHelper::strncpy instead of strcpy (tempradio, sensor set, set radio, set radio.extra.sf); an admin CLI line can be 160 bytes.
 
+- Dispatcher::calcRxDelay computes the receive delay with powf instead of the double pow: the same heuristic, and the nRF52 images (1 MB flash) no longer link the double pow (about 3.5 KB). Wire format unchanged.
+
 All other selected upstream sources retain their original implementation.

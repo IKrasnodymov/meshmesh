@@ -22,6 +22,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
   非公開チャンネルを作成し、個人メッセージで連絡先を招待し、電波で受信したチャンネルを見つけられます。[docs/en/channels.md](docs/en/channels.md)
 - **地域** — MeshCore の flood 範囲：既定の地域とチャンネルごとの地域、近くの中継器が扱う地域の検索。中継器は `region` コマンドで設定。[docs/en/regions.md](docs/en/regions.md)
 - **あなたの街のネットワーク** — 地域の MeshCore ネットワークの周波数、帯域幅、SF、CR をコミュニティのカタログから取得。サイトから書き込み（純正 MeshCore のボードにも）、またはアプリでテスト・維持・元に戻す・以前の設定への復帰つきで適用。ボードは電波でネットワークを自分で探すこともできます。カタログのプロファイルを順に受信して近くのリピーターに問い合わせ、別の都市の近くでは自動で行います（0.29.0）。[docs/en/networks.md](docs/en/networks.md)
+- **バックアップ** — 設定、鍵付きチャンネル、連絡先、クイック送信、カウンター、キャラクターシート、必要ならノード鍵をデバイスのページまたはアプリから1つのJSONファイルに保存。復元では変更内容を表示し、チェックした項目だけを同じボードまたは別のボードに書き込みます (0.30.0)。 [docs/en/backup.md](docs/en/backup.md)
 - **オフライン地図** — 地形と等高線つきの OpenStreetMap をスマホ（アプリ）またはデバイスの SD カードに保存。どのボードでもノード、直接リンク、GPS を地図に表示。
 - **ウォードライブ** — メッシュのカバー地図：受信したパケットとチャンネルへの ping を、それを中継したリピーターとともに、信頼できる GPS またはスマホの位置で記録。ESP32 では Wi-Fi と Bluetooth も記録し、CSV、GeoJSON、KML、WiGLE に書き出せます。[docs/en/wardrive.md](docs/en/wardrive.md)
 - **周辺のノード** — 信号強度、ホップ数、距離と方位。連絡先、リピーター、ルーム。
@@ -94,7 +95,7 @@ Android アプリ: `cd android && ./gradlew testDebugUnitTest assembleRelease` (
 
 ## ドキュメント
 
-英語の詳細なドキュメント: [チャンネル](docs/en/channels.md)、[地域](docs/en/regions.md)、[街のネットワーク](docs/en/networks.md)、[MeshCore との互換性](docs/en/meshcore-migration.md)、[ボード](docs/en/boards.md)、
+英語の詳細なドキュメント: [チャンネル](docs/en/channels.md)、[地域](docs/en/regions.md)、[街のネットワーク](docs/en/networks.md)、[バックアップ](docs/en/backup.md)、[MeshCore との互換性](docs/en/meshcore-migration.md)、[ボード](docs/en/boards.md)、
 [GAT562](docs/en/gat562.md)、[Android](docs/en/android.md)、[リピーターとルームのモード](docs/en/repeater.md)、
 [チェスのプロトコル](docs/en/chess.md)、[地図フォーマット](docs/en/maps-format.md)、[MeshCore との比較](docs/en/feature-parity.md)、
 [ハードウェア検証](docs/en/verification.md)。ロシア語の原文は [docs/](docs/) にあり、操作と機能の完全な

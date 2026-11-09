@@ -239,7 +239,7 @@ class ServerMesh:public mesh::Mesh,public CommonCLICallbacks {
     meshRadio.dirty=true;logPacket("TX",p,len);
   }
   void logTxFail(mesh::Packet* p,int len) override{meshRadio.event="Radio TX error "+String(meshRadio.radioError);meshRadio.dirty=true;logPacket("TX FAIL!",p,len);}
-  int calcRxDelay(float score,uint32_t airtime) const override{return prefs.rx_delay_base<=0?0:int((pow(prefs.rx_delay_base,0.85f-score)-1.0)*airtime);}
+  int calcRxDelay(float score,uint32_t airtime) const override{return prefs.rx_delay_base<=0?0:int((powf(prefs.rx_delay_base,0.85f-score)-1.0f)*airtime);}
   uint32_t getRetransmitDelay(const mesh::Packet* p) override{uint32_t t=_radio->getEstAirtimeFor(p->getPathByteLen()+p->payload_len+2)*prefs.tx_delay_factor;return getRNG()->nextInt(0,5*t+1);}
   uint32_t getDirectRetransmitDelay(const mesh::Packet* p) override{uint32_t t=_radio->getEstAirtimeFor(p->getPathByteLen()+p->payload_len+2)*prefs.direct_tx_delay_factor;return getRNG()->nextInt(0,5*t+1);}
   mesh::DispatcherAction onRecvPacket(mesh::Packet* p) override{

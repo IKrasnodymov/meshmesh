@@ -22,6 +22,7 @@ nodi MeshCore.
   creane uno privato, invita i contatti con un messaggio diretto, trova i canali sentiti in onda. [docs/en/channels.md](docs/en/channels.md)
 - **Regioni** — ambito dei flood MeshCore: regione predefinita e una per canale, ricerca delle regioni dei ripetitori vicini; ripetitori con i comandi `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Rete della tua città** — frequenza, banda, SF e CR di una rete MeshCore locale dal catalogo della comunità, scritti dal sito (anche su schede con MeshCore originale) o applicati nell’app con prova, Mantieni, Ripristina e ritorno alle impostazioni precedenti. La scheda trova anche la rete via radio: ascolta i profili del catalogo e interroga i ripetitori vicini, da sola vicino a un’altra città (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Backup** — impostazioni, canali con chiavi, contatti, invio rapido, contatori, schede personaggio e, a scelta, la chiave del nodo in un file JSON dalla pagina del dispositivo o dall’app; il ripristino mostra cosa cambierà e scrive solo ciò che è selezionato, sulla stessa scheda o su un’altra (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Mappe offline** — OpenStreetMap con rilievo e curve di livello, sul telefono (app) o sulla scheda SD del dispositivo; nodi, collegamenti diretti e GPS sulla mappa con qualsiasi scheda.
 - **Wardriving** — una mappa di copertura della rete: pacchetti sentiti e ping a un canale con i ripetitori che li inoltrano, con posizione GPS o del telefono affidabile; su ESP32 anche Wi-Fi e Bluetooth; esportazione in CSV, GeoJSON, KML e WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nodi vicini** — segnale, hop, distanza e direzione; contatti, ripetitori e stanze.
@@ -94,7 +95,7 @@ L'interfaccia dello schermo si può renderizzare su un computer senza scheda: `t
 
 ## Documentazione
 
-Documentazione dettagliata in inglese: [canali](docs/en/channels.md), [regioni](docs/en/regions.md), [rete della tua città](docs/en/networks.md), [compatibilità MeshCore](docs/en/meshcore-migration.md), [schede](docs/en/boards.md),
+Documentazione dettagliata in inglese: [canali](docs/en/channels.md), [regioni](docs/en/regions.md), [rete della tua città](docs/en/networks.md), [backup](docs/en/backup.md), [compatibilità MeshCore](docs/en/meshcore-migration.md), [schede](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modalità ripetitore e stanza](docs/en/repeater.md),
 [protocollo degli scacchi](docs/en/chess.md), [formato delle mappe](docs/en/maps-format.md), [confronto con MeshCore](docs/en/feature-parity.md),
 [verifica sull'hardware](docs/en/verification.md). Gli originali in russo sono in [docs/](docs/), con la guida

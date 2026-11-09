@@ -22,6 +22,7 @@ MeshCore standar.
   buat kanal privat, undang kontak lewat pesan langsung, temukan kanal yang terdengar di udara. [docs/en/channels.md](docs/en/channels.md)
 - **Wilayah** — cakupan flood MeshCore: wilayah bawaan dan per kanal, pencarian wilayah repeater terdekat; repeater diatur dengan perintah `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Jaringan kota Anda** — frekuensi, bandwidth, SF, dan CR jaringan MeshCore lokal dari katalog komunitas, ditulis dari situs web (juga ke papan dengan MeshCore bawaan) atau diterapkan di aplikasi dengan uji, Pertahankan, Kembalikan, dan kembali ke pengaturan sebelumnya. Papan juga menemukan jaringan lewat udara: mendengarkan profil katalog dan bertanya ke repeater terdekat, sendiri saat dekat kota lain (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Cadangan** — pengaturan, kanal beserta kunci, kontak, kirim cepat, penghitung, lembar karakter, dan bila mau kunci node dalam satu file JSON dari halaman perangkat atau aplikasi; pemulihan menampilkan apa yang berubah dan hanya menulis yang dicentang, ke papan yang sama atau lain (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Peta offline** — OpenStreetMap dengan relief dan garis kontur, di ponsel (aplikasi) atau kartu SD perangkat; node, tautan langsung, dan GPS di peta dengan papan apa pun.
 - **Wardriving** — peta jangkauan jaringan: paket yang didengar dan ping ke kanal beserta repeater yang meneruskannya, dengan posisi GPS atau ponsel yang tepercaya; di ESP32 juga Wi-Fi dan Bluetooth; ekspor ke CSV, GeoJSON, KML, dan WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Node di sekitar** — sinyal, hop, jarak dan arah; kontak, repeater dan ruang.
@@ -94,7 +95,7 @@ Antarmuka layar dapat dirender di komputer tanpa papan: `tools/ui_preview/build.
 
 ## Dokumentasi
 
-Dokumentasi terperinci dalam bahasa Inggris: [kanal](docs/en/channels.md), [wilayah](docs/en/regions.md), [jaringan kota](docs/en/networks.md), [kompatibilitas MeshCore](docs/en/meshcore-migration.md), [papan](docs/en/boards.md),
+Dokumentasi terperinci dalam bahasa Inggris: [kanal](docs/en/channels.md), [wilayah](docs/en/regions.md), [jaringan kota](docs/en/networks.md), [cadangan](docs/en/backup.md), [kompatibilitas MeshCore](docs/en/meshcore-migration.md), [papan](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [mode repeater dan ruang](docs/en/repeater.md),
 [protokol catur](docs/en/chess.md), [format peta](docs/en/maps-format.md), [perbandingan dengan MeshCore](docs/en/feature-parity.md),
 [verifikasi perangkat keras](docs/en/verification.md). Versi asli berbahasa Rusia ada di [docs/](docs/), dengan

@@ -234,6 +234,30 @@ def netfind_command(line):
     return 'ERR netfind start [all|LAT LON]|stop|use N'
 
 
+DEMO_KEY = '5a7c' + '00' * 62  # a demo node key (not a real one): "identity" for the backup page (docs/backup.md)
+
+
+def backup_command(line):
+    """The commands of the backup page that the demo answers: reads as the board does, writes accepted."""
+    reads = {'config': '/api/config', 'channels': '/api/channels', 'nodes': '/api/nodes', 'quick': '/api/quick',
+             'people': '/api/people', 'dice': '/api/dice'}
+    if line in reads:
+        return json.dumps(answer(reads[line], {}), ensure_ascii=False)
+    if line == 'identity':
+        return json.dumps({'private_key': DEMO_KEY, 'public_key': STATUS.get('public_key', '')})
+    if line == 'dice sheet export':
+        return json.dumps({'text': 'MMS1~General|', 'bytes': 13, 'parts': 1})
+    if line.startswith('dice '):
+        return 'OK ' + json.dumps(answer('/api/dice', {}))
+    if line.startswith('channel do ') and '"add"' in line:
+        return 'OK channel added 0000C0FFEE01'
+    if line.startswith('identity set '):
+        return 'OK identity unchanged'
+    if line.startswith('set '):
+        return radio_set(json.loads(line[4:]))
+    return 'OK'
+
+
 def answer(path, query):
     lang = lang_of(query)
     if path == '/api/status':
@@ -350,6 +374,8 @@ class Handler(BaseHTTPRequestHandler):
             reply = radio_command(body['command'])
         elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('netfind'):
             reply = netfind_command(body['command'])
+        elif url.path == '/api/command' and isinstance(body, dict):
+            reply = backup_command(str(body.get('command', '')))
         self.send(400 if reply.startswith('ERR') else 200, reply, 'text/plain')
 
 

@@ -22,6 +22,7 @@ MeshCore düğümleriyle haberleşir.
   özel kanal oluşturma, kişileri doğrudan mesajla davet etme, havada duyulan kanalları bulma. [docs/en/channels.md](docs/en/channels.md)
 - **Bölgeler** — MeshCore flood kapsamı: varsayılan bölge ve kanal başına bölge, yakındaki rölelerin bölgelerini arama; röleler `region` komutlarıyla. [docs/en/regions.md](docs/en/regions.md)
 - **Şehrinizin ağı** — yerel bir MeshCore ağının frekansı, bant genişliği, SF ve CR'si topluluk kataloğundan; web sitesinden yazılır (orijinal MeshCore'lu kartlara da) ya da uygulamada test, Tut, Geri al ve önceki ayarlara dönüşle uygulanır. Kart ağı havada da bulur: katalog profillerini dinler ve yakındaki tekrarlayıcılara sorar, başka bir şehre yakınken bunu kendiliğinden yapar (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Yedekleme** — ayarlar, anahtarlarıyla kanallar, kişiler, hızlı gönderim, sayaçlar, karakter kâğıtları ve isteğe bağlı düğüm anahtarı, cihaz sayfasından ya da uygulamadan tek bir JSON dosyasında; geri yükleme neyin değişeceğini gösterir ve yalnızca işaretleneni aynı ya da başka karta yazar (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Çevrimdışı haritalar** — rölyef ve eş yükselti eğrileriyle OpenStreetMap, telefonda (uygulama) veya cihazın SD kartında; düğümler, doğrudan bağlantılar ve GPS haritada, her kartla.
 - **Wardriving** — ağın kapsama haritası: duyulan paketler ve bir kanala atılan pingler, onları ileten rölelerle, güvenilir GPS ya da telefon konumuyla; ESP32’de ayrıca Wi-Fi ve Bluetooth; CSV, GeoJSON, KML ve WiGLE’a aktarma. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Yakındaki düğümler** — sinyal, atlama sayısı, mesafe ve yön; kişiler, tekrarlayıcılar ve odalar.
@@ -94,7 +95,7 @@ Ekran arayüzü kart olmadan bilgisayarda çizdirilebilir: `tools/ui_preview/bui
 
 ## Belgeler
 
-İngilizce ayrıntılı belgeler: [kanallar](docs/en/channels.md), [bölgeler](docs/en/regions.md), [şehrinizin ağı](docs/en/networks.md), [MeshCore uyumluluğu](docs/en/meshcore-migration.md), [kartlar](docs/en/boards.md),
+İngilizce ayrıntılı belgeler: [kanallar](docs/en/channels.md), [bölgeler](docs/en/regions.md), [şehrinizin ağı](docs/en/networks.md), [yedekleme](docs/en/backup.md), [MeshCore uyumluluğu](docs/en/meshcore-migration.md), [kartlar](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [tekrarlayıcı ve oda modları](docs/en/repeater.md),
 [satranç protokolü](docs/en/chess.md), [harita biçimi](docs/en/maps-format.md), [MeshCore ile karşılaştırma](docs/en/feature-parity.md),
 [donanım doğrulaması](docs/en/verification.md). Rusça asılları [docs/](docs/) klasöründedir; kontrollere ve

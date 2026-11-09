@@ -186,8 +186,9 @@ class MeshCoreBackend:public BaseChatMesh {
  }
  public:
  // A contact known only by its key (no advert heard yet): messages to it go by flood until a path is found.
- bool learn(const uint8_t key[32],const char* name){
-  uint64_t id=aliasOf(key);if(owner.contact(id))return true;ContactInfo c={};c.id=mesh::Identity(key);copyUtf8(c.name,name,sizeof(c.name));c.type=ADV_TYPE_CHAT;c.out_path_len=OUT_PATH_UNKNOWN;c.lastmod=uint32_t(time(nullptr));
+ // A backup (docs/backup.md) also gives the type and the position.
+ bool learn(const uint8_t key[32],const char* name,uint8_t type=ADV_TYPE_CHAT,int32_t lat=0,int32_t lon=0){
+  uint64_t id=aliasOf(key);if(owner.contact(id)||!memcmp(key,self_id.pub_key,32))return true;ContactInfo c={};c.id=mesh::Identity(key);copyUtf8(c.name,name,sizeof(c.name));c.type=type;c.out_path_len=OUT_PATH_UNKNOWN;c.lastmod=uint32_t(time(nullptr));c.gps_lat=lat;c.gps_lon=lon;
   if(!addContact(c))return false;updateContact(c,false);contactsDue=millis()+2000;return true;}
  protected:
  void onDiscoveredContact(ContactInfo& c,bool added,uint8_t pathLen,const uint8_t*) override{updateContact(c,true,pathLen&63);contactsDue=millis()+2000;appLink::advert(c,added);}
@@ -342,7 +343,16 @@ static const mesh::LocalIdentity* selfIdentity(MeshCoreBackend* core){return cor
 const uint8_t* MeshRadio::nodeKey() const{auto* self=selfIdentity(core);return self?self->pub_key:nullptr;}
 bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t* data,size_t size) const{auto* self=selfIdentity(core);if(!self)return false;self->sign(sig,data,size);return true;}
 bool MeshRadio::nodeVerify(const uint8_t key[32],const uint8_t sig[64],const uint8_t* data,size_t size){mesh::Identity id(key);return id.verify(sig,data,size);}
-bool MeshRadio::learnContact(const uint8_t key[32],const char* name){return core&&core->learn(key,name);}
+bool MeshRadio::learnContact(const uint8_t key[32],const char* name,uint8_t type,int32_t lat,int32_t lon){return core&&type>=ADV_TYPE_CHAT&&type<=ADV_TYPE_SENSOR&&core->learn(key,name,type,lat,lon);}
+// Backup (docs/backup.md): the node key in MeshCore's export format (the 64-byte private key, hex). A restored key is
+// stored for the next start: the running mesh keeps the old one. 1 saved, 0 the same key, -1 invalid, -2 storage.
+String MeshRadio::privateKeyText() const{auto* self=selfIdentity(core);if(!self)return "";uint8_t b[96];const_cast<mesh::LocalIdentity*>(self)->writeTo(b,96);char out[129];mesh::Utils::toHex(out,b,64);memset(b,0,sizeof b);String s(out);memset(out,0,sizeof out);return s;}
+int MeshRadio::restoreKey(const String& hex){
+ uint8_t b[96];bool hexOk=hex.length()==128;for(unsigned i=0;hexOk&&i<128;i++)hexOk=isxdigit((unsigned char)hex[i]);
+ if(!hexOk||!mesh::Utils::fromHex(b,64,hex.c_str())||!mesh::LocalIdentity::validatePrivateKey(b)){memset(b,0,sizeof b);return -1;}
+ mesh::LocalIdentity id;id.readFrom(b,64);id.writeTo(b,96);auto* self=selfIdentity(core);int r=0;
+ if(!self||memcmp(self->pub_key,b+64,32)){Preferences p;r=p.begin("meshmesh-mc",false)&&p.putBytes("identity",b,96)==96?1:-2;if(r==1)p.remove("adv_name");p.end();} // a new key announces itself
+ memset(b,0,sizeof b);return r;}
 String MeshRadio::publicKeyText() const{auto* self=selfIdentity(core);if(!self)return "";char out[65];mesh::Utils::toHex(out,self->pub_key,32);return out;}
 unsigned MeshRadio::messageLimit(uint64_t destination) const{return channels::isChannel(destination)?min(151U,unsigned(MAX_TEXT_LEN-strlen(config.name)-2)):151;}
 bool MeshRadio::resetPath(uint64_t id){Peer* p=contact(id);if(!p||!core||!core->resetPath(p->publicKey))return false;p->pathLength=255;dirty=true;return true;}

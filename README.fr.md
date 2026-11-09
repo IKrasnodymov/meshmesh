@@ -22,6 +22,7 @@ nœuds MeshCore standard.
   créer un canal privé, inviter des contacts par message privé, trouver les canaux captés sur les ondes. [docs/en/channels.md](docs/en/channels.md)
 - **Régions** — portée des floods MeshCore : région par défaut et une par canal, recherche des régions des répéteurs proches ; répéteurs réglés par les commandes `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Réseau de votre ville** — fréquence, bande passante, SF et CR d’un réseau MeshCore local depuis le catalogue de la communauté, écrits depuis le site (cartes MeshCore d’origine comprises) ou appliqués dans l’application avec un test, Garder, Revenir et un retour aux réglages précédents. La carte trouve aussi le réseau sur les ondes : elle écoute les profils du catalogue et interroge les répéteurs proches, d’elle-même près d’une autre ville (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Sauvegarde** — réglages, canaux avec clés, contacts, envoi rapide, compteurs, fiches de personnage et, au choix, la clé du nœud dans un fichier JSON depuis la page de l’appareil ou l’application ; la restauration montre ce qui changera et n’écrit que ce qui est coché, sur la même carte ou une autre (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Cartes hors ligne** — OpenStreetMap avec relief et courbes de niveau, sur le téléphone (application) ou la carte SD de l’appareil ; nœuds, liaisons directes et GPS sur la carte avec n’importe quelle carte radio.
 - **Wardriving** — une carte de couverture du réseau : paquets entendus et pings vers un canal avec les répéteurs qui les relaient, avec une position GPS ou du téléphone fiable ; sur ESP32 aussi le Wi-Fi et le Bluetooth ; export en CSV, GeoJSON, KML et WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nœuds à proximité** — signal, sauts, distance et cap ; contacts, répéteurs et salons.
@@ -94,7 +95,7 @@ L'interface de l'écran peut être rendue sur un ordinateur sans carte : `tools/
 
 ## Documentation
 
-Documentation détaillée en anglais : [canaux](docs/en/channels.md), [régions](docs/en/regions.md), [réseau de votre ville](docs/en/networks.md), [compatibilité MeshCore](docs/en/meshcore-migration.md), [cartes](docs/en/boards.md),
+Documentation détaillée en anglais : [canaux](docs/en/channels.md), [régions](docs/en/regions.md), [réseau de votre ville](docs/en/networks.md), [sauvegarde](docs/en/backup.md), [compatibilité MeshCore](docs/en/meshcore-migration.md), [cartes](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modes répéteur et salon](docs/en/repeater.md),
 [protocole d'échecs](docs/en/chess.md), [format des cartes](docs/en/maps-format.md), [comparaison avec MeshCore](docs/en/feature-parity.md),
 [vérification matérielle](docs/en/verification.md). Les originaux russes se trouvent dans [docs/](docs/), avec le guide

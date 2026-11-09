@@ -22,6 +22,7 @@ MeshCore estándar.
   crea uno privado, invita a tus contactos por mensaje directo y encuentra canales oídos en el aire. [docs/en/channels.md](docs/en/channels.md)
 - **Regiones** — ámbito de flood de MeshCore: región predeterminada y una por canal, búsqueda de las regiones de los repetidores cercanos; repetidores con los comandos `region`. [docs/en/regions.md](docs/en/regions.md)
 - **Red de tu ciudad** — la frecuencia, el ancho de banda, SF y CR de una red MeshCore local desde el catálogo de la comunidad, escritos desde el sitio web (también en placas con MeshCore original) o aplicados en la app con prueba, Mantener, Revertir y vuelta a los ajustes anteriores. La placa también encuentra la red por radio: escucha los perfiles del catálogo y pregunta a los repetidores cercanos, y lo hace sola cerca de otra ciudad (0.29.0). [docs/en/networks.md](docs/en/networks.md)
+- **Copia de seguridad** — ajustes, canales con claves, contactos, envío rápido, contadores, hojas de personaje y, si quieres, la clave del nodo en un archivo JSON desde la página del dispositivo o la app; al restaurar se ve qué cambiará y solo se escribe lo marcado, en la misma placa u otra (0.30.0). [docs/en/backup.md](docs/en/backup.md)
 - **Mapas sin conexión**: OpenStreetMap con relieve y curvas de nivel, en el teléfono (app) o en la tarjeta SD del dispositivo; nodos, enlaces directos y GPS en el mapa con cualquier placa.
 - **Wardriving** — un mapa de cobertura de la red: paquetes oídos y pings a un canal con los repetidores que los reenvían, con una posición GPS o del teléfono fiable; en ESP32 también Wi-Fi y Bluetooth; exportación a CSV, GeoJSON, KML y WiGLE. [docs/en/wardrive.md](docs/en/wardrive.md)
 - **Nodos cercanos**: señal, saltos, distancia y rumbo; contactos, repetidores y salas.
@@ -94,7 +95,7 @@ La interfaz de la pantalla se puede renderizar en un ordenador sin placa: `tools
 
 ## Documentación
 
-Documentación detallada en inglés: [canales](docs/en/channels.md), [regiones](docs/en/regions.md), [red de tu ciudad](docs/en/networks.md), [compatibilidad con MeshCore](docs/en/meshcore-migration.md), [placas](docs/en/boards.md),
+Documentación detallada en inglés: [canales](docs/en/channels.md), [regiones](docs/en/regions.md), [red de tu ciudad](docs/en/networks.md), [copia de seguridad](docs/en/backup.md), [compatibilidad con MeshCore](docs/en/meshcore-migration.md), [placas](docs/en/boards.md),
 [GAT562](docs/en/gat562.md), [Android](docs/en/android.md), [modos repetidor y sala](docs/en/repeater.md),
 [protocolo de ajedrez](docs/en/chess.md), [formato de mapas](docs/en/maps-format.md), [comparación con MeshCore](docs/en/feature-parity.md),
 [verificación en hardware](docs/en/verification.md). Los originales en ruso están en [docs/](docs/), y la guía
