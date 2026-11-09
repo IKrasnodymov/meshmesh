@@ -46,7 +46,7 @@ size_t rating::storeRead(uint8_t* d,size_t cap){if(ratingSaved.size()>cap)return
 const uint8_t* MeshRadio::nodeKey() const{static const uint8_t key[32]={0x5A,0x1F,0x0C,0x9E,0x77,0xD2};return key;}
 bool MeshRadio::nodeSign(uint8_t sig[64],const uint8_t*,size_t) const{memset(sig,0x5A,64);return true;}
 bool MeshRadio::nodeVerify(const uint8_t*,const uint8_t*,const uint8_t*,size_t){return true;}
-bool MeshRadio::learnContact(const uint8_t*,const char*){return true;}
+bool MeshRadio::learnContact(const uint8_t*,const char*,uint8_t,int32_t,int32_t){return true;}
 // The SD archive of finished games: names in memory.
 static std::vector<std::pair<std::string,std::string>> previewArchive;
 bool chessArchiveWrite(const String& name,const String& text){for(auto& a:previewArchive)if(a.first==name.c_str()){a.second=text.c_str();return true;}previewArchive.push_back({name.c_str(),text.c_str()});return true;}
