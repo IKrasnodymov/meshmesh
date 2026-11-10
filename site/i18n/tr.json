@@ -42,6 +42,7 @@
  "uf2.step1": "Kartı USB ile bağlayın. <b>Üzerinde MeshCore veya başka bir yazılım mı var?</b> Önce RESET'e hızlıca iki kez basın — bir sürücü belirir; ona dokunmayın.",
  "uf2.step2": "<b>Yükle</b> düğmesine basın ve kartın portunu seçin. MeshMesh çalıştıran kart önyükleyicisine kendisi geçer — ardından <b>Devam</b> düğmesine basın ve portu yeniden seçin.",
  "uf2.step3": "İşlemin bitmesini bekleyin (yaklaşık bir dakika) — kart yeniden başlar. Anahtar, ayarlar ve geçmiş korunur.",
+ "uf2.step4": "<b>Meshtastic veya MeshCore üzerine ilk kurulum:</b> onların verileri bellekte kalır ve MeshMesh sormadan silmez. Depolama oluşturun — ekranda «Modüller → Depolama oluştur...» ya da uygulamanın ana sayfasındaki düğmeyle. Aksi halde ayarlar, anahtar ve kişiler kaydedilmez.",
  "btn.install": "Yükle",
  "web.unsupported": "Bu tarayıcıda Web Serial yok — sayfayı bilgisayarda Chrome veya Edge ile açın.",
  "web.https": "Sayfa HTTPS üzerinden açılmalıdır.",

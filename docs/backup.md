@@ -71,13 +71,21 @@
 ```json
 {"format":"meshmesh-backup","version":1,"created":"2026-11-09T07:09:28Z","firmware":"0.30.0",
  "board":"m9","board_name":"Elecrow ThinkNode M9","role":"normal","node":{"id":"…","name":"…","public_key":"…"},
- "settings":{…},"identity":{"private_key":"…","public_key":"…"},
+ "settings":{…},"identity":{"private_key":"…"},
  "channels":[{"id":"…","name":"…","kind":"private","link":"meshcore://channel/add?…","region":"","policy":{…}}],
  "contacts":[{"key":"…","name":"…","type":1,"lat":0,"lon":0}],
  "quick":{"to":"ALL","gps":true,"presets":["…"]},
  "counters":{"current":0,"counters":[{"name":"","value":0,"color":0}],"settings":{…}},
  "sheets":[{"name":"…","general":false,"text":"MMS1~…"}]}
 ```
+
+Открытый ключ в файле один — `node.public_key`: по нему видно, с какого узла копия, и с ним сравнивается текущая плата.
+При восстановлении применяется только закрытый ключ `identity.private_key`, открытый плата вычисляет из него сама и хранит
+вместе с закрытым (одна запись `identity` в хранилище MeshCore). Копии 0.30.0 повторяли открытый ключ в
+`identity.public_key`; он не применяется, страница берёт его только для предпросмотра.
+
+Имя файла — `meshmesh-backup-<имя>-ГГГГ-ММ-ДД-ЧЧ-ММ.json` по местному времени телефона или компьютера (с 0.30.1;
+в 0.30.0 — UTC); `created` внутри файла — UTC в формате ISO 8601.
 
 Если ключ узла не удалось получить (домашняя сеть, старая прошивка), вместо `identity` записывается
 `identity_error`. Разделы отсутствуют, если на плате нет соответствующей функции.

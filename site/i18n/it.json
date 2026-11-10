@@ -42,6 +42,7 @@
  "uf2.step1": "Collega la scheda via USB. <b>C'è MeshCore o un altro firmware?</b> Prima premi RESET due volte rapidamente — compare un'unità; lasciala stare.",
  "uf2.step2": "Premi <b>Installa</b> e scegli la porta della scheda. Una scheda con MeshMesh passa da sola al bootloader — poi premi <b>Continua</b> e scegli di nuovo la porta.",
  "uf2.step3": "Attendi la fine (circa un minuto) — la scheda si riavvia. Chiave, impostazioni e cronologia restano.",
+ "uf2.step4": "<b>Prima installazione su Meshtastic o MeshCore:</b> i loro dati restano in memoria e MeshMesh non li cancella senza chiedere. Crea l'archivio — sullo schermo «Moduli → Crea archivio...» o con il pulsante nella pagina principale dell'app. Altrimenti impostazioni, chiave e contatti non vengono salvati.",
  "btn.install": "Installa",
  "web.unsupported": "Questo browser non ha Web Serial — apri la pagina in Chrome o Edge su un computer.",
  "web.https": "La pagina va aperta via HTTPS.",

@@ -42,6 +42,7 @@
  "uf2.step1": "Podłącz płytkę przez USB. <b>Jest na niej MeshCore lub inne oprogramowanie?</b> Najpierw naciśnij szybko dwa razy RESET — pojawi się dysk; nie ruszaj go.",
  "uf2.step2": "Naciśnij <b>Zainstaluj</b> i wybierz port płytki. Płytka z MeshMesh sama przejdzie do bootloadera — wtedy naciśnij <b>Dalej</b> i wybierz port jeszcze raz.",
  "uf2.step3": "Poczekaj do końca (około minuty) — płytka uruchomi się ponownie. Klucz, ustawienia i historia zostają.",
+ "uf2.step4": "<b>Pierwsza instalacja na Meshtastic lub MeshCore:</b> ich dane zostają w pamięci, a MeshMesh nie kasuje ich bez pytania. Utwórz pamięć — na ekranie „Moduły → Utwórz pamięć...” lub przyciskiem na stronie głównej aplikacji. Inaczej ustawienia, klucz i kontakty nie są zapisywane.",
  "btn.install": "Zainstaluj",
  "web.unsupported": "Ta przeglądarka nie ma Web Serial — otwórz stronę w Chrome lub Edge na komputerze.",
  "web.https": "Stronę trzeba otworzyć przez HTTPS.",

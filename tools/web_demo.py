@@ -253,6 +253,13 @@ def backup_command(line):
         return 'OK channel added 0000C0FFEE01'
     if line.startswith('identity set '):
         return 'OK identity unchanged'
+    if line == 'fsformat':
+        if STATUS['storage']:
+            return 'ERR filesystem already mounted; no format'
+        STATUS.update(storage=True, radio=True)
+        return 'OK MeshMesh filesystem initialized'
+    if line.startswith('set ') and not STATUS['storage']:
+        return 'ERR settings storage; restored previous'
     if line.startswith('set '):
         return radio_set(json.loads(line[4:]))
     return 'OK'
@@ -369,7 +376,7 @@ class Handler(BaseHTTPRequestHandler):
             body = None
         reply = 'OK'
         if url.path == '/api/config' and isinstance(body, dict):
-            reply = radio_set(body)
+            reply = radio_set(body) if STATUS['storage'] else 'ERR settings storage; restored previous'
         elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('radio '):
             reply = radio_command(body['command'])
         elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('netfind'):
@@ -387,6 +394,9 @@ def serve(port):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument('--port', type=int, default=8790)
+    p.add_argument('--no-storage', action='store_true', help='a board after Meshtastic: no storage, sending off, until fsformat')
     a = p.parse_args()
+    if a.no_storage:
+        STATUS.update(storage=False, radio=False)
     print(f'http://127.0.0.1:{a.port}/?lang=en#home')
     serve(a.port).serve_forever()

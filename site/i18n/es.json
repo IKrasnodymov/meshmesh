@@ -42,6 +42,7 @@
  "uf2.step1": "Conecta la placa por USB. <b>¿Tiene MeshCore u otro firmware?</b> Primero pulsa RESET dos veces rápido: aparecerá una unidad; no la toques.",
  "uf2.step2": "Pulsa <b>Instalar</b> y elige el puerto de la placa. Una placa con MeshMesh pasa sola a su bootloader: entonces pulsa <b>Continuar</b> y vuelve a elegir el puerto.",
  "uf2.step3": "Espera a que termine (alrededor de un minuto): la placa se reinicia. La clave, los ajustes y el historial se conservan.",
+ "uf2.step4": "<b>Primera instalación sobre Meshtastic o MeshCore:</b> sus datos quedan en la memoria y MeshMesh no los borra sin preguntar. Cree el almacenamiento: en la pantalla «Módulos → Crear almacén...» o con el botón de la página principal de la app. Si no, los ajustes, la clave y los contactos no se guardan.",
  "btn.install": "Instalar",
  "web.unsupported": "Este navegador no tiene Web Serial: abre la página en Chrome o Edge en un ordenador.",
  "web.https": "La página debe abrirse por HTTPS.",

@@ -240,7 +240,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <p class="foot">MeshMesh · <span class="version">0.3.6</span></p></main>
 
 <main class="wrap" id="app" hidden>
-<section class="page" id="p-home"><div class="card ident" id="ident"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.6</span> · локальная сеть, без интернета</p></section>
+<section class="page" id="p-home"><div class="card ident" id="ident"></div><div id="storeWarn"></div><div class="tiles" id="tiles"></div><p class="foot">MeshMesh <span class="version">0.3.6</span> · локальная сеть, без интернета</p></section>
 
 <section class="page" id="p-chats" hidden><div class="list" id="conversations"></div></section>
 
@@ -557,10 +557,20 @@ function hud(){
  h+=`<span class="clock" id="clock">${clockText()}</span><span class="batt">${mv&&(config.battery_volts||!ext)?`<span class="pct">${config.battery_volts?(mv/1000).toFixed(2)+'V':p+'%'}</span>`:''}<i>${ext?`<svg class="ic" style="position:absolute;left:4px;top:-1px;font-size:10px;color:var(--accent)"><use href="#i-bolt"/></svg>`:mv?`<b style="width:${Math.max(1,15*p/100)}px;background:${c}"></b>`:''}</i></span>`;
  $('icons').innerHTML=h}
 
+// No storage (nRF52 after Meshtastic or MeshCore: their files stay until asked; ESP32 with a foreign or broken
+// partition): nothing is saved and sending is off, so the home and settings pages say so and offer "fsformat".
+function storageCard(){return status.storage!==false?'':`<div class="card" style="border:1px solid var(--bad);margin-bottom:12px"><b class="bad">${L('Хранилище не создано')}</b><p class="small" style="margin:6px 0 10px">${L('В памяти платы остались данные прежней прошивки (Meshtastic, MeshCore или другой). Пока хранилища нет, настройки, ключ узла, контакты и сообщения не сохраняются, а отправка выключена. Создание хранилища стирает эти данные, затем плата перезапускается.')}</p><button class="btn danger" data-fsformat style="width:100%">${L('Создать хранилище')}</button></div>`}
+async function storageCreate(b){ // the second press within 5 s on the same button
+ if(!b.dataset.at||Date.now()-b.dataset.at>5000){const at=b.dataset.at=Date.now();b.classList.add('armed');b.textContent=L('Нажмите ещё раз: данные прежней прошивки сотрутся');setTimeout(()=>{if(b.dataset.at==at){delete b.dataset.at;b.classList.remove('armed');b.textContent=L('Создать хранилище')}},5000);return}
+ delete b.dataset.at;b.disabled=true;b.textContent=L('Создаю хранилище…');
+ try{await command('fsformat');await command('restart').catch(()=>{});notify(L('Хранилище создано, плата перезапускается'),'ok')}catch(e){notify(e.message,'bad');b.disabled=false;b.classList.remove('armed');b.textContent=L('Создать хранилище')}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fsformat]');if(b&&!b.disabled)storageCreate(b)});
+
 // Home: identity strip and the nine destinations of the M9 menu.
 function renderHome(){
+ if(status.storage!==false||!$('storeWarn').querySelector('.armed,[disabled]'))$('storeWarn').innerHTML=storageCard(); // a pressed button is kept
  const r=config,ready=status.radio;
- $('ident').innerHTML=`${ic('radio',ready?'acc':'bad')}<div class="who"><b>${esc(config.name)}</b><small class="${ready?'muted':'bad'}">${ready?L`${Number(r.frequency).toFixed(3)} МГц · SF${r.sf} · BW ${r.bandwidth} · CR 4/${r.cr}`:L`Ошибка радио ${status.radio_error}`}</small></div><div class="txrx"><div><i class="acc">▲</i>${status.tx??'—'}</div><div><i class="ok">▼</i>${status.rx??'—'}</div></div>`;
+ $('ident').innerHTML=`${ic('radio',ready?'acc':'bad')}<div class="who"><b>${esc(config.name)}</b><small class="${ready?'muted':'bad'}">${ready?L`${Number(r.frequency).toFixed(3)} МГц · SF${r.sf} · BW ${r.bandwidth} · CR 4/${r.cr}`:status.storage===false?L('Нет хранилища'):L`Ошибка радио ${status.radio_error}`}</small></div><div class="txrx"><div><i class="acc">▲</i>${status.tx??'—'}</div><div><i class="ok">▼</i>${status.rx??'—'}</div></div>`;
  const u=unreadTotal(),near=peers.filter(p=>p.heard&&age(p)<1800).length,f=faults(),links=status.wifi&&status.ble?'Wi-Fi + BLE':status.wifi?'Wi-Fi':status.ble?'Bluetooth':L('Всё выключено');
  const tiles=serverRole()?[['server',status.role==='room'?'room':'tower',status.role==='room'?'warn':'violet',status.role==='room'?L('Комната'):L('Репитер'),status.role==='room'?L('Посты и участники'):plural(status.relayed||0,'пакет переслан','пакета переслано','пакетов переслано')],['connect','wifi','info',L('Связь'),links],['nav','compass','warn',L('Навигация'),status.gps_fix?'GPS: '+plural(status.satellites,'спутник','спутника','спутников'):config.gps?L('GPS: поиск'):L('GPS выключен')],['modules','pulse',f?'bad':'ok',L('Модули'),f?plural(f,'ошибка','ошибки','ошибок'):L('Всё в норме')],['settings','gear','muted',L('Настройки'),L('Радио, экран, режим')],...petTile()]:[['chats','chat','acc',L('Чаты'),u?plural(u,'новое','новых','новых'):plural(history.length,'сообщение','сообщения','сообщений'),u],
   ...(status.quick_send?[['quick','send','info',L('Быстрая отправка'),L('Шаблоны и получатель')]]:[]),
@@ -1299,7 +1309,7 @@ function renderSettings(){
   ['nav','compass','warn',L('GPS и компас'),`GPS ${config.gps?L('вкл'):L('выкл')} · ${navInfo.calibrated?L('компас откалиброван'):navInfo.available?L('компас не откалиброван'):L('без компаса')}`],['alerts','bell','warn',L('Уведомления'),L`Личные: ${ALERT_MODES[alerts.dm].toLowerCase()} · Public: ${ALERT_MODES[alerts.pub].toLowerCase()}`],['connect','wifi','info',L('Подключения'),`${noWifi()?'':`Wi-Fi ${status.wifi?L('вкл'):L('выкл')} · `}BLE ${status.ble?L('вкл'):L('выкл')}`],
   ['modules','pulse','ok',L('Состояние модулей'),L`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted',L('Клавиши и подсказки'),L('Что делает каждая клавиша')],['library','pin','ok',L('Сохранённые карты'),mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:L('Карт нет')],['role','tower','violet',L('Режим работы'),status.role==='repeater'?L('Репитер MeshCore'):status.role==='room'?L('Комната MeshCore'):L('Обычный: чаты, карты, радар')],['backup','down','info',L('Резервная копия'),L('Сохранить настройки в файл или вернуть их')]];
  const off=status.power_on!==undefined;$('powerOff').hidden=$('powerOffHint').hidden=!off;if(off)$('powerOffHint').textContent=powerOnText();
- $('settingsList').innerHTML=items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
+ $('settingsList').innerHTML=storageCard()+items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
 // Apps of the device's screen menu (firmware "apps" setting): their order, "-" before an ID hides it.
 const APP_NAMES={chats:['chat',L('Чаты')],map:['pin',L('Карта')],nodes:['mesh',L('Узлы')],nav:['compass',L('Навигация')],connect:['wifi',L('Связь')],radar:['radar',L('Радар')],health:['pulse',L('Модули')],settings:['gear',L('Настройки')],solitaire:['cards',L('Косынка')],chess:['chess',L('Шахматы')],pet:['paw',L('Питомец')],dice:['dice',L('Кости')],quick:['send',L('Быстрая отправка')],people:['tally',L('Быстрый счётчик')],wardrive:['tower',L('Вардрайв')],gps:['compass','GPS'],wifi:['wifi','Wi-Fi'],ble:['ble','Bluetooth']};
 let appsDraft=[];
@@ -1339,7 +1349,7 @@ async function backupSave(){
  try{
   const b={format:'meshmesh-backup',version:1,created:new Date().toISOString(),firmware:status.version,board:status.board,board_name:boardName(),role:status.role,node:{id:status.node,name:config.name,public_key:status.public_key}};
   task(L('Настройки…'));const c=await request('/api/config');b.settings={};for(const k in c)if(!BK_SKIP.includes(k))b.settings[k]=c[k];
-  if($('bkKey').checked){task(L('Ключ узла…'));try{b.identity=bkJson(await bkCommand('identity'))}catch(e){b.identity_error=bkErr(e)}}
+  if($('bkKey').checked){task(L('Ключ узла…'));try{b.identity={private_key:bkJson(await bkCommand('identity')).private_key}}catch(e){b.identity_error=bkErr(e)}}
   if(normal){task(L('Каналы…'));b.channels=bkJson(await command('channels')).channels.map(x=>({id:x.id,name:x.name,kind:x.kind,link:x.link,region:x.region,policy:x.policy}));
    task(L('Контакты…'));b.contacts=bkJson(await command('nodes')).filter(p=>p.public_key&&p.type).map(p=>({key:p.public_key,name:p.name,type:p.type,...p.position?{lat:p.latitude,lon:p.longitude}:{}}))}
   if(status.quick_send){task(L('Быстрая отправка…'));const q=bkJson(await command('quick'));b.quick={to:q.to,gps:q.gps,presets:q.presets}}
@@ -1347,7 +1357,7 @@ async function backupSave(){
   if(hasModule('dice')){const d=diceJson(await command('dice')),now=d.character;b.sheets=[];
    try{for(let i=0;i<d.characters.length;i++){task(L`Листы персонажей: ${i+1} из ${d.characters.length}`);await command('dice char use '+i);b.sheets.push({name:d.characters[i],general:!i,text:diceJson(await command('dice sheet export')).text})}}
    finally{await command('dice char use '+now).catch(()=>{})}}
-  const stamp=b.created.slice(0,16).replace(/[:T]/g,'-'),file=`meshmesh-backup-${String(config.name||status.node||'').replace(/[^\p{L}\p{N}_-]+/gu,'_')}-${stamp}.json`;
+  const now=new Date(),stamp=[now.getFullYear(),two(now.getMonth()+1),two(now.getDate()),two(now.getHours()),two(now.getMinutes())].join('-'),file=`meshmesh-backup-${String(config.name||status.node||'').replace(/[^\p{L}\p{N}_-]+/gu,'_')}-${stamp}.json`;
   download(JSON.stringify(b,null,1),file,'application/json');
   task(b.identity_error?L`Копия сохранена без ключа узла: ${b.identity_error}`:L`Копия сохранена: ${file}`);notify(L('Копия сохранена'),b.identity_error?'warn':'ok')
  }catch(e){task(bkErr(e));notify(bkErr(e),'bad')}finally{backupBusy=false;const x=$('bkDo');if(x)x.disabled=false}}
@@ -1377,7 +1387,8 @@ function renderBackupFile(){
  if(b.counters&&cur.people&&tally(b.counters)!==tally(cur.people))sect('counters',L('Быстрый счётчик'),b.counters.counters.map(c=>`${esc(c.name||L('Счётчик'))}: ${c.value}`).join(' · '));
  const have=new Set(cur.dice?cur.dice.characters:[]),sheets=(b.sheets||[]).filter(s=>!s.general&&!have.has(s.name));
  if(cur.dice&&sheets.length)sect('sheets',L('Листы персонажей'),L`Добавятся: ${sheets.map(s=>s.name).join(', ')}`);
- if(b.identity&&b.identity.private_key&&b.identity.public_key!==status.public_key)sect('identity',L('Ключ узла'),L`Узел ${b.identity.public_key.slice(0,8)}… вместо ${String(status.public_key||'').slice(0,8)}…: контакты узнают эту плату как прежний узел. Плата перезапустится. Не включайте две платы с одним ключом.`,true);
+ const bkPub=String(b.identity&&b.identity.public_key||b.node&&b.node.public_key||''); // files before 0.30.1 repeat the public key in identity
+ if(b.identity&&b.identity.private_key&&bkPub!==status.public_key)sect('identity',L('Ключ узла'),L`Узел ${bkPub.slice(0,8)||'?'}… вместо ${String(status.public_key||'').slice(0,8)}…: контакты узнают эту плату как прежний узел. Плата перезапустится. Не включайте две платы с одним ключом.`,true);
  const note=b.identity_error?`<p class="small warn">${L`Ключа узла в копии нет: ${b.identity_error}`}</p>`:'';
  box.innerHTML=`<p class="small muted" style="margin:0 0 8px">${esc(backupFile.name)} · ${esc(b.node?.name||'')} · ${esc(b.board_name||b.board||'')} · ${esc(String(b.created||'').slice(0,16).replace('T',' '))}</p>${note}${rows.length?rows.join('')+`<div class="btns"><button class="btn primary" id="bkApply">${L('Восстановить отмеченное')}</button><button class="btn" id="bkCancel">${L('Другой файл')}</button></div>`:`<p class="small ok">${L('Всё из копии уже есть на устройстве.')}</p><div class="btns"><button class="btn" id="bkCancel">${L('Другой файл')}</button></div>`}<div id="bkLog" class="small" style="margin-top:8px"></div>`;
  $('bkCancel').onclick=()=>{backupFile=null;renderBackupFile()};if($('bkApply'))$('bkApply').onclick=()=>backupRestore({chans,contacts,sheets})}

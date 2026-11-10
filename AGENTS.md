@@ -450,4 +450,7 @@ MeshCore, 128 hex), `identity set`, `contact add {JSON}` (`MeshRadio::privateKey
 через `powf` (двойной `pow` больше не линкуется, ~3,5 КБ; `lib/MeshCore/PATCHES.md`): китайский T114 — 709672 байта.
 Проверено: сборка всех плат, сохранение и восстановление на странице с `tools/web_demo.py` в браузере. На железе (команды
 `identity`/`contact add`, перенос ключа на другую плату, приложение по BLE) не проверено: платы не были подключены.
+0.30.1 / Android 0.21.1: открытый ключ в копии один (`node.public_key`), имя файла по местному времени; без хранилища
+(`status.storage=false`, nRF52 после Meshtastic/MeshCore) страница показывает карточку «Хранилище не создано» с `fsformat`
+(`storageCard` в `web/index.html`, демо — `tools/web_demo.py --no-storage`), сайт — шаг `uf2.step4`.
 

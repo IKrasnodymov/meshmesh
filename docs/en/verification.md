@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.30.1 / Android 0.21.1: storage and backup after feedback** (10 November 2026). A T114 user reported after installing
+> that settings were saved neither from the phone nor on the board. From the code: after Meshtastic/MeshCore the area at
+> 0xD4000 holds foreign data, MeshMesh does not erase it without asking, the storage is not mounted and `set` answers
+> `ERR settings storage`; only the screen said so («No storage: menu»). Now the page/app show a «Storage not created»
+> card with a button (`fsformat` + `restart`), the site an nRF52 install step. Backup: the file holds one public key
+> (`node.public_key`), only the private key is applied; the file name uses local time. Checked: the page with
+> `tools/web_demo.py --no-storage` in a browser (card ru/de, `set` refused, two presses, gone after creation), the file name
+> (09-23 at UTC 06:23), the key preview from `node.public_key`, dictionaries; M9 and T114 builds. **Not checked:** the
+> user's actual cause (their board was not seen), the card on a T114 over BLE in the app.
+
 > **0.30.0 / Android 0.21.0: backup** (9 November 2026, `docs/en/backup.md`). All 18 targets built; the Chinese T114
 > image is 709672 bytes (about 3 KB free: the MeshCore receive delay uses `powf`, the double `pow` is no longer linked).
 > The page with `tools/web_demo.py` in a browser (390×844): saving the file (sections, node key), the restore preview
