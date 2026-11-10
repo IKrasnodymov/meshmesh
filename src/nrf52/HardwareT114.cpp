@@ -50,17 +50,21 @@ void Hardware::begin() {
   fsOk=LittleFS.mounted(); // mounted by main.cpp before the settings were read
   Serial.printf("HW %s screen=%d fs=%d heap=%u\n",MM_BOARD_NAME,panel!=nullptr,fsOk,ESP.getFreeHeap());
 }
+static uint16_t batteryRead();
 void Hardware::tick() {
   if(gpsEnabled){unsigned budget=512;while(Serial1.available()&&budget--){gps.encode(Serial1.read());gpsBytes++;}}
+  static uint32_t dividerOn=0; // the divider settles 10 ms before a reading, without stopping the loop
+  if(dividerOn&&millis()-dividerOn>=10){batteryMv=batteryRead();dividerOn=0;}
   if(millis()-lastSample<1000)return;lastSample=millis();
-  batteryMv=batteryNow();
+  output(pins::adcEnable,HIGH);dividerOn=millis()|1;
   if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }
 }
 // Divider on AIN2 (P0.04), switched on by P0.06 for the reading, as in MeshCore's T114Board.
-uint16_t Hardware::batteryNow() {
-  output(pins::adcEnable,HIGH);delay(2);
+uint16_t Hardware::batteryNow() {output(pins::adcEnable,HIGH);delay(10);return batteryRead();}
+// Read 10 ms after the divider is connected, as MeshCore and Meshtastic do.
+static uint16_t batteryRead() {
   analogReference(AR_INTERNAL_3_0);analogReadResolution(12);uint32_t raw=0;for(int i=0;i<8;i++)raw+=analogRead(pins::battery);
   digitalWrite(pins::adcEnable,LOW);
   return uint16_t(3000.f*pins::batteryScale*(raw/8)/4096);
@@ -78,7 +82,7 @@ int Hardware::readKey() {
 // levels. The USER button wakes it.
 void Hardware::powerDown(bool started) {
   if(started){brightness(0);setGps(false);}
-  output(pins::tftLight,HIGH);output(pins::tftPower,HIGH);output(pins::vext,!pins::vextOn);output(pins::led,!pins::ledOn);output(pins::radioCs,HIGH);
+  output(pins::tftLight,HIGH);output(pins::tftPower,HIGH);output(pins::vext,!pins::vextOn);output(pins::led,!pins::ledOn);output(pins::radioCs,HIGH);output(pins::adcEnable,LOW);
 }
 int Hardware::wakePin() const {return pins::button;}
 void Hardware::beep() {}

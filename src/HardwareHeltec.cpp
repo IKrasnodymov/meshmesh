@@ -40,8 +40,8 @@ void Hardware::begin() {
 void Hardware::tick() {
   if(gpsEnabled) {unsigned budget=1024;while(Serial1.available() && budget--){gps.encode(Serial1.read());gpsBytes++;}}
   if(millis()-lastSample<1000)return;lastSample=millis();
-  analogReadResolution(12);analogSetPinAttenuation(pins::battery,ADC_0db);
-  uint32_t sum=0;for(int i=0;i<6;i++)sum+=analogReadMilliVolts(pins::battery);batteryMv=uint16_t((sum/6)*4.9f);
+  analogReadResolution(12);analogSetPinAttenuation(pins::battery,ADC_2_5db); // as Meshtastic; the divider stays connected
+  uint32_t sum=0;for(int i=0;i<6;i++)sum+=analogReadMilliVolts(pins::battery);batteryMv=uint16_t((sum/6)*pins::batteryScale);
   if(gpsTime()) {
     DateTime now(gps.date.year(),gps.date.month(),gps.date.day(),gps.time.hour(),gps.time.minute(),gps.time.second());setUtc(now.unixtime(),"GPS");
   }

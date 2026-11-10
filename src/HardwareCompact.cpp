@@ -48,6 +48,15 @@ uint32_t einkActive=0,einkKeys=0;
 XPowersLibInterface* pmu=nullptr;
 #endif
 bool adcActive=HIGH;
+#if defined(MM_BOARD_HELTEC_V3) || defined(MM_BOARD_HELTEC_TRACKER) || defined(MM_BOARD_HELTEC_E213)
+constexpr adc_attenuation_t BatteryAtten=ADC_2_5db; // as Meshtastic: the 390k/100k divider gives the pin at most ~0.9 V
+#else
+constexpr adc_attenuation_t BatteryAtten=ADC_11db;
+#endif
+uint16_t readBattery() {
+  analogReadResolution(12);analogSetPinAttenuation(pins::battery,BatteryAtten);
+  uint32_t sum=0;for(int i=0;i<6;i++)sum+=analogReadMilliVolts(pins::battery);return uint16_t((sum/6)*pins::batteryScale);
+}
 #if defined(MM_BOARD_HELTEC_TRACKER)
 GpsProbe gpsPort(pins::gpsRx,pins::gpsTx,115200);
 #else
@@ -172,16 +181,20 @@ void Hardware::tick() {
   if(gpsEnabled) {
     gpsBytes+=gpsPort.tick(gps);
   }
+#if !defined(MM_EMULATOR) // QEMU builds: the emulator has no ADC and a conversion never completes
+  // A switched divider (390k/100k on Heltec boards) is read 10 ms after it is connected, as Meshtastic and
+  // MeshCore do: read at once, it gave 3-6 % too little on a Heltec V3 against a voltmeter.
+  static uint32_t dividerOn=0;
+  if(dividerOn && millis()-dividerOn>=10){batteryMv=readBattery();digitalWrite(pins::adcEnable,!adcActive);dividerOn=0;}
+#endif
   if(millis()-lastSample<1000)return;lastSample=millis();
 #if defined(MM_PMU)
   if(pmu&&pmu->isBatteryConnect())batteryMv=pmu->getBattVoltage();else batteryMv=0;
 #endif
-#if !defined(MM_EMULATOR) // QEMU builds: the emulator has no ADC and a conversion never completes
+#if !defined(MM_EMULATOR)
   if(pins::battery>=0) {
-    if(pins::adcEnable>=0)digitalWrite(pins::adcEnable,adcActive);
-    analogReadResolution(12);analogSetPinAttenuation(pins::battery,ADC_11db);
-    uint32_t sum=0;for(int i=0;i<6;i++)sum+=analogReadMilliVolts(pins::battery);batteryMv=uint16_t((sum/6)*pins::batteryScale);
-    if(pins::adcEnable>=0)digitalWrite(pins::adcEnable,!adcActive);
+    if(pins::adcEnable>=0){digitalWrite(pins::adcEnable,adcActive);dividerOn=millis()|1;}
+    else batteryMv=readBattery();
   }
 #endif
   if(gpsTime()) {
@@ -213,6 +226,7 @@ void Hardware::powerDown(bool started) {
   for(uint32_t at=millis();!eink::idle()&&millis()-at<8000;)delay(20);
 #endif
   hold(pins::vext,!pins::vextOn);hold(pins::gpsEnable,!pins::gpsOn);hold(pins::radioCs,HIGH);
+  if(pins::adcEnable>=0)pinMode(pins::adcEnable,INPUT); // released, as at boot: the board's pull keeps the divider off
 }
 int Hardware::wakePin() const {
 #if defined(MM_PMU)

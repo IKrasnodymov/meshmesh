@@ -198,7 +198,9 @@ Places where sources disagree or behaviour was chosen without a board:
 - **XIAO ESP32S3 + Wio-SX1262:** the button is BOOT (GPIO0); antenna receive control —
   GPIO38.
 - **Heltec V3:** the enable level of the battery divider (GPIO37) is detected at
-  boot — it differs between revisions.
+  boot — it differs between revisions. Since 0.30.3 the Heltec divider (V3, Wireless Tracker, E213, V4) is read 10 ms
+  after it is switched on, with 2.5 dB ADC attenuation and a 4.9 × 1.045 multiplier (E213: 4.9 × 1.03), as in Meshtastic:
+  reading at once with 4.9 gave a V3 voltage 3–6 % low against the owner's voltmeter.
 - **Classic ESP32 (T-Beam, T-LoRa):** after boot in QEMU, 126–133 KB of
   internal memory is free (the T-LoRa has no PSRAM). Whether it is enough for the Wi-Fi access point and BLE
   at the same time only the board will show: check `status` → `heap` with Wi-Fi and BLE on.

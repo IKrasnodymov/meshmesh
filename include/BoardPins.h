@@ -7,6 +7,7 @@ constexpr int spiClock=9, spiMiso=11, spiMosi=10;
 constexpr int radioCs=8, radioIrq=14, radioReset=12, radioBusy=13;
 constexpr float radioTcxo=1.8f;
 constexpr int sda=17, scl=18, oledReset=21, battery=1, button=0;
+constexpr float batteryScale=4.9f*1.045f; // 390k/100k divider; Meshtastic's ADC_MULTIPLIER (4.9 read low on a V3)
 constexpr int femPower=7,femEnable=2;
 #if defined(MM_HELTEC_R8)
 constexpr int peripheralPower=40,gpsEnable=42,adcEnable=-1,led=46;
@@ -26,7 +27,7 @@ constexpr int spiClock=9, spiMiso=11, spiMosi=10, radioCs=8, radioIrq=14, radioR
 constexpr float radioTcxo=1.8f;
 constexpr int sda=17, scl=18, oledReset=21, button=0, vext=36, vextOn=LOW;
 constexpr int battery=1, adcEnable=37, gpsRx=-1, gpsTx=-1, gpsEnable=-1, gpsOn=HIGH, gpsReset=-1, buzzer=-1;
-constexpr float batteryScale=4.9f;
+constexpr float batteryScale=4.9f*1.045f; // Meshtastic's ADC_MULTIPLIER; 4.9 read 3-6 % low against a voltmeter
 constexpr int led=35, ledOn=HIGH;
 #elif defined(MM_BOARD_HELTEC_TRACKER)
 constexpr int spiClock=9, spiMiso=11, spiMosi=10, radioCs=8, radioIrq=14, radioReset=12, radioBusy=13, radioRxEn=-1;
@@ -34,7 +35,7 @@ constexpr float radioTcxo=1.8f;
 constexpr int sda=-1, scl=-1, oledReset=-1, button=0, vext=3, vextOn=HIGH;
 constexpr int tftClock=41, tftData=42, tftDc=40, tftReset=39, tftCs=38, tftLight=21;
 constexpr int battery=1, adcEnable=2, gpsRx=33, gpsTx=34, gpsEnable=35, gpsOn=HIGH, gpsReset=36, buzzer=-1;
-constexpr float batteryScale=4.9f;
+constexpr float batteryScale=4.9f*1.045f; // Meshtastic's ADC_MULTIPLIER
 constexpr int led=18, ledOn=HIGH;
 #elif defined(MM_BOARD_TBEAM)
 constexpr int spiClock=5, spiMiso=19, spiMosi=27, radioCs=18, radioIrq=33, radioReset=23, radioBusy=32, radioRxEn=-1;

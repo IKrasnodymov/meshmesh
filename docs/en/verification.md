@@ -1,5 +1,15 @@
 # MeshMesh verification
 
+> **0.30.3: battery voltage** (10 November 2026). A Heltec V3 owner compared the screen with a voltmeter on the battery
+> connector: the board read 160–200 mV low while discharging (3.20 → 3.40 V, 3.55 → 3.71 V) and 80–100 mV low while
+> charging (3.48 → 3.58 V, 3.73 → 3.83 V), that is 3–6 %. We read the 390k/100k divider right after switching it on, at
+> 11 dB attenuation with a 4.9 multiplier; Meshtastic waits 10 ms and uses 2.5 dB and 4.9 × 1.045, MeshCore waits 10 ms
+> on the T114/T096. Now the same: V3, Wireless Tracker, E213 — a 10 ms pause without stopping the loop
+> (`src/HardwareCompact.cpp`), 2.5 dB, V3 and Tracker × 1.045; V4 (divider always on) — 2.5 dB instead of 0 dB and
+> × 1.045; T114/T096 — 10 ms instead of 2 ms. The other boards match MeshCore and were not changed. The 14 affected targets (Chinese T114: 709912 bytes)
+> were built. **Not checked on hardware:** no boards were on USB; how close it now is to the voltmeter will show from the
+> V3 owner's new readings.
+
 > **0.30.2: storage after Meshtastic is created by itself** (10 November 2026). A second report from the same user: two
 > T114s, installed from the site after "erasing the system", still do not save settings. The cause from our T114's original
 > flash copy: the factory Meshtastic 2.7.15 runs its code over 0xD4000–0xDDA00, with no file system; its erase clears only
