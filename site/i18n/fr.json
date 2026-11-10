@@ -42,7 +42,7 @@
  "uf2.step1": "Branchez la carte en USB. <b>MeshCore ou un autre firmware dessus ?</b> Appuyez d’abord deux fois rapidement sur RESET : un lecteur apparaît, n’y touchez pas.",
  "uf2.step2": "Appuyez sur <b>Installer</b> et choisissez le port de la carte. Une carte sous MeshMesh passe seule dans son bootloader : appuyez alors sur <b>Continuer</b> et choisissez de nouveau le port.",
  "uf2.step3": "Attendez la fin (environ une minute) : la carte redémarre. La clé, les réglages et l’historique sont conservés.",
- "uf2.step4": "<b>Première installation sur Meshtastic ou MeshCore :</b> leurs données restent en mémoire et MeshMesh ne les efface pas sans demander. Créez le stockage — à l'écran « Modules → Créer stockage... » ou avec le bouton de la page d'accueil de l'appli. Sinon les réglages, la clé et les contacts ne sont pas enregistrés.",
+ "uf2.step4": "<b>Après MeshCore</b> l'écran peut afficher « Pas de stockage » : MeshMesh n'efface pas ses clés sans demander. Créez le stockage — « Modules → Créer stockage... » à l'écran ou le bouton de la page d'accueil de l'appli, sinon les réglages ne sont pas enregistrés. Après Meshtastic le stockage se crée tout seul (depuis 0.30.2).",
  "btn.install": "Installer",
  "web.unsupported": "Ce navigateur ne prend pas en charge Web Serial : ouvrez la page dans Chrome ou Edge sur un ordinateur.",
  "web.https": "La page doit être ouverte en HTTPS.",

@@ -453,4 +453,7 @@ MeshCore, 128 hex), `identity set`, `contact add {JSON}` (`MeshRadio::privateKey
 0.30.1 / Android 0.21.1: открытый ключ в копии один (`node.public_key`), имя файла по местному времени; без хранилища
 (`status.storage=false`, nRF52 после Meshtastic/MeshCore) страница показывает карточку «Хранилище не создано» с `fsformat`
 (`storageCard` в `web/index.html`, демо — `tools/web_demo.py --no-storage`), сайт — шаг `uf2.step4`.
+0.30.2: nRF52 сам создаёт хранилище, если в начале области 0xD4000 нет файловой системы (ни `littlefs`, ни заголовка блока
+littlefs v1) — там код заводской Meshtastic T114 (`foreignCode` в `src/nrf52/Platform.cpp`); чужую littlefs (MeshCore) и
+нашу порванную — по-прежнему только по `fsformat`. На железе не проверено.
 

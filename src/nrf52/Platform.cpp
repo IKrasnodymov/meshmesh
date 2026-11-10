@@ -45,8 +45,20 @@ bool MeshFS::format(){
   flash_nrf5x_flush();if(!Adafruit_LittleFS::format()||!Adafruit_LittleFS::begin())return false;
   File f=Adafruit_LittleFS::open(marker,FILE_O_WRITE);if(!f)return false;f.write((const uint8_t*)"MeshMesh\n",9);f.close();return true;
 }
-// Creates storage only on a blank region (all 0xFF); bytes of an earlier firmware are never
-// formatted here: the USB command "fsformat" does that on request.
+// A littlefs v1 metadata block starts with the revision, the size (top bit: a continued directory) and the
+// tail pair; the superblock entry names "littlefs". Either in the first two blocks means a file system that
+// may hold someone's data (MeshCore companion keys, a MeshMesh storage torn by a reset mid-write).
+namespace {
+bool lfsHeader(const uint8_t* b){uint32_t w[4];memcpy(w,b,sizeof w);uint32_t size=w[1]&0x7fffffff,blocks=MeshFS::Size/BlockSize;return size>=16&&size<=BlockSize&&w[2]<blocks&&w[3]<blocks;}
+bool foreignCode(){
+  uint8_t head[2*BlockSize];flash_nrf5x_read(head,MeshFS::Start,sizeof head);
+  for(uint32_t i=0;i+8<=sizeof head;i++)if(!memcmp(head+i,"littlefs",8))return false;
+  return !lfsHeader(head)&&!lfsHeader(head+BlockSize);
+}
+}
+// Creates storage on a blank region (all 0xFF) and on one holding only the code of an earlier, larger
+// firmware: Meshtastic on the factory T114 runs its image past 0xD4000 (0xD4000-0xDDA00), and its "erase"
+// file clears only its own InternalFS. A file system is never formatted here: "fsformat" does that on request.
 // A littlefs of another firmware in the same region (MeshCore companion keeps its ExtraFS at
 // 0xD4000) mounts as well: without the MeshMesh marker and with files in it, it stays foreign.
 bool mountStorage(){
@@ -56,7 +68,10 @@ bool mountStorage(){
     if(empty){File f=LittleFS.open(MeshFS::marker,FILE_O_WRITE);if(f){f.write((const uint8_t*)"MeshMesh\n",9);f.close();return true;}}
     LittleFS.end();Serial.println("LittleFS: region holds another firmware's files; USB command fsformat creates storage");return false;
   }
-  if(!LittleFS.blank()){Serial.println("LittleFS: region holds other data; USB command fsformat creates storage");return false;}
+  if(!LittleFS.blank()){
+    if(!foreignCode()){Serial.println("LittleFS: region holds another file system; USB command fsformat creates storage");return false;}
+    Serial.println("LittleFS: region holds an earlier firmware's code, creating storage");return LittleFS.format();
+  }
   Serial.println("LittleFS: blank region, creating storage");return LittleFS.format()&&LittleFS.begin();
 }
 File MeshFS::open(const char* path,const char* mode,bool){

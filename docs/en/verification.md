@@ -1,5 +1,14 @@
 # MeshMesh verification
 
+> **0.30.2: storage after Meshtastic is created by itself** (10 November 2026). A second report from the same user: two
+> T114s, installed from the site after "erasing the system", still do not save settings. The cause from our T114's original
+> flash copy: the factory Meshtastic 2.7.15 runs its code over 0xD4000–0xDDA00, with no file system; its erase clears only
+> InternalFS. `mountStorage` (`src/nrf52/Platform.cpp`) now creates the storage when the first two blocks hold neither
+> `littlefs` nor a littlefs v1 block header. The rule was checked on the copies (Python, the same condition): Meshtastic
+> T114 — create; MeshCore GAT562, 7 of our T114/GAT562 storages (including the one torn on 7 October) — leave alone; 2 blank
+> areas. 4 nRF52 targets built; the Chinese T114 is 709864 bytes (2 KB free). **Not checked on hardware:** no T114
+> connected; boot over Meshtastic and the storage creation were not observed.
+
 > **0.30.1 / Android 0.21.1: storage and backup after feedback** (10 November 2026). A T114 user reported after installing
 > that settings were saved neither from the phone nor on the board. From the code: after Meshtastic/MeshCore the area at
 > 0xD4000 holds foreign data, MeshMesh does not erase it without asking, the storage is not mounted and `set` answers

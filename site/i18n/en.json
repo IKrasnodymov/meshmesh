@@ -42,7 +42,7 @@
  "uf2.step1": "Plug the board in over USB. <b>MeshCore or other firmware on it?</b> First press RESET twice quickly — a drive appears; leave it alone.",
  "uf2.step2": "Press <b>Install</b> and choose the board's port. A board running MeshMesh switches to its bootloader by itself — then press <b>Continue</b> and choose the port again.",
  "uf2.step3": "Wait for it to finish (about a minute) — the board restarts. Key, settings and history are kept.",
- "uf2.step4": "<b>First install over Meshtastic or MeshCore:</b> their data stays in memory, and MeshMesh does not erase it without asking. Create storage — on the screen «Modules → Create storage...» or with the button on the app's home page. Otherwise settings, the key and contacts are not saved.",
+ "uf2.step4": "<b>After MeshCore</b> the screen may say «No storage»: MeshMesh does not erase its keys without asking. Create storage — «Modules → Create storage...» on the screen or the button on the app's home page, otherwise settings are not saved. After Meshtastic the storage is created by itself (since 0.30.2).",
  "btn.install": "Install",
  "web.unsupported": "This browser has no Web Serial — open the page in Chrome or Edge on a computer.",
  "web.https": "The page must be opened over HTTPS.",

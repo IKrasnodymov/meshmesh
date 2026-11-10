@@ -42,7 +42,7 @@
  "uf2.step1": "Colokkan papan lewat USB. <b>Ada MeshCore atau firmware lain di dalamnya?</b> Tekan RESET dua kali dengan cepat — sebuah drive muncul; biarkan saja.",
  "uf2.step2": "Tekan <b>Instal</b> dan pilih port papan. Papan yang menjalankan MeshMesh masuk ke bootloader dengan sendirinya — lalu tekan <b>Lanjutkan</b> dan pilih port lagi.",
  "uf2.step3": "Tunggu hingga selesai (sekitar satu menit) — papan akan memulai ulang. Kunci, pengaturan dan riwayat tetap tersimpan.",
- "uf2.step4": "<b>Pemasangan pertama di atas Meshtastic atau MeshCore:</b> datanya tetap di memori dan MeshMesh tidak menghapusnya tanpa bertanya. Buat penyimpanan — di layar «Modul → Buat penyimpanan...» atau dengan tombol di halaman utama aplikasi. Jika tidak, pengaturan, kunci, dan kontak tidak disimpan.",
+ "uf2.step4": "<b>Setelah MeshCore</b> layar bisa menampilkan «Tanpa penyimpanan»: MeshMesh tidak menghapus kuncinya tanpa bertanya. Buat penyimpanan — «Modul → Buat penyimpanan...» di layar atau tombol di halaman utama aplikasi; jika tidak, pengaturan tidak disimpan. Setelah Meshtastic penyimpanan dibuat otomatis (sejak 0.30.2).",
  "btn.install": "Instal",
  "web.unsupported": "Browser ini tidak punya Web Serial — buka halaman ini di Chrome atau Edge di komputer.",
  "web.https": "Halaman harus dibuka lewat HTTPS.",

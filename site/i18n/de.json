@@ -42,7 +42,7 @@
  "uf2.step1": "Board per USB anschließen. <b>Läuft MeshCore oder eine andere Firmware darauf?</b> Zuerst zweimal schnell RESET drücken — ein Laufwerk erscheint; dieses einfach ignorieren.",
  "uf2.step2": "Auf <b>Installieren</b> klicken und den Port des Boards wählen. Ein Board mit MeshMesh wechselt selbst in den Bootloader — dann auf <b>Weiter</b> klicken und den Port erneut wählen.",
  "uf2.step3": "Warten, bis es fertig ist (etwa eine Minute) — das Board startet neu. Schlüssel, Einstellungen und Verlauf bleiben erhalten.",
- "uf2.step4": "<b>Erstinstallation über Meshtastic oder MeshCore:</b> deren Daten bleiben im Speicher, und MeshMesh löscht sie nicht ungefragt. Legen Sie den Speicher an — am Bildschirm „Module → Speicher anlegen...“ oder mit der Schaltfläche auf der Startseite der App. Sonst werden Einstellungen, Schlüssel und Kontakte nicht gespeichert.",
+ "uf2.step4": "<b>Nach MeshCore</b> kann der Bildschirm „Kein Speicher“ zeigen: MeshMesh löscht deren Schlüssel nicht ungefragt. Legen Sie den Speicher an — „Module → Speicher anlegen...“ am Bildschirm oder die Schaltfläche auf der Startseite der App, sonst werden Einstellungen nicht gespeichert. Nach Meshtastic wird der Speicher von selbst angelegt (ab 0.30.2).",
  "btn.install": "Installieren",
  "web.unsupported": "Dieser Browser hat kein Web Serial — öffnen Sie die Seite in Chrome oder Edge auf einem Computer.",
  "web.https": "Die Seite muss über HTTPS geöffnet werden.",
