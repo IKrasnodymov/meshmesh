@@ -1457,6 +1457,7 @@ function fields(page){const h=heltec();return page==='radio'?[
  {k:'notify_failed',n:L('Сигнал о проблеме отправки'),h:L('Ошибка передатчика или отсутствие ACK личного сообщения'),t:'sw'},
  {k:'notify_words',n:L('Ключевые слова платы'),h:L('Считаются упоминанием; через запятую, до 96 байт UTF-8'),t:'text',max:96}],
  {k:'dim_after',n:L('Гасить экран, с'),h:L('0 = выкл, 10–600 с'),t:'num',min:0,max:600,step:10},
+ ...config.double_back===undefined?[]:[{k:'double_back',n:L('Двойной клик — назад'),h:L('Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже'),t:'sw'}],
  ...h||config.lock_details===undefined?[]:[{k:'lock_details',n:L('Экран блокировки'),h:L('Соперник и ход в шахматах, отправитель сообщения'),t:'sel',o:[[true,L('Подробно')],[false,L('Скрыто')]]}],
  ...absent(5)?[]:[{k:'gps',n:extGps()?L('Внешний GPS'):L('Приёмник GPS'),h:L('Питание приёмника'),t:'sw'}],
  {k:'utc_offset',n:L('Смещение UTC'),h:L('Местное время, шаг 15 минут'),t:'sel',o:utcOptions()},

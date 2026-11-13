@@ -938,6 +938,8 @@
  "Считаются упоминанием; через запятую, до 96 байт UTF-8": "Comptent comme mention ; séparés par des virgules, 96 octets UTF-8 au plus",
  "Гасить экран, с": "Éteindre l'écran, s",
  "0 = выкл, 10–600 с": "0 = désactivé, 10–600 s",
+ "Двойной клик — назад": "Double clic : retour",
+ "Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже": "Comme dans MeshCore d’origine ; un clic simple agit 0,4 s plus tard",
  "Экран блокировки": "Écran verrouillé",
  "Соперник и ход в шахматах, отправитель сообщения": "Adversaire et coup aux échecs, expéditeur du message",
  "Подробно": "Détails",

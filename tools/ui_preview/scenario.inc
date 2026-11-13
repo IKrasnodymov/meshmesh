@@ -552,6 +552,29 @@ static void scenario(){
   key(0x82);shot("home-apps");key(13);page("settings");key(0x82);key(0xb7);key(13);page("map");key(0x82);
 #endif
   config.apps[0]=0;printf("apps order checks passed\n");}
+#if defined(MM_ONE_BUTTON)
+// Double click = back (config.doubleBack): a click waits for a second one; counting keeps its clicks immediate.
+ {auto must=[](bool ok,const char* why){if(!ok){printf("FAIL double click %s: %s\n",why,uiStatus().c_str());exit(1);}};
+  auto has=[](const char* s){return uiStatus().indexOf(s)>=0;};
+  auto twice=[](){uiKey(13);fakeMillis+=200;uiKey(13);tick();};
+  strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;
+  key(0x86);twice();must(has("\"page\":\"people\""),"off: two quick clicks are two clicks");
+  key(0x86);config.doubleBack=true;
+  uiKey(13);must(has("\"page\":\"home\"")&&has("\"click_wait\":true"),"a click waits for a second one");
+  tick();must(has("\"page\":\"quick\"")&&has("\"click_wait\":false"),"a single click acts after the wait");
+  key(0xa3);key(0xa3);must(has("\"app_open\":true")&&has("\"quick_targets\":true"),"hold opens Quick Send and its recipients");
+  twice();must(has("\"quick_targets\":false")&&has("\"app_open\":true"),"back closes the recipients");
+  twice();must(has("\"page\":\"quick\"")&&has("\"app_open\":false"),"back closes the app");
+  twice();must(has("\"page\":\"home\""),"back: the previous page");
+  uiKey(13);fakeMillis+=200;uiKey(0xa3);tick();must(has("\"page\":\"quick\"")&&has("\"app_open\":true"),"a hold after a click: the click first");
+  key(0x86);key(13);key(13);must(has("\"page\":\"people\""),"people");key(0xa3);int32_t before=people::value();
+  uiKey(13);must(people::value()==before+1&&has("\"click_wait\":false"),"counting: a click counts at once");
+  twice();must(people::value()==before+3&&has("\"app_open\":true"),"counting: two quick clicks count twice");
+  people::change(-3);config.doubleBack=false;key(0x86);config.apps[0]=0;
+  for(int i=0;i<20&&!has("\"page\":\"settings\"");i++)key(13);key(0xa3);for(int i=0;i<5;i++)key(13);shot("heltec-settings-double");
+  key(0xa3);must(config.doubleBack&&has("\"menu\":true"),"the settings menu switches it on");shot("heltec-settings-double-on");key(0xa3);
+  must(!config.doubleBack,"and off");for(int i=0;i<11;i++)tick();key(0x86);printf("double click checks passed\n");}
+#endif
 // Quick Send, manual counting and a persistent roll mode: the production key paths.
  {auto must=[](bool ok,const char* why){if(!ok){printf("FAIL wishlist UI %s: %s\n",why,uiStatus().c_str());exit(1);}};
   strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;

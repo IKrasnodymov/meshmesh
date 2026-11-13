@@ -1,5 +1,16 @@
 # MeshMesh verification
 
+> **0.31.0: double click — back** (13 November 2026). At a user's request: on the single-button boards (Heltec V4/V3,
+> Wireless Tracker, T114, T096, E213 and others, not the GAT562 with its joystick) a double click steps back, as in stock
+> MeshCore: it closes a popup, the menu, the radio editor, a game, an open app, otherwise goes to the previous screen. It
+> is a separate switch, off by default: “Settings” menu → “Double click”, “Settings → Screen” on the page and in the app,
+> `set {"double_back":true}` (NVS `dbl_back`). When on, a single click acts 0.4 s later (it waits for a second one); the
+> quick counter and counting with the button in dice keep their clicks immediate. Checked: all boards build (Chinese
+> T114: 710696 bytes, 1 KB free; T114 without modules), the `tools/ui_preview` scenario for Heltec and T114 (a single
+> click after the wait, back from recipients, an app and to the previous screen, a hold after a click, the counter, the
+> menu item in ru/en/zh/ar). **Not checked:** the physical button on boards (no boards on USB) and the switch on the
+> page in a browser (no Chromium on the machine).
+
 > **0.30.3: battery voltage** (10 November 2026). A Heltec V3 owner compared the screen with a voltmeter on the battery
 > connector: the board read 160–200 mV low while discharging (3.20 → 3.40 V, 3.55 → 3.71 V) and 80–100 mV low while
 > charging (3.48 → 3.58 V, 3.73 → 3.83 V), that is 3–6 %. We read the 390k/100k divider right after switching it on, at

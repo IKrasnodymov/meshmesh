@@ -912,6 +912,8 @@
  "Считаются упоминанием; через запятую, до 96 байт UTF-8": "Dianggap sebagai sebutan; dipisahkan koma, hingga 96 byte UTF-8",
  "Гасить экран, с": "Redupkan layar, dtk",
  "0 = выкл, 10–600 с": "0 = mati, 10–600 dtk",
+ "Двойной клик — назад": "Klik ganda: kembali",
+ "Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже": "Seperti MeshCore bawaan; klik tunggal bekerja 0,4 dtk kemudian",
  "Экран блокировки": "Layar kunci",
  "Соперник и ход в шахматах, отправитель сообщения": "Lawan dan langkah catur, pengirim pesan",
  "Подробно": "Detail",

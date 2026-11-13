@@ -64,7 +64,7 @@ void Config::load() {
   bootCounter=p.getUInt("boot",0)+1;
   if(!bootCounter || p.putUInt("boot",bootCounter)!=sizeof(bootCounter)) {bootCounter=0;Serial.println("ERR boot counter; TX disabled");}
   if(p.getBytesLength("radio_prev")==sizeof previous)p.getBytes("radio_prev",&previous,sizeof previous);
-  netAuto=p.getBool("net_auto",true);
+  netAuto=p.getBool("net_auto",true);doubleBack=p.getBool("dbl_back",false);
   p.end();
   {Config c=*this;c.setRadio(previous);if(!previous.set()||!c.valid()||sameRadio(previous))previous=RadioProfile();}
   if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=2;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
@@ -79,7 +79,7 @@ bool Config::save() {
   p.putString("name",name); p.putFloat("freq",kept.frequency); p.putFloat("bw",kept.bandwidth);
   p.putUChar("sf",kept.sf); p.putUChar("cr",kept.cr);
   if(previous.set())p.putBytes("radio_prev",&previous,sizeof previous);else if(p.isKey("radio_prev"))p.remove("radio_prev");
-  p.putBool("net_auto",netAuto);
+  p.putBool("net_auto",netAuto);p.putBool("dbl_back",doubleBack);
   p.putChar("power",power); p.putUChar("hops",hops); p.putUChar("path_hash",pathHash);
   p.putBool("relay",relay);p.putBool("gps",gps);p.putBool("sound",sound);p.putBool("bat_v",batteryVolts);p.putUChar("lang",lang);p.putBool("russian",lang==LangRu);
   p.putUChar("light",brightness);p.putUShort("lock",autoLock);p.putUShort("dim",dimAfter);p.putBool("lock_txt",lockDetails);p.putShort("utc_offset",utcOffset);p.putString("apps",apps);p.putBytes("key",key,32);

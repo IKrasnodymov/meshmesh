@@ -39,7 +39,7 @@ bool traceable(uint64_t id){Peer* p=nullptr;for(unsigned i=0;i<meshRadio.peerCou
 bool saved(uint64_t){return true;}void tick(){}String json(){return "{}";}String usbCommand(const String&){return "OK";}}
 String bleName(){return String("MeshCore-")+config.name+" 5EA1";}void bleRename(){}
 String configJson(bool){return "{}";}
-String applySettings(JsonObjectConst){return "OK settings saved";}
+String applySettings(JsonObjectConst v){if(v.containsKey("double_back"))config.doubleBack=v["double_back"];return "OK settings saved";} // the switches the checks read back
 // Hardware
 void Hardware::brightness(uint8_t){}void Hardware::beep(){}void Hardware::setGps(bool){}
 void Hardware::flush(){}

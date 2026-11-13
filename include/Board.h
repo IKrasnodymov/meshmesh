@@ -148,6 +148,10 @@
 #if defined(MM_BOARD_GAT562)
 #define MM_JOYSTICK 1
 #endif
+// One button (click, hold): the compact boards without the joystick.
+#if defined(MM_COMPACT) && !defined(MM_JOYSTICK)
+#define MM_ONE_BUTTON 1
+#endif
 // Colour TFT at its own resolution under the 128x64 compact layout (HiresCanvas.h, Palette.h).
 #if defined(MM_BOARD_T114)
 #define MM_HIRES 1

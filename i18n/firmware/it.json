@@ -6494,6 +6494,16 @@
   "ru": "Батарея: проценты",
   "text": "Batteria: percento"
  },
+ "4333345c": {
+  "en": "Double click: back",
+  "ru": "Двойной клик: назад",
+  "text": "Doppio clic: indietro"
+ },
+ "e20d55d5": {
+  "en": "Double click: off",
+  "ru": "Двойной клик: выкл.",
+  "text": "Doppio clic: off"
+ },
  "68dd789c": {
   "en": "Screen off: ",
   "ru": "Гасить: ",

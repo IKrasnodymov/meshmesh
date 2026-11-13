@@ -35,7 +35,8 @@ but their targets have not been added.
 \* the classic ESP32 addresses 4 MB of the 8 MB PSRAM; the firmware does not require it.
 
 Single-button boards use the Heltec V4 interface (`src/UiHeltec.cpp`): a short
-press — next screen, a hold — action or menu. The hardware layer is
+press — next screen, a hold — action or menu. Since 0.31.0 a double click can step back, as in stock MeshCore
+(the “Double click” switch in the “Settings” menu, off by default: a single click then acts 0.4 s later). The hardware layer is
 `src/HardwareCompact.cpp`, the pins are in `include/BoardPins.h`, the name, missing modules
 and power limit are in `include/Board.h`. As on the Heltec V4, these boards have no maps and
 no internet client (they need SD and PSRAM). The T-Deck uses the M9 interface (`src/Ui.cpp`)

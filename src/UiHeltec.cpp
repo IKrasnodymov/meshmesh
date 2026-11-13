@@ -329,7 +329,7 @@ unsigned wdOrder(unsigned* order,const wardrive::Repeater*& list){unsigned n=war
 // Actions: a screen with one action runs it on hold; several open a menu.
 enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPeopleMinus,ActPeopleNext,ActPeopleAdd,ActPeopleDelete,ActPeopleReset,ActPeopleBle,ActPeopleWifi,ActPeopleWindow,ActPeopleRssi,ActPeoplePersonal,ActPeopleClear,ActPeopleExit,ActQuick,ActNotify,ActNotifyLed,ActNotifyWake,ActNotifyPopup,ActNotifyFailed,ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
-  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceAct,ActDicePrevBlock,ActDiceAccept,ActDiceDecline,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActWardriveRun,ActWardrivePing,ActWardriveView,ActWardriveNets,ActClose};
+  ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceAct,ActDicePrevBlock,ActDiceAccept,ActDiceDecline,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActWardriveRun,ActWardrivePing,ActWardriveView,ActWardriveNets,ActDoubleBack,ActClose};
 constexpr unsigned MenuMax=14;
 #if MM_DICE
 #include "UiDiceCompact.inc"
@@ -395,7 +395,11 @@ unsigned actions(Act* out){
 #if defined(MM_JOYSTICK)
   out[n++]=ActSound; // the GAT562 buzzer
 #endif
-  out[n++]=ActRadio;out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;out[n++]=ActRole;out[n++]=ActPowerOff;out[n++]=ActNotify;break;
+  out[n++]=ActRadio;out[n++]=ActLanguage;out[n++]=ActBattery;out[n++]=ActScreen;out[n++]=ActContrast;
+#if defined(MM_ONE_BUTTON)
+  out[n++]=ActDoubleBack;
+#endif
+  out[n++]=ActRole;out[n++]=ActPowerOff;out[n++]=ActNotify;break;
  case PeoplePage:out[n++]=ActPeopleMinus;if(people::tally.count>1)out[n++]=ActPeopleNext;if(people::tally.count<people::Counters)out[n++]=ActPeopleAdd;out[n++]=ActPeopleReset;if(people::tally.count>1)out[n++]=ActPeopleDelete;out[n++]=ActPeopleBle;
 #if !defined(MM_NO_WIFI)
  out[n++]=ActPeopleWifi;
@@ -416,7 +420,7 @@ bool keepsMenu(Act a){
 #if MM_DICE
  if(a>=ActDiceRoll&&a<=ActDiceExit)return diceKeeps(a);
 #endif
- return (a==ActPeopleDelete&&tallyArmed)||a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
+ return (a==ActPeopleDelete&&tallyArmed)||a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActDoubleBack||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
 String flag(bool value){return value?t("On","Вкл"):t("Off","Выкл");}
 String actName(Act a){
  if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return "-1";case ActPeopleNext:return t("Next: ","Дальше: ")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t("New counter","Новый счётчик");
@@ -453,6 +457,7 @@ String actName(Act a){
  case ActGps:return config.gps?t("Turn GPS off","Выключить GPS"):t("Turn GPS on","Включить GPS");case ActPosition:return t("Share position","Передать позицию");
  case ActWifi:return portalActive()?t("Turn Wi-Fi off","Выключить Wi-Fi"):t("Turn Wi-Fi on","Включить Wi-Fi");case ActBle:return bleActive()?t("Turn BLE off","Выключить BLE"):t("Turn BLE on","Включить BLE");
  case ActLanguage:return t("Language: ","Язык: ")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t("Battery: volts","Батарея: вольты"):t("Battery: percent","Батарея: проценты");
+ case ActDoubleBack:return config.doubleBack?t("Double click: back","Двойной клик: назад"):t("Double click: off","Двойной клик: выкл.");
  case ActScreen:return t("Screen off: ","Гасить: ")+(config.dimAfter?String(config.dimAfter)+t(" s"," с"):t("never","никогда"));case ActContrast:return t("Contrast: ","Контраст: ")+String(config.brightness);
  case ActHoming:{int i=shownSignal();return t("Home in: ","Пеленг: ")+(i>=0?signalName(radar.targets[i]):String("-"));}case ActNextSignal:return t("Next signal","Следующий сигнал");
  case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t("Stop beacon","Выключить маяк"):t("CSI beacon: on","Маяк CSI: включить");
@@ -530,6 +535,7 @@ void run(Act a){
  case ActWifi:portalToggle();break;case ActBle:bleToggle();break;
  case ActSound:applyOne("sound",!config.sound);hardware.beep();break;
  case ActLanguage:applyOne("lang",langCodes[langStep(config.lang,1)]);break;case ActBattery:applyOne("battery_volts",!config.batteryVolts);break;
+ case ActDoubleBack:applyOne("double_back",!config.doubleBack);break;
  case ActScreen:{const uint16_t steps[]={0,15,30,60,120,300};int i=0;while(i<5&&steps[i]!=config.dimAfter)i++;applyOne("dim_after",steps[(i+1)%6]);break;}
  case ActContrast:{const uint8_t steps[]={10,60,150,255};int i=0;while(i<3&&steps[i]<config.brightness)i++;applyOne("brightness",steps[(i+1)%4]);break;}
  case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t("Homing started","Пеленг начат"));}break;}
@@ -865,7 +871,41 @@ void joystickKey(int key){
  if(ok){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 #endif
+#if defined(MM_ONE_BUTTON)
+// Double click = back, as on the stock MeshCore screen (config.doubleBack, off by default): a click waits DoubleMs
+// for a second one, so with the option on a single click acts that much later. Counting keeps clicks immediate.
+static constexpr uint32_t DoubleMs=400;static uint32_t clickAt=0;
+static bool fastClicks(){
+#if MM_DICE
+ if(diceTapOn())return true;
+#endif
+ return appOpen&&page==PeoplePage;
+}
+// One step back: a popup or menu closes, an edit or game is left, an open app closes, else the previous page.
+static void stepBack(){
+ if(popupAt){popupAt=0;return;}
+ if(chessPopupAt){chessPopupAt=0;return;}
+ if(rolePick){rolePick=rolePickBoot=false;return;}
+ if(radioEdit){if(radioEditing){radioEditing=false;radioDigit=0;}else radioEdit=false;return;}
+ if(menuOpen){menuOpen=false;return;}
+#if MM_CHESS
+ if(page==Chess&&chessOpen){if(chessMenu)chessMenu=false;else if(chessHeld>=0)chessHeld=-1;else chessOpen=nullptr;return;}
+#endif
+ if(page==QuickPage&&quickTargets){quickTargets=false;return;}
+ if(appPage()&&appOpen){appOpen=false;quickReply=false;return;}
+ showPage(previousPage(page));
+}
+#endif
+static void uiKeyNow(int key);
 void uiKey(int key){
+#if defined(MM_ONE_BUTTON)
+ if(powerOffPending())return;
+ if(clickAt){bool second=key==13;clickAt=0;if(second){lastInput=millis();dirty=true;stepBack();return;}uiKeyNow(13);} // another key: the waiting click first
+ if(key==13&&config.doubleBack&&!screenOff&&!fastClicks()){clickAt=millis();if(!clickAt)clickAt=1;lastInput=millis();return;}
+#endif
+ uiKeyNow(key);
+}
+static void uiKeyNow(int key){
  if(powerOffPending())return; // the screen says it is turning off
  lastInput=millis();dirty=true;
  if(screenOff){screenOff=false;hardware.brightness(config.brightness); // the first press only wakes the panel
@@ -906,7 +946,11 @@ void uiKey(int key){
 }
 bool uiRadarPage(){return page==Signals;}
 void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_row"]=quickIndex;if(!quickTargets&&quickIndex&&quickIndex<=quickSend::Count)d["quick_index"]=quickIndex-1;d["quick_targets"]=quickTargets;if(quickTargets)d["quick_target_index"]=quickTargetIndex;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["app_open"]=appOpen;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_row"]=quickIndex;if(!quickTargets&&quickIndex&&quickIndex<=quickSend::Count)d["quick_index"]=quickIndex-1;d["quick_targets"]=quickTargets;if(quickTargets)d["quick_target_index"]=quickTargetIndex;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["app_open"]=appOpen;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;
+#if defined(MM_ONE_BUTTON)
+ d["click_wait"]=clickAt!=0; // a click waiting for a second one (double click = back)
+#endif
+d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
 #if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}
@@ -924,6 +968,9 @@ void uiFarewell(){farewell=true;screenOff=false;hardware.brightness(config.brigh
 void uiTick(){
  uint32_t now=millis();
  if(powerOffPending()){static bool shown=false;if(!shown){shown=true;screenOff=false;hardware.brightness(config.brightness);draw();}return;} // drawn once: the board turns off
+#if defined(MM_ONE_BUTTON)
+ if(clickAt&&now-clickAt>=DoubleMs){clickAt=0;uiKeyNow(13);} // no second click came
+#endif
  notifications::Event receivedEvent;
  while(notifications::take(receivedEvent)){
   const auto& e=receivedEvent;bool wake=false;

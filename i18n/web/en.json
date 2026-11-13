@@ -925,6 +925,8 @@
  "Считаются упоминанием; через запятую, до 96 байт UTF-8": "Count as mentions; comma-separated, up to 96 bytes of UTF-8",
  "Гасить экран, с": "Screen off, s",
  "0 = выкл, 10–600 с": "0 = off, 10–600 s",
+ "Двойной клик — назад": "Double click — back",
+ "Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже": "As in stock MeshCore; a single click acts 0.4 s later",
  "Экран блокировки": "Lock screen",
  "Соперник и ход в шахматах, отправитель сообщения": "Chess opponent and move, message sender",
  "Подробно": "Detailed",

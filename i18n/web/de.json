@@ -925,6 +925,8 @@
  "Считаются упоминанием; через запятую, до 96 байт UTF-8": "Gelten als Erwähnung; durch Komma getrennt, bis 96 Byte UTF-8",
  "Гасить экран, с": "Bildschirm dimmen, s",
  "0 = выкл, 10–600 с": "0 = aus, 10–600 s",
+ "Двойной клик — назад": "Doppelklick: zurück",
+ "Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже": "Wie in der originalen MeshCore; ein einfacher Klick wirkt 0,4 s später",
  "Экран блокировки": "Sperrbildschirm",
  "Соперник и ход в шахматах, отправитель сообщения": "Gegner und Zug im Schach, Absender der Nachricht",
  "Подробно": "Details",

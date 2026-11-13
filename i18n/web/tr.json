@@ -925,6 +925,8 @@
  "Считаются упоминанием; через запятую, до 96 байт UTF-8": "Bahsetme sayılır; virgülle, en fazla 96 bayt UTF-8",
  "Гасить экран, с": "Ekranı karart, sn",
  "0 = выкл, 10–600 с": "0 = kapalı, 10–600 sn",
+ "Двойной клик — назад": "Çift tık: geri",
+ "Как в штатной MeshCore; одиночный клик срабатывает на 0,4 с позже": "Orijinal MeshCore’daki gibi; tek tık 0,4 sn sonra çalışır",
  "Экран блокировки": "Kilit ekranı",
  "Соперник и ход в шахматах, отправитель сообщения": "Satrançta rakip ve hamle, mesajı gönderen",
  "Подробно": "Ayrıntılı",

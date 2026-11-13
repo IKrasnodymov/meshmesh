@@ -62,7 +62,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:527: case ActRemoteLogin:case ActRemoteStatus:case ActTrace:{Peer* p=shownNode();bool sent=p&&(a==ActRemoteLogin?remote::login(p->id,\"\"):a==ActRemoteStatus?remote::status(p->id):remote::traceTo(p->id));notice(sent?t(\"Sent, wa"
+   "src/UiHeltec.cpp:532: case ActRemoteLogin:case ActRemoteStatus:case ActTrace:{Peer* p=shownNode();bool sent=p&&(a==ActRemoteLogin?remote::login(p->id,\"\"):a==ActRemoteStatus?remote::status(p->id):remote::traceTo(p->id));notice(sent?t(\"Sent, wa"
   ]
  },
  "015405e4": {
@@ -100,7 +100,7 @@
   ],
   "where": [
    "src/UiPet.inc:45: footer({{\"OK\",t(\"Start a pet\",\"Завести питомца\")},{\"BACK\",t(\"Menu\",\"Меню\")}});",
-   "src/UiHeltec.cpp:464: case ActPetAdopt:return t(\"Start a pet\",\"Завести питомца\");case ActPetRelease:return t(\"Let it go...\",\"Отпустить...\");"
+   "src/UiHeltec.cpp:469: case ActPetAdopt:return t(\"Start a pet\",\"Завести питомца\");case ActPetRelease:return t(\"Let it go...\",\"Отпустить...\");"
   ]
  },
  "01f31114": {
@@ -220,7 +220,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:477: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
+   "src/UiHeltec.cpp:482: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
   ]
  },
  "03b2add1": {
@@ -355,7 +355,7 @@
   ],
   "where": [
    "src/UiPet.inc:69: footer({{\"OK\",t(\"New egg\",\"Новое яйцо\")},{\"D\",s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
-   "src/UiHeltec.cpp:463: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
+   "src/UiHeltec.cpp:468: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
   ]
  },
  "05fff3d6": {
@@ -445,7 +445,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:526: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
+   "src/UiHeltec.cpp:531: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
   ]
  },
  "07a7234e": {
@@ -474,7 +474,7 @@
   ],
   "where": [
    "src/Ui.cpp:468: row(t(\"Clock\",\"Часы\"),(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource==\"manual\"?t(\"manual\",\"вручную\"):hardware.clockSource)+(hardware.clockTrusted?t(\" · trusted\",\" · доверено\"):String()),ink)",
-   "src/UiHeltec.cpp:790: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}",
+   "src/UiHeltec.cpp:796: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}",
    "src/UiHires.inc:343: text(6,106,fit(t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),228,small),ColDim,small);"
   ]
  },
@@ -567,7 +567,7 @@
   ],
   "where": [
    "src/Ui.cpp:286: {IcRadar,accent,t(\"Radar\",\"Радар\"),\"Wi-Fi, BLE, LoRa\",0},",
-   "src/UiHeltec.cpp:768: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+",
+   "src/UiHeltec.cpp:774: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+",
    "src/UiHires.inc:105: case PeoplePage:return t(\"Quick counter\",\"Быстрый счётчик\");case WardrivePage:return t(\"Wardrive\",\"Вардрайв\");case QuickPage:return t(\"Quick send\",\"Быстрая отправка\");case NotifyPage:return t(\"Notifications\",\"Уведомления"
   ]
  },
@@ -716,7 +716,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:448: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
+   "src/UiHeltec.cpp:452: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
   ]
  },
  "0ce4368f": {
@@ -752,8 +752,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:630: footer(t(\"click-next hold-run\",\"клик-далее держ-ОК\"));",
-   "src/UiHeltec.cpp:823: (quickTargets||!quickIndex||quickIndex>quickSend::Count?t(\"click-next hold-run\",\"клик-далее держ-ОК\"):t(\"click-next hold-send\",\"клик-выбор держ-слать\")):",
+   "src/UiHeltec.cpp:636: footer(t(\"click-next hold-run\",\"клик-далее держ-ОК\"));",
+   "src/UiHeltec.cpp:829: (quickTargets||!quickIndex||quickIndex>quickSend::Count?t(\"click-next hold-run\",\"клик-далее держ-ОК\"):t(\"click-next hold-send\",\"клик-выбор держ-слать\")):",
    "src/UiHires.inc:492: if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t(\"click-next hold-run\",\"клик-далее держ-ОК\")});}"
   ]
  },
@@ -799,7 +799,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:454: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:458: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "0da32845": {
@@ -850,7 +850,7 @@
   ],
   "where": [
    "src/Ui.cpp:665: if(key=='p'||key=='P'){int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"Wait: a ping is under way\",\"Подожд",
-   "src/UiHeltec.cpp:488: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
+   "src/UiHeltec.cpp:493: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
   ]
  },
  "0e6d291b": {
@@ -914,7 +914,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:451: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:455: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "0f020b2d": {
@@ -977,7 +977,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:471: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:476: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "10322163": {
@@ -1005,7 +1005,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:451: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:455: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "10f55374": {
@@ -1014,7 +1014,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:453: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:457: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "1106f73b": {
@@ -1023,7 +1023,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:449: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:453: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "1110da4e": {
@@ -1041,7 +1041,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:464: case ActPetAdopt:return t(\"Start a pet\",\"Завести питомца\");case ActPetRelease:return t(\"Let it go...\",\"Отпустить...\");"
+   "src/UiHeltec.cpp:469: case ActPetAdopt:return t(\"Start a pet\",\"Завести питомца\");case ActPetRelease:return t(\"Let it go...\",\"Отпустить...\");"
   ]
  },
  "113cbc15": {
@@ -1068,7 +1068,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:774: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
+   "src/UiHeltec.cpp:780: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
    "src/UiHires.inc:203: if(sel<0){empty(IcRadar,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"),st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
@@ -1311,7 +1311,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:676: if(way==-2)return t(\"the power key\",\"кнопка питания\");if(way<0)return t(\"RESET or power switch\",\"RESET или выключатель\");"
+   "src/UiHeltec.cpp:682: if(way==-2)return t(\"the power key\",\"кнопка питания\");if(way<0)return t(\"RESET or power switch\",\"RESET или выключатель\");"
   ]
  },
  "15bd3514": {
@@ -1320,7 +1320,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:806: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \"",
+   "src/UiHeltec.cpp:812: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \"",
    "src/UiHires.inc:369: text(6,88,fit(t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \")+String(meshRadio.rejected),228,small),ColDim,small);"
   ]
  },
@@ -1353,7 +1353,7 @@
   ],
   "where": [
    "src/Ui.cpp:320: String preview=last?(last->outgoing?t(\"You: \",\"Вы: \"):c||isRoom(id)?String(last->name)+\": \":String())+bubbleText(*last):!c?t(\"No messages yet\",\"Сообщений ещё нет\"):channels::isPublic(c->secret)?t(\"Open MeshCore channel\",",
-   "src/UiHeltec.cpp:740: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}",
+   "src/UiHeltec.cpp:746: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}",
    "src/UiHires.inc:146: if(!m){empty(IcChat,t(\"No messages yet\",\"Сообщений ещё нет\"),t(\"They appear here\",\"Здесь появятся входящие\"));return;}"
   ]
  },
@@ -1454,7 +1454,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:168: where=(metres<1000?String(int(metres))+t(\" m \",\" м \"):String(metres/1000,1)+t(\" km \",\" км \"))+dirs[k];}"
   ]
  },
@@ -1605,7 +1605,7 @@
   ],
   "where": [
    "src/Ui.cpp:972: else if(page==Sensors){if(selected==0)gpsToggle();else if(selected==1){bool sent=meshRadio.sendPosition();notice(sent?t(\"Position shared\",\"Позиция передана\"):t(\"Waiting for GPS fix\",\"Ожидание GPS-позиции\"),sent?ok:warn);",
-   "src/UiHeltec.cpp:529: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
+   "src/UiHeltec.cpp:534: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
   ]
  },
  "19b6c4b1": {
@@ -1637,7 +1637,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:738: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
+   "src/UiHeltec.cpp:744: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
    "src/UiHires.inc:148: const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"доставл.\"),tr(\"no ACK\",\"нет ACK\")};"
   ]
  },
@@ -1694,8 +1694,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:594: String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}",
-   "src/UiHeltec.cpp:812: t(\"OK: menu  < >\",\"OK: меню  < >\"):"
+   "src/UiHeltec.cpp:600: String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}",
+   "src/UiHeltec.cpp:818: t(\"OK: menu  < >\",\"OK: меню  < >\"):"
   ]
  },
  "1abacfa5": {
@@ -1713,7 +1713,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "1b6b5746": {
@@ -1731,7 +1731,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:445: case ActChess:return t(\"Chess: invite\",\"Шахматы: вызвать\");"
+   "src/UiHeltec.cpp:449: case ActChess:return t(\"Chess: invite\",\"Шахматы: вызвать\");"
   ]
  },
  "1b6fca38": {
@@ -1749,7 +1749,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:448: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
+   "src/UiHeltec.cpp:452: case ActSound:return config.sound?t(\"Sound: on\",\"Звук: вкл.\"):t(\"Sound: off\",\"Звук: выкл.\");"
   ]
  },
  "1bd6e4b7": {
@@ -1767,7 +1767,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:477: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
+   "src/UiHeltec.cpp:482: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
   ]
  },
  "1c9aa5a1": {
@@ -1776,7 +1776,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:600: Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
+   "src/UiHeltec.cpp:606: Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
    "src/UiHires.inc:499: else if(page==QuickPage)footer({t(\"click: choose\",\"клик: выбор\"),quickTargets||!quickIndex?t(\"hold: \",\"держ: \")+t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"hold: \",\"держ: \")+t(\"exit\",\"выход\"):t(\"hold: send\",\"дер",
    "src/UiHires.inc:499: else if(page==QuickPage)footer({t(\"click: choose\",\"клик: выбор\"),quickTargets||!quickIndex?t(\"hold: \",\"держ: \")+t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"hold: \",\"держ: \")+t(\"exit\",\"выход\"):t(\"hold: send\",\"дер"
   ]
@@ -1835,7 +1835,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:434: case ActWardriveView:return wardriveList?t(\"Show summary\",\"Показать сводку\"):t(\"Repeaters heard\",\"Слышимые ретрансляторы\");"
+   "src/UiHeltec.cpp:438: case ActWardriveView:return wardriveList?t(\"Show summary\",\"Показать сводку\"):t(\"Repeaters heard\",\"Слышимые ретрансляторы\");"
   ]
  },
  "1e3621c0": {
@@ -1853,7 +1853,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:807: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);",
+   "src/UiHeltec.cpp:813: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);",
    "src/UiHires.inc:370: text(6,106,fit(t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),228,small),ColDim,small);"
   ]
  },
@@ -1904,7 +1904,7 @@
   ],
   "where": [
    "src/UiTally.inc:56: String r=people::command(j.as<JsonObjectConst>());notice(r.startsWith(\"OK\")?String(ble?\"BLE\":\"Wi-Fi\")+\": \"+(on?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\")):r,r.startsWith(\"OK\")?ok:bad);return true;}",
-   "src/UiHeltec.cpp:439: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
+   "src/UiHeltec.cpp:443: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
   ]
  },
  "1f607748": {
@@ -1913,7 +1913,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:761: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
+   "src/UiHeltec.cpp:767: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
    "src/UiHires.inc:191: right(236,64,lost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady\",\"ровн"
   ]
  },
@@ -1970,7 +1970,7 @@
   ],
   "where": [
    "src/Ui.cpp:240: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
-   "src/UiHeltec.cpp:757: else if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t(\"Homing\",\"Пеленг\");",
+   "src/UiHeltec.cpp:763: else if(radar.tracking){const RadarTarget& f=radar.focus;bool fresh=homingFresh();int trend=radar.trend();title=t(\"Homing\",\"Пеленг\");",
    "src/UiHires.inc:105: case PeoplePage:return t(\"Quick counter\",\"Быстрый счётчик\");case WardrivePage:return t(\"Wardrive\",\"Вардрайв\");case QuickPage:return t(\"Quick send\",\"Быстрая отправка\");case NotifyPage:return t(\"Notifications\",\"Уведомления"
   ]
  },
@@ -1989,7 +1989,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:453: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:457: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "203c0966": {
@@ -1998,7 +1998,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:471: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:476: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "20434332": {
@@ -2027,7 +2027,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:642: if(config.role==RoleNormal)sayRight(126,62,t(\"OK: open the game\",\"OK: открыть партию\"),small);"
+   "src/UiHeltec.cpp:648: if(config.role==RoleNormal)sayRight(126,62,t(\"OK: open the game\",\"OK: открыть партию\"),small);"
   ]
  },
  "20b1a066": {
@@ -2151,7 +2151,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:635: say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t(\"click: close\",\"клик: закрыть\"));",
+   "src/UiHeltec.cpp:641: say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t(\"click: close\",\"клик: закрыть\"));",
    "src/UiHires.inc:459: if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){statusBar(t(\"Messages\",\"Сообщения\"));popup(*last);footer({t(\"click: close\",\"клик: закрыть\")});hardware.flush();return;}"
   ]
  },
@@ -2264,7 +2264,7 @@
   "where": [
    "src/Ui.cpp:240: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
    "src/Ui.cpp:288: {IcTally,tallyHue(people::tally.current),t(\"Quick counter\",\"Быстрый счётчик\"),tallyTileDetail(),0},",
-   "src/UiHeltec.cpp:723: case PeoplePage:title=t(\"Quick counter\",\"Быстрый счётчик\");drawTallyMono();break;"
+   "src/UiHeltec.cpp:729: case PeoplePage:title=t(\"Quick counter\",\"Быстрый счётчик\");drawTallyMono();break;"
   ]
  },
  "24f7b061": {
@@ -2384,7 +2384,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:454: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:458: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "269729a5": {
@@ -2393,7 +2393,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:441: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
+   "src/UiHeltec.cpp:445: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
   ]
  },
  "26ba46ea": {
@@ -2587,7 +2587,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:488: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
+   "src/UiHeltec.cpp:493: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
   ]
  },
  "292b3500": {
@@ -2607,7 +2607,7 @@
   ],
   "where": [
    "src/Ui.cpp:470: String actions[]={t(\"Share position\",\"Передать позицию\"),navigation.calibrating?t(\"Finish calibration\",\"Завершить калибровку\"):t(\"Calibrate compass\",\"Калибровать компас\")};",
-   "src/UiHeltec.cpp:453: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
+   "src/UiHeltec.cpp:457: case ActGps:return config.gps?t(\"Turn GPS off\",\"Выключить GPS\"):t(\"Turn GPS on\",\"Включить GPS\");case ActPosition:return t(\"Share position\",\"Передать позицию\");"
   ]
  },
  "294219df": {
@@ -2679,7 +2679,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:447: case ActChessNext:return t(\"Next game\",\"Следующая партия\");"
+   "src/UiHeltec.cpp:451: case ActChessNext:return t(\"Next game\",\"Следующая партия\");"
   ]
  },
  "2a21ea97": {
@@ -2697,7 +2697,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:817: page==DicePage?(dicer.s.mode==dice::Sheet?t(\"click-next hold-menu\",\"клик-далее держ-меню\"):t(\"click-roll hold-menu\",\"клик-бросок держ-меню\")):"
+   "src/UiHeltec.cpp:823: page==DicePage?(dicer.s.mode==dice::Sheet?t(\"click-next hold-menu\",\"клик-далее держ-меню\"):t(\"click-roll hold-menu\",\"клик-бросок держ-меню\")):"
   ]
  },
  "2a76df25": {
@@ -2838,7 +2838,7 @@
   ],
   "where": [
    "src/Ui.cpp:683: footer({{\"^v\",t(\"choose\",\"выбор\")},{\"OK\",quickTargets||selected==0?t(\"select\",\"выбрать\"):t(\"send\",\"слать\")},{\"BACK\",t(\"exit\",\"выход\")}});",
-   "src/UiHeltec.cpp:821: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):"
+   "src/UiHeltec.cpp:827: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):"
   ]
  },
  "2c4bf677": {
@@ -3001,7 +3001,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:701: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));"
+   "src/UiHeltec.cpp:707: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));"
   ]
  },
  "2e3ab72f": {
@@ -3075,7 +3075,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:611: if(hold){if(quickTargets){if(!quickTargetCount()){notice(t(\"No recipients\",\"Нет получателей\"));quickTargets=false;quickIndex=0;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d[\"action\"]=\"targe"
+   "src/UiHeltec.cpp:617: if(hold){if(quickTargets){if(!quickTargetCount()){notice(t(\"No recipients\",\"Нет получателей\"));quickTargets=false;quickIndex=0;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d[\"action\"]=\"targe"
   ]
  },
  "2f68d3a9": {
@@ -3084,7 +3084,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:787: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
+   "src/UiHeltec.cpp:793: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
    "src/UiHires.inc:340: text(36,42,fit(!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t("
   ]
  },
@@ -3186,7 +3186,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:446: case ActChessOpen:return t(\"Open game\",\"Открыть\");"
+   "src/UiHeltec.cpp:450: case ActChessOpen:return t(\"Open game\",\"Открыть\");"
   ]
  },
  "3132d9df": {
@@ -3195,7 +3195,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:735: say(0,43,\"RX \"+String(meshRadio.rxCount)+\"  TX \"+String(meshRadio.txCount)+t(\"  near \",\" рядом \")+String(near),small);"
+   "src/UiHeltec.cpp:741: say(0,43,\"RX \"+String(meshRadio.rxCount)+\"  TX \"+String(meshRadio.txCount)+t(\"  near \",\" рядом \")+String(near),small);"
   ]
  },
  "313721f1": {
@@ -3204,7 +3204,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:790: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}",
+   "src/UiHeltec.cpp:796: say(0,51,t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),small);break;}",
    "src/UiHires.inc:343: text(6,106,fit(t(\"Clock \",\"Часы \")+clockText(time(nullptr))+\" \"+(hardware.clockSource==\"unset\"?t(\"not set\",\"не задано\"):hardware.clockSource),228,small),ColDim,small);"
   ]
  },
@@ -3223,7 +3223,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:436: String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr(\"routed\",\"по маршруту\")))"
+   "src/MeshRadio.cpp:446: String s=m.route==ChatMessage::RouteDirect?(hops.length()?hops:String(tr(\"routed\",\"по маршруту\")))"
   ]
  },
  "31760903": {
@@ -3250,7 +3250,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:435: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:445: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "326bd72e": {
@@ -3278,7 +3278,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:731: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
+   "src/UiHeltec.cpp:737: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
    "src/UiHires.inc:476: case NotifyPage:statusBar(t(\"Notifications\",\"Уведомления\"));lines(t(\"LED / screen / popup\",\"LED / экран / окно\"),10,60,220,18,2,ColInk);break;case Home:home();break;case Messages:messages();break;case Nodes:nodes();break"
   ]
  },
@@ -3315,7 +3315,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:557: notice(t(\"Hold again: turn off\",\"Удерж. ещё: выключить\"));"
+   "src/UiHeltec.cpp:563: notice(t(\"Hold again: turn off\",\"Удерж. ещё: выключить\"));"
   ]
  },
  "32e3b1d4": {
@@ -3333,7 +3333,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:526: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
+   "src/UiHeltec.cpp:531: case ActResetPath:{Peer* p=shownNode();notice(p&&!meshRadio.busy()&&meshRadio.resetPath(p->id)?t(\"Path reset\",\"Путь сброшен\"):t(\"Path reset failed\",\"Путь не сброшен\"));break;}"
   ]
  },
  "336d57a2": {
@@ -3387,7 +3387,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:728: for(unsigned i=0;i<n&&i<4;i++){auto& e=l[order[i]];say(0,20+i*9,clipped(wdHash(e.hash,e.size)+\" \"+wdSnr(e.snr)+t(\"dB echo \",\"дБ эхо \")+String(e.echoes)+\" rx \"+String(e.rx),25),small);}}"
+   "src/UiHeltec.cpp:734: for(unsigned i=0;i<n&&i<4;i++){auto& e=l[order[i]];say(0,20+i*9,clipped(wdHash(e.hash,e.size)+\" \"+wdSnr(e.snr)+t(\"dB echo \",\"дБ эхо \")+String(e.echoes)+\" rx \"+String(e.rx),25),small);}}"
   ]
  },
  "33c54309": {
@@ -3432,7 +3432,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:787: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
+   "src/UiHeltec.cpp:793: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
    "src/UiHires.inc:340: text(36,42,fit(!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t("
   ]
  },
@@ -3460,7 +3460,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:598: if(diceTapOn())return t(\"click+ hold- 5s:exit\",\"клик+ держ- 5с:выход\");"
+   "src/UiHeltec.cpp:604: if(diceTapOn())return t(\"click+ hold- 5s:exit\",\"клик+ держ- 5с:выход\");"
   ]
  },
  "3517d70a": {
@@ -3720,7 +3720,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:792: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
+   "src/UiHeltec.cpp:798: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
    "src/UiHires.inc:353: text(36,58,fit(t(\"Secure pairing\",\"Защищённое сопряжение\"),196,tiny),ColDim,tiny);"
   ]
  },
@@ -3848,8 +3848,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:507: else if(page==Messages&&shownMessage()&&channels::isChannel(shownMessage()->destination)){const ChatMessage* m=shownMessage();const channels::Channel* c=meshRadio.channel(m->destination);if(c)openCompose(c->id,c->name);e",
-   "src/UiHeltec.cpp:509: else openCompose(meshmesh::Broadcast,t(\"Public channel\",\"Общий канал\"));"
+   "src/UiHeltec.cpp:512: else if(page==Messages&&shownMessage()&&channels::isChannel(shownMessage()->destination)){const ChatMessage* m=shownMessage();const channels::Channel* c=meshRadio.channel(m->destination);if(c)openCompose(c->id,c->name);e",
+   "src/UiHeltec.cpp:514: else openCompose(meshmesh::Broadcast,t(\"Public channel\",\"Общий канал\"));"
   ]
  },
  "3d6e0984": {
@@ -3894,7 +3894,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:459: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
+   "src/UiHeltec.cpp:464: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
   ]
  },
  "3e33cd0f": {
@@ -3912,7 +3912,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:738: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
+   "src/UiHeltec.cpp:744: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
    "src/UiHires.inc:148: const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"доставл.\"),tr(\"no ACK\",\"нет ACK\")};"
   ]
  },
@@ -3981,7 +3981,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:702: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
+   "src/UiHeltec.cpp:708: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
    "src/UiHires.inc:139: text(6,82,fit(room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),228,small)"
   ]
  },
@@ -4092,7 +4092,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:676: if(way==-2)return t(\"the power key\",\"кнопка питания\");if(way<0)return t(\"RESET or power switch\",\"RESET или выключатель\");"
+   "src/UiHeltec.cpp:682: if(way==-2)return t(\"the power key\",\"кнопка питания\");if(way<0)return t(\"RESET or power switch\",\"RESET или выключатель\");"
   ]
  },
  "42157e73": {
@@ -4146,7 +4146,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:535: case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t(\"Homing started\",\"Пеленг начат\"));}break;}"
+   "src/UiHeltec.cpp:541: case ActHoming:{int i=shownSignal();signalManual=true;if(i>=0&&radar.track(i)){pingedSamples=radar.samples;notice(t(\"Homing started\",\"Пеленг начат\"));}break;}"
   ]
  },
  "42dc0a3a": {
@@ -4179,6 +4179,15 @@
    "src/UiHeltec.cpp:312: if(radioEditing)return radioRow==RowFreq?t(\"click-digit+ hold-next\",\"клик-цифра+ держ-далее\"):t(\"click-change hold-done\",\"клик-изм. держ-готово\");"
   ]
  },
+ "4333345c": {
+  "cells": 19,
+  "families": [
+   "compact"
+  ],
+  "where": [
+   "src/UiHeltec.cpp:460: case ActDoubleBack:return config.doubleBack?t(\"Double click: back\",\"Двойной клик: назад\"):t(\"Double click: off\",\"Двойной клик: выкл.\");"
+  ]
+ },
  "437ffb06": {
   "cells": 15,
   "families": [
@@ -4204,7 +4213,7 @@
    "shared"
   ],
   "where": [
-   "src/UiHeltec.cpp:523: case ActReplyOk:reply(\"OK\");break;case ActReplyAck:reply(t(\"Got it\",\"Принято\"));break;",
+   "src/UiHeltec.cpp:528: case ActReplyOk:reply(\"OK\");break;case ActReplyAck:reply(t(\"Got it\",\"Принято\"));break;",
    "src/QuickSend.cpp:12: void defaults(State& s){s.to=meshmesh::Broadcast;s.gps=false;memset(s.text,0,sizeof s.text);const char* text[]={\"OK\",\"ping\",tr(\"Got it\",\"Принято\"),tr(\"On my way\",\"Иду\"),tr(\"Arrived\",\"На месте\"),tr(\"Need help\",\"Нужна помо"
   ]
  },
@@ -4241,7 +4250,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:748: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}",
+   "src/UiHeltec.cpp:754: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}",
    "src/UiHires.inc:158: if(!p){empty(IcMesh,t(\"No nodes heard\",\"Узлы пока не найдены\"),t(\"hold: announce\",\"держите: объявить\"));return;}"
   ]
  },
@@ -4262,7 +4271,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:527: case ActRemoteLogin:case ActRemoteStatus:case ActTrace:{Peer* p=shownNode();bool sent=p&&(a==ActRemoteLogin?remote::login(p->id,\"\"):a==ActRemoteStatus?remote::status(p->id):remote::traceTo(p->id));notice(sent?t(\"Sent, wa"
+   "src/UiHeltec.cpp:532: case ActRemoteLogin:case ActRemoteStatus:case ActTrace:{Peer* p=shownNode();bool sent=p&&(a==ActRemoteLogin?remote::login(p->id,\"\"):a==ActRemoteStatus?remote::status(p->id):remote::traceTo(p->id));notice(sent?t(\"Sent, wa"
   ]
  },
  "447f2127": {
@@ -4298,7 +4307,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:168: where=(metres<1000?String(int(metres))+t(\" m \",\" м \"):String(metres/1000,1)+t(\" km \",\" км \"))+dirs[k];}"
   ]
  },
@@ -4408,7 +4417,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:738: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
+   "src/UiHeltec.cpp:744: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
    "src/UiHires.inc:148: const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"доставл.\"),tr(\"no ACK\",\"нет ACK\")};"
   ]
  },
@@ -4474,7 +4483,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:702: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
+   "src/UiHeltec.cpp:708: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
    "src/UiHires.inc:139: text(6,82,fit(room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),228,small)"
   ]
  },
@@ -4502,7 +4511,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:450: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:454: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "47f20831": {
@@ -4540,7 +4549,7 @@
   ],
   "where": [
    "src/UiChess.inc:55: case ChessMatch::Inviting:return t(\"Challenge sent\",\"Вызов отправлен\");",
-   "src/UiHeltec.cpp:515: uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t(\"Challenge sent\",\"Вызов отправлен\"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=ch"
+   "src/UiHeltec.cpp:520: uint32_t before=chessNet.events;ChessMatch* m=chessNet.invite(p->id,2);if(m){showPage(Chess);openChess(m);notice(t(\"Challenge sent\",\"Вызов отправлен\"));}else if(chessNet.events!=before)notice(chessNet.event);chessSeen=ch"
   ]
  },
  "48d6ff09": {
@@ -4756,7 +4765,7 @@
   ],
   "where": [
    "src/Ui.cpp:584: void drawOff(){panel(30,62,260,116,card,10);icon(IcPower,160,96,14,farewell?dim:warn,card);textCenter(160,138,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),ink,bold);textCenter(16",
-   "src/UiHeltec.cpp:695: auto& c=*hardware.canvas;c.fillScreen(0);say(0,24,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),bold);",
+   "src/UiHeltec.cpp:701: auto& c=*hardware.canvas;c.fillScreen(0);say(0,24,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),bold);",
    "src/UiHires.inc:451: void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),ColInk,bold);center(120,106,t(\"To turn on:\",\"Вкл"
   ]
  },
@@ -4911,7 +4920,7 @@
   ],
   "where": [
    "src/UiHeltec.cpp:249: case RowPower:return String(c.power)+\" dBm\";case RowHops:return String(c.hops);case RowRelay:return c.relay?t(\"on\",\"вкл\"):t(\"off\",\"выкл\");",
-   "src/UiHeltec.cpp:528: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
+   "src/UiHeltec.cpp:533: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
   ]
  },
  "4e9e6845": {
@@ -5004,7 +5013,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:438: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
+   "src/UiHeltec.cpp:442: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
   ]
  },
  "4fb7bcd4": {
@@ -5015,8 +5024,8 @@
   ],
   "where": [
    "src/UiTally.inc:32: if(adding)footer({{\"OK\",t(\"Add\",\"Добавить\")},{\"<>\",t(\"Cards\",\"Карточки\")},{\"BACK\",t(\"Exit\",\"Выход\")}});",
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL",
-   "src/UiHeltec.cpp:605: String quickLabel(unsigned i){if(!i)return t(\"Choose recipient\",\"Выберите получателя\");if(i<=quickSend::Count)return quickSend::state.text[i-1][0]?String(quickSend::state.text[i-1]):String(\"--\");return \"< \"+t(\"Exit\",\"Вых"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL",
+   "src/UiHeltec.cpp:611: String quickLabel(unsigned i){if(!i)return t(\"Choose recipient\",\"Выберите получателя\");if(i<=quickSend::Count)return quickSend::state.text[i-1][0]?String(quickSend::state.text[i-1]):String(\"--\");return \"< \"+t(\"Exit\",\"Вых"
   ]
  },
  "4fd18c22": {
@@ -5037,7 +5046,7 @@
   ],
   "where": [
    "src/UiPet.inc:69: footer({{\"OK\",t(\"New egg\",\"Новое яйцо\")},{\"D\",s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
-   "src/UiHeltec.cpp:465: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
+   "src/UiHeltec.cpp:470: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
    "src/Pet.cpp:169: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save();events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
   ]
  },
@@ -5049,7 +5058,7 @@
   ],
   "where": [
    "src/UiPet.inc:78: footer({{\"OK\",t(\"Pet\",\"Погладить\")},{\"F\",t(\"Feed\",\"Кормить\")},{\"H\",t(\"Heal\",\"Лечить\")},{\"N\",t(\"Name\",\"Имя\")}});",
-   "src/UiHeltec.cpp:463: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
+   "src/UiHeltec.cpp:468: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
   ]
  },
  "501ae7fd": {
@@ -5067,7 +5076,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:455: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
+   "src/UiHeltec.cpp:459: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
   ]
  },
  "5030ef5f": {
@@ -5215,7 +5224,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -5234,7 +5243,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:561: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
+   "src/UiHeltec.cpp:567: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
   ]
  },
  "529ee6ca": {
@@ -5428,7 +5437,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:452: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
+   "src/UiHeltec.cpp:456: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
   ]
  },
  "56531ac6": {
@@ -5473,7 +5482,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:761: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
+   "src/UiHeltec.cpp:767: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
    "src/UiHires.inc:191: right(236,64,lost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady\",\"ровн"
   ]
  },
@@ -5519,7 +5528,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:460: case ActCalibrate:return t(\"Calibrate (10 s still)\",\"Калибровка (10 с тихо)\");"
+   "src/UiHeltec.cpp:465: case ActCalibrate:return t(\"Calibrate (10 s still)\",\"Калибровка (10 с тихо)\");"
   ]
  },
  "58702a65": {
@@ -5528,7 +5537,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:499: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"Hold again: erase\",\"Удерж. ещё: стереть\"));break;}"
+   "src/UiHeltec.cpp:504: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"Hold again: erase\",\"Удерж. ещё: стереть\"));break;}"
   ]
  },
  "588b49c2": {
@@ -5619,7 +5628,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:529: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
+   "src/UiHeltec.cpp:534: case ActPosition:notice(meshRadio.sendPosition()?t(\"Position shared\",\"Позиция передана\"):t(\"Needs a GPS fix\",\"Нужна позиция GPS\"));break;"
   ]
  },
  "5b31b3e0": {
@@ -5823,7 +5832,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:450: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:454: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "5d22309c": {
@@ -6018,7 +6027,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:791: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа ",
+   "src/UiHeltec.cpp:797: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа ",
    "src/UiHires.inc:348: else{text(36,42,fit(t(\"Access point off\",\"Точка доступа выкл.\"),196,bold),ColInk,bold);text(36,58,fit(t(\"Web chat and settings\",\"Веб-чат и настройки\"),196,tiny),ColDim,tiny);}"
   ]
  },
@@ -6064,7 +6073,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:452: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
+   "src/UiHeltec.cpp:456: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
   ]
  },
  "613fda65": {
@@ -6228,7 +6237,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:738: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
+   "src/UiHeltec.cpp:744: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост",
    "src/UiHires.inc:148: const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"доставл.\"),tr(\"no ACK\",\"нет ACK\")};"
   ]
  },
@@ -6348,7 +6357,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:452: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
+   "src/UiHeltec.cpp:456: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
   ]
  },
  "6835e49d": {
@@ -6431,7 +6440,7 @@
   ],
   "where": [
    "src/Ui.cpp:284: {IcCompass,warn,t(\"Navigation\",\"Навигация\"),hardware.gpsFix()?\"GPS: \"+count(hardware.gps.satellites.value(),\"sat\",\"sats\",\"спутник\",\"спутника\",\"спутников\"):config.gps?t(\"GPS: searching\",\"GPS: поиск\"):t(\"GPS off\",\"GPS выкл",
-   "src/UiHeltec.cpp:787: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
+   "src/UiHeltec.cpp:793: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
    "src/UiHires.inc:340: text(36,42,fit(!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t("
   ]
  },
@@ -6441,7 +6450,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:456: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);"
+   "src/UiHeltec.cpp:461: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);"
   ]
  },
  "68f1d0cd": {
@@ -6568,7 +6577,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "6b18c42e": {
@@ -6839,8 +6848,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:437: case ActNotify:return t(\"Notifications\",\"Уведомления\");",
-   "src/UiHeltec.cpp:731: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
+   "src/UiHeltec.cpp:441: case ActNotify:return t(\"Notifications\",\"Уведомления\");",
+   "src/UiHeltec.cpp:737: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
    "src/UiHires.inc:105: case PeoplePage:return t(\"Quick counter\",\"Быстрый счётчик\");case WardrivePage:return t(\"Wardrive\",\"Вардрайв\");case QuickPage:return t(\"Quick send\",\"Быстрая отправка\");case NotifyPage:return t(\"Notifications\",\"Уведомления"
   ]
  },
@@ -6850,8 +6859,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:600: Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
-   "src/UiHeltec.cpp:731: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
+   "src/UiHeltec.cpp:606: Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"\";return n==1?t(\"hold: \",\"держ: \")+actName(acts[0]):t(\"hold: menu\",\"держ: меню\");}",
+   "src/UiHeltec.cpp:737: case NotifyPage:title=t(\"Notifications\",\"Уведомления\");say(0,28,t(\"LED / screen / popup\",\"LED / экран / окно\"),small);say(0,42,t(\"hold: menu\",\"держ: меню\"),small);break;",
    "src/UiChessCompact.inc:169: say(68,63,chessCursor<0?(chessHeld<0?t(\"hold: menu\",\"держ: меню\"):t(\"hold: cancel\",\"держ: отмена\")):chessHeld<0?t(\"hold: pick\",\"держ: взять\"):t(\"hold: move\",\"держ: сходить\"),u8g2_font_4x6_t_cyrillic);}"
   ]
  },
@@ -6899,7 +6908,7 @@
   ],
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:167: if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;"
   ]
  },
@@ -6912,7 +6921,7 @@
   "where": [
    "src/Ui.cpp:275: text(44,56,fit(meshRadio.ready?String(config.frequency,3)+t(\" MHz · SF\",\" МГц · SF\")+String(config.sf)+\" · BW \"+String(config.bandwidth,1)+\" · CR 4/\"+String(config.cr):t(\"Radio error \",\"Ошибка радио \")+String(meshRadio.r",
    "src/UiServer.inc:66: text(50,54,fit(meshRadio.ready?String(config.frequency,3)+t(\" MHz · SF\",\" МГц · SF\")+String(config.sf)+\" · \"+String(config.power)+\" dBm\":t(\"Radio error \",\"Ошибка радио \")+String(meshRadio.radioError),170,small),meshRadio",
-   "src/UiHeltec.cpp:733: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
+   "src/UiHeltec.cpp:739: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
   ]
  },
  "70772e45": {
@@ -7053,7 +7062,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "72cf5600": {
@@ -7224,7 +7233,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:451: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:455: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "75c4a3a6": {
@@ -7251,7 +7260,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:432: case ActWardriveRun:return wardrive::running()?t(\"Stop wardrive\",\"Остановить вардрайв\"):t(\"Start: listen + ping\",\"Старт: приём + пинги\");"
+   "src/UiHeltec.cpp:436: case ActWardriveRun:return wardrive::running()?t(\"Stop wardrive\",\"Остановить вардрайв\"):t(\"Start: listen + ping\",\"Старт: приём + пинги\");"
   ]
  },
  "75f6ec15": {
@@ -7299,7 +7308,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:455: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
+   "src/UiHeltec.cpp:459: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");"
   ]
  },
  "77001ca0": {
@@ -7326,7 +7335,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:466: case ActPowerOff:return t(\"Turn off...\",\"Выключить...\");case ActRadio:return t(\"Radio...\",\"Радио...\");"
+   "src/UiHeltec.cpp:471: case ActPowerOff:return t(\"Turn off...\",\"Выключить...\");case ActRadio:return t(\"Radio...\",\"Радио...\");"
   ]
  },
  "774f7d04": {
@@ -7344,7 +7353,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:525: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
+   "src/UiHeltec.cpp:530: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
   ]
  },
  "77943e26": {
@@ -7381,7 +7390,7 @@
   ],
   "where": [
    "src/UiHeltec.cpp:106: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t(\"s\",\"с\");if(s<3600)return String(s/60)+t(\"m\",\"м\");if(s<86400)return String(s/3600)+t(\"h\",\"ч\");return String(s/86400)+t(\"d\",\"д\");}",
-   "src/UiHeltec.cpp:652: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):",
+   "src/UiHeltec.cpp:658: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):",
    "src/UiHires.inc:390: footer({rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):t(\"click-next hold-choose\",\"клик-далее держ-выбор\")});"
   ]
  },
@@ -7411,7 +7420,7 @@
   ],
   "where": [
    "src/Ui.cpp:980: armed=0;String r=executeCommand(\"fsformat\");bool done=r.startsWith(\"OK\");if(done)executeCommand(\"restart\");notice(done?t(\"Storage created, restart\",\"Создано, перезапуск\"):r,done?ok:bad);}",
-   "src/UiHeltec.cpp:501: armed=0;String r=executeCommand(\"fsformat\");if(r.startsWith(\"OK\"))executeCommand(\"restart\");notice(r.startsWith(\"OK\")?t(\"Storage created, restart\",\"Создано, перезапуск\"):r);break;}"
+   "src/UiHeltec.cpp:506: armed=0;String r=executeCommand(\"fsformat\");if(r.startsWith(\"OK\"))executeCommand(\"restart\");notice(r.startsWith(\"OK\")?t(\"Storage created, restart\",\"Создано, перезапуск\"):r);break;}"
   ]
  },
  "78b42472": {
@@ -7449,7 +7458,7 @@
   ],
   "where": [
    "src/Ui.cpp:665: if(key=='p'||key=='P'){int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"Wait: a ping is under way\",\"Подожд",
-   "src/UiHeltec.cpp:488: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
+   "src/UiHeltec.cpp:493: case ActWardrivePing:{int32_t lat,lon;bool phone;notice(wardrive::ping()?t(\"Ping queued\",\"Пинг в очереди\"):!wardrive::position(lat,lon,phone)?t(\"No position yet\",\"Позиции пока нет\"):t(\"A ping is under way\",\"Пинг уже идёт"
   ]
  },
  "79585709": {
@@ -7458,7 +7467,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -7697,7 +7706,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:745: say(0,42,p->heard?String(int(p->rssi))+\" dBm SNR \"+String(p->snr,1)+\", \"+ago(millis()-p->seen):t(\"saved, not heard\",\"сохранён, не слышен\"),small);",
+   "src/UiHeltec.cpp:751: say(0,42,p->heard?String(int(p->rssi))+\" dBm SNR \"+String(p->snr,1)+\", \"+ago(millis()-p->seen):t(\"saved, not heard\",\"сохранён, не слышен\"),small);",
    "src/UiHires.inc:164: text(12,82,p->heard?String(int(p->rssi))+\" dBm  SNR \"+String(p->snr,1):t(\"saved, not heard\",\"сохранён, не слышен\"),p->heard?ColInk:ColDim,small);"
   ]
  },
@@ -7754,7 +7763,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:525: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
+   "src/UiHeltec.cpp:530: case ActNodeOk:{Peer* p=shownNode();bool sent=p&&meshRadio.sendMessage(\"OK\",p->id);notice(sent?t(\"OK queued\",\"OK в очереди\"):t(\"Not queued\",\"Не отправлено\"));break;}"
   ]
  },
  "7c7e42ff": {
@@ -7781,8 +7790,8 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:435: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));",
-   "src/MeshRadio.cpp:435: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:445: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));",
+   "src/MeshRadio.cpp:445: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "7cbcaad7": {
@@ -7839,7 +7848,7 @@
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:451: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "7dd55181": {
@@ -7857,7 +7866,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:787: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
+   "src/UiHeltec.cpp:793: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
    "src/UiHires.inc:340: text(36,42,fit(!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t("
   ]
  },
@@ -8009,7 +8018,7 @@
   ],
   "where": [
    "src/Ui.cpp:664: if(key==Enter){if(wardrive::running()){d[\"action\"]=\"stop\";}else{d[\"passive\"]=true;d[\"ping\"]=true;}String r=wardrive::command(d.as<JsonObjectConst>());if(r.startsWith(\"ERR\"))notice(r,bad);else notice(wardrive::running()?t",
-   "src/UiHeltec.cpp:487: String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith(\"ERR\")?r:a==ActWardriveNets?\"Wi-Fi/BLE: \"+flag(wardrive::settings.nets):wardrive::running()?t(\"Wardrive on\",\"Вардрайв включён\"):t(\"Wardrive off\",\"Ва"
+   "src/UiHeltec.cpp:492: String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith(\"ERR\")?r:a==ActWardriveNets?\"Wi-Fi/BLE: \"+flag(wardrive::settings.nets):wardrive::running()?t(\"Wardrive on\",\"Вардрайв включён\"):t(\"Wardrive off\",\"Ва"
   ]
  },
  "81656fcc": {
@@ -8140,7 +8149,7 @@
   ],
   "where": [
    "src/Ui.cpp:105: String flag(bool v){return v?t(\"On\",\"Вкл\"):t(\"Off\",\"Выкл\");}",
-   "src/UiHeltec.cpp:420: String flag(bool value){return value?t(\"On\",\"Вкл\"):t(\"Off\",\"Выкл\");}"
+   "src/UiHeltec.cpp:424: String flag(bool value){return value?t(\"On\",\"Вкл\"):t(\"Off\",\"Выкл\");}"
   ]
  },
  "84dcf6cf": {
@@ -8194,7 +8203,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:792: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
+   "src/UiHeltec.cpp:798: case Ble:title=\"Bluetooth\";if(bleActive()){String n=bleName();say(0,23,n,width(n,bold)<=128?bold:small);say(0,37,\"PIN \"+String(blePin()),bold);}else{say(0,27,t(\"Bluetooth off\",\"Bluetooth выкл.\"));say(0,41,t(\"Secure pairi",
    "src/UiHires.inc:352: {String n=on?bleName():String(t(\"Bluetooth off\",\"Bluetooth выкл.\"));const uint8_t* f=width(n,bold)<=196?bold:small;text(36,42,fit(n,196,f),ColInk,f);} // the whole name, key digits too"
   ]
  },
@@ -8259,7 +8268,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:471: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
+   "src/UiHeltec.cpp:476: void reply(const String& text){const ChatMessage* m=shownMessage();if(!m)return;uint64_t to=channels::isChannel(m->destination)?m->destination:m->outgoing?m->destination:m->source;bool sent=to!=meshRadio.nodeId&&meshRadi"
   ]
  },
  "85b905aa": {
@@ -8280,7 +8289,7 @@
   "where": [
    "src/UiChess.inc:231: panel(x,176,w,42,card,6);colorDisc(x+10,188,m.mine);text(x+20,192,t(\"You\",\"Вы\"),ink,bold);if(diff)textRight(x+w-6,191,(diff>0?\"+\":\"\")+String(diff),diff>0?ok:bad,small);",
    "src/UiTour.inc:105: text(16,ry+11,String(i+1),r.me?ink:dim,small);text(32,ry+11,fit(r.me?String(t(\"You\",\"Вы\")):String(r.name),160,r.me?bold:body),ink,r.me?bold:body);",
-   "src/UiHeltec.cpp:738: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
+   "src/UiHeltec.cpp:744: if(m){String who=m->outgoing?t(\"You\",\"Вы\"):String(m->name);if(channels::isChannel(m->destination))who+=channelTag(m->destination);const char* states[]={\"\",tr(\"queued\",\"очередь\"),tr(\"sent\",\"отправл.\"),tr(\"delivered\",\"дост"
   ]
  },
  "85d45442": {
@@ -8298,7 +8307,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:806: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \"",
+   "src/UiHeltec.cpp:812: say(0,30,String(ESP.getFreeHeap()/1024)+\"K RAM\"+(ESP.getPsramSize()?\"  \"+String(ESP.getFreePsram()/1024)+\"K PSRAM\":String()),small);say(0,39,t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \"",
    "src/UiHires.inc:369: text(6,88,fit(t(\"relayed \",\"переслано \")+String(meshRadio.relayed)+t(\"  rejected \",\"  откл. \")+String(meshRadio.rejected),228,small),ColDim,small);"
   ]
  },
@@ -8308,7 +8317,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:458: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
+   "src/UiHeltec.cpp:463: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
   ]
  },
  "86199342": {
@@ -8326,7 +8335,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:704: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
+   "src/UiHeltec.cpp:710: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
    "src/UiHires.inc:141: text(6,112,fit((room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),228,small),ColDim,small);"
   ]
  },
@@ -8393,7 +8402,7 @@
   ],
   "where": [
    "src/UiPet.inc:69: footer({{\"OK\",t(\"New egg\",\"Новое яйцо\")},{\"D\",s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
-   "src/UiHeltec.cpp:465: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
+   "src/UiHeltec.cpp:470: case ActPetDeath:return creature.s.mortal?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");",
    "src/Pet.cpp:169: String Pet::setMortal(bool on){s.mortal=on;if(!on&&alive()&&!s.health)s.health=1;save();events++;return on?t(\"Death: on\",\"Смерть: вкл.\"):t(\"Death: off\",\"Смерть: выкл.\");}"
   ]
  },
@@ -8486,7 +8495,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:547: notice(t(\"OK again: let it go\",\"Ещё раз OK: отпустить\"));"
+   "src/UiHeltec.cpp:553: notice(t(\"OK again: let it go\",\"Ещё раз OK: отпустить\"));"
   ]
  },
  "89af1769": {
@@ -8537,7 +8546,7 @@
   ],
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:167: if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;"
   ]
  },
@@ -8627,7 +8636,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:737: case Messages:{const ChatMessage* m=shownMessage();title=t(\"Messages\",\"Сообщения\")+(m?\" \"+String(meshRadio.historyCount-messageOffset)+\"/\"+String(meshRadio.historyCount):\"\");",
+   "src/UiHeltec.cpp:743: case Messages:{const ChatMessage* m=shownMessage();title=t(\"Messages\",\"Сообщения\")+(m?\" \"+String(meshRadio.historyCount-messageOffset)+\"/\"+String(meshRadio.historyCount):\"\");",
    "src/UiHires.inc:104: case Messages:return t(\"Messages\",\"Сообщения\");case Nodes:return t(\"Nodes\",\"Узлы\");case Chess:return t(\"Chess\",\"Шахматы\");",
    "src/UiHires.inc:459: if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){statusBar(t(\"Messages\",\"Сообщения\"));popup(*last);footer({t(\"click: close\",\"клик: закрыть\")});hardware.flush();return;}"
   ]
@@ -8674,7 +8683,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:793: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
+   "src/UiHeltec.cpp:799: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
    "src/UiHires.inc:359: {IcPulse,ColGood,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percent\",\"проценты\"))},"
   ]
  },
@@ -8684,7 +8693,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:457: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
+   "src/UiHeltec.cpp:462: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
   ]
  },
  "8c716d4b": {
@@ -8767,7 +8776,7 @@
   ],
   "where": [
    "src/Ui.cpp:561: else if(radar.moving){state=t(\"MOTION\",\"ДВИЖЕНИЕ\");color=bad;}",
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -8786,7 +8795,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:788: say(0,33,t(\"Satellites \",\"Спутники \")+String(hardware.gps.satellites.value())+\"  NMEA \"+String(hardware.gps.passedChecksum()),small);",
+   "src/UiHeltec.cpp:794: say(0,33,t(\"Satellites \",\"Спутники \")+String(hardware.gps.satellites.value())+\"  NMEA \"+String(hardware.gps.passedChecksum()),small);",
    "src/UiHires.inc:341: text(36,58,t(\"Satellites \",\"Спутники \")+String(hardware.gps.satellites.value())+\"  NMEA \"+String(hardware.gps.passedChecksum()),ColDim,tiny);"
   ]
  },
@@ -8923,7 +8932,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:791: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа ",
+   "src/UiHeltec.cpp:797: case Wifi:title=\"Wi-Fi\";if(portalActive()){say(0,23,\"MM-\"+meshRadio.idText(meshRadio.nodeId).substring(6),bold);say(0,36,portalPassword());say(0,48,\"192.168.4.1\",small);}else{say(0,27,t(\"Access point off\",\"Точка доступа ",
    "src/UiHires.inc:348: else{text(36,42,fit(t(\"Access point off\",\"Точка доступа выкл.\"),196,bold),ColInk,bold);text(36,58,fit(t(\"Web chat and settings\",\"Веб-чат и настройки\"),196,tiny),ColDim,tiny);}"
   ]
  },
@@ -9017,7 +9026,7 @@
   ],
   "where": [
    "src/UiPet.inc:63: footer({{\"OK\",t(\"Knock\",\"Постучать\")},{\"N\",t(\"Name\",\"Имя\")},{\"BACK\",t(\"Menu\",\"Меню\")}});return;}",
-   "src/UiHeltec.cpp:462: case ActPetCuddle:return creature.s.stage==pet::Egg?t(\"Knock\",\"Постучать\"):t(\"Pet\",\"Погладить\");"
+   "src/UiHeltec.cpp:467: case ActPetCuddle:return creature.s.stage==pet::Egg?t(\"Knock\",\"Постучать\"):t(\"Pet\",\"Погладить\");"
   ]
  },
  "91e32a8a": {
@@ -9035,7 +9044,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -9054,8 +9063,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:455: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");",
-   "src/UiHeltec.cpp:793: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
+   "src/UiHeltec.cpp:459: case ActLanguage:return t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0];case ActBattery:return config.batteryVolts?t(\"Battery: volts\",\"Батарея: вольты\"):t(\"Battery: percent\",\"Батарея: проценты\");",
+   "src/UiHeltec.cpp:799: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
    "src/UiHires.inc:358: {IcChat,ColAccent,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0]},"
   ]
  },
@@ -9101,7 +9110,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:939: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
+   "src/UiHeltec.cpp:986: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
   ]
  },
  "93c8b75f": {
@@ -9119,7 +9128,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:440: case ActWrite:return page==Nodes?t(\"Write message...\",\"Написать...\")"
+   "src/UiHeltec.cpp:444: case ActWrite:return page==Nodes?t(\"Write message...\",\"Написать...\")"
   ]
  },
  "93d7f45b": {
@@ -9196,7 +9205,7 @@
   ],
   "where": [
    "src/Ui.cpp:664: if(key==Enter){if(wardrive::running()){d[\"action\"]=\"stop\";}else{d[\"passive\"]=true;d[\"ping\"]=true;}String r=wardrive::command(d.as<JsonObjectConst>());if(r.startsWith(\"ERR\"))notice(r,bad);else notice(wardrive::running()?t",
-   "src/UiHeltec.cpp:487: String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith(\"ERR\")?r:a==ActWardriveNets?\"Wi-Fi/BLE: \"+flag(wardrive::settings.nets):wardrive::running()?t(\"Wardrive on\",\"Вардрайв включён\"):t(\"Wardrive off\",\"Ва"
+   "src/UiHeltec.cpp:492: String r=wardrive::command(d.as<JsonObjectConst>());notice(r.startsWith(\"ERR\")?r:a==ActWardriveNets?\"Wi-Fi/BLE: \"+flag(wardrive::settings.nets):wardrive::running()?t(\"Wardrive on\",\"Вардрайв включён\"):t(\"Wardrive off\",\"Ва"
   ]
  },
  "95a9f71d": {
@@ -9281,7 +9290,7 @@
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:451: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "96da71cd": {
@@ -9339,7 +9348,7 @@
   ],
   "where": [
    "src/Ui.cpp:961: else if(page==Settings&&selected==settingsCount-1){if(!powerArmed||millis()-powerArmed>5000){powerArmed=millis();notice(t(\"OK again: turn off\",\"Ещё раз OK: выключить\"),warn);return;}powerArmed=0;powerOff();}",
-   "src/UiHeltec.cpp:555: notice(t(\"OK again: turn off\",\"Ещё раз OK: выключить\"));"
+   "src/UiHeltec.cpp:561: notice(t(\"OK again: turn off\",\"Ещё раз OK: выключить\"));"
   ]
  },
  "97bf0171": {
@@ -9384,7 +9393,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:459: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
+   "src/UiHeltec.cpp:464: case ActCsiSensor:return radar.csi==Radar::CsiSensor?t(\"CSI motion: off\",\"Движение CSI: выкл.\"):t(\"CSI sensor\",\"Приёмник CSI\");"
   ]
  },
  "98cbe749": {
@@ -9431,7 +9440,7 @@
   ],
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:167: if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;"
   ]
  },
@@ -9452,7 +9461,7 @@
   ],
   "where": [
    "src/Ui.cpp:683: footer({{\"^v\",t(\"choose\",\"выбор\")},{\"OK\",quickTargets||selected==0?t(\"select\",\"выбрать\"):t(\"send\",\"слать\")},{\"BACK\",t(\"exit\",\"выход\")}});",
-   "src/UiHeltec.cpp:821: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):",
+   "src/UiHeltec.cpp:827: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):",
    "src/UiHires.inc:499: else if(page==QuickPage)footer({t(\"click: choose\",\"клик: выбор\"),quickTargets||!quickIndex?t(\"hold: \",\"держ: \")+t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"hold: \",\"держ: \")+t(\"exit\",\"выход\"):t(\"hold: send\",\"дер"
   ]
  },
@@ -9502,7 +9511,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:444: case ActJoinHeard:{const HeardChannel* h=heardTag();return t(\"Join heard \",\"Вступить: \")+(h?h->name:\"\");}"
+   "src/UiHeltec.cpp:448: case ActJoinHeard:{const HeardChannel* h=heardTag();return t(\"Join heard \",\"Вступить: \")+(h?h->name:\"\");}"
   ]
  },
  "9ac6a634": {
@@ -9511,7 +9520,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:461: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
+   "src/UiHeltec.cpp:466: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
   ]
  },
  "9ac84c77": {
@@ -9575,7 +9584,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:433: case ActWardrivePing:return t(\"Ping now\",\"Пинг сейчас\");"
+   "src/UiHeltec.cpp:437: case ActWardrivePing:return t(\"Ping now\",\"Пинг сейчас\");"
   ]
  },
  "9bf07c85": {
@@ -9612,7 +9621,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:461: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
+   "src/UiHeltec.cpp:466: case ActStopHoming:return t(\"Stop homing\",\"Остановить пеленг\");case ActResetPeak:return t(\"Reset peak\",\"Сбросить пик\");"
   ]
  },
  "9c1eb940": {
@@ -9791,7 +9800,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:522: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
+   "src/UiHeltec.cpp:527: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
   ]
  },
  "9eccd626": {
@@ -9809,7 +9818,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:787: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
+   "src/UiHeltec.cpp:793: say(0,23,!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t(\"No da",
    "src/UiHires.inc:340: text(36,42,fit(!config.gps?t(\"GPS off\",\"GPS выключен\"):fix?t(\"Position fix\",\"Позиция есть\"):hardware.clockConflict?t(\"Old GPS date\",\"Старая дата GPS\"):hardware.gps.passedChecksum()?t(\"Searching sky\",\"Поиск спутников\"):t("
   ]
  },
@@ -9829,7 +9838,7 @@
   ],
   "where": [
    "src/UiHeltec.cpp:310: return radioRow>=RowSave?t(\"up/down, OK\",\"вверх/вниз, OK\"):t(\"up/down, <> change\",\"вверх/вниз, <> изменить\");",
-   "src/UiHeltec.cpp:654: t(\"up/down, OK\",\"вверх/вниз, OK\")"
+   "src/UiHeltec.cpp:660: t(\"up/down, OK\",\"вверх/вниз, OK\")"
   ]
  },
  "9ff63298": {
@@ -9970,7 +9979,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -9980,7 +9989,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:805: default:title=t(\"Modules\",\"Модули\");say(0,21,\"LoRa \"+String(meshRadio.ready?\"OK\":\"ERR\")+\"  FS \"+String(hardware.fsOk?\"OK\":\"ERR\")+\"  GPS \"+String(!config.gps?\"-\":hardware.gps.passedChecksum()?\"OK\":\"?\"),small);",
+   "src/UiHeltec.cpp:811: default:title=t(\"Modules\",\"Модули\");say(0,21,\"LoRa \"+String(meshRadio.ready?\"OK\":\"ERR\")+\"  FS \"+String(hardware.fsOk?\"OK\":\"ERR\")+\"  GPS \"+String(!config.gps?\"-\":hardware.gps.passedChecksum()?\"OK\":\"?\"),small);",
    "src/UiHires.inc:106: return t(\"Modules\",\"Модули\");"
   ]
  },
@@ -10008,7 +10017,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:467: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
+   "src/UiHeltec.cpp:472: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
   ]
  },
  "a1d3f60b": {
@@ -10184,7 +10193,7 @@
   ],
   "where": [
    "src/Ui.cpp:951: if(page==Homing&&(key==KeyLeft||key==KeyRight)){radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"),dim);return;}",
-   "src/UiHeltec.cpp:537: case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"));break;"
+   "src/UiHeltec.cpp:543: case ActStopHoming:radar.untrack();break;case ActResetPeak:radar.resetPeak();notice(t(\"Peak reset\",\"Пик сброшен\"));break;"
   ]
  },
  "a4ae14df": {
@@ -10202,7 +10211,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:652: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):",
+   "src/UiHeltec.cpp:658: sayRight(128,63,rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):",
    "src/UiHires.inc:390: footer({rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):t(\"click-next hold-choose\",\"клик-далее держ-выбор\")});"
   ]
  },
@@ -10305,7 +10314,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:628: footer(t(\"up/down, OK, back\",\"выбор, OK, назад\"));"
+   "src/UiHeltec.cpp:634: footer(t(\"up/down, OK, back\",\"выбор, OK, назад\"));"
   ]
  },
  "a67b669f": {
@@ -10336,7 +10345,7 @@
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:451: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "a6f0f217": {
@@ -10416,7 +10425,7 @@
   "where": [
    "src/UiServer.inc:43: switch(r){case RowForward:return flag(v.forwarding);case RowAdmin:return v.password;case RowGuest:return v.guest.length()?v.guest:t(\"none\",\"нет\");case RowReadOnly:return flag(v.readOnlyLogin);",
    "src/UiHeltec.cpp:251: case RowRegion:return c.region[0]?String(c.region):String(t(\"none\",\"нет\"));",
-   "src/UiHeltec.cpp:704: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
+   "src/UiHeltec.cpp:710: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);"
   ]
  },
  "a8450dca": {
@@ -10443,7 +10452,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:817: page==DicePage?(dicer.s.mode==dice::Sheet?t(\"click-next hold-menu\",\"клик-далее держ-меню\"):t(\"click-roll hold-menu\",\"клик-бросок держ-меню\")):"
+   "src/UiHeltec.cpp:823: page==DicePage?(dicer.s.mode==dice::Sheet?t(\"click-next hold-menu\",\"клик-далее держ-меню\"):t(\"click-roll hold-menu\",\"клик-бросок держ-меню\")):"
   ]
  },
  "a8dee5ea": {
@@ -10452,7 +10461,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:761: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
+   "src/UiHeltec.cpp:767: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
    "src/UiHires.inc:191: right(236,64,lost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady\",\"ровн"
   ]
  },
@@ -10483,7 +10492,7 @@
   "where": [
    "src/Ui.cpp:240: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
    "src/Ui.cpp:588: String names[]={t(\"Radio\",\"Радио\"),t(\"Screen & device\",\"Экран и устройство\"),t(\"GPS & compass\",\"GPS и компас\"),t(\"Connections\",\"Подключения\"),t(\"Module health\",\"Состояние модулей\"),t(\"Keys & help\",\"Клавиши и подсказки\"),",
-   "src/UiHeltec.cpp:670: header(t(\"Radio\",\"Радио\")+(radioChanged()?\" *\":\"\"));sayRight(128,63,radioHint(),small);"
+   "src/UiHeltec.cpp:676: header(t(\"Radio\",\"Радио\")+(radioChanged()?\" *\":\"\"));sayRight(128,63,radioHint(),small);"
   ]
  },
  "aa37fc61": {
@@ -10703,7 +10712,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:422: if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return \"-1\";case ActPeopleNext:return t(\"Next: \",\"Дальше: \")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t(\"N"
+   "src/UiHeltec.cpp:426: if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return \"-1\";case ActPeopleNext:return t(\"Next: \",\"Дальше: \")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t(\"N"
   ]
  },
  "ae4cbe4b": {
@@ -10739,7 +10748,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:740: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}",
+   "src/UiHeltec.cpp:746: else{say(0,30,t(\"No messages yet\",\"Сообщений ещё нет\"));say(0,44,t(\"They appear here\",\"Здесь появятся входящие\"),small);}break;}",
    "src/UiHires.inc:146: if(!m){empty(IcChat,t(\"No messages yet\",\"Сообщений ещё нет\"),t(\"They appear here\",\"Здесь появятся входящие\"));return;}"
   ]
  },
@@ -10877,7 +10886,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "b16132ba": {
@@ -10886,7 +10895,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:449: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:453: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "b162cbba": {
@@ -10922,7 +10931,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:439: if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?\" #\"+String(m.tries):String(tr(\" · try \",\" · попытка \"))+m.tries):\" \"+String(m.tries)+\"/3\";"
+   "src/MeshRadio.cpp:449: if(m.outgoing&&m.tries>1)s+=m.status==ChatMessage::Delivered?(brief?\" #\"+String(m.tries):String(tr(\" · try \",\" · попытка \"))+m.tries):\" \"+String(m.tries)+\"/3\";"
   ]
  },
  "b367cee2": {
@@ -10940,7 +10949,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:704: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
+   "src/UiHeltec.cpp:710: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
    "src/UiHires.inc:141: text(6,112,fit((room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),228,small),ColDim,small);"
   ]
  },
@@ -11117,7 +11126,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:443: case ActJoin:{String name;uint8_t key[16];channels::parseLink(m?m->text:\"\",name,key);return t(\"Join \",\"Вступить: \")+name;}"
+   "src/UiHeltec.cpp:447: case ActJoin:{String name;uint8_t key[16];channels::parseLink(m?m->text:\"\",name,key);return t(\"Join \",\"Вступить: \")+name;}"
   ]
  },
  "b6367d0d": {
@@ -11126,7 +11135,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:434: case ActWardriveView:return wardriveList?t(\"Show summary\",\"Показать сводку\"):t(\"Repeaters heard\",\"Слышимые ретрансляторы\");"
+   "src/UiHeltec.cpp:438: case ActWardriveView:return wardriveList?t(\"Show summary\",\"Показать сводку\"):t(\"Repeaters heard\",\"Слышимые ретрансляторы\");"
   ]
  },
  "b68c48d1": {
@@ -11173,7 +11182,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:680: return t(\"hold \",\"удержать \")+MM_BUTTON;"
+   "src/UiHeltec.cpp:686: return t(\"hold \",\"удержать \")+MM_BUTTON;"
   ]
  },
  "b728f1ab": {
@@ -11193,7 +11202,7 @@
   ],
   "where": [
    "src/Ui.cpp:805: else if(!chess)textCenter(160,166,meshRadio.ready?(config.role==RoleRepeater?t(\"The repeater keeps relaying\",\"Репитер продолжает пересылку\"):config.role==RoleRoom?t(\"The room keeps serving members\",\"Комната продолжает ра",
-   "src/UiHeltec.cpp:701: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));",
+   "src/UiHeltec.cpp:707: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));",
    "src/UiHires.inc:138: text(36,58,meshRadio.ready?String(config.frequency,3)+t(\" MHz\",\" МГц\"):t(\"Radio error\",\"Ошибка радио\"),meshRadio.ready?ColDim:ColBad,tiny);"
   ]
  },
@@ -11387,8 +11396,8 @@
   ],
   "where": [
    "src/UiTally.inc:56: String r=people::command(j.as<JsonObjectConst>());notice(r.startsWith(\"OK\")?String(ble?\"BLE\":\"Wi-Fi\")+\": \"+(on?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\")):r,r.startsWith(\"OK\")?ok:bad);return true;}",
-   "src/UiHeltec.cpp:438: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa",
-   "src/UiHeltec.cpp:439: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
+   "src/UiHeltec.cpp:442: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa",
+   "src/UiHeltec.cpp:443: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
   ]
  },
  "bb312581": {
@@ -11457,7 +11466,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:702: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
+   "src/UiHeltec.cpp:708: say(0,31,room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),small);",
    "src/UiHires.inc:139: text(6,82,fit(room?t(\"posts \",\"постов \")+String(v.posts)+t(\"  in \",\"  вошли \")+String(v.clients):\"RX \"+String(meshRadio.rxCount)+\" TX \"+String(meshRadio.txCount)+t(\" fwd \",\" перес. \")+String(meshRadio.relayed),228,small)"
   ]
  },
@@ -11479,7 +11488,7 @@
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
    "src/Ui.cpp:451: const char* dirs[]={tr(\"N\",\"С\"),tr(\"E\",\"В\"),tr(\"S\",\"Ю\"),tr(\"W\",\"З\")};for(int k=0;k<4;k++){float rad=k*M_PI/2;textCenter(cx+roundf((r-16)*sinf(rad)),cy-roundf((r-16)*cosf(rad))+4,dirs[k],k?dim:bad,bold);}",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51"
   ]
  },
  "bca41134": {
@@ -11590,7 +11599,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:810: if(menuOpen)drawMenu();else footer(appClosed()?t(\"hold: open\",\"держ: открыть\"):page==PeoplePage?",
+   "src/UiHeltec.cpp:816: if(menuOpen)drawMenu();else footer(appClosed()?t(\"hold: open\",\"держ: открыть\"):page==PeoplePage?",
    "src/UiDiceCompact.inc:168: if(!r){say(0,30,t(\"No rolls yet\",\"Бросков ещё нет\"));say(0,44,appOpen?t(\"Click to roll\",\"Клик - бросить\"):t(\"hold: open\",\"держ: открыть\"),small);return;}",
    "src/UiHires.inc:493: else if(appClosed())footer({t(\"hold: open\",\"держ: открыть\"),clickHint(pageTitle(nextPage(page)))});"
   ]
@@ -11657,7 +11666,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:458: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
+   "src/UiHeltec.cpp:463: case ActCsiBeacon:return radar.csi==Radar::CsiBeacon?t(\"Stop beacon\",\"Выключить маяк\"):t(\"CSI beacon: on\",\"Маяк CSI: включить\");"
   ]
  },
  "bedfd24f": {
@@ -11795,7 +11804,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:441: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
+   "src/UiHeltec.cpp:445: :page==Messages&&m&&!publicChat?t(\"Write reply...\",\"Ответить текстом...\"):t(\"Write to channel...\",\"Написать в канал...\");"
   ]
  },
  "c0de6bb4": {
@@ -11859,7 +11868,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:432: case ActWardriveRun:return wardrive::running()?t(\"Stop wardrive\",\"Остановить вардрайв\"):t(\"Start: listen + ping\",\"Старт: приём + пинги\");"
+   "src/UiHeltec.cpp:436: case ActWardriveRun:return wardrive::running()?t(\"Stop wardrive\",\"Остановить вардрайв\"):t(\"Start: listen + ping\",\"Старт: приём + пинги\");"
   ]
  },
  "c15f1276": {
@@ -11877,7 +11886,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:678: return t(\"hold the joystick\",\"удержать джойстик\");"
+   "src/UiHeltec.cpp:684: return t(\"hold the joystick\",\"удержать джойстик\");"
   ]
  },
  "c164cb75": {
@@ -11969,7 +11978,7 @@
   ],
   "where": [
    "src/Ui.cpp:584: void drawOff(){panel(30,62,260,116,card,10);icon(IcPower,160,96,14,farewell?dim:warn,card);textCenter(160,138,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),ink,bold);textCenter(16",
-   "src/UiHeltec.cpp:695: auto& c=*hardware.canvas;c.fillScreen(0);say(0,24,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),bold);",
+   "src/UiHeltec.cpp:701: auto& c=*hardware.canvas;c.fillScreen(0);say(0,24,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),bold);",
    "src/UiHires.inc:451: void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),ColInk,bold);center(120,106,t(\"To turn on:\",\"Вкл"
   ]
  },
@@ -11988,7 +11997,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:750: if(radar.csi==Radar::CsiSensor){title=t(\"Motion CSI\",\"Движение CSI\");bool heard=radar.beaconHeard();",
+   "src/UiHeltec.cpp:756: if(radar.csi==Radar::CsiSensor){title=t(\"Motion CSI\",\"Движение CSI\");bool heard=radar.beaconHeard();",
    "src/UiHires.inc:181: if(radar.csi==Radar::CsiSensor){title=t(\"Motion CSI\",\"Движение CSI\");bool heard=radar.beaconHeard();"
   ]
  },
@@ -12063,7 +12072,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:438: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
+   "src/UiHeltec.cpp:442: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
   ]
  },
  "c339d69e": {
@@ -12072,7 +12081,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:466: case ActPowerOff:return t(\"Turn off...\",\"Выключить...\");case ActRadio:return t(\"Radio...\",\"Радио...\");"
+   "src/UiHeltec.cpp:471: case ActPowerOff:return t(\"Turn off...\",\"Выключить...\");case ActRadio:return t(\"Radio...\",\"Радио...\");"
   ]
  },
  "c381ffad": {
@@ -12126,7 +12135,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:823: (quickTargets||!quickIndex||quickIndex>quickSend::Count?t(\"click-next hold-run\",\"клик-далее держ-ОК\"):t(\"click-next hold-send\",\"клик-выбор держ-слать\")):"
+   "src/UiHeltec.cpp:829: (quickTargets||!quickIndex||quickIndex>quickSend::Count?t(\"click-next hold-run\",\"клик-далее держ-ОК\"):t(\"click-next hold-send\",\"клик-выбор держ-слать\")):"
   ]
  },
  "c4a85995": {
@@ -12154,7 +12163,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:748: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}",
+   "src/UiHeltec.cpp:754: else{say(0,30,t(\"No nodes heard\",\"Узлы пока не найдены\"));say(0,44,t(\"hold: announce\",\"держите: объявить\"),small);}break;}",
    "src/UiHires.inc:158: if(!p){empty(IcMesh,t(\"No nodes heard\",\"Узлы пока не найдены\"),t(\"hold: announce\",\"держите: объявить\"));return;}"
   ]
  },
@@ -12316,7 +12325,7 @@
   ],
   "where": [
    "src/Ui.cpp:683: footer({{\"^v\",t(\"choose\",\"выбор\")},{\"OK\",quickTargets||selected==0?t(\"select\",\"выбрать\"):t(\"send\",\"слать\")},{\"BACK\",t(\"exit\",\"выход\")}});",
-   "src/UiHeltec.cpp:821: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):"
+   "src/UiHeltec.cpp:827: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):"
   ]
  },
  "c7cc0357": {
@@ -12361,7 +12370,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:454: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:458: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "c892063e": {
@@ -12479,7 +12488,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:452: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
+   "src/UiHeltec.cpp:456: case ActRemoteLogin:{Peer* p=shownNode();return p&&remote::saved(p->id)?t(\"Log in\",\"Войти\"):t(\"Log in as guest\",\"Войти гостем\");}case ActRemoteStatus:return t(\"Server status\",\"Статус сервера\");case ActTrace:return t(\"Tra"
   ]
  },
  "cac89629": {
@@ -12488,7 +12497,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:451: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:455: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "cafbc847": {
@@ -12524,7 +12533,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:703: say(0,40,t(\"admin \",\"админ \")+v.password,small);",
+   "src/UiHeltec.cpp:709: say(0,40,t(\"admin \",\"админ \")+v.password,small);",
    "src/UiHires.inc:140: text(6,97,fit(t(\"admin \",\"админ \")+v.password,228,small),ColDim,small);"
   ]
  },
@@ -12648,7 +12657,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:778: t(\"Wi-Fi and LoRa\",\"Wi-Fi и LoRa\")",
+   "src/UiHeltec.cpp:784: t(\"Wi-Fi and LoRa\",\"Wi-Fi и LoRa\")",
    "src/UiHires.inc:207: t(\"Wi-Fi and LoRa\",\"Wi-Fi и LoRa\")"
   ]
  },
@@ -12658,7 +12667,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:521: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
+   "src/UiHeltec.cpp:526: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
   ]
  },
  "cd4e738f": {
@@ -12760,7 +12769,7 @@
   ],
   "where": [
    "src/Ui.cpp:924: if(key==KeyHome){change(homePage());return;}if(config.role!=RoleNormal&&(key==KeyMsg||key==KeyMap)){notice(t(\"Not in this mode: Settings > Device mode\",\"Недоступно в этом режиме: Настройки > Режим работы\"),warn);return;}",
-   "src/UiHeltec.cpp:522: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
+   "src/UiHeltec.cpp:527: case ActAdvert:notice(meshRadio.sendHello()?t(\"Node announced\",\"Узел объявлен\"):t(\"Announcement failed\",\"Объявление не отправлено\"));break;"
   ]
  },
  "ceb1d0b2": {
@@ -12769,7 +12778,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:467: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
+   "src/UiHeltec.cpp:472: case ActSelfTest:return t(\"Encryption test\",\"Тест шифрования\");case ActClose:return t(\"< Close menu\",\"< Закрыть меню\");"
   ]
  },
  "cebaa29e": {
@@ -12835,7 +12844,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:761: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
+   "src/UiHeltec.cpp:767: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
    "src/UiHires.inc:191: right(236,64,lost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady\",\"ровн"
   ]
  },
@@ -12872,7 +12881,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:451: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
+   "src/UiHeltec.cpp:455: case ActOlder:return t(\"Older message\",\"Предыдущее\");case ActNewer:return t(\"Newer message\",\"Следующее\");case ActNextNode:return t(\"Next node\",\"Следующий узел\");case ActNodeOk:return t(\"Send: OK\",\"Написать: OK\");case Act"
   ]
  },
  "cfde1dc9": {
@@ -12884,7 +12893,7 @@
   "where": [
    "src/Ui.cpp:240: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
    "src/Ui.cpp:282: {IcSend,info,t(\"Quick send\",\"Быстрая отправка\"),quickSend::targetName(),0},",
-   "src/UiHeltec.cpp:430: case ActQuick:return t(\"Quick send\",\"Быстрая отправка\");"
+   "src/UiHeltec.cpp:434: case ActQuick:return t(\"Quick send\",\"Быстрая отправка\");"
   ]
  },
  "d019e1e4": {
@@ -12942,7 +12951,7 @@
   "where": [
    "src/Ui.cpp:240: case Sensors:return t(\"Navigation\",\"Навигация\");case Settings:return t(\"Settings\",\"Настройки\");case Radio:return t(\"Radio\",\"Радио\");case Display:return t(\"Screen & device\",\"Экран и устройство\");case Network:return t(\"Con",
    "src/Ui.cpp:287: {IcTower,wardrive::running()?ok:dim,t(\"Wardrive\",\"Вардрайв\"),wardrive::running()?count(wardrive::points(),\"point\",\"points\",\"точка\",\"точки\",\"точек\"):t(\"Off\",\"Выключен\"),0},",
-   "src/UiHeltec.cpp:726: case WardrivePage:title=t(\"Wardrive\",\"Вардрайв\");"
+   "src/UiHeltec.cpp:732: case WardrivePage:title=t(\"Wardrive\",\"Вардрайв\");"
   ]
  },
  "d14850d6": {
@@ -12969,7 +12978,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:736: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
+   "src/UiHeltec.cpp:742: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
   ]
  },
  "d23a6b60": {
@@ -13015,7 +13024,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:463: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
+   "src/UiHeltec.cpp:468: case ActPetFeed:return t(\"Feed a snack: \",\"Кормить, вкусн.: \")+String(creature.s.snacks);case ActPetHeal:return t(\"Heal\",\"Лечить\");case ActPetEgg:return t(\"New egg\",\"Новое яйцо\");"
   ]
  },
  "d26cc5ee": {
@@ -13033,7 +13042,7 @@
    "shared"
   ],
   "where": [
-   "src/MeshRadio.cpp:435: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
+   "src/MeshRadio.cpp:445: String hops=m.hops==255?String():!m.hops?String(brief?tr(\"direct\",\"напр.\"):tr(\"direct\",\"напрямую\")):(brief?String(m.hops)+tr(\" rpt\",\" ретр.\"):String(tr(\"via \",\"через \"))+m.hops+tr(\" rpt\",\" ретр.\"));"
   ]
  },
  "d2b3452b": {
@@ -13042,7 +13051,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:704: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
+   "src/UiHeltec.cpp:710: say(0,49,(room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),small);",
    "src/UiHires.inc:141: text(6,112,fit((room?t(\"room \",\"комната \"):t(\"guest \",\"гость \"))+(v.guest.length()?v.guest:t(\"none\",\"нет\"))+(v.forwarding?\"\":t(\"  no fwd\",\"  без перес.\")),228,small),ColDim,small);"
   ]
  },
@@ -13084,7 +13093,7 @@
   ],
   "where": [
    "src/UiTally.inc:53: if(key=='r'){if(tallyConfirm('r')){people::set(c.current,0);notice(t(\"Counter reset\",\"Счётчик сброшен\"),dim);}return true;}",
-   "src/UiHeltec.cpp:477: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
+   "src/UiHeltec.cpp:482: if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t(\"Deleted: \",\"Удалён: \")+gone);}else tallyArme"
   ]
  },
  "d3312a44": {
@@ -13093,7 +13102,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:774: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
+   "src/UiHeltec.cpp:780: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
    "src/UiHires.inc:203: if(sel<0){empty(IcRadar,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"),st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
@@ -13253,7 +13262,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:540: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
+   "src/UiHeltec.cpp:546: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
   ]
  },
  "d4ee5f0f": {
@@ -13271,7 +13280,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:814: t(\"click +1 hold-menu\",\"клик +1 держ-меню\"):"
+   "src/UiHeltec.cpp:820: t(\"click +1 hold-menu\",\"клик +1 держ-меню\"):"
   ]
  },
  "d528eacc": {
@@ -13298,7 +13307,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:736: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
+   "src/UiHeltec.cpp:742: unsigned mv=hardware.batteryMv;say(0,52,(mv>4250?t(\"USB power\",\"Питание USB\"):String(mv/1000.f,2)+\"V\")+(config.relay?t(\"  relay on\",\"  ретрансляция\"):\"\"),small);break;}"
   ]
  },
  "d5ea5328": {
@@ -13307,7 +13316,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:521: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
+   "src/UiHeltec.cpp:526: case ActForward:{String r=meshServer.command(meshServer.view().forwarding?\"set repeat off\":\"set repeat on\");notice(r.startsWith(\"OK\")?(meshServer.view().forwarding?t(\"Forwarding on\",\"Пересылка вкл.\"):t(\"Forwarding off\",\""
   ]
  },
  "d609b7de": {
@@ -13325,9 +13334,9 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:756: say(30,62,String(radar.csiRate)+t(\"/s\",\"/с\"),small);}",
-   "src/UiHeltec.cpp:765: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
-   "src/UiHeltec.cpp:768: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
+   "src/UiHeltec.cpp:762: say(30,62,String(radar.csiRate)+t(\"/s\",\"/с\"),small);}",
+   "src/UiHeltec.cpp:771: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
+   "src/UiHeltec.cpp:774: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
   ]
  },
  "d6404c3c": {
@@ -13372,7 +13381,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:696: say(0,44,t(\"To turn on:\",\"Включить:\"),small);say(0,54,powerOnHint(),small);hardware.flush();",
+   "src/UiHeltec.cpp:702: say(0,44,t(\"To turn on:\",\"Включить:\"),small);say(0,54,powerOnHint(),small);hardware.flush();",
    "src/UiHires.inc:451: void offPage(){g().fillScreen(ColBack);icon(IcPower,120,42,12,ColWarn);center(120,82,farewell?t(\"Device is off\",\"Устройство выключено\"):t(\"Turning off...\",\"Выключение...\"),ColInk,bold);center(120,106,t(\"To turn on:\",\"Вкл"
   ]
  },
@@ -13458,7 +13467,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:439: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
+   "src/UiHeltec.cpp:443: case ActNotifyFailed:return t(\"TX alert: \",\"Ошибка TX: \")+(config.notifyFailed?t(\"on\",\"вкл.\"):t(\"off\",\"выкл.\"));"
   ]
  },
  "d8b27ae3": {
@@ -13558,7 +13567,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:594: String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
+   "src/UiHeltec.cpp:600: String hint(){Act acts[MenuMax];unsigned n=actions(acts);if(!n)return \"<  >\";return n==1?t(\"OK: \",\"OK: \")+actName(acts[0]):t(\"OK: menu  < >\",\"OK: меню  < >\");}"
   ]
  },
  "daa68450": {
@@ -13567,8 +13576,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:456: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
-   "src/UiHeltec.cpp:794: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
+   "src/UiHeltec.cpp:461: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
+   "src/UiHeltec.cpp:800: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
    "src/UiHires.inc:360: {IcScreen,ColInfo,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"))},"
   ]
  },
@@ -13614,7 +13623,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:793: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
+   "src/UiHeltec.cpp:799: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
    "src/UiHires.inc:359: {IcPulse,ColGood,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percent\",\"проценты\"))},"
   ]
  },
@@ -13624,7 +13633,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:768: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+",
+   "src/UiHeltec.cpp:774: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+",
    "src/UiHires.inc:197: title=beacon?t(\"CSI beacon \",\"Маяк CSI \")+String(radar.csiRate)+t(\"/s\",\"/с\"):t(\"Radar\",\"Радар\")+"
   ]
  },
@@ -13634,7 +13643,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:644: if(config.role==RoleNormal)sayRight(126,62,t(\"hold: open the game\",\"держ: открыть партию\"),small);",
+   "src/UiHeltec.cpp:650: if(config.role==RoleNormal)sayRight(126,62,t(\"hold: open the game\",\"держ: открыть партию\"),small);",
    "src/UiHires.inc:461: if(chessPopupAt&&millis()-chessPopupAt<8000){statusBar(t(\"Chess\",\"Шахматы\"));chessPopup();footer({config.role==RoleNormal?t(\"hold: open the game\",\"держ: открыть партию\"):String()});hardware.flush();return;}"
   ]
  },
@@ -13653,7 +13662,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:765: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
+   "src/UiHeltec.cpp:771: String st=f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\");say(30,62,st,small);}",
    "src/UiHires.inc:195: text(6,113,f.kind==RadarTarget::Lora?String(radar.samples)+t(\" pkts\",\" пак.\"):String(radar.rate)+t(\"/s\",\"/с\"),ColDim,tiny);return;}"
   ]
  },
@@ -13682,7 +13691,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:656: t(\"click-next hold-choose\",\"клик-далее держ-выбор\")",
+   "src/UiHeltec.cpp:662: t(\"click-next hold-choose\",\"клик-далее держ-выбор\")",
    "src/UiHires.inc:390: footer({rolePickBoot?t(\"as now in \",\"как сейчас через \")+String(left)+t(\"s\",\"с\"):t(\"click-next hold-choose\",\"клик-далее держ-выбор\")});"
   ]
  },
@@ -13748,7 +13757,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "ddbf78c7": {
@@ -13775,7 +13784,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:939: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
+   "src/UiHeltec.cpp:986: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
   ]
  },
  "ddebda8a": {
@@ -13786,7 +13795,7 @@
   ],
   "where": [
    "src/Ui.cpp:1008: if(notifications::enabled(notifications::mode(notification.message,config.notifyPopup,2),notification.mention)&&page!=DiceView&&page!=PeopleView)notice(t(\"New message from \",\"Сообщение от \")+notification.message.name,acc",
-   "src/UiHeltec.cpp:939: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
+   "src/UiHeltec.cpp:986: }else if(config.notifyFailed&&(e.kind==notifications::TxError||e.kind==notifications::Unconfirmed)){ledAt=now;ledPattern=3;notice(e.kind==notifications::TxError?t(\"Radio TX error\",\"Ошибка передачи\"):channels::isChannel(e"
   ]
  },
  "de82dc1b": {
@@ -13804,7 +13813,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:450: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
+   "src/UiHeltec.cpp:454: case ActAdvert:return t(\"Announce node\",\"Объявить узел\");case ActReplyOk:return t(\"Reply: OK\",\"Ответить: OK\")+String(publicChat?\" #\":\"\");case ActReplyAck:return t(\"Reply: Got it\",\"Ответить: Принято\");"
   ]
  },
  "df18626f": {
@@ -13832,7 +13841,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:807: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);",
+   "src/UiHeltec.cpp:813: say(0,48,t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),small);",
    "src/UiHires.inc:370: text(6,106,fit(t(\"up \",\"работа \")+ago(millis())+t(\"  boot \",\"  загр. \")+String(config.bootCounter),228,small),ColDim,small);"
   ]
  },
@@ -14001,13 +14010,22 @@
    "src/Ui.cpp:632: if(page==Radio){switch(i){case 0:return t(\"1 kHz steps; must match every node\",\"Шаг 1 кГц; должна совпадать у всех узлов\");case 1:return t(\"62.5 / 125 / 250 / 500 kHz\",\"62.5 / 125 / 250 / 500 кГц\");case 2:return t(\"Highe"
   ]
  },
+ "e20d55d5": {
+  "cells": 19,
+  "families": [
+   "compact"
+  ],
+  "where": [
+   "src/UiHeltec.cpp:460: case ActDoubleBack:return config.doubleBack?t(\"Double click: back\",\"Двойной клик: назад\"):t(\"Double click: off\",\"Двойной клик: выкл.\");"
+  ]
+ },
  "e22b7b2a": {
   "cells": 21,
   "families": [
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:549: notice(t(\"Hold again: let it go\",\"Удерж. ещё: отпустить\"));"
+   "src/UiHeltec.cpp:555: notice(t(\"Hold again: let it go\",\"Удерж. ещё: отпустить\"));"
   ]
  },
  "e26038f9": {
@@ -14034,7 +14052,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:755: say(0,52,String(radar.activity*1000,1)+t(\" / thr \",\" / порог \")+String(threshold*1000,1)+(radar.baseline>0?\"\":\"*\"),small);",
+   "src/UiHeltec.cpp:761: say(0,52,String(radar.activity*1000,1)+t(\" / thr \",\" / порог \")+String(threshold*1000,1)+(radar.baseline>0?\"\":\"*\"),small);",
    "src/UiHires.inc:185: text(6,102,String(radar.activity*1000,1)+t(\" / thr \",\" / порог \")+String(threshold*1000,1)+\"  \"+String(radar.csiRate)+t(\"/s\",\"/с\"),ColDim,small);return;}"
   ]
  },
@@ -14056,7 +14074,7 @@
   ],
   "where": [
    "src/UiHeltec.cpp:249: case RowPower:return String(c.power)+\" dBm\";case RowHops:return String(c.hops);case RowRelay:return c.relay?t(\"on\",\"вкл\"):t(\"off\",\"выкл\");",
-   "src/UiHeltec.cpp:528: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
+   "src/UiHeltec.cpp:533: case ActGps:notice(applyOne(\"gps\",!config.gps).startsWith(\"OK\")?\"GPS: \"+String(config.gps?t(\"on\",\"вкл\"):t(\"off\",\"выкл\")):t(\"Radio busy, retry\",\"Радио занято, повторите\"));break;"
   ]
  },
  "e3a856ac": {
@@ -14093,7 +14111,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:449: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
+   "src/UiHeltec.cpp:453: case ActRole:return t(\"Device mode...\",\"Режим работы...\");case ActForward:return meshServer.view().forwarding?t(\"Forwarding: off\",\"Пересылка: выкл.\"):t(\"Forwarding: on\",\"Пересылка: вкл.\");"
   ]
  },
  "e45d38ac": {
@@ -14178,7 +14196,7 @@
   ],
   "where": [
    "src/Ui.cpp:513: if(!radar.count)textCenter(252,110,state.length()?state:t(\"No signals yet\",\"Сигналов пока нет\"),radar.wifi==Radar::WifiReady?dim:warn,small);",
-   "src/UiHeltec.cpp:774: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
+   "src/UiHeltec.cpp:780: if(sel<0){say(0,30,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"));say(0,44,st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):",
    "src/UiHires.inc:203: if(sel<0){empty(IcRadar,beacon?t(\"Beacon on\",\"Маяк включён\"):t(\"No signals yet\",\"Сигналов пока нет\"),st.length()?st:beacon?t(\"hold: switch off\",\"держите: выключить\"):"
   ]
  },
@@ -14288,7 +14306,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:793: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
+   "src/UiHeltec.cpp:799: case Settings:title=t(\"Settings\",\"Настройки\");say(0,20,t(\"Language: \",\"Язык: \")+langNames[config.lang<LangCount?config.lang:0],small);say(0,28,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percen",
    "src/UiHires.inc:359: {IcPulse,ColGood,t(\"Battery: \",\"Батарея: \")+(config.batteryVolts?t(\"volts\",\"вольты\"):t(\"percent\",\"проценты\"))},"
   ]
  },
@@ -14373,8 +14391,8 @@
   ],
   "where": [
    "src/UiServer.inc:36: String reply=setRole(selected);bool done=reply.startsWith(\"OK\");notice(done?t(\"Restarting: \",\"Перезапуск: \")+roleTitle(selected):reply,done?ok:bad);return true;",
-   "src/UiHeltec.cpp:846: if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;return;}",
-   "src/UiHeltec.cpp:882: if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;}return;}"
+   "src/UiHeltec.cpp:852: if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;return;}",
+   "src/UiHeltec.cpp:922: if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith(\"OK\")?t(\"Restarting: \",\"Перезапуск: \")+roleShort(roleSel):r);if(!r.startsWith(\"OK\"))rolePick=false;}return;}"
   ]
  },
  "ea17de99": {
@@ -14475,7 +14493,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:457: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
+   "src/UiHeltec.cpp:462: case ActHoming:{int i=shownSignal();return t(\"Home in: \",\"Пеленг: \")+(i>=0?signalName(radar.targets[i]):String(\"-\"));}case ActNextSignal:return t(\"Next signal\",\"Следующий сигнал\");"
   ]
  },
  "ec0794a8": {
@@ -14487,7 +14505,7 @@
   "where": [
    "src/Ui.cpp:221: String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return t(\"now\",\"сейчас\");if(s<3600)return String(s/60)+t(\" min\",\" мин\");if(s<86400)return String(s/3600)+t(\" h\",\" ч\");return String(s/86400)+t(\" d\",\" д\");}",
    "src/UiDice.inc:310: if(i==s.character)textRight(300,y+14,count(dicer.sheet.count,\"block\",\"blocks\",\"блок\",\"блока\",\"блоков\")+\" · \"+t(\"now\",\"сейчас\"),ok,small);diceSpot(14,y,292,20,TapHeroRow,i);}",
-   "src/UiHeltec.cpp:649: for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,roleShort(r),body,!focus);if(r==config.role)sayRight(125,y,t(\"now\",\"сейчас\"),small,!focus);}"
+   "src/UiHeltec.cpp:655: for(int r=0;r<RoleCount;r++){int y=21+r*12;bool focus=r==roleSel;if(focus)c.fillRect(0,y-10,128,12,1);say(3,y,roleShort(r),body,!focus);if(r==config.role)sayRight(125,y,t(\"now\",\"сейчас\"),small,!focus);}"
   ]
  },
  "ec0c2450": {
@@ -14505,7 +14523,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:454: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
+   "src/UiHeltec.cpp:458: case ActWifi:return portalActive()?t(\"Turn Wi-Fi off\",\"Выключить Wi-Fi\"):t(\"Turn Wi-Fi on\",\"Включить Wi-Fi\");case ActBle:return bleActive()?t(\"Turn BLE off\",\"Выключить BLE\"):t(\"Turn BLE on\",\"Включить BLE\");"
   ]
  },
  "ec36b964": {
@@ -14734,7 +14752,7 @@
   ],
   "where": [
    "src/UiTally.inc:15: if(adding){ring(26,26,268,154,10,line);d.fillRoundRect(146,82,28,5,2,accent);d.fillRoundRect(158,70,5,29,2,accent);textCenter(160,124,t(\"New counter\",\"Новый счётчик\"),ink,bold);",
-   "src/UiHeltec.cpp:422: if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return \"-1\";case ActPeopleNext:return t(\"Next: \",\"Дальше: \")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t(\"N"
+   "src/UiHeltec.cpp:426: if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return \"-1\";case ActPeopleNext:return t(\"Next: \",\"Дальше: \")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t(\"N"
   ]
  },
  "ef717bee": {
@@ -14743,7 +14761,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:727: if(wardriveList){unsigned order[24];const wardrive::Repeater* l;unsigned n=wdOrder(order,l);if(!n)say(0,30,t(\"No repeaters yet\",\"Ретрансляторов нет\"),small);"
+   "src/UiHeltec.cpp:733: if(wardriveList){unsigned order[24];const wardrive::Repeater* l;unsigned n=wdOrder(order,l);if(!n)say(0,30,t(\"No repeaters yet\",\"Ретрансляторов нет\"),small);"
   ]
  },
  "ef76a03a": {
@@ -14790,7 +14808,7 @@
   ],
   "where": [
    "src/Ui.cpp:534: text(14,142,\"-100\",faint,small);textRight(306,142,\"-35 dBm\",faint,small);textCenter(160,142,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak)))+\" dBm (\"+String(radar.fast-radar.peak,0)+\")\":String(\"-\")),dim,",
-   "src/UiHeltec.cpp:763: sayRight(128,41,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak))):String(\"-\")),small);",
+   "src/UiHeltec.cpp:769: sayRight(128,41,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak))):String(\"-\")),small);",
    "src/UiHires.inc:193: right(236,82,t(\"peak \",\"пик \")+(radar.samples?String(int(lroundf(radar.peak))):String(\"-\")),ColDim,small);"
   ]
  },
@@ -14901,7 +14919,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:438: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
+   "src/UiHeltec.cpp:442: case ActNotifyLed:case ActNotifyWake:case ActNotifyPopup:{uint8_t mode=a==ActNotifyLed?config.notifyLed:a==ActNotifyWake?config.notifyWake:config.notifyPopup;return (a==ActNotifyLed?String(\"LED: \"):a==ActNotifyWake?t(\"Wa"
   ]
  },
  "f1fd2cf6": {
@@ -14930,7 +14948,7 @@
   ],
   "where": [
    "src/Ui.cpp:683: footer({{\"^v\",t(\"choose\",\"выбор\")},{\"OK\",quickTargets||selected==0?t(\"select\",\"выбрать\"):t(\"send\",\"слать\")},{\"BACK\",t(\"exit\",\"выход\")}});",
-   "src/UiHeltec.cpp:821: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):",
+   "src/UiHeltec.cpp:827: String(\"^v \")+t(\"choose\",\"выбор\")+\" OK \"+(quickTargets||!quickIndex?t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"exit\",\"выход\"):t(\"send\",\"слать\")):",
    "src/UiHires.inc:499: else if(page==QuickPage)footer({t(\"click: choose\",\"клик: выбор\"),quickTargets||!quickIndex?t(\"hold: \",\"держ: \")+t(\"select\",\"выбрать\"):quickIndex>quickSend::Count?t(\"hold: \",\"держ: \")+t(\"exit\",\"выход\"):t(\"hold: send\",\"дер"
   ]
  },
@@ -14942,7 +14960,7 @@
   ],
   "where": [
    "src/Ui.cpp:1019: notice(t(\"Network nearby: \",\"Рядом сеть: \")+(r.place!=255?netfind::placeName(r.place)+\" \":String())+\"SF\"+String(r.radio.sf)+t(\" · Settings > Radio\",\" · Настройки › Радио\"),info);",
-   "src/UiHeltec.cpp:944: notice(t(\"Network nearby: \",\"Рядом сеть: \")+(r.place!=255?netfind::placeName(r.place)+\" \":String())+\"SF\"+String(r.radio.sf));ledAt=now;ledPattern=1;"
+   "src/UiHeltec.cpp:991: notice(t(\"Network nearby: \",\"Рядом сеть: \")+(r.place!=255?netfind::placeName(r.place)+\" \":String())+\"SF\"+String(r.radio.sf));ledAt=now;ledPattern=1;"
   ]
  },
  "f29830d4": {
@@ -15023,7 +15041,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:794: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
+   "src/UiHeltec.cpp:800: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
    "src/UiHires.inc:360: {IcScreen,ColInfo,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"))},"
   ]
  },
@@ -15052,7 +15070,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:561: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
+   "src/UiHeltec.cpp:567: case ActSelfTest:{bool valid=meshRadio.selfTest();meshRadio.event=valid?\"Encryption test OK\":\"Encryption test FAILED\";notice(valid?t(\"Encryption: OK\",\"Шифрование: OK\"):t(\"Encryption: ERROR\",\"Шифрование: ошибка\"));break;}"
   ]
  },
  "f4fe8e62": {
@@ -15063,7 +15081,7 @@
   ],
   "where": [
    "src/UiPet.inc:78: footer({{\"OK\",t(\"Pet\",\"Погладить\")},{\"F\",t(\"Feed\",\"Кормить\")},{\"H\",t(\"Heal\",\"Лечить\")},{\"N\",t(\"Name\",\"Имя\")}});",
-   "src/UiHeltec.cpp:462: case ActPetCuddle:return creature.s.stage==pet::Egg?t(\"Knock\",\"Постучать\"):t(\"Pet\",\"Погладить\");"
+   "src/UiHeltec.cpp:467: case ActPetCuddle:return creature.s.stage==pet::Egg?t(\"Knock\",\"Постучать\"):t(\"Pet\",\"Погладить\");"
   ]
  },
  "f5175dd0": {
@@ -15092,8 +15110,8 @@
   ],
   "where": [
    "src/Ui.cpp:628: if(page==Radio){switch(i){case 0:return String(c.frequency,3)+t(\" MHz\",\" МГц\");case 1:return String(c.bandwidth,1)+t(\" kHz\",\" кГц\");case 2:return \"SF\"+String(c.sf);case 3:return \"4/\"+String(c.cr);case 4:return String(c.p",
-   "src/UiHeltec.cpp:701: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));",
-   "src/UiHeltec.cpp:733: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
+   "src/UiHeltec.cpp:707: say(0,21,roleShort(config.role),bold);if(meshRadio.ready)sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));else sayRight(128,20,hardware.fsOk?t(\"Radio error\",\"Ошибка радио\"):t(\"No storage\",\"Нет хранилища\"));",
+   "src/UiHeltec.cpp:739: if(meshRadio.ready){sayRight(128,20,String(config.frequency,3)+t(\" MHz\",\" МГц\"));sayRight(128,30,\"SF\"+String(config.sf)+\" BW\"+String(config.bandwidth,1));}else sayRight(128,24,t(\"Radio error \",\"Ошибка радио \")+String(mes"
   ]
  },
  "f639bb47": {
@@ -15160,7 +15178,7 @@
   ],
   "where": [
    "src/Ui.cpp:780: footer({{\"OK\",hardware.fsOk?t(\"Crypto test + sound\",\"Тест шифрования и звука\"):t(\"Create storage...\",\"Создать хранилище...\")},{\"BACK\",t(\"Back\",\"Назад\")}});",
-   "src/UiHeltec.cpp:442: case ActFormat:return t(\"Create storage...\",\"Создать хранилище...\");"
+   "src/UiHeltec.cpp:446: case ActFormat:return t(\"Create storage...\",\"Создать хранилище...\");"
   ]
  },
  "f7ade58d": {
@@ -15169,7 +15187,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:761: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
+   "src/UiHeltec.cpp:767: sayRight(128,31,wifiLost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady",
    "src/UiHires.inc:191: right(236,64,lost?(f.kind==RadarTarget::Ble?bleState():wifiState()):!fresh?(radar.samples>1?t(\"lost\",\"потерян\"):t(\"no signal\",\"нет сигнала\")):trend>0?t(\"stronger\",\"теплее\"):trend<0?t(\"weaker\",\"холоднее\"):t(\"steady\",\"ровн"
   ]
  },
@@ -15292,8 +15310,8 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:456: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
-   "src/UiHeltec.cpp:794: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
+   "src/UiHeltec.cpp:461: case ActScreen:return t(\"Screen off: \",\"Гасить: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\"));case ActContrast:return t(\"Contrast: \",\"Контраст: \")+String(config.brightness);",
+   "src/UiHeltec.cpp:800: say(0,36,t(\"Screen off: \",\"Гасить экран: \")+(config.dimAfter?String(config.dimAfter)+t(\" s\",\" с\"):t(\"never\",\"никогда\")),small);say(0,44,t(\"Contrast: \",\"Контраст: \")+String(config.brightness),small);",
    "src/UiHires.inc:361: {IcGear,ColDim,t(\"Contrast: \",\"Контраст: \")+String(config.brightness)},"
   ]
  },
@@ -15341,7 +15359,7 @@
   ],
   "where": [
    "src/Ui.cpp:234: String distanceText(float m,float bearing){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;return (m<1000?Strin",
-   "src/UiHeltec.cpp:746: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
+   "src/UiHeltec.cpp:752: float metres,bearing;if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;say(0,51",
    "src/UiHires.inc:167: if(distanceTo(*p,metres,bearing)){const char* dirs[]={tr(\"N\",\"С\"),tr(\"NE\",\"СВ\"),tr(\"E\",\"В\"),tr(\"SE\",\"ЮВ\"),tr(\"S\",\"Ю\"),tr(\"SW\",\"ЮЗ\"),tr(\"W\",\"З\"),tr(\"NW\",\"СЗ\")};int k=int((bearing+22.5f)/45)%8;"
   ]
  },
@@ -15430,7 +15448,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:540: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
+   "src/UiHeltec.cpp:546: case ActCalibrate:if(radar.beaconHeard()){radar.calibrate();notice(t(\"Calibrating 10 s\",\"Калибровка 10 с\"));}else notice(t(\"No beacon heard\",\"Маяк не слышен\"));break;"
   ]
  },
  "fbe55d29": {
@@ -15475,7 +15493,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:776: t(\"BLE and LoRa\",\"BLE и LoRa\")",
+   "src/UiHeltec.cpp:782: t(\"BLE and LoRa\",\"BLE и LoRa\")",
    "src/UiHires.inc:205: t(\"BLE and LoRa\",\"BLE и LoRa\")"
   ]
  },
@@ -15494,7 +15512,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:423: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
+   "src/UiHeltec.cpp:427: case ActPeopleDelete:return tallyArmed?t(\"Hold again: delete\",\"Держите ещё: удалить\"):t(\"Delete this counter\",\"Удалить этот счётчик\");case ActPeopleReset:return t(\"Reset to 0\",\"Сбросить в 0\");case ActPeopleBle:return \"BL"
   ]
  },
  "fd249ae3": {
@@ -15560,7 +15578,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:751: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
+   "src/UiHeltec.cpp:757: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo",
    "src/UiHires.inc:182: String state=radar.wifi!=Radar::WifiReady?t(\"no Wi-Fi: AP on?\",\"нет Wi-Fi: точка?\"):!heard?t(\"no beacon\",\"нет маяка\"):radar.csiStale?t(\"CSI frozen\",\"CSI стоит\"):radar.calibrateUntil?t(\"calibrating\",\"калибровка\"):radar.mo"
   ]
  },
@@ -15663,7 +15681,7 @@
   ],
   "where": [
    "src/Ui.cpp:979: static uint32_t armed=0;if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"),warn);return;}",
-   "src/UiHeltec.cpp:497: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"));break;}"
+   "src/UiHeltec.cpp:502: if(!armed||millis()-armed>5000){armed=millis();notice(t(\"OK again: erase old data\",\"Ещё раз OK: стереть\"));break;}"
   ]
  },
  "ffad6b6e": {
@@ -15681,7 +15699,7 @@
    "compact"
   ],
   "where": [
-   "src/UiHeltec.cpp:747: else if(p->position)say(0,51,t(\"has GPS position\",\"есть GPS-позиция\"),small);}",
+   "src/UiHeltec.cpp:753: else if(p->position)say(0,51,t(\"has GPS position\",\"есть GPS-позиция\"),small);}",
    "src/UiHires.inc:169: else if(p->position)where=t(\"has GPS position\",\"есть GPS-позиция\");"
   ]
  },
