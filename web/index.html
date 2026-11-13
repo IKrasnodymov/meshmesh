@@ -392,7 +392,7 @@ function other(m){const d=dest(m);return isChan(d)||m.outgoing?d:m.source}
 const peer=id=>peers.find(p=>p.id===id);
 function nodeName(id){return id==='ALL'?'Public':isChan(id)?chan(id)?.name||L('Канал'):peer(id)?.name||history.find(m=>m.source===id)?.name||id}
 // Public, the joined channels, then direct conversations; a removed channel keeps its history out of sight.
-function conversationIds(){const ids=['ALL',...(chans?.channels||[]).map(c=>c.id).filter(id=>id!=='ALL'),...new Set([...history].reverse().map(other).filter(id=>!isChan(id)))];if(route==='chat'&&!ids.includes(recipient))ids.push(recipient);return ids}
+function conversationIds(){const ids=['ALL',...(chans?.channels||[]).map(c=>c.id).filter(id=>id!=='ALL'),...new Set([...history,...outbox].reverse().map(other).filter(id=>!isChan(id)))];if(route==='chat'&&!ids.includes(recipient))ids.push(recipient);return ids}
 let readMarks=store('read')||{};
 function unread(id){const at=readMarks[id]||0;return history.filter(m=>matches(m,id)&&!m.outgoing&&m.time>at).length}
 function unreadTotal(){return conversationIds().reduce((n,id)=>{const a=alertMode(id);return n+(a==='off'?0:a==='mention'?unreadMentions(id):unread(id))},0)}
@@ -954,7 +954,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.targ
 
 // Chats.
 function renderThreads(){const ids=conversationIds(),k=ids.findIndex(id=>!isChan(id));
- const rows=ids.map(id=>{const rows=history.filter(m=>matches(m,id)),last=rows.at(-1),n=unread(id),p=peer(id),l=last&&parseLink(last.text),a=alertMode(id),at=n&&a!=='off'&&unreadMentions(id);
+ const rows=ids.map(id=>{const rows=history.filter(m=>matches(m,id)).concat(outbox.filter(m=>m.destination===id)),last=rows.at(-1),n=unread(id),p=peer(id),l=last&&parseLink(last.text),a=alertMode(id),at=n&&a!=='off'&&unreadMentions(id);
   const preview=last?(last.outgoing?L('Вы: '):isChan(id)?last.name+': ':'')+(l?L`Приглашение в канал «${l.name}»`:last.text.replace(/\n/g,' ')):id==='ALL'?L('Открытый канал MeshCore'):isChan(id)?chanKind(chan(id)):L('Сообщений ещё нет');
   return `<button class="row" data-go="chat/${encodeURIComponent(id)}">${avatar(id,nodeName(id),p?p.type:-1)}<span class="main"><b>${esc(nodeName(id))}${a==='off'?ic('belloff','faint'):a==='mention'?ic('bell','faint'):''}</b><small class="${n?'new':''}">${esc(preview)}</small></span><span class="side"><span>${last?timeText(last.time):''}</span>${n?`<span class="pills">${at?'<span class="pill at">@</span>':''}<span class="pill${a==='all'?'':' mute'}">${n}</span></span>`:''}</span></button>`});
  if(status.channels!==undefined)rows.splice(k<0?rows.length:k,0,`<button class="row" data-go="addch"><span class="av" style="background:var(--card);color:var(--accent);font-size:24px;font-weight:400">+</span><span class="main"><b>${L`Добавить канал`}</b><small>${L`Хештег, ссылка, QR или новый`}</small></span><span class="go">${ic('next')}</span></button>`);
@@ -969,7 +969,7 @@ const TICK_WAIT=30,TICKS=[['sent','muted',L('Ушло в эфир')],['sent','ba
 $('tickLegend').innerHTML=TICKS.map(t=>`<div class="tickrow">${ic(t[0],t[1])}<span>${t[2]}</span></div>`).join('')+`<p class="small faint" style="margin:6px 0 0">${L`Красная — через ${TICK_WAIT} с без повтора. Повтор слышит сам узел: если поблизости никто не передаёт дальше, повтора не будет, даже когда сообщение дошло. Сколько раз и кто повторил — в «Пути пакета»: нажмите на время сообщения.`}</p>`;
 function relayedByNodesOnly(m){const e=m.echoes||[];return e.length>0&&e.every(x=>{const h=String(x.hash).toLowerCase(),ps=peers.filter(p=>String(p.public_key||'').toLowerCase().startsWith(h));return ps.length>0&&ps.every(p=>p.type===1)})}
 function tick(m){const s=m.status,flood=isChan(dest(m))||m.route==='flood';
- return s===1?['queued','faint',L('В очереди')]:s===4?['failed','bad',L('Нет подтверждения')]:s===3?TICKS[4]:m.heard?TICKS[relayedByNodesOnly(m)?3:2]:s===2?TICKS[flood&&m.time&&deviceNow()-m.time>=TICK_WAIT?1:0]:null}
+ return m.local&&!s?['queued','faint',L('Передаётся на устройство')]:s===1?['sent','faint',L('Устройство приняло, ждёт эфира')]:s===4?['failed','bad',L('Нет подтверждения')]:s===3?TICKS[4]:m.heard?TICKS[relayedByNodesOnly(m)?3:2]:s===2?TICKS[flood&&m.time&&deviceNow()-m.time>=TICK_WAIT?1:0]:null}
 function statusMark(m){const t=tick(m);return t?`<span title="${t[2]}${m.heard&&m.status!==4?L` · повторов: ${m.heard}`:''}">${ic(t[0],t[1])}</span>`:''}
 // Opening a chat, as in Telegram: at the first unread message (marked «Новые сообщения»), else where it was
 // left (the message at the top, kept per chat), else at the end; the round button returns to the end.
@@ -990,7 +990,7 @@ $('toBottom').onclick=()=>window.scrollTo({top:document.body.scrollHeight,behavi
 function renderChat(){
  const p=peer(recipient),c=chan(recipient);$('chatSub').textContent=isChan(recipient)?(chans&&!c?L('Вы не в этом канале'):L`${c?.kind==='private'?L('Закрытый'):L('Открытый')} канал · имена не проверены · без подтверждений`):p?`${typeText(p.type)} · ${pathText(p)}${p.heard?' · '+ago(age(p)):''}`:L('Нет в контактах');
  $('chatHint').textContent=L`✓ в эфире · ✓✓ передано дальше${isChan(recipient)?'':L(' или доставлено')} · время — путь пакета`;
- const rows=history.filter(m=>matches(m,recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length+'|'+peers.length+'|'+rows.filter(m=>m.outgoing&&m.status===2&&!m.heard&&deviceNow()-m.time>=TICK_WAIT).length; // ticks turn red with time
+ const rows=history.filter(m=>matches(m,recipient)).concat(outbox.filter(m=>m.destination===recipient)),box=$('messages'),fingerprint=recipient+JSON.stringify(rows)+chans?.channels?.length+'|'+peers.length+'|'+rows.filter(m=>m.outgoing&&m.status===2&&!m.heard&&deviceNow()-m.time>=TICK_WAIT).length; // ticks turn red with time
  if(box.dataset.fingerprint!==fingerprint){const near=document.documentElement.scrollHeight-window.scrollY-window.innerHeight<120,first=!box.dataset.fingerprint;box.dataset.fingerprint=fingerprint;
   chatRows=rows;box.innerHTML=rows.length?rows.map((m,i)=>{const named=!m.outgoing&&(isChan(recipient)||peer(recipient)?.type===3),l=parseLink(m.text);return `${chatNewKey&&msgKey(m)===chatNewKey?`<div class="newmark">${L`Новые сообщения`}</div>`:''}<div class="bubble${m.outgoing?' out':''}" data-i="${i}">${named?`<span class="from" style="color:${lighten(hue(m.source))}">${esc(m.name)}</span>`:''}${l?inviteCard(m.text,l):messageText(m.text)}<div class="meta"${m.protocol===2?L` data-msg="${esc(msgKey(m))}" title="Путь пакета"`:''}>${m.protocol===1?'<span class="faint">MM/1</span>':''}${m.outgoing&&m.status===4?`<span class="bad">${L`не подтверждено`}</span>`:''}${routeText(m)?`<span class="faint">${routeText(m)}</span>`:''}<span>${stampText(m.time)}</span>${m.outgoing?statusMark(m):''}</div></div>`}).join(''):`<div class="empty">${L`${ic(isChan(recipient)?'hash':'chat')}Сообщений пока нет`}<small>${L`Напишите текст и отправьте`}</small></div>`;
   if(first)placeChat(rows);else if(near)window.scrollTo(0,document.body.scrollHeight);updateToBottom()}
@@ -1014,8 +1014,18 @@ function swipeReply(box){let s=null;const pull=36,max=64;
  box.addEventListener('pointerup',end);box.addEventListener('pointercancel',end);
  box.addEventListener('dblclick',e=>{const b=e.target.closest('.bubble[data-i]');if(b&&!e.target.closest('button,a')){getSelection()?.removeAllRanges();startReply(chatRows[b.dataset.i])}})}
 function autosize(){const t=$('text');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
-async function send(){if(!$('text').value.trim())return;const text=replyPrefix()+$('text').value;if(byteCount()>messageLimit()){notify(L`Лимит байт UTF-8: ${messageLimit()}`,'warn');return}
- $('sendButton').disabled=true;try{await request('/api/send',{to:recipient,text});$('text').value='';drafts.delete(recipient);setReply(null);autosize();byteCount();notify(L('Сообщение в очереди'));await refresh()}catch(e){notify(e.message.startsWith('ERR')?L('Не отправлено: текст, очередь или радио'):e.message,'bad')}finally{byteCount()}}
+// Sending, as in messengers: the bubble appears at once with a clock (the phone or browser still holds it) and gets
+// its grey tick when the device has taken the message; the device's own copy replaces it at the first history read
+// that starts after that. Over BLE a full refresh takes seconds, so the page does not wait for it. Sends keep their order.
+let outbox=[],sendChain=Promise.resolve(),refreshAgain=false;
+function send(){if(!$('text').value.trim())return;const text=replyPrefix()+$('text').value;if(byteCount()>messageLimit()){notify(L`Лимит байт UTF-8: ${messageLimit()}`,'warn');return}
+ const to=recipient,draft=$('text').value,reply=replyTo,m={local:true,outgoing:true,destination:to,text,time:Math.floor(deviceNow()),status:0};
+ outbox.push(m);$('text').value='';drafts.delete(to);setReply(null);autosize();render();window.scrollTo(0,document.body.scrollHeight);
+ sendChain=sendChain.then(async()=>{try{await request('/api/send',{to,text});m.status=1;m.okAt=Date.now();refreshSoon()}
+  catch(e){outbox=outbox.filter(x=>x!==m);notify(e.message.startsWith('ERR')?L('Не отправлено: текст, очередь или радио'):e.message,'bad');
+   if(route==='chat'&&recipient===to&&!$('text').value.trim()){$('text').value=draft;setReply(reply);autosize()}else if(!drafts.get(to))drafts.set(to,draft)} // the text is not lost
+  finally{if(route==='chat'||route==='chats')render()}})}
+function refreshSoon(){if(refreshing)refreshAgain=true;else refresh()}
 
 // Channels: joining by hashtag, link (QR), key or a new random key; the channel page with its QR code and invitations.
 const chanKind=c=>c?.kind==='public'?L('Общий канал MeshCore'):c?.kind==='private'?L('Закрытый канал'):L('Открытый канал (хештег)');
@@ -1788,10 +1798,10 @@ async function rptRun(line,ok){try{const r=await command('server cli '+line),bad
 async function rptPassword(kind){const v=$(kind==='admin'?'rptPass':'rptGuest').value;if(/[^\x20-\x7e]/.test(v)){notify(L('Только латиница, цифры и символы'),'bad');return}if(kind==='admin'&&!v){notify(L('Пароль администратора не может быть пустым'),'bad');return}await rptRun(kind==='admin'?'password '+v:'set guest.password '+v,L('Пароль сохранён'))}
 async function roomPost(){const t=$('roomText').value.trim();if(!t)return;if(bytes(t)>151){notify(L('Пост: до 151 байта UTF-8'),'bad');return}try{await command('server post '+t);$('roomText').value='';notify(L('Пост сохранён; участники получат его по очереди'),'ok');await loadServer(false)}catch(e){notify(e.message,'bad')}}
 
-async function refresh(){if(refreshing||uploading||!auth||companion)return;refreshing=true;try{
+async function refresh(){if(refreshing||uploading||!auth||companion)return;refreshing=true;refreshAgain=false;const started=Date.now();try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  const obj=v=>v&&typeof v==='object'&&!Array.isArray(v);if(!obj(got[0])||!Array.isArray(got[1])||!Array.isArray(got[2])||!obj(got[3]))throw Error(L('неожиданный ответ, повторю')); // a mixed-up answer must not replace the data
- [status,history,peers,config,navInfo,mapInfo]=got;fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
+ [status,history,peers,config,navInfo,mapInfo]=got;outbox=outbox.filter(m=>!m.okAt||m.okAt>started);fetchedAt=Date.now();clockBase={unix:status.unix_time,at:Date.now()};
  // In the app the phone's clock sets an unset device clock once, so new messages get their reception time.
  if(window.MeshNative&&(!clockSynced||Date.now()-clockSynced>1800000)){clockSynced=Date.now();const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now,source:'phone'}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
  await refreshChess(false,false);
@@ -1806,7 +1816,7 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  if(mapState.follow&&status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};
  if(!mapState.center)mapHome();
  for(const v of document.querySelectorAll('.version'))v.textContent=String(status.firmware||'').replace(/^MeshMesh\s*/,'');
- render();if(joinLink&&!joinLink.offered){joinLink.offered=true;go('join')}}catch(e){if(/Authentication/.test(e.message)){auth='';clearInterval(timer);$('app').hidden=true;$('login').hidden=false;hud();notify(L('Нужен пароль Wi-Fi'),'warn')}else notify(L`Нет связи с устройством: ${e.message}`,'bad')}finally{refreshing=false}}
+ render();if(joinLink&&!joinLink.offered){joinLink.offered=true;go('join')}}catch(e){if(/Authentication/.test(e.message)){auth='';clearInterval(timer);$('app').hidden=true;$('login').hidden=false;hud();notify(L('Нужен пароль Wi-Fi'),'warn')}else notify(L`Нет связи с устройством: ${e.message}`,'bad')}finally{refreshing=false;if(refreshAgain)setTimeout(refresh,0)}}
 
 // Map package upload and preparation (formats shared with tools/maps.py and src/Maps.cpp).
 function download(data,name,type='application/octet-stream'){const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}

@@ -1,5 +1,17 @@
 # MeshMesh verification
 
+> **0.32.1 / Android 0.21.2: sending without waiting** (13 November 2026). From an app user's report: after «Send» the
+> field cleared, but the message showed in the chat late, sometimes much later. The cause was the page, not BLE: it waited for
+> the `/api/send` answer (over BLE queued behind the running poll's requests) and for a full poll (`refresh`: status, history,
+> nodes, settings, chess, pet, dice — seconds each over BLE); if a poll was already running none started, and the message
+> waited for the next timer round. Now (`send`, `outbox` in `web/index.html`) the message shows at once with a clock
+> («Sending to the device»), after the board's answer with one faint tick («The device took it, waiting for the air»; the
+> board's status 1 is now shown so too instead of a clock), and the board's copy replaces it at the first history read
+> started after the answer; the poll after sending starts at once or when the current one ends. Sends keep their order; on a
+> refusal the bubble goes and the text and reply return to the field. Checked in a browser on `tools/web_demo.py` with 1.2 s
+> per request and one request queue (BLE-like): bubble after 3 ms, tick after the answer, replacement without duplicates,
+> refusal with the text back. Not checked on a phone over BLE or on the boards.
+
 > **0.32.0: emoji on the screens, T114 backlight** (13 November 2026). At a T114 user's request. Emoji: about 300
 > common emoji (faces, hands, hearts, weather, animals, food, things, travel, signs) as 12x12 pictures after Twemoji 15.1
 > (CC-BY 4.0), `tools/emoji.py` → `include/EmojiData.h` (~10 KB). In colour on the M9/T-Deck (12 px), T114 (16 px), T096
