@@ -29,6 +29,7 @@ MeshCore-Knoten.
 - **Signalradar** — Wi-Fi, Bluetooth und LoRa in der Umgebung, mit Peilung nach „wärmer / kälter“.
 - **Bewegungssensor** — zwei Boards erkennen eine Person, die zwischen ihnen hindurchgeht (Wi-Fi CSI).
 - **Schach** mit Ihren Kontakten über das Mesh und Klondike-Solitär auf dem M9.
+- **Dame und Seeschlacht** mit Ihren Kontakten über das Mesh (0.33.0): Russische Dame und eine Seeschlacht auf 10×10 Feldern, jeder Zug eine bestätigte Nachricht, ohne Wertung; alle Spiele liegen im Menüordner „Spiele“, und Ordner lassen sich auf der Webseite oder in der App anlegen, umbenennen, verbergen und füllen. [docs/en/games.md](docs/en/games.md)
 - **Mesh-Haustier** — ein pixeliges Wesen im Tamagotchi-Stil auf jeder Platine: Es ernährt sich vom Funkverkehr, wächst und kann an Hunger oder Einsamkeit sterben. [docs/en/pet.md](docs/en/pet.md)
 - **Würfel** — der Würfler DIC3R auf jeder Platine: RPG-Pools und Formeln (2d6+1, d20, d66, d%), ein Warhammer-Raster mit Erfolgsschwelle und ein Charakterbogen aus Blöcken (Werte, Leisten, Markierungen, Fähigkeiten, die würfeln und verbrauchen) mit Vorlagen für D&D 5e und R.E.T., erstellt auf der Webseite oder in der App und über das Mesh an einen Kontakt gesendet; gleich auf dem Bildschirm, der Webseite und in der App. [docs/en/dice.md](docs/en/dice.md)
 - **Schach ohne MeshMesh auf dem Gerät**: [Die Schachseite](https://ikrasnodymov.github.io/meshmesh/chess/) spielt über ein

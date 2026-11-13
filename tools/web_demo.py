@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """The device page with made-up data, for screenshots of the site (tools/web_shots.py) and for looking at
 the page in any language without a board: web/index.html, its dictionaries (i18n/web) and /api/* answers
-of an imaginary M9 with contacts, channels, messages, a chess game and the radar. Nothing here comes
-from a real device: names, keys, places and messages are invented.
+of an imaginary M9 with contacts, channels, messages, a chess game, checkers and sea battle and the radar.
+Nothing here comes from a real device: names, keys, places and messages are invented.
 
     python3 tools/web_demo.py [--port 8790]      then open http://127.0.0.1:8790/?lang=de#chats
+
+Checkers and sea battle are fixed games without --duel. With --duel PROGRAM (tools/ui_preview/build.sh with
+KEEP=PROGRAM builds it) the real src/Duel.cpp plays them: one copy is this board, a second one answers as Bob V4
+(accepts, moves a random legal move, shoots at random) and the demo carries their messages both ways.
 """
 import argparse
 import json
+import random
+import subprocess
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -111,14 +118,14 @@ STATUS = {
     'latitude': HOME[0], 'longitude': HOME[1], 'mag': [0, 0, 0], 'accel': [0, 0, 0], 'clock_trusted': True, 'busy': False,
     'rx_age': 40, 'quick_send': True, 'people_counter': True, 'wardrive': True, 'notification_dropped': 0,
     'notification_led': True, 'event': '', 'wifi': True, 'wifi_radio': True, 'langs': ' '.join(['en', 'ru'] + LANGS[1:]),
-    'modules': 'chess pet dice wardrive', 'internet': False, 'ble': True, 'companion': True,
+    'modules': 'chess pet dice wardrive checkers sea', 'internet': False, 'ble': True, 'companion': True,
 }
 CONFIG = {
     'name': 'M9', 'frequency': 869.618, 'bandwidth': 62.5, 'sf': 8, 'cr': 8, 'power': 14, 'hops': 3, 'path_hash': 2,
     'relay': False, 'gps': True, 'sound': True, 'battery_volts': False, 'lang': 'en', 'russian': False, 'brightness': 180,
     'auto_lock': 120, 'dim_after': 30, 'lock_details': False, 'notify_led': 1, 'notify_wake': 1, 'notify_popup': 1,
     'notify_failed': True, 'notify_words': '', 'utc_offset': 120, 'region': '', 'net_auto': True,
-    'apps': 'chats quick nodes nav map radar wardrive people chess pet dice solitaire connect health settings',
+    'apps': 'chats quick nodes nav map radar wardrive people {games chess checkers sea pet dice solitaire} connect health settings',
 }
 CHANNELS = {'max': 8, 'channels': [
     {'id': 'ALL', 'name': 'Public', 'kind': 'public', 'hash': '11', 'link': '', 'region': '',
@@ -134,6 +141,172 @@ GAME = {'id': '3F2A', 'peer': 'B0B5A11E7C42D9E3', 'name': 'Bob V4', 'color': 'wh
         'my_turn': True, 'check': False, 'result': '', 'reason': '', 'draw_offer': '', 'out_status': 3, 'retry_in': -1,
         'retries': 0, 'auto_stopped': False, 'last_san': 'Nf6', 'last': 'g8f6', 'fen': FEN, 'rated': True, 'sign': '',
         'elo_before': 1500, 'elo_after': 1500, 'elo_counted': False, 'move_open': False, 'unseen': False, 'updated': NOW - 120}
+# Checkers and sea battle (firmware "duel", src/Duel.cpp): positions played by the real code (tools/ui_preview).
+DUEL_LIST = ('id', 'kind', 'peer', 'name', 'state', 'result', 'reason', 'my_turn', 'unseen', 'out_status', 'retry_in', 'auto_stopped',
+             'updated', 'color', 'plies', 'last', 'draw_offer', 'mine_left', 'their_left', 'shots', 'first', 'aim', 'last_out', 'last_in',
+             'ships_left', 'sunk', 'can_shuffle', 'fair')
+DUELS = [
+    {'id': '41A8', 'kind': 'checkers', 'peer': 'B0B5A11E7C42D9E3', 'name': 'Bob V4', 'state': 'playing', 'result': '', 'reason': '',
+     'my_turn': True, 'unseen': False, 'out_status': 3, 'retry_in': -1, 'auto_stopped': False, 'updated': NOW - 300, 'color': 'white',
+     'plies': 16, 'last': 'b6-c5', 'draw_offer': '', 'mine_left': 9, 'their_left': 9, 'board': '.wwwww.www...w...bbb...bb...bbbb',
+     'legal': ['d4:f6:h4', 'd4:b6'], 'last_path': ['b6', 'c5']},
+    {'id': '4BC8', 'kind': 'sea', 'peer': 'A22A4E1F03C5B7D8', 'name': 'Anna', 'state': 'playing', 'result': '', 'reason': '', 'my_turn': True,
+     'unseen': False, 'out_status': 3, 'retry_in': -1, 'auto_stopped': False, 'updated': NOW - 600, 'shots': 28, 'first': True, 'aim': '',
+     'last_out': 'c2', 'last_in': 'j8', 'ships_left': 10, 'sunk': 1, 'can_shuffle': False,
+     'mine': '...o...s..s..s......s.oo.xxs......o..o....o.......ssss..ss...........o...s.s...o..os.o..s...os.ss...',
+     'theirs': '...........ooo..............o...~~~x.o.o..~X~..o....~~~...o..x....o............o....x..............o'},
+    {'id': '0D92', 'kind': 'checkers', 'peer': 'C0FFEE42D1B2A3F4', 'name': 'Rita T-Deck', 'state': 'invited', 'result': '', 'reason': '',
+     'my_turn': False, 'unseen': True, 'out_status': 0, 'retry_in': -1, 'auto_stopped': False, 'updated': NOW - 60, 'color': 'white',
+     'plies': 0, 'draw_offer': '', 'mine_left': 12, 'their_left': 12, 'board': 'wwwwwwwwwwww........bbbbbbbbbbbb', 'legal': []}]
+
+
+def duel_list():
+    games = [{k: g[k] for k in DUEL_LIST if k in g} for g in DUELS]
+    return {'games': games, 'events': 0, 'event': '', 'kinds': ['checkers', 'sea'],
+            'waiting': sum(1 for g in DUELS if g['state'] == 'invited' or g['my_turn'] or g['unseen'])}
+
+
+def duel_static(line):
+    """The fixed games: the player's answers change them, moves and shots need an opponent (--duel PROGRAM)."""
+    if line == 'duel':
+        return json.dumps(duel_list(), ensure_ascii=False)
+    words = line.split()
+    if len(words) >= 4 and words[1] == 'invite':
+        peer, kind = words[2], words[3]
+        names = {nid: name for nid, name, *_ in NODES}
+        gid = '%04X' % random.randrange(0x1000, 0xFFFF)
+        color = {'w': 'white', 'b': 'black'}.get(words[4] if len(words) > 4 else 'r', random.choice(['white', 'black']))
+        g = {'id': gid, 'kind': kind, 'peer': peer, 'name': names.get(peer, peer), 'state': 'inviting', 'result': '', 'reason': '',
+             'my_turn': False, 'unseen': False, 'out_status': 2, 'retry_in': -1, 'auto_stopped': False, 'updated': NOW}
+        g.update({'color': color, 'plies': 0, 'draw_offer': '', 'mine_left': 12, 'their_left': 12, 'board': 'w' * 12 + '.' * 8 + 'b' * 12,
+                  'legal': []} if kind == 'checkers' else {'shots': 0, 'first': True, 'aim': '', 'last_out': '', 'last_in': '',
+                  'ships_left': 10, 'sunk': 0, 'can_shuffle': True, 'mine': SEA_FLEET, 'theirs': '.' * 100})
+        DUELS.append(g)
+        return f'OK game {gid} ' + (color if kind == 'checkers' else 'sea')
+    g = next((x for x in DUELS if len(words) > 2 and x['id'] == words[2]), None)
+    if not g:
+        return 'ERR duel invite|accept|decline|move|shoot|shuffle|draw|resign|resend|remove|show|seen GAME_ID ...'
+    verb = words[1]
+    if verb == 'show':
+        return json.dumps(g, ensure_ascii=False)
+    if verb == 'seen':
+        g['unseen'] = False
+        return 'OK seen'
+    if verb == 'accept' and g['state'] == 'invited':
+        g.update(state='playing', my_turn=g.get('color') == 'white', unseen=False,
+                 legal=['a3-b4', 'c3-b4', 'c3-d4', 'e3-d4', 'e3-f4', 'g3-f4', 'g3-h4'] if g.get('color') == 'white' else [])
+    elif verb == 'decline' and g['state'] in ('invited', 'inviting'):
+        g.update(state='over', reason='declined' if g['state'] == 'invited' else 'cancelled', my_turn=False, unseen=False)
+    elif verb == 'resign' and g['state'] == 'playing':
+        g.update(state='over', result='lost', reason='resigned', my_turn=False)
+    elif verb == 'draw' and g['state'] == 'playing' and g['kind'] == 'checkers':
+        g['draw_offer'] = 'mine'
+    elif verb == 'remove' and g['state'] == 'over':
+        DUELS.remove(g)
+    elif verb == 'shuffle' and g.get('can_shuffle'):
+        pass
+    elif verb in ('move', 'shoot'):
+        return 'ERR no opponent in this demo: tools/web_demo.py --duel PROGRAM plays against the real code'
+    else:
+        return f'ERR {verb} not possible now'
+    return 'OK ' + verb
+
+
+SEA_FLEET = DUELS[1]['mine'].translate(str.maketrans('xXo', 'ss.'))  # a new game's fleet: Anna's game before the shots
+
+
+class DuelEngine:
+    """Two copies of the real games code: "me" answers the page, "bob" plays against it on its own."""
+    PEER = '1F00B2C3D4E5F600'  # the preview program's first chat contact: each copy sees the other as it
+    BOB = ('B0B5A11E7C42D9E3', 'Bob V4')
+
+    def __init__(self, program):
+        self.lock = threading.Lock()
+        self.me = subprocess.Popen([program, '--duel', 'en'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        self.bob = subprocess.Popen([program, '--duel', 'en'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        self.turn_seen = {}
+        self.rng = random.Random()
+        threading.Thread(target=self.loop, daemon=True).start()
+
+    @staticmethod
+    def ask(p, line):
+        p.stdin.write(line + '\n')
+        p.stdin.flush()
+        return p.stdout.readline().strip()
+
+    def outward(self, text):
+        """Answers of "me": the preview's contact becomes Bob, the host's clock the demo's."""
+        try:
+            d = json.loads(text)
+        except ValueError:
+            return text
+        now = time.time()
+        for g in d.get('games', [d]) if isinstance(d, dict) else []:
+            if g.get('peer') == self.PEER:
+                g['peer'], g['name'] = self.BOB
+            if g.get('updated'):
+                g['updated'] = NOW - max(0, int(now - g['updated']))
+        return json.dumps(d, ensure_ascii=False)
+
+    def command(self, line):
+        words = line.split()
+        if len(words) > 2 and words[1] == 'invite':
+            words[2] = self.PEER  # every invitation goes to Bob
+            line = ' '.join(words)
+        with self.lock:
+            return self.outward(self.ask(self.me, line))
+
+    def carry(self):
+        n = 0
+        for src, dst in ((self.me, self.bob), (self.bob, self.me)):
+            for m in json.loads(self.ask(src, 'sent')):
+                self.ask(dst, f"recv {self.PEER} {m['text']}")
+                self.ask(src, f"ack {m['id']}")
+                n += 1
+        return n
+
+    def play(self):
+        """Bob: accepts, agrees to a draw, moves or shoots two seconds after his turn comes."""
+        for g in json.loads(self.ask(self.bob, 'duel'))['games']:
+            gid = g['id']
+            if g['state'] == 'invited':
+                self.ask(self.bob, f'duel accept {gid}')
+            elif g['state'] == 'playing' and g.get('draw_offer') == 'theirs':
+                self.ask(self.bob, f'duel draw {gid}')
+            elif g['state'] == 'playing' and g['my_turn']:
+                since = self.turn_seen.setdefault(gid, time.time())
+                if time.time() - since < 2:
+                    continue
+                self.turn_seen.pop(gid, None)
+                d = json.loads(self.ask(self.bob, f'duel show {gid}'))
+                if g['kind'] == 'checkers' and d.get('legal'):
+                    self.ask(self.bob, f"duel move {gid} {self.rng.choice(d['legal'])}")
+                elif g['kind'] == 'sea':
+                    cells = [c for c in range(100) if d['theirs'][c] == '.']
+                    if cells:
+                        c = self.rng.choice(cells)
+                        self.ask(self.bob, f"duel shoot {gid} {'abcdefghij'[c % 10]}{c // 10 + 1}")
+            elif g['state'] == 'over':
+                self.ask(self.bob, f'duel remove {gid}')
+
+    def loop(self):
+        while True:
+            time.sleep(1)
+            with self.lock:
+                for _ in range(10):
+                    if not self.carry():
+                        break
+                self.play()
+                self.carry()
+
+
+DUEL = None  # DuelEngine with --duel PROGRAM
+
+
+def duel_command(line):
+    return DUEL.command(line) if DUEL else duel_static(line)
+
+
 RADAR = {'active': True, 'wifi': 'scanning', 'ble': 'scanning', 'sweeps': 14, 'personal': 3, 'tracking': False, 'targets': [
     {'kind': 'lora', 'ref': 1, 'name': 'North Hill Omni', 'rssi': -64, 'age_ms': 3000, 'node': 'A1D4C3B2E5F60718'},
     {'kind': 'wifi', 'ref': 2, 'name': 'MM-21E0B4', 'rssi': -41, 'age_ms': 800, 'node': ''},
@@ -289,6 +462,9 @@ def answer(path, query):
         return {'events': 1, 'event': '', 'waiting': 1, 'elo': 1512, 'tours': 0, 'sd': True, 'games': [GAME]}
     if path == '/api/tour':
         return []
+    if path == '/api/duel':
+        r = duel_command(f"duel show {query['id'][0]}" if 'id' in query else 'duel')
+        return None if r.startswith('ERR') else json.loads(r)
     if path == '/api/channels':
         return CHANNELS
     if path == '/api/radar':
@@ -381,6 +557,8 @@ class Handler(BaseHTTPRequestHandler):
             reply = radio_command(body['command'])
         elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('netfind'):
             reply = netfind_command(body['command'])
+        elif url.path == '/api/command' and isinstance(body, dict) and str(body.get('command', '')).startswith('duel'):
+            reply = duel_command(body['command'])
         elif url.path == '/api/command' and isinstance(body, dict):
             reply = backup_command(str(body.get('command', '')))
         self.send(400 if reply.startswith('ERR') else 200, reply, 'text/plain')
@@ -395,7 +573,10 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument('--port', type=int, default=8790)
     p.add_argument('--no-storage', action='store_true', help='a board after Meshtastic: no storage, sending off, until fsformat')
+    p.add_argument('--duel', metavar='PROGRAM', help='checkers and sea battle by the real code against a scripted Bob (tools/ui_preview/build.sh KEEP=PROGRAM)')
     a = p.parse_args()
+    if a.duel:
+        DUEL = DuelEngine(a.duel)
     if a.no_storage:
         STATUS.update(storage=False, radio=False)
     print(f'http://127.0.0.1:{a.port}/?lang=en#home')

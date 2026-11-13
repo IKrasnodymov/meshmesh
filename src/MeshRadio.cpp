@@ -18,6 +18,7 @@
 #include <time.h>
 #include <SHA256.h>
 #include "ChessNet.h"
+#include "Duel.h"
 #include "ChessTour.h"
 #include "ChessSync.h"
 #include "Dice.h"
@@ -155,7 +156,7 @@ class MeshCoreBackend:public BaseChatMesh {
  // True for a chat message kept in the history (not a copy, a chess command or a malformed text).
  bool receiveMessage(uint64_t source,uint64_t dest,uint32_t stamp,const char* name,const char* text,const mesh::Packet* packet,uint8_t hops){size_t n=strnlen(text,MAX_TEXT_LEN+1);if(!n||n>MAX_TEXT_LEN||!meshmesh::validUtf8((const uint8_t*)text,n)){owner.rejected++;return false;}if(duplicate(source,stamp,text))return false;for(unsigned i=0;i<owner.historyCount;i++){const auto& old=owner.history[i];if(old.protocol==2&&!old.outgoing&&old.source==source&&old.session==stamp&&!strcmp(old.text,text))return false;}
   // Chess commands come only from direct messages of keyed contacts, never from the channel.
-  if(!channels::isChannel(dest)&&(chessNet.receive(source,name,text)||tour::net.receive(source,name,text)||ledger::exchange.receive(source,name,text)||dicer.receive(source,name,text)))return false;
+  if(!channels::isChannel(dest)&&(chessNet.receive(source,name,text)||duels.receive(source,name,text)||tour::net.receive(source,name,text)||ledger::exchange.receive(source,name,text)||dicer.receive(source,name,text)))return false;
  ChatMessage m;m.source=source;m.destination=dest;m.timestamp=uint32_t(time(nullptr));m.session=stamp;m.route=packet->isRouteFlood()?ChatMessage::RouteFlood:ChatMessage::RouteDirect;m.hops=hops;
   // A flood packet carries the repeaters it passed; a direct one arrives with its path consumed.
   if(packet->isRouteFlood())keepPath(m,packet->path_len,packet->path);m.signal=true;m.snr=int8_t(constrain(lroundf(owner.lastSnr*4),-128,127));m.rssi=int16_t(lroundf(owner.lastRssi));m.heard=1;{uint8_t h[MAX_HASH_SIZE];packet->calculatePacketHash(h);memcpy(&m.packet,h,4);}
@@ -175,6 +176,7 @@ class MeshCoreBackend:public BaseChatMesh {
   if(type==ADV_TYPE_CHAT)return true;
   for(unsigned i=0;i<owner.historyCount;i++){auto& m=owner.history[i];if(m.source==id||m.destination==id)return true;}
   for(auto& g:chessNet.matches)if(g.state!=ChessMatch::Free&&g.peer==id)return true;
+  if(duels.playsWith(id))return true;
   return false;
  }
  void protectContacts(){for(int i=0;i<getNumContacts();i++){ContactInfo c;if(!getContactByIdx(i,c))continue;ContactInfo* p=lookupContactByPubKey(c.id.pub_key,32);if(p)p->flags=(p->flags&~1)|(keep(aliasOf(p->id.pub_key),p->type)?1:0);}protectedAt=millis();}
@@ -428,7 +430,7 @@ uint32_t MeshRadio::queue(const String& text,uint64_t destination,bool game,bool
  Pending* slot=nullptr;for(auto& wait:pending)if(!wait.active){slot=&wait;break;}if(!slot){event="Waiting for ACKs";dirty=true;return false;}
  auto& wait=*slot;wait={};wait.active=true;auto& m=wait.message;m.source=nodeId;m.destination=destination;m.session=config.bootCounter;m.id=++sequence;m.timestamp=time(nullptr);m.outgoing=true;m.status=ChatMessage::Queued;strcpy(m.name,config.name);strcpy(m.text,text.c_str());m.game=game;wait.probe=probe;wait.scoped=scopeKey(channels::isChannel(destination)?channelIndex(destination):-1,wait.scopeKey);wait.wireTimestamp=coreRtc.getCurrentTimeUnique();if(!core->reserveStamp(wait.wireTimestamp)){wait.active=false;event="MeshCore timestamp storage error";dirty=true;return 0;}if(game){dirty=true;return m.id;}addMessage(m);event=channels::isChannel(destination)?"Queued: broadcast":"Queued: waiting for delivery";return m.id;
 }
-void MeshRadio::status(uint32_t id,ChatMessage::Status value,bool txError){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(p.probe){if(value==ChatMessage::Failed)wardrive::probeFailed(id);return;}if(!dicer.delivery(id,value)&&!tour::net.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered||history[i].status==value)return;history[i].status=value;notifications::emit(txError?notifications::TxError:value==ChatMessage::Delivered?notifications::Confirmed:value==ChatMessage::Failed?notifications::Unconfirmed:notifications::Transmitted,history[i]);persist(history[i]);dirty=true;break;}}
+void MeshRadio::status(uint32_t id,ChatMessage::Status value,bool txError){for(auto& p:pending)if(p.message.game&&p.message.id==id){if(p.probe){if(value==ChatMessage::Failed)wardrive::probeFailed(id);return;}if(!dicer.delivery(id,value)&&!tour::net.delivery(id,value)&&!duels.delivery(id,value))chessNet.delivery(id,value);return;}for(unsigned i=0;i<historyCount;i++)if(history[i].protocol==2&&history[i].outgoing&&history[i].source==nodeId&&history[i].session==config.bootCounter&&history[i].id==id){if(history[i].status==ChatMessage::Delivered||history[i].status==value)return;history[i].status=value;notifications::emit(txError?notifications::TxError:value==ChatMessage::Delivered?notifications::Confirmed:value==ChatMessage::Failed?notifications::Unconfirmed:notifications::Transmitted,history[i]);persist(history[i]);dirty=true;break;}}
 // Route of an outgoing message: the current attempt, or the one that got the ACK. Saved with the next status.
 // The path: the route of a direct attempt, the one returned with a flood delivery; copies match the attempt's packet.
 void MeshRadio::track(const Pending& wait,unsigned attempt,bool delivered,uint8_t pathLen,const uint8_t* path){

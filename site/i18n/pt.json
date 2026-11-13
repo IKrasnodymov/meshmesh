@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: uma rede em teste — OK mantém, um reinício volta à salva",
  "shot.web-networks": "Escolhendo uma rede por cidade",
  "shot.web-networks-test": "Teste de configurações: manter, reverter, verificar",
- "doc.networks": "Rede da sua cidade"
+ "doc.networks": "Rede da sua cidade",
+ "f.games.t": "Damas, batalha naval e pastas",
+ "f.games.d": "Mais dois jogos com seus contatos por rádio, além do xadrez: damas russas e batalha naval. Cada lance e cada tiro é uma mensagem direta confirmada, reenviada até chegar; sem ELO, é só jogar. No M9 e no T-Deck com teclas e toque, com um botão ou joystick nas placas OLED, na página web e no app. Todos os jogos agora ficam na pasta Jogos do menu; na página web e no app você cria pastas, renomeia, oculta e move apps entre elas.",
+ "shot.m9-checkers": "Damas: uma pedra escolhida, com seus lances marcados",
+ "shot.m9-checkers-chain": "Uma dama captura várias pedras em um lance",
+ "shot.m9-sea-mid": "Batalha naval: acertos, um navio afundado, sua frota",
+ "shot.m9-sea-lost": "A frota do vencedor, mostrada e conferida com as respostas",
+ "shot.m9-folder": "A pasta Jogos",
+ "shot.m9-home-folder": "O menu com a pasta Jogos",
+ "shot.heltec-checkers-move": "Damas com um botão: o lance sugerido",
+ "shot.heltec-sea-hunt": "Batalha naval no OLED: afundar o navio atingido",
+ "doc.games": "Damas, batalha naval, pastas"
 }

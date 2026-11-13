@@ -17,6 +17,7 @@
 #else
 #define MM_LANG_IN(l) 1
 #endif
+#include "Modules.h" // MM_DUEL: the strings of checkers and sea battle (I18nTable.h)
 #include "I18nTable.h"
 #include "I18nFonts.h"
 #include <algorithm>

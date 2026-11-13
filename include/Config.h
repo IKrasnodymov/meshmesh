@@ -34,7 +34,7 @@ struct Config {
   uint8_t notifyWake=0; // preserve the keyboard boards' existing screen-off behaviour
 #endif
   bool notifyFailed=false;char notifyWords[97]="";
-  char apps[160]=""; // screen menu: order of the apps, "-" hides one (App.h); empty = the default
+  char apps[256]=""; // screen menu: order of the apps, "-" hides one (App.h); empty = the default
   // Default region of our flood packets (Regions.h): empty - none; the key is that of "#name" unless an app set
   // another (a private region of the MeshCore app).
   char region[31]="";uint8_t regionKey[16]={};

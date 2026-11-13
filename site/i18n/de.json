@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: ein Netz im Test — OK behält es, ein Neustart stellt das gespeicherte her",
  "shot.web-networks": "Netz nach Stadt wählen",
  "shot.web-networks-test": "Ein Einstellungstest: behalten, zurücksetzen, prüfen",
- "doc.networks": "Netz Ihrer Stadt"
+ "doc.networks": "Netz Ihrer Stadt",
+ "f.games.t": "Dame, Seeschlacht und Ordner",
+ "f.games.d": "Neben Schach zwei weitere Spiele mit Ihren Kontakten per Funk: Russische Dame und Seeschlacht. Jeder Zug und jeder Schuss ist eine bestätigte Direktnachricht, die wiederholt wird, bis sie ankommt; ohne Wertung, einfach spielen. Auf M9 und T-Deck mit Tasten und Touch, mit einer Taste oder einem Joystick auf OLED-Boards, auf der Webseite und in der App. Alle Spiele liegen jetzt im Menüordner „Spiele“; auf der Webseite und in der App legen Sie Ordner an, benennen und verbergen sie und verschieben Apps zwischen ihnen.",
+ "shot.m9-checkers": "Dame: ein Stein gewählt, seine Züge markiert",
+ "shot.m9-checkers-chain": "Eine Dame schlägt mehrere Steine in einem Zug",
+ "shot.m9-sea-mid": "Seeschlacht: Treffer, ein versenktes Schiff, Ihre Flotte",
+ "shot.m9-sea-lost": "Die Flotte des Siegers, aufgedeckt und mit den Antworten abgeglichen",
+ "shot.m9-folder": "Der Ordner „Spiele“",
+ "shot.m9-home-folder": "Das Menü mit dem Ordner „Spiele“",
+ "shot.heltec-checkers-move": "Dame mit einer Taste: ein Zug wird vorgeschlagen",
+ "shot.heltec-sea-hunt": "Seeschlacht auf einem OLED: das getroffene Schiff versenken",
+ "doc.games": "Dame, Seeschlacht, Ordner"
 }

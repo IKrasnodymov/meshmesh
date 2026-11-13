@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """nRF52 boards (GAT562 30S, Heltec T114; community: Heltec T096, fakeTec): package, back up and install through the Adafruit UF2 bootloader.
 
-  package ENV [--without chess,pet,dice,wardrive] [--lang CODE]
+  package ENV [--without chess,pet,dice,wardrive] [--with-games] [--lang CODE]
                      firmware.bin, firmware.uf2 and INSTALL.txt in artifacts/meshmesh-<board>-<version>:
                      English and Russian, and in lang/<code>/ the image of English and that language
                      (1 MB flash: one image does not hold every language; tools/pio_lang.py).
                      --without leaves optional modules out (include/Modules.h; chess about 76 KB, pet 26 KB,
                      dice 17 KB on the T114) and builds the package itself, in its own folders, as
                      artifacts/meshmesh-<board>-<version>-without-<modules>; --lang builds that one language
-                     image only (the full package builds all of them)
+                     image only (the full package builds all of them); --with-games builds checkers and sea battle in
+                     (off in the nRF52 images: English and Russian only, the T114 needs --without chess or the like)
   backup             copy CURRENT.UF2 and INFO_UF2.TXT from the mounted bootloader drive (0600) into
                      backups/<board>/ (the board from the drive's Board-ID)
   flash PACKAGE [--lang CODE]  require a backup, enter the bootloader and write the package: a mounted UF2 drive
@@ -96,20 +97,25 @@ def dfu_package(data, base_zip, out):
 
 MODULES = ('chess', 'pet', 'dice', 'wardrive')  # optional modules (include/Modules.h)
 WITHOUT = ()  # the modules this run leaves out (package --without)
+GAMES = False  # checkers and sea battle built in (package --with-games; MM_WITH_GAMES, off in the nRF52 images by default)
 
 
 def slug():
-    return '-'.join(sorted(WITHOUT))
+    return '-'.join(sorted(WITHOUT) + (['with-games'] if GAMES else []))
+
+
+def custom():
+    return bool(WITHOUT) or GAMES
 
 
 def plain_build():
     """The build folder of the plain image: .pio/build, or one per module set."""
-    return ROOT / '.pio/build' if not WITHOUT else ROOT / '.pio/build-mods' / slug()
+    return ROOT / '.pio/build' if not custom() else ROOT / '.pio/build-mods' / slug()
 
 
 def lang_build():
     """The language images (without Russian) build apart from the plain one."""
-    return ROOT / '.pio/build-lang' if not WITHOUT else ROOT / '.pio/build-mods-lang' / slug()
+    return ROOT / '.pio/build-lang' if not custom() else ROOT / '.pio/build-mods-lang' / slug()
 
 
 def build(env, lang=None):
@@ -118,10 +124,10 @@ def build(env, lang=None):
     if lang:
         environ['MM_LANG'] = lang
         environ['PLATFORMIO_BUILD_DIR'] = str(lang_build())
-    elif WITHOUT:
+    elif custom():
         environ['PLATFORMIO_BUILD_DIR'] = str(plain_build())
-    if WITHOUT:
-        environ['PLATFORMIO_BUILD_FLAGS'] = ' '.join(f'-DMM_NO_{m.upper()}' for m in WITHOUT)
+    if custom():
+        environ['PLATFORMIO_BUILD_FLAGS'] = ' '.join([f'-DMM_NO_{m.upper()}' for m in WITHOUT] + (['-DMM_WITH_GAMES'] if GAMES else []))
     subprocess.run([sys.executable, '-m', 'platformio', 'run', '-s', '-e', env], cwd=ROOT, env=environ, check=True)
 
 
@@ -167,7 +173,7 @@ def version():
 
 def package(env, only=None):
     name, title = BOARDS[env]
-    if WITHOUT:
+    if custom():
         build(env)
     build_dir = plain_build() / env
     elf = build_dir / 'firmware.elf'
@@ -178,13 +184,14 @@ def package(env, only=None):
     if any(p.stat().st_mtime > elf.stat().st_mtime for p in sources):
         raise SystemExit('Firmware is older than project sources; run a successful build before packaging')
     objcopy = Path.home() / '.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-objcopy'
-    target = ROOT / 'artifacts' / (f'meshmesh-{name}-{version()}' + (f'-without-{slug()}' if WITHOUT else ''))
+    target = ROOT / 'artifacts' / (f'meshmesh-{name}-{version()}' + (('-without-' + '-'.join(WITHOUT) if WITHOUT else '') + ('-with-games' if GAMES else '')))
     target.mkdir(parents=True, exist_ok=True)
     data = image(env, objcopy, target / 'firmware.bin')
     (target / 'firmware.uf2').write_bytes(uf2(data, APP_START))
     shutil.copy(build_dir / 'firmware.zip', target / 'firmware-dfu.zip')
     shutil.rmtree(target / 'lang', ignore_errors=True)
-    langs = languages(env, objcopy, target, data, only)
+    # With the games only English and Russian fit (docs/games.md): no language images unless one is asked for.
+    langs = languages(env, objcopy, target, data, only) if only or not GAMES else {}
     digest = hashlib.sha256(data).hexdigest()
     (target / 'INSTALL.txt').write_text(f"""MeshMesh {version()} для {title}
 
@@ -200,7 +207,7 @@ def package(env, only=None):
 создаёт его по запросу.
 Обновление по Bluetooth (DFU) не поддерживается: firmware-dfu.zip — для adafruit-nrfutil по USB.
 
-{('Без модулей: ' + ', '.join(WITHOUT) + ' (tools/nrf52.py package --without; включить их обратно — установить полный пакет).' + chr(10) + chr(10)) if WITHOUT else ''}Языки экрана: образ в корне пакета — английский и русский. Образ английского и другого языка
+{('С шашками и морским боем (tools/nrf52.py package --with-games): других языков, кроме английского и русского, в пакете нет.' + chr(10) + chr(10)) if GAMES else ''}{('Без модулей: ' + ', '.join(WITHOUT) + ' (tools/nrf52.py package --without; включить их обратно — установить полный пакет).' + chr(10) + chr(10)) if WITHOUT else ''}Языки экрана: образ в корне пакета — английский и русский. Образ английского и другого языка
 (без русского) — в lang/<код>/ (uk, es, pt, fr, de, it, pl, tr, zh, ja, ko, ar, id): весь набор языков
 не помещается в 1 МБ flash. Язык включается в настройках платы после установки.
 
@@ -210,7 +217,7 @@ SHA-256 firmware.bin: {digest}
     manifest = {'target': env, 'board': env, 'version': version(), 'chip': 'nrf52840', 'firmware_sha256': digest, 'size': len(data),
                 'uf2_sha256': uf2_digest, 'firmware.bin': {'bytes': len(data), 'sha256': digest},
                 'firmware.uf2': {'family': hex(FAMILY), 'base': hex(APP_START), 'sha256': uf2_digest}, 'languages': langs,
-                'modules': [m for m in MODULES if m not in WITHOUT]}
+                'modules': [m for m in MODULES if m not in WITHOUT] + (['checkers', 'sea'] if GAMES else [])}
     release = json.loads((build_dir / 'release.json').read_text())
     if release['version'] != version():
         raise SystemExit('Build version is stale')
@@ -378,13 +385,15 @@ def main():
     pk.add_argument('environment', choices=BOARDS)
     pk.add_argument('--without', default='', help='optional modules to leave out, comma-separated: ' + ', '.join(MODULES))
     pk.add_argument('--lang', help='build only this language image (besides English and Russian)')
+    pk.add_argument('--with-games', action='store_true', help='with checkers and sea battle (MM_WITH_GAMES): English and Russian only')
     sub.add_parser('backup')
     f = sub.add_parser('flash')
     f.add_argument('package')
     f.add_argument('--lang', help='screen language of the image (en and ru are in every image)')
     args = parser.parse_args()
     if args.command == 'package':
-        global WITHOUT
+        global WITHOUT, GAMES
+        GAMES = args.with_games
         WITHOUT = tuple(sorted({m.strip() for m in args.without.split(',') if m.strip()}))
         if any(m not in MODULES for m in WITHOUT):
             raise SystemExit('--without takes ' + ', '.join(MODULES))

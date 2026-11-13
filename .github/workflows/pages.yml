@@ -56,6 +56,9 @@ jobs:
       # Required: do not silently publish old screenshots when generation fails.
       - if: matrix.env == 'm9'
         run: pip install pillow && python tools/site_shots.py artifacts/site-shots
+      # Checkers and sea battle: two host copies of src/Duel.cpp play whole games, with lost messages resent.
+      - if: matrix.env == 'm9'
+        run: KEEP=/tmp/duelsrv sh tools/ui_preview/build.sh m9 /tmp/duel-preview en && python tools/duel_check.py /tmp/duelsrv --games 4
       # The device page in every language (made-up data, headless Chrome of the runner).
       - if: matrix.env == 'm9'
         run: |

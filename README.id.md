@@ -29,6 +29,7 @@ MeshCore standar.
 - **Radar sinyal** — Wi-Fi, Bluetooth dan LoRa di sekitar Anda, dengan pelacakan “panas / dingin”.
 - **Sensor gerak** — dua papan mendeteksi orang yang berjalan di antaranya (Wi-Fi CSI).
 - **Catur** dengan kontak Anda lewat mesh, dan solitaire Klondike di M9.
+- **Dam dan perang laut** dengan kontak Anda lewat mesh (0.33.0): dam Rusia dan perang laut 10×10, setiap langkah adalah pesan yang dikonfirmasi, tanpa rating; semua game ada di folder Game pada menu, dan folder bisa dibuat, diganti namanya, disembunyikan, dan diisi di halaman web atau aplikasi. [docs/en/games.md](docs/en/games.md)
 - **Peliharaan mesh** — makhluk piksel ala Tamagotchi di setiap papan: makan dari lalu lintas radio, tumbuh, dan bisa mati karena lapar atau kesepian. [docs/en/pet.md](docs/en/pet.md)
 - **Dadu** — pelempar dadu DIC3R di setiap papan: kumpulan dadu dan rumus RPG (2d6+1, d20, d66, d%), grid Warhammer dengan ambang sukses dan lembar karakter dari blok (atribut, trek, tanda, kemampuan yang melempar dadu dan menghabiskan) dengan templat D&D 5e dan R.E.T., dibuat di halaman web atau aplikasi lalu dikirim ke kontak lewat mesh; sama di layar, halaman web, dan aplikasi. [docs/en/dice.md](docs/en/dice.md)
 - **Catur tanpa MeshMesh di perangkat Anda**: [halaman catur](https://ikrasnodymov.github.io/meshmesh/chess/) bermain melalui

@@ -2,6 +2,7 @@
 #pragma GCC optimize("Os") // 1 MB flash: the screens and menus are not speed-critical (the rest of the nRF52 image is -O2)
 #endif
 #include "App.h"
+#include <new>
 #include "Hardware.h"
 #include "MeshRadio.h"
 #include "Remote.h"
@@ -18,6 +19,7 @@
 #include "QuickSend.h"
 #include "People.h"
 #include "Wardrive.h"
+#include "Duel.h"
 #include "Emoji.h"
 #include <algorithm>
 #include <math.h>
@@ -36,9 +38,12 @@
 // Joystick boards (MM_JOYSTICK, GAT562): left/right change the screen, up/down scroll the screen or
 // the menu, the centre runs the action or opens the menu, Back closes and goes home; messages are
 // written on an on-screen keyboard (UiCompose.inc).
+// Folders (App.h): a folder is a screen of the cycle with its apps listed; a hold (joystick: OK on the chosen
+// app) enters it, then clicks go through its apps and after the last one back to the folder screen; Back (or a
+// double click) returns to it. Folders are made on the web page and in the app.
 namespace {
-enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,NotifyPage,QuickPage,PeoplePage,WardrivePage,PageCount};
-const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules","notifications","quick","people","wardrive"};
+enum Page {Home,Messages,Nodes,Chess,PetPage,DicePage,Signals,Gps,Wifi,Ble,Settings,Modules,NotifyPage,QuickPage,PeoplePage,WardrivePage,CheckersPage,SeaPage,FolderPage,PageCount};
+const char* pageNames[]={"home","messages","nodes","chess","pet","dice","radar","gps","wifi","ble","settings","modules","notifications","quick","people","wardrive","checkers","sea","folder"};
 unsigned quickIndex=0,quickTargetIndex=0;bool quickTargets=false,quickReply=false;uint64_t quickReplyTo=0;
 int page=Home,menuIndex=0,messageOffset=0,nodeIndex=0;bool menuOpen=false,dirty=true,screenOff=false;
 // One button: pages whose click counts, rolls or picks are entered with a hold, so clicking through the pages passes them.
@@ -53,7 +58,8 @@ bool appPage(){
 bool appClosed(){return appPage()&&!appOpen;}
 uint32_t drawAt=0,lastInput=0,menuAt=0,actionAt=0,popupAt=0,ledAt=0,pingAt=0,pingedSamples=0;String action;
 inline __attribute__((always_inline)) void led(bool on){if(pins::led>=0)digitalWrite(pins::led,on?pins::ledOn:!pins::ledOn);}
-uint32_t chessPopupAt=0,chessSeen=0,tourSeen=0;String chessPopupText; // chess and tournament news
+uint32_t chessPopupAt=0,chessSeen=0,tourSeen=0,duelSeen=0;String chessPopupText; // chess, tournament and game news
+uint8_t newsKind=0; // the news shown: 0 chess or a tournament, 1+Duel::Kind checkers or sea battle
 ChatMessage incomingPopup{};uint8_t ledPattern=0;
 unsigned unreadCount=0;struct {uint64_t source=0;uint32_t session=0,id=0;} newest;
 const uint8_t* activeFont=nullptr;
@@ -99,7 +105,13 @@ struct HiFont{const uint8_t* main;const uint8_t* latin;bool bold;};
 HiFont hiFont(const uint8_t* f){
  if(f==small)return{u8g2_font_9x15_t_cyrillic,u8g2_font_9x15_tf,false};
  if(f==u8g2_font_4x6_t_cyrillic)return{u8g2_font_7x13_t_cyrillic,u8g2_font_7x13_tf,false};
+#if defined(MM_NO_RU)
+ // Without a Russian screen (the nRF52 images of the other languages) the large role writes numbers, a password and
+ // states: ASCII large, anything else (a Cyrillic name) at 10x20; 3 KB less than the Cyrillic large font.
+ if(f==u8g2_font_10x20_t_cyrillic)return{u8g2_font_inr24_mr,u8g2_font_10x20_t_cyrillic,false};
+#else
  if(f==u8g2_font_10x20_t_cyrillic)return{u8g2_font_inr24_t_cyrillic,nullptr,false};
+#endif
  return{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf,f==bold};
 }
 // Emoji: 16 px with the large fonts, 12 px with the small ones, in the pictures' colours.
@@ -132,6 +144,18 @@ void textLines(const String& value,int y,unsigned maximum){
  while(at<value.length()&&count<12){unsigned n=0,end=at,space=0;while(end<value.length()&&value[end]!='\n'){unsigned next=end;uint32_t c=utf8Next(value,next);if(n+glyphCells(c)>21)break;n+=glyphCells(c);end=next;if(c==' ')space=end;}
   if(end<value.length()&&value[end]!='\n'&&space>at)end=space;rows[count++]=value.substring(at,end);at=end;if(at<value.length()&&value[at]=='\n')at++;}
  unsigned first=count>maximum?(millis()/4000)%(count-maximum+1):0;for(unsigned i=first;i<count&&i<first+maximum;i++)say(0,y+(i-first)*12,rows[i]);
+}
+// Up to `rows` lines of `cols` characters from x, wrapped at spaces (the narrow panels of the game boards).
+void textLinesAt(const String& value,int x,int y,unsigned rows,unsigned cols){
+ unsigned at=0;for(unsigned r=0;r<rows&&at<value.length();r++){unsigned n=0,end=at,space=0;
+  while(end<value.length()&&n<cols){uint8_t c=value[end];end+=c<128?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;n++;if(c==' ')space=end;}
+  if(end<value.length()&&space>at)end=space;say(x,y+r*9,value.substring(at,end),small);at=end;while(at<value.length()&&value[at]==' ')at++;}
+}
+// The delivery of a game's last command (ChessNet.h, Duel.h): stopped - resending gave up.
+String linkText(uint8_t link,bool stopped){
+ switch(link){case ChatMessage::Queued:return t("sending","отправка");case ChatMessage::Sent:return t("no ACK yet","ждём ACK");
+ case ChatMessage::Delivered:return t("delivered","доставлено");case ChatMessage::Failed:return stopped?t("not delivered","не доставлено"):t("will resend","повторю");}
+ return "";
 }
 String clockText(time_t at){if(at<1700000000)return "--:--";at+=config.utcOffset*60;tm* v=gmtime(&at);char b[6];snprintf(b,sizeof b,"%02d:%02d",v->tm_hour,v->tm_min);return b;}
 String ago(uint32_t ms){uint32_t s=ms/1000;if(s<60)return String(s)+t("s","с");if(s<3600)return String(s/60)+t("m","м");if(s<86400)return String(s/3600)+t("h","ч");return String(s/86400)+t("d","д");}
@@ -178,14 +202,13 @@ String wifiState(){
 #endif
  switch(radar.wifi){case Radar::WifiPortal:return t("Wi-Fi: access point","Wi-Fi: точка доступа");case Radar::WifiBusy:return t("Wi-Fi busy","Wi-Fi занят");case Radar::WifiFailed:return t("Wi-Fi error","Ошибка Wi-Fi");default:return radar.sweeps?"":t("scanning...","сканирую...");}}
 String bleState(){return radar.ble==Radar::BleBusy?t("BLE busy","BLE занят"):radar.ble==Radar::BleFailed?t("BLE error","Ошибка BLE"):"";}
-void showPage(int next){page=next;appOpen=false;if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive()&&!wardrive::holdsRadar())radar.close();if(page==QuickPage){quickTargets=false;quickIndex=0;}if(page==Messages){messageOffset=0;unreadCount=0;}}
 // Server roles show the pages that still mean something: no chats, nodes or radar.
 bool pageShown(int p){
  if(p==WardrivePage&&!MM_WARDRIVE)return false;
 #if defined(MM_NO_WIFI)
  if(p==Wifi)return false; // no Wi-Fi radio
 #endif
- if((p==Chess&&!MM_CHESS)||(p==PetPage&&!MM_PET)||(p==DicePage&&!MM_DICE))return false; // modules left out of this image (Modules.h)
+ if((p==Chess&&!MM_CHESS)||(p==CheckersPage&&!MM_CHECKERS)||(p==SeaPage&&!MM_SEA)||(p==PetPage&&!MM_PET)||(p==DicePage&&!MM_DICE))return false; // modules left out of this image (Modules.h)
  return config.role==RoleNormal||p==Home||p==PetPage||p==DicePage||p==Gps||p==Wifi||p==Ble||p==Settings||p==Modules;} // the pet lives in every role
 } // namespace
 // The pages after Home, in the default order; the chosen order and the hidden ones: config.apps (App.h).
@@ -202,6 +225,12 @@ const char* const uiApps[]={"chats","quick","nodes","gps","radar",
  "people",
 #if MM_CHESS
  "chess",
+#endif
+#if MM_CHECKERS
+ "checkers",
+#endif
+#if MM_SEA
+ "sea",
 #endif
 #if MM_PET
  "pet",
@@ -220,6 +249,12 @@ const uint8_t appPages[]={Messages,QuickPage,Nodes,Gps,Signals,
 #if MM_CHESS
  Chess,
 #endif
+#if MM_CHECKERS
+ CheckersPage,
+#endif
+#if MM_SEA
+ SeaPage,
+#endif
 #if MM_PET
  PetPage,
 #endif
@@ -228,11 +263,40 @@ const uint8_t appPages[]={Messages,QuickPage,Nodes,Gps,Signals,
 #endif
  MM_WIFI_APP(Wifi)Ble,Modules,Settings};
 static_assert(sizeof appPages==sizeof uiApps/sizeof *uiApps,"a page for every app ID");
-// What a click goes through: Home, then the shown apps in the chosen order.
-unsigned pageCycle(uint8_t* cycle){unsigned n=0;cycle[n++]=Home;uint8_t order[AppsMax];unsigned k=appsShown(order);for(unsigned i=0;i<k;i++)if(pageShown(appPages[order[i]]))cycle[n++]=appPages[order[i]];return n;}
-int stepPage(int p,int step){uint8_t c[AppsMax+1];unsigned n=pageCycle(c);for(unsigned i=0;i<n;i++)if(c[i]==p)return c[(i+n+step)%n];return Home;} // a hidden page opened by an event: back to Home
-int nextPage(int p){return stepPage(p,1);}
-int previousPage(int p){return stepPage(p,-1);}
+// Folders: folderAt is the folder of the folder screen. A place in the cycle is a page, or FolderPage|folder<<8
+// (showPage takes both).
+int folderAt=0,folderSel=0; // folderSel: the joystick's choice on the folder screen
+int folderCode(int f){return FolderPage|f<<8;}
+unsigned folderPages(int f,uint8_t* out){uint8_t e[AppsMax];unsigned k=appsShown(e,f),n=0;for(unsigned i=0;i<k;i++)if(pageShown(appPages[e[i]]))out[n++]=appPages[e[i]];return n;}
+// What a click goes through: Home, then the shown apps and folders in the chosen order (a folder without a shown app is left out).
+unsigned pageCycle(int* cycle){
+ unsigned n=0;cycle[n++]=Home;uint8_t e[AppEntriesMax],p[AppsMax];unsigned k=appsShown(e);
+ for(unsigned i=0;i<k;i++){if(!(e[i]&AppFolder)){if(pageShown(appPages[e[i]]))cycle[n++]=appPages[e[i]];}else if(folderPages(e[i]&~AppFolder,p))cycle[n++]=folderCode(e[i]&~AppFolder);}
+ return n;}
+// The folder of the app shown when that folder is in the cycle and shows the app (however the page was opened:
+// a click, a menu, news), else -1.
+int pageFolder(){
+ for(uint8_t i=0;i<uiAppCount&&page!=FolderPage;i++)if(appPages[i]==page){int f=appsFolderOf(i),c[AppEntriesMax+1];unsigned n=f<0?0:pageCycle(c);
+  for(unsigned k=0;k<n;k++)if(c[k]==folderCode(f)){uint8_t p[AppsMax];unsigned m=folderPages(f,p);for(unsigned j=0;j<m;j++)if(p[j]==page)return f;}}
+ return -1;}
+int here(){int f=pageFolder();return page==FolderPage?folderCode(folderAt):f>=0?folderCode(f):page;}
+// In a folder: its apps, the folder screen before the first and after the last. A hidden page opened by an event: back to Home.
+int stepPage(int step){
+ int f=pageFolder();if(f>=0){uint8_t p[AppsMax];unsigned n=folderPages(f,p);for(unsigned i=0;i<n;i++)if(p[i]==page){int j=int(i)+step;return j>=0&&j<int(n)?p[j]:folderCode(f);}}
+ int c[AppEntriesMax+1];unsigned n=pageCycle(c);int h=here();for(unsigned i=0;i<n;i++)if(c[i]==h)return c[(i+n+step)%n];return Home;}
+int nextPage(){return stepPage(1);}
+int previousPage(){return stepPage(-1);}
+int folderBack(){int f=pageFolder();return f>=0?folderCode(f):-1;} // the folder screen an app of a folder returns to
+void showPage(int next){
+ page=next&0xff;appOpen=false;if(page==FolderPage){folderAt=next>>8;folderSel=0;}
+ if(page==Signals){signalManual=false;radar.open();}else if(!webRadarActive()&&!wardrive::holdsRadar())radar.close();if(page==QuickPage){quickTargets=false;quickIndex=0;}if(page==Messages){messageOffset=0;unreadCount=0;}}
+// An app's name in a folder's list.
+String appName(int p){
+ switch(p){case Messages:return t("Messages","Сообщения");case QuickPage:return t("Quick send","Быстрая отправка");case Nodes:return t("Nodes","Узлы");case Gps:return "GPS";
+ case Signals:return t("Radar","Радар");case WardrivePage:return t("Wardrive","Вардрайв");case PeoplePage:return t("Quick counter","Быстрый счётчик");case Chess:return t("Chess","Шахматы");
+ case CheckersPage:return t("Checkers","Шашки");case SeaPage:return t("Sea battle","Морской бой");case PetPage:return t("Pet","Питомец");case DicePage:return t("Dice","Кости");
+ case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");case NotifyPage:return t("Notifications","Уведомления");case FolderPage:return appsFolderName(folderAt);}
+ return t("Modules","Модули");}
 // Device role: offered for 5 s after boot (click: next, hold: choose) and from the menus.
 bool rolePick=false,rolePickBoot=false;int roleSel=0;uint32_t rolePickAt=0;
 String roleShort(int r){return r==RoleRepeater?t("Repeater","Репитер"):r==RoleRoom?t("Room server","Комната"):t("Normal","Обычный");}
@@ -252,6 +316,9 @@ void openRolePick(bool atBoot){if(atBoot&&!screenPresent())return;rolePick=true;
 #if MM_CHESS
 #include "UiChessCompact.inc"
 #endif
+#if MM_DUEL
+#include "UiDuelCompact.inc"
+#endif
 #if MM_PET
 #include "UiPetCompact.inc"
 #endif
@@ -266,8 +333,11 @@ template<class T> String applyOne(const char* key,T value){StaticJsonDocument<96
 // returns the saved one). Network: the network search (NetFind.h): hold starts it near the position (or stops it),
 // and once a network is found tests it (radio try).
 enum RadioRow {RowFreq,RowBw,RowSf,RowCr,RowPower,RowHops,RowRelay,RowHash,RowRegion,RowFind,RowPrev,RowNet,RowSave,RowCancel,RadioRows};
-bool radioEdit=false,radioEditing=false;int radioRow=0,radioDigit=0;Config radioDraft;
-void openRadio(){radioDraft=config;radioEdit=true;radioEditing=false;radioRow=0;radioDigit=0;dirty=true;}
+bool radioEdit=false,radioEditing=false;int radioRow=0,radioDigit=0;
+// The draft lives in zeroed memory, made a copy of config when the editor opens: a Config object with its defaults
+// would keep them in the image (536 bytes of the nRF52 flash).
+alignas(Config) uint8_t radioDraftSpace[sizeof(Config)];Config& radioDraft=*reinterpret_cast<Config*>(radioDraftSpace);
+void openRadio(){new(radioDraftSpace) Config(config);radioEdit=true;radioEditing=false;radioRow=0;radioDigit=0;dirty=true;}
 String radioName(int i){
  switch(i){case RowFreq:return t("Frequency","Частота");case RowBw:return t("Bandwidth","Полоса");case RowSf:return "SF";case RowCr:return "CR";
  case RowPower:return t("Power","Мощность");case RowHops:return t("Relay limit","Предел перес.");case RowRelay:return t("Relaying","Ретрансляция");case RowHash:return t("Path hash","Хэш пути");
@@ -358,7 +428,7 @@ unsigned wdOrder(unsigned* order,const wardrive::Repeater*& list){unsigned n=war
  std::sort(order,order+n,[&](unsigned a,unsigned b){unsigned x=list[a].echoes*4+list[a].rx,y=list[b].echoes*4+list[b].rx;return x!=y?x>y:list[a].snr>list[b].snr;});return n;}
 #endif
 // Actions: a screen with one action runs it on hold; several open a menu.
-enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
+enum Act {ActFormat,ActJoin,ActJoinHeard,ActWrite,ActChess,ActChessOpen,ActChessNext,ActCheckers,ActSea,ActDuelOpen,ActDuelNext,ActSound,ActRole,ActForward,ActAdvert,ActReplyOk,ActReplyAck,ActOlder,ActNewer,ActNextNode,ActNodeOk,ActResetPath,ActGps,ActPosition,ActWifi,ActBle,ActLanguage,ActBattery,ActScreen,ActContrast,ActSelfTest,ActHoming,ActNextSignal,ActStopHoming,ActResetPeak,ActCsiBeacon,ActCsiSensor,ActCalibrate,ActPetCuddle,ActPetFeed,ActPetHeal,ActPetEgg,ActPetDeath,ActPetAdopt,ActPetRelease,
   ActPeopleMinus,ActPeopleNext,ActPeopleAdd,ActPeopleDelete,ActPeopleReset,ActPeopleBle,ActPeopleWifi,ActPeopleWindow,ActPeopleRssi,ActPeoplePersonal,ActPeopleClear,ActPeopleExit,ActQuick,ActNotify,ActNotifyLed,ActNotifyWake,ActNotifyPopup,ActNotifyFailed,ActPowerOff,ActRadio,ActDiceRoll,ActDiceSaved,ActDiceNextSaved,ActDiceCount,ActDiceType,ActDiceMod,ActDiceHero,ActDiceMode,ActDiceGridMore,ActDiceGridFive,ActDiceGridRow,ActDiceGridType,ActDiceThreshold,
   ActDicePlus1,ActDiceMinus1,ActDicePlus5,ActDiceMinus5,ActDiceNextCounter,ActDiceAddCounter,ActDiceTap,ActDiceAct,ActDicePrevBlock,ActDiceAccept,ActDiceDecline,ActDiceExit,ActRemoteLogin,ActRemoteStatus,ActTrace,ActWardriveRun,ActWardrivePing,ActWardriveView,ActWardriveNets,ActDoubleBack,ActClose};
 constexpr unsigned MenuMax=14;
@@ -389,10 +459,11 @@ unsigned actions(Act* out){
   if(meshRadio.historyCount){out[n++]=ActReplyOk;out[n++]=ActReplyAck;out[n++]=ActOlder;out[n++]=ActNewer;out[n++]=ActQuick;}break;
  case Nodes:if(Peer* p=shownNode()){
 #if defined(MM_JOYSTICK)
-  if(p->type==1){out[n++]=ActWrite;if(MM_CHESS)out[n++]=ActChess;}
+  if(p->type==1)out[n++]=ActWrite;
 #else
-  out[n++]=ActNextNode;if(MM_CHESS&&p->type==1)out[n++]=ActChess;
+  out[n++]=ActNextNode;
 #endif
+  if(p->type==1){if(MM_CHESS)out[n++]=ActChess;if(MM_CHECKERS)out[n++]=ActCheckers;if(MM_SEA)out[n++]=ActSea;} // games with a chat contact
   if(p->type==1)out[n++]=ActNodeOk;
   if(p->type==2||p->type==3){out[n++]=ActRemoteLogin;out[n++]=ActRemoteStatus;} // with the saved password, else as a guest
   if(remote::traceable(p->id))out[n++]=ActTrace;
@@ -402,6 +473,11 @@ unsigned actions(Act* out){
 #if MM_CHESS
   {ChessMatch* games[ChessNet::MaxMatches];unsigned g=chessGames(games);if(g){out[n++]=ActChessOpen;if(g>1)out[n++]=ActChessNext;}} // the joystick opens with OK
 #endif
+#endif
+  break;
+ case CheckersPage:case SeaPage:
+#if MM_DUEL&&!defined(MM_JOYSTICK)
+  {Duel* games[DuelNet::Max];unsigned g=duelGames(duelKind(),games);if(g){out[n++]=ActDuelOpen;if(g>1)out[n++]=ActDuelNext;}} // the joystick opens with OK
 #endif
   break;
  case Signals:
@@ -451,7 +527,7 @@ bool keepsMenu(Act a){
 #if MM_DICE
  if(a>=ActDiceRoll&&a<=ActDiceExit)return diceKeeps(a);
 #endif
- return (a==ActPeopleDelete&&tallyArmed)||a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActLanguage||a==ActBattery||a==ActDoubleBack||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
+ return (a==ActPeopleDelete&&tallyArmed)||a==ActFormat||a==ActPowerOff||a==ActSound||a==ActNextSignal||a==ActOlder||a==ActNewer||a==ActNextNode||a==ActChessNext||a==ActDuelNext||a==ActLanguage||a==ActBattery||a==ActDoubleBack||a==ActScreen||a==ActContrast||a==ActPetDeath||a==ActPetRelease;}
 String flag(bool value){return value?t("On","Вкл"):t("Off","Выкл");}
 String actName(Act a){
  if(a>=ActPeopleMinus&&a<=ActPeopleExit){switch(a){case ActPeopleMinus:return "-1";case ActPeopleNext:return t("Next: ","Дальше: ")+people::name((people::tally.current+1)%people::tally.count);case ActPeopleAdd:return t("New counter","Новый счётчик");
@@ -480,6 +556,8 @@ String actName(Act a){
  case ActChess:return t("Chess: invite","Шахматы: вызвать");
  case ActChessOpen:return t("Open game","Открыть");
  case ActChessNext:return t("Next game","Следующая партия");
+ case ActCheckers:return t("Checkers: invite","Шашки: вызвать");case ActSea:return t("Sea battle: invite","Морской бой: вызвать");
+ case ActDuelOpen:return t("Open game","Открыть");case ActDuelNext:return t("Next game","Следующая игра");
  case ActSound:return config.sound?t("Sound: on","Звук: вкл."):t("Sound: off","Звук: выкл.");
  case ActRole:return t("Device mode...","Режим работы...");case ActForward:return meshServer.view().forwarding?t("Forwarding: off","Пересылка: выкл."):t("Forwarding: on","Пересылка: вкл.");
  case ActAdvert:return t("Announce node","Объявить узел");case ActReplyOk:return t("Reply: OK","Ответить: OK")+String(publicChat?" #":"");case ActReplyAck:return t("Reply: Got it","Ответить: Принято");
@@ -510,7 +588,7 @@ void run(Act a){
  if(a>=ActPeopleMinus&&a<=ActPeopleExit){if(a==ActPeopleMinus){people::change(-1);return;}
   if(a==ActPeopleNext){people::select((people::tally.current+1)%people::tally.count);return;}
   if(a==ActPeopleAdd){if(people::add())notice(people::name(people::tally.current));return;}
-  if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t("Deleted: ","Удалён: ")+gone);}else tallyArmed=millis();return;}if(a==ActPeopleExit){showPage(nextPage(page));return;}StaticJsonDocument<128>d;d["action"]=a==ActPeopleReset?"reset":a==ActPeopleClear?"window_reset":"settings";if(a==ActPeopleBle)d["ble"]=!people::settings.ble;if(a==ActPeopleWifi)d["wifi"]=!people::settings.wifi;if(a==ActPeopleWindow)d["window"]=people::settings.window==30?60:people::settings.window==60?300:30;if(a==ActPeopleRssi)d["rssi"]=people::settings.rssi>=-40?-100:people::settings.rssi+5;if(a==ActPeoplePersonal)d["personal_only"]=!people::settings.personal;String r=people::command(d.as<JsonObjectConst>());notice(!r.startsWith("OK")?r:a==ActPeopleReset?t("Counter reset","Счётчик сброшен"):a==ActPeopleClear?t("New device window","Новое окно устройств"):actName(a));return;}
+  if(a==ActPeopleDelete){if(tallyArmed&&millis()-tallyArmed<5000){tallyArmed=0;String gone=people::name(people::tally.current);if(people::remove(people::tally.current))notice(t("Deleted: ","Удалён: ")+gone);}else tallyArmed=millis();return;}if(a==ActPeopleExit){showPage(nextPage());return;}StaticJsonDocument<128>d;d["action"]=a==ActPeopleReset?"reset":a==ActPeopleClear?"window_reset":"settings";if(a==ActPeopleBle)d["ble"]=!people::settings.ble;if(a==ActPeopleWifi)d["wifi"]=!people::settings.wifi;if(a==ActPeopleWindow)d["window"]=people::settings.window==30?60:people::settings.window==60?300:30;if(a==ActPeopleRssi)d["rssi"]=people::settings.rssi>=-40?-100:people::settings.rssi+5;if(a==ActPeoplePersonal)d["personal_only"]=!people::settings.personal;String r=people::command(d.as<JsonObjectConst>());notice(!r.startsWith("OK")?r:a==ActPeopleReset?t("Counter reset","Счётчик сброшен"):a==ActPeopleClear?t("New device window","Новое окно устройств"):actName(a));return;}
 
 #if MM_DICE
  if(a>=ActDiceRoll&&a<=ActDiceExit){diceRun(a);return;}
@@ -552,6 +630,15 @@ void run(Act a){
   break;
  case ActChessOpen:{ChessMatch* games[ChessNet::MaxMatches];unsigned g=chessGames(games);if(g)openChess(games[chessSel%g]);break;}
  case ActChessNext:chessSel++;menuIndex=0;break;
+#endif
+#if MM_DUEL
+ case ActCheckers:case ActSea:
+  if(Peer* p=shownNode()){ // the game screen shows the invitation; no news popup for it
+   uint32_t before=duels.events;Duel* g=duels.invite(p->id,a==ActSea?Duel::Sea:Duel::Checkers);
+   if(g){showPage(duelPageOf(*g));openDuel(g);notice(t("Challenge sent","Вызов отправлен"));}else if(duels.events!=before)notice(duels.event);duelSeen=duels.events;}
+  break;
+ case ActDuelOpen:{Duel* games[DuelNet::Max];unsigned g=duelGames(duelKind(),games);if(g)openDuel(games[duelSel%g]);break;}
+ case ActDuelNext:duelSel++;menuIndex=0;break;
 #endif
  case ActRole:openRolePick(false);break;case ActRadio:openRadio();break;
  case ActForward:{String r=meshServer.command(meshServer.view().forwarding?"set repeat off":"set repeat on");notice(r.startsWith("OK")?(meshServer.view().forwarding?t("Forwarding on","Пересылка вкл."):t("Forwarding off","Пересылка выкл.")):r);break;}
@@ -620,11 +707,11 @@ String fitted(const String& value,int px,const uint8_t* f){
  return value.substring(0,cut)+"..";
 }
 void footer(const String& hint){
- auto& c=*hardware.canvas;int x=1;uint8_t cycle[AppsMax+1];unsigned n=pageCycle(cycle);
+ auto& c=*hardware.canvas;int x=1,cycle[AppEntriesMax+1];unsigned n=pageCycle(cycle);int h=here();
 #if MM_DICE
  if(diceTapOn())n=0; // counting: the button does not change the screen, the hint takes the row
 #endif
- for(unsigned i=0;i<n;i++){if(cycle[i]==page)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
+ for(unsigned i=0;i<n;i++){if(cycle[i]==h)c.fillRect(x,58,2,4,1);else c.drawPixel(x,61,1);x+=3;}
  if(hint.length())sayRight(128,63,fitted(clipped(hint,20),128-x,small));
 }
 #if defined(MM_JOYSTICK)
@@ -642,12 +729,12 @@ String quickName(uint64_t id){const auto* ch=meshRadio.channel(id);const Peer* p
 String quickLabel(unsigned i){if(!i)return t("Choose recipient","Выберите получателя");if(i<=quickSend::Count)return quickSend::state.text[i-1][0]?String(quickSend::state.text[i-1]):String("--");return "< "+t("Exit","Выход");}
 bool quickKey(int key){if(page!=QuickPage)return false;if(key==0x86){if(quickTargets){quickTargets=false;quickIndex=0;}else{quickReply=false;showPage(Home);}return true;}bool click=key==13||key==0x82||key==0xb6,hold=key==0xa3;
 #if defined(MM_JOYSTICK)
- click=key==0xb6;hold=key==13;if(key==0xb5){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+n-1)%n;}else quickIndex=(quickIndex+quickSend::Count+1)%(quickSend::Count+2);return true;}if(key==0xb4||key==0xb7){quickReply=quickTargets=false;showPage(key==0xb4?previousPage(page):nextPage(page));return true;}
+ click=key==0xb6;hold=key==13;if(key==0xb5){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+n-1)%n;}else quickIndex=(quickIndex+quickSend::Count+1)%(quickSend::Count+2);return true;}if(key==0xb4||key==0xb7){quickReply=quickTargets=false;showPage(key==0xb4?previousPage():nextPage());return true;}
 #endif
  if(click){if(quickTargets){unsigned n=quickTargetCount();if(n)quickTargetIndex=(quickTargetIndex+1)%n;}else quickIndex=(quickIndex+1)%(quickSend::Count+2);}
  if(hold){if(quickTargets){if(!quickTargetCount()){notice(t("No recipients","Нет получателей"));quickTargets=false;quickIndex=0;return true;}quickTargetIndex%=quickTargetCount();StaticJsonDocument<128>d;d["action"]="target";d["to"]=meshRadio.idText(quickTarget(quickTargetIndex));String r=quickSend::command(d.as<JsonObjectConst>());notice(r);if(r.startsWith("OK")){quickReply=quickTargets=false;quickIndex=1;}}
  else if(!quickIndex){quickTargets=true;quickTargetIndex=0;}
- else if(quickIndex>quickSend::Count){quickReply=false;showPage(nextPage(page));}
+ else if(quickIndex>quickSend::Count){quickReply=false;showPage(nextPage());}
  else notice(quickSend::send(quickIndex-1,quickReply?quickReplyTo:0));}return true;}
 void drawQuickMono(){auto& c=*hardware.canvas;
  if(quickTargets){say(0,20,fitted(t("Choose recipient","Выберите получателя"),128,small),small);unsigned n=quickTargetCount();int first=max(0,min(int(quickTargetIndex)-1,int(n)-3));
@@ -671,14 +758,27 @@ void drawPopup(const ChatMessage& m){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(3,3,11,8,1);c.drawLine(3,3,8,7,1);c.drawLine(13,3,8,7,1);
  say(18,11,clipped(String(m.name)+(channels::isChannel(m.destination)?channelTag(m.destination):String()),18),bold);textLines(messageText(m),25,3);sayRight(126,62,t("click: close","клик: закрыть"));
 }
+String newsTitle(){return newsKind==1?t("Checkers","Шашки"):newsKind==2?t("Sea battle","Морской бой"):newsKind?t("Games","Игры"):t("Chess","Шахматы");}
 void drawChessPopup(){
  auto& c=*hardware.canvas;c.fillScreen(0);c.drawRect(0,0,128,64,1);
- c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1); // a pawn
- say(18,11,t("Chess","Шахматы"),bold);textLines(chessPopupText,25,3);
+ if(newsKind==2){c.fillTriangle(3,8,13,8,11,11,1);c.fillRect(5,8,7,3,1);c.fillRect(7,4,3,4,1);} // a ship
+ else if(newsKind==1){c.fillCircle(8,7,4,1);c.drawCircle(8,7,2,0);} // a draughts man
+ else{c.fillCircle(8,5,2,1);c.fillTriangle(8,5,5,10,11,10,1);c.fillRect(4,10,9,2,1);} // a pawn
+ say(18,11,newsTitle(),bold);textLines(chessPopupText,25,3);
 #if defined(MM_JOYSTICK)
  if(config.role==RoleNormal)sayRight(126,62,t("OK: open the game","OK: открыть партию"),small);
 #else
  if(config.role==RoleNormal)sayRight(126,62,t("hold: open the game","держ: открыть партию"),small);
+#endif
+}
+// Hold (OK) on news: the game it is about, or its game's list.
+void openNews(){
+ if(config.role!=RoleNormal)return;
+#if MM_CHESS
+ if(!newsKind){ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);}
+#endif
+#if MM_DUEL
+ if(newsKind){Duel* g=duels.eventGame;if(g&&g->state!=Duel::Free){showPage(duelPageOf(*g));openDuel(g);}else if(newsKind<3){showPage(newsKind==2?SeaPage:CheckersPage);openDuel(nullptr);}}
 #endif
 }
 void drawRolePick(){
@@ -739,6 +839,24 @@ void drawServerHome(){
  say(0,31,room?t("posts ","постов ")+String(v.posts)+t("  in ","  вошли ")+String(v.clients):"RX "+String(meshRadio.rxCount)+" TX "+String(meshRadio.txCount)+t(" fwd "," перес. ")+String(meshRadio.relayed),small);
  say(0,40,t("admin ","админ ")+v.password,small);
  say(0,49,(room?t("room ","комната "):t("guest ","гость "))+(v.guest.length()?v.guest:t("none","нет"))+(v.forwarding?"":t("  no fwd","  без перес.")),small);
+}
+// What an app has for the player: unread messages, games waiting for a move or an answer.
+unsigned appNews(int p){
+#if MM_CHESS
+ if(p==Chess)return chessNet.waiting();
+#endif
+#if MM_DUEL
+ if(p==CheckersPage||p==SeaPage)return duels.waiting(p==SeaPage?Duel::Sea:Duel::Checkers);
+#endif
+ return p==Messages?unreadCount:0;}
+// A folder: its apps in one column, two when more than four; the one a hold (OK) opens lit.
+void drawFolderMono(){
+ auto& c=*hardware.canvas;uint8_t p[AppsMax];unsigned n=folderPages(folderAt,p),rows=n>4?(n+1)/2:n;if(rows>4)rows=4;int w=n>4?64:128;
+#if defined(MM_JOYSTICK)
+ folderSel=n?folderSel%n:0;
+#endif
+ for(unsigned i=0;i<n&&i<rows*2;i++){int x=i/rows*64,y=13+i%rows*11;bool focus=int(i)==folderSel;unsigned k=appNews(p[i]);String badge=k?String(k):String();
+  if(focus)c.fillRect(x,y,w-1,11,1);say(x+2,y+9,fitted(appName(p[i]),w-6-(k?width(badge,small)+3:0),small),small,!focus);if(k)sayRight(x+w-3,y+9,badge,small,!focus);}
 }
 #if defined(MM_HIRES)
 #include "UiHires.inc"
@@ -833,6 +951,10 @@ void draw(){
 #if MM_CHESS
  case Chess:if(chessOpen&&chessOpen->state!=ChessMatch::Free){drawChessBoard(*chessOpen);return;}chessOpen=nullptr;drawChessList(title);break;
 #endif
+#if MM_DUEL
+ case CheckersPage:case SeaPage:if(Duel* g=shownDuel()){drawDuel(*g);return;}drawDuelList(title);break;
+#endif
+ case FolderPage:title=appsFolderName(folderAt);drawFolderMono();break;
 #if MM_PET
  case PetPage:title=petTitle();drawPetMono();break;
 #endif
@@ -844,7 +966,13 @@ void draw(){
   say(0,48,t("up ","работа ")+ago(millis())+t("  boot ","  загр. ")+String(config.bootCounter),small);
  }
  header(title);
- if(menuOpen)drawMenu();else footer(appClosed()?t("hold: open","держ: открыть"):page==PeoplePage?
+ if(menuOpen)drawMenu();else footer(page==FolderPage?
+#if defined(MM_JOYSTICK)
+ t("OK: open  < >","OK: открыть  < >"):
+#else
+ t("hold: open","держ: открыть"):
+#endif
+ appClosed()?t("hold: open","держ: открыть"):page==PeoplePage?
 #if defined(MM_JOYSTICK)
  t("OK: menu  < >","OK: меню  < >"):
 #else
@@ -883,11 +1011,7 @@ void joystickKey(int key){
   if(ok){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;return;}
   if(back)rolePick=false;return;}
  if(popupAt){popupAt=0;if(ok)showPage(Messages);return;}
- if(chessPopupAt){chessPopupAt=0;if(ok&&config.role==RoleNormal){
-#if MM_CHESS
- ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
-#endif
- }return;}
+ if(chessPopupAt){chessPopupAt=0;if(ok)openNews();return;}
  if(quickKey(key))return;
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(up||down){menuIndex=(menuIndex+(up?n-1:1))%n;return;}
@@ -896,8 +1020,12 @@ void joystickKey(int key){
 #if MM_CHESS
  if(page==Chess&&chessKey(key))return;
 #endif
- if(left||right){showPage(left?previousPage(page):nextPage(page));return;}
- if(back){if(page!=Home)showPage(Home);return;}
+#if MM_DUEL
+ if((page==CheckersPage||page==SeaPage)&&duelKey(key))return;
+#endif
+ if(page==FolderPage){uint8_t p[AppsMax];unsigned n=folderPages(folderAt,p);if(n&&(up||down)){folderSel=(folderSel+(up?n-1:1))%n;return;}if(n&&ok){showPage(p[folderSel%n]);return;}}
+ if(left||right){showPage(left?previousPage():nextPage());return;}
+ if(back){int f=folderBack();if(f>=0)showPage(f);else if(page!=Home)showPage(Home);return;} // Back leaves a folder for its screen
  if(up||down){scroll(up?-1:1);return;}
  if(ok){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
@@ -922,9 +1050,12 @@ static void stepBack(){
 #if MM_CHESS
  if(page==Chess&&chessOpen){if(chessMenu)chessMenu=false;else if(chessHeld>=0)chessHeld=-1;else chessOpen=nullptr;return;}
 #endif
+#if MM_DUEL
+ if(duelBack())return;
+#endif
  if(page==QuickPage&&quickTargets){quickTargets=false;return;}
  if(appPage()&&appOpen){appOpen=false;quickReply=false;return;}
- showPage(previousPage(page));
+ int f=folderBack();showPage(f>=0?f:previousPage()); // an app of a folder: back to the folder screen
 }
 #endif
 static void uiKeyNow(int key);
@@ -952,12 +1083,9 @@ static void uiKeyNow(int key){
  if(rolePick){if(key==0x86){rolePick=false;return;}if(key==13||key==0x82){roleSel=(roleSel+1)%RoleCount;rolePickBoot=false;return;}
   if(key==0xa3){if(roleSel==config.role){rolePick=false;return;}String r=setRole(roleSel);notice(r.startsWith("OK")?t("Restarting: ","Перезапуск: ")+roleShort(roleSel):r);if(!r.startsWith("OK"))rolePick=false;}return;}
  if(popupAt){popupAt=0;if(key==13)return;}
- if(chessPopupAt&&page!=DicePage){chessPopupAt=0;if(key==0xa3&&config.role==RoleNormal){
-#if MM_CHESS
- ChessMatch* m=chessNet.eventMatch;showPage(Chess);openChess(m&&m->state!=ChessMatch::Free?m:nullptr);
-#endif
- }return;}
- if(appClosed()&&!menuOpen){if(key==0xa3){appOpen=true;quickTargets=false;quickIndex=0;}else if(key==0x86)showPage(Home);else if(key==13||key==0x82)showPage(nextPage(page));return;}
+ if(chessPopupAt&&page!=DicePage){chessPopupAt=0;if(key==0xa3)openNews();return;}
+ if(page==FolderPage&&!menuOpen){uint8_t p[AppsMax];if(key==0xa3){if(folderPages(folderAt,p))showPage(p[0]);}else if(key==0x86)showPage(Home);else if(key==13||key==0x82)showPage(nextPage());return;}
+ if(appClosed()&&!menuOpen){if(key==0xa3){appOpen=true;quickTargets=false;quickIndex=0;}else if(key==0x86)showPage(Home);else if(key==13||key==0x82)showPage(nextPage());return;}
  if(quickKey(key))return;
  if(menuOpen){menuAt=millis();Act acts[MenuMax];unsigned n=actions(acts);if(!n){menuOpen=false;return;}
   if(key==13||key==0x82){menuIndex=(menuIndex+1)%n;return;}
@@ -966,22 +1094,33 @@ static void uiKeyNow(int key){
 #if MM_CHESS
  if(page==Chess&&chessButton(key))return;
 #endif
+#if MM_DUEL
+ if((page==CheckersPage||page==SeaPage)&&duelButton(key))return;
+#endif
 #if MM_DICE
  if(diceTapKey(key)||diceRollKey(key))return;
 #endif
 #endif
  if(page==PeoplePage&&(key==13||key==0x82)){people::change(1);return;}
  if(key==0x86){showPage(Home);return;}
- if(key==13||key==0x82){showPage(nextPage(page));return;}
+ if(key==13||key==0x82){showPage(nextPage());return;}
  if(key==0xa3){Act acts[MenuMax];unsigned n=actions(acts);if(n==1)run(acts[0]);else if(n>1){menuOpen=true;menuIndex=0;menuAt=millis();}}
 }
 bool uiRadarPage(){return page==Signals;}
-void uiBegin(){openRolePick(true);chessSeen=chessNet.events;if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
-String uiStatus(){StaticJsonDocument<768>d;if(page==QuickPage){d["quick_row"]=quickIndex;if(!quickTargets&&quickIndex&&quickIndex<=quickSend::Count)d["quick_index"]=quickIndex-1;d["quick_targets"]=quickTargets;if(quickTargets)d["quick_target_index"]=quickTargetIndex;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["app_open"]=appOpen;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;
+void uiBegin(){openRolePick(true);chessSeen=chessNet.events;
+#if MM_DUEL
+ duelSeen=duels.events;
+#endif
+ if(pins::led>=0)pinMode(pins::led,OUTPUT);led(false);lastInput=millis();if(meshRadio.historyCount){auto& m=meshRadio.history[meshRadio.historyCount-1];newest={m.source,m.session,m.id};}draw();}
+String uiStatus(){StaticJsonDocument<1024>d;if(page==QuickPage){d["quick_row"]=quickIndex;if(!quickTargets&&quickIndex&&quickIndex<=quickSend::Count)d["quick_index"]=quickIndex-1;d["quick_targets"]=quickTargets;if(quickTargets)d["quick_target_index"]=quickTargetIndex;d["quick_to"]=meshRadio.idText(quickReply?quickReplyTo:quickSend::state.to);}d["action"]=millis()-actionAt<3500?action:String();d["page"]=rolePick?"role":pageNames[page];d["role"]=roleName(config.role);if(rolePick){d["role_selected"]=roleSel;d["boot_pick"]=rolePickBoot;}if(radioEdit){d["page"]="radio";d["radio_row"]=radioRow;d["radio_editing"]=radioEditing;d["radio_digit"]=radioDigit;d["radio_draft"]=radioValue(radioDraft,radioRow);}d["locked"]=false;d["app_open"]=appOpen;d["menu"]=menuOpen;d["menu_index"]=menuIndex;if(menuOpen){Act choices[MenuMax];d["menu_count"]=actions(choices);}d["screen_off"]=screenOff;d["popup"]=popupAt!=0;
 #if defined(MM_ONE_BUTTON)
  d["click_wait"]=clickAt!=0; // a click waiting for a second one (double click = back)
 #endif
-d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;
+d["chess_popup"]=chessPopupAt!=0;d["unread"]=unreadCount;{int f=pageFolder();if(page==FolderPage||f>=0){d["folder"]=f>=0?f:folderAt;d["in_folder"]=f>=0;if(page==FolderPage)d["folder_sel"]=folderSel;}}
+#if MM_DUEL
+ if(chessPopupAt)d["news_kind"]=newsKind;
+ if((page==CheckersPage||page==SeaPage)&&shownDuel())duelStatus(d.as<JsonObject>());
+#endif
 #if MM_CHESS
  if(page==Chess&&chessOpen){char id[5];snprintf(id,sizeof id,"%04X",chessOpen->id);d["chess_game"]=id;d["chess_cursor"]=chessCursor;d["chess_held"]=chessHeld;d["chess_menu"]=chessMenu;d["chess_menu_index"]=chessMenuIndex;
   if(chessMenu){ChessAct acts[8];unsigned k=chessActions(*chessOpen,acts);d["chess_act"]=int(acts[chessMenuIndex%k]);}}
@@ -1021,14 +1160,22 @@ void uiTick(){
  {static uint16_t netSeen=0;auto& s=netfind::state;if(s.found!=netSeen){netSeen=s.found;if(s.best!=255){auto& r=s.results[s.best];
   notice(t("Network nearby: ","Рядом сеть: ")+(r.place!=255?netfind::placeName(r.place)+" ":String())+"SF"+String(r.radio.sf));ledAt=now;ledPattern=1;
   if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}}
- if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length()){chessPopupText=tour::net.event;chessPopupAt=page==DicePage||page==PeoplePage?0:now;ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
- if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){
-  // News of the game on the screen updates the board instead of covering it.
-  
+ // Game news: a popup (none while counting or rolling), the LED and the screen awake. News of the game on the
+ // screen updates the board instead of covering it (show false).
+ auto news=[&](const String& text,uint8_t kind,bool show){if(show){chessPopupText=text;newsKind=kind;chessPopupAt=page==DicePage||page==PeoplePage?0:now;}
+  ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;};
+ if(tour::net.events!=tourSeen){tourSeen=tour::net.events;if(tour::net.event.length())news(tour::net.event,0,true);}
+ if(chessNet.events!=chessSeen){chessSeen=chessNet.events;if(chessNet.event.length()){bool show=true;
 #if MM_CHESS
-  if(page==Chess&&chessOpen&&chessNet.eventMatch==chessOpen&&!menuOpen)chessNet.viewed(*chessOpen);else
+  if(page==Chess&&chessOpen&&chessNet.eventMatch==chessOpen&&!menuOpen){chessNet.viewed(*chessOpen);show=false;}
 #endif
-  {chessPopupText=chessNet.event;chessPopupAt=page==DicePage||page==PeoplePage?0:now;}ledAt=now;if(page!=DicePage&&page!=PeoplePage)menuOpen=false;if(screenOff){screenOff=false;hardware.brightness(config.brightness);}lastInput=now;dirty=true;}}
+  news(chessNet.event,0,show);}}
+#if MM_DUEL
+ if(duels.events!=duelSeen){duelSeen=duels.events;if(duels.event.length()){Duel* g=duels.eventGame;bool show=!(g&&g==duelOpen&&page==duelPageOf(*g)&&!menuOpen&&!duelMenu);
+  if(!show)duels.viewed(*g);news(duels.event,g?1+g->kind:3,show);}}
+ if(duelOpen&&(page==CheckersPage||page==SeaPage)&&(duelHeld>=0||duelOpen->myTurn()||duelOpen->aim>=0))dirty=true; // the cursor, the picked piece or the shot in flight blinks
+ if(duels.dirty&&(page==CheckersPage||page==SeaPage)){dirty=true;duels.dirty=false;}
+#endif
  if(ledAt){uint32_t e=now-ledAt;led(e<1500&&(e/(ledPattern==2?125:ledPattern==3?100:250))%2==0);if(e>=1500){ledAt=0;led(false);}}
  // Homing ping on the LED (the V4 has no buzzer): faster as the signal strengthens.
  if(!ledAt&&page==Signals&&radar.tracking){bool fresh=homingFresh();float level=constrain((radar.fast+85)/55.f,0.f,1.f);lastInput=now;

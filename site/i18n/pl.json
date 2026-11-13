@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: sieć w teście — OK ją zostawia, restart przywraca zapisaną",
  "shot.web-networks": "Wybór sieci według miasta",
  "shot.web-networks-test": "Test ustawień: zachowaj, przywróć, sprawdź",
- "doc.networks": "Sieć twojego miasta"
+ "doc.networks": "Sieć twojego miasta",
+ "f.games.t": "Warcaby, statki i foldery",
+ "f.games.d": "Dwie kolejne gry z kontaktami przez radio, oprócz szachów: warcaby rosyjskie i statki. Każdy ruch i strzał to potwierdzona prywatna wiadomość, ponawiana, aż dotrze; bez rankingu, po prostu gra. Na M9 i T-Deck klawiszami i dotykiem, jednym przyciskiem lub dżojstikiem na płytkach z OLED, na stronie WWW i w aplikacji. Wszystkie gry są teraz w folderze „Gry” menu głównego; na stronie i w aplikacji tworzysz foldery, zmieniasz ich nazwy, ukrywasz je i przenosisz między nimi aplikacje.",
+ "shot.m9-checkers": "Warcaby: wybrany pionek i jego ruchy",
+ "shot.m9-checkers-chain": "Damka bije kilka pionków w jednym ruchu",
+ "shot.m9-sea-mid": "Statki: trafienia, zatopiony statek, twoja flota",
+ "shot.m9-sea-lost": "Flota zwycięzcy pokazana i sprawdzona z odpowiedziami",
+ "shot.m9-folder": "Folder „Gry”",
+ "shot.m9-home-folder": "Menu z folderem „Gry”",
+ "shot.heltec-checkers-move": "Warcaby jednym przyciskiem: proponowany ruch",
+ "shot.heltec-sea-hunt": "Statki na OLED: dobij trafiony statek",
+ "doc.games": "Warcaby, statki, foldery"
 }

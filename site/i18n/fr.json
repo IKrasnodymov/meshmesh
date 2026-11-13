@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9 : un réseau en test — OK le garde, un redémarrage rend l’enregistré",
  "shot.web-networks": "Choisir un réseau par ville",
  "shot.web-networks-test": "Un test des réglages : garder, revenir, vérifier",
- "doc.networks": "Réseau de votre ville"
+ "doc.networks": "Réseau de votre ville",
+ "f.games.t": "Dames, bataille navale et dossiers",
+ "f.games.d": "Deux autres jeux avec vos contacts par radio, en plus des échecs : les dames russes et la bataille navale. Chaque coup et chaque tir est un message direct acquitté, renvoyé jusqu'à son arrivée ; sans classement, juste pour jouer. Sur le M9 et le T-Deck avec les touches et l'écran tactile, avec un seul bouton ou un joystick sur les cartes OLED, sur la page web et dans l'application. Tous les jeux sont désormais dans le dossier Jeux du menu ; sur la page web et dans l'application, vous créez des dossiers, les renommez, les masquez et y rangez les applications.",
+ "shot.m9-checkers": "Dames : un pion choisi, ses coups marqués",
+ "shot.m9-checkers-chain": "Une dame prend plusieurs pions en un coup",
+ "shot.m9-sea-mid": "Bataille navale : touchés, un navire coulé, votre flotte",
+ "shot.m9-sea-lost": "La flotte du gagnant montrée et vérifiée avec les réponses",
+ "shot.m9-folder": "Le dossier Jeux",
+ "shot.m9-home-folder": "Le menu avec le dossier Jeux",
+ "shot.heltec-checkers-move": "Les dames avec un seul bouton : un coup proposé",
+ "shot.heltec-sea-hunt": "Bataille navale sur OLED : achever le navire touché",
+ "doc.games": "Dames, bataille navale, dossiers"
 }

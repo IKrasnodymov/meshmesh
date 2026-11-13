@@ -14,6 +14,7 @@
 #include "People.h"
 #include "Wardrive.h"
 #include "ChessNet.h"
+#include "Duel.h"
 #include "ChessTour.h"
 #include "Companion.h"
 #include "HistoryReply.h"
@@ -140,6 +141,7 @@ void portalBegin() {
   server.on("/api/pet",HTTP_GET,[]{if(authorized())answer(creature.json());}); // actions through /api/command ("pet ...")
   server.on("/api/dice",HTTP_GET,[]{if(authorized())answer(dicer.json());}); // actions through /api/command ("dice ...")
   server.on("/api/tour",HTTP_GET,[]{if(!authorized())return;answer(tour::net.json());});
+  server.on("/api/duel",HTTP_GET,[]{if(!authorized())return;if(!server.hasArg("id")){answer(duels.json());return;}String r=duels.command("duel show "+server.arg("id"));answer(r,!r.startsWith("ERR"));}); // checkers and sea battle; actions through /api/command ("duel ...")
   server.on("/api/chess",HTTP_GET,[]{if(!authorized())return;if(server.hasArg("rating")){answer(chessNet.command("chess rating"));return;}if(!server.hasArg("id")){answer(chessNet.web());return;}char* e=nullptr;unsigned long id=strtoul(server.arg("id").c_str(),&e,16);ChessMatch* m=id&&e&&!*e?chessNet.find(uint16_t(id)):nullptr;if(!m){answer("Unknown game",false);return;}answer(chessNet.detail(*m));});
   // Channels: the private keys only over the access point, as /api/key (the home network carries plain HTTP).
   server.on("/api/channels",HTTP_GET,[]{if(authorized())answer(channelsJson(wifiOn));});

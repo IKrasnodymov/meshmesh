@@ -29,6 +29,7 @@ MeshCore düğümleriyle haberleşir.
 - **Sinyal radarı** — çevrenizdeki Wi-Fi, Bluetooth ve LoRa, “sıcak / soğuk” yön bulmayla.
 - **Hareket sensörü** — iki kart, aralarından geçen bir insanı algılar (Wi-Fi CSI).
 - Mesh üzerinden kişilerinizle **satranç** ve M9'da Klondike solitaire.
+- Mesh üzerinden kişilerinizle **dama ve Amiral Battı** (0.33.0): Rus daması ve 10×10 Amiral Battı, her hamle onaylı bir mesaj, derece yok; tüm oyunlar menünün «Oyunlar» klasöründe durur, klasörler web sayfasında veya uygulamada oluşturulabilir, yeniden adlandırılabilir, gizlenebilir ve doldurulabilir. [docs/en/games.md](docs/en/games.md)
 - **Ağ evcil hayvanı** — her kartta Tamagotchi tarzı piksel bir yaratık: radyo trafiğiyle beslenir, büyür ve açlıktan ya da yalnızlıktan ölebilir. [docs/en/pet.md](docs/en/pet.md)
 - **Zarlar** — her kartta DIC3R zar atıcı: RPG zar havuzları ve formüller (2d6+1, d20, d66, d%), başarı eşiğiyle Warhammer ızgarası ve D&D 5e ile R.E.T. şablonlarıyla bloklardan oluşan karakter kâğıdı (özellikler, göstergeler, işaretler, zar atan ve harcayan yetenekler), web sayfasında veya uygulamada hazırlanıp mesh üzerinden bir kişiye gönderilir; ekranda, web sayfasında ve uygulamada aynı. [docs/en/dice.md](docs/en/dice.md)
 - **Cihazınızda MeshMesh olmadan satranç**: [satranç sayfası](https://ikrasnodymov.github.io/meshmesh/chess/), resmi MeshCore

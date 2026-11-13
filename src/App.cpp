@@ -16,6 +16,7 @@
 #include "Radar.h"
 #include "Internet.h"
 #include "ChessNet.h"
+#include "Duel.h"
 #include "ChessTour.h"
 #include "MeshServer.h"
 #include "Pet.h"
@@ -78,7 +79,7 @@ String statusJson() {
 #if defined(MM_NRF52)
   d["wifi_radio"]=false; // nRF52: no Wi-Fi; the page arrives through the app over BLE or USB
   {String l;for(int i=0;i<LangCount;i++)if(langAvailable(i))l+=String(l.length()?" ":"")+langCodes[i];d["langs"]=l;} // the screen languages of this image
-  {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";if(MM_WARDRIVE)m+=String(m.length()?" ":"")+"wardrive";d["modules"]=m;} // optional modules in this image (Modules.h)
+  {String m;if(MM_CHESS)m+="chess";if(MM_PET)m+=String(m.length()?" ":"")+"pet";if(MM_DICE)m+=String(m.length()?" ":"")+"dice";if(MM_WARDRIVE)m+=String(m.length()?" ":"")+"wardrive";if(MM_CHECKERS)m+=String(m.length()?" ":"")+"checkers";if(MM_SEA)m+=String(m.length()?" ":"")+"sea";d["modules"]=m;} // optional modules in this image (Modules.h)
 #endif
   d["internet"]=internet.online();d["ble"]=bleActive();d["companion"]=companion::connected();String s;serializeJson(d,s);return s;
 }
@@ -190,8 +191,8 @@ String applySettings(JsonObjectConst v) {
       if(n!=0 && (n<(name=="auto_lock"?30:10)||n>600))return "ERR timeout 0 or 30..600 (dim: 10..600)";
       if(name=="auto_lock")next.autoLock=n;else next.dimAfter=n;
     } else if(name=="apps") {
-      uint8_t order[AppsMax];bool hidden[AppsMax];
-      if(!value.is<const char*>()||!appsParse(value.as<const char*>(),order,hidden,true)){String all;for(uint8_t i=0;i<uiAppCount;i++)all+=String(i?" ":"")+uiApps[i];return "ERR apps: IDs separated by spaces, -ID hides: "+all;}
+      AppMenu menu;
+      if(!value.is<const char*>()||!appsParse(value.as<const char*>(),menu,true)){String all;for(uint8_t i=0;i<uiAppCount;i++)all+=String(i?" ":"")+uiApps[i];return "ERR apps: IDs separated by spaces, -ID hides, {NAME ID ...} is a folder (up to 6): "+all;}
       String text=appsText(value.as<const char*>());if(text.length()>=sizeof next.apps)return "ERR apps: too long";strlcpy(next.apps,text.c_str(),sizeof next.apps);
     } else if(name=="region") { // "" or "*": none; the same name keeps its key (an app may have set a private one)
       if(!value.is<const char*>())return "ERR region: text";String raw=value.as<String>();raw.trim();
@@ -258,6 +259,7 @@ String executeCommand(const String& input) {
   if(line=="chess"||line.startsWith("chess "))return chessNet.command(line);
   if(line=="pet"||line.startsWith("pet "))return creature.command(line);
   if(line=="dice"||line.startsWith("dice "))return dicer.command(line);
+  if(line=="duel"||line.startsWith("duel "))return duels.command(line);
   if(line=="tour"||line.startsWith("tour "))return tour::net.command(line);
   if(line=="ui")return uiStatus();
   if(line=="navigation")return navigation.info();
@@ -359,5 +361,5 @@ String executeCommand(const String& input) {
     DynamicJsonDocument d(2048);if(deserializeJson(d,line.substring(4)) || !d.is<JsonObject>())return "ERR set {JSON object}";
     return applySettings(d.as<JsonObjectConst>());
   }
-  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, identity, identity set HEX, contact add {JSON}, connections, messages, quick, quick do {JSON}, people, people do {JSON}, wardrive, wardrive do {JSON}, wardrive log mesh|nets FROM, radar, radar web, radar do {JSON}, set {JSON}, radio try {JSON}|keep|revert|previous, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, netfind, netfind start [all|LAT LON]|stop|use N, chess, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
+  return "Commands: status, role, role normal|repeater|room, server, server secrets, server cli TEXT, server post TEXT, config, key, identity, identity set HEX, contact add {JSON}, connections, messages, quick, quick do {JSON}, people, people do {JSON}, wardrive, wardrive do {JSON}, wardrive log mesh|nets FROM, radar, radar web, radar do {JSON}, set {JSON}, radio try {JSON}|keep|revert|previous, send ALL|NODE_ID|CHANNEL_ID text, sendjson {JSON}, channels, channel do {JSON}, regions, regions find, netfind, netfind start [all|LAT LON]|stop|use N, chess, duel, duel invite NODE_ID checkers|sea, pet, pet adopt|release|cuddle|feed|heal|mortal on|off|name NAME|skip SECONDS, hello, position, resetpath NODE_ID, forget NODE_ID, selftest, wifi, internet, ble, remote, remote login|status|cli|trace NODE_ID [text], recalibrate, fsformat, restart, poweroff";
 }

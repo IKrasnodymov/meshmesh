@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: una rete in prova — OK la tiene, un riavvio torna a quella salvata",
  "shot.web-networks": "Scelta di una rete per città",
  "shot.web-networks-test": "Prova delle impostazioni: mantieni, ripristina, verifica",
- "doc.networks": "Rete della tua città"
+ "doc.networks": "Rete della tua città",
+ "f.games.t": "Dama, battaglia navale e cartelle",
+ "f.games.d": "Altri due giochi con i tuoi contatti via radio, oltre agli scacchi: la dama russa e la battaglia navale. Ogni mossa e ogni tiro è un messaggio diretto confermato, reinviato finché non arriva; senza ELO, solo per giocare. Su M9 e T-Deck con i tasti e il touch, con un solo pulsante o un joystick sulle schede OLED, sulla pagina web e nell'app. Ora tutti i giochi stanno nella cartella Giochi del menu; sulla pagina web e nell'app puoi creare cartelle, rinominarle, nasconderle e spostarvi le app.",
+ "shot.m9-checkers": "Dama: una pedina scelta, le sue mosse segnate",
+ "shot.m9-checkers-chain": "Una dama mangia più pedine in una mossa",
+ "shot.m9-sea-mid": "Battaglia navale: colpi a segno, una nave affondata, la tua flotta",
+ "shot.m9-sea-lost": "La flotta del vincitore mostrata e verificata con le risposte",
+ "shot.m9-folder": "La cartella Giochi",
+ "shot.m9-home-folder": "Il menu con la cartella Giochi",
+ "shot.heltec-checkers-move": "Dama con un solo pulsante: una mossa proposta",
+ "shot.heltec-sea-hunt": "Battaglia navale su OLED: finire la nave colpita",
+ "doc.games": "Dama, battaglia navale, cartelle"
 }

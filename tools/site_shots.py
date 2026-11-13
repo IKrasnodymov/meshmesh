@@ -17,10 +17,10 @@ sys.path.insert(0, str(ROOT/'tools'))
 from i18n import CODES  # noqa: E402
 
 # Names the site shows (site/index.html HERO, OLED, GAT, FEATURES); the M9 preview writes them without "m9-".
-M9 = ['radio-net', 'dice-sheet', 'dice-sheet-ret', 'dice-templates', 'dice-offer', 'people-cards', 'people-new', 'wardrive', 'wardrive-map', 'radio-regions', 'channel-region', 'network-ble', 'dice-shapes', 'dice-grid', 'dice-counters', 'dice-saved', 'pet-happy', 'pet-hungry', 'pet-dead', 'threads-channels', 'channel-private', 'channel-add', 'chat-invite', 'role-boot', 'repeater', 'room', 'room-post', 'threads', 'chat', 'chat-public', 'map', 'library', 'nodes', 'node', 'radar',
+M9 = ['m9-checkers', 'm9-sea-mid', 'm9-home-folder', 'm9-folder', 'm9-checkers-chain', 'm9-sea-lost', 'radio-net', 'dice-sheet', 'dice-sheet-ret', 'dice-templates', 'dice-offer', 'people-cards', 'people-new', 'wardrive', 'wardrive-map', 'radio-regions', 'channel-region', 'network-ble', 'dice-shapes', 'dice-grid', 'dice-counters', 'dice-saved', 'pet-happy', 'pet-hungry', 'pet-dead', 'threads-channels', 'channel-private', 'channel-add', 'chat-invite', 'role-boot', 'repeater', 'room', 'room-post', 'threads', 'chat', 'chat-public', 'map', 'library', 'nodes', 'node', 'radar',
       'homing', 'motion', 'chess-italian', 'chess-promotion', 'locked-chess', 'chess-rating', 'chess-pick-rated', 'chess-rated-result', 'tour-final', 'tour-new-players', 'tour-invite', 'solitaire-played', 'sensors', 'home', 'layout', 'locked', 'settings',
       'radio', 'radio-test', 'diagnostics']
-HELTEC = ['radio-net', 'dice-sheet', 'people-two', 'wardrive', 'wardrive-repeaters', 'radio-region', 'ble-on', 'dice-grid', 'pet-stats', 'invite-menu', 'role', 'repeater', 'room', 'messages', 'popup', 'nodes', 'radar', 'homing', 'gps', 'settings', 'home', 'messages-menu', 'wifi-on', 'chess-piece', 'chess-move', 'chess-gamemenu', 'chess-list']
+HELTEC = ['checkers-move', 'sea-hunt', 'radio-net', 'dice-sheet', 'people-two', 'wardrive', 'wardrive-repeaters', 'radio-region', 'ble-on', 'dice-grid', 'pet-stats', 'invite-menu', 'role', 'repeater', 'room', 'messages', 'popup', 'nodes', 'radar', 'homing', 'gps', 'settings', 'home', 'messages-menu', 'wifi-on', 'chess-piece', 'chess-move', 'chess-gamemenu', 'chess-list']
 GAT562 = ['home', 'keyboard', 'chess', 'chess-list', 'radar', 'node-menu']
 T114 = ['radio-net', 'dice-sheet', 'people-two', 'wardrive', 'wardrive-repeaters', 'radio-find', 'ble-on', 'dice-saved', 'pet-happy', 'home', 'chess-targets', 'chess-list', 'radar', 'popup', 'nodes']
 
@@ -37,7 +37,7 @@ def main():
                     im = im.resize((im.width*scale, im.height*scale), Image.NEAREST)
                     if board not in ('m9', 't114'):
                         im = im.convert('L')
-                    site = f'{prefix or "m9-"}{name}' if prefix else f'm9-{name}'
+                    site = f'{prefix}{name}' if prefix else name if name.startswith('m9-') else f'm9-{name}'  # the new M9 shots carry the prefix
                     im.save(out/f'{site}-{lang}.png', optimize=True)
     print(out, len(list(out.glob('*.png'))), 'screenshots')
 

@@ -669,6 +669,146 @@
   "ru": "Лист персонажа от ",
   "text": "Karta postaci od "
  },
+ "79fd86cb": {
+  "en": "the fleet is sunk, you lost",
+  "ru": "флот потоплен, вы проиграли",
+  "text": "flota zatopiona, przegrana"
+ },
+ "d1844256": {
+  "en": "miss, your shot",
+  "ru": "мимо, ваш выстрел",
+  "text": "pudło, twój strzał"
+ },
+ "58bfd425": {
+  "en": "hit",
+  "ru": "попадание",
+  "text": "trafiony"
+ },
+ "09d7206d": {
+  "en": "ship sunk",
+  "ru": "корабль потоплен",
+  "text": "statek zatopiony"
+ },
+ "9ded29d1": {
+  "en": ": game refused, six games in progress",
+  "ru": ": игра отклонена, идут шесть игр",
+  "text": ": gra odrzucona, trwa sześć gier"
+ },
+ "6cebfbaf": {
+  "en": " invites you: ",
+  "ru": " зовёт играть: ",
+  "text": " zaprasza do gry: "
+ },
+ "4d2eaec8": {
+  "en": ": a move of an unknown game",
+  "ru": ": ход в неизвестной игре",
+  "text": ": ruch w nieznanej grze"
+ },
+ "aeb93a07": {
+  "en": ", you won",
+  "ru": ", вы победили",
+  "text": ", wygrana"
+ },
+ "7ccdd470": {
+  "en": ", you lost",
+  "ru": ", вы проиграли",
+  "text": ", przegrana"
+ },
+ "a40fb99e": {
+  "en": ", draw",
+  "ru": ", ничья",
+  "text": ", remis"
+ },
+ "2682eef5": {
+  "en": ", your move",
+  "ru": ", ваш ход",
+  "text": ", twój ruch"
+ },
+ "f22d907f": {
+  "en": "the whole fleet sunk, you won",
+  "ru": "весь флот потоплен, вы победили",
+  "text": "cała flota zatopiona, wygrana"
+ },
+ "dcaf01fc": {
+  "en": "miss, their shot",
+  "ru": "мимо, стреляет соперник",
+  "text": "pudło, strzela przeciwnik"
+ },
+ "8a16dab8": {
+  "en": "hit! shoot again",
+  "ru": "попадание! стреляйте ещё",
+  "text": "trafiony! strzelaj dalej"
+ },
+ "d5fb3a10": {
+  "en": "ship sunk! shoot again",
+  "ru": "корабль потоплен! стреляйте ещё",
+  "text": "statek zatopiony! strzelaj dalej"
+ },
+ "02b38e4a": {
+  "en": ": shot not accepted (",
+  "ru": ": выстрел не принят (",
+  "text": ": strzał nieprzyjęty ("
+ },
+ "6eadccab": {
+  "en": ": the fleet does not match the answers",
+  "ru": ": расстановка не сходится с ответами",
+  "text": ": flota nie zgadza się z odpowiedziami"
+ },
+ "2bd603d2": {
+  "en": " accepted: your shot",
+  "ru": " принял вызов: ваш выстрел",
+  "text": " przyjął: twój strzał"
+ },
+ "d33bfd2d": {
+  "en": " declined the game",
+  "ru": " отказался от игры",
+  "text": " odrzucił grę"
+ },
+ "6477dc1a": {
+  "en": " cancelled the game",
+  "ru": " отменил игру",
+  "text": " anulował grę"
+ },
+ "843426e8": {
+  "en": "This game is not in this build",
+  "ru": "Этой игры нет в прошивке",
+  "text": "Tej gry nie ma w oprogramowaniu"
+ },
+ "70ee6464": {
+  "en": ": choose a chat contact",
+  "ru": ": выберите чат-контакт",
+  "text": ": wybierz kontakt czatu"
+ },
+ "7982eb10": {
+  "en": "Six games in progress, finish one",
+  "ru": "Идут шесть игр, завершите одну",
+  "text": "Trwa sześć gier, zakończ jedną"
+ },
+ "693b9cbd": {
+  "en": " · MeshMesh checkers: you play Black",
+  "ru": " · шашки MeshMesh: вы играете чёрными",
+  "text": " · warcaby MeshMesh: grasz czarnymi"
+ },
+ "4ae0fde2": {
+  "en": " · MeshMesh checkers: you play White",
+  "ru": " · шашки MeshMesh: вы играете белыми",
+  "text": " · warcaby MeshMesh: grasz białymi"
+ },
+ "bfba4d09": {
+  "en": " · MeshMesh sea battle",
+  "ru": " · морской бой MeshMesh",
+  "text": " · statki MeshMesh"
+ },
+ "32b66c9b": {
+  "en": "Games: cannot save",
+  "ru": "Игры: не удалось сохранить",
+  "text": "Gry: nie można zapisać"
+ },
+ "d72bc500": {
+  "en": ": no confirmation for 24 h",
+  "ru": ": нет подтверждения 24 ч",
+  "text": ": brak potwierdzenia od 24 h"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -1018,6 +1158,166 @@
   "en": "Battery low",
   "ru": "Батарея садится",
   "text": "Słaba bateria"
+ },
+ "0b2e473c": {
+  "en": "Not in this mode: Settings > Device mode",
+  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
+  "text": "Niedostępne w tym trybie: Ustawienia > Tryb pracy"
+ },
+ "cea9ae4c": {
+  "en": "Node announced",
+  "ru": "Узел объявлен",
+  "text": "Węzeł ogłoszony"
+ },
+ "5b43376d": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить узел",
+  "text": "Nie udało się ogłosić węzła"
+ },
+ "aa9ad8ae": {
+  "en": "Message queued",
+  "ru": "Сообщение в очереди",
+  "text": "Wiadomość w kolejce"
+ },
+ "5035dc01": {
+  "en": "Cannot send: empty, full queue or radio",
+  "ru": "Не отправлено: текст, очередь или радио",
+  "text": "Nie wysłano: tekst, kolejka lub radio"
+ },
+ "d7961dd2": {
+  "en": "UTF-8 byte limit: ",
+  "ru": "Лимит байт UTF-8: ",
+  "text": "Limit bajtów UTF-8: "
+ },
+ "7a7a7a09": {
+  "en": "Waiting for GPS fix",
+  "ru": "Ожидание GPS-позиции",
+  "text": "Czekam na pozycję GPS"
+ },
+ "916ad0e6": {
+  "en": "This node has not shared GPS",
+  "ru": "Узел пока не передал GPS",
+  "text": "Ten węzeł nie udostępnił GPS"
+ },
+ "26314428": {
+  "en": "This board is now the beacon",
+  "ru": "Эта плата — маяк",
+  "text": "Ta płytka jest teraz nadajnikiem"
+ },
+ "c3f96c6f": {
+  "en": "This board is now the sensor",
+  "ru": "Эта плата — приёмник",
+  "text": "Ta płytka jest teraz odbiornikiem"
+ },
+ "a4a4ec2c": {
+  "en": "Peak reset",
+  "ru": "Пик сброшен",
+  "text": "Szczyt wyzerowany"
+ },
+ "8b1ba9b1": {
+  "en": "Map unavailable",
+  "ru": "Карта недоступна",
+  "text": "Mapa niedostępna"
+ },
+ "9777035b": {
+  "en": "OK again: turn off",
+  "ru": "Ещё раз OK: выключить",
+  "text": "Jeszcze raz OK: wyłącz"
+ },
+ "a0b9db2e": {
+  "en": "Nothing to save",
+  "ru": "Изменений нет",
+  "text": "Brak zmian"
+ },
+ "fd2cfcf6": {
+  "en": "No previous settings",
+  "ru": "Прежних настроек нет",
+  "text": "Brak poprzednich ustawień"
+ },
+ "20434332": {
+  "en": "Radio settings changed",
+  "ru": "Настройки радио изменены",
+  "text": "Zmieniono ustawienia radia"
+ },
+ "0a9fb2e4": {
+  "en": "Internet over Wi-Fi is off in this mode",
+  "ru": "Интернет по Wi-Fi выключен в этом режиме",
+  "text": "Internet przez Wi-Fi wyłączony w tym trybie"
+ },
+ "b477e636": {
+  "en": "Public key: ",
+  "ru": "Открытый ключ: ",
+  "text": "Klucz publiczny: "
+ },
+ "1992c148": {
+  "en": "Position shared",
+  "ru": "Позиция передана",
+  "text": "Pozycja wysłana"
+ },
+ "3d7566e2": {
+  "en": "Calibration saved",
+  "ru": "Калибровка сохранена",
+  "text": "Kalibracja zapisana"
+ },
+ "338a95a4": {
+  "en": "Rotate wider, at least 20 seconds",
+  "ru": "Вращайте шире, не менее 20 секунд",
+  "text": "Obracaj szerzej, co najmniej 20 sekund"
+ },
+ "f96aca09": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте устройство во все стороны",
+  "text": "Obracaj urządzenie we wszystkie strony"
+ },
+ "c3938153": {
+  "en": "No signal selected",
+  "ru": "Сигнал не выбран",
+  "text": "Nie wybrano sygnału"
+ },
+ "51fd901e": {
+  "en": "Calibrating: keep the area still for 10 s",
+  "ru": "Калибровка: 10 с без движения в зоне",
+  "text": "Kalibracja: 10 s bez ruchu w strefie"
+ },
+ "9b3514a0": {
+  "en": "Needs a heard beacon",
+  "ru": "Нужен услышанный маяк",
+  "text": "Brak słyszanego nadajnika"
+ },
+ "fa65940f": {
+  "en": "Ping on",
+  "ru": "Звук пеленга включён",
+  "text": "Dźwięk namiaru włączony"
+ },
+ "21bdb533": {
+  "en": "Device sound is off in settings",
+  "ru": "Звук устройства выключен в настройках",
+  "text": "Dźwięk urządzenia wyłączony w ustawieniach"
+ },
+ "d3c484a4": {
+  "en": "Ping off",
+  "ru": "Звук пеленга выключен",
+  "text": "Dźwięk namiaru wyłączony"
+ },
+ "ff8d187c": {
+  "en": "OK again: erase old data",
+  "ru": "Ещё раз OK: стереть",
+  "text": "OK ponownie: wymaż"
+ },
+ "78ae1f77": {
+  "en": "Storage created, restart",
+  "ru": "Создано, перезапуск",
+  "text": "Utworzono, restart"
+ },
+ "0eb32dbe": {
+  "en": "Encryption test passed",
+  "ru": "Проверка шифрования пройдена",
+  "text": "Test szyfrowania zaliczony"
+ },
+ "4d624476": {
+  "en": "Encryption test failed",
+  "ru": "Ошибка шифрования",
+  "text": "Błąd testu szyfrowania"
  },
  "47cf8db9": {
   "en": "New message from ",
@@ -1455,16 +1755,6 @@
   "ru": "Репитер",
   "text": "Repeater"
  },
- "9e61ffe9": {
-  "en": " MHz · SF",
-  "ru": " МГц · SF",
-  "text": " MHz · SF"
- },
- "704528a8": {
-  "en": "Radio error ",
-  "ru": "Ошибка радио ",
-  "text": "Błąd radia "
- },
  "6a4fb7b4": {
   "en": "Internet",
   "ru": "Интернет",
@@ -1584,6 +1874,16 @@
    "many": "{n} punktów"
   }
  },
+ "480bf3f5": {
+  "en": "Checkers",
+  "ru": "Шашки",
+  "text": "Warcaby"
+ },
+ "86e57321": {
+  "en": "Sea battle",
+  "ru": "Морской бой",
+  "text": "Statki"
+ },
  "7226324f": {
   "en": "Solitaire",
   "ru": "Косынка",
@@ -1625,6 +1925,16 @@
   "ru": "Радио, экран",
   "text": "Radio, ekran"
  },
+ "9e61ffe9": {
+  "en": " MHz · SF",
+  "ru": " МГц · SF",
+  "text": " MHz · SF"
+ },
+ "704528a8": {
+  "en": "Radio error ",
+  "ru": "Ошибка радио ",
+  "text": "Błąd radia "
+ },
  "b784e416": {
   "en": "Open",
   "ru": "Открыть",
@@ -1634,6 +1944,47 @@
   "en": "Lock",
   "ru": "Блок",
   "text": "Blokada"
+ },
+ "8244dadc": {
+  "en": " waiting",
+  "ru": " ждут",
+  "text": " czeka"
+ },
+ "2ff2b907": {
+  "en": {
+   "one": "app",
+   "other": "apps"
+  },
+  "ru": {
+   "one": "приложение",
+   "few": "приложения",
+   "many": "приложений"
+  },
+  "forms": {
+   "one": "{n} aplikacja",
+   "few": "{n} aplikacje",
+   "many": "{n} aplikacji"
+  }
+ },
+ "86f6e8f7": {
+  "en": "Folders and order: web page or app",
+  "ru": "Папки и порядок: веб-страница или приложение",
+  "text": "Foldery i kolejność: strona WWW lub aplikacja"
+ },
+ "8cbf76ce": {
+  "en": "No apps in this folder",
+  "ru": "В папке нет приложений",
+  "text": "Brak aplikacji w folderze"
+ },
+ "d3ced5d8": {
+  "en": "Menu",
+  "ru": "Меню",
+  "text": "Menu"
+ },
+ "7c285a3c": {
+  "en": "Select",
+  "ru": "Выбор",
+  "text": "Wybór"
  },
  "6bb58bc8": {
   "en": "Hashtag, name and key, new, heard on air",
@@ -1669,16 +2020,6 @@
   "en": "Announce",
   "ru": "Объявить",
   "text": "Ogłoś"
- },
- "d3ced5d8": {
-  "en": "Menu",
-  "ru": "Меню",
-  "text": "Menu"
- },
- "7c285a3c": {
-  "en": "Select",
-  "ru": "Выбор",
-  "text": "Wybór"
  },
  "9172b7d6": {
   "en": "Private channel · senders unverified · no ACK",
@@ -1901,6 +2242,36 @@
   "ru": "На карте",
   "text": "Na mapie"
  },
+ "8c87b0a8": {
+  "en": "Play with ",
+  "ru": "Играть с ",
+  "text": "Graj z "
+ },
+ "54326f87": {
+  "en": "Rated or friendly",
+  "ru": "На рейтинг или товарищеская",
+  "text": "Rankingowa lub towarzyska"
+ },
+ "fc82f8da": {
+  "en": "Russian draughts",
+  "ru": "Русские шашки",
+  "text": "Warcaby rosyjskie"
+ },
+ "e6106db4": {
+  "en": "Ten ships each",
+  "ru": "По десять кораблей",
+  "text": "Po dziesięć statków"
+ },
+ "6cfcb203": {
+  "en": "Choose",
+  "ru": "Выбрать",
+  "text": "Wybierz"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "Zamknij"
+ },
  "cc4a6a69": {
   "en": "Node was removed",
   "ru": "Узел удалён",
@@ -1980,6 +2351,11 @@
   "en": "Trace",
   "ru": "Трасса",
   "text": "Trasa"
+ },
+ "392c83fa": {
+  "en": "Play",
+  "ru": "Играть",
+  "text": "Graj"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -3770,166 +4146,6 @@
   "ru": "Имя: 1-24 байта UTF-8",
   "text": "Nazwa: 1-24 bajty UTF-8"
  },
- "0b2e473c": {
-  "en": "Not in this mode: Settings > Device mode",
-  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
-  "text": "Niedostępne w tym trybie: Ustawienia > Tryb pracy"
- },
- "cea9ae4c": {
-  "en": "Node announced",
-  "ru": "Узел объявлен",
-  "text": "Węzeł ogłoszony"
- },
- "5b43376d": {
-  "en": "Announcement failed",
-  "ru": "Не удалось объявить узел",
-  "text": "Nie udało się ogłosić węzła"
- },
- "aa9ad8ae": {
-  "en": "Message queued",
-  "ru": "Сообщение в очереди",
-  "text": "Wiadomość w kolejce"
- },
- "5035dc01": {
-  "en": "Cannot send: empty, full queue or radio",
-  "ru": "Не отправлено: текст, очередь или радио",
-  "text": "Nie wysłano: tekst, kolejka lub radio"
- },
- "d7961dd2": {
-  "en": "UTF-8 byte limit: ",
-  "ru": "Лимит байт UTF-8: ",
-  "text": "Limit bajtów UTF-8: "
- },
- "7a7a7a09": {
-  "en": "Waiting for GPS fix",
-  "ru": "Ожидание GPS-позиции",
-  "text": "Czekam na pozycję GPS"
- },
- "916ad0e6": {
-  "en": "This node has not shared GPS",
-  "ru": "Узел пока не передал GPS",
-  "text": "Ten węzeł nie udostępnił GPS"
- },
- "26314428": {
-  "en": "This board is now the beacon",
-  "ru": "Эта плата — маяк",
-  "text": "Ta płytka jest teraz nadajnikiem"
- },
- "c3f96c6f": {
-  "en": "This board is now the sensor",
-  "ru": "Эта плата — приёмник",
-  "text": "Ta płytka jest teraz odbiornikiem"
- },
- "a4a4ec2c": {
-  "en": "Peak reset",
-  "ru": "Пик сброшен",
-  "text": "Szczyt wyzerowany"
- },
- "8b1ba9b1": {
-  "en": "Map unavailable",
-  "ru": "Карта недоступна",
-  "text": "Mapa niedostępna"
- },
- "9777035b": {
-  "en": "OK again: turn off",
-  "ru": "Ещё раз OK: выключить",
-  "text": "Jeszcze raz OK: wyłącz"
- },
- "a0b9db2e": {
-  "en": "Nothing to save",
-  "ru": "Изменений нет",
-  "text": "Brak zmian"
- },
- "fd2cfcf6": {
-  "en": "No previous settings",
-  "ru": "Прежних настроек нет",
-  "text": "Brak poprzednich ustawień"
- },
- "20434332": {
-  "en": "Radio settings changed",
-  "ru": "Настройки радио изменены",
-  "text": "Zmieniono ustawienia radia"
- },
- "0a9fb2e4": {
-  "en": "Internet over Wi-Fi is off in this mode",
-  "ru": "Интернет по Wi-Fi выключен в этом режиме",
-  "text": "Internet przez Wi-Fi wyłączony w tym trybie"
- },
- "b477e636": {
-  "en": "Public key: ",
-  "ru": "Открытый ключ: ",
-  "text": "Klucz publiczny: "
- },
- "1992c148": {
-  "en": "Position shared",
-  "ru": "Позиция передана",
-  "text": "Pozycja wysłana"
- },
- "3d7566e2": {
-  "en": "Calibration saved",
-  "ru": "Калибровка сохранена",
-  "text": "Kalibracja zapisana"
- },
- "338a95a4": {
-  "en": "Rotate wider, at least 20 seconds",
-  "ru": "Вращайте шире, не менее 20 секунд",
-  "text": "Obracaj szerzej, co najmniej 20 sekund"
- },
- "f96aca09": {
-  "en": "Rotate in all directions",
-  "ru": "Вращайте устройство во все стороны",
-  "text": "Obracaj urządzenie we wszystkie strony"
- },
- "c3938153": {
-  "en": "No signal selected",
-  "ru": "Сигнал не выбран",
-  "text": "Nie wybrano sygnału"
- },
- "51fd901e": {
-  "en": "Calibrating: keep the area still for 10 s",
-  "ru": "Калибровка: 10 с без движения в зоне",
-  "text": "Kalibracja: 10 s bez ruchu w strefie"
- },
- "9b3514a0": {
-  "en": "Needs a heard beacon",
-  "ru": "Нужен услышанный маяк",
-  "text": "Brak słyszanego nadajnika"
- },
- "fa65940f": {
-  "en": "Ping on",
-  "ru": "Звук пеленга включён",
-  "text": "Dźwięk namiaru włączony"
- },
- "21bdb533": {
-  "en": "Device sound is off in settings",
-  "ru": "Звук устройства выключен в настройках",
-  "text": "Dźwięk urządzenia wyłączony w ustawieniach"
- },
- "d3c484a4": {
-  "en": "Ping off",
-  "ru": "Звук пеленга выключен",
-  "text": "Dźwięk namiaru wyłączony"
- },
- "ff8d187c": {
-  "en": "OK again: erase old data",
-  "ru": "Ещё раз OK: стереть",
-  "text": "OK ponownie: wymaż"
- },
- "78ae1f77": {
-  "en": "Storage created, restart",
-  "ru": "Создано, перезапуск",
-  "text": "Utworzono, restart"
- },
- "0eb32dbe": {
-  "en": "Encryption test passed",
-  "ru": "Проверка шифрования пройдена",
-  "text": "Test szyfrowania zaliczony"
- },
- "4d624476": {
-  "en": "Encryption test failed",
-  "ru": "Ошибка шифрования",
-  "text": "Błąd testu szyfrowania"
- },
  "13c4173d": {
   "en": "None",
   "ru": "Без региона",
@@ -5088,26 +5304,6 @@
   "ru": "завершена",
   "text": "zakończona"
  },
- "6e6fa95b": {
-  "en": "sending",
-  "ru": "отправка",
-  "text": "wysyłanie"
- },
- "0f0e7f9f": {
-  "en": "no ACK yet",
-  "ru": "ждём ACK",
-  "text": "czekam na ACK"
- },
- "5b4bc08f": {
-  "en": "not delivered",
-  "ru": "не доставлено",
-  "text": "nie doręczono"
- },
- "5165f173": {
-  "en": "will resend",
-  "ru": "повторю",
-  "text": "ponowię"
- },
  "9866b3af": {
   "en": "Accept challenge",
   "ru": "Принять вызов",
@@ -5559,11 +5755,6 @@
   "ru": "Добавить",
   "text": "Dodaj"
  },
- "19ca4410": {
-  "en": "Close",
-  "ru": "Закрыть",
-  "text": "Zamknij"
- },
  "9461ecf5": {
   "en": "Send",
   "ru": "Отправить",
@@ -5945,6 +6136,574 @@
   "ru": "Выберите: Кости +1",
   "text": "Wybierz: Kości +1"
  },
+ "a22c4db7": {
+  "en": "A game with them is on · ",
+  "ru": "Игра с ним уже идёт · ",
+  "text": "Gra z nim już trwa · "
+ },
+ "4f640623": {
+  "en": "Invite",
+  "ru": "Позвать",
+  "text": "Zaproś"
+ },
+ "6c373ed8": {
+  "en": {
+   "one": "king",
+   "other": "kings"
+  },
+  "ru": {
+   "one": "дамка",
+   "few": "дамки",
+   "many": "дамок"
+  },
+  "forms": {
+   "one": "{n} damka",
+   "few": "{n} damki",
+   "many": "{n} damek"
+  }
+ },
+ "ffcafe22": {
+  "en": {
+   "one": "man",
+   "other": "men"
+  },
+  "ru": {
+   "one": "шашка",
+   "few": "шашки",
+   "many": "шашек"
+  },
+  "forms": {
+   "one": "{n} pionek",
+   "few": "{n} pionki",
+   "many": "{n} pionków"
+  }
+ },
+ "68efa11c": {
+  "en": "Last move",
+  "ru": "Последний ход",
+  "text": "Ostatni ruch"
+ },
+ "e44516cf": {
+  "en": "OK accepts",
+  "ru": "OK - принять",
+  "text": "OK: przyjmij"
+ },
+ "ec36e656": {
+  "en": "Draw? D accepts",
+  "ru": "Ничья? D - да",
+  "text": "Remis? D: tak"
+ },
+ "02d04336": {
+  "en": "You must capture",
+  "ru": "Бить обязательно",
+  "text": "Bicie obowiązkowe"
+ },
+ "d2e8445e": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "игра",
+   "few": "игры",
+   "many": "игр"
+  },
+  "forms": {
+   "one": "{n} gra",
+   "few": "{n} gry",
+   "many": "{n} gier"
+  }
+ },
+ "2b4391d1": {
+  "en": "Your fleet",
+  "ru": "Ваш флот",
+  "text": "Twoja flota"
+ },
+ "723d2c43": {
+  "en": "Sunk: ",
+  "ru": "Потоплено: ",
+  "text": "Zatopione: "
+ },
+ "8a34ca1b": {
+  "en": "They: ",
+  "ru": "Соперник: ",
+  "text": "Rywal: "
+ },
+ "ac1b9e7b": {
+  "en": "S reshuffles your fleet",
+  "ru": "S - перемешать ваш флот",
+  "text": "S: rozstaw flotę od nowa"
+ },
+ "8e752412": {
+  "en": "Answers do not match the fleet!",
+  "ru": "Ответы не сходятся с флотом!",
+  "text": "Odpowiedzi nie pasują do floty!"
+ },
+ "9af0fc57": {
+  "en": "Waiting for their fleet",
+  "ru": "Ждём расстановку соперника",
+  "text": "Czekam na flotę rywala"
+ },
+ "e795e315": {
+  "en": "New sea battle",
+  "ru": "Новый морской бой",
+  "text": "Nowa gra w statki"
+ },
+ "98b3c926": {
+  "en": "New checkers game",
+  "ru": "Новая партия в шашки",
+  "text": "Nowa partia warcabów"
+ },
+ "5bf2b5c4": {
+  "en": "Sea battle keys",
+  "ru": "Клавиши морского боя",
+  "text": "Klawisze statków"
+ },
+ "20075015": {
+  "en": "Checkers keys",
+  "ru": "Клавиши шашек",
+  "text": "Klawisze warcabów"
+ },
+ "25230e72": {
+  "en": "Aim at their field (also ^v)",
+  "ru": "Прицел по полю соперника (и ^v)",
+  "text": "Celuj w pole rywala (też ^v)"
+ },
+ "778a3a96": {
+  "en": "Fire; a hit shoots again",
+  "ru": "Выстрел; попал - стреляйте ещё",
+  "text": "Strzał; trafiony: strzelaj dalej"
+ },
+ "d8bc35b5": {
+  "en": "Take a man / put it",
+  "ru": "Взять шашку / поставить",
+  "text": "Weź pionek / postaw"
+ },
+ "a8d00f7d": {
+  "en": "To the games",
+  "ru": "К играм",
+  "text": "Do gier"
+ },
+ "01641b94": {
+  "en": "Put back / to the games",
+  "ru": "Вернуть шашку / к играм",
+  "text": "Odłóż pionek / do gier"
+ },
+ "a3cc8300": {
+  "en": "Reshuffle the fleet before the first shot",
+  "ru": "Перемешать флот до первого выстрела",
+  "text": "Rozstaw flotę od nowa przed 1. strzałem"
+ },
+ "9c14f810": {
+  "en": "Play again after the game",
+  "ru": "Сыграть ещё раз после игры",
+  "text": "Zagraj ponownie po grze"
+ },
+ "e961207e": {
+  "en": "Shots are sent as direct messages with ACK.",
+  "ru": "Выстрелы идут личными сообщениями с ACK.",
+  "text": "Strzały idą jako prywatne wiadomości z ACK."
+ },
+ "ebdc7e4d": {
+  "en": "The game was removed",
+  "ru": "Игра удалена",
+  "text": "Gra usunięta"
+ },
+ "e9bdded1": {
+  "en": "Games",
+  "ru": "Игры",
+  "text": "Gry"
+ },
+ "e815b877": {
+  "en": "Shuffle",
+  "ru": "Перемешать",
+  "text": "Losuj"
+ },
+ "17c8f6f5": {
+  "en": "Again",
+  "ru": "Ещё раз",
+  "text": "Rewanż"
+ },
+ "2b372be5": {
+  "en": "Fire",
+  "ru": "Огонь",
+  "text": "Ognia"
+ },
+ "23b71582": {
+  "en": "Aim",
+  "ru": "Прицел",
+  "text": "Celuj"
+ },
+ "5c50940f": {
+  "en": "Invitation sent: you play ",
+  "ru": "Приглашение отправлено: вы играете ",
+  "text": "Zaproszenie wysłane: grasz "
+ },
+ "6c3d3c4b": {
+  "en": "Accepted: you play ",
+  "ru": "Принято: вы играете ",
+  "text": "Przyjęto: grasz "
+ },
+ "eff7a987": {
+  "en": "Waiting for the reply",
+  "ru": "Ждём ответа на приглашение",
+  "text": "Czekam na odpowiedź"
+ },
+ "004240d6": {
+  "en": "The game is over",
+  "ru": "Игра окончена",
+  "text": "Gra zakończona"
+ },
+ "26f3eff2": {
+  "en": "Men stand on the dark squares",
+  "ru": "Шашки стоят на тёмных полях",
+  "text": "Pionki stoją na ciemnych polach"
+ },
+ "e3b9fa5d": {
+  "en": "Capture is compulsory",
+  "ru": "Бить обязательно",
+  "text": "Bicie obowiązkowe"
+ },
+ "4ec43a0a": {
+  "en": "This man cannot move",
+  "ru": "Эта шашка не может ходить",
+  "text": "Ten pionek nie ma ruchu"
+ },
+ "2a7a0aa3": {
+  "en": "Choose one of your men",
+  "ru": "Выберите свою шашку",
+  "text": "Wybierz swój pionek"
+ },
+ "fc4e565c": {
+  "en": "Accepted: their shot first",
+  "ru": "Принято: первым стреляет соперник",
+  "text": "Przyjęto: pierwszy strzela rywal"
+ },
+ "1d9fe078": {
+  "en": "Waiting for the answer to your shot",
+  "ru": "Ждём ответа на ваш выстрел",
+  "text": "Czekam na odpowiedź na strzał"
+ },
+ "0c7cebdf": {
+  "en": "Wait for their shot",
+  "ru": "Дождитесь выстрела соперника",
+  "text": "Czekaj na strzał przeciwnika"
+ },
+ "a1b13732": {
+  "en": "Already known: aim elsewhere",
+  "ru": "Уже известно: цельтесь в другое место",
+  "text": "Już znane: celuj gdzie indziej"
+ },
+ "fb2cb481": {
+  "en": "Fire: ",
+  "ru": "Огонь: ",
+  "text": "Ognia: "
+ },
+ "83fec916": {
+  "en": "Shot refused",
+  "ru": "Выстрел не принят",
+  "text": "Strzał odrzucony"
+ },
+ "f47b3ad3": {
+  "en": "Only finished games can be removed",
+  "ru": "Удалить можно только оконченную игру",
+  "text": "Usunąć można tylko zakończoną grę"
+ },
+ "16c92847": {
+  "en": "DEL again removes the game",
+  "ru": "DEL ещё раз удалит игру",
+  "text": "DEL ponownie usunie grę"
+ },
+ "b7ea8321": {
+  "en": "Game removed",
+  "ru": "Игра удалена",
+  "text": "Gra usunięta"
+ },
+ "24b72155": {
+  "en": "Invitation sent",
+  "ru": "Приглашение отправлено",
+  "text": "Zaproszenie wysłane"
+ },
+ "aeea187c": {
+  "en": "Invites you to play",
+  "ru": "Зовёт сыграть",
+  "text": "Zaprasza do gry"
+ },
+ "77002057": {
+  "en": "Invites you: you play ",
+  "ru": "Зовёт: вы играете ",
+  "text": "Zaprasza: grasz "
+ },
+ "8f1c0ad5": {
+  "en": "Fleet reshuffled",
+  "ru": "Флот перемешан",
+  "text": "Flota rozstawiona"
+ },
+ "61f87f87": {
+  "en": "Too late: they have shot at it",
+  "ru": "Поздно: по флоту уже стреляли",
+  "text": "Za późno: rywal już strzelał"
+ },
+ "8aeec316": {
+  "en": "No game in progress",
+  "ru": "Игра не идёт",
+  "text": "Gra nie trwa"
+ },
+ "6840292a": {
+  "en": "X again resigns the game",
+  "ru": "X ещё раз - сдаться",
+  "text": "X ponownie: poddanie"
+ },
+ "6ece70ea": {
+  "en": "Finish this game first",
+  "ru": "Сначала завершите игру",
+  "text": "Najpierw zakończ grę"
+ },
+ "63db1444": {
+  "en": "Resign with X",
+  "ru": "Сдаться - клавиша X",
+  "text": "Poddanie: klawisz X"
+ },
+ "f6f12c56": {
+  "en": "Waiting for the answer",
+  "ru": "Ждём ответа",
+  "text": "Czekam na odpowiedź"
+ },
+ "67559138": {
+  "en": "Your shot",
+  "ru": "Ваш выстрел",
+  "text": "Twój strzał"
+ },
+ "1186be29": {
+  "en": "Their shot",
+  "ru": "Стреляет соперник",
+  "text": "Strzał przeciwnika"
+ },
+ "379c2cde": {
+  "en": "Game cancelled",
+  "ru": "Игра отменена",
+  "text": "Gra anulowana"
+ },
+ "fb10fcb6": {
+  "en": ": 15 king moves each",
+  "ru": ": 15 ходов дамками",
+  "text": ": 15 ruchów damkami"
+ },
+ "12cf24be": {
+  "en": ": their fleet sunk",
+  "ru": ": флот соперника потоплен",
+  "text": ": flota rywala zatopiona"
+ },
+ "b8237894": {
+  "en": ": your fleet sunk",
+  "ru": ": ваш флот потоплен",
+  "text": ": twoja flota zatopiona"
+ },
+ "ab60a3b7": {
+  "en": ": they cannot move",
+  "ru": ": у соперника нет ходов",
+  "text": ": rywal nie ma ruchu"
+ },
+ "eac19a4a": {
+  "en": ": you cannot move",
+  "ru": ": у вас нет ходов",
+  "text": ": nie masz ruchu"
+ },
+ "97a3d6c0": {
+  "en": "miss",
+  "ru": "мимо",
+  "text": "pudło"
+ },
+ "0c4ee115": {
+  "en": "hit",
+  "ru": "ранен",
+  "text": "trafiony"
+ },
+ "369547b9": {
+  "en": "sunk",
+  "ru": "потоплен",
+  "text": "zatopiony"
+ },
+ "c43c60c7": {
+  "en": "New game",
+  "ru": "Новая игра",
+  "text": "Nowa gra"
+ },
+ "f938729c": {
+  "en": "Six games in progress: finish one",
+  "ru": "Идут шесть игр: завершите одну",
+  "text": "Trwa sześć gier: zakończ jedną"
+ },
+ "a6bc62ad": {
+  "en": "Invite a chat contact",
+  "ru": "Позвать чат-контакт",
+  "text": "Zaproś kontakt czatu"
+ },
+ "21fa374d": {
+  "en": "Shots travel as direct MeshCore messages with delivery confirmation. Ten ships each, placed at random; a hit shoots again. The other player needs MeshMesh with sea battle.",
+  "ru": "Выстрелы идут личными сообщениями MeshCore с подтверждением доставки. У каждого десять кораблей, расставленных случайно; попал - стреляй ещё. Сопернику нужен MeshMesh с морским боем.",
+  "text": "Strzały idą jako prywatne wiadomości MeshCore z potwierdzeniem doręczenia. Każdy ma dziesięć statków rozstawionych losowo; po trafieniu strzelasz dalej. Rywal potrzebuje MeshMesh ze statkami."
+ },
+ "5dfd2cfc": {
+  "en": "Moves travel as direct MeshCore messages with delivery confirmation. Russian draughts: capturing is compulsory, kings fly. The other player needs MeshMesh with checkers.",
+  "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Русские шашки: бить обязательно, дамка ходит далеко. Сопернику нужен MeshMesh с шашками.",
+  "text": "Ruchy idą jako prywatne wiadomości MeshCore z potwierdzeniem doręczenia. Warcaby rosyjskie: bicie obowiązkowe, damka chodzi daleko. Rywal potrzebuje MeshMesh z warcabami."
+ },
+ "aa01c756": {
+  "en": "Your fleet is placed at random; S reshuffles it before the first shot",
+  "ru": "Флот расставится случайно; S перемешает его до первого выстрела",
+  "text": "Flota rozstawi się losowo; S rozstawi ją od nowa przed 1. strzałem"
+ },
+ "2dad4c3d": {
+  "en": "This piece cannot move",
+  "ru": "Этой шашке хода нет",
+  "text": "Ten pionek nie ma ruchu"
+ },
+ "0c69ddb4": {
+  "en": "Pick your piece",
+  "ru": "Выберите свою шашку",
+  "text": "Wybierz swój pionek"
+ },
+ "11f8f418": {
+  "en": "^v path, OK",
+  "ru": "^v путь, OK",
+  "text": "^v droga,OK"
+ },
+ "77be2549": {
+  "en": "column ",
+  "ru": "столбец ",
+  "text": "kolumna "
+ },
+ "e6c513fc": {
+  "en": ": finish",
+  "ru": ": добить",
+  "text": ": dobij"
+ },
+ "16996d68": {
+  "en": "hit",
+  "ru": "попал",
+  "text": "trafiony"
+ },
+ "0689f5b7": {
+  "en": "Already known",
+  "ru": "Уже известно",
+  "text": "Już znane"
+ },
+ "1d3993e6": {
+  "en": "afloat ",
+  "ru": "целы ",
+  "text": "całe "
+ },
+ "9f5e37bf": {
+  "en": "menu: shuffle",
+  "ru": "меню: перемешать",
+  "text": "menu: losuj"
+ },
+ "3e164df9": {
+  "en": "OK: fire",
+  "ru": "OK: огонь",
+  "text": "OK: ognia"
+ },
+ "1613513b": {
+  "en": "invites you",
+  "ru": "зовёт играть",
+  "text": "zaprasza"
+ },
+ "9c182680": {
+  "en": "Nodes: OK - invite",
+  "ru": "Узлы: OK - вызвать",
+  "text": "Węzły: OK - wyzwij"
+ },
+ "2a151dd6": {
+  "en": "waiting for the answer",
+  "ru": "ждём ответа",
+  "text": "czekam na odpowiedź"
+ },
+ "0ab238b8": {
+  "en": "your shot",
+  "ru": "ваш выстрел",
+  "text": "twój strzał"
+ },
+ "5c126ec2": {
+  "en": "their shot",
+  "ru": "стреляет соперник",
+  "text": "strzał przeciwnika"
+ },
+ "9ffee113": {
+  "en": "declined",
+  "ru": "отклонена",
+  "text": "odrzucona"
+ },
+ "97ecf17c": {
+  "en": "cancelled",
+  "ru": "отменена",
+  "text": "anulowana"
+ },
+ "a778e220": {
+  "en": "Shuffle fleet",
+  "ru": "Перемешать флот",
+  "text": "Losuj flotę"
+ },
+ "3f807b89": {
+  "en": "Their field",
+  "ru": "Поле соперника",
+  "text": "Pole rywala"
+ },
+ "20d9a26e": {
+  "en": "My fleet",
+  "ru": "Мой флот",
+  "text": "Moja flota"
+ },
+ "418e791d": {
+  "en": "Delete game",
+  "ru": "Удалить игру",
+  "text": "Usuń grę"
+ },
+ "3e4b01da": {
+  "en": "Game list",
+  "ru": "Список игр",
+  "text": "Lista gier"
+ },
+ "fa33deb4": {
+  "en": "< Back to the game",
+  "ru": "< К игре",
+  "text": "< Do gry"
+ },
+ "9b5dbd3a": {
+  "en": "Fleet placed again",
+  "ru": "Флот расставлен заново",
+  "text": "Flota rozstawiona od nowa"
+ },
+ "dde5c0b7": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи",
+  "text": "Błąd nadawania radia"
+ },
+ "93a5052f": {
+  "en": "Delivery not confirmed",
+  "ru": "Доставка не подтверждена",
+  "text": "Dostawa niepotwierdzona"
+ },
+ "6e6fa95b": {
+  "en": "sending",
+  "ru": "отправка",
+  "text": "wysyłanie"
+ },
+ "0f0e7f9f": {
+  "en": "no ACK yet",
+  "ru": "ждём ACK",
+  "text": "czekam na ACK"
+ },
+ "5b4bc08f": {
+  "en": "not delivered",
+  "ru": "не доставлено",
+  "text": "nie doręczono"
+ },
+ "5165f173": {
+  "en": "will resend",
+  "ru": "повторю",
+  "text": "ponowię"
+ },
  "7854f1f9": {
   "en": "s",
   "ru": "с",
@@ -6094,6 +6853,21 @@
   "en": "BLE error",
   "ru": "Ошибка BLE",
   "text": "Błąd BLE"
+ },
+ "8bd652c8": {
+  "en": "Messages",
+  "ru": "Сообщения",
+  "text": "Wiadomości"
+ },
+ "6f228773": {
+  "en": "Notifications",
+  "ru": "Уведомления",
+  "text": "Powiadomienia"
+ },
+ "a1841168": {
+  "en": "Modules",
+  "ru": "Модули",
+  "text": "Moduły"
  },
  "6b18c42e": {
   "en": "Normal",
@@ -6321,11 +7095,6 @@
   "ru": "Слышимые ретрансляторы",
   "text": "Słyszane przekaźniki"
  },
- "6f228773": {
-  "en": "Notifications",
-  "ru": "Уведомления",
-  "text": "Powiadomienia"
- },
  "4fb02329": {
   "en": "Wake: ",
   "ru": "Экран: ",
@@ -6385,6 +7154,21 @@
   "en": "Next game",
   "ru": "Следующая партия",
   "text": "Następna partia"
+ },
+ "7c7101d9": {
+  "en": "Checkers: invite",
+  "ru": "Шашки: вызвать",
+  "text": "Warcaby: wyzwij"
+ },
+ "3386f067": {
+  "en": "Sea battle: invite",
+  "ru": "Морской бой: вызвать",
+  "text": "Statki: wyzwij"
+ },
+ "5e701de1": {
+  "en": "Next game",
+  "ru": "Следующая игра",
+  "text": "Następna gra"
  },
  "1bc1b700": {
   "en": "Sound: on",
@@ -6911,11 +7695,6 @@
   "ru": "  ретрансляция",
   "text": "  przekazywanie"
  },
- "8bd652c8": {
-  "en": "Messages",
-  "ru": "Сообщения",
-  "text": "Wiadomości"
- },
  "64af19bb": {
   "en": "queued",
   "ru": "очередь",
@@ -7136,11 +7915,6 @@
   "ru": "Гасить экран: ",
   "text": "Wygaszanie: "
  },
- "a1841168": {
-  "en": "Modules",
-  "ru": "Модули",
-  "text": "Moduły"
- },
  "15bd3514": {
   "en": "relayed ",
   "ru": "переслано ",
@@ -7160,6 +7934,11 @@
   "en": "  boot ",
   "ru": "  загр. ",
   "text": "  start "
+ },
+ "dbc2db80": {
+  "en": "OK: open  < >",
+  "ru": "OK: открыть  < >",
+  "text": "OK: otwórz  < >"
  },
  "bde1b411": {
   "en": "hold: open",
@@ -7186,16 +7965,6 @@
   "ru": "клик-выбор держ-слать",
   "text": "klik-wybór trzymaj-wyślij"
  },
- "dde5c0b7": {
-  "en": "Radio TX error",
-  "ru": "Ошибка передачи",
-  "text": "Błąd nadawania radia"
- },
- "93a5052f": {
-  "en": "Delivery not confirmed",
-  "ru": "Доставка не подтверждена",
-  "text": "Dostawa niepotwierdzona"
- },
  "a6f65ca6": {
   "en": "No storage: menu",
   "ru": "Нет хранилища: меню",
@@ -7210,6 +7979,81 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "Poprz."
+ },
+ "347bd268": {
+  "en": "No games yet",
+  "ru": "Игр пока нет",
+  "text": "Brak gier"
+ },
+ "745e4b4c": {
+  "en": "Node menu: invite",
+  "ru": "Меню узла: вызвать",
+  "text": "Menu węzła: wyzwij"
+ },
+ "1fc5bb4e": {
+  "en": "must take",
+  "ru": "надо бить",
+  "text": "musisz bić"
+ },
+ "97ebcef9": {
+  "en": "sunk ",
+  "ru": "потоплено ",
+  "text": "zatopione "
+ },
+ "7f462399": {
+  "en": "mine ",
+  "ru": "моих ",
+  "text": "moje "
+ },
+ "14369dba": {
+  "en": "hold: fix",
+  "ru": "держ: выбрать",
+  "text": "trzym: wybierz"
+ },
+ "99b3464e": {
+  "en": "hold: fire",
+  "ru": "держ: огонь",
+  "text": "trzym: ognia"
+ },
+ "7c6057ae": {
+  "en": "my fleet",
+  "ru": "мой флот",
+  "text": "moja flota"
+ },
+ "241d56d7": {
+  "en": "theirs",
+  "ru": "их",
+  "text": "ich"
+ },
+ "da3cf1b1": {
+  "en": "mine",
+  "ru": "мои",
+  "text": "moje"
+ },
+ "56155faf": {
+  "en": "sunk",
+  "ru": "потоплено",
+  "text": "zatopione"
+ },
+ "6c234a82": {
+  "en": "afloat",
+  "ru": "на плаву",
+  "text": "na wodzie"
+ },
+ "12643c68": {
+  "en": "answers do not match!",
+  "ru": "ответы не сходятся!",
+  "text": "odpowiedzi nie pasują!"
+ },
+ "1ad835a9": {
+  "en": "they ",
+  "ru": "они ",
+  "text": "rywal "
+ },
+ "458cc672": {
+  "en": "click: back",
+  "ru": "клик: назад",
+  "text": "klik: wstecz"
  },
  "9b345e63": {
   "en": "No repeaters yet",
@@ -7696,11 +8540,6 @@
   "en": "A change restarts; data and settings stay",
   "ru": "Смена перезапускает; данные и настройки сохраняются",
   "text": "Zmiana uruchamia ponownie; dane i ustawienia zostają"
- },
- "6cfcb203": {
-  "en": "Choose",
-  "ru": "Выбрать",
-  "text": "Wybierz"
  },
  "ef107ddc": {
   "en": "Continue",

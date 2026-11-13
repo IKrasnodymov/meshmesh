@@ -151,7 +151,7 @@ bool gameKey(int key){
  if(key>='A'&&key<='Z')key+=32;
  if(gameHelp){gameHelp=false;return true;}
  if(key!='n')gameNewArmed=false;
- if(key==KeyBack){if(gameHeld>=0)gameHeld=-1;else change(Home);return true;}
+ if(key==KeyBack){if(gameHeld>=0)gameHeld=-1;else change(Home,true);return true;}
  if(gameFinishing&&key!=Erase&&key!='u')return true; // cards are flying to the foundations
  if(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown){gameMoveCursor(key);return true;}
  if(key==Enter){gameAct(false);return true;}

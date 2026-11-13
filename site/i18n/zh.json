@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9：测试中的网络 — OK 保留，重启恢复已保存的设置",
  "shot.web-networks": "按城市选择网络",
  "shot.web-networks-test": "设置测试：保留、还原、检查",
- "doc.networks": "你所在城市的网络"
+ "doc.networks": "你所在城市的网络",
+ "f.games.t": "西洋跳棋、海战棋和文件夹",
+ "f.games.d": "除国际象棋外，又多了两款通过无线电与联系人对战的游戏：俄式跳棋和海战棋。每一步走子和每一次射击都是带确认的私信，未送达会一直重发；不计等级分，只为好玩。在 M9 和 T-Deck 上用按键和触摸操作，在 OLED 开发板上用单键或摇杆操作，也可在网页和应用中游玩。所有游戏现在都放在主菜单的“游戏”文件夹中；在网页和应用中可以创建、重命名和隐藏文件夹，并在文件夹之间移动应用。",
+ "shot.m9-checkers": "西洋跳棋：选中一枚棋子，标出可走的位置",
+ "shot.m9-checkers-chain": "王棋一步连吃数子",
+ "shot.m9-sea-mid": "海战棋：命中、被击沉的舰船和你的舰队",
+ "shot.m9-sea-lost": "胜者公开舰队，并与应答核对",
+ "shot.m9-folder": "“游戏”文件夹",
+ "shot.m9-home-folder": "带有“游戏”文件夹的菜单",
+ "shot.heltec-checkers-move": "单键玩西洋跳棋：给出的走法",
+ "shot.heltec-sea-hunt": "OLED 上的海战棋：补射被命中的舰船",
+ "doc.games": "跳棋、海战棋、文件夹"
 }

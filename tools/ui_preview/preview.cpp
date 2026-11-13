@@ -16,6 +16,7 @@
 #include "Maps.h"
 #include "Pet.h"
 #include "Dice.h"
+#include "Duel.h"
 #include "Navigation.h"
 #include "Wire.h"
 #include <time.h>
@@ -175,6 +176,20 @@ int main(int argc,char** argv){
    if(line=="loopback"){while(done<previewSent.size()){PreviewSent p=previewSent[done++];if(p.text.rfind("\xf0\x9f\x8e\xb2",0)!=0)continue;dicer.delivery(p.id,ChatMessage::Delivered);
      const Peer* from=meshRadio.findContact(p.peer);dicer.receive(p.peer,from?from->name:"",p.text.c_str());}dicer.tick();printf("OK loopback\n");fflush(stdout);continue;}
    String r=dicer.command(String(line.c_str()));dicer.tick();printf("%s\n",r.c_str());fflush(stdout);}
+  return 0;}
+ // "--duel": checkers and sea battle (src/Duel.cpp) as a server for the protocol and web page checks: a line on stdin,
+ // a line on stdout. "recv PEER TEXT" - a direct message from a contact; "ack ID" / "fail ID" - the delivery of a sent
+ // message; "sent" - the messages sent since the last "sent" as JSON; "wait SECONDS" - time passes; anything else is a
+ // "duel ..." command. tools/duel_check.py runs two of them against each other.
+ if(std::string(outDir)=="--duel"){duels.begin();std::string line;size_t done=0;
+  while(std::getline(std::cin,line)){fakeMillis+=500;String r;
+   if(line.rfind("recv ",0)==0){size_t sp=line.find(' ',5);uint64_t from=strtoull(line.substr(5,sp-5).c_str(),nullptr,16);const Peer* p=meshRadio.findContact(from);
+    r=duels.receive(from,p?p->name:"?",line.substr(sp+1).c_str())?"OK game":"OK chat";}
+   else if(line.rfind("ack ",0)==0||line.rfind("fail ",0)==0){bool ack=line[0]=='a';uint32_t id=strtoul(line.c_str()+(ack?4:5),nullptr,10);r=duels.delivery(id,ack?ChatMessage::Delivered:ChatMessage::Failed)?"OK":"OK unknown";}
+   else if(line=="sent"){DynamicJsonDocument d(8192);JsonArray a=d.to<JsonArray>();for(;done<previewSent.size();done++){JsonObject o=a.createNestedObject();o["id"]=previewSent[done].id;o["peer"]=meshRadio.idText(previewSent[done].peer);o["text"]=previewSent[done].text.c_str();}serializeJson(d,r);}
+   else if(line.rfind("wait ",0)==0){fakeMillis+=strtoul(line.c_str()+5,nullptr,10)*1000;r="OK";}
+   else r=duels.command(String(line.c_str()));
+   duels.tick();printf("%s\n",r.c_str());fflush(stdout);}
   return 0;}
  quickSend::begin();people::begin();wardrive::begin();wishlistChecks();uiBegin();scenario();return 0;
 }

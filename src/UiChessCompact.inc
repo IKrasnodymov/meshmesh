@@ -20,12 +20,6 @@ const uint8_t glyphs[7][6]={{0},
  {0x15,0x1f,0x0e,0x0e,0x0e,0x1f},  // rook
  {0x15,0x0a,0x1f,0x0e,0x0e,0x1f},  // queen
  {0x04,0x0e,0x04,0x1f,0x0e,0x1f}}; // king
-// Up to `rows` lines of `cols` characters from x, wrapped at spaces.
-void textLinesAt(const String& value,int x,int y,unsigned rows,unsigned cols){
- unsigned at=0;for(unsigned r=0;r<rows&&at<value.length();r++){unsigned n=0,end=at,space=0;
-  while(end<value.length()&&n<cols){uint8_t c=value[end];end+=c<128?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;n++;if(c==' ')space=end;}
-  if(end<value.length()&&space>at)end=space;say(x,y+r*9,value.substring(at,end),small);at=end;while(at<value.length()&&value[at]==' ')at++;}
-}
 bool glyphAt(int piece,int x,int y){return x>=0&&x<5&&y>=0&&y<6&&(glyphs[piece][y]>>(4-x)&1);}
 bool ringAt(int piece,int x,int y){if(glyphAt(piece,x,y))return false;for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(glyphAt(piece,x+dx,y+dy))return true;return false;}
 unsigned chessGames(ChessMatch** out){unsigned n=0;for(auto& m:chessNet.matches)if(m.state!=ChessMatch::Free)out[n++]=&m;
@@ -40,11 +34,7 @@ String chessStateText(const ChessMatch& m){
  default:return "";
  }
 }
-String chessLink(const ChessMatch& m){
- switch(m.link()){case ChatMessage::Queued:return t("sending","отправка");case ChatMessage::Sent:return t("no ACK yet","ждём ACK");
- case ChatMessage::Delivered:return t("delivered","доставлено");case ChatMessage::Failed:return m.autoStopped?t("not delivered","не доставлено"):t("will resend","повторю");}
- return "";
-}
+String chessLink(const ChessMatch& m){return linkText(m.link(),m.autoStopped);}
 // Board squares on the screen: the player's side at the bottom.
 int squareAt(const ChessMatch& m,int col,int row){return m.mine==chess::White?(7-row)*8+col:row*8+(7-col);}
 void squareXY(const ChessMatch& m,int sq,int& x,int& y){int f=chess::fileOf(sq),r=chess::rankOf(sq);if(m.mine==chess::White){x=f*8;y=(7-r)*8;}else{x=(7-f)*8;y=r*8;}}

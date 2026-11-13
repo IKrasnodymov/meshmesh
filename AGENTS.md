@@ -7,7 +7,7 @@
 (регион по умолчанию и у канала, поиск у соседних репитеров, команды companion 54/55/63/64; `docs/regions.md`, `src/Regions.cpp`,
 `src/RegionSearch.inc`, проверка `tools/region_check.py`), сеть города — радиопрофиль по справочнику сообщества (`site/networks.json`, `tools/networks.py`; сайт `site/netpick.js` (свёрнутый блок, только русская версия сайта) пишет его по companion, страница/приложение — `renderNet` в `web/index.html`, тест и прежний профиль на плате — `radio try|keep|revert|previous`, поиск сети в эфире — `netfind`, `src/NetFind.inc`, выжимка справочника `include/NetCatalog.h`, `docs/networks.md`), LoRa, офлайн-карты (SD устройства или память телефона в приложении — `android/.../api/MapStore.kt`; рельеф и горизонтали по Terrain Tiles при подготовке; карта узлов без подложки — `drawMap` в `web/index.html`; `docs/maps-format.md`), Wi-Fi, BLE, радар сигналов, датчик движения по Wi-Fi CSI,
 шахматы с контактами (экран M9 и веб обеих плат, личные сообщения MeshCore,
-партии на рейтинг ELO с результатом, подписанным ключами обоих узлов, — `src/ChessRating.cpp`, турниры по швейцарской системе — `src/ChessTour.cpp`; `docs/chess.md`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
+партии на рейтинг ELO с результатом, подписанным ключами обоих узлов, — `src/ChessRating.cpp`, турниры по швейцарской системе — `src/ChessTour.cpp`; `docs/chess.md`; шашки и морской бой с контактами без рейтинга — `src/Checkers.cpp`, `src/Sea.cpp`, `src/Duel.cpp`, экраны `src/UiDuel.inc`, `src/UiDuelCompact.inc`, `docs/games.md`, проверка протокола `tools/duel_check.py`; папки приложений меню (папка «Игры») — `src/Apps.cpp`; страница сайта `chess/` играет через штатную MeshCore companion по Web Serial/Bluetooth —
 `web/chess-companion.js`, `tools/chess_site.py`), питомец сети — тамагочи, который кормится эфиром,
 растёт и может умереть (`src/Pet.cpp`, экраны `src/UiPet.inc`, `src/UiPetCompact.inc`, T114 — `src/UiHires.inc`;
 `docs/pet.md`), кости — дайсер DIC3R: RPG-броски и формулы, сетка Warhammer, лист персонажа из блоков с формулами, шаблоны D&D и Р.Э.Т., отправка листа контакту (`src/Dice.cpp`,
@@ -170,7 +170,10 @@ Gradle `output-metadata.json`, не вычисляет их из версии п
 размер проверять по самому большому, китайскому (`tools/nrf52.py package`). На nRF52 `UiHeltec.cpp`, `Dice.cpp`, `Wardrive.cpp`, `Clock.cpp`, `Config.cpp`, `Navigation.cpp`, `RadarModel.cpp`, `Power.cpp`, `nrf52/PortalNrf.cpp`, `nrf52/Platform.cpp`, `nrf52/HardwareT114.cpp`, `nrf52/RadarNrf.cpp`
 и `MeshRadio.cpp` (с протоколом companion), а также `App.cpp`, шахматы, `Pet.cpp`, `Channels.cpp`, `MeshServer.cpp`, `main.cpp`, `UiIcons.cpp` и `I18n.cpp` собираются с `-Os` (прагма в файле, остальной наш код `-O2` через `build_src_flags`); библиотеки и ядро nRF52 с 0.25.0 собираются с `-Os` (`build_flags`): иначе китайский образ T114 не помещался.
 Шахматы, питомец, кости и вардрайв на nRF52 — отключаемые модули (`include/Modules.h`, `MM_NO_CHESS|PET|DICE|WARDRIVE`,
-`tools/nrf52.py package ENV --without …`, `docs/gat562.md`); сайт и приложение ставят полный набор. Новые
+`tools/nrf52.py package ENV --without …`, `docs/gat562.md`); сайт и приложение ставят полный набор. Шашки и морской бой
+(`MM_CHECKERS`, `MM_SEA`, общий `MM_DUEL`) на nRF52 по умолчанию выключены (места нет: китайский T114 и без них — 2,6 КБ
+свободно); образ с ними — `--with-games`, только en+ru, на T114 — ещё и `--without chess`. Строки, которые есть только в коде игр,
+не входят в таблицу переводов образа без них (`tools/i18n.py`, `GAMES`). Новые
 обращения к этим модулям из общего кода и компактного интерфейса обёртывать `#if MM_CHESS` и т. п. и проверять
 сборку без них. Кириллические шрифты остаются во всех
 образах: по радио приходят русские сообщения.
@@ -482,3 +485,17 @@ MeshCore, 128 hex), `identity set`, `contact add {JSON}` (`MeshRadio::privateKey
 littlefs v1) — там код заводской Meshtastic T114 (`foreignCode` в `src/nrf52/Platform.cpp`); чужую littlefs (MeshCore) и
 нашу порванную — по-прежнему только по `fsformat`. На железе не проверено.
 
+
+## Шашки, морской бой и папки (0.33.0 / Android 0.22.0)
+
+`docs/games.md`: русские шашки (`src/Checkers.cpp`) и морской бой (`src/Sea.cpp`) с контактами личными сообщениями
+`🏁…`/`🚢…` с ACK и повтором как у шахмат, без рейтинга; партии обеих игр — `src/Duel.cpp` (`duels`, до 6, файл
+`/meshmesh/duels.0|1`), USB `duel …`, `GET /api/duel`. Победитель морского боя отправляет расстановку, проигравший сверяет её
+с ответами. Экраны: M9/T-Deck — `src/UiDuel.inc`, компактные и T114 — `src/UiDuelCompact.inc`, `UiHires.inc`; страница —
+разделы `checkers`, `sea`, `duel`, плитка «Игры» (`games`) и редактор папок в `renderApps` (`web/index.html`), приложение —
+`DuelNews.kt`. Папки: настройка `apps` — `{ИМЯ id …}`, `-{…}` скрыта, `games` — «Игры» на языке экрана; при первом запуске
+0.33.0 сохранённый порядок один раз переносит игры в папку (`appsAddGames`, NVS `apps3`). Проверка протокола —
+`tools/duel_check.py` (два экземпляра кода через `tools/ui_preview` `--duel`, потери сообщений; в CI), экраны — сценарии
+`tools/ui_preview/scenario_games_*.inc`. Чтобы китайский T114 поместился с папками: `quickSend::state` и черновик радио
+в обнуляемой памяти (не в `.data`), крупный шрифт T114 без русского — `inr24_mr`. По BLE `set` не длиннее 255 байт: страница
+не сохраняет порядок приложений длиннее 240 байт. На железе не проверено: плат на USB не было.

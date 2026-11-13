@@ -29,6 +29,7 @@ MeshCore estándar.
 - **Radar de señales**: Wi-Fi, Bluetooth y LoRa a tu alrededor, con rastreo tipo “frío / caliente”.
 - **Sensor de movimiento**: dos placas detectan a una persona que camina entre ellas (Wi-Fi CSI).
 - **Ajedrez** con tus contactos a través de la malla, y solitario Klondike en el M9.
+- **Damas y batalla naval** con tus contactos a través de la malla (0.33.0): damas rusas y una batalla naval de 10×10, cada jugada es un mensaje confirmado, sin ELO; todos los juegos están en la carpeta Juegos del menú, y en la página web o en la app se pueden crear carpetas, renombrarlas, ocultarlas y llenarlas. [docs/en/games.md](docs/en/games.md)
 - **Mascota de la red** — una criatura de píxeles al estilo Tamagotchi en todas las placas: se alimenta del tráfico de radio, crece y puede morir de hambre o de soledad. [docs/en/pet.md](docs/en/pet.md)
 - **Dados** — el lanzador de dados DIC3R en todas las placas: reservas y fórmulas de rol (2d6+1, d20, d66, d%), una cuadrícula de Warhammer con umbral de éxito y una hoja de personaje por bloques (atributos, barras, marcas, habilidades que tiran y gastan) con plantillas de D&D 5e y R.E.T., que se crea en la página web o en la app y se envía a un contacto por la red mesh; iguales en la pantalla, la página web y la app. [docs/en/dice.md](docs/en/dice.md)
 - **Ajedrez sin MeshMesh en tu dispositivo**: [la página de ajedrez](https://ikrasnodymov.github.io/meshmesh/chess/) juega a través de

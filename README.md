@@ -29,6 +29,7 @@ MeshCore nodes.
 - **Signal radar** — Wi-Fi, Bluetooth and LoRa around you, with “warmer / colder” homing.
 - **Motion sensor** — two boards detect a person walking between them (Wi-Fi CSI).
 - **Chess** with your contacts over the mesh, and Klondike solitaire on the M9.
+- **Checkers and sea battle** with your contacts over the mesh (0.33.0): Russian draughts and a 10×10 sea battle, each move an acknowledged message, no rating; all games sit in a Games folder of the menu, and folders can be created, renamed, hidden and filled on the web page or in the app. [docs/en/games.md](docs/en/games.md)
 - **Mesh pet** — a Tamagotchi-like pixel creature on every board that feeds on radio traffic, grows up and can die of hunger or loneliness. [docs/en/pet.md](docs/en/pet.md)
 - **Dice** — the DIC3R dice roller on every board: RPG pools and formulas (2d6+1, d20, d66, d%), a Warhammer grid with a success threshold and a character sheet of blocks (stats, tracks, marks, abilities that roll and spend) with D&D 5e and R.E.T. templates, built on the web page or in the app and sent to a contact over the mesh; the same on the screen, the web page and the app. [docs/en/dice.md](docs/en/dice.md)
 - **Chess without MeshMesh on your device**: [the chess page](https://ikrasnodymov.github.io/meshmesh/chess/) plays through a

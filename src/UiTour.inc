@@ -58,7 +58,7 @@ bool tourListKey(int key){
  tour::Tour* rows[tour::MaxTours];unsigned n=tourRows(rows),total=1+n;
  if(key==KeyUp||key==KeyDown){tourSel=(tourSel+(key==KeyUp?-1:1)+total)%total;return true;}
  if(key==Enter||key==KeyHold){if(!tourSel)tourStartWizard();else tourOpenCard(rows[tourSel-1]);return true;}
- if(key==KeyBack){change(Home);return true;}
+ if(key==KeyBack){change(Home,true);return true;}
  return false;
 }
 

@@ -308,14 +308,14 @@ bool chessKey(int key){
   if(chessTab==2){ // rating: up/down go through the players
    if(key==KeyUp||key==KeyDown){chessRatingSel=max(0,chessRatingSel+(key==KeyUp?-1:1));return true;}
    if(key=='s'){unsigned n=ledger::exchange.startAll();notice(n?t("Comparing ledgers with ","Сверка журнала с узлами: ")+String(n):String(t("No rated players heard in a day","За сутки не слышно игроков с рейтингом")),n?ok:dim);return true;}
-   if(key==KeyBack){change(Home);return true;}
+   if(key==KeyBack){change(Home,true);return true;}
    return key==Enter||key==KeyHold||key==Erase;
   }
   if(key==KeyUp||key==KeyDown){chessSortRows();int total=1+chessRowCount;selected=(selected+(key==KeyUp?-1:1)+total)%total;return true;}
-  if(key==Enter||key==KeyHold){chessSortRows();if(!selected){if(!chessNet.room()){notice(t("Six games in progress: finish one","Идут шесть партий: завершите одну"),warn);return true;}change(ChessPick);}else chessEnter(chessRows[selected-1]);return true;}
+  if(key==Enter||key==KeyHold){chessSortRows();if(!selected){if(!chessNet.room()){notice(t("Six games in progress: finish one","Идут шесть партий: завершите одну"),warn);return true;}pickReturn=ChessList;change(ChessPick);}else chessEnter(chessRows[selected-1]);return true;}
   if(key==Erase&&selected){chessSortRows();ChessMatch& m=*chessRows[selected-1];if(m.state!=ChessMatch::Over){notice(t("Only finished games can be removed","Удалить можно только оконченную партию"),dim);return true;}
    if(!chessRemoveArmed){chessRemoveArmed=true;notice(t("DEL again removes the game","DEL ещё раз удалит партию"),warn);return true;}chessRemoveArmed=false;chessNet.remove(m);notice(t("Game removed","Партия удалена"),ok);return true;}
-  if(key==KeyBack){change(Home);return true;}
+  if(key==KeyBack){change(Home,true);return true;}
   return false;
  }
  if(page==ChessPick){
@@ -324,7 +324,7 @@ bool chessKey(int key){
   if(key==KeyUp||key==KeyDown){chessSortPeers();if(chessPeerCount)selected=(selected+(key==KeyUp?-1:1)+chessPeerCount)%chessPeerCount;return true;}
   if(key==Enter||key==KeyHold){chessSortPeers();if(!chessPeerCount)return true;ChessMatch* m=chessNet.invite(meshRadio.peers[chessPeers[selected]].id,chessPickColor,chessPickRated);if(!m){notice(chessNet.event,bad);return true;}
    chessNet.events=chessEventsSeen;chessEnter(m);notice(m->link()==ChatMessage::Failed?t("Not sent now: will resend","Сейчас не отправлено: повторю"):t("Challenge sent: you play ","Вызов отправлен: вы играете ")+colorName(m->mine,true),m->link()==ChatMessage::Failed?bad:ok);return true;}
-  if(key==KeyBack){change(ChessList);return true;}
+  if(key==KeyBack){change(pickReturn,true);return true;} // the list, or the node card it was opened from
   return false;
  }
  // Board.

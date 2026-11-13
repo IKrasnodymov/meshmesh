@@ -74,6 +74,7 @@ class CommandApi(
             "/api/maps/tile" -> return tile(query)
             "/api/tour" -> "tour"
             "/api/chess" -> if (query.containsKey("rating")) "chess rating" else query["id"]?.let { "chess show $it" } ?: "chess web"
+            "/api/duel" -> query["id"]?.let { "duel show $it" } ?: "duel"
             "/api/radar" -> "radar web"
             "/api/wardrive/log" -> "wardrive log " + (if (query["kind"] == "nets") "nets" else "mesh") + " " + (query["from"]?.toIntOrNull()?.coerceAtLeast(0) ?: 0)
             else -> GETS[route] ?: return ApiReply(404, "Not found")
@@ -192,7 +193,7 @@ class CommandApi(
         )
         /** Commands added for the app (docs/android.md): older firmware lacks them. */
         private val APP_COMMANDS = listOf("quick", "people", "radar web", "radar do ", "map tile ", "connections", "sendjson ", "channels", "channel do ", "wardrive")
-        private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "tour", "map areas", "channels")
+        private val SLOW = setOf("messages", "nodes", "config", "chess web", "chess rating", "tour", "duel", "map areas", "channels")
         private val STATUS_PRINT = listOf("boot", "tx", "rx", "event", "relayed", "rejected", "contacts_replaced", "wifi", "ble", "busy", "channels")
     }
 }

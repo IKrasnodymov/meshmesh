@@ -510,6 +510,7 @@ const ICONS={
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png, the device page img/web-<name>-<lang>.webp); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'games',ic:'chess',c:'#e9b13b',shots:['m9-checkers','m9-sea-mid','heltec-checkers-move','heltec-sea-hunt','m9-home-folder','m9-folder','m9-checkers-chain','m9-sea-lost']},
  {id:'emoji',ic:'chat',c:'#e9b13b',shots:['m9-chat','t114-popup','heltec-popup','m9-threads']},
  {id:'backup',ic:'backup',c:'#4f9df7',shots:['web-backup-restore','web-backup']},
  {id:'netfind',ic:'tower',c:'#4cc26b',shots:['m9-radio-net','web-netfind','t114-radio-net','heltec-radio-net']},
@@ -544,7 +545,7 @@ const HERO=['m9-home','m9-chat','m9-map','m9-radar','m9-chess-italian','m9-motio
 const OLED=['heltec-home','heltec-messages','heltec-nodes','heltec-radar','heltec-gps','heltec-popup'];
 const GAT=['gat562-home','gat562-keyboard','gat562-chess','gat562-radar','gat562-chess-list','gat562-node-menu'];
 // Documents: the overview in every language; the details in Russian, translated to English (docs/en).
-const DOCS=[['README.md','doc.readme'],['docs/channels.md','doc.channels'],['docs/regions.md','doc.regions'],['docs/networks.md','doc.networks'],['docs/wardrive.md','doc.wardrive'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/t114.md','doc.t114'],['docs/android.md','doc.android'],['docs/companion.md','doc.companion'],['docs/repeater.md','doc.repeater'],['docs/pet.md','doc.pet'],['docs/dice.md','doc.dice'],['docs/chess.md','doc.chess'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
+const DOCS=[['README.md','doc.readme'],['docs/channels.md','doc.channels'],['docs/regions.md','doc.regions'],['docs/networks.md','doc.networks'],['docs/wardrive.md','doc.wardrive'],['docs/meshcore-migration.md','doc.migration'],['docs/boards.md','doc.boards'],['docs/gat562.md','doc.gat562'],['docs/t114.md','doc.t114'],['docs/android.md','doc.android'],['docs/companion.md','doc.companion'],['docs/repeater.md','doc.repeater'],['docs/pet.md','doc.pet'],['docs/dice.md','doc.dice'],['docs/chess.md','doc.chess'],['docs/games.md','doc.games'],['docs/maps-format.md','doc.maps'],['docs/feature-parity.md','doc.parity'],['docs/verification.md','doc.verification']];
 function docPath(path){
  if(path==='README.md')return lang==='en'?path:`README.${lang}.md`;
  return lang==='ru'?path:path.replace('docs/','docs/en/');

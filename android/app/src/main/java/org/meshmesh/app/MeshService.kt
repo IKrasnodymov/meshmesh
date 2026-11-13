@@ -392,23 +392,25 @@ class MeshService : Service() {
     }
 
     // Background: the page is not polling, so the service does (every 8 s). A change of the RX counter
-    // rereads the history and the chess games (else chess every 32 s); incoming messages after the last
-    // one seen, chess news (ChessNews) and new nodes become notifications as the page's settings say (Alerts).
+    // rereads the history and the chess, checkers and sea battle games (else every 32 s); incoming messages after
+    // the last one seen, game news (ChessNews, DuelNews) and new nodes become notifications as the page's settings
+    // say (Alerts; its "chess" switch is the page's "Games").
     private var lastRx = -1
     private var lastSeen: Set<String>? = null
     private var chessGames: JSONArray? = null
+    private var duelGames: JSONArray? = null
     private var knownNodes: Set<String>? = null
     private var channelNames = HashMap<String, String>()
 
     private fun schedulePolling() {
         background?.cancel(); background = null
-        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessGames = null; knownNodes = null; return }
+        if (uiVisible || api == null) { lastRx = -1; lastSeen = null; chessGames = null; duelGames = null; knownNodes = null; return }
         background = scope.launch {
             var round = 0
             while (isActive) {
                 val api = api ?: break
                 val heard = runCatching { pollStatus(api) }.getOrDefault(false)
-                if (heard || round % 4 == 0) runCatching { pollChess(api) }
+                if (heard || round % 4 == 0) { runCatching { pollChess(api) }; runCatching { pollDuel(api) } }
                 round++
                 delay(8000)
             }
@@ -482,6 +484,19 @@ class MeshService : Service() {
         chessGames = games
     }
 
+    /** Checkers and sea battle (firmware 0.33.0+; older firmware answers an error and is skipped). */
+    private suspend fun pollDuel(api: DeviceApi) {
+        val reply = api.request("GET", "/api/duel", null)
+        if (reply.status != 200) return
+        val games = JSONObject(reply.body).optJSONArray("games") ?: return
+        val alerts = Alerts(Prefs(this).alerts)
+        duelGames?.takeIf { alerts.chess }?.let { before ->
+            for (n in DuelNews.between(before, games))
+                notify(ID_DUEL + (n.game.toIntOrNull(16) ?: 0), n.title, n.text, "duel/${n.game}", alerts)
+        }
+        duelGames = games
+    }
+
     private fun notify(id: Int, title: String, text: String, route: String, alerts: Alerts = Alerts(Prefs(this).alerts)) {
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) return
         val open = PendingIntent.getActivity(this, id, Intent(this, MainActivity::class.java).putExtra(MainActivity.EXTRA_ROUTE, route)
@@ -502,6 +517,7 @@ class MeshService : Service() {
         const val ID_CHESS = 100000 // + the game number: one notification per game
         const val ID_LOST = 4
         const val ID_NODE = 200000 // + a hash of the node ID
+        const val ID_DUEL = 300000 // + the game number: one notification per checkers or sea battle game
         val KIND_TEXT get() = mapOf("wifi" to "Wi-Fi", "ble" to "Bluetooth", "usb" to "USB", "tcp" to I18n.t("USB через компьютер"))
     }
 }

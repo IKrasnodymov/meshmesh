@@ -2,7 +2,9 @@
 // 240x135 in the style of the M9 (Ui.cpp): its colours (Palette.h) and icons (UiIcons.h), dark cards,
 // the accent bar on the chosen row, avatars, a status bar with the clock and battery and key chips
 // below. Pages, menus, keys and texts are those of the compact interface above; only the drawing differs.
-// Chess fills the screen: the 128x128 board (drawHiresBoard) and a narrow panel with its own key chips.
+// Chess fills the screen: the 128x128 board (drawHiresBoard) and a narrow panel with its own key chips; so do
+// checkers (the same board) and sea battle (their 120 px field, the own fleet small in the panel). A folder shows
+// its apps as tiles, the one a hold opens framed.
 namespace hi {
 GFXcanvas8& g(){return hardware.canvas->screen;}
 // Text roles as hiFont() draws them: tiny 7x13, small 9x15, body 10x20, bold, big inr24. y is the baseline.
@@ -93,17 +95,32 @@ template<class F> void menuBox(unsigned n,int index,F name){
  if(n>3){int th=max(10,80*3/int(n)),ty=29+(80-th)*first/max(1,int(n)-3);g().fillRoundRect(230,29,2,80,1,ColCard);g().fillRoundRect(230,ty,2,th,1,ColFaint);}
 }
 void empty(Icon ic,const String& a,const String& b){icon(ic,120,46,12,ColFaint);center(120,84,fit(a,228),ColInk);center(120,103,fit(b,228,small),ColDim,small);}
-String pageTitle(int p){
- switch(p){case Home:return "MeshMesh";
+// A page's title; code: a page, or FolderPage|folder<<8.
+String pageTitle(int code){
+ switch(code&0xff){case Home:return "MeshMesh";
 #if MM_PET
  case PetPage:return petTitle();
 #endif
 #if MM_DICE
  case DicePage:return diceTitle();
 #endif
- case Messages:return t("Messages","Сообщения");case Nodes:return t("Nodes","Узлы");case Chess:return t("Chess","Шахматы");
- case PeoplePage:return t("Quick counter","Быстрый счётчик");case WardrivePage:return t("Wardrive","Вардрайв");case QuickPage:return t("Quick send","Быстрая отправка");case NotifyPage:return t("Notifications","Уведомления");case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case Gps:return "GPS";case Wifi:return "Wi-Fi";case Ble:return "Bluetooth";case Settings:return t("Settings","Настройки");}
- return t("Modules","Модули");
+ case Signals:return radar.tracking?t("Homing","Пеленг"):t("Radar","Радар");case FolderPage:return appsFolderName(code>>8);}
+ return appName(code);
+}
+Icon pageIcon(int p){
+ switch(p){case Messages:return IcChat;case QuickPage:return IcSend;case Nodes:return IcMesh;case Gps:return IcPin;case Signals:return IcRadar;case WardrivePage:return IcTower;
+ case PeoplePage:return IcTally;case Chess:return IcChess;case CheckersPage:return IcCheckers;case SeaPage:return IcShip;case PetPage:return IcPaw;case DicePage:return IcDice;
+ case Wifi:return IcWifi;case Ble:return IcBle;case Settings:return IcGear;case NotifyPage:return IcMail;}
+ return IcPulse;}
+uint16_t pageHue(int p){return p==Messages||p==QuickPage?ColAccent:p==Nodes||p==DicePage?ColViolet:p==Chess?ColBoardLight:p==CheckersPage||p==PeoplePage?ColWarn:p==SeaPage||p==Ble?ColInfo:p==PetPage?ColPink:p==Gps?ColGood:ColDim;}
+// A folder: its apps in rows with their icons (two columns when more than five), news counts in amber; the app a
+// hold opens lit as the chosen row.
+void folder(){
+ auto& d=g();uint8_t p[AppsMax];unsigned n=folderPages(folderAt,p),cols=n>5?2:1,rows=min(5u,(n+cols-1)/cols);int h=min(30,92/int(max(1u,rows))),w=cols>1?114:232;
+ for(unsigned i=0;i<n&&i<rows*cols;i++){int x=4+i/rows*118,y=23+i%rows*h,cy=y+(h-2)/2;bool focus=int(i)==folderSel;unsigned k=appNews(p[i]);String badge=k?String(k):String();
+  if(focus){panel(x,y,w,h-2,ColCardHi,6);d.fillRoundRect(x,y+4,3,h-10,1,ColAccent);}
+  icon(pageIcon(p[i]),x+15,cy,6,pageHue(p[i]),focus?ColCardHi:ColBack);if(k)right(x+w-6,cy+6,badge,ColWarn,small);
+  text(x+30,cy+6,fit(appName(p[i]),w-36-(k?width(badge,small)+4:0),small),focus?ColInk:ColDim,small);}
 }
 // The click hint names the next screen: "click: Nodes".
 String clickHint(const String& action){String k=t("click: next","клик: далее");int c=k.indexOf(':');return (c>0?k.substring(0,c):k)+": "+action;}
@@ -117,17 +134,17 @@ void home(){
  text(36,58,fit(meshRadio.ready?String(config.frequency,3)+" SF"+String(config.sf)+" BW"+String(config.bandwidth,1):!hardware.fsOk?t("No storage: menu","Нет хранилища: меню"):t("Radio error ","Ошибка радио ")+String(meshRadio.radioError),150,tiny),meshRadio.ready?ColDim:ColBad,tiny);
  String tx=String(meshRadio.txCount),rx=String(meshRadio.rxCount);
  right(230,41,tx,ColInk,small);tri(230-width(tx,small)-7,37,true,3,ColAccent);right(230,58,rx,ColInk,small);tri(230-width(rx,small)-7,54,false,3,ColGood);
- unsigned near=0,games=0,mine=chessNet.waiting();for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
- for(auto& m:chessNet.matches)if(m.state!=ChessMatch::Free)games++;
+ unsigned near=0,games=duels.count(),mine=chessNet.waiting()+duels.waiting();for(unsigned i=0;i<meshRadio.peerCount;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
+ for(auto& m:chessNet.matches)if(m.state!=ChessMatch::Free)games++; // chess, checkers and sea battle: the games waiting for the player
  struct {Icon ic;uint16_t hue;String name;unsigned n;bool news;} tiles[3]={
   {IcChat,ColAccent,t("Chats","Чаты"),unreadCount?unreadCount:meshRadio.historyCount,unreadCount>0},
   {IcMesh,ColViolet,t("Nodes","Узлы"),near,false},
-#if MM_CHESS
-  {IcChess,ColInk,t("Chess","Шахматы"),mine?mine:games,mine>0}};
+#if MM_CHESS||MM_DUEL
+  {IcChess,ColInk,t("Games","Игры"),mine?mine:games,mine>0}};
 #else
-  {IcDice,ColWarn,t("Dice","Кости"),dicer.rolls,false}}; // chess left out of this image (Modules.h)
+  {IcDice,ColWarn,t("Dice","Кости"),dicer.rolls,false}}; // the games left out of this image (Modules.h)
 #endif
- for(int i=0;i<(MM_CHESS||MM_DICE?3:2);i++){int x=4+i*79,y=69;panel(x,y,74,45,ColCard,8);d.fillRoundRect(x+6,y+6,22,22,6,ColBack);icon(tiles[i].ic,x+17,y+17,6,tiles[i].hue);
+ for(int i=0;i<(MM_CHESS||MM_DUEL||MM_DICE?3:2);i++){int x=4+i*79,y=69;panel(x,y,74,45,ColCard,8);d.fillRoundRect(x+6,y+6,22,22,6,ColBack);icon(tiles[i].ic,x+17,y+17,6,tiles[i].hue);
   text(x+35,y+23,String(tiles[i].n),tiles[i].news?ColWarn:ColInk,bold);text(x+6,y+41,fit(tiles[i].name,64,tiny),ColDim,tiny);}
 }
 // Repeater and room server: role, radio, traffic and the passwords an owner needs for the MeshCore app.
@@ -378,8 +395,8 @@ void popup(const ChatMessage& m){
 }
 void chessPopup(){
  panel(4,25,232,89,ColCard,8);g().drawRoundRect(4,25,232,89,8,ColLine);
- g().fillCircle(21,43,12,ColCardHi);icon(IcChess,21,43,7,ColBoardLight,ColCardHi);
- text(39,49,t("Chess","Шахматы"),ColInk,bold);lines(chessPopupText,10,72,220,17,3,ColInk);
+ g().fillCircle(21,43,12,ColCardHi);icon(newsKind==1?IcCheckers:newsKind==2?IcShip:newsKind?IcFolder:IcChess,21,43,7,newsKind==2?ColInfo:newsKind==1?ColWarn:ColBoardLight,ColCardHi);
+ text(39,49,newsTitle(),ColInk);lines(chessPopupText,10,72,220,17,3,ColInk);
 }
 void rolePage(){
  g().fillScreen(ColBack);statusBar(t("Device mode","Режим работы"));const Icon icons[]={IcChat,IcTower,IcRoom};
@@ -424,6 +441,105 @@ void chessBoard(const ChessMatch& m){
  toast();
 }
 #endif
+#if MM_DUEL
+// Checkers and sea battle: the games with avatars; a game fills the screen.
+void duelList(){
+ Duel* games[DuelNet::Max];unsigned n=duelGames(duelKind(),games);
+ if(!n){icon(duelKind()==Duel::Sea?IcShip:IcCheckers,120,42,10,ColFaint);center(120,76,t("No games yet","Игр пока нет"));
+  center(120,94,fit(t("Node menu: invite","Меню узла: вызвать"),228,small),ColDim,small);center(120,110,fit(t("or accept a challenge","или примите вызов"),228,small),ColDim,small);return;}
+ duelSel%=n;int first=max(0,min(duelSel-1,int(n)-3));
+ for(unsigned i=first;i<n&&i<unsigned(first+3);i++){const Duel& m=*games[i];int y=23+(i-first)*31;bool focus=int(i)==duelSel;row(y,29,focus);
+  avatar(22,y+14,10,m.peer,m.name);text(40,y+15,fit(m.name,150,bold),focus?ColInk:ColDim,bold);right(230,y+14,duelListSide(m),ColDim,tiny);
+  if(m.unseen)g().fillCircle(30,y+5,3,ColWarn); // news not opened yet
+  text(40,y+28,fit(duelState(m),190,tiny),m.myTurn()?ColAccent:m.state==Duel::Invited||m.drawOffer==Duel::OfferedToMe?ColWarn:ColDim,tiny);}
+}
+void duelMenuBox(const Duel& m){if(!duelMenu)return;DuelAct acts[12];unsigned k=duelActions(m,acts);duelMenuIndex%=k;menuBox(k,duelMenuIndex,[&](unsigned i){return duelActName(acts[i]);});}
+#if MM_CHECKERS
+// The board as chess draws it (16 px squares, the own side at the bottom); men are discs, kings carry a gold
+// centre; the offered move: its end framed, its landings ringed, the pieces it takes crossed in red.
+void ckHiBoard(const Duel& m){
+ auto& d=g();d.fillScreen(ColBack);ckSettle(m);bool picking=ckPicking(m),blink=(millis()/300)%2;
+ checkers::Move shown;bool offer=ckShown(m,shown);int taken[12];unsigned nt=offer?ckTaken(m,shown,taken):0;
+ checkers::Move l[checkers::MaxMoves];unsigned n=duelHeld>=0&&picking?m.game.pos.legal(l):0;
+ constexpr int S=16,Top=(HiresCanvas::Height-8*S)/2;
+ for(int y=0;y<8;y++)for(int x=0;x<8;x++){int s=ckSquare(m,x,y),px=x*S,py=Top+y*S,cx=px+S/2,cy=py+S/2;
+  bool last=m.game.plies&&s>=0&&(s==m.game.last.from()||s==m.game.last.to());
+  d.fillRect(px,py,S,S,s<0?ColBoardLight:s==duelHeld&&blink?ColTarget:last?ColLastMove:ColBoardDark);if(s<0)continue;
+  if(int8_t p=m.game.pos.board[s]){bool white=p>0;d.fillCircle(cx,cy,6,white?ColInk:ColPieceDark);d.drawCircle(cx,cy,6,white?ColPieceDark:ColDim);d.drawCircle(cx,cy,4,white?ColDim:ColLine);
+   if(p==checkers::King||p==-checkers::King)d.fillCircle(cx,cy,2,ColTarget);
+   for(unsigned i=0;i<nt;i++)if(taken[i]==s)for(int k=0;k<2;k++){d.drawLine(px+3+k,py+3,px+12+k,py+12,ColBad);d.drawLine(px+12+k,py+3,px+3+k,py+12,ColBad);}}
+  for(unsigned i=0;i<n;i++)if(l[i].from()==duelHeld&&l[i].to()==s)d.fillCircle(cx,cy,2,ColTarget);
+ }
+ if(offer){for(unsigned i=1;i+1<shown.n;i++){int x,y;ckXY(m,shown.path[i],x,y);d.drawCircle(x*S+S/2,Top+y*S+S/2,4,ColCursor);}
+  int x,y;ckXY(m,shown.to(),x,y);for(int k=0;k<2;k++)d.drawRect(x*S+k,Top+y*S+k,S-2*k,S-2*k,ColCursor);}
+ if(picking&&duelHeld<0&&duelCursor>=0&&(millis()/400)%3){int x,y;ckXY(m,duelCursor,x,y);for(int k=0;k<3;k++)d.drawRect(x*S+k,Top+y*S+k,S-2*k,S-2*k,k==1?ColPieceDark:ColCursor);}
+ constexpr int X=134,W=104;bool white=m.mine==checkers::White;
+ text(X,16,fit(m.name,W,bold),ColInk,bold);d.fillCircle(X+4,28,4,white?ColInk:ColPieceDark);d.drawCircle(X+4,28,4,ColDim);
+ text(X+12,33,fit(t("you: ","вы: ")+(white?t("white","белые"):t("black","чёрные")),W-12,tiny),ColDim,tiny);
+ String st=duelState(m);if(picking){unsigned k=m.game.pos.legal(l);if(k&&l[0].capture)st=t("must take","надо бить");}
+ lines(st,X,51,W,15,picking?1:2,picking?ColAccent:m.state==Duel::Invited||m.drawOffer==Duel::OfferedToMe?ColWarn:ColDim,small);
+ if(picking){bool word=duelHeld>=0?!offer:duelCursor<0;panel(X-3,58,W+5,22,ColCardHi,5);if(word)d.drawRoundRect(X-3,58,W+5,22,5,ColAccent);
+  String choice=ckChoiceText(m);const uint8_t* f=width(choice,small)<=W-6?small:tiny;text(X+2,74,fit(choice,W-6,f),word?ColAccent:ColTarget,f);}
+ else text(X,82,fit(linkText(m.link(),m.autoStopped),W,tiny),ColDim,tiny);
+ if(m.game.plies)text(X,97,fit(String((m.game.plies+1)/2)+(m.game.plies%2?". ":"... ")+ckMoveText(m.game.last),W,small),ColDim,small);
+ if(picking)chip(X-2,113,t("click: next","клик: далее"),238);
+ else for(int k=0;k<2;k++){bool w=(k==0)==white;int x=X+4+k*52;d.fillCircle(x,108,4,w?ColInk:ColPieceDark);d.drawCircle(x,108,4,ColDim);text(x+8,113,String(m.game.pos.count(w?checkers::White:checkers::Black)),ColInk,small);} // the pieces left: mine, theirs
+ chip(X-2,131,!picking?t("hold: menu","держ: меню"):duelHeld<0?(duelCursor<0?t("hold: menu","держ: меню"):t("hold: pick","держ: взять")):offer?t("hold: move","держ: сходить"):t("hold: cancel","держ: отмена"),238);
+ duelMenuBox(m);toast();
+}
+#endif
+#if MM_SEA
+// A field: cells of `cell` px on the card colour, water navy, hits red crosses, sunk ships red, my ships grey;
+// their fleet shown at the end ringed in violet, my shot in flight blinking gold, the last shot at the field framed.
+void seaHiField(const Duel& m,bool own,int x0,int y0,int cell){
+ auto& d=g();d.fillRect(x0,y0,cell*10+1,cell*10+1,ColLine);bool blink=(millis()/300)%2;int last=own?m.lastIn:m.lastOut,s=cell-1;
+ for(int k=0;k<sea::Cells;k++){int x=x0+1+k%10*cell,y=y0+1+k/10*cell;uint16_t fill=ColCard;bool cross=false,dot=false;
+  if(own){int ship=m.home.fleet.shipAt(k);bool shot=m.home.isShot(k);fill=ship<0?ColDiceNumber:shot&&m.home.sunk(ship)?ColDiceFail:ColDim;cross=ship>=0&&shot;dot=ship<0&&shot;}
+  else{uint8_t mk=m.target.mark[k];if(mk==sea::Miss||m.target.around(k))fill=ColDiceNumber;else if(mk==sea::Sunk)fill=ColDiceFail;dot=mk==sea::Miss;cross=mk==sea::Hit||mk==sea::Sunk;}
+  d.fillRect(x,y,s,s,fill);
+  if(dot)d.fillRect(x+s/2-1,y+s/2-1,2+(cell>6),2+(cell>6),ColInfo);
+  uint16_t ink=fill==ColDiceFail?ColInk:ColBad;
+  if(cross&&cell>6)for(int q=0;q<2;q++){d.drawLine(x+2+q,y+2,x+s-3+q,y+s-3,ink);d.drawLine(x+s-3+q,y+2,x+2+q,y+s-3,ink);}else if(cross)d.fillRect(x+1,y+1,s-2,s-2,ink);
+  if(!own&&!cross&&m.revealed&&m.theirs.shipAt(k)>=0)d.drawRect(x,y,s,s,ColViolet);
+  if(!own&&k==m.aim){d.drawRect(x,y,s,s,ColTarget);if(blink)d.fillCircle(x+s/2,y+s/2,s/4,ColTarget);}
+  if(k==last)d.drawRect(x-1,y-1,cell+1,cell+1,ColWarn);}
+}
+void seaHiBoard(const Duel& m){
+ auto& d=g();d.fillScreen(ColBack);seaSettle(m);bool picking=seaPicking(m)&&!duelFleet,blink=(millis()/400)%3;
+ constexpr int C=12,X0=2,Y0=(HiresCanvas::Height-10*C-1)/2,X=130,W=108;
+ seaHiField(m,duelFleet,X0,Y0,C);
+ if(picking){int col=duelColumn>=0?duelColumn:duelCursor>=100?duelCursor-100:-1;
+  if(col>=0)d.drawRect(X0+col*C,Y0,C+1,10*C+1,duelColumn>=0?ColAccent:ColCursor);
+  if(duelCursor>=0&&duelCursor<100&&blink)for(int k=0;k<2;k++)d.drawRect(X0+duelCursor%10*C+k,Y0+duelCursor/10*C+k,C+1-2*k,C+1-2*k,ColCursor);}
+ text(X,15,fit(m.name,W,bold),ColInk,bold);
+ String sunk=t("sunk ","потоплено ")+String(m.target.sunkShips())+"/10",mine=t("mine ","моих ")+String(m.home.shipsLeft())+"/10";
+ if(picking){text(X,31,fit(duelState(m),W,small),ColAccent,small);text(X,45,fit(sunk,W,tiny),ColDim,tiny);text(X,58,fit(mine,W,tiny),ColDim,tiny);
+  bool word=duelCursor<0;panel(X-3,63,W+5,22,ColCardHi,5);if(word)d.drawRoundRect(X-3,63,W+5,22,5,ColAccent);
+  String choice=seaChoiceText(m);const uint8_t* f=width(choice,small)<=W-6?small:tiny;text(X+2,79,fit(choice,W-6,f),word?ColAccent:seaHunting(m,duelCursor)?ColBad:ColTarget,f);
+  if(m.lastOut>=0)text(X,98,fit(t("you ","вы ")+seaCell(m.lastOut)+" "+seaMark(m.target.mark[m.lastOut]),W,tiny),ColDim,tiny);
+  chip(X-2,113,t("click: next","клик: далее"),238);
+  chip(X-2,131,duelCursor<0?(duelColumn>=0?t("hold: cancel","держ: отмена"):t("hold: menu","держ: меню")):duelCursor>=100?t("hold: fix","держ: выбрать"):t("hold: fire","держ: огонь"),238);}
+ else{
+  // The other field small, its title by it; the state and counts above, the last shots and the delivery below.
+  lines(duelFleet?t("my fleet","мой флот")+": "+duelState(m):duelState(m),X,31,W,13,2,m.myTurn()?ColAccent:m.state==Duel::Invited?ColWarn:ColDim,tiny);
+  seaHiField(m,!duelFleet,X,52,4);text(X+44,62,fit(duelFleet?t("theirs","их"):t("mine","мои"),W-44,tiny),ColDim,tiny);
+  text(X+44,77,String(duelFleet?m.target.sunkShips():m.home.shipsLeft())+"/10",duelFleet?ColBad:ColGood,small);
+  text(X+44,91,fit(duelFleet?t("sunk","потоплено"):t("afloat","на плаву"),W-44,tiny),ColDim,tiny);
+  String note=m.state==Duel::Over&&m.revealed&&!m.fair?t("answers do not match!","ответы не сходятся!"):m.lastIn>=0&&m.state==Duel::Playing?t("they ","они ")+seaCell(m.lastIn)+" "+seaMark(m.lastAnswer==sea::AnswerWin?sea::Sunk:m.lastAnswer):linkText(m.link(),m.autoStopped);
+  if(m.state==Duel::Over&&!m.fair)lines(note,X,104,W,13,2,ColBad,tiny);else text(X,108,fit(note,W,tiny),ColDim,tiny);
+  chip(X-2,131,duelFleet&&m.state==Duel::Playing?t("click: back","клик: назад"):t("hold: menu","держ: меню"),238);}
+ duelMenuBox(m);toast();
+}
+#endif
+void duelBoard(const Duel& m){
+#if MM_SEA
+ if(m.kind==Duel::Sea)seaHiBoard(m);
+#endif
+#if MM_CHECKERS
+ if(m.kind==Duel::Checkers)ckHiBoard(m);
+#endif
+}
+#endif
 // Radio settings: four rows, changed values in amber, the value being set in the accent colour.
 void radioPage(){
  g().fillScreen(ColBack);statusBar(t("Radio","Радио")+(radioChanged()?" *":""));int first=max(0,min(radioRow-1,RadioRows-4));
@@ -458,13 +574,16 @@ void draw(){
  const ChatMessage* last=&incomingPopup;
  if(popupAt&&millis()-popupAt<8000&&last&&!last->outgoing){statusBar(t("Messages","Сообщения"));popup(*last);footer({t("click: close","клик: закрыть")});hardware.flush();return;}
  popupAt=0;
- if(chessPopupAt&&millis()-chessPopupAt<8000){statusBar(t("Chess","Шахматы"));chessPopup();footer({config.role==RoleNormal?t("hold: open the game","держ: открыть партию"):String()});hardware.flush();return;}
+ if(chessPopupAt&&millis()-chessPopupAt<8000){statusBar(newsTitle());chessPopup();footer({config.role==RoleNormal?t("hold: open the game","держ: открыть партию"):String()});hardware.flush();return;}
  chessPopupAt=0;
 #if MM_CHESS
  if(page==Chess&&chessOpen&&chessOpen->state!=ChessMatch::Free){chessBoard(*chessOpen);hardware.flush();return;}
  if(page==Chess)chessOpen=nullptr;
 #endif
- String title=pageTitle(page);
+#if MM_DUEL
+ if((page==CheckersPage||page==SeaPage)&&shownDuel()){duelBoard(*duelOpen);hardware.flush();return;}
+#endif
+ String title=pageTitle(page==FolderPage?folderCode(folderAt):page);
  switch(page){
  case PeoplePage:{const auto& k=people::tally;bool many=k.count>1;panel(4,24,232,90,ColCard,8);d.fillRoundRect(4,24,232,5,2,ColDice0+people::current().color%dice::Colors);
   text(12,46,fit(people::name(k.current),many?176:212,small),ColInk,small);if(many)right(228,45,String(k.current+1)+"/"+String(k.count),ColDim,tiny);
@@ -477,6 +596,10 @@ void draw(){
 #if MM_CHESS
  case Chess:chessList();break;
 #endif
+#if MM_DUEL
+ case CheckersPage:case SeaPage:duelList();break;
+#endif
+ case FolderPage:folder();break;
 #if MM_PET
  case PetPage:petPage();break;
 #endif
@@ -490,14 +613,14 @@ void draw(){
  case Gps:gps();break;case Wifi:wifi();break;case Ble:ble();break;case Settings:settings();break;default:modules();}
  statusBar(title,page==Home);
  if(menuOpen){Act acts[MenuMax];unsigned n=actions(acts);if(n){menuIndex%=n;menuBox(n,menuIndex,[&](unsigned i){return actName(acts[i]);});}footer({t("click-next hold-run","клик-далее держ-ОК")});}
- else if(appClosed())footer({t("hold: open","держ: открыть"),clickHint(pageTitle(nextPage(page)))});
+ else if(appClosed()||page==FolderPage)footer({t("hold: open","держ: открыть"),clickHint(pageTitle(nextPage()))});
 #if MM_DICE
  else if(diceTapOn())footer({t("click: +1","клик: +1"),t("hold: -1","держ: -1"),t("5 s: exit","5 с: выход")});
  else if(page==DicePage)footer({dicer.s.mode==dice::Sheet?t("click: next","клик: далее"):t("click: roll","клик: бросок"),t("hold: menu","держ: меню")});
  #endif
  else if(page==PeoplePage)footer({t("click: +1","клик: +1"),t("hold: menu","держ: меню")});
  else if(page==QuickPage)footer({t("click: choose","клик: выбор"),quickTargets||!quickIndex?t("hold: ","держ: ")+t("select","выбрать"):quickIndex>quickSend::Count?t("hold: ","держ: ")+t("exit","выход"):t("hold: send","держ: слать")});
- else footer({clickHint(pageTitle(nextPage(page))),hint()});
+ else footer({clickHint(pageTitle(nextPage())),hint()});
  toast();hardware.flush();
 }
 }

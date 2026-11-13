@@ -187,6 +187,21 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 .cstate{padding:10px 12px;margin-bottom:8px}.cstate b{display:block;font-size:17px}.cstate small{display:block;font-size:12px;color:var(--dim);margin-top:3px}
 .offer{background:var(--deep);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}.offer span{flex:1}
 .mvlist{display:grid;grid-template-columns:auto 1fr 1fr;gap:3px 12px;font-variant-numeric:tabular-nums;max-height:260px;overflow:auto;padding:10px 12px;margin-top:8px}.mvlist i{font-style:normal;color:var(--faint)}.mvlist .now{color:var(--accent);font-weight:700}
+.board.ck .sq.l{cursor:default}.board.ck .sq.d.last{background:#a38a4c}.board.ck .sq.d.sel{background:#7d9a4c}.board.ck .sq svg{width:84%;height:84%}
+.sq.can::before{content:"";position:absolute;inset:6%;border-radius:50%;box-shadow:0 0 0 2px #e9d58a99;z-index:2;pointer-events:none}.sq.via::after{content:"";position:absolute;width:16%;height:16%;border-radius:50%;background:#5c6b3a88;z-index:2;pointer-events:none}
+.sea{display:grid;grid-template-columns:18px repeat(10,minmax(0,1fr));gap:2px;user-select:none;touch-action:manipulation;width:100%}.sea>i{font-style:normal;font-size:11px;font-weight:700;color:var(--faint);display:grid;place-items:center;min-height:14px}
+.sc{position:relative;aspect-ratio:1;border:0;padding:0;margin:0;border-radius:3px;background:#12314a;min-width:0;display:block}.sc.open{cursor:crosshair}.sc.open:hover,.sc.open:focus-visible{background:#1d4d6e;outline:0;box-shadow:inset 0 0 0 2px var(--accent)}
+.sc::after{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;line-height:1;font-size:clamp(9px,2.6vw,15px);pointer-events:none}
+.sc.mo::after,.sc.mn::after{content:"";inset:38%;border-radius:50%;background:#86aac4}.sc.mn{background:#0c2233}.sc.mn::after{inset:43%;background:#3b5a70}
+.sc.ms{background:#66788a}.sc.mx{background:#8a5326}.sc.mx::after{content:"✕";color:#ffc078}.sc.mk{background:#b8433b}.sc.mk::after{content:"✕";color:#fff}
+.sc.ma{box-shadow:inset 0 0 0 2px var(--warn);animation:aim 1s ease-in-out infinite}.sc.pick{background:#1d4d6e;box-shadow:inset 0 0 0 3px var(--warn)}.sc.last{outline:2px solid var(--accent);outline-offset:-1px;z-index:1}
+@keyframes aim{50%{box-shadow:inset 0 0 0 6px var(--warn)}}
+.sea.small{max-width:320px;grid-template-columns:14px repeat(10,minmax(0,1fr));gap:1.5px}.sea.small>i{font-size:9px}.sea.small .sc::after{font-size:clamp(8px,2vw,11px)}
+.sealeg{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 2px 0;font-size:12px;color:var(--dim)}.sealeg span{display:inline-flex;align-items:center;gap:5px}.sealeg .sc{width:14px;height:14px;border-radius:2px;display:inline-block}.sealeg .sc::after{font-size:9px}
+.cells3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}.cells3 small{display:block;font-size:11px;color:var(--dim)}.cells3 b{font-size:17px}
+.set.app.infolder{padding-left:22px;background:linear-gradient(90deg,var(--line) 0 3px,transparent 3px) 12px 0/100% 100% no-repeat}.set.app.folder .name{color:var(--ink)}.set.app .name small .lnk{margin-left:12px}.set.app .name small .lnk:first-child{margin-left:0}
+.lnk{border:0;background:none;padding:2px 0;color:var(--accent);font-size:12px;font-weight:600;text-decoration:underline;text-underline-offset:2px}.lnk.danger{color:var(--bad)}.lnk.danger.armed{background:var(--bad);color:var(--ink);text-decoration:none;border-radius:4px;padding:2px 6px}
+.set .name .appdir{display:block;text-align:left;margin-top:4px;max-width:100%;font-size:12px;padding:3px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg)}.appsnew{display:flex;gap:8px;padding:10px 12px}.appsnew input{flex:1;min-width:0;padding:9px;border-radius:8px;border:1px solid var(--line);background:var(--bg)}.set.app .name input{width:100%;max-width:100%;text-align:left;padding:6px 8px;border-radius:6px;border:1px solid var(--accent);background:var(--bg)}
 @media(max-width:700px){.chessgrid{grid-template-columns:1fr}.board{border-width:2px}}
 .page[hidden],[hidden]{display:none!important}
 @media(max-width:560px){.tiles{gap:6px}.tile{min-height:96px;padding:8px}.tile .box{left:8px;top:8px}.tile b{font-size:14px}.icons{gap:7px}.cells{grid-template-columns:repeat(4,1fr);padding:12px 8px}.scope{grid-template-columns:1fr}.scope canvas{max-width:300px;margin:0 auto}.navgrid{grid-template-columns:1fr}.navgrid svg{max-width:220px;margin:0 auto;display:block}.homing{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
@@ -219,6 +234,10 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <symbol id="i-dice" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M6.5 3h11A3.5 3.5 0 0 1 21 6.5v11a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 17.5v-11A3.5 3.5 0 0 1 6.5 3zM6.3 7.8a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0zM10.2 12a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0zM14.1 16.2a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0z"/></symbol>
 <symbol id="i-paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="16.5" rx="5.2" ry="4.3"/><circle cx="5.2" cy="10.6" r="2.2"/><circle cx="9.3" cy="6.4" r="2.3"/><circle cx="14.7" cy="6.4" r="2.3"/><circle cx="18.8" cy="10.6" r="2.2"/></symbol>
 <symbol id="i-chess" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.8" r="3.6"/><path d="M9.2 10h5.6l1.8 8H7.4z"/><rect x="5" y="18.5" width="14" height="3.5" rx="1.2"/></symbol>
+<symbol id="i-checkers" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10.5v4c0 2.5 4 4.5 9 4.5s9-2 9-4.5v-4z" opacity=".55"/><path fill-rule="evenodd" d="M3 10.5a9 4.5 0 1 0 18 0a9 4.5 0 1 0-18 0zM6.4 10.5a5.6 2.7 0 1 0 11.2 0a5.6 2.7 0 1 0-11.2 0zM8.2 10.5a3.8 1.8 0 1 0 7.6 0a3.8 1.8 0 1 0-7.6 0z"/></symbol>
+<symbol id="i-ship" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 13.5h21l-3.6 6.5H5.1z"/><rect x="5.5" y="8.5" width="10.5" height="4" rx=".8"/><rect x="12.3" y="3.8" width="3.2" height="4.7" rx=".5"/><path d="M1.5 22.6q2.6-1.5 5.2 0t5.3 0t5.3 0t5.2 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".6"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24" fill="currentColor"><path d="M2 6.2a2 2 0 0 1 2-2h5.4l2.1 2.5H20a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-games" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M7 6h10a5 5 0 0 1 5 5v3.6a3.4 3.4 0 0 1-6.1 2.1L14.5 15h-5l-1.4 1.7A3.4 3.4 0 0 1 2 14.6V11a5 5 0 0 1 5-5zM6.4 9v2H4.6v1.6h1.8v2H8v-2h1.8V11H8V9zM15.4 10.3a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0zM17.5 13a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0z"/></symbol>
 <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5L7.5 12l7.5 7.5"/></symbol>
 <symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5l7.5 7.5L9 19.5"/></symbol>
 <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 10.8L21.5 3l-7.8 19-3.2-7.9z"/></symbol>
@@ -312,6 +331,10 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <div class="btns" style="margin-top:12px"><button class="btn" id="chessSound"></button><button class="btn" id="chessAlerts" hidden></button></div>
 <p class="small faint" style="margin:10px 4px">Ходы идут личными сообщениями MeshCore с подтверждением доставки и проходят через ретрансляторы. Сопернику нужен MeshMesh: M9 или GAT562 (на экране устройства) либо другая плата (эта страница). Партии хранятся на устройстве; страница показывает их и отправляет ходы.</p></div><div id="chessRatingView" hidden></div><div id="chessToursView" hidden></div></section>
 
+<section class="page" id="p-games" hidden><div class="tiles" id="gameTiles" style="margin-top:0"></div><p class="small faint" style="margin:10px 4px" id="gamesNote"></p></section>
+<section class="page" id="p-checkers" hidden><div id="ckView"></div></section>
+<section class="page" id="p-sea" hidden><div id="seaView"></div></section>
+<section class="page" id="p-duel" hidden><div id="duelView"></div></section>
 <section class="page" id="p-pet" hidden><div id="petView"></div></section>
 <section class="page" id="p-people" hidden><div id="peopleView" class="people-fields"></div></section>
 <section class="page" id="p-wardrive" hidden><div id="wdView" class="people-fields"></div></section>
@@ -416,14 +439,14 @@ const sysAlertsUsable=typeof Notification!=='undefined'&&window.isSecureContext&
 function alertCue(strong){if(!alerts.sound||quietNow()||window.MeshHost?.hidden)return; // the app in the background: Android notifies
  chessBeep();try{navigator.vibrate?.(strong?[150,80,150,80,150]:[120])}catch{}}
 function systemAlert(title,body,to,tag){if(!sysAlertsUsable||!alerts.system||!document.hidden||Notification.permission!=='granted')return;try{const n=new Notification(title,{body,tag,silent:!alerts.sound||quietNow()});n.onclick=()=>{window.focus();go(to);n.close()}}catch{}}
-function logAlert(kind,title,text,to){alertLog.push({kind,title,text,go:to,t:Math.floor(deviceNow())||Math.floor(Date.now()/1000)});alertLog=alertLog.slice(-40);store('alert-log',alertLog)}
+function logAlert(kind,title,text,to,icon){alertLog.push({kind,title,text,go:to,...icon?{ic:icon}:{},t:Math.floor(deviceNow())||Math.floor(Date.now()/1000)});alertLog=alertLog.slice(-40);store('alert-log',alertLog)}
 // After each refresh: new incoming messages (at most 5 at once) and, when enabled, nodes heard for the first time.
 function alertScan(){const inc=history.filter(m=>!m.outgoing),keys=inc.map(m=>msgKey(m)+'.'+m.text.length);
  if(alertSeen)for(const m of inc.filter((m,i)=>!alertSeen.has(keys[i])).slice(-5)){const id=other(m),how=alertFor(m);if(!how||route==='chat'&&recipient===id&&!document.hidden)continue;
   const title=(how==='mention'?'@ ':'')+(isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id));notify(title+': '+cutBytes(m.text,90),how==='mention'?'warn':'accent','incoming');alertCue(how==='mention');systemAlert(title,m.text,'chat/'+id,'mm-'+id)}
  alertSeen=new Set(keys);
  const ids=peers.map(p=>p.id);if(peersSeen&&alerts.nodes)for(const p of peers.filter(p=>!peersSeen.has(p.id))){const t=L`Новый узел: ${p.name}`;notify(t,'info');logAlert('node',t,typeText(p.type),'node/'+p.id);systemAlert(L('Новый узел'),p.name,'node/'+p.id,'mm-node')}
- peersSeen=new Set(ids);const n=unreadTotal();document.title=(n?`(${n}) `:'')+'MeshMesh'}
+ peersSeen=new Set(ids);const n=unreadTotal()+gamesWaiting();document.title=(n?`(${n}) `:'')+'MeshMesh'} // unread messages and games waiting for a move
 function alertSelect(attr,value,modes,extra=''){return `<select ${attr}>${extra}${modes.map(k=>`<option value="${k}"${k===value?' selected':''}>${ALERT_MODES[k]}</option>`).join('')}</select>`}
 const alertModesFor=id=>alertKind(id)==='dm'?['all','off']:['all','mention','off'];
 // One row for a conversation's own mode (channel card, node card, the settings list).
@@ -432,15 +455,15 @@ function feedItems(){const f=alertFilter,items=[];
  for(const m of history){if(m.outgoing)continue;const id=other(m),how=alertFor(m);if(!how)continue;const k=alertKind(id);
   if(f==='mention'&&how!=='mention'||f==='dm'&&k!=='dm'||f==='chan'&&k==='dm'||f==='chess'||f==='node')continue;
   items.push({id,t:m.time||0,title:isChan(id)?nodeName(id)+' · '+m.name:m.name||nodeName(id),text:m.text,go:'chat/'+id,at:how==='mention',fresh:m.time>(readMarks[id]||0)})}
- for(const e of alertLog)if(f==='all'||f===e.kind)items.push({id:e.kind,t:e.t,title:e.title,text:e.text,go:e.go,log:e.kind});
+ for(const e of alertLog)if(f==='all'||f===e.kind)items.push({id:e.kind,t:e.t,title:e.title,text:e.text,go:e.go,log:e.kind,ic:e.ic});
  return items}
-function feedRow(x){return `<button class="row" data-go="${esc(x.go)}">${x.log?`<span class="av" style="--s:36px;background:var(--card)">${ic(x.log==='chess'?'chess':'mesh','acc')}</span>`:avatar(x.id,nodeName(x.id),peer(x.id)?.type??-1)}<span class="main"><b>${esc(x.title)}</b><small class="${x.fresh?'new':''}">${esc(String(x.text).replace(/\n/g,' '))}</small></span><span class="side"><span>${timeText(x.t)}</span>${x.at?'<span class="pill at">@</span>':''}</span></button>`}
+function feedRow(x){return `<button class="row" data-go="${esc(x.go)}">${x.log?`<span class="av" style="--s:36px;background:var(--card)">${ic(x.ic||(x.log==='chess'?'chess':'mesh'),'acc')}</span>`:avatar(x.id,nodeName(x.id),peer(x.id)?.type??-1)}<span class="main"><b>${esc(x.title)}</b><small class="${x.fresh?'new':''}">${esc(String(x.text).replace(/\n/g,' '))}</small></span><span class="side"><span>${timeText(x.t)}</span>${x.at?'<span class="pill at">@</span>':''}</span></button>`}
 function renderAlerts(){for(const b of document.querySelectorAll('[data-altab]'))b.classList.toggle('on',b.dataset.altab===alertTab);const v=$('alertsView');
- if(alertTab==='feed'){let items=feedItems(),h=`<div class="chips">${[['all',L('Все')],['mention',L('Упоминания')],['dm',L('Личные')],['chan',L('Каналы')],['chess',L('Шахматы')],['node',L('Узлы')]].map(([k,t])=>`<button data-alf="${k}" class="${alertFilter===k?'on':''}">${t}</button>`).join('')}</div>
+ if(alertTab==='feed'){let items=feedItems(),h=`<div class="chips">${[['all',L('Все')],['mention',L('Упоминания')],['dm',L('Личные')],['chan',L('Каналы')],['chess',L('Игры')],['node',L('Узлы')]].map(([k,t])=>`<button data-alf="${k}" class="${alertFilter===k?'on':''}">${t}</button>`).join('')}</div>
   <div class="set" style="padding:0 4px;min-height:40px"><span class="name small muted">${L`Порядок`}</span><select id="alertSort">${[['new',L('Сначала новые')],['old',L('Сначала старые')],['chat',L('По чатам')]].map(([k,t])=>`<option value="${k}"${alertSort===k?' selected':''}>${t}</option>`).join('')}</select></div>`;
   items.sort((a,b)=>alertSort==='old'?a.t-b.t:b.t-a.t);
   if(alertSort==='chat'){const g=new Map();for(const x of items){if(!g.has(x.id))g.set(x.id,[]);g.get(x.id).push(x)}
-   h+=[...g].map(([id,l])=>`<div class="feedhead"><span>${esc(l[0].log?{chess:L('Шахматы'),node:L('Узлы')}[l[0].log]:nodeName(id))}</span><span>${l.length}</span></div><div class="list">${l.slice(0,20).map(feedRow).join('')}</div>`).join('')}
+   h+=[...g].map(([id,l])=>`<div class="feedhead"><span>${esc(l[0].log?{chess:L('Игры'),node:L('Узлы')}[l[0].log]:nodeName(id))}</span><span>${l.length}</span></div><div class="list">${l.slice(0,20).map(feedRow).join('')}</div>`).join('')}
   else h+=`<div class="list">${items.slice(0,100).map(feedRow).join('')}</div>`;
   if(!items.length)h+=`<div class="empty">${L`${ic('bell')}Уведомлений нет`}<small>${alertFilter==='mention'?L('Упоминание — «@[имя]» в канале или ваше ключевое слово'):L('Здесь появятся сообщения, о которых сообщают уведомления')}</small></div>`;
   setHtml(v,h);return}
@@ -451,7 +474,7 @@ function renderAlerts(){for(const b of document.querySelectorAll('[data-altab]')
  let h=`<h3>${L`Сообщения`}</h3><div class="card" style="padding:4px 0">${kind('dm',L('Личные'),L('Сообщения вам'))}${kind('chan',L('Каналы'),L('Хештеги и закрытые каналы'))}${kind('pub','Public',L('Открытый канал MeshCore'))}</div>
   <h3>${L`Упоминания`}</h3><div class="card pad"><p class="small muted" style="margin:0 0 8px">${me?L`Упоминание — «@[${esc(me)}]» (так отвечают приложения MeshCore) или одно из слов ниже, без учёта регистра. Оно уведомляет и в режиме «Упоминания».`:L('Ключевые слова считаются упоминанием.')}</p><input id="alertWords" placeholder="${L('Слова через запятую')}" value="${esc(alerts.words.join(', '))}" autocomplete="off" autocapitalize="none"></div>
   <h3>${L`Всплывающие сообщения`}</h3><div class="card" style="padding:4px 0"><div class="set"><span class="name">${L`Входящие сообщения`}<small>${L`Звук и системные уведомления настраиваются отдельно`}</small></span>${alertSelect('data-al="banners"',alerts.banners,['all','mention','off'])}</div><div class="set"><span class="name">${L`Результаты действий`}<small>${L`При выключенных баннерах ошибки остаются на странице`}</small></span><select data-al="actions">${[['all',L('Все')],['errors',L('Только ошибки')],['off',L('Выключены')]].map(([k,v])=>`<option value="${k}"${alerts.actions===k?' selected':''}>${v}</option>`).join('')}</select></div></div>
-  <h3>${L`Другое`}</h3><div class="card style="padding:4px 0">${sw('chess',L('Шахматы'),L('Вызовы, ходы соперника, итоги'))}${sw('nodes',L('Новые узлы'),L('Узел, услышанный впервые'))}${window.MeshNative?sw('lost',L('Потеря связи'),L('Устройство отключилось, пока приложение в фоне')):''}${sw('sound',L('Звук и вибрация'),window.MeshNative?L('Иначе уведомления приходят беззвучно'):L('Сигнал на этой странице'))}${sysAlertsUsable?sw('system',L('Уведомления браузера'),Notification.permission==='denied'?L('Запрещены в настройках браузера'):L('Когда вкладка в фоне')):''}</div>
+  <h3>${L`Другое`}</h3><div class="card style="padding:4px 0">${sw('chess',L('Игры'),L('Шахматы, шашки, морской бой: вызовы, ходы соперника, итоги'))}${sw('nodes',L('Новые узлы'),L('Узел, услышанный впервые'))}${window.MeshNative?sw('lost',L('Потеря связи'),L('Устройство отключилось, пока приложение в фоне')):''}${sw('sound',L('Звук и вибрация'),window.MeshNative?L('Иначе уведомления приходят беззвучно'):L('Сигнал на этой странице'))}${sysAlertsUsable?sw('system',L('Уведомления браузера'),Notification.permission==='denied'?L('Запрещены в настройках браузера'):L('Когда вкладка в фоне')):''}</div>
   <h3>${L`Тихие часы`}</h3><div class="card" style="padding:4px 0">${sw('quiet',L('Без звука и вибрации'),L('По времени телефона или компьютера'))}<div class="set"><span class="name">${L`Начало`}</span><input type="time" id="alertFrom" value="${esc(alerts.from)}"></div><div class="set"><span class="name">${L`Конец`}</span><input type="time" id="alertTo" value="${esc(alerts.to)}"></div></div>
   <h3>${L`Отдельные чаты`}</h3><div class="card" style="padding:4px 0">${conversationIds().map(id=>alertRow(id,esc(nodeName(id)))).join('')}</div>
   ${own.length?`<button class="btn" id="alertReset" style="width:100%;margin-top:10px">${L`Сбросить настройки чатов (${own.length})`}</button>`:''}
@@ -490,7 +513,7 @@ function faults(){return moduleStates().filter((s,i)=>!s&&!absent(i)&&!(extGps()
 function eventLabel(v){if(v.startsWith('New message from '))return L`Сообщение от ${v.slice(17)}`;if(v.startsWith('Delivered to '))return L`Доставлено: ${v.slice(13)}`;return {'Queued: waiting for delivery':L('Ожидание подтверждения'),'Queued: broadcast':L('Сообщение в общем чате отправляется'),'No delivery ACK':L('Получатель не подтвердил доставку'),'Settings saved':L('Настройки сохранены')}[v]||(/^Radio TX error|^TX failed/.test(v)?L('Ошибка передачи по радио'):v)}
 
 // Pages: a hash per screen; BACK goes where the device's BACK key would.
-const PAGES={home:['MeshMesh'],chats:[L('Чаты'),'home'],chat:[null,'chats'],addch:[L('Новый канал'),'chats'],join:[L('Канал по ссылке'),'chats'],chinfo:[L('Канал'),'chats'],alerts:[L('Уведомления'),'chats'],msg:[L('Путь пакета'),'chats'],map:[L('Карта'),'home'],library:[L('Сохранённые карты'),'map'],nodes:[L('Узлы'),'home'],node:[null,'nodes'],nav:[L('Навигация'),'home'],connect:[L('Подключения'),'home'],radar:[L('Радар'),'home'],homing:[L('Пеленг'),'radar'],motion:[L('Движение (CSI)'),'home'],modules:[L('Модули'),'home'],settings:[L('Настройки'),'home'],radio:[L('Радио'),'settings'],device:[L('Экран'),'settings'],apps:[L('Приложения'),'settings'],help:[L('Клавиши'),'settings'],role:[L('Режим работы'),'settings'],backup:[L('Резервная копия'),'settings'],server:[L('Репитер'),'home'],game:[L('Косынка'),'home'],chess:[L('Шахматы'),'home'],board:[null,'chess'],pet:[L('Питомец'),'home'],dice:[L('Кости'),'home'],quick:[L('Быстрая отправка'),'home'],people:[L('Быстрый счётчик'),'home'],wardrive:[L('Вардрайв'),'home']};
+const PAGES={home:['MeshMesh'],chats:[L('Чаты'),'home'],chat:[null,'chats'],addch:[L('Новый канал'),'chats'],join:[L('Канал по ссылке'),'chats'],chinfo:[L('Канал'),'chats'],alerts:[L('Уведомления'),'chats'],msg:[L('Путь пакета'),'chats'],map:[L('Карта'),'home'],library:[L('Сохранённые карты'),'map'],nodes:[L('Узлы'),'home'],node:[null,'nodes'],nav:[L('Навигация'),'home'],connect:[L('Подключения'),'home'],radar:[L('Радар'),'home'],homing:[L('Пеленг'),'radar'],motion:[L('Движение (CSI)'),'home'],modules:[L('Модули'),'home'],settings:[L('Настройки'),'home'],radio:[L('Радио'),'settings'],device:[L('Экран'),'settings'],apps:[L('Приложения'),'settings'],help:[L('Клавиши'),'settings'],role:[L('Режим работы'),'settings'],backup:[L('Резервная копия'),'settings'],server:[L('Репитер'),'home'],games:[L('Игры'),'home'],game:[L('Косынка'),'games'],chess:[L('Шахматы'),'games'],board:[null,'chess'],checkers:[L('Шашки'),'games'],sea:[L('Морской бой'),'games'],duel:[null,'games'],pet:[L('Питомец'),'games'],dice:[L('Кости'),'games'],quick:[L('Быстрая отправка'),'home'],people:[L('Быстрый счётчик'),'home'],wardrive:[L('Вардрайв'),'home']};
 const RADAR_PAGES=['radar','homing','motion'];
 function go(target){if(location.hash==='#'+target)show();else location.hash='#'+target}
 function show(){
@@ -503,7 +526,7 @@ function show(){
  leave(prev,next);route=next;param=arg;
  for(const s of document.querySelectorAll('.page'))s.hidden=s.id!=='p-'+route;document.body.dataset.route=route;
  enter(route,prev);render();if(route==='node')loadRemote();if(prev!==next&&route!=='chat')window.scrollTo(0,0)} // a chat places itself (placeChat)
-function parent(){return cameFrom[route]||(route==='chinfo'?'chat/'+param:PAGES[route][1])||'home'}
+function parent(){const up=cameFrom[route]||(route==='chinfo'?'chat/'+param:route==='duel'?duelGame(param)?.kind||'games':PAGES[route][1])||'home';return up==='games'&&serverRole()?'home':up} // a repeater or room shows its pet on the home page
 function leave(prev,next){
  if(prev==='chat'){drafts.set(recipient,$('text').value);setReply(null);saveChatPos();chatNewKey='';$('toBottom').hidden=true}
  if(prev==='join')joinLink=null;
@@ -524,13 +547,14 @@ function enter(page,prev){
  if(page==='library'||page==='map')loadAreas();
  if(page==='radio'||page==='device')buildEditor(page);
  if(page==='radio'){loadChans().then(()=>route==='radio'&&renderRegions());renderNet(true);netScanLoad();if(netPick.open)netLoad().then(()=>route==='radio'&&renderNet(true))}
- if(page==='apps'){appsDraft=appsParse(config.apps);renderApps()}
+ if(page==='apps'){appsDraft=appsParse(config.apps);appsEdit=appsArmed=-1;renderApps()}
  if(page==='help')renderHelp();
  if(page==='role'){roleChoice=null;renderRole()}
  if(page==='backup'){backupFile=null;renderBackup()}
  if(page==='server'){rptFormBuilt=false;loadServer(true)}
  if(page==='game')enterGame();
  if(page==='board')enterBoard();
+ if(page==='duel')enterDuel();else if(DUEL_PAGES.includes(page))refreshDuel(true);
  if(page==='pet')enterPet();
  if(page==='dice')enterDice();
  if(page==='quick')loadQuick();
@@ -538,11 +562,11 @@ function enter(page,prev){
  if(page==='wardrive'){if(!chans)loadChans();loadWardrive()}
  if(page==='map'&&status.wardrive)loadWardriveLog();
  if(page==='map')setTimeout(drawMap,0)}
-function render(){hud();const f={home:renderHome,wardrive:renderWardrive,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,quick:renderQuick,people:renderPeople,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg,alerts:renderAlerts}[route];if(f&&(auth||standaloneMode))f()}
+function render(){hud();const f={home:renderHome,wardrive:renderWardrive,chats:renderThreads,chat:renderChat,nodes:renderNodes,node:renderNode,map:drawMap,library:renderLibrary,nav:renderNav,connect:renderConnect,radar:renderScope,homing:renderHoming,motion:renderMotion,modules:renderModules,settings:renderSettings,role:renderRole,server:renderServer,game:renderGame,games:renderGames,checkers:()=>renderDuelList('checkers'),sea:()=>renderDuelList('sea'),duel:renderDuel,chess:renderChessList,board:renderBoard,pet:renderPet,dice:renderDice,quick:renderQuick,people:renderPeople,addch:renderAddCh,join:renderJoin,chinfo:renderChanInfo,msg:renderMsg,alerts:renderAlerts}[route];if(f&&(auth||standaloneMode))f()}
 
 // Status bar: title on the left; unread, links, GPS, radio, clock and battery on the right.
 function hud(){
- const t=standaloneMode&&route==='map'?L('Карты'):PAGES[route][0]??(route==='chat'?nodeName(recipient):route==='board'?L`Шахматы · ${chessGame(param)?.name||''}`:peer(param)?.name||L('Узел'));
+ const t=standaloneMode&&route==='map'?L('Карты'):PAGES[route][0]??(route==='chat'?nodeName(recipient):route==='board'?L`Шахматы · ${chessGame(param)?.name||''}`:route==='duel'?(duelGame(param)?.kind==='sea'?L`Морской бой · ${duelGame(param).name}`:L`Шашки · ${duelGame(param)?.name||''}`):peer(param)?.name||L('Узел'));
  $('title').textContent=t;$('title').className=route==='home'&&!standaloneMode?'home':'';$('back').hidden=route==='home'||standaloneMode&&route!=='library'||!!companion&&route==='chess';$('chanInfo').hidden=!(route==='chat'&&chan(recipient));$('quickReply').hidden=!(route==='chat'&&status.quick_send);
  if(!auth){$('icons').innerHTML='';return}
  if(companion){$('icons').innerHTML=companion.icons();return}
@@ -580,14 +604,13 @@ function renderHome(){
   ['radar','radar','acc',L('Радар'),noWifi()?'BLE, LoRa':'Wi-Fi, BLE, LoRa'],
   ...(status.wardrive?[['wardrive','tower',wdData&&(wdData.passive||wdData.ping||wdData.nets)?'ok':'muted',L('Вардрайв'),wdData&&(wdData.passive||wdData.ping||wdData.nets)?plural(wdData.points,'точка','точки','точек'):L('Карта покрытия сети')]]:[]),
   ...(status.people_counter?[['people','tally','ok',L('Быстрый счётчик'),tallyTile()]]:[]),
-  ...(hasModule('chess')?[['chess','chess','',L('Шахматы'),chessTileText(),chess.waiting]]:[]),
-  ...petTile(),
-  ...diceTile(),
-  ['game','cards','warn',L('Косынка'),gameDetail()],
+  gamesTile(),
   ['connect','wifi','info',L('Связь'),links],
   ['modules','pulse',f?'bad':'ok',L('Модули'),f?plural(f,'ошибка','ошибки','ошибок'):L('Всё в норме')],
   ['settings','gear','muted',L('Настройки'),L('Радио, экран')]];
- $('tiles').innerHTML=tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
+ $('tiles').innerHTML=tilesHtml(tiles)}
+// Tiles of the home and games pages: [page, icon, colour, name, detail, badge].
+function tilesHtml(tiles){return tiles.map(([go,i,c,name,detail,badge])=>`<button class="tile" data-go="${go}"><span class="box">${ic(i,c)}</span>${badge?`<span class="badge">${badge>99?'99+':badge}</span>`:''}<b>${name}</b><small>${esc(detail)}</small></button>`).join('')}
 
 // The quick counter: cards turned by a swipe, each counted by a tap on its number; the BLE/Wi-Fi estimate below.
 // The carousel is rebuilt only when its cards change, so a swipe or a tap in progress is not reset by the refresh.
@@ -1315,22 +1338,67 @@ function langName(){const l=SCREEN_LANGS.find(x=>x[0]===config.lang);return l?l[
 // Settings: the M9 settings list and its two editors.
 function renderSettings(){
  const items=[['radio','radio','acc',L('Радио'),L`${Number(config.frequency).toFixed(3)} МГц · SF${config.sf} · ${config.power} dBm`],['device','screen','info',L('Экран и устройство'),`${heltec()?L('Контраст'):L('Яркость')} ${config.brightness} · ${langName()}`],
-  ...config.apps===undefined?[]:[['apps','cards','violet',L('Приложения на экране'),(()=>{const a=appsParse(config.apps);return L`${a.filter(x=>x.on).length} из ${a.length} в меню устройства`})()]],
+  ...config.apps===undefined?[]:[['apps','cards','violet',L('Приложения на экране'),(()=>{const a=appsAll(appsParse(config.apps));return L`${a.filter(x=>x.shown).length} из ${a.length} в меню устройства`})()]],
   ['nav','compass','warn',L('GPS и компас'),`GPS ${config.gps?L('вкл'):L('выкл')} · ${navInfo.calibrated?L('компас откалиброван'):navInfo.available?L('компас не откалиброван'):L('без компаса')}`],['alerts','bell','warn',L('Уведомления'),L`Личные: ${ALERT_MODES[alerts.dm].toLowerCase()} · Public: ${ALERT_MODES[alerts.pub].toLowerCase()}`],['connect','wifi','info',L('Подключения'),`${noWifi()?'':`Wi-Fi ${status.wifi?L('вкл'):L('выкл')} · `}BLE ${status.ble?L('вкл'):L('выкл')}`],
   ['modules','pulse','ok',L('Состояние модулей'),L`RX ${status.rx} · TX ${status.tx} · ${status.relayed} переслано`],['help','help','muted',L('Клавиши и подсказки'),L('Что делает каждая клавиша')],['library','pin','ok',L('Сохранённые карты'),mapInfo.name?`${mapInfo.name} · ${plural(mapInfo.tiles,'тайл','тайла','тайлов')}`:L('Карт нет')],['role','tower','violet',L('Режим работы'),status.role==='repeater'?L('Репитер MeshCore'):status.role==='room'?L('Комната MeshCore'):L('Обычный: чаты, карты, радар')],['backup','down','info',L('Резервная копия'),L('Сохранить настройки в файл или вернуть их')]];
  const off=status.power_on!==undefined;$('powerOff').hidden=$('powerOffHint').hidden=!off;if(off)$('powerOffHint').textContent=powerOnText();
  $('settingsList').innerHTML=storageCard()+items.map(([go,i,c,n,d])=>`<button class="row" data-go="${go}"><span class="icbox" style="width:34px;height:34px;border-radius:8px;background:var(--card);display:grid;place-items:center;font-size:18px;flex:none">${ic(i,c)}</span><span class="main"><b>${n}</b><small>${esc(d)}</small></span><span class="go">${ic('next')}</span></button>`).join('')}
-// Apps of the device's screen menu (firmware "apps" setting): their order, "-" before an ID hides it.
-const APP_NAMES={chats:['chat',L('Чаты')],map:['pin',L('Карта')],nodes:['mesh',L('Узлы')],nav:['compass',L('Навигация')],connect:['wifi',L('Связь')],radar:['radar',L('Радар')],health:['pulse',L('Модули')],settings:['gear',L('Настройки')],solitaire:['cards',L('Косынка')],chess:['chess',L('Шахматы')],pet:['paw',L('Питомец')],dice:['dice',L('Кости')],quick:['send',L('Быстрая отправка')],people:['tally',L('Быстрый счётчик')],wardrive:['tower',L('Вардрайв')],gps:['compass','GPS'],wifi:['wifi','Wi-Fi'],ble:['ble','Bluetooth']};
-let appsDraft=[];
-const appsParse=t=>String(t||'').split(/[ ,]+/).filter(Boolean).map(x=>({id:x.replace(/^-/,''),on:!x.startsWith('-')}));
-const appsText=a=>a.map(x=>(x.on?'':'-')+x.id).join(' ');
-function renderApps(){const changed=appsText(appsDraft)!==config.apps,last=appsDraft.length-1;
- $('appsList').innerHTML=appsDraft.map((a,i)=>{const [icon,name]=APP_NAMES[a.id]||['help',a.id],fixed=a.id==='settings';
-  return `<div class="set app${a.on?'':' off'}"><span style="width:30px;display:grid;place-items:center;font-size:18px;flex:none">${ic(icon,a.on?'acc':'faint')}</span><span class="name">${name}<small>${fixed?L('Всегда в меню'):a.on?L('В меню'):L('Скрыто')}</small></span><button type="button" class="btn mv" data-mv="${i}" data-step="-1" aria-label="${L('Выше')}"${i?'':' disabled'}>${ic('up')}</button><button type="button" class="btn mv" data-mv="${i}" data-step="1" aria-label="${L('Ниже')}"${i<last?'':' disabled'}>${ic('down')}</button><button type="button" class="sw${a.on?' on':''}" data-app="${i}" role="switch" aria-checked="${a.on}" aria-label="${L`${name}: в меню`}"${fixed?' disabled':''}></button></div>`}).join('');
- $('appsNote').textContent=L`${heltec()?L('Порядок страниц после главного экрана: короткое нажатие кнопки листает их в этом порядке. '):L('Порядок плиток главного меню устройства, слева направо и сверху вниз. ')}Скрытое приложение остаётся в прошивке: новое сообщение или вызов в шахматы по-прежнему откроют его экран. Настройки не скрываются.${serverRole()?L(' В режиме репитера или комнаты экран показывает только часть приложений.'):''}`;
- const b=$('appsSave');b.disabled=!changed;b.className='btn save'+(changed?' primary':'');b.textContent=changed?L('Сохранить'):L('Нет изменений')}
-async function saveApps(text){try{await request('/api/config',{apps:text});notify(L('Меню устройства обновлено'),'ok');config=await request('/api/config');appsDraft=appsParse(config.apps);renderApps()}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}}
+// Apps of the device's screen menu (firmware "apps" setting, src/Apps.cpp): IDs separated by spaces, "-" before one
+// hides it; "{NAME id id}" is a folder ("_" for the spaces of its name, "games" the games folder in the interface
+// language), "-{NAME ...}" hides the folder with its apps. Settings stay at the top level and shown.
+const APP_NAMES={chats:['chat',L('Чаты')],map:['pin',L('Карта')],nodes:['mesh',L('Узлы')],nav:['compass',L('Навигация')],connect:['wifi',L('Связь')],radar:['radar',L('Радар')],health:['pulse',L('Модули')],settings:['gear',L('Настройки')],solitaire:['cards',L('Косынка')],chess:['chess',L('Шахматы')],checkers:['checkers',L('Шашки')],sea:['ship',L('Морской бой')],pet:['paw',L('Питомец')],dice:['dice',L('Кости')],quick:['send',L('Быстрая отправка')],people:['tally',L('Быстрый счётчик')],wardrive:['tower',L('Вардрайв')],gps:['compass','GPS'],wifi:['wifi','Wi-Fi'],ble:['ble','Bluetooth']};
+let appsDraft=[],appsEdit=-1,appsArmed=-1;
+const isFolder=x=>x.folder!==undefined,APPS_BYTES=240; // the firmware keeps 255 bytes; "set {JSON}" over Bluetooth takes 255 in all
+function appsParse(t){const out=[];let open=null;
+ for(let x of String(t||'').split(/[ ,]+/).filter(Boolean)){const off=x.startsWith('-');if(off)x=x.slice(1);const close=x.endsWith('}');if(close)x=x.slice(0,-1);
+  if(x.startsWith('{')){open={folder:x.slice(1),on:!off,apps:[]};out.push(open);if(close)open=null;continue}
+  if(x){const a={id:x,on:!off||x==='settings'};if(open&&x!=='settings')open.apps.push(a);else out.push(a)}
+  if(close)open=null}
+ return out}
+const appsText=a=>a.map(x=>isFolder(x)?`${x.on?'':'-'}{${x.folder}${x.apps.map(p=>' '+(p.on?'':'-')+p.id).join('')}}`:(x.on?'':'-')+x.id).join(' ');
+const appsAll=a=>a.flatMap(x=>isFolder(x)?x.apps.map(p=>({...p,shown:p.on&&x.on})):[{...x,shown:x.on}]);
+const folderName=n=>n==='games'?L('Игры'):String(n).replace(/_/g,' ');
+// Firmware 0.33.0 brought the folders (its "apps" always names the games folder unless removed).
+const appsFolders=()=>String(config.apps||'').includes('{')||(String(status.version||'').split('.').map(Number).reduce((v,x,i)=>v+(x||0)*[1e6,1e3,1][i],0)>=33000);
+// A folder name as the firmware takes it: up to 23 bytes, "_" for spaces, no braces or commas, not starting with "-".
+function folderCheck(raw,except){const n=String(raw||'').trim().replace(/\s+/g,'_');
+ if(!n)return [null,L('Введите название папки')];if(/[{},]/.test(n)||n.startsWith('-'))return [null,L('В названии нельзя { } , и минус в начале')];
+ if(bytes(n)>23)return [null,L('Название — не больше 23 байт')];if(appsDraft.some((x,k)=>isFolder(x)&&k!==except&&x.folder===n))return [null,L('Такая папка уже есть')];return [n,'']}
+// Moves: an app steps over its neighbours; at a folder it goes into it (out of it at the folder's edge); settings step over folders.
+function appsMove(i,j,step){const d=appsDraft;
+ if(j<0){const x=d[i],k=i+step;if(k<0||k>=d.length)return;const y=d[k];
+  if(!isFolder(x)&&isFolder(y)&&x.id!=='settings'){d.splice(i,1);if(step<0)y.apps.push(x);else y.apps.unshift(x);return}
+  [d[i],d[k]]=[d[k],d[i]];return}
+ const f=d[i].apps,k=j+step;if(k>=0&&k<f.length){[f[j],f[k]]=[f[k],f[j]];return}
+ const [x]=f.splice(j,1);d.splice(step<0?i:i+1,0,x)}
+function appsMoveTo(i,j,to){const d=appsDraft,x=j<0?d[i]:d[i].apps[j];if(to===(j<0?-1:i))return;
+ if(to<0){d[i].apps.splice(j,1);d.splice(i+1,0,x);return}
+ const target=d[to];if(j<0)d.splice(i,1);else d[i].apps.splice(j,1);target.apps.push(x)}
+function renderApps(){const text=appsText(appsDraft),changed=text!==config.apps,can=appsFolders(),folders=appsDraft.filter(isFolder),last=appsDraft.length-1,big=bytes(text)>APPS_BYTES;
+ const mv=(i,j,step,ok)=>`<button type="button" class="btn mv" data-mv="${i}:${j}" data-step="${step}" aria-label="${step<0?L('Выше'):L('Ниже')}"${ok?'':' disabled'}>${ic(step<0?'up':'down')}</button>`;
+ const app=(a,i,j)=>{const [icon,name]=APP_NAMES[a.id]||['help',a.id],fixed=a.id==='settings',f=j>=0?appsDraft[i]:null;
+  const where=can&&!fixed&&folders.length?`<select class="appdir" data-appdir="${i}:${j}" aria-label="${L`${name}: папка`}"><option value="-1">${L('Без папки')}</option>${appsDraft.map((x,k)=>isFolder(x)?`<option value="${k}"${f&&k===i?' selected':''}>${esc(folderName(x.folder))}</option>`:'').join('')}</select>`:'';
+  return `<div class="set app${a.on&&(!f||f.on)?'':' off'}${f?' infolder':''}"><span style="width:30px;display:grid;place-items:center;font-size:18px;flex:none">${ic(icon,a.on?'acc':'faint')}</span><span class="name">${name}<small>${fixed?L('Всегда в меню'):!a.on?L('Скрыто'):f&&!f.on?L('Скрыто вместе с папкой'):L('В меню')}</small>${where}</span>${mv(i,j,-1,j>=0||i>0)}${mv(i,j,1,j>=0||i<last)}<button type="button" class="sw${a.on?' on':''}" data-app="${i}:${j}" role="switch" aria-checked="${a.on}" aria-label="${L`${name}: в меню`}"${fixed?' disabled':''}></button></div>`};
+ const folder=(f,i)=>{const name=folderName(f.folder),edit=appsEdit===i;
+  return `<div class="set app folder${f.on?'':' off'}"><span style="width:30px;display:grid;place-items:center;font-size:18px;flex:none">${ic('folder',f.on?'violet':'faint')}</span><span class="name">${edit?`<input id="appsRename" value="${esc(name)}" maxlength="23" aria-label="${L('Название папки')}" autocomplete="off">`:esc(name)}<small>${edit?`<button type="button" class="lnk" data-fsave="${i}">${L('Сохранить')}</button><button type="button" class="lnk" data-fcancel="1">${L('Отмена')}</button>`:`${plural(f.apps.length,'приложение','приложения','приложений')}${f.on?'':' · '+L('скрыта')} <button type="button" class="lnk" data-fren="${i}">${L('Переименовать')}</button><button type="button" class="lnk danger${appsArmed===i?' armed':''}" data-fdel="${i}">${appsArmed===i?L('Точно удалить?'):L('Удалить')}</button>`}</small></span>${mv(i,-1,-1,i>0)}${mv(i,-1,1,i<last)}<button type="button" class="sw${f.on?' on':''}" data-fsw="${i}" role="switch" aria-checked="${f.on}" aria-label="${L`Папка «${esc(name)}»: в меню`}"></button></div>`};
+ let h=appsDraft.map((x,i)=>isFolder(x)?folder(x,i)+x.apps.map((a,j)=>app(a,i,j)).join(''):app(x,i,-1)).join('');
+ if(can)h+=folders.length<6?`<div class="appsnew"><input id="appsNewName" maxlength="23" placeholder="${L('Название новой папки')}" autocomplete="off"><button type="button" class="btn" data-fnew="1">${ic('folder')}${L('Создать папку')}</button></div>`:`<p class="small faint" style="margin:8px 12px">${L('Папок уже шесть — больше прошивка не хранит.')}</p>`;
+ if(big)h+=`<p class="small bad" style="margin:8px 12px">${L`Список длиннее ${APPS_BYTES} байт: сократите названия папок.`}</p>`;
+ const keep=document.activeElement?.id;$('appsList').innerHTML=h;if(keep==='appsRename'||keep==='appsNewName')$(keep)?.focus();
+ $('appsNote').textContent=L`${heltec()?L('Порядок страниц после главного экрана: короткое нажатие кнопки листает их в этом порядке. '):L('Порядок плиток главного меню устройства, слева направо и сверху вниз. ')}Скрытое приложение остаётся в прошивке: новое сообщение или вызов в шахматы по-прежнему откроют его экран. Настройки не скрываются.${serverRole()?L(' В режиме репитера или комнаты экран показывает только часть приложений.'):''}`+(can?' '+(heltec()?L('Папка — отдельная страница в этом же ряду: удержание кнопки входит в неё, клик листает её приложения. Скрытая папка прячет всё, что в ней лежит.'):L('Папка — плитка меню, которая открывается и показывает свои приложения. Скрытая папка прячет всё, что в ней лежит.')):'');
+ const b=$('appsSave');b.disabled=!changed||big;b.className='btn save'+(changed&&!big?' primary':'');b.textContent=changed?L('Сохранить'):L('Нет изменений')}
+async function saveApps(text){try{await request('/api/config',{apps:text});notify(L('Меню устройства обновлено'),'ok');config=await request('/api/config');appsDraft=appsParse(config.apps);appsEdit=appsArmed=-1;renderApps()}catch(e){notify(e.message.replace(/^ERR /,''),'bad')}}
+function appsClick(e){const t=e.target.closest('[data-mv],[data-app],[data-fsw],[data-fren],[data-fdel],[data-fsave],[data-fcancel],[data-fnew]');if(!t||t.disabled)return;const d=t.dataset,ij=v=>v.split(':').map(Number);
+ if(!d.fdel)appsArmed=-1;
+ if(d.mv){const [i,j]=ij(d.mv);appsMove(i,j,+d.step)}
+ else if(d.app){const [i,j]=ij(d.app),a=j<0?appsDraft[i]:appsDraft[i].apps[j];a.on=!a.on}
+ else if(d.fsw){const f=appsDraft[+d.fsw];f.on=!f.on}
+ else if(d.fren){appsEdit=+d.fren;renderApps();const f=$('appsRename');f.focus();f.select();return}
+ else if(d.fcancel)appsEdit=-1;
+ else if(d.fsave){const i=+d.fsave,f=appsDraft[i],v=$('appsRename').value;if(f.folder==='games'&&v.trim()===folderName('games')){appsEdit=-1;renderApps();return}const [n,err]=folderCheck(v,i);if(!n){notify(err,'warn');return}f.folder=n;appsEdit=-1}
+ else if(d.fdel){const i=+d.fdel;if(appsArmed!==i){appsArmed=i;renderApps();setTimeout(()=>{if(appsArmed===i){appsArmed=-1;if(route==='apps')renderApps()}},4000);return}appsArmed=-1;appsEdit=-1;const [f]=appsDraft.splice(i,1);appsDraft.splice(i,0,...f.apps)}
+ else if(d.fnew){const [n,err]=folderCheck($('appsNewName').value,-1);if(!n){notify(err,'warn');$('appsNewName').focus();return}appsDraft.push({folder:n,on:true,apps:[]});appsEdit=-1;notify(L`Папка «${folderName(n)}» создана: переложите в неё приложения`,'muted')}
+ renderApps()}
 // Power off (firmware 0.8.0+): deep sleep or System OFF; status.power_on tells what turns the board on again.
 function powerOnText(){const b=status.power_button;return status.power_on==='button'?L`Включение: удерживать ${b==='trackball'?L('трекбол'):b==='joystick'?L('центр джойстика'):L`кнопку ${b}`} около секунды или нажать RESET.`:status.power_on==='power_key'?L('Включение: кнопка питания платы (PWR).'):L('Включение: кнопка RESET или выключатель питания.')}
 // Two presses, as the device screens confirm erasing: the first arms the button for 5 s.
@@ -1805,6 +1873,7 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  // In the app the phone's clock sets an unset device clock once, so new messages get their reception time.
  if(window.MeshNative&&(!clockSynced||Date.now()-clockSynced>1800000)){clockSynced=Date.now();const now=Math.floor(Date.now()/1000);try{await command('clock '+JSON.stringify({unix:now,source:'phone'}));clockBase={unix:now,at:Date.now()};status.unix_time=now}catch{}}
  await refreshChess(false,false);
+ if(Date.now()-duelAt>=(DUEL_PAGES.includes(route)?0:duelOk===false?120000:15000))await refreshDuel(false,false); // checkers and sea battle: slower off their pages
  if(pet===null||route==='home'&&Date.now()-petAt>60000)await loadPet(); // the home tile; the pet page polls itself
  if(dice===null||route==='home'&&Date.now()-diceAt>60000)await loadDice();
  PAGES.server[0]=status.role==='room'?L('Комната'):L('Репитер');
@@ -1953,10 +2022,10 @@ async function refreshChess(quiet,draw=true){
   if(news.act&&chessAlerts&&document.hidden)try{const n=new Notification(L('Шахматы'),{body:news.text,tag:'meshmesh-chess'});n.onclick=()=>{window.focus();if(news.game)go('board/'+news.game);n.close()}}catch{}}}
  chess=next;chessLoaded=true;
  if(chess.tours!==undefined&&route==='chess'&&(chessTab==='tours'||!tours)){try{tours=await request('/api/tour')}catch{}}
- const rk=chess.elo+'/'+chess.games.filter(g=>g.sign==='stored').length;if(chess.elo!==undefined&&route==='chess'&&(chessRatingAt!==rk||!chessRating)){chessRatingAt=rk;try{chessRating=await request('/api/chess?rating=1')}catch{}}if(typeof document!=='undefined')document.title=chess.waiting?`(${chess.waiting}) MeshMesh`:'MeshMesh';
+ const rk=chess.elo+'/'+chess.games.filter(g=>g.sign==='stored').length;if(chess.elo!==undefined&&route==='chess'&&(chessRatingAt!==rk||!chessRating)){chessRatingAt=rk;try{chessRating=await request('/api/chess?rating=1')}catch{}}if(typeof document!=='undefined'){const w=companion?chess.waiting:gamesWaiting();document.title=w?`(${w}) MeshMesh`:'MeshMesh'}
  if(route==='board'&&chessGame(param)){try{const d=await request('/api/chess?id='+param);chessDetail={...d,at:Date.now()}}catch{chessDetail=null}
   if(chessGame(param).unseen)command('chess seen '+param).catch(()=>{})}
- if(draw){if(route==='chess')renderChessList();else if(route==='board')renderBoard();else if(route==='home')renderHome();hud()}}
+ if(draw){if(route==='chess')renderChessList();else if(route==='board')renderBoard();else if(route==='home')renderHome();else if(route==='games')renderGames();hud()}}
 
 // Expected change of my rating against a player (K: 32 for the first 20 counted games, then 20), as on the device.
 function eloChange(id){const r=chessRating;if(!r)return null;const o=(r.players||[]).find(p=>p.id===id),them=o?o.elo:1500,k=(r.games||0)<20?32:20,e=1/(1+Math.pow(10,(them-r.elo)/400));return {win:Math.round(k*(1-e)),loss:Math.round(-k*e),them}}
@@ -2103,6 +2172,172 @@ async function chessTap(s,g){
  renderBoard()}
 async function chessMove(uci){const g=chessGame(param);chessSel=null;chessPromo=null;if(!g)return;await chessCommand(`chess move ${g.id} ${uci}`)}
 
+// Checkers and sea battle with contacts (firmware "duel", src/Duel.cpp, docs/games.md): no rating, just a game.
+// The device keeps the games and sends every move or shot as a direct message; this page shows them, sends the
+// player's moves and shots through /api/command and announces the other side's (compared with the previous list).
+let duel=null,duelOk=null,duelAt=0,duelBusy=false,duelDetail=null,duelSel=null,duelPaths=null,duelAim='',duelArmed='',duelQuiet=false,duelColor=store('duel-color')??2;
+const DUEL_KINDS={checkers:[L('Шашки'),'checkers','acc'],sea:[L('Морской бой'),'ship','info']},DUEL_PAGES=['games','checkers','sea','duel'];
+const duelGame=id=>duel?.games.find(g=>g.id===id);
+const duelHas=k=>!!duel&&(duel.kinds||[]).includes(k)&&hasModule(k);
+const duelNeeds=g=>g.state==='invited'||g.my_turn||g.unseen||g.draw_offer==='theirs';
+const duelWaiting=k=>duel?duel.games.filter(g=>(!k||g.kind===k)&&duelNeeds(g)).length:0;
+const gamesWaiting=()=>(hasModule('chess')?chess.waiting||0:0)+duelWaiting();
+const ckSq=n=>(n.charCodeAt(1)-49)*4+((n.charCodeAt(0)-97)>>1),ckPath=m=>String(m).split(/[-:]/); // a square name → its index among the 32 dark squares
+const seaCell=n=>n?(+n.slice(1)-1)*10+n.charCodeAt(0)-97:-1;
+function duelState(g){
+ const sea=g.kind==='sea',r=g.result;
+ if(g.state==='inviting')return L('Вызов отправлен, ждём ответа');
+ if(g.state==='invited')return sea?L('Зовёт вас в морской бой'):L`Зовёт вас в шашки: вы играете ${g.color==='white'?L('белыми'):L('чёрными')}`;
+ if(g.state==='playing'){if(sea)return g.aim?L`Выстрел по ${g.aim.toUpperCase()}: ждём ответа`:g.my_turn?L('Ваш выстрел'):L('Стреляет соперник');
+  return g.draw_offer==='theirs'?L('Предлагает ничью'):g.my_turn?L('Ваш ход'):L('Ход соперника')}
+ if(g.reason==='declined')return L('Вызов отклонён');if(g.reason==='cancelled')return L('Партия отменена');
+ const why={rules:sea?(r==='won'?L(': флот соперника потоплен'):L(': ваш флот потоплен')):r==='won'?L(': у соперника нет ходов'):L(': у вас нет ходов'),resigned:r==='won'?L(': соперник сдался'):L(': вы сдались'),agreed:L(' по соглашению'),quiet:L(': 15 ходов дамками без взятий')}[g.reason]||'';
+ return (r==='won'?L('Победа'):r==='lost'?L('Поражение'):L('Ничья'))+why}
+function duelTone(g){if(g.state==='over')return g.result==='won'?'ok':g.result==='lost'?'bad':'muted';return duelNeeds(g)?'acc':'muted'}
+function duelTileText(k){const w=duelWaiting(k),n=duel?duel.games.filter(g=>g.kind===k&&g.state!=='over').length:0;return w?plural(w,'ждёт хода','ждут хода','ждут хода'):n?plural(n,'партия','партии','партий'):L('С контактами')}
+// The games page: chess, checkers and sea battle with contacts, the pet, dice and solitaire (those this board has).
+function gameTiles(){
+ const t=[];if(hasModule('chess'))t.push(['chess','chess','',L('Шахматы'),chessTileText(),chess.waiting]);
+ for(const k of ['checkers','sea'])if(duelHas(k))t.push([k,DUEL_KINDS[k][1],DUEL_KINDS[k][2],DUEL_KINDS[k][0],duelTileText(k),duelWaiting(k)]);
+ return [...t,...petTile(),...diceTile(),['game','cards','warn',L('Косынка'),gameDetail()]]}
+function gamesTile(){const w=gamesWaiting(),n=gameTiles().length;return ['games','games','violet',L('Игры'),w?plural(w,'ждёт хода','ждут хода','ждут хода'):plural(n,'игра','игры','игр'),w]}
+function renderGames(){$('gameTiles').innerHTML=tilesHtml(gameTiles());
+ $('gamesNote').textContent=duelHas('checkers')||duelHas('sea')?L('Шахматы, шашки и морской бой — партии с чат-контактами через личные сообщения MeshCore. Шашки и морской бой — без рейтинга и очков, просто игра; сопернику нужен MeshMesh.'):''}
+
+// News: what changed for the player since the previous list (in the page's language, not the device's).
+function duelNews(before,after){
+ const out=[];let act=false,game='',any='';
+ for(const g of after){const o=before.find(x=>x.id===g.id),n=g.name,was=out.length,sea=g.kind==='sea';
+  if(!o){if(g.state==='invited'){out.push(sea?L`${n} зовёт вас в морской бой`:L`${n} зовёт вас в шашки`);act=true;game=game||g.id}continue}
+  if(sea){
+   if(g.last_in&&g.last_in!==o.last_in){const c=g.last_in.toUpperCase();out.push(g.result==='lost'&&g.state==='over'?L`${n}: ${c} — флот потоплен, вы проиграли`:g.ships_left<o.ships_left?L`${n}: ${c} — ваш корабль потоплен`:g.my_turn?L`${n}: ${c} — мимо, ваш выстрел`:L`${n}: ${c} — попадание`);act=act||g.my_turn||g.state==='over'} // their hit lets them shoot on: an alert only when the turn comes back
+   else if(o.aim&&!g.aim&&g.last_out===o.aim){const c=o.aim.toUpperCase();out.push(g.result==='won'&&g.state==='over'?L`${c}: весь флот потоплен, вы победили`:g.sunk>o.sunk?L`${c}: корабль потоплен! Стреляйте ещё`:g.my_turn?L`${c}: попадание! Стреляйте ещё`:L`${c}: мимо, стреляет соперник`)}
+   if(g.fair===false&&o.fair!==false)out.push(L`${n}: расстановка не сходится с ответами`)}
+  else if(g.plies>o.plies&&lastByThem(g)){out.push(`${n}: ${g.last}`+(g.state==='over'?' — '+duelState(g).toLowerCase():L(' — ваш ход')));act=true}
+  if(o.state!=='over'&&g.state==='over'&&out.length===was)out.push(`${n}: ${duelState(g).toLowerCase()}`);
+  if(o.state==='inviting'&&g.state==='playing'&&out.length===was){out.push(L`${n} принял вызов`+(g.my_turn?sea?L(' — ваш выстрел'):L(' — ваш ход'):''));act=act||g.my_turn}
+  if(!sea&&o.draw_offer!=='theirs'&&g.draw_offer==='theirs'&&g.state==='playing'){out.push(L`${n} предлагает ничью`);act=true}
+  if(o.out_status!==4&&g.out_status===4)out.push(L`${n}: не подтвердил, повторю автоматически`);
+  if(out.length>was){any=any||g.id;if(duelNeeds(g))game=game||g.id}}
+ return {text:out.join(' · '),act,game:game||any}}
+async function refreshDuel(quiet,draw=true){
+ if(duelBusy)return;duelBusy=true;duelAt=Date.now();let next=null;
+ try{next=await request('/api/duel')}catch{}finally{duelBusy=false}
+ if(!next||!Array.isArray(next.games)){if(duel===null)duelOk=false;return} // firmware without the games (or a lost answer: the next poll)
+ duelOk=true;
+ if(duel&&!quiet&&!duelQuiet){const news=duelNews(duel.games,next.games),here=DUEL_PAGES.includes(route),g=next.games.find(x=>x.id===news.game),title=g?DUEL_KINDS[g.kind][0]:L('Игры'),to=news.game?'duel/'+news.game:'games';
+  if(news.text&&news.act&&alerts.chess){logAlert('chess',title,news.text,to,g?DUEL_KINDS[g.kind][1]:'games');systemAlert(title,news.text,to,'mm-duel')}
+  if(news.text&&(alerts.chess||here)){notify(news.text,news.act?'accent':'muted');if(news.act)alertCue(false)}}
+ duel=next;
+ if(route==='duel'&&duelGame(param)){try{const d=await request('/api/duel?id='+param);duelDetail={...d,at:Date.now()}}catch{duelDetail=null}
+  const g=duelGame(param);if(g?.unseen){g.unseen=false;command('duel seen '+param).catch(()=>{})}} // the open game is seen at once
+ if(draw){if(route==='duel')renderDuel();else if(['games','checkers','sea','home'].includes(route))render();hud()}}
+async function duelCommand(line,ok,tone='ok'){duelQuiet=true;try{const r=await command(line);if(ok)notify(ok,tone);return r}catch(e){notify(String(e.message).replace(/^ERR\s*/,L('Не выполнено: ')),'bad');return null}finally{duelBusy=false;await refreshDuel(true);duelQuiet=false}}
+
+// A list of one kind with the new game form: the colour (checkers) and the chat contacts.
+function duelRow(g){const p=peer(g.peer),bad=g.out_status===4&&g.state!=='over',sea=g.kind==='sea';
+ const more=sea?(g.state==='playing'?L` · кораблей ${g.ships_left}/10, потоплено ${g.sunk}`:''):g.last&&g.state!=='invited'?' · '+g.last:'';
+ return `<button class="row" data-go="duel/${g.id}">${avatar(g.peer,g.name,p?p.type:-1)}<span class="main"><b>${sea?'':`<span class="disc ${g.color[0]}"></span>`}${esc(g.name)}</b><small class="${bad?'bad':duelTone(g)}">${esc(bad?deliveryText(g):duelState(g)+more)}</small></span><span class="side"><span>${timeText(g.updated)}</span>${duelNeeds(g)?'<span class="pill">!</span>':''}</span></button>`}
+function renderDuelList(kind){
+ const v=$(kind==='sea'?'seaView':'ckView'),sea=kind==='sea';
+ if(!duel){setHtml(v,`<div class="empty">${duelOk===false?L`${ic(DUEL_KINDS[kind][1])}Этой игры нет в прошивке устройства`:L('Загрузка…')}</div>`);return}
+ const rank=g=>duelNeeds(g)?0:g.state==='over'?2:1,games=duel.games.filter(g=>g.kind===kind).sort((a,b)=>rank(a)-rank(b)||(b.updated||0)-(a.updated||0));
+ let h=games.length?`<div class="list">${games.map(duelRow).join('')}</div>`:`<div class="empty" style="padding:28px 16px">${L`${ic(DUEL_KINDS[kind][1])}Партий пока нет`}<small>${sea?L('Вызовите чат-контакт ниже: флот расставится сам, первым стреляет вызвавший.'):L('Выберите цвет и вызовите чат-контакт ниже.')}</small></div>`;
+ h+=`<h3>${L('Новая партия')}</h3>`;
+ if(!sea)h+=`<div class="tabs">${[L('Белыми'),L('Чёрными'),L('Случайно')].map((n,i)=>`<button data-duelcolor="${i}" class="${i===duelColor?'on':''}">${i<2?`<span class="disc ${'wb'[i]}"></span>`:''}${n}</button>`).join('')}</div>`;
+ const contacts=peers.filter(p=>p.type===1).sort((a,b)=>(b.heard?1:0)-(a.heard?1:0)||(a.heard?age(a)-age(b):0));
+ h+=contacts.length?`<div class="list">${contacts.map(p=>`<button class="row" data-duelinvite="${p.id} ${kind}">${avatar(p.id,p.name,1)}<span class="main"><b>${esc(p.name)}</b><small>${p.heard?(age(p)<60?L('сейчас'):L`${ago(age(p))} назад`)+' · ':''}${pathText(p)}</small></span><span class="side acc">${L`Вызвать ${ic('next')}`}</span></button>`).join('')}</div>`
+  :`<p class="small muted" style="margin:8px 4px">${L`Чат-контактов пока нет: объявите ${L('узел в разделе «Узлы»')} и дождитесь объявления соперника.`}</p>`;
+ h+=`<p class="small faint" style="margin:10px 4px">${sea?L('Поле 10×10, флот из десяти кораблей (4, 3, 3, 2, 2, 2, 1, 1, 1, 1 клетки) расставляется случайно; пока по нему не стреляли, его можно перемешать. Попадание даёт ещё выстрел. Ответы даёт устройство соперника само, а в конце победитель показывает свой флот для проверки.'):L('Русские шашки: бить обязательно, простая шашка бьёт и назад, дамка ходит и бьёт на любое расстояние по диагонали.')} ${L('Ходы идут личными сообщениями MeshCore с подтверждением доставки; сопернику нужен MeshMesh с этой игрой. Без рейтинга и очков, до шести игр сразу.')}</p>`;
+ setHtml(v,h)}
+
+// A checkers board: the own side at the bottom, men and kings (a crown), the last move's squares, the pieces that
+// can move, and after a tap the destinations of the chosen piece (the stops of a capture marked on the way).
+function ckPiece(c){
+ const white=c==='w'||c==='W',king=c==='W'||c==='B',[fill,rim,ink]=white?['#f8f4ea','#1c2026','#b9ae98']:['#2b3038','#0b0d10','#5d6874'];
+ return `<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10.8" r="8.6" fill="${rim}"/><circle cx="10" cy="10" r="8.1" fill="${fill}" stroke="${rim}" stroke-width=".9"/><circle cx="10" cy="10" r="5.5" fill="none" stroke="${ink}" stroke-width="1.1"/>${king?`<path d="M5.5 12.8l-.8-5.6 3 2.5L10 5.4l2.3 4.3 3-2.5-.8 5.6z" fill="#e9b13b" stroke="${rim}" stroke-width=".7" stroke-linejoin="round"/>`:''}</svg>`}
+function ckBoard(g,d){
+ const b=d&&d.board||'',flip=g.color==='black',legal=d&&g.my_turn?d.legal||[]:[],last=new Set((d&&d.last_path||[]).map(ckSq)),from=new Set(legal.map(m=>ckSq(ckPath(m)[0])));
+ if(duelSel!==null&&!from.has(duelSel)){duelSel=null;duelPaths=null}
+ const moves=duelSel===null?[]:(duelPaths||legal.filter(m=>ckSq(ckPath(m)[0])===duelSel)),to=new Set(moves.map(m=>ckSq(ckPath(m).at(-1)))),via=new Set(moves.flatMap(m=>ckPath(m).slice(1,-1).map(ckSq)));
+ const names={w:L('белая шашка'),W:L('белая дамка'),b:L('чёрная шашка'),B:L('чёрная дамка')};let h='';
+ for(let row=0;row<8;row++)for(let col=0;col<8;col++){
+  const r=flip?row:7-row,c=flip?7-col:col,lab=(col===0?`<i class="rk">${r+1}</i>`:'')+(row===7?`<i class="fl">${'abcdefgh'[c]}</i>`:'');
+  if((r+c)%2){h+=`<span class="sq l">${lab}</span>`;continue}
+  const s=r*4+(c>>1),p=b[s]&&b[s]!=='.'?b[s]:'',cls=['sq','d',last.has(s)?'last':'',s===duelSel?'sel':'',duelSel===null&&from.has(s)?'can':'',to.has(s)?'to':'',via.has(s)&&!to.has(s)?'via':''].filter(Boolean).join(' ');
+  h+=`<button class="${cls}" data-ck="${s}" aria-label="${'abcdefgh'[c]}${r+1}${p?' '+names[p]:''}">${p?ckPiece(p):''}${lab}</button>`}
+ return `<div class="board ck">${h}</div>`}
+// A sea field: columns a..j, rows 1..10 from the top. Theirs is clickable on my shot: the first tap aims, the second fires.
+const SEA_MARK={'.':'','o':'mo','~':'mn','s':'ms','x':'mx','X':'mk','*':'ma'};
+function seaGrid(cells,theirs,g,small){
+ const live=theirs&&g.my_turn&&g.state==='playing',last=seaCell(theirs?g.last_out:g.last_in);
+ let h='<i></i>'+[...'abcdefghij'].map(c=>`<i>${c}</i>`).join('');
+ for(let r=0;r<10;r++){h+=`<i>${r+1}</i>`;for(let c=0;c<10;c++){const i=r*10+c,m=cells?cells[i]:'.',name='abcdefghij'[c]+(r+1),cls=['sc',SEA_MARK[m]||'',i===last?'last':'',live&&duelAim===name?'pick':''].filter(Boolean).join(' ');
+  h+=live&&m==='.'?`<button class="${cls} open" data-shoot="${name}" aria-label="${name}"></button>`:`<span class="${cls}" title="${name}"></span>`}}
+ return `<div class="sea${small?' small':''}">${h}</div>`}
+function renderDuel(){
+ const v=$('duelView'),g=duelGame(param);
+ if(!g){setHtml(v,`<div class="empty">${duel?L('Партия удалена'):L('Загрузка…')}</div>`);return}
+ const d=duelDetail&&duelDetail.id===g.id?duelDetail:null,sea=g.kind==='sea',p=peer(g.peer),fresh=g.state==='playing'&&(sea?!g.shots&&!g.aim:!g.plies);
+ if(!sea&&duelPaths&&!g.my_turn)duelPaths=null;if(sea&&(!g.my_turn||!d||d.theirs[seaCell(duelAim)]!=='.'))duelAim='';
+ const heard=p&&p.heard?(age(p)<60?L('соперник слышен сейчас'):L`соперник слышен ${ago(age(p))} назад`):L('соперник не слышен с запуска');
+ let sub=g.out_status===4&&g.state!=='over'?`<small class="bad">${deliveryText(g)}</small><small>${heard}</small>`:!g.my_turn&&g.state!=='over'&&g.out_status?`<small>${deliveryText(g)}</small>`:'';
+ if(!sea&&g.draw_offer==='mine'&&g.state==='playing')sub+=`<small>${L`Вы предложили ничью`}</small>`;
+ if(!sea&&g.last&&g.state!=='invited')sub+=`<small>${L`Последний ход: ${g.last}`}</small>`;
+ if(sea&&g.state!=='over'&&!g.shots&&!g.aim)sub+=`<small>${g.first?L('Первым стреляете вы'):L('Первым стреляет соперник')}</small>`;
+ if(sea&&(g.last_out||g.last_in))sub+=`<small>${[g.last_out&&L`Ваш последний выстрел: ${g.last_out.toUpperCase()}`,g.last_in&&L`Соперник стрелял: ${g.last_in.toUpperCase()}`].filter(Boolean).join(' · ')}</small>`;
+ const acts=[],armed=a=>duelArmed===a?' armed':'';
+ if(g.out_status===4&&g.state!=='over')acts.push(['resend',L('Повторить отправку'),'primary']);
+ if(g.state==='invited')acts.push(['accept',L('Принять вызов'),'primary'],['decline',L('Отказаться'),'danger']);
+ if(g.state==='inviting')acts.push(['decline',L('Отменить вызов'),'danger']);
+ if(sea&&g.can_shuffle)acts.push(['shuffle',L('Перемешать флот'),'']);
+ if(g.state==='playing'){if(!sea&&g.draw_offer!=='theirs'&&!fresh)acts.push(['draw',g.draw_offer==='mine'?L('Ничья предложена'):L('Предложить ничью'),'']);
+  acts.push(fresh?['decline',L('Отменить партию'),'danger']:['resign',duelArmed==='resign'?L('Точно сдаться?'):L('Сдаться'),'danger'+armed('resign')])}
+ if(g.state==='over'){if(g.out_status===4)acts.push(['resend',L('Повторить отправку'),'']);acts.push(['again',sea?L('Ещё партия'):L('Реванш (цвета меняются)'),'primary'],['remove',duelArmed==='remove'?L('Точно удалить?'):L('Удалить партию'),'danger'+armed('remove')])}
+ const state=`<div class="card cstate"><b class="${duelTone(g)}">${esc(duelState(g))}</b>${sub}</div>`
+  +(!sea&&g.state==='playing'&&g.draw_offer==='theirs'?`<div class="offer"><span>${L`${esc(g.name)} предлагает ничью`}</span><button class="btn primary" data-duel="draw">${L`Согласиться`}</button></div>`:'')
+  +(duelPaths?`<div class="card pad" style="margin-bottom:8px"><b>${L`Бить можно по-разному: выберите путь`}</b><div class="btns" style="margin-top:8px">${duelPaths.map(m=>`<button class="btn primary" data-ckpath="${esc(m)}">${esc(m)}</button>`).join('')}<button class="btn" data-ckpath="">${L`Отмена`}</button></div></div>`:'')
+  +(sea&&duelAim?`<div class="offer"><span>${L`Цель: ${duelAim.toUpperCase()}`}</span><button class="btn primary" data-shoot="${duelAim}">${L`Огонь`}</button></div>`:'')
+  +(acts.length?`<div class="btns" style="margin-bottom:8px">${acts.map(([a,t,c])=>`<button class="btn ${c}" data-duel="${a}"${a==='draw'&&g.draw_offer==='mine'?' disabled':''}>${t}</button>`).join('')}</div>`:'');
+ let h;
+ if(!sea){const mine=g.color==='white';
+  h=`<div class="chessgrid"><div><div class="card pside"><span class="disc ${mine?'b':'w'}"></span><b>${esc(g.name)}</b><small class="muted">${plural(g.their_left??12,'шашка','шашки','шашек')}</small></div><div class="bwrap">${ckBoard(g,d)}</div><div class="card pside" style="margin:8px 0 0"><span class="disc ${mine?'w':'b'}"></span><b>${L`Вы`}</b><small class="muted">${plural(g.mine_left??12,'шашка','шашки','шашек')}</small></div></div><div>${state}</div></div>`}
+ else{
+  const fair=g.state==='over'?g.fair===false?`<div class="card pad" style="border:1px solid var(--bad);margin-bottom:8px"><b class="bad">${L`Расстановка соперника не сходится с его ответами`}</b><p class="small" style="margin:4px 0 0">${L`Показанный в конце флот противоречит ответам на выстрелы: игра могла быть нечестной.`}</p></div>`
+   :g.fair===true?`<p class="small ok" style="margin:0 4px 8px">${L`Флот соперника показан и сходится с его ответами.`}</p>`:g.result==='lost'?`<p class="small muted" style="margin:0 4px 8px">${L`Ждём флот соперника для проверки ответов.`}</p>`:'':'';
+  const legend=[['mo',L('мимо')],['mn',L('пусто рядом с потопленным')],['mx',L('попадание')],['mk',L('потоплен')],['ms',L('корабль')]].map(([c,t])=>`<span><i class="sc ${c}"></i>${t}</span>`).join('');
+  h=`<div class="chessgrid"><div><h3 style="margin-top:4px">${L`Поле соперника`} · ${L`потоплено ${g.sunk??0} из 10`}</h3>${seaGrid(d&&d.theirs,true,g)}<div class="sealeg">${legend}</div>${g.my_turn?`<p class="small acc" style="margin:8px 4px 0">${L`Нажмите клетку, затем ещё раз или «Огонь», чтобы выстрелить.`}</p>`:''}</div>
+<div>${state}${fair}<h3>${L`Ваш флот`} · ${L`осталось ${g.ships_left??10} из 10`}</h3>${seaGrid(d&&d.mine,false,g,true)}</div></div>`}
+ setHtml(v,h)}
+function enterDuel(){duelSel=null;duelPaths=null;duelAim='';duelArmed='';duelDetail=null;refreshDuel(true)}
+async function ckTap(s,g){
+ if(!g.my_turn){notify(g.state==='playing'?L('Сейчас ход соперника'):g.state==='invited'?L('Сначала примите вызов'):g.state==='inviting'?L('Ждём ответа на вызов'):L('Партия окончена'),'muted');return}
+ const d=duelDetail;if(!d||d.id!==g.id){notify(L('Загружаю партию…'),'muted');return}
+ const legal=d.legal||[],start=m=>ckSq(ckPath(m)[0]);
+ if(duelSel!==null&&s!==duelSel){const moves=legal.filter(m=>start(m)===duelSel&&ckSq(ckPath(m).at(-1))===s);
+  if(moves.length>1){duelPaths=moves;renderDuel();return}
+  if(moves.length===1){await duelMove(g,moves[0]);return}}
+ const own=/[wW]/.test(d.board[s])===(g.color==='white')&&d.board[s]!=='.';duelPaths=null;
+ if(legal.some(m=>start(m)===s))duelSel=s===duelSel?null:s;
+ else{if(own)notify(legal.some(m=>m.includes(':'))?L('Бить обязательно: выберите шашку, которая бьёт'):L('Эта шашка не может ходить'),'muted');else if(duelSel!==null)notify(L('Сюда нельзя'),'warn');duelSel=null}
+ renderDuel()}
+async function duelMove(g,m){duelSel=null;duelPaths=null;await duelCommand(`duel move ${g.id} ${m}`)}
+async function duelClick(d){
+ if(d.duelcolor!==undefined){duelColor=+d.duelcolor;store('duel-color',duelColor);render();return}
+ const say=r=>notify(/ sea$/.test(r)?L('Вызов отправлен: вы стреляете первым'):L`Вызов отправлен: вы играете ${/ white$/.test(r)?L('белыми'):L('чёрными')}`,'ok');
+ if(d.duelinvite){const [id,kind]=d.duelinvite.split(' '),r=await duelCommand(`duel invite ${id} ${kind}${kind==='checkers'?' '+'wbr'[duelColor]:''}`);if(r){say(r);go('duel/'+r.split(' ')[2])}return}
+ const g=duelGame(param);if(!g)return;
+ if(d.ck!==undefined){await ckTap(+d.ck,g);return}
+ if(d.ckpath!==undefined){if(d.ckpath)await duelMove(g,d.ckpath);else{duelPaths=null;duelSel=null;renderDuel()}return}
+ if(d.shoot){if(!g.my_turn)return;if(duelAim!==d.shoot){duelAim=d.shoot;renderDuel();return}duelAim='';await duelCommand(`duel shoot ${g.id} ${d.shoot}`);return}
+ const a=d.duel;
+ if((a==='resign'||a==='remove')&&duelArmed!==a){duelArmed=a;renderDuel();setTimeout(()=>{if(duelArmed===a){duelArmed='';if(route==='duel')renderDuel()}},4000);return}
+ duelArmed='';
+ if(a==='again'){const r=await duelCommand(`duel invite ${g.peer} ${g.kind}${g.kind==='checkers'?' '+(g.color==='white'?'b':'w'):''}`);if(r){say(r);go('duel/'+r.split(' ')[2])}return}
+ const said={accept:[L('Вызов принят'),'ok'],decline:[g.state==='invited'?L('Вызов отклонён'):g.state==='inviting'?L('Вызов отменён'):L('Партия отменена'),'muted'],draw:[g.draw_offer==='theirs'?L('Ничья принята'):L('Ничья предложена'),'ok'],resign:[L('Вы сдались'),'muted'],resend:[L('Отправлено повторно'),'ok'],remove:[L('Партия удалена'),'muted'],shuffle:[L('Флот перемешан'),'ok']}[a];
+ if(!said)return;const r=await duelCommand(`duel ${a} ${g.id}`,said[0],said[1]);if(r&&a==='remove')go(g.kind)}
+if(typeof document!=='undefined')document.addEventListener('click',e=>{const t=e.target.closest('[data-duel],[data-ck],[data-ckpath],[data-shoot],[data-duelinvite],[data-duelcolor]');if(t&&!t.disabled)duelClick(t.dataset)});
+
 // Wiring. Skipped outside a browser: tools/check_web_*.cjs run the functions above in Node.
 if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('hashchange',show);
@@ -2141,8 +2376,9 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('regionBox').onclick=e=>{if(e.target.id==='regionFind'){findRegions();return}const b=e.target.closest('[data-region]'),f=$('set-region');if(b&&f){f.value=b.dataset.region;draft.region=b.dataset.region;editorState('radio');f.scrollIntoView({block:'center'})}};
  for(const page of ['radio','device']){$(page+'Form').addEventListener('input',e=>{const el=e.target.closest('[data-k]');if(!el)return;draft[el.dataset.k]=editorValue(el);if(el.type==='range')$(el.id+'-v').textContent=el.value;editorState(page)});
   $(page+'Form').addEventListener('click',e=>{const el=e.target.closest('.sw[data-k]');if(!el)return;const k=el.dataset.k;draft[k]=!draft[k];el.classList.toggle('on',draft[k]);el.setAttribute('aria-checked',draft[k]);editorState(page)});$(page+'Save').onclick=()=>saveEditor(page)}
- $('appsList').addEventListener('click',e=>{const m=e.target.closest('[data-mv]');if(m){const i=+m.dataset.mv,j=i+ +m.dataset.step;[appsDraft[i],appsDraft[j]]=[appsDraft[j],appsDraft[i]];renderApps();document.querySelector(`[data-mv="${j}"][data-step="${m.dataset.step}"]:not(:disabled)`)?.focus();return}
-  const s=e.target.closest('[data-app]');if(s){const a=appsDraft[+s.dataset.app];a.on=!a.on;renderApps()}});
+ $('appsList').addEventListener('click',appsClick);
+ $('appsList').addEventListener('change',e=>{const t=e.target.closest('[data-appdir]');if(!t)return;const [i,j]=t.dataset.appdir.split(':').map(Number);appsArmed=-1;appsMoveTo(i,j,+t.value);renderApps()});
+ $('appsList').addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;if(e.target.id==='appsRename'){e.preventDefault();$('appsList').querySelector('[data-fsave]')?.click()}else if(e.target.id==='appsNewName'){e.preventDefault();$('appsList').querySelector('[data-fnew]')?.click()}});
  $('appsSave').onclick=()=>saveApps(appsText(appsDraft));$('appsDefault').onclick=()=>saveApps('');
  $('roleList').onclick=e=>{const t=e.target.closest('[data-role]');if(t){roleChoice=t.dataset.role;renderRole()}};$('roleApply').onclick=applyRole;$('powerOff').onclick=powerOffDevice;
  $('rptForm').addEventListener('click',e=>{if(e.target.id==='rptFwd')rptRun(rpt.forwarding?'set repeat off':'set repeat on',rpt.forwarding?L('Пересылка выключена'):L('Пересылка включена'));if(e.target.id==='rptRead')rptRun(rpt.read_only_login?'set allow.read.only off':'set allow.read.only on',L('Сохранено'));const b=e.target.closest('[data-pw]');if(b)rptPassword(b.dataset.pw)});

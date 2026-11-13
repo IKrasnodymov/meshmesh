@@ -1,6 +1,13 @@
 // Screens rendered by the preview; the key codes are the production M9 codes.
-// Selects an app's tile on the M9 home grid (three a row) from the first one.
-static void tile(const char* id){key(0x82);uint8_t o[AppsMax];unsigned n=appsShown(o);for(unsigned i=0;i<n;i++)if(!strcmp(uiApps[o[i]],id)){for(unsigned k=0;k<i/3;k++)key(0xb6);for(unsigned k=0;k<i%3;k++)key(0xb7);return;}printf("FAIL no home tile %s\n",id);exit(1);}
+// Selects an app's tile on the M9 home grid (three a row) from the first one; an app in a folder: the folder's tile
+// opens the folder, then the app's tile there is selected.
+static void tile(const char* id){
+ key(0x82);uint8_t o[AppEntriesMax];unsigned n=appsShown(o);int app=-1;for(uint8_t i=0;i<uiAppCount;i++)if(!strcmp(uiApps[i],id))app=i;
+ auto pick=[](unsigned i){for(unsigned k=0;k<i/3;k++)key(0xb6);for(unsigned k=0;k<i%3;k++)key(0xb7);};
+ for(unsigned i=0;i<n;i++)if(o[i]==app){pick(i);return;}
+ int f=app<0?-1:appsFolderOf(uint8_t(app));
+ for(unsigned i=0;i<n&&f>=0;i++)if(o[i]==(AppFolder|f)){pick(i);key(13);uint8_t in[AppEntriesMax];unsigned m=appsShown(in,f);for(unsigned j=0;j<m;j++)if(in[j]==app){pick(j);return;}}
+ printf("FAIL no home tile %s\n",id);exit(1);}
 static void scenario(){
 #if defined(MM_JOYSTICK)
  // GAT562: joystick arrows 0xb4..0xb7, centre 13 (hold 0xa3), Back 0x86 (hold 0x82).
@@ -13,7 +20,7 @@ static void scenario(){
  ChessMatch* g=chessNet.invite(peerId(0),chess::White);sayId(0,"Heltec V4",g->id,"yes");
  for(const char* u:{"e2e4","e7e5","g1f3","b8c6","f1c4","f8c5"}){if(g->myTurn()){chess::Move mv;if(g->game.pos.parseUci(u,mv))chessNet.move(*g,mv);}else{char b[16];snprintf(b,sizeof b,"%u %s",g->game.plies+1,u);sayId(0,"Heltec V4",g->id,b);}}
  chessNet.events=0;for(int i=0;i<9;i++)tick(); // no news popup over the board
- key(0x86);for(int i=0;i<16&&uiStatus().indexOf("\"page\":\"chess\"")<0;i++)key(0xb7);shot("gat562-chess-list");key(13);key(13);shot("gat562-chess");key(0x86);key(0x86);
+ key(0x86);for(int i=0;i<16&&uiStatus().indexOf("\"page\":\"chess\"")<0;i++)key(uiStatus().indexOf("\"page\":\"folder\"")>=0?13:0xb7);shot("gat562-chess-list");key(13);key(13);shot("gat562-chess");key(0x86);key(0x86);
  for(int i=0;i<16&&uiStatus().indexOf("\"page\":\"radar\"")<0;i++)key(0xb7);for(int i=0;i<3;i++)tick();shot("gat562-radar");
  for(int i=0;i<16&&uiStatus().indexOf("\"page\":\"nodes\"")<0;i++)key(0xb4);key(13);shot("gat562-node-menu");key(0x86);
  // Radio settings: "Radio..." in the Settings menu; the frequency by digits (OK, left/right, up/down), SF by right, Save.
@@ -55,7 +62,7 @@ static void scenario(){
   tile("chess");key(13);expect("chess list","\"page\":\"chess\"");touch('t',160,46+44+20);expect("game opens","\"page\":\"chess_board\"");
   touch('t',4+4*24+12,25+6*24+12);expect("tap e2 takes the pawn","\"chess_held\":\"e2\"");touch('t',4+4*24+12,25+4*24+12);
   if(g->game.plies!=1){printf("FAIL e2-e4 by taps: %u plies\n",g->game.plies);exit(1);}shot("tdeck-chess");
-  touch('t',160,10);touch('t',160,10);expect("chess list back to menu","\"page\":\"home\"");
+  touch('t',160,10);touch('t',160,10);expect("chess list back to its folder","\"page\":\"folder\"");touch('t',160,10);expect("folder back to menu","\"page\":\"home\"");
   tile("chess");key(13);touch('t',160,60);expect("new game","\"page\":\"chess_pick\"");touch('t',160,35);expect("colour row","\"chess_color\":0");
   touch('t',160,88+44+20);expect("first tap on another contact selects","\"selected\":1");expect("no challenge yet","\"page\":\"chess_pick\"");}
  // Channels: "add a channel" row, the hashtag editor, a channel chat, its card from the footer "<" hint.
@@ -77,7 +84,7 @@ static void scenario(){
   dicer.setMode(dice::Sheet);tick();touch('t',8+60,60);touch('t',8+60,60);if(dicer.rolls!=rolls+2||String(dicer.last()->formula)!="d20"){printf("FAIL sheet block taps: %s\n",dicer.json().c_str());exit(1);}shot("tdeck-dice-sheet");
   key('e');touch('t',100,74+5*19+8);if(uiStatus().indexOf("\"block_field\":5")<0){printf("FAIL builder row tap: %s\n",uiStatus().c_str());exit(1);}
   touch('t',100,74+5*19+8);if(dicer.sheet.block[1].shape!=dice::Square){printf("FAIL builder second tap: %s\n",uiStatus().c_str());exit(1);}shot("tdeck-dice-builder");key(0x86);
-  touch('t',160,10);expect("dice back","\"page\":\"home\"");}
+  touch('t',160,10);expect("dice back to its folder","\"page\":\"folder\"");touch('t',160,10);expect("folder back","\"page\":\"home\"");}
  // Quick Send: the pinned recipient card and first/last templates use their own touch targets.
  {strlcpy(config.apps,"quick people dice",sizeof config.apps);config.dimAfter=0;config.autoLock=0;key(0x82);key(13);expect("Quick tile","\"page\":\"quick\"");shot("tdeck-quick");unsigned before=meshRadio.historyCount;
   touch('t',160,45);expect("recipient card opens chooser","\"quick_targets\":true");shot("tdeck-quick-targets");if(meshRadio.historyCount!=before){printf("FAIL recipient card sent a template\n");exit(1);}
@@ -85,6 +92,8 @@ static void scenario(){
   touch('t',160,90);if(meshRadio.historyCount!=before+1||String(meshRadio.history[before].text)!=quickSend::state.text[0]||meshRadio.history[before].destination!=quickSend::state.to){printf("FAIL first Quick template touch\n");exit(1);}
   key(0xb5);key(0xb5);shot("tdeck-quick-last");touch('t',160,190);if(meshRadio.historyCount!=before+2||String(meshRadio.history[before+1].text)!=quickSend::state.text[quickSend::Count-1]){printf("FAIL last Quick template touch\n");exit(1);}
   touch('t',160,45);expect("pinned card after scrolling","\"quick_targets\":true");if(meshRadio.historyCount!=before+2){printf("FAIL pinned card sent a template\n");exit(1);}touch('t',160,10);touch('t',160,10);config.apps[0]=0;}
+ // Checkers, sea battle, the folders and the node card's Play (the T-Deck part of the file).
+#include "scenario_games_m9.inc"
  printf("tdeck touch checks passed\n");return;
 #elif defined(MM_HELTEC_V4)
  auto expect=[](const char* what,const char* part){if(uiStatus().indexOf(part)<0){printf("FAIL %s: %s\n",what,uiStatus().c_str());exit(1);}};
@@ -118,7 +127,7 @@ static void scenario(){
   for(int i=0;i<40&&uiStatus().indexOf("\"chess_cursor\":-1,")<0;i++)key(13);expect("Game menu after the pieces","\"chess_cursor\":-1,");shot("heltec-chess-gamemenu");
   key(0xa3);expect("game menu","\"chess_menu\":true");shot("heltec-chess-menu");
   key(13);key(13);key(0xa3);expect("Game list","\"page\":\"chess\"");if(uiStatus().indexOf("chess_game")>=0){printf("FAIL game list: %s\n",uiStatus().c_str());exit(1);}
-  key(13);expect("click leaves the list","\"page\":\"pet\"");
+  key(13);expect("click leaves the list for the next game of its folder","\"page\":\"checkers\"");
   chessNet.remove(*g);}
 #else
  shot("role-boot");key(0x86);shot("home");key(0x81);shot("threads");key(13);shot("chat-public");key(0x86);
@@ -313,11 +322,11 @@ static void scenario(){
   int16_t offset=config.utcOffset;{time_t now=time(nullptr);config.utcOffset=int16_t(((12-int(now/3600%24))+24)%24*60);} // noon: awake at any hour of the build
 #if defined(MM_HELTEC_V4)
   for(int i=0;i<11;i++)tick(); // menus and popups close
-  for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"pet\"")<0;i++)
+  for(int i=0;i<20&&uiStatus().indexOf("\"page\":\"pet\"")<0;i++) // in the games folder: a hold (OK) enters it
 #if defined(MM_JOYSTICK)
-   key(0xb7);
+   key(uiStatus().indexOf("\"page\":\"folder\"")>=0?13:0xb7);
 #else
-   key(13);
+   key(uiStatus().indexOf("\"page\":\"folder\"")>=0?0xa3:13);
 #endif
   const char* prefix=
 #if defined(MM_JOYSTICK)
@@ -467,7 +476,7 @@ static void scenario(){
   const int next=13,hold=0xa3,run=0xa3;const char* prefix="heltec-";
 #endif
   auto snap=[&](const char* n){shot((std::string(prefix)+n).c_str());};
-  for(int i=0;i<11;i++)tick();for(int i=0;i<14&&uiStatus().indexOf("\"page\":\"dice\"")<0;i++)key(next);
+  for(int i=0;i<11;i++)tick();for(int i=0;i<20&&uiStatus().indexOf("\"page\":\"dice\"")<0;i++)key(uiStatus().indexOf("\"page\":\"folder\"")>=0?hold:next); // in the games folder
   if(uiStatus().indexOf("\"page\":\"dice\"")<0){printf("FAIL dice page: %s\n",uiStatus().c_str());exit(1);}
 #if !defined(MM_JOYSTICK)
   snap("dice-closed");key(hold);must(uiStatus().indexOf("\"app_open\":true")>=0,"hold opens dice");
@@ -652,5 +661,11 @@ static void scenario(){
  key(0x90);key(0xb5);shot("settings-poweroff");key(13);key(13);
  if(!powerOffPending()){printf("FAIL Turn off needs two OK\n");exit(1);}
  shot("poweroff");uiFarewell();shot("poweroff-done");
+#endif
+// Checkers, sea battle and the app folders: their own files (statements of this function).
+#if defined(MM_HELTEC_V4)
+#include "scenario_games_compact.inc"
+#elif !defined(MM_BOARD_TDECK) // the T-Deck runs it inside its touch checks
+#include "scenario_games_m9.inc"
 #endif
 }

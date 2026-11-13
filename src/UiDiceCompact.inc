@@ -78,7 +78,7 @@ String diceActName(Act a){
 void diceRun(Act a){
  auto& s=dicer.s;int i=diceBlock();
  switch(a){
- case ActDiceExit:diceTapping=false;showPage(nextPage(page));break;
+ case ActDiceExit:diceTapping=false;showPage(nextPage());break;
  case ActDiceRoll:diceRepeatSaved=false;if(s.mode==dice::Grid){if(!s.gridChosen){notice(t("Choose dice: Dice +1","Выберите: Кости +1"));break;}dicer.gridRoll();}else dicer.rollPool();break;
  case ActDiceSaved:diceRepeatSaved=true;dicer.rollSaved(diceSavedSel);break;
  case ActDiceNextSaved:{unsigned n=dicer.savedCount();diceSavedSel=n?(diceSavedSel+1)%n:0;break;}

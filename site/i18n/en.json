@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: a network under test — OK keeps it, a restart returns the saved one",
  "shot.web-networks": "Choosing a network by city",
  "shot.web-networks-test": "A settings test: keep, revert, check",
- "doc.networks": "Network of your city"
+ "doc.networks": "Network of your city",
+ "f.games.t": "Checkers, sea battle and folders",
+ "f.games.d": "Two more games with your contacts over radio, besides chess: Russian draughts and sea battle. Every move and shot is an acknowledged direct message, resent until it arrives; no rating, just play. On the M9 and T-Deck with keys and touch, with one button or a joystick on OLED boards, on the web page and in the app. All games now live in the Games folder of the menu; on the web page and in the app you create folders, rename and hide them and move apps between them.",
+ "shot.m9-checkers": "Checkers: a man picked, its moves marked",
+ "shot.m9-checkers-chain": "A king takes several men in one move",
+ "shot.m9-sea-mid": "Sea battle: hits, a sunk ship, your fleet",
+ "shot.m9-sea-lost": "The winner's fleet shown and checked against the answers",
+ "shot.m9-folder": "The Games folder",
+ "shot.m9-home-folder": "The menu with the Games folder",
+ "shot.heltec-checkers-move": "Checkers with one button: the move offered",
+ "shot.heltec-sea-hunt": "Sea battle on an OLED: finish the hit ship",
+ "doc.games": "Checkers, sea battle, folders"
 }

@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: test edilen ağ — OK korur, yeniden başlatma kayıtlı olana döner",
  "shot.web-networks": "Şehre göre ağ seçimi",
  "shot.web-networks-test": "Ayar testi: tut, geri al, kontrol et",
- "doc.networks": "Şehrinizin ağı"
+ "doc.networks": "Şehrinizin ağı",
+ "f.games.t": "Dama, Amiral Battı ve klasörler",
+ "f.games.d": "Satrancın yanında kişilerinizle telsiz üzerinden iki oyun daha: Rus daması ve Amiral Battı. Her hamle ve atış, ulaşana kadar yeniden gönderilen onaylı bir özel mesajdır; derece yok, sadece oyun. M9 ve T-Deck'te tuşlar ve dokunmayla, OLED kartlarda tek düğme veya joystick ile, web sayfasında ve uygulamada. Tüm oyunlar artık menünün «Oyunlar» klasöründe; web sayfasında ve uygulamada klasör oluşturur, yeniden adlandırır, gizler ve uygulamaları aralarında taşırsınız.",
+ "shot.m9-checkers": "Dama: bir taş seçildi, hamleleri işaretli",
+ "shot.m9-checkers-chain": "Dama tek hamlede birkaç taş alıyor",
+ "shot.m9-sea-mid": "Amiral Battı: isabetler, batan bir gemi, filonuz",
+ "shot.m9-sea-lost": "Kazananın filosu gösterildi ve yanıtlarla karşılaştırıldı",
+ "shot.m9-folder": "«Oyunlar» klasörü",
+ "shot.m9-home-folder": "«Oyunlar» klasörlü menü",
+ "shot.heltec-checkers-move": "Tek düğmeyle dama: hamle öneriliyor",
+ "shot.heltec-sea-hunt": "OLED üzerinde Amiral Battı: vurulan gemiyi batır",
+ "doc.games": "Dama, Amiral Battı, klasörler"
 }

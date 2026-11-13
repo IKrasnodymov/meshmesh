@@ -29,6 +29,7 @@ nodi MeshCore.
 - **Radar dei segnali** — Wi-Fi, Bluetooth e LoRa intorno a te, con ricerca “acqua / fuoco”.
 - **Sensore di movimento** — due schede rilevano una persona che cammina tra loro (Wi-Fi CSI).
 - **Scacchi** con i tuoi contatti attraverso la mesh, e il solitario Klondike sull'M9.
+- **Dama e battaglia navale** con i tuoi contatti attraverso la mesh (0.33.0): dama russa e battaglia navale 10×10, ogni mossa è un messaggio confermato, senza ELO; tutti i giochi stanno in una cartella Giochi del menu, e le cartelle si creano, si rinominano, si nascondono e si riempiono sulla pagina web o nell'app. [docs/en/games.md](docs/en/games.md)
 - **Cucciolo della rete** — una creatura in pixel in stile Tamagotchi su ogni scheda: si nutre del traffico radio, cresce e può morire di fame o di solitudine. [docs/en/pet.md](docs/en/pet.md)
 - **Dadi** — il lanciadadi DIC3R su ogni scheda: riserve e formule da GdR (2d6+1, d20, d66, d%), una griglia Warhammer con soglia di successo e una scheda del personaggio a blocchi (caratteristiche, tracciati, segni, abilità che tirano e spendono) con modelli D&D 5e e R.E.T., composta sulla pagina web o nell’app e inviata a un contatto tramite la rete mesh; uguali sullo schermo, sulla pagina web e nell’app. [docs/en/dice.md](docs/en/dice.md)
 - **Scacchi senza MeshMesh sul dispositivo**: [la pagina degli scacchi](https://ikrasnodymov.github.io/meshmesh/chess/) gioca tramite

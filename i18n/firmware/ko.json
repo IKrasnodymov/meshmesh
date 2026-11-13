@@ -669,6 +669,146 @@
   "ru": "Лист персонажа от ",
   "text": "캐릭터 시트 도착 · "
  },
+ "79fd86cb": {
+  "en": "the fleet is sunk, you lost",
+  "ru": "флот потоплен, вы проиграли",
+  "text": "함대 격침, 패배"
+ },
+ "d1844256": {
+  "en": "miss, your shot",
+  "ru": "мимо, ваш выстрел",
+  "text": "빗나감, 내 사격"
+ },
+ "58bfd425": {
+  "en": "hit",
+  "ru": "попадание",
+  "text": "명중"
+ },
+ "09d7206d": {
+  "en": "ship sunk",
+  "ru": "корабль потоплен",
+  "text": "함선 격침"
+ },
+ "9ded29d1": {
+  "en": ": game refused, six games in progress",
+  "ru": ": игра отклонена, идут шесть игр",
+  "text": ": 게임 거절, 6판 진행 중"
+ },
+ "6cebfbaf": {
+  "en": " invites you: ",
+  "ru": " зовёт играть: ",
+  "text": " 님이 초대: "
+ },
+ "4d2eaec8": {
+  "en": ": a move of an unknown game",
+  "ru": ": ход в неизвестной игре",
+  "text": ": 알 수 없는 게임의 수"
+ },
+ "aeb93a07": {
+  "en": ", you won",
+  "ru": ", вы победили",
+  "text": ", 승리"
+ },
+ "7ccdd470": {
+  "en": ", you lost",
+  "ru": ", вы проиграли",
+  "text": ", 패배"
+ },
+ "a40fb99e": {
+  "en": ", draw",
+  "ru": ", ничья",
+  "text": ", 무승부"
+ },
+ "2682eef5": {
+  "en": ", your move",
+  "ru": ", ваш ход",
+  "text": ", 내 차례"
+ },
+ "f22d907f": {
+  "en": "the whole fleet sunk, you won",
+  "ru": "весь флот потоплен, вы победили",
+  "text": "함대 전멸, 승리"
+ },
+ "dcaf01fc": {
+  "en": "miss, their shot",
+  "ru": "мимо, стреляет соперник",
+  "text": "빗나감, 상대 사격"
+ },
+ "8a16dab8": {
+  "en": "hit! shoot again",
+  "ru": "попадание! стреляйте ещё",
+  "text": "명중! 한 번 더 사격"
+ },
+ "d5fb3a10": {
+  "en": "ship sunk! shoot again",
+  "ru": "корабль потоплен! стреляйте ещё",
+  "text": "격침! 한 번 더 사격"
+ },
+ "02b38e4a": {
+  "en": ": shot not accepted (",
+  "ru": ": выстрел не принят (",
+  "text": ": 사격 거부됨 ("
+ },
+ "6eadccab": {
+  "en": ": the fleet does not match the answers",
+  "ru": ": расстановка не сходится с ответами",
+  "text": ": 함대 배치가 응답과 불일치"
+ },
+ "2bd603d2": {
+  "en": " accepted: your shot",
+  "ru": " принял вызов: ваш выстрел",
+  "text": " 님 수락: 내 사격"
+ },
+ "d33bfd2d": {
+  "en": " declined the game",
+  "ru": " отказался от игры",
+  "text": " 님이 게임 거절"
+ },
+ "6477dc1a": {
+  "en": " cancelled the game",
+  "ru": " отменил игру",
+  "text": " 님이 게임 취소"
+ },
+ "843426e8": {
+  "en": "This game is not in this build",
+  "ru": "Этой игры нет в прошивке",
+  "text": "이 펌웨어에는 이 게임이 없음"
+ },
+ "70ee6464": {
+  "en": ": choose a chat contact",
+  "ru": ": выберите чат-контакт",
+  "text": ": 채팅 연락처를 선택하세요"
+ },
+ "7982eb10": {
+  "en": "Six games in progress, finish one",
+  "ru": "Идут шесть игр, завершите одну",
+  "text": "6판 진행 중, 한 판을 끝내세요"
+ },
+ "693b9cbd": {
+  "en": " · MeshMesh checkers: you play Black",
+  "ru": " · шашки MeshMesh: вы играете чёрными",
+  "text": " · MeshMesh 체커: 당신은 흑"
+ },
+ "4ae0fde2": {
+  "en": " · MeshMesh checkers: you play White",
+  "ru": " · шашки MeshMesh: вы играете белыми",
+  "text": " · MeshMesh 체커: 당신은 백"
+ },
+ "bfba4d09": {
+  "en": " · MeshMesh sea battle",
+  "ru": " · морской бой MeshMesh",
+  "text": " · MeshMesh 해전"
+ },
+ "32b66c9b": {
+  "en": "Games: cannot save",
+  "ru": "Игры: не удалось сохранить",
+  "text": "게임: 저장 실패"
+ },
+ "d72bc500": {
+  "en": ": no confirmation for 24 h",
+  "ru": ": нет подтверждения 24 ч",
+  "text": ": 24시간 동안 확인 없음"
+ },
  "576dfcbc": {
   "en": "Paused: access point on",
   "ru": "Пауза: включена точка доступа",
@@ -1018,6 +1158,166 @@
   "en": "Battery low",
   "ru": "Батарея садится",
   "text": "배터리 부족"
+ },
+ "0b2e473c": {
+  "en": "Not in this mode: Settings > Device mode",
+  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
+  "text": "이 모드에서 불가: 설정 > 장치 모드"
+ },
+ "cea9ae4c": {
+  "en": "Node announced",
+  "ru": "Узел объявлен",
+  "text": "노드 알림 전송"
+ },
+ "5b43376d": {
+  "en": "Announcement failed",
+  "ru": "Не удалось объявить узел",
+  "text": "알림 전송 실패"
+ },
+ "aa9ad8ae": {
+  "en": "Message queued",
+  "ru": "Сообщение в очереди",
+  "text": "메시지 대기 중"
+ },
+ "5035dc01": {
+  "en": "Cannot send: empty, full queue or radio",
+  "ru": "Не отправлено: текст, очередь или радио",
+  "text": "전송 불가: 빈 글, 대기열 가득 또는 무선"
+ },
+ "d7961dd2": {
+  "en": "UTF-8 byte limit: ",
+  "ru": "Лимит байт UTF-8: ",
+  "text": "UTF-8 바이트 한도: "
+ },
+ "7a7a7a09": {
+  "en": "Waiting for GPS fix",
+  "ru": "Ожидание GPS-позиции",
+  "text": "GPS 위치 대기 중"
+ },
+ "916ad0e6": {
+  "en": "This node has not shared GPS",
+  "ru": "Узел пока не передал GPS",
+  "text": "이 노드는 GPS를 공유하지 않음"
+ },
+ "26314428": {
+  "en": "This board is now the beacon",
+  "ru": "Эта плата — маяк",
+  "text": "이제 이 보드가 비콘"
+ },
+ "c3f96c6f": {
+  "en": "This board is now the sensor",
+  "ru": "Эта плата — приёмник",
+  "text": "이제 이 보드가 수신기"
+ },
+ "a4a4ec2c": {
+  "en": "Peak reset",
+  "ru": "Пик сброшен",
+  "text": "최고치 초기화"
+ },
+ "8b1ba9b1": {
+  "en": "Map unavailable",
+  "ru": "Карта недоступна",
+  "text": "지도 사용 불가"
+ },
+ "9777035b": {
+  "en": "OK again: turn off",
+  "ru": "Ещё раз OK: выключить",
+  "text": "다시 OK: 끄기"
+ },
+ "a0b9db2e": {
+  "en": "Nothing to save",
+  "ru": "Изменений нет",
+  "text": "저장할 내용 없음"
+ },
+ "fd2cfcf6": {
+  "en": "No previous settings",
+  "ru": "Прежних настроек нет",
+  "text": "이전 설정 없음"
+ },
+ "20434332": {
+  "en": "Radio settings changed",
+  "ru": "Настройки радио изменены",
+  "text": "무선 설정 변경됨"
+ },
+ "0a9fb2e4": {
+  "en": "Internet over Wi-Fi is off in this mode",
+  "ru": "Интернет по Wi-Fi выключен в этом режиме",
+  "text": "이 모드에서는 Wi-Fi 인터넷 꺼짐"
+ },
+ "b477e636": {
+  "en": "Public key: ",
+  "ru": "Открытый ключ: ",
+  "text": "공개 키: "
+ },
+ "1992c148": {
+  "en": "Position shared",
+  "ru": "Позиция передана",
+  "text": "위치 공유됨"
+ },
+ "3d7566e2": {
+  "en": "Calibration saved",
+  "ru": "Калибровка сохранена",
+  "text": "보정 저장됨"
+ },
+ "338a95a4": {
+  "en": "Rotate wider, at least 20 seconds",
+  "ru": "Вращайте шире, не менее 20 секунд",
+  "text": "더 크게, 20초 이상 돌리세요"
+ },
+ "f96aca09": {
+  "en": "Rotate in all directions",
+  "ru": "Вращайте устройство во все стороны",
+  "text": "장치를 모든 방향으로 돌리세요"
+ },
+ "c3938153": {
+  "en": "No signal selected",
+  "ru": "Сигнал не выбран",
+  "text": "선택된 신호 없음"
+ },
+ "51fd901e": {
+  "en": "Calibrating: keep the area still for 10 s",
+  "ru": "Калибровка: 10 с без движения в зоне",
+  "text": "보정 중: 10초간 움직임 없이 유지"
+ },
+ "9b3514a0": {
+  "en": "Needs a heard beacon",
+  "ru": "Нужен услышанный маяк",
+  "text": "수신된 비콘 필요"
+ },
+ "fa65940f": {
+  "en": "Ping on",
+  "ru": "Звук пеленга включён",
+  "text": "추적음 켜짐"
+ },
+ "21bdb533": {
+  "en": "Device sound is off in settings",
+  "ru": "Звук устройства выключен в настройках",
+  "text": "장치 소리가 설정에서 꺼져 있음"
+ },
+ "d3c484a4": {
+  "en": "Ping off",
+  "ru": "Звук пеленга выключен",
+  "text": "추적음 꺼짐"
+ },
+ "ff8d187c": {
+  "en": "OK again: erase old data",
+  "ru": "Ещё раз OK: стереть",
+  "text": "OK 한 번 더: 이전 데이터 삭제"
+ },
+ "78ae1f77": {
+  "en": "Storage created, restart",
+  "ru": "Создано, перезапуск",
+  "text": "저장소 생성됨, 재시작"
+ },
+ "0eb32dbe": {
+  "en": "Encryption test passed",
+  "ru": "Проверка шифрования пройдена",
+  "text": "암호화 테스트 통과"
+ },
+ "4d624476": {
+  "en": "Encryption test failed",
+  "ru": "Ошибка шифрования",
+  "text": "암호화 테스트 실패"
  },
  "47cf8db9": {
   "en": "New message from ",
@@ -1453,16 +1753,6 @@
   "ru": "Репитер",
   "text": "리피터"
  },
- "9e61ffe9": {
-  "en": " MHz · SF",
-  "ru": " МГц · SF",
-  "text": " MHz · SF"
- },
- "704528a8": {
-  "en": "Radio error ",
-  "ru": "Ошибка радио ",
-  "text": "무선 오류 "
- },
  "6a4fb7b4": {
   "en": "Internet",
   "ru": "Интернет",
@@ -1574,6 +1864,16 @@
    "other": "{n}개 지점"
   }
  },
+ "480bf3f5": {
+  "en": "Checkers",
+  "ru": "Шашки",
+  "text": "체커"
+ },
+ "86e57321": {
+  "en": "Sea battle",
+  "ru": "Морской бой",
+  "text": "해전"
+ },
  "7226324f": {
   "en": "Solitaire",
   "ru": "Косынка",
@@ -1613,6 +1913,16 @@
   "ru": "Радио, экран",
   "text": "무선, 화면"
  },
+ "9e61ffe9": {
+  "en": " MHz · SF",
+  "ru": " МГц · SF",
+  "text": " MHz · SF"
+ },
+ "704528a8": {
+  "en": "Radio error ",
+  "ru": "Ошибка радио ",
+  "text": "무선 오류 "
+ },
  "b784e416": {
   "en": "Open",
   "ru": "Открыть",
@@ -1622,6 +1932,45 @@
   "en": "Lock",
   "ru": "Блок",
   "text": "잠금"
+ },
+ "8244dadc": {
+  "en": " waiting",
+  "ru": " ждут",
+  "text": " 대기 중"
+ },
+ "2ff2b907": {
+  "en": {
+   "one": "app",
+   "other": "apps"
+  },
+  "ru": {
+   "one": "приложение",
+   "few": "приложения",
+   "many": "приложений"
+  },
+  "forms": {
+   "other": "앱 {n}개"
+  }
+ },
+ "86f6e8f7": {
+  "en": "Folders and order: web page or app",
+  "ru": "Папки и порядок: веб-страница или приложение",
+  "text": "폴더와 순서: 웹 페이지 또는 앱"
+ },
+ "8cbf76ce": {
+  "en": "No apps in this folder",
+  "ru": "В папке нет приложений",
+  "text": "이 폴더에 앱 없음"
+ },
+ "d3ced5d8": {
+  "en": "Menu",
+  "ru": "Меню",
+  "text": "메뉴"
+ },
+ "7c285a3c": {
+  "en": "Select",
+  "ru": "Выбор",
+  "text": "선택"
  },
  "6bb58bc8": {
   "en": "Hashtag, name and key, new, heard on air",
@@ -1657,16 +2006,6 @@
   "en": "Announce",
   "ru": "Объявить",
   "text": "알리기"
- },
- "d3ced5d8": {
-  "en": "Menu",
-  "ru": "Меню",
-  "text": "메뉴"
- },
- "7c285a3c": {
-  "en": "Select",
-  "ru": "Выбор",
-  "text": "선택"
  },
  "9172b7d6": {
   "en": "Private channel · senders unverified · no ACK",
@@ -1887,6 +2226,36 @@
   "ru": "На карте",
   "text": "지도에"
  },
+ "8c87b0a8": {
+  "en": "Play with ",
+  "ru": "Играть с ",
+  "text": "게임 상대: "
+ },
+ "54326f87": {
+  "en": "Rated or friendly",
+  "ru": "На рейтинг или товарищеская",
+  "text": "레이팅전 또는 친선전"
+ },
+ "fc82f8da": {
+  "en": "Russian draughts",
+  "ru": "Русские шашки",
+  "text": "러시아 체커"
+ },
+ "e6106db4": {
+  "en": "Ten ships each",
+  "ru": "По десять кораблей",
+  "text": "각자 함선 10척"
+ },
+ "6cfcb203": {
+  "en": "Choose",
+  "ru": "Выбрать",
+  "text": "선택"
+ },
+ "19ca4410": {
+  "en": "Close",
+  "ru": "Закрыть",
+  "text": "닫기"
+ },
  "cc4a6a69": {
   "en": "Node was removed",
   "ru": "Узел удалён",
@@ -1966,6 +2335,11 @@
   "en": "Trace",
   "ru": "Трасса",
   "text": "추적"
+ },
+ "392c83fa": {
+  "en": "Play",
+  "ru": "Играть",
+  "text": "게임"
  },
  "a3e2d1e0": {
   "en": "Action",
@@ -3738,166 +4112,6 @@
   "ru": "Имя: 1-24 байта UTF-8",
   "text": "이름: 1-24 UTF-8 바이트"
  },
- "0b2e473c": {
-  "en": "Not in this mode: Settings > Device mode",
-  "ru": "Недоступно в этом режиме: Настройки > Режим работы",
-  "text": "이 모드에서 불가: 설정 > 장치 모드"
- },
- "cea9ae4c": {
-  "en": "Node announced",
-  "ru": "Узел объявлен",
-  "text": "노드 알림 전송"
- },
- "5b43376d": {
-  "en": "Announcement failed",
-  "ru": "Не удалось объявить узел",
-  "text": "알림 전송 실패"
- },
- "aa9ad8ae": {
-  "en": "Message queued",
-  "ru": "Сообщение в очереди",
-  "text": "메시지 대기 중"
- },
- "5035dc01": {
-  "en": "Cannot send: empty, full queue or radio",
-  "ru": "Не отправлено: текст, очередь или радио",
-  "text": "전송 불가: 빈 글, 대기열 가득 또는 무선"
- },
- "d7961dd2": {
-  "en": "UTF-8 byte limit: ",
-  "ru": "Лимит байт UTF-8: ",
-  "text": "UTF-8 바이트 한도: "
- },
- "7a7a7a09": {
-  "en": "Waiting for GPS fix",
-  "ru": "Ожидание GPS-позиции",
-  "text": "GPS 위치 대기 중"
- },
- "916ad0e6": {
-  "en": "This node has not shared GPS",
-  "ru": "Узел пока не передал GPS",
-  "text": "이 노드는 GPS를 공유하지 않음"
- },
- "26314428": {
-  "en": "This board is now the beacon",
-  "ru": "Эта плата — маяк",
-  "text": "이제 이 보드가 비콘"
- },
- "c3f96c6f": {
-  "en": "This board is now the sensor",
-  "ru": "Эта плата — приёмник",
-  "text": "이제 이 보드가 수신기"
- },
- "a4a4ec2c": {
-  "en": "Peak reset",
-  "ru": "Пик сброшен",
-  "text": "최고치 초기화"
- },
- "8b1ba9b1": {
-  "en": "Map unavailable",
-  "ru": "Карта недоступна",
-  "text": "지도 사용 불가"
- },
- "9777035b": {
-  "en": "OK again: turn off",
-  "ru": "Ещё раз OK: выключить",
-  "text": "다시 OK: 끄기"
- },
- "a0b9db2e": {
-  "en": "Nothing to save",
-  "ru": "Изменений нет",
-  "text": "저장할 내용 없음"
- },
- "fd2cfcf6": {
-  "en": "No previous settings",
-  "ru": "Прежних настроек нет",
-  "text": "이전 설정 없음"
- },
- "20434332": {
-  "en": "Radio settings changed",
-  "ru": "Настройки радио изменены",
-  "text": "무선 설정 변경됨"
- },
- "0a9fb2e4": {
-  "en": "Internet over Wi-Fi is off in this mode",
-  "ru": "Интернет по Wi-Fi выключен в этом режиме",
-  "text": "이 모드에서는 Wi-Fi 인터넷 꺼짐"
- },
- "b477e636": {
-  "en": "Public key: ",
-  "ru": "Открытый ключ: ",
-  "text": "공개 키: "
- },
- "1992c148": {
-  "en": "Position shared",
-  "ru": "Позиция передана",
-  "text": "위치 공유됨"
- },
- "3d7566e2": {
-  "en": "Calibration saved",
-  "ru": "Калибровка сохранена",
-  "text": "보정 저장됨"
- },
- "338a95a4": {
-  "en": "Rotate wider, at least 20 seconds",
-  "ru": "Вращайте шире, не менее 20 секунд",
-  "text": "더 크게, 20초 이상 돌리세요"
- },
- "f96aca09": {
-  "en": "Rotate in all directions",
-  "ru": "Вращайте устройство во все стороны",
-  "text": "장치를 모든 방향으로 돌리세요"
- },
- "c3938153": {
-  "en": "No signal selected",
-  "ru": "Сигнал не выбран",
-  "text": "선택된 신호 없음"
- },
- "51fd901e": {
-  "en": "Calibrating: keep the area still for 10 s",
-  "ru": "Калибровка: 10 с без движения в зоне",
-  "text": "보정 중: 10초간 움직임 없이 유지"
- },
- "9b3514a0": {
-  "en": "Needs a heard beacon",
-  "ru": "Нужен услышанный маяк",
-  "text": "수신된 비콘 필요"
- },
- "fa65940f": {
-  "en": "Ping on",
-  "ru": "Звук пеленга включён",
-  "text": "추적음 켜짐"
- },
- "21bdb533": {
-  "en": "Device sound is off in settings",
-  "ru": "Звук устройства выключен в настройках",
-  "text": "장치 소리가 설정에서 꺼져 있음"
- },
- "d3c484a4": {
-  "en": "Ping off",
-  "ru": "Звук пеленга выключен",
-  "text": "추적음 꺼짐"
- },
- "ff8d187c": {
-  "en": "OK again: erase old data",
-  "ru": "Ещё раз OK: стереть",
-  "text": "OK 한 번 더: 이전 데이터 삭제"
- },
- "78ae1f77": {
-  "en": "Storage created, restart",
-  "ru": "Создано, перезапуск",
-  "text": "저장소 생성됨, 재시작"
- },
- "0eb32dbe": {
-  "en": "Encryption test passed",
-  "ru": "Проверка шифрования пройдена",
-  "text": "암호화 테스트 통과"
- },
- "4d624476": {
-  "en": "Encryption test failed",
-  "ru": "Ошибка шифрования",
-  "text": "암호화 테스트 실패"
- },
  "13c4173d": {
   "en": "None",
   "ru": "Без региона",
@@ -5050,26 +5264,6 @@
   "ru": "завершена",
   "text": "종료"
  },
- "6e6fa95b": {
-  "en": "sending",
-  "ru": "отправка",
-  "text": "전송 중"
- },
- "0f0e7f9f": {
-  "en": "no ACK yet",
-  "ru": "ждём ACK",
-  "text": "ACK 대기"
- },
- "5b4bc08f": {
-  "en": "not delivered",
-  "ru": "не доставлено",
-  "text": "전달 안 됨"
- },
- "5165f173": {
-  "en": "will resend",
-  "ru": "повторю",
-  "text": "재전송 예정"
- },
  "9866b3af": {
   "en": "Accept challenge",
   "ru": "Принять вызов",
@@ -5519,11 +5713,6 @@
   "ru": "Добавить",
   "text": "추가"
  },
- "19ca4410": {
-  "en": "Close",
-  "ru": "Закрыть",
-  "text": "닫기"
- },
  "9461ecf5": {
   "en": "Send",
   "ru": "Отправить",
@@ -5903,6 +6092,568 @@
   "ru": "Выберите: Кости +1",
   "text": "선택: 주사위 +1"
  },
+ "a22c4db7": {
+  "en": "A game with them is on · ",
+  "ru": "Игра с ним уже идёт · ",
+  "text": "이미 게임 중 · "
+ },
+ "4f640623": {
+  "en": "Invite",
+  "ru": "Позвать",
+  "text": "초대"
+ },
+ "6c373ed8": {
+  "en": {
+   "one": "king",
+   "other": "kings"
+  },
+  "ru": {
+   "one": "дамка",
+   "few": "дамки",
+   "many": "дамок"
+  },
+  "forms": {
+   "other": "킹 {n}개"
+  }
+ },
+ "ffcafe22": {
+  "en": {
+   "one": "man",
+   "other": "men"
+  },
+  "ru": {
+   "one": "шашка",
+   "few": "шашки",
+   "many": "шашек"
+  },
+  "forms": {
+   "other": "말 {n}개"
+  }
+ },
+ "68efa11c": {
+  "en": "Last move",
+  "ru": "Последний ход",
+  "text": "마지막 수"
+ },
+ "e44516cf": {
+  "en": "OK accepts",
+  "ru": "OK - принять",
+  "text": "OK: 수락"
+ },
+ "ec36e656": {
+  "en": "Draw? D accepts",
+  "ru": "Ничья? D - да",
+  "text": "무승부? D: 수락"
+ },
+ "02d04336": {
+  "en": "You must capture",
+  "ru": "Бить обязательно",
+  "text": "반드시 잡아야 함"
+ },
+ "d2e8445e": {
+  "en": {
+   "one": "game",
+   "other": "games"
+  },
+  "ru": {
+   "one": "игра",
+   "few": "игры",
+   "many": "игр"
+  },
+  "forms": {
+   "other": "게임 {n}판"
+  }
+ },
+ "2b4391d1": {
+  "en": "Your fleet",
+  "ru": "Ваш флот",
+  "text": "내 함대"
+ },
+ "723d2c43": {
+  "en": "Sunk: ",
+  "ru": "Потоплено: ",
+  "text": "격침: "
+ },
+ "8a34ca1b": {
+  "en": "They: ",
+  "ru": "Соперник: ",
+  "text": "상대: "
+ },
+ "ac1b9e7b": {
+  "en": "S reshuffles your fleet",
+  "ru": "S - перемешать ваш флот",
+  "text": "S: 함대 재배치"
+ },
+ "8e752412": {
+  "en": "Answers do not match the fleet!",
+  "ru": "Ответы не сходятся с флотом!",
+  "text": "응답이 함대와 불일치!"
+ },
+ "9af0fc57": {
+  "en": "Waiting for their fleet",
+  "ru": "Ждём расстановку соперника",
+  "text": "상대 함대 대기 중"
+ },
+ "e795e315": {
+  "en": "New sea battle",
+  "ru": "Новый морской бой",
+  "text": "새 해전"
+ },
+ "98b3c926": {
+  "en": "New checkers game",
+  "ru": "Новая партия в шашки",
+  "text": "새 체커 게임"
+ },
+ "5bf2b5c4": {
+  "en": "Sea battle keys",
+  "ru": "Клавиши морского боя",
+  "text": "해전 키"
+ },
+ "20075015": {
+  "en": "Checkers keys",
+  "ru": "Клавиши шашек",
+  "text": "체커 키"
+ },
+ "25230e72": {
+  "en": "Aim at their field (also ^v)",
+  "ru": "Прицел по полю соперника (и ^v)",
+  "text": "상대 진영 조준 (^v도)"
+ },
+ "778a3a96": {
+  "en": "Fire; a hit shoots again",
+  "ru": "Выстрел; попал - стреляйте ещё",
+  "text": "사격; 명중하면 한 번 더"
+ },
+ "d8bc35b5": {
+  "en": "Take a man / put it",
+  "ru": "Взять шашку / поставить",
+  "text": "말 들기 / 놓기"
+ },
+ "a8d00f7d": {
+  "en": "To the games",
+  "ru": "К играм",
+  "text": "게임 목록"
+ },
+ "01641b94": {
+  "en": "Put back / to the games",
+  "ru": "Вернуть шашку / к играм",
+  "text": "되돌리기 / 게임 목록"
+ },
+ "a3cc8300": {
+  "en": "Reshuffle the fleet before the first shot",
+  "ru": "Перемешать флот до первого выстрела",
+  "text": "첫 사격 전 함대 재배치"
+ },
+ "9c14f810": {
+  "en": "Play again after the game",
+  "ru": "Сыграть ещё раз после игры",
+  "text": "게임 후 다시 하기"
+ },
+ "e961207e": {
+  "en": "Shots are sent as direct messages with ACK.",
+  "ru": "Выстрелы идут личными сообщениями с ACK.",
+  "text": "사격은 ACK가 있는 개인 메시지로 전송됩니다."
+ },
+ "ebdc7e4d": {
+  "en": "The game was removed",
+  "ru": "Игра удалена",
+  "text": "게임이 삭제됨"
+ },
+ "e9bdded1": {
+  "en": "Games",
+  "ru": "Игры",
+  "text": "게임"
+ },
+ "e815b877": {
+  "en": "Shuffle",
+  "ru": "Перемешать",
+  "text": "재배치"
+ },
+ "17c8f6f5": {
+  "en": "Again",
+  "ru": "Ещё раз",
+  "text": "다시"
+ },
+ "2b372be5": {
+  "en": "Fire",
+  "ru": "Огонь",
+  "text": "발사"
+ },
+ "23b71582": {
+  "en": "Aim",
+  "ru": "Прицел",
+  "text": "조준"
+ },
+ "5c50940f": {
+  "en": "Invitation sent: you play ",
+  "ru": "Приглашение отправлено: вы играете ",
+  "text": "초대 보냄: 당신은 "
+ },
+ "6c3d3c4b": {
+  "en": "Accepted: you play ",
+  "ru": "Принято: вы играете ",
+  "text": "수락함: 당신은 "
+ },
+ "eff7a987": {
+  "en": "Waiting for the reply",
+  "ru": "Ждём ответа на приглашение",
+  "text": "초대 응답 대기 중"
+ },
+ "004240d6": {
+  "en": "The game is over",
+  "ru": "Игра окончена",
+  "text": "게임 종료"
+ },
+ "26f3eff2": {
+  "en": "Men stand on the dark squares",
+  "ru": "Шашки стоят на тёмных полях",
+  "text": "말은 어두운 칸에 놓입니다"
+ },
+ "e3b9fa5d": {
+  "en": "Capture is compulsory",
+  "ru": "Бить обязательно",
+  "text": "잡기는 필수입니다"
+ },
+ "4ec43a0a": {
+  "en": "This man cannot move",
+  "ru": "Эта шашка не может ходить",
+  "text": "이 말은 움직일 수 없음"
+ },
+ "2a7a0aa3": {
+  "en": "Choose one of your men",
+  "ru": "Выберите свою шашку",
+  "text": "내 말을 고르세요"
+ },
+ "fc4e565c": {
+  "en": "Accepted: their shot first",
+  "ru": "Принято: первым стреляет соперник",
+  "text": "수락함: 상대가 먼저 사격"
+ },
+ "1d9fe078": {
+  "en": "Waiting for the answer to your shot",
+  "ru": "Ждём ответа на ваш выстрел",
+  "text": "사격 응답 대기 중"
+ },
+ "0c7cebdf": {
+  "en": "Wait for their shot",
+  "ru": "Дождитесь выстрела соперника",
+  "text": "상대의 사격을 기다리세요"
+ },
+ "a1b13732": {
+  "en": "Already known: aim elsewhere",
+  "ru": "Уже известно: цельтесь в другое место",
+  "text": "이미 확인됨: 다른 곳을 조준하세요"
+ },
+ "fb2cb481": {
+  "en": "Fire: ",
+  "ru": "Огонь: ",
+  "text": "발사: "
+ },
+ "83fec916": {
+  "en": "Shot refused",
+  "ru": "Выстрел не принят",
+  "text": "사격 거부됨"
+ },
+ "f47b3ad3": {
+  "en": "Only finished games can be removed",
+  "ru": "Удалить можно только оконченную игру",
+  "text": "끝난 게임만 삭제 가능"
+ },
+ "16c92847": {
+  "en": "DEL again removes the game",
+  "ru": "DEL ещё раз удалит игру",
+  "text": "DEL을 한 번 더 누르면 게임 삭제"
+ },
+ "b7ea8321": {
+  "en": "Game removed",
+  "ru": "Игра удалена",
+  "text": "게임 삭제됨"
+ },
+ "24b72155": {
+  "en": "Invitation sent",
+  "ru": "Приглашение отправлено",
+  "text": "초대 보냄"
+ },
+ "aeea187c": {
+  "en": "Invites you to play",
+  "ru": "Зовёт сыграть",
+  "text": "게임 초대"
+ },
+ "77002057": {
+  "en": "Invites you: you play ",
+  "ru": "Зовёт: вы играете ",
+  "text": "초대: 당신은 "
+ },
+ "8f1c0ad5": {
+  "en": "Fleet reshuffled",
+  "ru": "Флот перемешан",
+  "text": "함대 재배치됨"
+ },
+ "61f87f87": {
+  "en": "Too late: they have shot at it",
+  "ru": "Поздно: по флоту уже стреляли",
+  "text": "늦음: 상대가 이미 사격함"
+ },
+ "8aeec316": {
+  "en": "No game in progress",
+  "ru": "Игра не идёт",
+  "text": "진행 중인 게임 없음"
+ },
+ "6840292a": {
+  "en": "X again resigns the game",
+  "ru": "X ещё раз - сдаться",
+  "text": "X를 한 번 더 누르면 기권"
+ },
+ "6ece70ea": {
+  "en": "Finish this game first",
+  "ru": "Сначала завершите игру",
+  "text": "먼저 이 게임을 끝내세요"
+ },
+ "63db1444": {
+  "en": "Resign with X",
+  "ru": "Сдаться - клавиша X",
+  "text": "기권은 X 키"
+ },
+ "f6f12c56": {
+  "en": "Waiting for the answer",
+  "ru": "Ждём ответа",
+  "text": "응답 대기 중"
+ },
+ "67559138": {
+  "en": "Your shot",
+  "ru": "Ваш выстрел",
+  "text": "내 사격"
+ },
+ "1186be29": {
+  "en": "Their shot",
+  "ru": "Стреляет соперник",
+  "text": "상대 사격"
+ },
+ "379c2cde": {
+  "en": "Game cancelled",
+  "ru": "Игра отменена",
+  "text": "게임 취소됨"
+ },
+ "fb10fcb6": {
+  "en": ": 15 king moves each",
+  "ru": ": 15 ходов дамками",
+  "text": ": 킹으로 15수씩"
+ },
+ "12cf24be": {
+  "en": ": their fleet sunk",
+  "ru": ": флот соперника потоплен",
+  "text": ": 상대 함대 전멸"
+ },
+ "b8237894": {
+  "en": ": your fleet sunk",
+  "ru": ": ваш флот потоплен",
+  "text": ": 내 함대 전멸"
+ },
+ "ab60a3b7": {
+  "en": ": they cannot move",
+  "ru": ": у соперника нет ходов",
+  "text": ": 상대가 둘 수 없음"
+ },
+ "eac19a4a": {
+  "en": ": you cannot move",
+  "ru": ": у вас нет ходов",
+  "text": ": 내가 둘 수 없음"
+ },
+ "97a3d6c0": {
+  "en": "miss",
+  "ru": "мимо",
+  "text": "빗나감"
+ },
+ "0c4ee115": {
+  "en": "hit",
+  "ru": "ранен",
+  "text": "명중"
+ },
+ "369547b9": {
+  "en": "sunk",
+  "ru": "потоплен",
+  "text": "격침"
+ },
+ "c43c60c7": {
+  "en": "New game",
+  "ru": "Новая игра",
+  "text": "새 게임"
+ },
+ "f938729c": {
+  "en": "Six games in progress: finish one",
+  "ru": "Идут шесть игр: завершите одну",
+  "text": "6판 진행 중: 한 판을 끝내세요"
+ },
+ "a6bc62ad": {
+  "en": "Invite a chat contact",
+  "ru": "Позвать чат-контакт",
+  "text": "채팅 연락처 초대"
+ },
+ "21fa374d": {
+  "en": "Shots travel as direct MeshCore messages with delivery confirmation. Ten ships each, placed at random; a hit shoots again. The other player needs MeshMesh with sea battle.",
+  "ru": "Выстрелы идут личными сообщениями MeshCore с подтверждением доставки. У каждого десять кораблей, расставленных случайно; попал - стреляй ещё. Сопернику нужен MeshMesh с морским боем.",
+  "text": "사격은 전달 확인이 있는 MeshCore 개인 메시지로 전송됩니다. 각자 함선 10척을 무작위로 배치하고, 명중하면 한 번 더 쏩니다. 상대에게도 해전이 있는 MeshMesh가 필요합니다."
+ },
+ "5dfd2cfc": {
+  "en": "Moves travel as direct MeshCore messages with delivery confirmation. Russian draughts: capturing is compulsory, kings fly. The other player needs MeshMesh with checkers.",
+  "ru": "Ходы идут личными сообщениями MeshCore с подтверждением доставки. Русские шашки: бить обязательно, дамка ходит далеко. Сопернику нужен MeshMesh с шашками.",
+  "text": "수는 전달 확인이 있는 MeshCore 개인 메시지로 전송됩니다. 러시아 체커: 잡기는 필수, 킹은 멀리 이동합니다. 상대에게도 체커가 있는 MeshMesh가 필요합니다."
+ },
+ "aa01c756": {
+  "en": "Your fleet is placed at random; S reshuffles it before the first shot",
+  "ru": "Флот расставится случайно; S перемешает его до первого выстрела",
+  "text": "함대는 무작위 배치; 첫 사격 전 S로 재배치"
+ },
+ "2dad4c3d": {
+  "en": "This piece cannot move",
+  "ru": "Этой шашке хода нет",
+  "text": "이 말은 움직일 수 없음"
+ },
+ "0c69ddb4": {
+  "en": "Pick your piece",
+  "ru": "Выберите свою шашку",
+  "text": "내 말을 고르세요"
+ },
+ "11f8f418": {
+  "en": "^v path, OK",
+  "ru": "^v путь, OK",
+  "text": "^v 경로, OK"
+ },
+ "77be2549": {
+  "en": "column ",
+  "ru": "столбец ",
+  "text": "열 "
+ },
+ "e6c513fc": {
+  "en": ": finish",
+  "ru": ": добить",
+  "text": ": 마무리"
+ },
+ "16996d68": {
+  "en": "hit",
+  "ru": "попал",
+  "text": "명중"
+ },
+ "0689f5b7": {
+  "en": "Already known",
+  "ru": "Уже известно",
+  "text": "이미 확인됨"
+ },
+ "1d3993e6": {
+  "en": "afloat ",
+  "ru": "целы ",
+  "text": "생존 "
+ },
+ "9f5e37bf": {
+  "en": "menu: shuffle",
+  "ru": "меню: перемешать",
+  "text": "메뉴: 재배치"
+ },
+ "3e164df9": {
+  "en": "OK: fire",
+  "ru": "OK: огонь",
+  "text": "OK: 발사"
+ },
+ "1613513b": {
+  "en": "invites you",
+  "ru": "зовёт играть",
+  "text": "초대 받음"
+ },
+ "9c182680": {
+  "en": "Nodes: OK - invite",
+  "ru": "Узлы: OK - вызвать",
+  "text": "노드: OK - 초대"
+ },
+ "2a151dd6": {
+  "en": "waiting for the answer",
+  "ru": "ждём ответа",
+  "text": "응답 대기 중"
+ },
+ "0ab238b8": {
+  "en": "your shot",
+  "ru": "ваш выстрел",
+  "text": "내 사격"
+ },
+ "5c126ec2": {
+  "en": "their shot",
+  "ru": "стреляет соперник",
+  "text": "상대 사격"
+ },
+ "9ffee113": {
+  "en": "declined",
+  "ru": "отклонена",
+  "text": "거절됨"
+ },
+ "97ecf17c": {
+  "en": "cancelled",
+  "ru": "отменена",
+  "text": "취소됨"
+ },
+ "a778e220": {
+  "en": "Shuffle fleet",
+  "ru": "Перемешать флот",
+  "text": "함대 재배치"
+ },
+ "3f807b89": {
+  "en": "Their field",
+  "ru": "Поле соперника",
+  "text": "상대 진영"
+ },
+ "20d9a26e": {
+  "en": "My fleet",
+  "ru": "Мой флот",
+  "text": "내 함대"
+ },
+ "418e791d": {
+  "en": "Delete game",
+  "ru": "Удалить игру",
+  "text": "게임 삭제"
+ },
+ "3e4b01da": {
+  "en": "Game list",
+  "ru": "Список игр",
+  "text": "게임 목록"
+ },
+ "fa33deb4": {
+  "en": "< Back to the game",
+  "ru": "< К игре",
+  "text": "< 게임으로"
+ },
+ "9b5dbd3a": {
+  "en": "Fleet placed again",
+  "ru": "Флот расставлен заново",
+  "text": "함대 다시 배치됨"
+ },
+ "dde5c0b7": {
+  "en": "Radio TX error",
+  "ru": "Ошибка передачи",
+  "text": "무선 송신 오류"
+ },
+ "93a5052f": {
+  "en": "Delivery not confirmed",
+  "ru": "Доставка не подтверждена",
+  "text": "배달 미확인"
+ },
+ "6e6fa95b": {
+  "en": "sending",
+  "ru": "отправка",
+  "text": "전송 중"
+ },
+ "0f0e7f9f": {
+  "en": "no ACK yet",
+  "ru": "ждём ACK",
+  "text": "ACK 대기"
+ },
+ "5b4bc08f": {
+  "en": "not delivered",
+  "ru": "не доставлено",
+  "text": "전달 안 됨"
+ },
+ "5165f173": {
+  "en": "will resend",
+  "ru": "повторю",
+  "text": "재전송 예정"
+ },
  "7854f1f9": {
   "en": "s",
   "ru": "с",
@@ -6052,6 +6803,21 @@
   "en": "BLE error",
   "ru": "Ошибка BLE",
   "text": "BLE 오류"
+ },
+ "8bd652c8": {
+  "en": "Messages",
+  "ru": "Сообщения",
+  "text": "메시지"
+ },
+ "6f228773": {
+  "en": "Notifications",
+  "ru": "Уведомления",
+  "text": "알림"
+ },
+ "a1841168": {
+  "en": "Modules",
+  "ru": "Модули",
+  "text": "모듈"
  },
  "6b18c42e": {
   "en": "Normal",
@@ -6277,11 +7043,6 @@
   "ru": "Слышимые ретрансляторы",
   "text": "들린 리피터"
  },
- "6f228773": {
-  "en": "Notifications",
-  "ru": "Уведомления",
-  "text": "알림"
- },
  "4fb02329": {
   "en": "Wake: ",
   "ru": "Экран: ",
@@ -6341,6 +7102,21 @@
   "en": "Next game",
   "ru": "Следующая партия",
   "text": "다음 대국"
+ },
+ "7c7101d9": {
+  "en": "Checkers: invite",
+  "ru": "Шашки: вызвать",
+  "text": "체커: 초대"
+ },
+ "3386f067": {
+  "en": "Sea battle: invite",
+  "ru": "Морской бой: вызвать",
+  "text": "해전: 초대"
+ },
+ "5e701de1": {
+  "en": "Next game",
+  "ru": "Следующая игра",
+  "text": "다음 게임"
  },
  "1bc1b700": {
   "en": "Sound: on",
@@ -6867,11 +7643,6 @@
   "ru": "  ретрансляция",
   "text": "  중계 켬"
  },
- "8bd652c8": {
-  "en": "Messages",
-  "ru": "Сообщения",
-  "text": "메시지"
- },
  "64af19bb": {
   "en": "queued",
   "ru": "очередь",
@@ -7092,11 +7863,6 @@
   "ru": "Гасить экран: ",
   "text": "화면 끄기: "
  },
- "a1841168": {
-  "en": "Modules",
-  "ru": "Модули",
-  "text": "모듈"
- },
  "15bd3514": {
   "en": "relayed ",
   "ru": "переслано ",
@@ -7116,6 +7882,11 @@
   "en": "  boot ",
   "ru": "  загр. ",
   "text": "  부팅 "
+ },
+ "dbc2db80": {
+  "en": "OK: open  < >",
+  "ru": "OK: открыть  < >",
+  "text": "OK: 열기  < >"
  },
  "bde1b411": {
   "en": "hold: open",
@@ -7142,16 +7913,6 @@
   "ru": "клик-выбор держ-слать",
   "text": "클릭 선택 길게 전송"
  },
- "dde5c0b7": {
-  "en": "Radio TX error",
-  "ru": "Ошибка передачи",
-  "text": "무선 송신 오류"
- },
- "93a5052f": {
-  "en": "Delivery not confirmed",
-  "ru": "Доставка не подтверждена",
-  "text": "배달 미확인"
- },
  "a6f65ca6": {
   "en": "No storage: menu",
   "ru": "Нет хранилища: меню",
@@ -7166,6 +7927,81 @@
   "en": "Before",
   "ru": "Ранее",
   "text": "이전"
+ },
+ "347bd268": {
+  "en": "No games yet",
+  "ru": "Игр пока нет",
+  "text": "아직 게임 없음"
+ },
+ "745e4b4c": {
+  "en": "Node menu: invite",
+  "ru": "Меню узла: вызвать",
+  "text": "노드 메뉴: 초대"
+ },
+ "1fc5bb4e": {
+  "en": "must take",
+  "ru": "надо бить",
+  "text": "잡기 필수"
+ },
+ "97ebcef9": {
+  "en": "sunk ",
+  "ru": "потоплено ",
+  "text": "격침 "
+ },
+ "7f462399": {
+  "en": "mine ",
+  "ru": "моих ",
+  "text": "아군 "
+ },
+ "14369dba": {
+  "en": "hold: fix",
+  "ru": "держ: выбрать",
+  "text": "길게: 선택"
+ },
+ "99b3464e": {
+  "en": "hold: fire",
+  "ru": "держ: огонь",
+  "text": "길게: 발사"
+ },
+ "7c6057ae": {
+  "en": "my fleet",
+  "ru": "мой флот",
+  "text": "내 함대"
+ },
+ "241d56d7": {
+  "en": "theirs",
+  "ru": "их",
+  "text": "상대"
+ },
+ "da3cf1b1": {
+  "en": "mine",
+  "ru": "мои",
+  "text": "아군"
+ },
+ "56155faf": {
+  "en": "sunk",
+  "ru": "потоплено",
+  "text": "격침"
+ },
+ "6c234a82": {
+  "en": "afloat",
+  "ru": "на плаву",
+  "text": "생존"
+ },
+ "12643c68": {
+  "en": "answers do not match!",
+  "ru": "ответы не сходятся!",
+  "text": "응답 불일치!"
+ },
+ "1ad835a9": {
+  "en": "they ",
+  "ru": "они ",
+  "text": "상대 "
+ },
+ "458cc672": {
+  "en": "click: back",
+  "ru": "клик: назад",
+  "text": "클릭: 뒤로"
  },
  "9b345e63": {
   "en": "No repeaters yet",
@@ -7650,11 +8486,6 @@
   "en": "A change restarts; data and settings stay",
   "ru": "Смена перезапускает; данные и настройки сохраняются",
   "text": "변경 시 재시작; 데이터와 설정은 유지"
- },
- "6cfcb203": {
-  "en": "Choose",
-  "ru": "Выбрать",
-  "text": "선택"
  },
  "ef107ddc": {
   "en": "Continue",

@@ -29,6 +29,7 @@ węzłami MeshCore.
 - **Radar sygnałów** — Wi-Fi, Bluetooth i LoRa wokół ciebie, z namierzaniem „ciepło / zimno”.
 - **Czujnik ruchu** — dwie płytki wykrywają osobę przechodzącą między nimi (Wi-Fi CSI).
 - **Szachy** z kontaktami przez sieć mesh oraz pasjans Klondike na M9.
+- **Warcaby i statki** z kontaktami przez sieć mesh (0.33.0): warcaby rosyjskie i statki na planszy 10×10, każdy ruch to potwierdzona wiadomość, bez rankingu; wszystkie gry są w folderze „Gry” menu, a foldery można tworzyć, zmieniać ich nazwy, ukrywać i wypełniać na stronie WWW lub w aplikacji. [docs/en/games.md](docs/en/games.md)
 - **Zwierzak sieci** — pikselowe stworzonko w stylu Tamagotchi na każdej płytce: żywi się ruchem radiowym, rośnie i może umrzeć z głodu lub samotności. [docs/en/pet.md](docs/en/pet.md)
 - **Kości** — rzucacz kośćmi DIC3R na każdej płytce: pule i formuły RPG (2d6+1, d20, d66, d%), siatka Warhammer z progiem sukcesu i karta postaci z bloków (cechy, paski, znaczniki, zdolności, które rzucają i zużywają) z szablonami D&D 5e i R.E.T., tworzona na stronie WWW lub w aplikacji i wysyłana do kontaktu przez sieć mesh; te same na ekranie, stronie WWW i w aplikacji. [docs/en/dice.md](docs/en/dice.md)
 - **Szachy bez MeshMesh na urządzeniu**: [strona szachów](https://ikrasnodymov.github.io/meshmesh/chess/) gra przez

@@ -3,6 +3,7 @@
 #endif
 #include "UiIcons.h"
 #include "Dice.h"
+#include "Modules.h"
 #include <Arduino.h>
 #include <math.h>
 #include <initializer_list>
@@ -42,7 +43,19 @@ void drawIcon(Adafruit_GFX& d,Icon id,int cx,int cy,int s,uint16_t c,uint16_t ho
   d.fillTriangle(ax,ay,bx,by,fx,fy,c);d.fillTriangle(bx,by,ex,ey,fx,fy,c);if(s>5)d.drawLine(fx,fy,bx-1,by+1,hole);break;}
  case IcTally:{int bw=max(1,s/5),top=cy-s*3/4,len=s*3/2;for(int k=0;k<4;k++)d.fillRect(cx-s*3/4+k*s/2-bw/2,top,bw+(s>6),len,c); // four strokes struck through
   thick(d,cx-s,cy+h,cx+s,cy-h,c);if(s>6)thick(d,cx-s,cy+h+1,cx+s,cy-h+1,c);break;}
+ // The game icons only with their games (Modules.h): 1 MB nRF52 images without them save the code.
+#if MM_CHECKERS
+ case IcCheckers:{int n=s>6?4:2,cell=max(2,(2*s)/n),x0=cx-cell*n/2,y0=cy-cell*n/2,r=max(2,cell*n/4); // a corner of the board and a man standing on it
+  for(int i=0;i<n;i++)for(int j=0;j<n;j++)if((i+j)&1)d.fillRect(x0+j*cell,y0+i*cell,cell,cell,c);d.drawRect(x0,y0,cell*n,cell*n,c);
+  int mx=cx+cell*n/4,my=cy-cell*n/4;d.fillCircle(mx,my,r+1,hole);d.fillCircle(mx,my,r,c);if(r>2)d.drawCircle(mx,my,r/2,hole);break;}
+#endif
+#if MM_SEA
+ case IcShip:{int deck=cy+q/2;d.fillTriangle(cx-s,deck,cx+s,deck,cx+s*5/8,cy+s*3/4,c);d.fillTriangle(cx-s,deck,cx-s*5/8,cy+s*3/4,cx+s*5/8,cy+s*3/4,c); // a hull, a cabin, a funnel
+  d.fillRect(cx-h,cy-q,s*3/4,q+q/2+1,c);d.fillRect(cx+q/2,cy-s*3/4,max(2,s/4),s*3/4,c);if(s>6)d.fillCircle(cx-q,cy,max(1,s/8),hole);break;}
+#endif
+ case IcFolder:d.fillRoundRect(cx-s,cy-s*5/8,s*3/4+1,s/2,max(1,s/6),c);d.fillRoundRect(cx-s,cy-s*3/8,2*s,s*9/8,max(1,s/5),c);d.drawFastHLine(cx-s+1,cy-s*3/8+max(1,s/6),2*s-2,hole);break;
  case IcKey:d.drawCircle(cx-h,cy,max(2,s*3/8),c);d.drawFastHLine(cx-h+s*3/8,cy,s+1,c);d.drawFastVLine(cx+h,cy,max(2,s/3),c);d.drawFastVLine(cx+s-1,cy,max(2,s/3),c);break;
+ default:break; // a game icon left out of this image
  }
 }
 namespace {

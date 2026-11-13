@@ -46,6 +46,7 @@ void Config::load() {
   if(!p.isKey("path_hash2")){if(pathHash==1){pathHash=2;p.putUChar("path_hash",pathHash);}p.putBool("path_hash2",true);}
   strlcpy(apps,p.getString("apps","").c_str(),sizeof apps);
   if(!p.isKey("apps2")){if(appsOldDefault(apps)){apps[0]=0;p.putString("apps","");}p.putBool("apps2",true);} // 0.24.0: the new default order
+  if(!p.isKey("apps3")){char was[sizeof apps];strlcpy(was,apps,sizeof was);appsAddGames(apps,sizeof apps);if(strcmp(was,apps))p.putString("apps",apps);p.putBool("apps3",true);} // 0.33.0: the games folder
   strlcpy(region,p.getString("region","").c_str(),sizeof region);
   if(!region[0])memset(regionKey,0,16);else if(p.getBytesLength("region_key")!=16||p.getBytes("region_key",regionKey,16)!=16)regions::keyOf(region,regionKey);
   // Language: "lang" since 0.3.7; older versions kept only "russian".

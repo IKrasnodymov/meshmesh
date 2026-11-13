@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: jaringan dalam uji — OK mempertahankannya, mulai ulang mengembalikan yang tersimpan",
  "shot.web-networks": "Memilih jaringan menurut kota",
  "shot.web-networks-test": "Uji pengaturan: pertahankan, kembalikan, periksa",
- "doc.networks": "Jaringan kota Anda"
+ "doc.networks": "Jaringan kota Anda",
+ "f.games.t": "Dam, perang laut, dan folder",
+ "f.games.d": "Selain catur, ada dua game lagi dengan kontak lewat radio: dam Rusia dan perang laut. Setiap langkah dan tembakan adalah pesan pribadi yang dikonfirmasi dan dikirim ulang sampai tiba; tanpa rating, sekadar bermain. Di M9 dan T-Deck dengan tombol dan sentuhan, dengan satu tombol atau joystick di papan OLED, di halaman web, dan di aplikasi. Semua game kini ada di folder Game pada menu; di halaman web dan aplikasi Anda bisa membuat folder, mengganti nama, menyembunyikannya, dan memindahkan aplikasi di antara folder.",
+ "shot.m9-checkers": "Dam: biji dipilih, langkahnya ditandai",
+ "shot.m9-checkers-chain": "Raja memakan beberapa biji dalam satu langkah",
+ "shot.m9-sea-mid": "Perang laut: tembakan kena, kapal tenggelam, armada Anda",
+ "shot.m9-sea-lost": "Armada pemenang ditunjukkan dan dicocokkan dengan jawaban",
+ "shot.m9-folder": "Folder Game",
+ "shot.m9-home-folder": "Menu dengan folder Game",
+ "shot.heltec-checkers-move": "Dam dengan satu tombol: langkah ditawarkan",
+ "shot.heltec-sea-hunt": "Perang laut di OLED: habisi kapal yang kena",
+ "doc.games": "Dam, perang laut, folder"
 }

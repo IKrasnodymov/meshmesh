@@ -12,6 +12,7 @@
 #include "WifiDiagnostics.h"
 #include "Hardware.h"
 #include "ChessNet.h"
+#include "Duel.h"
 #include "ChessTour.h"
 #include "Pet.h"
 #include "Dice.h"
@@ -93,7 +94,7 @@ void powerOffTick(){
 #endif
   if(!offAt||int32_t(millis()-offAt)<0)return;
   if(meshRadio.busy()&&millis()-offAt<5000)return;
-  people::flush();wardrive::flush();meshRadio.flush();chessNet.flush();tour::net.flush();creature.flush();dicer.flush(); // counters wait 2 s before writing
+  people::flush();wardrive::flush();meshRadio.flush();chessNet.flush();duels.flush();tour::net.flush();creature.flush();dicer.flush(); // counters wait 2 s before writing
   Serial.println("OFF");Serial.flush();
   uiFarewell();uint32_t shown=millis();
   int pin=hardware.wakePin();

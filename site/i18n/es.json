@@ -355,5 +355,16 @@
  "shot.m9-radio-test": "M9: una red en prueba — OK la conserva, un reinicio devuelve la guardada",
  "shot.web-networks": "Elegir una red por ciudad",
  "shot.web-networks-test": "Prueba de ajustes: mantener, revertir, comprobar",
- "doc.networks": "Red de tu ciudad"
+ "doc.networks": "Red de tu ciudad",
+ "f.games.t": "Damas, batalla naval y carpetas",
+ "f.games.d": "Dos juegos más con tus contactos por radio, además del ajedrez: damas rusas y batalla naval. Cada jugada y cada disparo es un mensaje directo confirmado, que se reenvía hasta que llega; sin ELO, solo por jugar. En el M9 y el T-Deck con teclas y pantalla táctil, con un botón o un joystick en las placas OLED, en la página web y en la app. Todos los juegos están ahora en la carpeta Juegos del menú; en la página web y en la app puedes crear carpetas, renombrarlas, ocultarlas y mover apps entre ellas.",
+ "shot.m9-checkers": "Damas: una ficha elegida, con sus jugadas marcadas",
+ "shot.m9-checkers-chain": "Una dama captura varias fichas en una jugada",
+ "shot.m9-sea-mid": "Batalla naval: tocados, un barco hundido, tu flota",
+ "shot.m9-sea-lost": "La flota del ganador, mostrada y comprobada con las respuestas",
+ "shot.m9-folder": "La carpeta Juegos",
+ "shot.m9-home-folder": "El menú con la carpeta Juegos",
+ "shot.heltec-checkers-move": "Damas con un botón: la jugada propuesta",
+ "shot.heltec-sea-hunt": "Batalla naval en OLED: rematar el barco tocado",
+ "doc.games": "Damas, batalla naval, carpetas"
 }
