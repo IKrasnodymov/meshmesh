@@ -3,6 +3,7 @@
 #endif
 #include "I18n.h"
 #include "Config.h"
+#include "Emoji.h"
 #include <U8g2_for_Adafruit_GFX.h>
 #if defined(MM_NRF52)
 #if !defined(MM_LANG_EXTRA)
@@ -164,12 +165,16 @@ bool fontHasGlyph(const uint8_t* font,uint16_t cp){
 
 uint32_t utf8Next(const String& s,unsigned& i){return nextCodepoint(s,i);}
 uint8_t glyphCells(uint32_t cp){
+ if(cp>=0x203c){if(emoji::modifier(cp))return 0;if(emoji::flagLetter(cp))return 1;if(emoji::pictograph(cp)||emoji::find(cp)>=0)return 2;} // Emoji.h: two columns
  return (cp>=0x1100&&cp<=0x115f)||(cp>=0x2e80&&cp<=0xa4cf)||(cp>=0xac00&&cp<=0xd7a3)||(cp>=0xf900&&cp<=0xfaff)||(cp>=0xfe30&&cp<=0xfe4f)||(cp>=0xff00&&cp<=0xff60)||(cp>=0xffe0&&cp<=0xffe6)?2:1;
 }
 
 const uint8_t* const* fallbackFonts(const uint8_t* font){
  static const uint8_t* list[8];unsigned n=0;
  [[maybe_unused]] bool small=font==u8g2_font_5x8_t_cyrillic||font==u8g2_font_4x6_t_cyrillic;
+#if defined(MM_HIRES)
+ small=false; // the T114 draws small text with the 12-13 px fonts (hiGlyph): the 8 px CJK fonts stay out (11 KB)
+#endif
  if(font==u8g2_font_6x13_t_cyrillic){list[n++]=u8g2_font_6x13_tf;list[n++]=mmFontExt13;}
  else if(font==u8g2_font_6x13B_t_cyrillic){list[n++]=u8g2_font_6x13B_tf;list[n++]=mmFontExt13B;}
  else if(font==u8g2_font_5x8_t_cyrillic){list[n++]=u8g2_font_5x8_tf;list[n++]=mmFontExt8;}

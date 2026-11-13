@@ -1,5 +1,19 @@
 # MeshMesh verification
 
+> **0.32.0: emoji on the screens, T114 backlight** (13 November 2026). At a T114 user's request. Emoji: about 300
+> common emoji (faces, hands, hearts, weather, animals, food, things, travel, signs) as 12x12 pictures after Twemoji 15.1
+> (CC-BY 4.0), `tools/emoji.py` → `include/EmojiData.h` (~10 KB). In colour on the M9/T-Deck (12 px), T114 (16 px), T096
+> and Wireless Tracker (palette `ColEmoji0…`), as silhouettes on monochrome OLEDs and e-ink. Skin tones, FE0F and ZWJ are
+> not drawn (the base emoji shows), a flag shows its country letters, an emoji without a picture a frame. Before, the M9
+> drew a frame and the compact boards and the T114 skipped emoji. For the Chinese T114 to fit, the T114 leaves out the
+> 8 px CJK fonts (its small text uses the 12–13 px ones). T114 (and T096) backlight: after `analogWrite` the LEDA pin
+> stayed with the PWM module and `digitalWrite(HIGH)` did not switch it off, so the dark (and powered-off) screen glowed
+> black at any brightness below the maximum; now the pin leaves the PWM first, and power-off pulls the panel's lines low.
+> Checked: all 18 boards build, nRF52 packages with every language (Chinese T114 710872 bytes, 1.8 KB free; GAT562 zh
+> 688660), the `tools/ui_preview` scenarios for M9, T-Deck, Heltec, GAT562 and T114 in ru/en/zh/ar, the emoji on the
+> screenshots. **Not checked:** on hardware — neither the emoji nor the T114 backlight in the dark (no boards on USB); the
+> T096 and Wireless Tracker build only.
+
 > **0.31.0: double click — back** (13 November 2026). At a user's request: on the single-button boards (Heltec V4/V3,
 > Wireless Tracker, T114, T096, E213 and others, not the GAT562 with its joystick) a double click steps back, as in stock
 > MeshCore: it closes a popup, the menu, the radio editor, a game, an open app, otherwise goes to the previous screen. It

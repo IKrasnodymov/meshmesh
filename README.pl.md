@@ -17,7 +17,7 @@ węzłami MeshCore.
 
 ## Funkcje
 
-- **Czaty** — wiadomości prywatne i publiczne, potwierdzenia doręczenia ✓✓, ponawianie, trasa widoczna przy każdej wiadomości.
+- **Czaty** — wiadomości prywatne i publiczne, potwierdzenia doręczenia ✓✓, ponawianie, trasa widoczna przy każdej wiadomości; około 300 popularnych emoji rysowanych na ekranach, w kolorze na kolorowych (0.32.0).
 - **Kanały** — do 8 kanałów MeshCore: dołączanie przez #hashtag, link `meshcore://` lub kod QR, nazwę i klucz;
   tworzenie kanału prywatnego, zapraszanie kontaktów wiadomością prywatną, wyszukiwanie kanałów słyszanych w eterze. [docs/en/channels.md](docs/en/channels.md)
 - **Regiony** — zasięg floodów MeshCore: region domyślny i osobny dla kanału, wyszukiwanie regionów pobliskich przekaźników; przekaźniki ustawiane poleceniami `region`. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ trzeci repeater. Niezaimplementowane: głos, planowanie tras, aktualizacje OTA.
 
 ## Licencja
 
-[MIT](LICENSE). Dołączony MeshCore (`lib/MeshCore`) zachowuje własną licencję MIT. Dane map ©
+[MIT](LICENSE). Dołączony MeshCore (`lib/MeshCore`) zachowuje własną licencję MIT. Emoji na ekranach są rysowane na podstawie [Twemoji](https://github.com/jdecked/twemoji) (Twitter, Inc i inni autorzy, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Dane map ©
 współtwórcy [OpenStreetMap](https://www.openstreetmap.org/copyright). Pomysł radaru nawiązuje do
 trackera RSSI i radarowych HUD-ów autorstwa [Stevee87](https://github.com/Stevee87).
 

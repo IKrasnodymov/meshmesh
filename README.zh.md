@@ -16,7 +16,7 @@
 
 ## 功能
 
-- **聊天**——私聊和公开消息，✓✓ 送达回执，自动重发，每条消息显示路由。
+- **聊天**——私聊和公开消息，✓✓ 送达回执，自动重发，每条消息显示路由；约 300 个常用表情符号直接画在屏幕上，彩色屏幕显示彩色（0.32.0）。
 - **频道**——最多 8 个 MeshCore 频道：通过 #话题标签、`meshcore://` 链接或二维码、名称和密钥加入；
   创建私密频道，通过私信邀请联系人，发现空中收到的频道。[docs/en/channels.md](docs/en/channels.md)
 - **区域** — MeshCore 的 flood 范围：默认区域和每个频道的区域，查找附近中继器服务的区域；中继器用 `region` 命令设置。[docs/en/regions.md](docs/en/regions.md)
@@ -104,7 +104,7 @@ Android 应用：`cd android && ./gradlew testDebugUnitTest assembleRelease`（[
 
 ## 许可证
 
-[MIT](LICENSE)。内置的 MeshCore（`lib/MeshCore`）保留其自身的 MIT 许可证。地图数据 ©
+[MIT](LICENSE)。内置的 MeshCore（`lib/MeshCore`）保留其自身的 MIT 许可证。屏幕上的表情符号依据 [Twemoji](https://github.com/jdecked/twemoji)（Twitter, Inc 及其他贡献者，[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)）绘制。地图数据 ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献者。雷达的设计思路借鉴了
 [Stevee87](https://github.com/Stevee87) 的 RSSI 追踪器和雷达 HUD。
 

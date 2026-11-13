@@ -17,7 +17,7 @@ ESP32 と nRF52 の LoRa デバイス向けの、オフグリッドで使える�
 
 ## 機能
 
-- **チャット** — 個人メッセージと公開メッセージ、✓✓ の配信確認、再送、メッセージごとの経路表示。
+- **チャット** — 個人メッセージと公開メッセージ、✓✓ の配信確認、再送、メッセージごとの経路表示。よく使う約 300 の絵文字を画面に描画（カラー画面ではカラー、0.32.0）。
 - **チャンネル** — MeshCore チャンネルを最大 8 個。#ハッシュタグ、`meshcore://` リンクや QR コード、名前と鍵で参加できます。
   非公開チャンネルを作成し、個人メッセージで連絡先を招待し、電波で受信したチャンネルを見つけられます。[docs/en/channels.md](docs/en/channels.md)
 - **地域** — MeshCore の flood 範囲：既定の地域とチャンネルごとの地域、近くの中継器が扱う地域の検索。中継器は `region` コマンドで設定。[docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ Android アプリ: `cd android && ./gradlew testDebugUnitTest assembleRelease` (
 
 ## ライセンス
 
-[MIT](LICENSE)。同梱の MeshCore (`lib/MeshCore`) は独自の MIT ライセンスを維持しています。地図データ ©
+[MIT](LICENSE)。同梱の MeshCore (`lib/MeshCore`) は独自の MIT ライセンスを維持しています。画面の絵文字は [Twemoji](https://github.com/jdecked/twemoji)（Twitter, Inc および貢献者、[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)）をもとに描いています。地図データ ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors。レーダーのアイデアは
 [Stevee87](https://github.com/Stevee87) による RSSI トラッカーとレーダー HUD を参考にしています。
 

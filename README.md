@@ -17,7 +17,7 @@ MeshCore nodes.
 
 ## Features
 
-- **Chats** — direct and public messages, ✓✓ delivery receipts, retries, route shown per message.
+- **Chats** — direct and public messages, ✓✓ delivery receipts, retries, route shown per message; about 300 common emoji drawn on the screens, in colour on colour screens (0.32.0).
 - **Channels** — up to 8 MeshCore channels: join by #hashtag, `meshcore://` link or QR code, name and key;
   create a private one, invite contacts by direct message, find channels heard on air. [docs/en/channels.md](docs/en/channels.md)
 - **Regions** — MeshCore flood scope: a default region and one per channel, a search of the regions nearby repeaters serve; repeaters set up with the `region` commands. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ third repeater. Not implemented: voice, route planning, OTA updates.
 
 ## License
 
-[MIT](LICENSE). Bundled MeshCore (`lib/MeshCore`) keeps its own MIT license. Map data ©
+[MIT](LICENSE). Bundled MeshCore (`lib/MeshCore`) keeps its own MIT license. Screen emoji are drawn from [Twemoji](https://github.com/jdecked/twemoji) graphics by Twitter, Inc and other contributors, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Map data ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors. The radar idea follows
 the RSSI tracker and radar HUDs by [Stevee87](https://github.com/Stevee87).
 

@@ -27,6 +27,7 @@
 #include <time.h>
 #include <math.h>
 #include <initializer_list>
+#include "Emoji.h"
 #include <algorithm>
 // Defined in U8g2_for_Adafruit_GFX.cpp; used to fall back to Latin-1 and placeholders for missing glyphs.
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
@@ -69,8 +70,18 @@ const uint8_t* activeFont=nullptr;
 void useFont(const uint8_t* f){if(f!=activeFont){hardware.font.setFont(f);hardware.font.setFontMode(1);activeFont=f;}} // SetFont resets transparency
 uint32_t nextCp(const String& s,unsigned& i){uint8_t c=s[i];unsigned n=c<0x80?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;uint32_t cp=n==1?c:n==2?c&0x1f:n==3?c&0x0f:c&0x07;for(unsigned k=1;k<n&&i+k<s.length();k++)cp=cp<<6|(uint8_t(s[i+k])&0x3f);i+=n;return cp;}
 const char* substitute(uint32_t cp){switch(cp){case 0x2026:return "...";case 0x2013:case 0x2014:case 0x2212:return "-";case 0x2116:return "No";case 0x2018:case 0x2019:return "'";case 0x201c:case 0x201d:case 0x201e:return "\"";case 0x2192:return "->";case 0x2190:return "<-";case 0x2022:return "\xc2\xb7";}return nullptr;}
+// Emoji (Emoji.h): the picture in its colours, 12 px (8 px in the small face) from 1 px under the baseline,
+// 2 px apart (the pictures fill their squares).
 int glyph(int x,int y,uint32_t cp,const Face& f,uint16_t color,bool paint){
  auto& u=hardware.font;const uint8_t* use=nullptr;
+ if(char l=emoji::flagLetter(cp))cp=uint8_t(l);
+ if(cp>=0x203c){
+  if(emoji::modifier(cp))return 0;
+  int e=emoji::find(cp);
+  if(e>=0){int s=f.main==small.main?8:emoji::Size;uint8_t px[emoji::Size*emoji::Size];
+   if(paint&&emoji::decode(e,px))emoji::draw(px,x,y-s+1+s/12,s,[](int a,int b,uint8_t v){hardware.canvas->drawPixel(a,b,rgb(emoji::palette[v-1]));});
+   return s+2;}
+ }
  if(cp<=0xffff){useFont(f.main);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.main;else if(f.latin){useFont(f.latin);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.latin;}}
  if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f.main);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;} // other languages' letters
  if(!use){

@@ -149,19 +149,19 @@ int main(int argc,char** argv){
  time_t now=time(nullptr);
  auto add=[&](uint64_t src,uint64_t dst,const char* name,const char* text,bool out,ChatMessage::Status st,int ago){ChatMessage m;m.source=src;m.destination=dst;strcpy(m.name,name);strcpy(m.text,text);m.outgoing=out;m.status=st;m.timestamp=now-ago;m.id=++nextId;meshRadio.history[meshRadio.historyCount++]=m;};
  uint64_t B=meshmesh::Broadcast;
- add(peerId(5),B,"Марат","Всем привет! Кто на связи в районе Кремля?",false,ChatMessage::Received,5400);
+ add(peerId(5),B,"Марат","Всем привет! 👋 Кто на связи в районе Кремля?",false,ChatMessage::Received,5400);
  add(meshRadio.nodeId,B,"M9","Я на связи, M9 у Кремлёвской",true,ChatMessage::Sent,5300);
  add(peerId(0),meshRadio.nodeId,"Heltec V4","Радиотест V4 → M9: 1790746076",false,ChatMessage::Received,3600);
  add(meshRadio.nodeId,peerId(0),"M9","Принято, слышу хорошо. SNR около 9 дБ",true,ChatMessage::Delivered,3500);
  add(meshRadio.nodeId,peerId(0),"M9","Проверка длинного сообщения: переносы строк должны аккуратно помещаться внутри пузыря",true,ChatMessage::Failed,1200);
- add(peerId(0),meshRadio.nodeId,"Heltec V4","OK",false,ChatMessage::Received,300);
- add(peerId(3),meshRadio.nodeId,"Игорь T-Deck","Буду через 10 минут",false,ChatMessage::Received,120);
- add(meshRadio.nodeId,peerId(3),"M9","Жду у входа",true,ChatMessage::Sent,60);
+ add(peerId(0),meshRadio.nodeId,"Heltec V4","OK 👍🏽",false,ChatMessage::Received,300);
+ add(peerId(3),meshRadio.nodeId,"Игорь T-Deck","Буду через 10 минут 🚗💨",false,ChatMessage::Received,120);
+ add(meshRadio.nodeId,peerId(3),"M9","Жду у входа 😊☕️",true,ChatMessage::Sent,60);
  // Channels: Public, a hashtag and a private one with messages; two more heard on air.
  meshRadio.channelCount=1;strcpy(meshRadio.channelList[0].name,"Public");memcpy(meshRadio.channelList[0].secret,channels::publicSecret,16);meshRadio.channelList[0].id=meshmesh::Broadcast;
  {uint64_t tag,priv;meshRadio.joinHashtag("kazan",&tag);uint8_t k[16];for(int i=0;i<16;i++)k[i]=uint8_t(200-i*9);meshRadio.addChannel("Друзья",k,&priv);
   add(peerId(3),tag,"Игорь T-Deck","Кто едет на Кабан в субботу?",false,ChatMessage::Received,2400);
-  add(peerId(5),priv,"Марат","Встречаемся в 19:00",false,ChatMessage::Received,900);
+  add(peerId(5),priv,"Марат","Встречаемся в 19:00 🔥🎉 🇷🇺🦖",false,ChatMessage::Received,900);
   meshRadio.heard[0].hash=0x5A;meshRadio.heard[0].packets=3;meshRadio.heard[0].at=fakeMillis-120000;strcpy(meshRadio.heard[0].name,"#ru");
   meshRadio.heard[1].hash=0x07;meshRadio.heard[1].packets=1;meshRadio.heard[1].at=fakeMillis-600000;meshRadio.heardCount=2;meshRadio.heardSamples=4;
   channels::Channel invite{};strcpy(invite.name,"Походы");for(int i=0;i<16;i++)invite.secret[i]=uint8_t(i*13+5);

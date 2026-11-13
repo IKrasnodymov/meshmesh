@@ -18,12 +18,15 @@
 #include "QuickSend.h"
 #include "People.h"
 #include "Wardrive.h"
+#include "Emoji.h"
 #include <algorithm>
 #include <math.h>
 #include <time.h>
 #if defined(MM_HIRES)
-#include "Palette.h"
 #include "UiIcons.h"
+#endif
+#if defined(MM_HIRES) || defined(MM_PANEL_ST7735)
+#include "Palette.h" // colour screens: the palette, emoji colours too
 #endif
 #if defined(MM_NRF52)
 #include <esp_system.h> // ESP.getFreeHeap(); Arduino.h provides it on the ESP32
@@ -62,11 +65,29 @@ String clipped(const String& value,unsigned count){unsigned i=0,n=0,cut=0;while(
 void notice(const String& value){action=value;actionAt=millis();dirty=true;}
 // SetFont resets transparency; the monochrome canvas treats any non-zero colour as lit.
 void useFont(const uint8_t* f){if(f!=activeFont){hardware.font.setFont(f);hardware.font.setFontMode(1);activeFont=f;}}
+// Emoji (Emoji.h), two columns (and the 1 px gap) wide: 12 px (8 px in the small fonts) from 1 px under the baseline. The colour
+// TFTs (Tracker, T096) draw the picture's colours, monochrome panels its lit group in `color`. An emoji
+// without a picture here gets a frame. -1: not an emoji.
+int emojiGlyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
+ if(emoji::modifier(cp))return 0;
+ int e=emoji::find(cp);if(e<0)return -1;
+ int s=f==small||f==u8g2_font_4x6_t_cyrillic?8:emoji::Size;uint8_t px[emoji::Size*emoji::Size];
+ if(!paint||!emoji::decode(e,px))return s+1;
+#if defined(MM_PANEL_ST7735)
+ (void)color;emoji::draw(px,x,y-s+1+s/12,s,[](int a,int b,uint8_t v){hardware.canvas->drawPixel(a,b,ColEmoji0+v-1);});
+#else
+ emoji::mono(px);emoji::draw(px,x,y-s+1+s/12,s,[color](int a,int b,uint8_t){hardware.canvas->drawPixel(a,b,color);});
+#endif
+ return s+1;
+}
 // Glyph by glyph: what the font lacks comes from its fallback fonts (I18n.h); Arabic in visual order.
 int glyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
+ if(char l=emoji::flagLetter(cp))cp=uint8_t(l);
+ if(cp>=0x203c){int w=emojiGlyph(x,y,cp,f,color,paint);if(w>=0)return w;}
  const uint8_t* use=cp<=0xffff&&fontHasGlyph(f,cp)?f:nullptr;
  if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;}
- if(!use)return 0;useFont(use);if(!paint)return u8g2_GetGlyphWidth(&hardware.font.u8g2,cp);hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);
+ if(!use){if(!emoji::pictograph(cp))return 0;if(paint)hardware.canvas->drawRect(x+1,y-9,10,10,color);return 12;}
+ useFont(use);if(!paint)return u8g2_GetGlyphWidth(&hardware.font.u8g2,cp);hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);
 }
 int width(const String& value,const uint8_t* f){String s=visualText(value);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(0,0,utf8Next(s,i),f,0,false);return w;}
 void say(int x,int y,const String& value,const uint8_t* f=body,uint16_t color=1){String s=visualText(value);for(unsigned i=0;i<s.length();)x+=glyph(x,y,utf8Next(s,i),f,color,true);}
@@ -81,8 +102,17 @@ HiFont hiFont(const uint8_t* f){
  if(f==u8g2_font_10x20_t_cyrillic)return{u8g2_font_inr24_t_cyrillic,nullptr,false};
  return{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf,f==bold};
 }
+// Emoji: 16 px with the large fonts, 12 px with the small ones, in the pictures' colours.
 int hiGlyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
  HiresCanvas& c=*hardware.canvas;HiFont h=hiFont(f);
+ if(char l=emoji::flagLetter(cp))cp=uint8_t(l);
+ if(cp>=0x203c){
+  if(emoji::modifier(cp))return 0;
+  int e=emoji::find(cp);
+  if(e>=0){int s=f==small||f==u8g2_font_4x6_t_cyrillic?emoji::Size:16;uint8_t px[emoji::Size*emoji::Size];
+   if(paint&&emoji::decode(e,px))emoji::draw(px,x,y-s+1+s/12,s,[&c](int a,int b,uint8_t v){c.screen.drawPixel(a,b,ColEmoji0+v-1);});
+   return s+2;}
+ }
  const uint8_t* use=cp>0xffff?nullptr:fontHasGlyph(h.main,cp)?h.main:h.latin&&fontHasGlyph(h.latin,cp)?h.latin:nullptr;
  if(use){hardware.font.begin(c.screen);useFont(use);int w=u8g2_GetGlyphWidth(&hardware.font.u8g2,cp)+h.bold;
   if(paint){hardware.font.setForegroundColor(color);hardware.font.drawGlyph(x,y,cp);if(h.bold)hardware.font.drawGlyph(x+1,y,cp);}
@@ -91,7 +121,8 @@ int hiGlyph(int x,int y,uint32_t cp,const uint8_t* f,uint16_t color,bool paint){
  // at their own size, as tall as the large fonts' capitals (small text takes the 13 px ones).
  const uint8_t* layout=f==small?body:f==u8g2_font_4x6_t_cyrillic?u8g2_font_6x12_t_cyrillic:f;
  if(cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(layout);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;}
- if(!use)return 0;hardware.font.begin(c.screen);useFont(use);if(paint){hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);}
+ if(!use){if(!emoji::pictograph(cp))return 0;int s=f==small||f==u8g2_font_4x6_t_cyrillic?emoji::Size:16;if(paint)c.screen.drawRect(x+1,y-s+2+s/12,s-2,s-2,color);return s+1;}
+ hardware.font.begin(c.screen);useFont(use);if(paint){hardware.font.setForegroundColor(color);return hardware.font.drawGlyph(x,y,cp);}
  return u8g2_GetGlyphWidth(&hardware.font.u8g2,cp);
 }
 #endif

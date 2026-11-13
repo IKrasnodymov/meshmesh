@@ -17,7 +17,7 @@ nœuds MeshCore standard.
 
 ## Fonctions
 
-- **Chats** — messages privés et publics, accusés de remise ✓✓, renvois, route affichée pour chaque message.
+- **Chats** — messages privés et publics, accusés de remise ✓✓, renvois, route affichée pour chaque message ; environ 300 emoji courants dessinés sur les écrans, en couleur sur les écrans couleur (0.32.0).
 - **Canaux** — jusqu'à 8 canaux MeshCore : rejoindre par #hashtag, lien `meshcore://` ou QR code, nom et clé ;
   créer un canal privé, inviter des contacts par message privé, trouver les canaux captés sur les ondes. [docs/en/channels.md](docs/en/channels.md)
 - **Régions** — portée des floods MeshCore : région par défaut et une par canal, recherche des régions des répéteurs proches ; répéteurs réglés par les commandes `region`. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ troisième répéteur. Non implémenté : voix, calcul d'itinéraire, mises à j
 
 ## Licence
 
-[MIT](LICENSE). MeshCore intégré (`lib/MeshCore`) conserve sa propre licence MIT. Données cartographiques ©
+[MIT](LICENSE). MeshCore intégré (`lib/MeshCore`) conserve sa propre licence MIT. Les emoji des écrans sont dessinés d’après [Twemoji](https://github.com/jdecked/twemoji) (Twitter, Inc et autres contributeurs, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Données cartographiques ©
 contributeurs [OpenStreetMap](https://www.openstreetmap.org/copyright). L'idée du radar s'inspire
 du traceur RSSI et des HUD radar de [Stevee87](https://github.com/Stevee87).
 

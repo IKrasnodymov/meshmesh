@@ -274,7 +274,7 @@ footer a{color:var(--dim)}
     <a class="btn cta-apk" href="app/meshmesh.apk" download><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg><span data-i18n="cta.apk"></span></a>
     <a class="btn cta-more" href="#features"><span data-i18n="cta.more"></span></a>
    </div>
-   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg></b><span data-i18n="news.backup"></span><i>→</i></a>
+   <a class="news" href="#features"><b class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg></b><span data-i18n="news.emoji"></span><i>→</i></a>
    <div class="facts">
     <div><b>14</b><span data-i18n="facts.boards"></span></div>
     <div><b>MeshCore</b><span data-i18n="facts.radio"></span></div>
@@ -510,6 +510,7 @@ const ICONS={
 };
 // Each feature: icon, colour, screenshots (img/<name>-<lang>.png, the device page img/web-<name>-<lang>.webp); texts f.<id>.t, f.<id>.d and shot.<name>.
 const FEATURES=[
+ {id:'emoji',ic:'chat',c:'#e9b13b',shots:['m9-chat','t114-popup','heltec-popup','m9-threads']},
  {id:'backup',ic:'backup',c:'#4f9df7',shots:['web-backup-restore','web-backup']},
  {id:'netfind',ic:'tower',c:'#4cc26b',shots:['m9-radio-net','web-netfind','t114-radio-net','heltec-radio-net']},
  {id:'networks',ic:'region',c:'#4f9df7',shots:['m9-radio-test','web-networks','web-networks-test']},

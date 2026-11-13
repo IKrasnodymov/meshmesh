@@ -17,7 +17,7 @@ MeshCore 노드와 통신합니다.
 
 ## 기능
 
-- **채팅** — 개인 메시지와 공개 메시지, ✓✓ 전달 확인, 재전송, 메시지별 경로 표시.
+- **채팅** — 개인 메시지와 공개 메시지, ✓✓ 전달 확인, 재전송, 메시지별 경로 표시. 자주 쓰는 이모지 약 300개를 화면에 그림(컬러 화면에서는 컬러, 0.32.0).
 - **채널** — 최대 8개의 MeshCore 채널: #해시태그, `meshcore://` 링크나 QR 코드, 이름과 키로 참여합니다.
   비공개 채널을 만들고, 개인 메시지로 연락처를 초대하고, 전파에서 수신된 채널을 찾을 수 있습니다. [docs/en/channels.md](docs/en/channels.md)
 - **지역** — MeshCore flood 범위: 기본 지역과 채널별 지역, 주변 리피터가 맡은 지역 검색; 리피터는 `region` 명령으로 설정. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ Android 앱: `cd android && ./gradlew testDebugUnitTest assembleRelease` ([docs/
 
 ## 라이선스
 
-[MIT](LICENSE). 함께 포함된 MeshCore(`lib/MeshCore`)는 자체 MIT 라이선스를 따릅니다. 지도 데이터 ©
+[MIT](LICENSE). 함께 포함된 MeshCore(`lib/MeshCore`)는 자체 MIT 라이선스를 따릅니다. 화면의 이모지는 [Twemoji](https://github.com/jdecked/twemoji) 그래픽(Twitter, Inc 및 기여자, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/))을 바탕으로 그렸습니다. 지도 데이터 ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자. 레이더 아이디어는
 [Stevee87](https://github.com/Stevee87)의 RSSI 트래커와 레이더 HUD에서 왔습니다.
 

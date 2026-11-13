@@ -10,6 +10,7 @@
 #include <Wire.h>
 #include <Adafruit_ST7789.h>
 #include <esp_system.h>
+#include <initializer_list>
 Hardware hardware;
 namespace {
 // SPI1 is the 32 MHz SPIM3 (SPI_32MHZ_INTERFACE=1 in platformio.ini); LoRa stays on SPI.
@@ -18,11 +19,18 @@ constexpr int W=HiresCanvas::Width,H=HiresCanvas::Height;
 uint32_t rowHash[H];    // rows as last sent: flush() sends only the rows that changed
 bool tftOn=false,uartOn=false;
 void output(int pin,int level){if(pin<0)return;pinMode(pin,OUTPUT);digitalWrite(pin,level);}
-void light(uint8_t level){if(level>=255)output(pins::tftLight,LOW);else analogWrite(pins::tftLight,255-level);} // LEDA: LOW = on
+// Backlight (LEDA: LOW = on). analogWrite() hands the pin to a PWM module, and digitalWrite() no longer
+// reaches it: "off" kept the last brightness over the sleeping, black panel, and System OFF too. Off and
+// full brightness first give the pin back to the GPIO (and stop the PWM module when it has no other pin).
+void light(uint8_t level){
+  if(level&&level<255){analogWrite(pins::tftLight,255-level);return;}
+  for(int i=0;i<HWPWM_MODULE_NUM;i++)if(HwPWMx[i]->checkPin(pins::tftLight)){HwPWMx[i]->removePin(pins::tftLight);if(!HwPWMx[i]->usedChannelCount())HwPWMx[i]->stop();}
+  output(pins::tftLight,level?LOW:HIGH);
+}
 }
 void Hardware::brightness(uint8_t level) {
   if(!panel)return;
-  if(!level){output(pins::tftLight,HIGH);if(tftOn){tft.enableDisplay(false);tft.enableSleep(true);tftOn=false;}return;}
+  if(!level){light(0);if(tftOn){tft.enableDisplay(false);tft.enableSleep(true);tftOn=false;}return;}
   if(!tftOn){tft.enableSleep(false);delay(5);tft.enableDisplay(true);tftOn=true;}
   light(level);
 }
@@ -79,10 +87,11 @@ int Hardware::readKey() {
   return 0;
 }
 // Off: backlight, TFT and Vext (GPS) supplies off, LED off, the SX1262 deselected; System OFF keeps the
-// levels. The USER button wakes it.
+// levels. The panel's lines go LOW, so they do not feed the unpowered panel. The USER button wakes it.
 void Hardware::powerDown(bool started) {
   if(started){brightness(0);setGps(false);}
-  output(pins::tftLight,HIGH);output(pins::tftPower,HIGH);output(pins::vext,!pins::vextOn);output(pins::led,!pins::ledOn);output(pins::radioCs,HIGH);output(pins::adcEnable,LOW);
+  light(0);output(pins::tftPower,HIGH);SPI1.end();for(int pin:{pins::tftCs,pins::tftDc,pins::tftReset,pins::tftClock,pins::tftData})output(pin,LOW);
+  output(pins::vext,!pins::vextOn);output(pins::led,!pins::ledOn);output(pins::radioCs,HIGH);output(pins::adcEnable,LOW);
 }
 int Hardware::wakePin() const {return pins::button;}
 void Hardware::beep() {}

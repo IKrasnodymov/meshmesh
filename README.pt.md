@@ -17,7 +17,7 @@ MeshCore padrão.
 
 ## Recursos
 
-- **Chats** — mensagens diretas e públicas, confirmações de entrega ✓✓, reenvios, rota exibida em cada mensagem.
+- **Chats** — mensagens diretas e públicas, confirmações de entrega ✓✓, reenvios, rota exibida em cada mensagem; cerca de 300 emoji comuns desenhados nas telas, em cores nas telas coloridas (0.32.0).
 - **Canais** — até 8 canais MeshCore: entre por #hashtag, link `meshcore://` ou código QR, nome e chave;
   crie um privado, convide contatos por mensagem direta, encontre canais ouvidos no ar. [docs/en/channels.md](docs/en/channels.md)
 - **Regiões** — escopo de flood do MeshCore: região padrão e uma por canal, busca das regiões dos repetidores próximos; repetidores com os comandos `region`. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ terceiro repetidor. Não implementado: voz, planejamento de rotas, atualizaçõe
 
 ## Licença
 
-[MIT](LICENSE). O MeshCore incluído (`lib/MeshCore`) mantém sua própria licença MIT. Dados de mapa ©
+[MIT](LICENSE). O MeshCore incluído (`lib/MeshCore`) mantém sua própria licença MIT. Os emoji das telas são desenhados a partir de [Twemoji](https://github.com/jdecked/twemoji) (Twitter, Inc e outros colaboradores, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Dados de mapa ©
 colaboradores do [OpenStreetMap](https://www.openstreetmap.org/copyright). A ideia do radar segue
 o rastreador RSSI e os HUDs de radar de [Stevee87](https://github.com/Stevee87).
 

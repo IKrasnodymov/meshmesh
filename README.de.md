@@ -17,7 +17,7 @@ MeshCore-Knoten.
 
 ## Funktionen
 
-- **Chats** — direkte und öffentliche Nachrichten, ✓✓-Zustellbestätigungen, Wiederholungen, Route bei jeder Nachricht.
+- **Chats** — direkte und öffentliche Nachrichten, ✓✓-Zustellbestätigungen, Wiederholungen, Route bei jeder Nachricht; rund 300 häufige Emoji auf den Bildschirmen, farbig auf Farbdisplays (0.32.0).
 - **Kanäle** — bis zu 8 MeshCore-Kanäle: Beitritt per #Hashtag, `meshcore://`-Link oder QR-Code, Name und Schlüssel;
   einen privaten Kanal erstellen, Kontakte per Direktnachricht einladen, auf Sendung gehörte Kanäle finden. [docs/en/channels.md](docs/en/channels.md)
 - **Regionen** — Flood-Bereich von MeshCore: Standardregion und eigene Region je Kanal, Suche der Regionen naher Repeater; Repeater per `region`-Befehlen. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ dritten Repeater. Nicht implementiert: Sprachübertragung, Routenplanung, OTA-Up
 
 ## Lizenz
 
-[MIT](LICENSE). Das mitgelieferte MeshCore (`lib/MeshCore`) behält seine eigene MIT-Lizenz. Kartendaten ©
+[MIT](LICENSE). Das mitgelieferte MeshCore (`lib/MeshCore`) behält seine eigene MIT-Lizenz. Die Emoji auf den Bildschirmen stammen aus [Twemoji](https://github.com/jdecked/twemoji) (Twitter, Inc und weitere Mitwirkende, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Kartendaten ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright)-Mitwirkende. Die Radar-Idee folgt
 dem RSSI-Tracker und den Radar-HUDs von [Stevee87](https://github.com/Stevee87).
 

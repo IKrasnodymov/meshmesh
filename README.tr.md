@@ -17,7 +17,7 @@ MeshCore düğümleriyle haberleşir.
 
 ## Özellikler
 
-- **Sohbetler** — özel ve genel mesajlar, ✓✓ iletim onayları, yeniden gönderim, her mesaj için gösterilen rota.
+- **Sohbetler** — özel ve genel mesajlar, ✓✓ iletim onayları, yeniden gönderim, her mesaj için gösterilen rota; ekranlarda çizilen yaklaşık 300 yaygın emoji, renkli ekranlarda renkli (0.32.0).
 - **Kanallar** — en fazla 8 MeshCore kanalı: #hashtag, `meshcore://` bağlantısı veya QR kodu, ad ve anahtarla katılma;
   özel kanal oluşturma, kişileri doğrudan mesajla davet etme, havada duyulan kanalları bulma. [docs/en/channels.md](docs/en/channels.md)
 - **Bölgeler** — MeshCore flood kapsamı: varsayılan bölge ve kanal başına bölge, yakındaki rölelerin bölgelerini arama; röleler `region` komutlarıyla. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ Henüz doğrulanmadı: LoRa menzili, açık havada GPS doğruluğu, pusula doğr
 
 ## Lisans
 
-[MIT](LICENSE). Pakete dahil MeshCore (`lib/MeshCore`) kendi MIT lisansını korur. Harita verileri ©
+[MIT](LICENSE). Pakete dahil MeshCore (`lib/MeshCore`) kendi MIT lisansını korur. Ekranlardaki emojiler [Twemoji](https://github.com/jdecked/twemoji) grafiklerinden çizilmiştir (Twitter, Inc ve diğer katkıda bulunanlar, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Harita verileri ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıcıları. Radar fikri,
 [Stevee87](https://github.com/Stevee87) tarafından geliştirilen RSSI izleyici ve radar HUD'larından esinlenmiştir.
 

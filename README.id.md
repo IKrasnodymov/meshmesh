@@ -17,7 +17,7 @@ MeshCore standar.
 
 ## Fitur
 
-- **Chat** — pesan langsung dan publik, tanda terima ✓✓, pengiriman ulang, rute ditampilkan per pesan.
+- **Chat** — pesan langsung dan publik, tanda terima ✓✓, pengiriman ulang, rute ditampilkan per pesan; sekitar 300 emoji umum digambar di layar, berwarna di layar warna (0.32.0).
 - **Kanal** — hingga 8 kanal MeshCore: gabung lewat #hashtag, tautan `meshcore://` atau kode QR, nama dan kunci;
   buat kanal privat, undang kontak lewat pesan langsung, temukan kanal yang terdengar di udara. [docs/en/channels.md](docs/en/channels.md)
 - **Wilayah** — cakupan flood MeshCore: wilayah bawaan dan per kanal, pencarian wilayah repeater terdekat; repeater diatur dengan perintah `region`. [docs/en/regions.md](docs/en/regions.md)
@@ -106,7 +106,7 @@ repeater ketiga. Belum diimplementasikan: suara, perencanaan rute, pembaruan OTA
 
 ## Lisensi
 
-[MIT](LICENSE). MeshCore yang disertakan (`lib/MeshCore`) mempertahankan lisensi MIT-nya sendiri. Data peta ©
+[MIT](LICENSE). MeshCore yang disertakan (`lib/MeshCore`) mempertahankan lisensi MIT-nya sendiri. Emoji di layar digambar dari grafis [Twemoji](https://github.com/jdecked/twemoji) (Twitter, Inc dan kontributor lain, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)). Data peta ©
 kontributor [OpenStreetMap](https://www.openstreetmap.org/copyright). Ide radar terinspirasi dari
 pelacak RSSI dan HUD radar karya [Stevee87](https://github.com/Stevee87).
 
