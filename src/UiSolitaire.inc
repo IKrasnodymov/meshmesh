@@ -11,7 +11,7 @@ sol::Move gameHint{};
 const uint16_t felt=rgb(0x0d3527),feltDeep=rgb(0x0a2b20),feltLine=rgb(0x2c6a53),shadow=rgb(0x04150e),cardFace=rgb(0xfbf8f0),cardEdge=rgb(0xb9b2a2);
 const uint16_t suitRed=rgb(0xd62f28),suitBlack=rgb(0x1f242b),tintRed=rgb(0xf7ddd6),tintBlack=rgb(0xdfe4ec),gold=rgb(0xe4a82a),goldDeep=rgb(0x9c6b12),backFill=rgb(0x1d3a7a),backLine=rgb(0x3457a6);
 constexpr int CardW=42,CardH=48,TopY=25,TabY=78,TabBottom=218,FanStep=20;
-const Face cardIndex{u8g2_font_9x15_t_cyrillic,u8g2_font_9x15_tf};
+const Face cardIndex{u8g2_font_9x15_t_cyrillic,u8g2_font_9x15_tf,mmAaCard};
 // 9x9 corner suits (spades, hearts, diamonds, clubs); bit 8 is the left column.
 const uint16_t suitBits[4][9]={
  {0x010,0x038,0x07c,0x0fe,0x1ff,0x1ff,0x0d6,0x010,0x038},

@@ -30,6 +30,7 @@
 #include <initializer_list>
 #include "Emoji.h"
 #include <algorithm>
+#include "AaFonts.h"
 // Defined in U8g2_for_Adafruit_GFX.cpp; used to fall back to Latin-1 and placeholders for missing glyphs.
 uint8_t u8g2_IsGlyph(u8g2_font_t* u8g2,uint16_t encoding);
 int8_t u8g2_GetGlyphWidth(u8g2_font_t* u8g2,uint16_t encoding);
@@ -68,9 +69,25 @@ const uint16_t avatarHues[]={rgb(0x2f7d6f),rgb(0x3f6fb5),rgb(0x8a5cc2),rgb(0xb56
 
 // Text: the Cyrillic fonts lack Latin-1 and punctuation such as "·", "°", "№"; other languages' letters
 // come from the fallback fonts of I18n.h, and Arabic is drawn in visual order.
-struct Face{const uint8_t* main;const uint8_t* latin;};
-const Face body{u8g2_font_6x13_t_cyrillic,u8g2_font_6x13_tf},bold{u8g2_font_6x13B_t_cyrillic,u8g2_font_6x13B_tf},small{u8g2_font_5x8_t_cyrillic,u8g2_font_5x8_tf};
-const Face big{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf},digits{u8g2_font_logisoso42_tn,nullptr};
+// A face draws from its anti-aliased Inter face (aa, include/AaFonts.h) first, sized to the cap height of the
+// bitmap face it replaces; what aa lacks (CJK, Arabic, ...) comes from the u8g2 faces on the same baseline.
+struct Face{const uint8_t* main;const uint8_t* latin;const AaFont& aa;};
+const Face body{u8g2_font_6x13_t_cyrillic,u8g2_font_6x13_tf,mmAaBody},bold{u8g2_font_6x13B_t_cyrillic,u8g2_font_6x13B_tf,mmAaBold},small{u8g2_font_5x8_t_cyrillic,u8g2_font_5x8_tf,mmAaSmall};
+const Face big{u8g2_font_10x20_t_cyrillic,u8g2_font_10x20_tf,mmAaBig},digits{u8g2_font_logisoso42_tn,nullptr,mmAaDigits};
+const AaGlyph* aaFind(const AaFont& f,uint32_t cp){
+ int lo=0,hi=int(f.count)-1;while(lo<=hi){int m=(lo+hi)/2;uint16_t c=f.glyphs[m].cp;if(c==cp)return &f.glyphs[m];if(c<cp)lo=m+1;else hi=m-1;}return nullptr;
+}
+// Blends the glyph's 4-bit coverage into the RGB565 canvas, each channel bg+(fg-bg)*a/15, clipped to the canvas.
+int aaDraw(int x,int y,const AaGlyph& gl,const AaFont& f,uint16_t color){
+ GFXcanvas16& c=*hardware.canvas;uint16_t* buf=c.getBuffer();const int W=c.width(),H=c.height();
+ const int fr=color>>11,fg=(color>>5)&0x3f,fb=color&0x1f,x0=x+gl.dx,y0=y-gl.top;const uint8_t* d=f.data+gl.offset;unsigned n=0;
+ for(int r=0;r<gl.h;r++){int py=y0+r;
+  for(int k=0;k<gl.w;k++,n++){int a=n&1?d[n>>1]&0x0f:d[n>>1]>>4;int px=x0+k;if(!a||py<0||py>=H||px<0||px>=W)continue;
+   uint16_t& p=buf[py*W+px];if(a==15){p=color;continue;}
+   int br=p>>11,bg_=(p>>5)&0x3f,bb=p&0x1f;
+   p=uint16_t(((br+((fr-br)*a+7)/15)<<11)|((bg_+((fg-bg_)*a+7)/15)<<5)|(bb+((fb-bb)*a+7)/15));}}
+ return gl.advance;
+}
 const uint8_t* activeFont=nullptr;
 void useFont(const uint8_t* f){if(f!=activeFont){hardware.font.setFont(f);hardware.font.setFontMode(1);activeFont=f;}} // SetFont resets transparency
 uint32_t nextCp(const String& s,unsigned& i){uint8_t c=s[i];unsigned n=c<0x80?1:(c&0xe0)==0xc0?2:(c&0xf0)==0xe0?3:4;uint32_t cp=n==1?c:n==2?c&0x1f:n==3?c&0x0f:c&0x07;for(unsigned k=1;k<n&&i+k<s.length();k++)cp=cp<<6|(uint8_t(s[i+k])&0x3f);i+=n;return cp;}
@@ -87,11 +104,12 @@ int glyph(int x,int y,uint32_t cp,const Face& f,uint16_t color,bool paint){
    if(paint&&emoji::decode(e,px))emoji::draw(px,x,y-s+1+s/12,s,[](int a,int b,uint8_t v){hardware.canvas->drawPixel(a,b,rgb(emoji::palette[v-1]));});
    return s+2;}
  }
+ if(const AaGlyph* a=aaFind(f.aa,cp))return paint?aaDraw(x,y,*a,f.aa,color):a->advance;
  if(cp<=0xffff){useFont(f.main);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.main;else if(f.latin){useFont(f.latin);if(u8g2_IsGlyph(&u.u8g2,cp))use=f.latin;}}
  if(!use&&cp<=0xffff)for(const uint8_t* const* x=fallbackFonts(f.main);*x;x++)if(fontHasGlyph(*x,cp)){use=*x;break;} // other languages' letters
  if(!use){
   if(const char* sub=substitute(cp)){String s(sub);int w=0;for(unsigned i=0;i<s.length();)w+=glyph(x+w,y,nextCp(s,i),f,color,paint);return w;}
-  useFont(f.main);int w=u8g2_GetGlyphWidth(&u.u8g2,'0'),a=u.getFontAscent();if(paint)hardware.canvas->drawRect(x+1,y-a,max(2,w-2),a,color);return w; // visible placeholder, e.g. emoji
+  int w=f.aa.zeroWidth,a=f.aa.capHeight;if(paint)hardware.canvas->drawRect(x+1,y-a,max(2,w-2),a,color);return w; // visible placeholder, e.g. emoji
  }
  useFont(use);if(!paint)return u8g2_GetGlyphWidth(&u.u8g2,cp);u.setForegroundColor(color);return u.drawGlyph(x,y,cp);
 }

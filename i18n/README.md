@@ -30,6 +30,8 @@ python3 tools/i18n.py check       # everything below; the build of the site fail
 `generate` needs the BDF fonts and u8g2 `bdfconv` in `upstream/fonts` (see `tools/i18n_fonts.py`).
 The glyph subsets come from Fusion Pixel Font (SIL OFL 1.1, licenses in `i18n/fonts/fusion-pixel/`),
 ClearlyU 12 (`i18n/fonts/clearlyu-cu12.txt`) and the public-domain X11 misc-fixed fonts.
+It also renders the anti-aliased Inter faces of the 320x240 screens (M9, T-Deck) into `include/AaFonts.h`
+(`tools/aa_fonts.py`, Inter v4.1 TTFs in `upstream/fonts/inter`, SIL OFL 1.1 in `i18n/fonts/inter/OFL.txt`).
 Run it after every translation change, then build the boards and look at the screens:
 `.venv/bin/python tools/site_shots.py OUTDIR de` renders them on a computer.
 

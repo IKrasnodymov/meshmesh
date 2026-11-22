@@ -326,7 +326,9 @@ if __name__ == '__main__':
     elif cmd == 'generate':
         generate_table()
         import i18n_fonts  # noqa: E402
+        import aa_fonts  # noqa: E402
         i18n_fonts.generate()
+        aa_fonts.generate()
     elif cmd == 'todo':
         code = sys.argv[2]
         source = json.loads((DIR/'source.json').read_text())

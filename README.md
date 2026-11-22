@@ -107,7 +107,7 @@ third repeater. Not implemented: voice, route planning, OTA updates.
 
 ## License
 
-[MIT](LICENSE). Bundled MeshCore (`lib/MeshCore`) keeps its own MIT license. Screen emoji are drawn from [Twemoji](https://github.com/jdecked/twemoji) graphics by Twitter, Inc and other contributors, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Map data ©
+[MIT](LICENSE). Bundled MeshCore (`lib/MeshCore`) keeps its own MIT license. Screen emoji are drawn from [Twemoji](https://github.com/jdecked/twemoji) graphics by Twitter, Inc and other contributors, [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Text on the M9 and T-Deck screens is drawn with [Inter](https://rsms.me/inter/) by Rasmus Andersson, [SIL Open Font License 1.1](i18n/fonts/inter/OFL.txt). Map data ©
 [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors. The radar idea follows
 the RSSI tracker and radar HUDs by [Stevee87](https://github.com/Stevee87).
 
