@@ -5,7 +5,7 @@
 set -e
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 LIB=$ROOT/.pio/libdeps/m9
-BOARD=${1:-m9};OUT=${2:-$ROOT/artifacts/ui-preview};mkdir -p "$OUT"
+BOARD=${1:-m9};OUT=${2:-$ROOT/artifacts/ui-preview};[ -n "$SIM" ]||mkdir -p "$OUT"
 DEF="-DARDUINO=10819 -DMM_UI_PREVIEW=1 -DARDUINOJSON_ENABLE_PROGMEM=0 -DARDUINOJSON_ENABLE_ARDUINO_STREAM=0 -DARDUINOJSON_ENABLE_ARDUINO_PRINT=0 -DARDUINOJSON_ENABLE_STD_STRING=0 -DARDUINOJSON_ENABLE_STD_STREAM=0"
 SRC=$ROOT/src/Ui.cpp
 if [ "$BOARD" = tdeck ];then DEF="$DEF -DMM_BOARD_TDECK=1";fi
@@ -14,6 +14,9 @@ if [ "$BOARD" = heltec ];then DEF="$DEF -DMM_HELTEC_V4=1 -DMM_COMPACT=1";SRC=$RO
 if [ "$BOARD" = gat562 ];then DEF="$DEF -DMM_HELTEC_V4=1 -DMM_COMPACT=1 -DMM_JOYSTICK=1 -DMM_NO_WIFI=1";SRC=$ROOT/src/UiHeltec.cpp;fi
 # T114: the one-button 128x64 interface drawn at 240x135 on the colour TFT (HiresCanvas), without Wi-Fi.
 if [ "$BOARD" = t114 ];then DEF="$DEF -DMM_HELTEC_V4=1 -DMM_COMPACT=1 -DMM_HIRES=1 -DMM_NO_WIFI=1";SRC=$ROOT/src/UiHeltec.cpp;fi
+# SIM=1: the interactive simulator in an SDL2 window (tools/ui_preview/live.inc) instead of the screenshots; OUTDIR is unused.
+LINK=
+if [ -n "$SIM" ];then DEF="$DEF -DMM_UI_SIM=1 $(sdl2-config --cflags)";LINK=$(sdl2-config --libs);fi
 INC="-I$ROOT/tools/ui_preview/shim -I$ROOT/include -I$ROOT/lib/MeshProtocol -I$LIB/ArduinoJson/src -I$LIB/Adafruit\ GFX\ Library -I$LIB/U8g2_for_Adafruit_GFX/src"
 B=$(mktemp -d)
 cc -c -O1 -w "$LIB/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c" -o "$B/fonts.o"
@@ -49,9 +52,10 @@ eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/HistoryStorage.cpp" -o "
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/HistoryReply.cpp" -o "$B/history-reply.o"
 eval c++ -std=gnu++17 -O1 -Wall $DEF $INC -c "$ROOT/src/Clock.cpp" -o "$B/clock.o"
 for f in SHA256 Hash Crypto;do eval c++ -std=gnu++17 -O1 -w $DEF $INC -c "$LIB/Crypto/$f.cpp" -o "$B/crypto-$f.o";done
-c++ "$B"/*.o -o "$B/preview"
+c++ "$B"/*.o $LINK -o "$B/preview"
 # KEEP=PATH: keep the program (tools/ui_preview/preview.cpp "--dice" serves the dice to the web page checks).
 if [ -n "$KEEP" ];then rm -f "$KEEP";cp "$B/preview" "$KEEP";fi # a new file: macOS kills a binary overwritten in place
+if [ -n "$SIM" ];then [ -n "$NORUN" ]||"$B/preview" --live ${3:-ru};rm -rf "$B";exit 0;fi # NORUN=1: only build (with KEEP)
 # Several languages ("ru en de"): one build, a folder per language.
 case "${3:-ru}" in
 *" "*)for L in $3;do mkdir -p "$OUT/$L";"$B/preview" "$OUT/$L" $L >/dev/null;done;;

@@ -124,6 +124,9 @@ static void shot(const char* name){tick();std::string n=name;
 static uint64_t peerId(int i){return (uint64_t(0x1F+i*0x2B)<<56)|0xB2C3D4E5F600ULL|uint64_t(i*0x1111);} // 8-byte IDs as MeshCore keys give
 static void scenario();
 #include "wishlist_checks.inc"
+#if defined(MM_UI_SIM)
+#include "live.inc"
+#endif
 int main(int argc,char** argv){
  outDir=argc>1?argv[1]:".";
  config.lang=argc>2?max(0,langFromCode(argv[2])):LangRu; // a language code, Russian by default
@@ -191,6 +194,10 @@ int main(int argc,char** argv){
    else r=duels.command(String(line.c_str()));
    duels.tick();printf("%s\n",r.c_str());fflush(stdout);}
   return 0;}
+#if defined(MM_UI_SIM)
+ // "--live LANG": the interactive simulator (tools/ui_preview/live.inc), without the scripted checks.
+ if(std::string(outDir)=="--live"){quickSend::begin();people::begin();wardrive::begin();uiBegin();return live();}
+#endif
  quickSend::begin();people::begin();wardrive::begin();wishlistChecks();uiBegin();scenario();return 0;
 }
 #include "scenario.inc"

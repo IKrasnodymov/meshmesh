@@ -26,7 +26,8 @@
 GitHub: публичный `IKrasnodymov/meshmesh` (MIT; `README.md` — английский обзор, `README.<lang>.md` — его переводы, `README.ru.md` — полный русский; `docs/en/` — английские переводы подробных документов), основная ветка `main`. Сайт —
 GitHub Pages из `site/` (https://ikrasnodymov.github.io/meshmesh/): `.github/workflows/pages.yml`
 собирает все платы, APK и `tools/pages.py` (манифесты браузерной установки ESP Web Tools,
-запись по смещениям без стирания NVS). Скриншоты экрана — `tools/ui_preview`.
+запись по смещениям без стирания NVS). Скриншоты экрана — `tools/ui_preview`; интерактивный симулятор в окне SDL2 —
+`tools/ui_preview/sim.sh [m9] [LANG]` (`SIM=1` в `build.sh`, код `tools/ui_preview/live.inc`; пересборка по fswatch).
 В Git сохранять исходники, vendored MeshCore с лицензиями, инструменты и
 документацию. `backups/`, `artifacts/`, `logs/`, `upstream/`, окружение Python,
 результаты сборок и `.env` остаются локальными и исключены через `.gitignore`.
