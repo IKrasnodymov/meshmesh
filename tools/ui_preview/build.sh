@@ -1,7 +1,7 @@
 #!/bin/sh
 # Build and render the screen UI on the host: tools/ui_preview/build.sh m9|tdeck|heltec|gat562|t114 OUTDIR [LANG]
 # tdeck: the M9 interface with the T-Deck keys and the touch checks (it stops at the first failure).
-# LANG is a code of include/I18n.h (ru by default); a list with spaces ("ru en de") renders each into OUTDIR/<code>/.
+# LANG is a code of include/I18n.h (en by default); a list with spaces ("en ru de") renders each into OUTDIR/<code>/.
 set -e
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 LIB=$ROOT/.pio/libdeps/m9
@@ -55,10 +55,10 @@ for f in SHA256 Hash Crypto;do eval c++ -std=gnu++17 -O1 -w $DEF $INC -c "$LIB/C
 c++ "$B"/*.o $LINK -o "$B/preview"
 # KEEP=PATH: keep the program (tools/ui_preview/preview.cpp "--dice" serves the dice to the web page checks).
 if [ -n "$KEEP" ];then rm -f "$KEEP";cp "$B/preview" "$KEEP";fi # a new file: macOS kills a binary overwritten in place
-if [ -n "$SIM" ];then [ -n "$NORUN" ]||"$B/preview" --live ${3:-ru};rm -rf "$B";exit 0;fi # NORUN=1: only build (with KEEP)
-# Several languages ("ru en de"): one build, a folder per language.
-case "${3:-ru}" in
+if [ -n "$SIM" ];then [ -n "$NORUN" ]||"$B/preview" --live ${3:-en};rm -rf "$B";exit 0;fi # NORUN=1: only build (with KEEP)
+# Several languages ("en ru de"): one build, a folder per language.
+case "${3:-en}" in
 *" "*)for L in $3;do mkdir -p "$OUT/$L";"$B/preview" "$OUT/$L" $L >/dev/null;done;;
-*)"$B/preview" "$OUT" ${3:-ru};;
+*)"$B/preview" "$OUT" ${3:-en};;
 esac
 rm -rf "$B"

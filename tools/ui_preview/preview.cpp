@@ -129,7 +129,7 @@ static void scenario();
 #endif
 int main(int argc,char** argv){
  outDir=argc>1?argv[1]:".";
- config.lang=argc>2?max(0,langFromCode(argv[2])):LangRu; // a language code, Russian by default
+ config.lang=argc>2?max(0,langFromCode(argv[2])):LangEn; // a language code, English by default
 #if defined(MM_HIRES)
  hardware.canvas=new HiresCanvas();strcpy(config.name,"T114");
 #elif defined(MM_HELTEC_V4)
