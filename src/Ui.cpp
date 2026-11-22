@@ -283,16 +283,16 @@ void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);if(focus
 
 // Module health: the same eight modules as the diagnostics page.
 unsigned moduleStates(bool* state){bool s[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};unsigned faults=0;for(int i=0;i<8;i++){if(state)state[i]=s[i];faults+=!s[i];}return faults;}
-// Home: identity strip and a 3-column grid of destinations; two rows are visible, the rest scroll.
+// Home: identity strip and a list of destinations; six rows are visible, the rest scroll.
 // The tiles follow config.apps: its order and folders, without the hidden ones (Apps.cpp).
-const int tileColumns=3;
+const int tileTop=71,tileRowH=24,tileRowsShown=6;
 struct AppTile{Icon ic;uint16_t hue;String name,detail;unsigned badge;};
 // The tile of every app ID, in uiApps order.
 void appTiles(AppTile* out){
  unsigned unreadCount=unreadTotal(),near=0,total=meshRadio.peerCount;for(unsigned i=0;i<total;i++)if(meshRadio.peers[i].heard&&millis()-meshRadio.peers[i].seen<1800000)near++;
  String links=portalActive()?"Wi-Fi":internet.online()?t("Internet","Интернет"):"";if(bleActive())links+=links.length()?" + BLE":"Bluetooth";if(!links.length())links=t("All off","Всё выключено");unsigned faults=moduleStates(nullptr);
  AppTile tiles[]={
-  {IcChat,accent,t("Chats","Чаты"),unreadCount?count(unreadCount,"new","new","новое","новых","новых"):count(meshRadio.historyCount,"message","messages","сообщение","сообщения","сообщений"),unreadCount},
+  {IcChat,accent,t("Chats","Чаты"),unreadCount?String():count(meshRadio.historyCount,"message","messages","сообщение","сообщения","сообщений"),unreadCount},
   {IcSend,info,t("Quick send","Быстрая отправка"),quickSend::targetName(),0},
   {IcMesh,violet,t("Nodes","Узлы"),String(near)+t(" of "," из ")+String(total)+t(" nearby"," рядом"),0},
   {IcCompass,warn,t("Navigation","Навигация"),hardware.gpsFix()?"GPS: "+count(hardware.gps.satellites.value(),"sat","sats","спутник","спутника","спутников"):config.gps?t("GPS: searching","GPS: поиск"):t("GPS off","GPS выключен"),0},
@@ -317,20 +317,22 @@ AppTile folderTile(uint8_t f,const AppTile* tiles){
  uint8_t in[AppEntriesMax];unsigned n=appsShown(in,f);AppTile t{IcFolder,warn,appsFolderName(f),String(),0};
  for(unsigned i=0;i<n;i++){t.badge+=tiles[in[i]].badge;if(i<4)t.detail+=String(i?", ":"")+tiles[in[i]].name;}return t;
 }
-// Two rows of three from y 71 (home and a folder); a folder's tile has a tab, as a folder.
+// Single-line rows from y 71 (home and a folder): icon, name, the detail on the right and the badge; a folder's row has the folder icon.
+// The first shown row keeps one row above the selection while it can.
+int tileFirst(int shown){return max(0,min(selected-1,shown-tileRowsShown));}
 void drawTiles(const uint8_t* order,int shown,const AppTile* tiles){
- auto& d=g();selected=max(0,min(selected,shown-1));int firstRow=max(0,selected/tileColumns-1);
- for(int i=firstRow*tileColumns;i<shown&&i<(firstRow+2)*tileColumns;i++){
+ auto& d=g();selected=max(0,min(selected,shown-1));int first=tileFirst(shown);
+ for(int i=first;i<shown&&i<first+tileRowsShown;i++){
   bool folder=order[i]&AppFolder;AppTile tile=folder?folderTile(order[i]&~AppFolder,tiles):tiles[order[i]];
-  int x=8+(i%tileColumns)*104,y=71+(i/tileColumns-firstRow)*74;bool focus=selected==i;
-  if(folder)d.fillRoundRect(x+6,y-3,40,10,4,focus?accent:line);
-  panel(x,y,96,68,focus?cardHi:card,8);if(focus)ring(x,y,96,68,8);target(x,y,96,min(68,219-y),i);
-  d.fillRoundRect(x+9,y+8,26,26,6,bg);icon(tile.ic,x+22,y+21,8,tile.hue,bg);
-  if(tile.badge){String b=tile.badge>99?"99+":String(tile.badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(x+88-w,y+8,w,13,6,bad);textCenter(x+88-w/2,y+18,b,ink,small);}
-  String rows[2];if(measure(tile.name,bold)>80&&wrap(tile.name,rows,2,80,bold)==2){text(x+9,y+45,rows[0],ink,bold);text(x+9,y+57,fit(rows[1],80,bold),ink,bold);text(x+9,y+65,fit(tile.detail,80,small),dim,small);} // a long name takes two rows
-  else{text(x+9,y+49,fit(tile.name,80,bold),ink,bold);text(x+9,y+61,fit(tile.detail,80,small),dim,small);}
+  int y=tileTop+(i-first)*tileRowH,h=tileRowH-1;bool focus=selected==i;
+  panel(8,y,304,h,focus?cardHi:bg,7);target(8,y,304,h,i); // the highlight alone marks the selection, no accent bar
+  icon(tile.ic,20,y+h/2,6,tile.hue,focus?cardHi:bg);
+  int right=306;
+  if(tile.badge){String b=tile.badge>99?"99+":String(tile.badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(right-w,y+(h-14)/2,w,14,7,bad);textCenter(right-w/2,y+(h-14)/2+11,b,ink,small);right-=w+6;}
+  int nameW=min(measure(tile.name,bold),right-33-40);text(33,y+h/2+5,fit(tile.name,nameW,bold),ink,bold);
+  int detailW=right-33-nameW-10;if(detailW>20)textRight(right,y+h/2+4,fit(tile.detail,detailW,small),dim,small);
  }
- scrollbar(firstRow,2,(shown+tileColumns-1)/tileColumns,71,142);
+ scrollbar(first,tileRowsShown,shown,tileTop,tileRowsShown*tileRowH-1);
 }
 void drawHome(){
  panel(8,26,304,38,card,8);icon(IcRadio,26,44,9,meshRadio.ready?accent:bad,card);
@@ -1021,7 +1023,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(page==NetList&&key==Erase){netListErase();return;}
  if(page==Map){if(key=='l'||key=='L'){change(Library);return;}if(key==KeyLeft)maps.pan(-70,0);if(key==KeyRight)maps.pan(70,0);if(key==KeyUp)maps.pan(0,-70);if(key==KeyDown)maps.pan(0,70);if(key=='+'||key=='=')maps.changeZoom(1);if(key=='-'||key=='_')maps.changeZoom(-1);if(key==Enter){maps.follow=true;if(hardware.gpsFix())maps.center(hardware.gps.location.lat(),hardware.gps.location.lng());else notice(t("Waiting for GPS fix","Ожидание GPS-позиции"),warn);}return;}
  if((page==Nodes||page==Node)&&(key=='p'||key=='P')){if(Peer* p=focusedPeer()){if(p->position){maps.follow=false;maps.center(p->latitude,p->longitude);change(Map);}else notice(t("This node has not shared GPS","Узел пока не передал GPS"),warn);}return;}
- if((page==Home||page==Folder)&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){uint8_t order[AppEntriesMax];int tileCount=page==Folder?appsShown(order,folderOpen):appsShown(order),tileRows=(tileCount+tileColumns-1)/tileColumns;if(!tileCount)return;selected=constrain(selected,0,tileCount-1);int col=selected%tileColumns,row=selected/tileColumns,n=min(tileColumns,tileCount-row*tileColumns);if(key==KeyLeft)col=(col+n-1)%n;if(key==KeyRight)col=(col+1)%n;if(key==KeyUp)row=(row+tileRows-1)%tileRows;if(key==KeyDown)row=(row+1)%tileRows;selected=min(row*tileColumns+col,tileCount-1);return;}
+ if((page==Home||page==Folder)&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){uint8_t order[AppEntriesMax];int tileCount=page==Folder?appsShown(order,folderOpen):appsShown(order);if(!tileCount)return;selected=constrain(selected,0,tileCount-1);selected=(selected+(key==KeyLeft||key==KeyUp?tileCount-1:1))%tileCount;return;} // a list: up/left the previous row, down/right the next
  if(page==Node&&(key==KeyLeft||key==KeyRight||key==KeyUp||key==KeyDown)){Peer* p=focusedPeer();if(!p)return;NodeAction acts[6];int n=nodeActions(*p,acts);action=(action+(key==KeyLeft||key==KeyUp?-1:1)+n)%n;return;}
  if(page==Sensors&&(key==KeyLeft||key==KeyRight)){selected=(selected+(key==KeyLeft?2:1))%3;return;}
  if(page==WardriveView&&wardriveKey(key))return;

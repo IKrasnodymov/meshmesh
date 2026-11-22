@@ -35,8 +35,8 @@
  auto touch=[](char gesture,int x,int y){uiTouch(gesture,x,y);tick();};
  // Home: the games folder's tile is selected by the keys and tapped; in the folder a tap opens Checkers.
  key(0x82);{uint8_t o[AppEntriesMax];unsigned n=appsShown(o);int at=-1;for(unsigned i=0;i<n;i++)if(o[i]&AppFolder)at=i;must(at>=0,"games folder tile");
-  for(int k=0;k<at/3;k++)key(0xb6);for(int k=0;k<at%3;k++)key(0xb7);int first=max(0,at/3-1);touch('t',8+(at%3)*104+48,71+(at/3-first)*74+34);}
- expect("folder by a tap","\"page\":\"folder\"");touch('t',8+104+48,71+34);expect("checkers tile","\"page\":\"checkers\"");
+  for(int k=0;k<at;k++)key(0xb6);int first=max(0,min(at-1,int(n)-6));touch('t',160,71+(at-first)*24+12);}
+ expect("folder by a tap","\"page\":\"folder\"");touch('t',160,71+24+12);expect("checkers tile","\"page\":\"checkers\"");
  touch('t',160,24+20);expect("new game row","\"page\":\"duel_pick\"");touch('t',160,35);expect("colour row","\"duel_color\":0");
  touch('t',160,60+48+20);expect("first tap on a contact selects","\"selected\":1");expect("no invitation yet","\"page\":\"duel_pick\"");
  touch('t',160,60+20);touch('t',160,60+20);expect("second tap invites","\"page\":\"checkers_board\"");
@@ -45,7 +45,7 @@
   say(g,"2 f6-e5");tick();touch('t',4+3*24+12,25+4*24+12);touch('t',4+5*24+12,25+2*24+12);must(g->game.plies==3&&g->game.last.capture,"capture d4:f6 by taps");shot("tdeck-checkers");
   touch('t',160,10);expect("board back to the list","\"page\":\"checkers\"");touch('t',160,10);expect("list back to the folder","\"page\":\"folder\"");}
  // Sea battle: the tile, a contact, then a tap aims and a second tap on the same cell fires.
- touch('t',8+2*104+48,71+34);expect("sea tile","\"page\":\"sea\"");touch('t',160,24+20);expect("sea contact choice","\"page\":\"duel_pick\"");
+ touch('t',160,71+2*24+12);expect("sea tile","\"page\":\"sea\"");touch('t',160,24+20);expect("sea contact choice","\"page\":\"duel_pick\"");
  touch('t',160,60+20);touch('t',160,60+20);expect("sea invitation","\"page\":\"sea_board\"");
  {Duel* g=shown();must(g&&g->kind==Duel::Sea,"sea game");say(g,"yes");tick();touch('t',18+4*17+8,35+4*17+8);expect("tap aims","\"duel_cursor\":\"e5\"");must(g->aim<0,"one tap only aims");
   touch('t',18+4*17+8,35+4*17+8);must(g->aim==44&&lastSent().find(" 1 e5")!=std::string::npos,"second tap fires");shot("tdeck-sea");
@@ -58,7 +58,7 @@
 #else
  // Home: the games folder (its badge sums the games waiting), the folder page, back with the folder's tile selected.
  key(0x82);uint8_t top[AppEntriesMax];unsigned topN=appsShown(top);int games=-1;for(unsigned i=0;i<topN;i++)if(top[i]&AppFolder)games=i;must(games>=0,"games folder on the home grid");
- for(int k=0;k<games/3;k++)key(0xb6);for(int k=0;k<games%3;k++)key(0xb7);shot("m9-home-folder");
+ for(int k=0;k<games;k++)key(0xb6);shot("m9-home-folder");
  key(13);must(has("\"page\":\"folder\""),"folder opens");shot("m9-folder");
  key(0x86);{char want[24];snprintf(want,sizeof want,"\"selected\":%d,",games);must(has("\"page\":\"home\"")&&has(want),"BACK: the folder's tile");}
  // Checkers: the list from the folder, a new game with Heltec V4 as White.

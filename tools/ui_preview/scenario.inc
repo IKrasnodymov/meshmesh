@@ -1,9 +1,9 @@
 // Screens rendered by the preview; the key codes are the production M9 codes.
-// Selects an app's tile on the M9 home grid (three a row) from the first one; an app in a folder: the folder's tile
+// Selects an app's row on the M9 home list from the first one; an app in a folder: the folder's tile
 // opens the folder, then the app's tile there is selected.
 static void tile(const char* id){
  key(0x82);uint8_t o[AppEntriesMax];unsigned n=appsShown(o);int app=-1;for(uint8_t i=0;i<uiAppCount;i++)if(!strcmp(uiApps[i],id))app=i;
- auto pick=[](unsigned i){for(unsigned k=0;k<i/3;k++)key(0xb6);for(unsigned k=0;k<i%3;k++)key(0xb7);};
+ auto pick=[](unsigned i){for(unsigned k=0;k<i;k++)key(0xb6);};
  for(unsigned i=0;i<n;i++)if(o[i]==app){pick(i);return;}
  int f=app<0?-1:appsFolderOf(uint8_t(app));
  for(unsigned i=0;i<n&&f>=0;i++)if(o[i]==(AppFolder|f)){pick(i);key(13);uint8_t in[AppEntriesMax];unsigned m=appsShown(in,f);for(unsigned j=0;j<m;j++)if(in[j]==app){pick(j);return;}}
@@ -37,10 +37,10 @@ static void scenario(){
  // The rightmost footer hint (BACK on most pages), found by tapping from the right edge.
  auto footerRight=[&](const char* page){for(int x=316;x>150&&uiStatus().indexOf(page)>=0;x-=4){uiTouch('t',x,230);tick();}};
  shot("tdeck-role");touch('t',160,10);expect("title bar leaves the boot choice","\"page\":\"home\"");
- touch('t',260,100);expect("Nodes tile","\"page\":\"nodes\"");shot("tdeck-nodes");
+ touch('t',160,71+2*24+12);expect("Nodes row","\"page\":\"nodes\"");shot("tdeck-nodes");
  touch('t',160,90);expect("second node row","\"page\":\"node\"");expect("second node","\"selected_node\":\"4A00B2C3D4E5F711\"");
  touch('t',160,10);expect("title bar back","\"page\":\"nodes\"");key(0x83);footerRight("\"page\":\"diagnostics\"");expect("footer BACK to where @ was pressed","\"page\":\"nodes\"");key(0x82);
- touch('d',0,0);expect("swipe down","\"selected\":3");touch('u',0,0);touch('l',0,0);expect("swipe left","\"selected\":2");
+ touch('d',0,0);expect("swipe down","\"selected\":1");touch('d',0,0);touch('u',0,0);touch('l',0,0);expect("swipe up and left","\"selected\":0");
  key(0x90);touch('t',160,24+32+10);expect("Settings row","\"page\":\"display\"");
  touch('t',160,25+23+8);expect("first tap selects","\"selected\":1");shot("tdeck-display");
  touch('t',160,10);expect("cancel the editor","\"page\":\"settings\"");
@@ -146,7 +146,7 @@ static void scenario(){
  {String want=String("\"selected_node\":\"")+meshRadio.idText(peerId(1))+"\"";for(int i=0;i<8&&uiStatus().indexOf(want)<0;i++)key(0xb6);
   if(uiStatus().indexOf(want)<0){printf("FAIL repeater not in the node list: %s\n",uiStatus().c_str());exit(1);}}
  key(13);shot("node-repeater");key(13);if(uiStatus().indexOf("\"page\":\"remote\"")<0){printf("FAIL server page: %s\n",uiStatus().c_str());exit(1);}shot("remote");key(0x86);key(0x86);key(0x86);
- key(0x82);key(0xb6);key(13);shot("sensors");
+ key(0x82);for(int i=0;i<3;i++)key(0xb6);key(13);shot("sensors");
  // Navigation: the GPS switch, then BACK returns where the page was opened (the menu tile, the settings row).
  {bool gps=config.gps;key(13);if(config.gps==gps){printf("FAIL GPS switch in navigation\n");exit(1);}shot("sensors-gps");key(13);
   key(0x86);if(uiStatus().indexOf("\"page\":\"home\"")<0||uiStatus().indexOf("\"selected\":3,")<0){printf("FAIL back from navigation to the menu: %s\n",uiStatus().c_str());exit(1);}
@@ -169,7 +169,7 @@ static void scenario(){
  key(13);if(uiStatus().indexOf("\"locked\":true")<0){printf("FAIL slow OK presses unlocked\n");exit(1);}fakeMillis+=1500;
  uiKey(13);fakeMillis+=300;uiKey(13);tick();if(uiStatus().indexOf("\"locked\":false")<0){printf("FAIL two OK presses did not unlock: %s\n",uiStatus().c_str());exit(1);}
  key(0x88);key(0xa3);key(0x82);
- key(0xb6);key(0xb7);key(0xb7);shot("home-radar");key(0xb6);shot("home-scrolled");key(0xb5);key(13);shot("radar");key(0xb6);key(0xb6);shot("radar-select");key(0xb5);key(0xb5);key(13);shot("homing");key(0x86);shot("radar-back");key(0xb7);shot("motion");key('b');for(int i=0;i<4;i++)tick();shot("motion-beacon");key('b');key(0xb7);key(0x86);
+ for(int i=0;i<5;i++)key(0xb6);shot("home-radar");for(int i=0;i<3;i++)key(0xb6);shot("home-scrolled");for(int i=0;i<3;i++)key(0xb5);key(13);shot("radar");key(0xb6);key(0xb6);shot("radar-select");key(0xb5);key(0xb5);key(13);shot("homing");key(0x86);shot("radar-back");key(0xb7);shot("motion");key('b');for(int i=0;i<4;i++)tick();shot("motion-beacon");key('b');key(0xb7);key(0x86);
  // Solitaire: the ninth home tile; hints, a held run and the key sheet.
  tile("solitaire");shot("home-solitaire");key(13);shot("solitaire");for(int i=0;i<12;i++){key('p');key(' ');}shot("solitaire-played");
  key(0xb5);key(0xb5);key(0xb6);key(0xb5);key(13);key(0xb7);shot("solitaire-held");key(0x86);key('h');shot("solitaire-help");key(0x86);key(0x86);
