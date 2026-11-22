@@ -303,7 +303,7 @@ void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);} // the
 unsigned moduleStates(bool* state){bool s[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};unsigned faults=0;for(int i=0;i<8;i++){if(state)state[i]=s[i];faults+=!s[i];}return faults;}
 // Home: identity strip and a list of destinations; six rows are visible, the rest scroll.
 // The tiles follow config.apps: its order and folders, without the hidden ones (Apps.cpp).
-const int tileTop=71,tileRowH=24,tileRowsShown=6;
+const int tileTop=48,tileRowH=24,tileRowsShown=7;
 struct AppTile{Icon ic;uint16_t hue;String name,detail;unsigned badge;};
 // The tile of every app ID, in uiApps order.
 void appTiles(AppTile* out){
@@ -335,7 +335,7 @@ AppTile folderTile(uint8_t f,const AppTile* tiles){
  uint8_t in[AppEntriesMax];unsigned n=appsShown(in,f);AppTile t{IcFolder,warn,appsFolderName(f),String(),0};
  for(unsigned i=0;i<n;i++){t.badge+=tiles[in[i]].badge;if(i<4)t.detail+=String(i?", ":"")+tiles[in[i]].name;}return t;
 }
-// Single-line rows from y 71 (home and a folder): icon, name, the detail on the right and the badge; a folder's row has the folder icon.
+// Single-line rows from y 48 (home and a folder): icon, name, the detail on the right and the badge; a folder's row has the folder icon.
 // The first shown row keeps one row above the selection while it can.
 int menuFirst(int shown,int visible){return max(0,min(selected-1,shown-visible));}
 // A menu row (home, a folder, settings): row i at y, the icon, the name, the detail on the right and the badge;
@@ -357,21 +357,22 @@ void drawTiles(const uint8_t* order,int shown,const AppTile* tiles){
  }
  scrollbar(first,tileRowsShown,shown,tileTop,tileRowsShown*tileRowH-1);
 }
+// The one-line strip above the home and folder rows: icon, name in bold, then the detail.
+void strip(Icon ic,uint16_t hue,const String& name,int nameW){panel(8,25,304,20,card,6);icon(ic,20,35,6,hue,card);text(33,39,fit(name,nameW,bold),ink,bold);}
 void drawHome(){
- panel(8,26,304,38,card,8);icon(IcRadio,26,44,9,meshRadio.ready?accent:bad,card);
- text(44,41,fit(String(config.name),150,bold),ink,bold);
- text(44,56,fit(meshRadio.ready?String(config.frequency,3)+t(" MHz · SF"," МГц · SF")+String(config.sf)+" · BW "+String(config.bandwidth,1)+" · CR 4/"+String(config.cr):t("Radio error ","Ошибка радио ")+String(meshRadio.radioError),200,small),meshRadio.ready?dim:bad,small);
- textRight(302,41,String(meshRadio.txCount),ink,small);tri(302-measure(String(meshRadio.txCount),small)-7,38,0,3,accent);
- textRight(302,56,String(meshRadio.rxCount),ink,small);tri(302-measure(String(meshRadio.rxCount),small)-7,53,2,3,ok);
+ strip(IcRadio,meshRadio.ready?accent:bad,config.name,110);int x=33+min(measure(config.name,bold),110)+8,r=306;
+ auto counter=[&](unsigned n,int dir,uint16_t c){String v(n);textRight(r,39,v,ink,small);r-=measure(v,small)+7;tri(r,36,dir,3,c);r-=10;};
+ counter(meshRadio.rxCount,2,ok);counter(meshRadio.txCount,0,accent); // sent, then received, on the right
+ text(x,39,fit(meshRadio.ready?String(config.frequency,3)+t(" MHz · SF"," МГц · SF")+String(config.sf)+" · BW "+String(config.bandwidth,1)+" · CR 4/"+String(config.cr):t("Radio error ","Ошибка радио ")+String(meshRadio.radioError),r-x,small),meshRadio.ready?dim:bad,small);
  AppTile tiles[sizeof uiApps/sizeof *uiApps];appTiles(tiles);uint8_t order[AppEntriesMax];drawTiles(order,appsShown(order),tiles);
  footer({{"OK",t("Open","Открыть")},{"MSG",t("Chats","Чаты")},{"MAP",t("Map","Карта")},{"MIC",t("Lock","Блок")}});
 }
 // A folder: its apps in the same grid; folders are arranged on the web page or in the app.
 void drawFolder(){
  AppTile tiles[sizeof uiApps/sizeof *uiApps];appTiles(tiles);uint8_t order[AppEntriesMax];int shown=appsShown(order,folderOpen);unsigned badge=0;for(int i=0;i<shown;i++)badge+=tiles[order[i]].badge;
- panel(8,26,304,38,card,8);icon(IcFolder,26,44,9,warn,card);
- text(44,41,fit(count(shown,"app","apps","приложение","приложения","приложений")+(badge?" · "+String(badge)+t(" waiting"," ждут"):String()),258,bold),ink,bold);
- text(44,56,fit(t("Folders and order: web page or app","Папки и порядок: веб-страница или приложение"),258,small),dim,small);
+ String head=count(shown,"app","apps","приложение","приложения","приложений")+(badge?" · "+String(badge)+t(" waiting"," ждут"):String());
+ strip(IcFolder,warn,head,150);int x=33+min(measure(head,bold),150)+8;
+ text(x,39,fit(t("Folders and order: web page or app","Папки и порядок: веб-страница или приложение"),306-x,small),dim,small);
  if(!shown){textCenter(160,130,t("No apps in this folder","В папке нет приложений"),dim);footer({{"BACK",t("Menu","Меню")}});return;}
  drawTiles(order,shown,tiles);
  footer({{"OK",t("Open","Открыть")},{"<>",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});

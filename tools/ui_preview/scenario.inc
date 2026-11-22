@@ -37,7 +37,7 @@ static void scenario(){
  // The rightmost footer hint (BACK on most pages), found by tapping from the right edge.
  auto footerRight=[&](const char* page){for(int x=316;x>150&&uiStatus().indexOf(page)>=0;x-=4){uiTouch('t',x,230);tick();}};
  shot("tdeck-role");touch('t',160,10);expect("title bar leaves the boot choice","\"page\":\"home\"");
- touch('t',160,71+2*24+12);expect("Nodes row","\"page\":\"nodes\"");shot("tdeck-nodes");
+ touch('t',160,48+2*24+12);expect("Nodes row","\"page\":\"nodes\"");shot("tdeck-nodes");
  touch('t',160,90);expect("second node row","\"page\":\"node\"");expect("second node","\"selected_node\":\"4A00B2C3D4E5F711\"");
  touch('t',160,10);expect("title bar back","\"page\":\"nodes\"");key(0x83);footerRight("\"page\":\"diagnostics\"");expect("footer BACK to where @ was pressed","\"page\":\"nodes\"");key(0x82);
  touch('d',0,0);expect("swipe down","\"selected\":1");touch('d',0,0);touch('u',0,0);touch('l',0,0);expect("swipe up and left","\"selected\":0");
