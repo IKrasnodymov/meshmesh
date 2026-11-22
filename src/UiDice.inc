@@ -247,7 +247,7 @@ void drawDiceBlock(){
  d.fillCircle(22,62,5,hue);text(32,66,fit(t("Block ","Блок ")+String(sheetSel+1)+" · "+b.name,270,bold),ink,bold);
  uint8_t fs[FieldCount];unsigned n=blockFields(b.kind,fs);blockField=constrain(blockField,0,int(n)-1);static int first=0;if(blockField<first)first=blockField;if(blockField>=first+6)first=blockField-5;first=constrain(first,0,max(0,int(n)-6)); // scrolls only past an edge: a second tap hits the same row
  for(int k=first;k<int(n)&&k<first+6;k++){int y=74+(k-first)*19;bool focus=k==blockField;uint8_t f=fs[k];
-  panel(14,y,292,17,focus?card:cardHi,5);if(focus)d.fillRoundRect(14,y+4,3,9,1,accent);
+  panel(14,y,292,17,focus?card:cardHi,5);
   String label=fieldLabel(f,b.kind);text(22,y+12,fit(label,128,small),focus?ink:dim,small);
   int vx=154;if(f==FieldColor){d.fillRoundRect(vx,y+4,24,9,3,hue);text(vx+30,y+12,String(b.color+1)+"/15",faint,small);}
   else if(f==FieldShape){drawStatShape(d,b.shape,vx+8,y+8,6,mix(dice::colors[b.color%dice::Colors],0x1c2835,.6f),hue);}
@@ -292,7 +292,7 @@ void drawDiceSaved(){
  if(!count){icon(IcDice,160,112,14,faint,cardHi);textCenter(160,146,t("No saved rolls","Сохранённых бросков нет"),dim);textCenter(160,162,t("A: save a formula with a name","A: сохранить формулу с именем"),faint,small);}
  diceSel=count?constrain(diceSel,0,int(count)-1):0;int first=max(0,min(diceSel-2,int(count)-5));
  for(int i=first;i<int(count)&&i<first+5;i++){int y=72+(i-first)*24;bool focus=i==diceSel;const dice::Block& r=dicer.sheet.block[dicer.savedBlock(i)];
-  panel(14,y,292,22,focus?card:cardHi,6);if(focus)d.fillRoundRect(14,y+5,3,12,1,accent);d.fillCircle(28,y+11,5,diceColor(r.color));
+  panel(14,y,292,22,focus?card:cardHi,6);d.fillCircle(28,y+11,5,diceColor(r.color));
   String f=dice::readable(dicer.rollFormula(dicer.savedBlock(i)).c_str());if(!f.length())f="?";int fw=measure(f,small);text(40,y+15,fit(r.name,250-fw),focus?ink:dim,focus?bold:body);textRight(300,y+15,f,focus?accent:faint,small);diceSpot(14,y,292,22,TapSaved,i);}
  scrollbar(first,5,count,72,118);
  text(18,208,t("F: formula  N: name  C: colour  DEL: delete","F: формула  N: имя  C: цвет  DEL: удалить"),faint,small);
@@ -304,7 +304,7 @@ void drawDiceHeroes(){
  diceSel=constrain(diceSel,0,int(s.characters)-1);int y0=72;
  if(dicer.offered){panel(14,y0,292,20,rgb(0x3a2f12),6);text(22,y0+14,fit(t("O: sheet from ","O: лист от ")+dicer.offer.from+": "+dicer.offer.name,276,small),warn,small);y0+=22;}
  for(unsigned i=0;i<s.characters;i++){int y=y0+i*22;bool focus=int(i)==diceSel;const dice::Character& c=s.list[i];
-  panel(14,y,292,20,focus?card:cardHi,6);if(focus)d.fillRoundRect(14,y+4,3,12,1,accent);
+  panel(14,y,292,20,focus?card:cardHi,6);
   if(i){d.fillCircle(28,y+10,7,avatarHues[i%8]);textCenter(28,y+14,initial(c.name),ink,small);}else{d.fillCircle(28,y+10,7,line);icon(IcPerson,28,y+10,4,dim,line);}
   text(42,y+14,fit(dicer.heroName(i),170,focus?bold:body),focus?ink:dim,focus?bold:body);
   if(i==s.character)textRight(300,y+14,count(dicer.sheet.count,"block","blocks","блок","блока","блоков")+" · "+t("now","сейчас"),ok,small);diceSpot(14,y,292,20,TapHeroRow,i);}
@@ -329,7 +329,7 @@ void drawDiceSend(){
  if(!n){textCenter(160,130,t("No chat contacts yet","Пока нет контактов-собеседников"),dim);return;}
  diceSel=constrain(diceSel,0,int(n)-1);int first=max(0,min(diceSel-2,int(n)-5));
  for(int i=first;i<int(n)&&i<first+5;i++){int y=72+(i-first)*24;bool focus=i==diceSel;const Peer* p=meshRadio.findContact(ids[i]);
-  panel(14,y,292,22,focus?card:cardHi,6);if(focus)d.fillRoundRect(14,y+5,3,12,1,accent);text(24,y+15,fit(p?p->name:"",200,focus?bold:body),focus?ink:dim,focus?bold:body);
+  panel(14,y,292,22,focus?card:cardHi,6);text(24,y+15,fit(p?p->name:"",200,focus?bold:body),focus?ink:dim,focus?bold:body);
   if(p&&p->heard)textRight(300,y+15,p->hops?String(p->hops)+t(" hops"," хоп."):t("direct","напрямую"),faint,small);diceSpot(14,y,292,22,TapPick,i);}
  scrollbar(first,5,n,72,118);
  const auto& o=dicer.out;if(o.parts){String st=o.done?t("Delivered to ","Доставлен: ")+o.name:o.failed?t("Not delivered to ","Не доставлен: ")+o.name:t("Sending: part ","Отправка: часть ")+String(o.part+1)+"/"+String(o.parts);text(18,208,fit(st,284,small),o.failed?bad:o.done?ok:accent,small);}

@@ -297,7 +297,7 @@ void drawToast(){
  panel(x,193,w,23,cardHi,6);g().drawRoundRect(x,193,w,23,6,line);g().fillRoundRect(x+5,198,3,13,1,toastColor);text(x+15,209,s,ink);
 }
 void scrollbar(int first,int visible,int total,int y,int h){if(total<=visible)return;int th=max(12,h*visible/total),ty=y+(h-th)*first/max(1,total-visible);g().fillRoundRect(315,y,3,h,1,card);g().fillRoundRect(315,ty,3,th,1,faint);}
-void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);if(focus)g().fillRoundRect(8,y+6,3,h-12,1,accent);}
+void listRow(int y,int h,bool focus){panel(8,y,304,h,focus?cardHi:bg,7);} // the highlight alone marks the selection, as on home
 
 // Module health: the same eight modules as the diagnostics page.
 unsigned moduleStates(bool* state){bool s[]={meshRadio.ready,hardware.keyboardOk,hardware.sdOk,hardware.fsOk,hardware.rtcValid,hardware.gps.passedChecksum()>0,hardware.compassSample,hardware.imuSample};unsigned faults=0;for(int i=0;i<8;i++){if(state)state[i]=s[i];faults+=!s[i];}return faults;}
@@ -337,18 +337,23 @@ AppTile folderTile(uint8_t f,const AppTile* tiles){
 }
 // Single-line rows from y 71 (home and a folder): icon, name, the detail on the right and the badge; a folder's row has the folder icon.
 // The first shown row keeps one row above the selection while it can.
-int tileFirst(int shown){return max(0,min(selected-1,shown-tileRowsShown));}
+int menuFirst(int shown,int visible){return max(0,min(selected-1,shown-visible));}
+// A menu row (home, a folder, settings): row i at y, the icon, the name, the detail on the right and the badge;
+// the highlight alone marks the selection.
+void menuRow(int y,int i,Icon ic,uint16_t hue,const String& name,const String& detail,unsigned badge=0){
+ auto& d=g();const int h=tileRowH-1;bool focus=selected==i;
+ panel(8,y,304,h,focus?cardHi:bg,7);target(8,y,304,h,i);
+ icon(ic,20,y+h/2,6,hue,focus?cardHi:bg);
+ int right=306;
+ if(badge){String b=badge>99?"99+":String(badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(right-w,y+(h-14)/2,w,14,7,bad);textCenter(right-w/2,y+(h-14)/2+11,b,ink,small);right-=w+6;}
+ int nameW=min(measure(name,bold),right-33-40);text(33,y+h/2+5,fit(name,nameW,bold),ink,bold);
+ int detailW=right-33-nameW-10;if(detailW>20)textRight(right,y+h/2+4,fit(detail,detailW,small),dim,small);
+}
 void drawTiles(const uint8_t* order,int shown,const AppTile* tiles){
- auto& d=g();selected=max(0,min(selected,shown-1));int first=tileFirst(shown);
+ selected=max(0,min(selected,shown-1));int first=menuFirst(shown,tileRowsShown);
  for(int i=first;i<shown&&i<first+tileRowsShown;i++){
   bool folder=order[i]&AppFolder;AppTile tile=folder?folderTile(order[i]&~AppFolder,tiles):tiles[order[i]];
-  int y=tileTop+(i-first)*tileRowH,h=tileRowH-1;bool focus=selected==i;
-  panel(8,y,304,h,focus?cardHi:bg,7);target(8,y,304,h,i); // the highlight alone marks the selection, no accent bar
-  icon(tile.ic,20,y+h/2,6,tile.hue,focus?cardHi:bg);
-  int right=306;
-  if(tile.badge){String b=tile.badge>99?"99+":String(tile.badge);int w=max(16,measure(b,small)+8);d.fillRoundRect(right-w,y+(h-14)/2,w,14,7,bad);textCenter(right-w/2,y+(h-14)/2+11,b,ink,small);right-=w+6;}
-  int nameW=min(measure(tile.name,bold),right-33-40);text(33,y+h/2+5,fit(tile.name,nameW,bold),ink,bold);
-  int detailW=right-33-nameW-10;if(detailW>20)textRight(right,y+h/2+4,fit(tile.detail,detailW,small),dim,small);
+  menuRow(tileTop+(i-first)*tileRowH,i,tile.ic,tile.hue,tile.name,tile.detail,tile.badge);
  }
  scrollbar(first,tileRowsShown,shown,tileTop,tileRowsShown*tileRowH-1);
 }
@@ -595,7 +600,7 @@ void drawScope(){
  text(194,34,fit("Wi-Fi "+String(radar.counted(RadarTarget::Wifi))+"·BLE "+String(radar.counted(RadarTarget::Ble))+"·LoRa "+String(radar.counted(RadarTarget::Lora)),120,small),dim,small);
  int first=max(0,sel-6);
  for(int i=first;i<int(radar.count)&&i<first+7;i++){const RadarTarget& r=radar.targets[i];int y=40+(i-first)*22;bool focus=i==sel;
-  panel(190,y,124,20,focus?cardHi:bg,5);if(focus)d.fillRoundRect(190,y+4,3,12,1,accent);d.fillCircle(199,y+10,3,rgb(targetHue(r)));
+  panel(190,y,124,20,focus?cardHi:bg,5);d.fillCircle(199,y+10,3,rgb(targetHue(r)));
   text(206,y+14,fit(targetName(r),76),focus?ink:dim);textRight(310,y+14,String(int(r.rssi)),focus?ink:dim,bold);}
  String state=wifiState();if(!state.length())state=bleState();
  unsigned people=radar.personal(30000);if(!state.length()&&people)state=count(people,"phone/watch nearby","phones/watches nearby","телефон/часы рядом","телефона/часов рядом","телефонов/часов рядом");
@@ -680,9 +685,9 @@ void drawSettings(){
   "GPS "+flag(config.gps)+" · "+(navigation.calibrated?t("compass calibrated","компас откалиброван"):t("compass not calibrated","компас не откалиброван")),
   "Wi-Fi "+flag(portalActive())+" · BLE "+flag(bleActive()),"RX "+String(meshRadio.rxCount)+" · TX "+String(meshRadio.txCount)+" · "+String(meshRadio.relayed)+t(" relayed"," переслано"),
   t("What every key does","Что делает каждая клавиша"),maps.title.length()?maps.title+" · "+count(maps.tileCount,"tile","tiles","тайл","тайла","тайлов"):t("No maps","Карт нет"),config.role==RoleRepeater?t("MeshCore repeater","Репитер MeshCore"):config.role==RoleRoom?t("MeshCore room server","Комната MeshCore"):t("Normal: chats, maps, radar","Обычный: чаты, карты, радар"),powerOnHint()};
- int first=max(0,selected-5);for(int i=first;i<settingsCount&&i<first+6;i++){int y=24+(i-first)*32;bool focus=selected==i;listRow(y,30,focus);target(8,y,304,30,i);
-  g().fillRoundRect(16,y+4,22,22,5,card);icon(icons[i],27,y+15,7,hues[i],card);text(46,y+14,names[i],ink,bold);text(46,y+26,fit(details[i],250,small),dim,small);tri(302,y+15,1,4,focus?accent:faint);}
- scrollbar(first,6,settingsCount,24,190);footer({{"OK",t("Open","Открыть")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
+ const int shown=8; // menu rows as on home, from under the status bar
+ int first=menuFirst(settingsCount,shown);for(int i=first;i<settingsCount&&i<first+shown;i++)menuRow(24+(i-first)*tileRowH,i,icons[i],hues[i],names[i],details[i]);
+ scrollbar(first,shown,settingsCount,24,shown*tileRowH-1);footer({{"OK",t("Open","Открыть")},{"^v",t("Select","Выбор")},{"BACK",t("Menu","Меню")}});
 }
 int settingRows(){return page==Radio?13:13;} // Radio: 8 values, the region, its search, the previous profile and the network search; Display: 10 values; then Save
 // Radio rows 8 and 9: the default region of our floods (OK types one, <> the regions found) and the region search;

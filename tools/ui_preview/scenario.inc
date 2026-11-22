@@ -44,7 +44,7 @@ static void scenario(){
  key(0x90);touch('t',160,24+32+10);expect("Settings row","\"page\":\"display\"");
  touch('t',160,25+23+8);expect("first tap selects","\"selected\":1");shot("tdeck-display");
  touch('t',160,10);expect("cancel the editor","\"page\":\"settings\"");
- touch('t',160,24+3*32+10);expect("Connections","\"page\":\"network\"");touch('t',160,25+56+6+44+10);expect("Bluetooth card toggles","\"page\":\"network\"");
+ touch('t',160,24+3*24+10);expect("Connections","\"page\":\"network\"");touch('t',160,25+56+6+44+10);expect("Bluetooth card toggles","\"page\":\"network\"");
  if(!bleActive()){printf("FAIL Bluetooth card did not toggle\n");exit(1);}
  internet.state=Internet::Online;touch('t',160,25+38+6+10);expect("Internet card","\"page\":\"internet\"");
  // Footer: OK (client on/off), DEL (rescan; on the T-Deck keyboard DEL would go back here), BACK.
