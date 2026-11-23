@@ -1159,6 +1159,66 @@
   "ru": "Батарея садится",
   "text": "배터리 부족"
  },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "보내지 못함: 무선 또는 경로"
+ },
+ "315b16c1": {
+  "en": "Radio busy, try again",
+  "ru": "Радио занято, повторите",
+  "text": "무선 사용 중, 다시 시도"
+ },
+ "0691ba75": {
+  "en": "Path reset: next message floods",
+  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
+  "text": "경로 초기화: 다음 메시지는 flood"
+ },
+ "7a14a9e8": {
+  "en": "Path reset failed",
+  "ru": "Не удалось сбросить путь",
+  "text": "경로 초기화 실패"
+ },
+ "08d31104": {
+  "en": "OK again removes the contact",
+  "ru": "Нажмите OK ещё раз для удаления",
+  "text": "OK를 한 번 더 누르면 연락처 삭제"
+ },
+ "17781681": {
+  "en": "Contact removed; its next advert adds it again",
+  "ru": "Контакт удалён; новое объявление вернёт его",
+  "text": "연락처 삭제됨; 다음 알림이 오면 다시 추가"
+ },
+ "3e33cd0f": {
+  "en": "Cannot remove while sending",
+  "ru": "Нельзя удалить во время отправки",
+  "text": "전송 중에는 삭제 불가"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "이름 저장됨"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "이름: 1-15 UTF-8 바이트"
+ },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "지역: 문자, 숫자, '-'"
+ },
+ "cb8d0572": {
+  "en": "Password: 8-63 characters",
+  "ru": "Пароль: 8-63 символа",
+  "text": "비밀번호: 8-63자"
+ },
+ "d4544911": {
+  "en": "Name: 1-24 UTF-8 bytes",
+  "ru": "Имя: 1-24 байта UTF-8",
+  "text": "이름: 1-24 UTF-8 바이트"
+ },
  "0b2e473c": {
   "en": "Not in this mode: Settings > Device mode",
   "ru": "Недоступно в этом режиме: Настройки > Режим работы",
@@ -1763,20 +1823,6 @@
   "ru": "Всё выключено",
   "text": "모두 꺼짐"
  },
- "2aef0bab": {
-  "en": {
-   "one": "new",
-   "other": "new"
-  },
-  "ru": {
-   "one": "новое",
-   "few": "новых",
-   "many": "новых"
-  },
-  "forms": {
-   "other": "신규 {n}"
-  }
- },
  "d04d1711": {
   "en": {
    "one": "message",
@@ -1928,6 +1974,11 @@
   "ru": "Открыть",
   "text": "열기"
  },
+ "a1d3f60b": {
+  "en": "hold OK",
+  "ru": "удерж. OK",
+  "text": "OK 길게"
+ },
  "64010381": {
   "en": "Lock",
   "ru": "Блок",
@@ -2061,11 +2112,6 @@
   "en": "Send",
   "ru": "Отпр.",
   "text": "전송"
- },
- "a1d3f60b": {
-  "en": "hold OK",
-  "ru": "удерж. OK",
-  "text": "OK 길게"
  },
  "a23ea557": {
   "en": "Layout",
@@ -4051,66 +4097,6 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "설정 저장됨"
- },
- "bfb7fda0": {
-  "en": "Not sent: radio or route",
-  "ru": "Не отправлено: радио или маршрут",
-  "text": "보내지 못함: 무선 또는 경로"
- },
- "315b16c1": {
-  "en": "Radio busy, try again",
-  "ru": "Радио занято, повторите",
-  "text": "무선 사용 중, 다시 시도"
- },
- "0691ba75": {
-  "en": "Path reset: next message floods",
-  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
-  "text": "경로 초기화: 다음 메시지는 flood"
- },
- "7a14a9e8": {
-  "en": "Path reset failed",
-  "ru": "Не удалось сбросить путь",
-  "text": "경로 초기화 실패"
- },
- "08d31104": {
-  "en": "OK again removes the contact",
-  "ru": "Нажмите OK ещё раз для удаления",
-  "text": "OK를 한 번 더 누르면 연락처 삭제"
- },
- "17781681": {
-  "en": "Contact removed; its next advert adds it again",
-  "ru": "Контакт удалён; новое объявление вернёт его",
-  "text": "연락처 삭제됨; 다음 알림이 오면 다시 추가"
- },
- "3e33cd0f": {
-  "en": "Cannot remove while sending",
-  "ru": "Нельзя удалить во время отправки",
-  "text": "전송 중에는 삭제 불가"
- },
- "a34dbdc4": {
-  "en": "Name saved",
-  "ru": "Имя сохранено",
-  "text": "이름 저장됨"
- },
- "a64e97e5": {
-  "en": "Name: 1-15 UTF-8 bytes",
-  "ru": "Имя: 1-15 байт UTF-8",
-  "text": "이름: 1-15 UTF-8 바이트"
- },
- "184e57b2": {
-  "en": "Region: letters, digits, '-'",
-  "ru": "Регион: буквы, цифры, '-'",
-  "text": "지역: 문자, 숫자, '-'"
- },
- "cb8d0572": {
-  "en": "Password: 8-63 characters",
-  "ru": "Пароль: 8-63 символа",
-  "text": "비밀번호: 8-63자"
- },
- "d4544911": {
-  "en": "Name: 1-24 UTF-8 bytes",
-  "ru": "Имя: 1-24 байта UTF-8",
-  "text": "이름: 1-24 UTF-8 바이트"
  },
  "13c4173d": {
   "en": "None",

@@ -1159,6 +1159,66 @@
   "ru": "Батарея садится",
   "text": "电量低"
  },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "未发送：无线电或路由"
+ },
+ "315b16c1": {
+  "en": "Radio busy, try again",
+  "ru": "Радио занято, повторите",
+  "text": "无线电忙,请重试"
+ },
+ "0691ba75": {
+  "en": "Path reset: next message floods",
+  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
+  "text": "路径已重置: 下条消息将泛洪"
+ },
+ "7a14a9e8": {
+  "en": "Path reset failed",
+  "ru": "Не удалось сбросить путь",
+  "text": "路径重置失败"
+ },
+ "08d31104": {
+  "en": "OK again removes the contact",
+  "ru": "Нажмите OK ещё раз для удаления",
+  "text": "再按 OK 删除联系人"
+ },
+ "17781681": {
+  "en": "Contact removed; its next advert adds it again",
+  "ru": "Контакт удалён; новое объявление вернёт его",
+  "text": "联系人已删除; 收到其新通告后会重新添加"
+ },
+ "3e33cd0f": {
+  "en": "Cannot remove while sending",
+  "ru": "Нельзя удалить во время отправки",
+  "text": "发送中无法删除"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "名字已保存"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "名字: 1-15 字节 UTF-8"
+ },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "区域: 字母、数字、'-'"
+ },
+ "cb8d0572": {
+  "en": "Password: 8-63 characters",
+  "ru": "Пароль: 8-63 символа",
+  "text": "密码: 8-63 个字符"
+ },
+ "d4544911": {
+  "en": "Name: 1-24 UTF-8 bytes",
+  "ru": "Имя: 1-24 байта UTF-8",
+  "text": "名称: 1-24 字节 UTF-8"
+ },
  "0b2e473c": {
   "en": "Not in this mode: Settings > Device mode",
   "ru": "Недоступно в этом режиме: Настройки > Режим работы",
@@ -1763,20 +1823,6 @@
   "ru": "Всё выключено",
   "text": "全部关闭"
  },
- "2aef0bab": {
-  "en": {
-   "one": "new",
-   "other": "new"
-  },
-  "ru": {
-   "one": "новое",
-   "few": "новых",
-   "many": "новых"
-  },
-  "forms": {
-   "other": "{n} 未读"
-  }
- },
  "d04d1711": {
   "en": {
    "one": "message",
@@ -1928,6 +1974,11 @@
   "ru": "Открыть",
   "text": "打开"
  },
+ "a1d3f60b": {
+  "en": "hold OK",
+  "ru": "удерж. OK",
+  "text": "长按 OK"
+ },
  "64010381": {
   "en": "Lock",
   "ru": "Блок",
@@ -2061,11 +2112,6 @@
   "en": "Send",
   "ru": "Отпр.",
   "text": "发送"
- },
- "a1d3f60b": {
-  "en": "hold OK",
-  "ru": "удерж. OK",
-  "text": "长按 OK"
  },
  "a23ea557": {
   "en": "Layout",
@@ -4051,66 +4097,6 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "设置已保存"
- },
- "bfb7fda0": {
-  "en": "Not sent: radio or route",
-  "ru": "Не отправлено: радио или маршрут",
-  "text": "未发送：无线电或路由"
- },
- "315b16c1": {
-  "en": "Radio busy, try again",
-  "ru": "Радио занято, повторите",
-  "text": "无线电忙,请重试"
- },
- "0691ba75": {
-  "en": "Path reset: next message floods",
-  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
-  "text": "路径已重置: 下条消息将泛洪"
- },
- "7a14a9e8": {
-  "en": "Path reset failed",
-  "ru": "Не удалось сбросить путь",
-  "text": "路径重置失败"
- },
- "08d31104": {
-  "en": "OK again removes the contact",
-  "ru": "Нажмите OK ещё раз для удаления",
-  "text": "再按 OK 删除联系人"
- },
- "17781681": {
-  "en": "Contact removed; its next advert adds it again",
-  "ru": "Контакт удалён; новое объявление вернёт его",
-  "text": "联系人已删除; 收到其新通告后会重新添加"
- },
- "3e33cd0f": {
-  "en": "Cannot remove while sending",
-  "ru": "Нельзя удалить во время отправки",
-  "text": "发送中无法删除"
- },
- "a34dbdc4": {
-  "en": "Name saved",
-  "ru": "Имя сохранено",
-  "text": "名字已保存"
- },
- "a64e97e5": {
-  "en": "Name: 1-15 UTF-8 bytes",
-  "ru": "Имя: 1-15 байт UTF-8",
-  "text": "名字: 1-15 字节 UTF-8"
- },
- "184e57b2": {
-  "en": "Region: letters, digits, '-'",
-  "ru": "Регион: буквы, цифры, '-'",
-  "text": "区域: 字母、数字、'-'"
- },
- "cb8d0572": {
-  "en": "Password: 8-63 characters",
-  "ru": "Пароль: 8-63 символа",
-  "text": "密码: 8-63 个字符"
- },
- "d4544911": {
-  "en": "Name: 1-24 UTF-8 bytes",
-  "ru": "Имя: 1-24 байта UTF-8",
-  "text": "名称: 1-24 字节 UTF-8"
  },
  "13c4173d": {
   "en": "None",

@@ -19,7 +19,7 @@ bool Hardware::read(TwoWire& bus,uint8_t addr,uint8_t reg,uint8_t* bytes,uint8_t
   for(unsigned i=0;i<size;i++) bytes[i]=bus.read();return true;
 }
 bool Hardware::probeKeyboard() {
-  for(uint8_t at:{uint8_t(pins::keyboardAddress),uint8_t(pins::keyboardAddress+1)})if(read(Wire1,at,0,&keyboardHw,1,true)){keyboardAt=at;boardName=at==0x6d?"ThinkNode M9 v1.1":"ThinkNode M9 v1.0";return true;}
+  for(uint8_t at:{uint8_t(pins::keyboardAddress),uint8_t(pins::keyboardAddress+1)})if(read(Wire1,at,0,&keyboardHw,1,true)){keyboardAt=at;boardName=at==0x6d?"ThinkNode M9 v1.1":"ThinkNode M9 v1.0";micKey=at!=0x6d;return true;}
   return false;
 }
 bool Hardware::write(uint8_t addr,uint8_t reg,uint8_t value) {

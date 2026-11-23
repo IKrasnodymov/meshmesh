@@ -42,7 +42,7 @@ String statusJson() {
 #if defined(MM_COMPACT)
   d["family"]="compact";d["button"]=MM_BUTTON;
 #else
-  d["family"]="full";
+  d["family"]="full";d["mic_key"]=hardware.micKey;
 #endif
   {static const int absent[]={MM_ABSENT -1};JsonArray a=d.createNestedArray("absent");for(int i:absent)if(i>=0)a.add(i);}
   d["firmware"]=MESHMM_FIRMWARE;d["role"]=roleName(config.role);d["node"]=meshRadio.idText(meshRadio.nodeId);d["name"]=config.name;d["network"]=meshRadio.networkId;

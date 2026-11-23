@@ -1159,6 +1159,66 @@
   "ru": "Батарея садится",
   "text": "Słaba bateria"
  },
+ "bfb7fda0": {
+  "en": "Not sent: radio or route",
+  "ru": "Не отправлено: радио или маршрут",
+  "text": "Nie wysłano: radio lub trasa"
+ },
+ "315b16c1": {
+  "en": "Radio busy, try again",
+  "ru": "Радио занято, повторите",
+  "text": "Radio zajęte, ponów"
+ },
+ "0691ba75": {
+  "en": "Path reset: next message floods",
+  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
+  "text": "Trasa wyzerowana: następna wiadomość pójdzie flood"
+ },
+ "7a14a9e8": {
+  "en": "Path reset failed",
+  "ru": "Не удалось сбросить путь",
+  "text": "Nie udało się wyzerować trasy"
+ },
+ "08d31104": {
+  "en": "OK again removes the contact",
+  "ru": "Нажмите OK ещё раз для удаления",
+  "text": "Naciśnij OK ponownie, aby usunąć"
+ },
+ "17781681": {
+  "en": "Contact removed; its next advert adds it again",
+  "ru": "Контакт удалён; новое объявление вернёт его",
+  "text": "Kontakt usunięty; jego następne ogłoszenie go przywróci"
+ },
+ "3e33cd0f": {
+  "en": "Cannot remove while sending",
+  "ru": "Нельзя удалить во время отправки",
+  "text": "Nie można usunąć podczas wysyłania"
+ },
+ "a34dbdc4": {
+  "en": "Name saved",
+  "ru": "Имя сохранено",
+  "text": "Imię zapisane"
+ },
+ "a64e97e5": {
+  "en": "Name: 1-15 UTF-8 bytes",
+  "ru": "Имя: 1-15 байт UTF-8",
+  "text": "Imię: 1-15 bajtów UTF-8"
+ },
+ "184e57b2": {
+  "en": "Region: letters, digits, '-'",
+  "ru": "Регион: буквы, цифры, '-'",
+  "text": "Region: litery, cyfry, '-'"
+ },
+ "cb8d0572": {
+  "en": "Password: 8-63 characters",
+  "ru": "Пароль: 8-63 символа",
+  "text": "Hasło: 8-63 znaki"
+ },
+ "d4544911": {
+  "en": "Name: 1-24 UTF-8 bytes",
+  "ru": "Имя: 1-24 байта UTF-8",
+  "text": "Nazwa: 1-24 bajty UTF-8"
+ },
  "0b2e473c": {
   "en": "Not in this mode: Settings > Device mode",
   "ru": "Недоступно в этом режиме: Настройки > Режим работы",
@@ -1765,22 +1825,6 @@
   "ru": "Всё выключено",
   "text": "Wszystko wył."
  },
- "2aef0bab": {
-  "en": {
-   "one": "new",
-   "other": "new"
-  },
-  "ru": {
-   "one": "новое",
-   "few": "новых",
-   "many": "новых"
-  },
-  "forms": {
-   "one": "{n} nowa",
-   "few": "{n} nowe",
-   "many": "{n} nowych"
-  }
- },
  "d04d1711": {
   "en": {
    "one": "message",
@@ -1940,6 +1984,11 @@
   "ru": "Открыть",
   "text": "Otwórz"
  },
+ "a1d3f60b": {
+  "en": "hold OK",
+  "ru": "удерж. OK",
+  "text": "przytrz. OK"
+ },
  "64010381": {
   "en": "Lock",
   "ru": "Блок",
@@ -2075,11 +2124,6 @@
   "en": "Send",
   "ru": "Отпр.",
   "text": "Wyślij"
- },
- "a1d3f60b": {
-  "en": "hold OK",
-  "ru": "удерж. OK",
-  "text": "przytrz. OK"
  },
  "a23ea557": {
   "en": "Layout",
@@ -4085,66 +4129,6 @@
   "en": "Settings saved",
   "ru": "Настройки сохранены",
   "text": "Ustawienia zapisane"
- },
- "bfb7fda0": {
-  "en": "Not sent: radio or route",
-  "ru": "Не отправлено: радио или маршрут",
-  "text": "Nie wysłano: radio lub trasa"
- },
- "315b16c1": {
-  "en": "Radio busy, try again",
-  "ru": "Радио занято, повторите",
-  "text": "Radio zajęte, ponów"
- },
- "0691ba75": {
-  "en": "Path reset: next message floods",
-  "ru": "Путь сброшен: следующее сообщение пойдёт flood",
-  "text": "Trasa wyzerowana: następna wiadomość pójdzie flood"
- },
- "7a14a9e8": {
-  "en": "Path reset failed",
-  "ru": "Не удалось сбросить путь",
-  "text": "Nie udało się wyzerować trasy"
- },
- "08d31104": {
-  "en": "OK again removes the contact",
-  "ru": "Нажмите OK ещё раз для удаления",
-  "text": "Naciśnij OK ponownie, aby usunąć"
- },
- "17781681": {
-  "en": "Contact removed; its next advert adds it again",
-  "ru": "Контакт удалён; новое объявление вернёт его",
-  "text": "Kontakt usunięty; jego następne ogłoszenie go przywróci"
- },
- "3e33cd0f": {
-  "en": "Cannot remove while sending",
-  "ru": "Нельзя удалить во время отправки",
-  "text": "Nie można usunąć podczas wysyłania"
- },
- "a34dbdc4": {
-  "en": "Name saved",
-  "ru": "Имя сохранено",
-  "text": "Imię zapisane"
- },
- "a64e97e5": {
-  "en": "Name: 1-15 UTF-8 bytes",
-  "ru": "Имя: 1-15 байт UTF-8",
-  "text": "Imię: 1-15 bajtów UTF-8"
- },
- "184e57b2": {
-  "en": "Region: letters, digits, '-'",
-  "ru": "Регион: буквы, цифры, '-'",
-  "text": "Region: litery, cyfry, '-'"
- },
- "cb8d0572": {
-  "en": "Password: 8-63 characters",
-  "ru": "Пароль: 8-63 символа",
-  "text": "Hasło: 8-63 znaki"
- },
- "d4544911": {
-  "en": "Name: 1-24 UTF-8 bytes",
-  "ru": "Имя: 1-24 байта UTF-8",
-  "text": "Nazwa: 1-24 bajty UTF-8"
  },
  "13c4173d": {
   "en": "None",
