@@ -38,6 +38,8 @@ struct Config {
   // Default region of our flood packets (Regions.h): empty - none; the key is that of "#name" unless an app set
   // another (a private region of the MeshCore app).
   char region[31]="";uint8_t regionKey[16]={};
+  // The regional preset chosen last (RadioPresets.h), by name: tells apart the presets that share the radio.
+  char preset[32]="";
   // The profile before the last change of the shared radio parameters ("radio previous" returns to it), and
   // during a test ("radio try") the saved one: the test lives in memory only, a restart brings the saved one back.
   RadioProfile previous,trial;

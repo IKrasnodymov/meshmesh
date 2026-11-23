@@ -152,7 +152,7 @@ String configJson(bool includeKey) {
   d["hops"]=config.hops;d["path_hash"]=config.pathHash;d["relay"]=config.relay;d["gps"]=config.gps;d["sound"]=config.sound;d["battery_volts"]=config.batteryVolts;d["lang"]=langCodes[config.lang<LangCount?config.lang:0];d["russian"]=config.lang==LangRu;d["brightness"]=config.brightness;if(includeKey)d["key"]=config.keyHex();
   d["auto_lock"]=config.autoLock;d["dim_after"]=config.dimAfter;d["lock_details"]=config.lockDetails;
   d["notify_led"]=config.notifyLed;d["notify_wake"]=config.notifyWake;d["notify_popup"]=config.notifyPopup;d["notify_failed"]=config.notifyFailed;d["notify_words"]=config.notifyWords;
-  d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);d["region"]=config.region;d["net_auto"]=config.netAuto;
+  d["utc_offset"]=config.utcOffset;d["apps"]=appsText(config.apps);d["region"]=config.region;d["preset"]=config.preset;d["net_auto"]=config.netAuto;
 #if defined(MM_ONE_BUTTON)
   d["double_back"]=config.doubleBack; // the page shows the switch only where the board has it
 #endif
@@ -198,6 +198,8 @@ String applySettings(JsonObjectConst v) {
       if(!value.is<const char*>())return "ERR region: text";String raw=value.as<String>();raw.trim();
       if(!raw.length()||raw==regions::Unscoped){next.region[0]=0;memset(next.regionKey,0,16);}
       else if(raw!=config.region){String r=regions::normalize(raw);if(!r.length())return "ERR region: letters, digits and '-', up to 30 bytes";strlcpy(next.region,r.c_str(),sizeof next.region);regions::keyOf(r,next.regionKey);}
+    } else if(name=="preset") { // the regional preset chosen last, by name (RadioPresets.h); "" - none
+      if(!value.is<const char*>()||value.as<String>().length()>=sizeof next.preset)return "ERR preset: up to 31 bytes";strlcpy(next.preset,value.as<const char*>(),sizeof next.preset);
     } else if(name=="lang") {
       int l=value.is<const char*>()?langFromCode(value.as<String>()):-1;
       if(l<0||!langAvailable(l)){String all;for(int i=0;i<LangCount;i++)if(langAvailable(i))all+=String(all.length()?"|":"")+langCodes[i];return "ERR lang: "+all;}next.lang=l;

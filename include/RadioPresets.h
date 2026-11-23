@@ -36,20 +36,21 @@ inline constexpr Preset list[]={
  {"Vietnam (Deprecated)",920.250f,250,11,5,0},
 };
 constexpr int Count=sizeof list/sizeof list[0];
-inline void apply(Config& c,int i){const Preset& p=list[i];c.frequency=p.frequency;c.bandwidth=p.bandwidth;c.sf=p.sf;c.cr=p.cr;if(p.hash)c.pathHash=p.hash;}
+inline void apply(Config& c,int i){const Preset& p=list[i];strlcpy(c.preset,p.name,sizeof c.preset);c.frequency=p.frequency;c.bandwidth=p.bandwidth;c.sf=p.sf;c.cr=p.cr;if(p.hash)c.pathHash=p.hash;}
 inline bool usable(const Config& c,int i){Config t=c;apply(t,i);return t.valid();}
 inline bool fits(const Config& c,int i){const Preset& p=list[i];return fabsf(c.frequency-p.frequency)<.0005f&&c.bandwidth==p.bandwidth&&c.sf==p.sf&&c.cr==p.cr&&(!p.hash||c.pathHash==p.hash);}
+inline int find(const char* name){for(int i=0;i<Count;i++)if(!strcmp(list[i].name,name))return i;return -1;}
 // The preset the settings are, -1 when none. Several share the radio (EU/UK (Narrow), Switzerland, Netherlands
-// (Limburg)): the hint (the one chosen last) when it fits, else the first with the same path hash, else the first.
-inline int match(const Config& c,int hint=-1){
- if(hint>=0&&hint<Count&&fits(c,hint))return hint;
+// (Limburg)): the one chosen last (Config::preset) when it fits, else the first with the same path hash, else the first.
+inline int match(const Config& c){
+ int hint=find(c.preset);if(hint>=0&&fits(c,hint))return hint;
  for(int i=0;i<Count;i++)if(list[i].hash==c.pathHash&&fits(c,i))return i;
  for(int i=0;i<Count;i++)if(fits(c,i))return i;
  return -1;
 }
 // The next (dir>0) or previous usable preset from the current one; -1 when the board takes none.
-inline int step(const Config& c,int dir,int hint=-1){
- int at=match(c,hint);if(at<0)at=dir>0?-1:Count;
+inline int step(const Config& c,int dir){
+ int at=match(c);if(at<0)at=dir>0?-1:Count;
  for(int n=0;n<Count;n++){at=(at+(dir>0?1:-1)+Count)%Count;if(usable(c,at))return at;}
  return -1;
 }
