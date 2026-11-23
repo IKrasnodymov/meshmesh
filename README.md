@@ -1,5 +1,9 @@
 # MeshMesh
 
+This is the Bas on Tech UI mod of the original MeshMesh. It focuses on creating a more compact UI for the ThinkNode M9
+
+---
+
 **English** · [Русский](README.ru.md) · [Українська](README.uk.md) · [Español](README.es.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md)
 
 **Website and one-click browser install: https://ikrasnodymov.github.io/meshmesh/**
