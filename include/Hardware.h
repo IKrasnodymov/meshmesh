@@ -89,6 +89,7 @@ class Hardware {
   bool gpsEnabled=false;
   bool read(TwoWire& bus,uint8_t addr,uint8_t reg,uint8_t* bytes,uint8_t size,bool stop=false);
   bool write(uint8_t addr,uint8_t reg,uint8_t value);
+  bool probeKeyboard(); // M9: the keyboard controller at either of its addresses
 };
 extern Hardware hardware;
 #if !defined(MM_HELTEC_V4) && !defined(MM_COMPACT) && !defined(MM_UI_PREVIEW)

@@ -10,10 +10,17 @@
 #include <esp_heap_caps.h>
 #include <sys/time.h>
 Hardware hardware;
+// The keyboard controller: 0x6c on the M9 V1.0, 0x6d on a later board (the stock firmware names V1.0 and V1.1).
+// The first address that answers is kept.
+static uint8_t keyboardAt=pins::keyboardAddress;
 bool Hardware::read(TwoWire& bus,uint8_t addr,uint8_t reg,uint8_t* bytes,uint8_t size,bool stop) {
   bus.beginTransmission(addr);bus.write(reg);if(bus.endTransmission(stop)) return false;
   if(bus.requestFrom(int(addr),int(size))!=size) return false;
   for(unsigned i=0;i<size;i++) bytes[i]=bus.read();return true;
+}
+bool Hardware::probeKeyboard() {
+  for(uint8_t at:{uint8_t(pins::keyboardAddress),uint8_t(pins::keyboardAddress+1)})if(read(Wire1,at,0,&keyboardHw,1,true)){keyboardAt=at;return true;}
+  return false;
 }
 bool Hardware::write(uint8_t addr,uint8_t reg,uint8_t value) {
   Wire.beginTransmission(addr);Wire.write(reg);Wire.write(value);return Wire.endTransmission()==0;
@@ -52,8 +59,8 @@ void Hardware::begin() {
   canvas->fillScreen(0x0862);text(14,38,MESHMM_FIRMWARE,0x07ff);text(14,65,"Starting ThinkNode M9...");flush();
   Wire.begin(pins::sda,pins::scl,100000);Wire.setTimeOut(20);
   Wire1.begin(pins::keyboardSda,pins::keyboardScl,100000);Wire1.setTimeOut(20);
-  keyboardOk=read(Wire1,pins::keyboardAddress,0,&keyboardHw,1,true);
-  if(keyboardOk) read(Wire1,pins::keyboardAddress,0xfe,&keyboardFw,1,true);
+  keyboardOk=probeKeyboard();
+  if(keyboardOk) read(Wire1,keyboardAt,0xfe,&keyboardFw,1,true);
   rtcOk=rtc.begin(&Wire);
   if(rtcOk && !rtc.lostPower()) {
     rtc.start();DateTime date=rtc.now();rtcValid=date.year()>=2025 && date.year()<2100;
@@ -70,7 +77,7 @@ void Hardware::begin() {
   if(read(Wire,0x6b,0,&id,1) && id==5) {
     imuOk=write(0x6b,0x02,0x40)&&write(0x6b,0x03,0x07)&&write(0x6b,0x04,0)&&write(0x6b,0x06,1)&&write(0x6b,0x08,1);
   }
-  Serial.printf("HW keyboard=%d hw=%02x fw=%02x rtc=%d valid=%d sd=%d fs=%d compass=%d imu=%d psram=%u\n",keyboardOk,keyboardHw,keyboardFw,rtcOk,rtcValid,sdOk,fsOk,compassOk,imuOk,ESP.getPsramSize());
+  Serial.printf("HW keyboard=%d at=%02x hw=%02x fw=%02x rtc=%d valid=%d sd=%d fs=%d compass=%d imu=%d psram=%u\n",keyboardOk,keyboardAt,keyboardHw,keyboardFw,rtcOk,rtcValid,sdOk,fsOk,compassOk,imuOk,ESP.getPsramSize());
 }
 void Hardware::tick() {
   if(gpsEnabled) {
@@ -96,11 +103,11 @@ void Hardware::tick() {
   if(imuOk && read(Wire,0x6b,0x2e,&status,1) && (status&1) && read(Wire,0x6b,0x35,data,6)) {
     for(int i=0;i<3;i++) accel[i]=int16_t(uint16_t(data[2*i])|(uint16_t(data[2*i+1])<<8))/16384.0f;imuSample=true;
   }
-  if(!keyboardOk && millis()-lastProbe>2000) {lastProbe=millis();keyboardOk=read(Wire1,pins::keyboardAddress,0,&keyboardHw,1,true);}
+  if(!keyboardOk && millis()-lastProbe>2000) {lastProbe=millis();keyboardOk=probeKeyboard();}
 }
 int Hardware::readKey() {
   static uint32_t poll=0;if(millis()-poll<15 || !keyboardOk) return 0;poll=millis();
-  uint8_t key=0;if(!read(Wire1,pins::keyboardAddress,1,&key,1,true)) return 0;
+  uint8_t key=0;if(!read(Wire1,keyboardAt,1,&key,1,true)) return 0;
   if(key==0 || key==255) return 0;lastKey=key;keyCount++;brightness(config.brightness);return key;
 }
 // Off: the backlight and the screen, GPS and sensor supply off (both active LOW), the LR1110 deselected.

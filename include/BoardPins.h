@@ -170,6 +170,6 @@ constexpr int lcdCs=16, lcdDc=15, lcdReset=14, backlight=17, peripheralPower=18;
 constexpr int sdCs=48, sda=7, scl=6, keyboardSda=20, keyboardScl=21;
 constexpr int gpsRx=2, gpsTx=3, gpsReset=5, gpsEnable=11;
 constexpr int battery=13, buzzer=9;
-constexpr unsigned keyboardAddress=0x6c;
+constexpr unsigned keyboardAddress=0x6c; // V1.0; a later board answers at 0x6d (Hardware::probeKeyboard tries both)
 #endif
 }

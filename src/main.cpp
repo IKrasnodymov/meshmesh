@@ -244,6 +244,9 @@ void appLoop() {
         else if(arg=="watch"){pinMode(n,INPUT);int last=digitalRead(n),edges=0,lows=0;uint32_t start=millis();while(millis()-start<1500){int v=digitalRead(n);edges+=v!=last;lows+=!v;last=v;}usbLine("GPIO "+String(n)+" edges "+String(edges)+" lowsamples "+String(lows));}
         else{pinMode(n,OUTPUT);digitalWrite(n,arg.toInt()?HIGH:LOW);usbLine("OK gpio "+String(n)+"="+String(arg.toInt()?1:0));}}
       else if(command=="i2cscan"){String r="I2C";for(uint8_t a=1;a<127;a++){Wire.beginTransmission(a);if(!Wire.endTransmission())r+=" 0x"+String(a,HEX);}usbLine(r);}
+#elif !defined(MM_COMPACT)
+      // The sensor bus (Wire) and the keyboard bus (Wire1): which addresses answer, e.g. a keyboard that does not.
+      else if(command=="i2cscan"){String r="I2C main";for(TwoWire* bus:{&Wire,&Wire1}){if(bus==&Wire1)r+=" | keys";for(uint8_t a=1;a<127;a++){bus->beginTransmission(a);if(!bus->endTransmission())r+=" 0x"+String(a,HEX);}}usbLine(r);}
 #endif
       else if(command.startsWith("uikey ")) {uiKey(strtol(command.substring(6).c_str(),nullptr,0));usbLine("OK UI key");}
 #if !defined(MM_COMPACT)
