@@ -60,7 +60,7 @@ String statusJson() {
   } // "poweroff": what turns the board on again
   d["radio"]=meshRadio.ready;d["radio_error"]=meshRadio.radioError;d["tx"]=meshRadio.txCount;d["radio_recal"]=meshRadio.recalibrations;d["rx"]=meshRadio.rxCount;d["rejected"]=meshRadio.rejected;d["relayed"]=meshRadio.relayed;d["contacts_replaced"]=meshRadio.replaced;d["contacts_saved"]=meshRadio.contactsSaved;
   d["diagnostic_rx"]=meshRadio.diagnosticRx;d["rssi"]=meshRadio.lastRssi;d["snr"]=meshRadio.lastSnr;d["keyboard"]=hardware.keyboardOk;d["key_count"]=hardware.keyCount;d["last_key"]=hardware.lastKey;
-  d["battery_mv"]=hardware.batteryMv;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
+  d["battery_mv"]=hardware.batteryMv;if(hardware.usbPower>=0)d["usb_power"]=hardware.usbPower>0;d["sd"]=hardware.sdOk;d["storage"]=hardware.fsOk;d["rtc"]=hardware.rtcOk;d["rtc_valid"]=hardware.rtcValid;
   d["compass"]=hardware.compassOk;d["compass_sample"]=hardware.compassSample;d["imu"]=hardware.imuOk;d["imu_sample"]=hardware.imuSample;
   d["gps_bytes"]=hardware.gpsBytes;d["gps_sentences"]=hardware.gps.passedChecksum();d["gps_fix"]=hardware.gpsFix();d["satellites"]=hardware.gps.satellites.value();
   if(d["gps_fix"].as<bool>()) {d["latitude"]=hardware.gps.location.lat();d["longitude"]=hardware.gps.location.lng();}

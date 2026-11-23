@@ -278,7 +278,7 @@ String title(){
 }
 void statusBar(){
  auto& d=g();d.fillRect(0,0,320,20,bar);d.drawFastHLine(0,20,320,line);int x=313;
- uint16_t mv=hardware.batteryMv;bool external=mv>4250;unsigned pct=batteryPercent(mv);uint16_t level=!mv?faint:external?accent:pct<=15?bad:pct<=30?warn:ok;
+ uint16_t mv=hardware.batteryMv;bool external=hardware.usbPower>=0?hardware.usbPower>0:mv>4250;unsigned pct=batteryPercent(mv);uint16_t level=!mv?faint:external?accent:pct<=15?bad:pct<=30?warn:ok;
  d.drawRoundRect(x-19,5,19,10,2,dim);d.fillRect(x,8,2,4,dim);
  if(external){d.fillTriangle(x-8,6,x-13,11,x-9,11,accent);d.fillTriangle(x-10,9,x-6,9,x-11,14,accent);}else if(mv)d.fillRect(x-17,7,max(1u,15*pct/100),6,level);
  x-=23;if(mv&&(config.batteryVolts||!external)){String p=config.batteryVolts?String(mv/1000.f,2)+"V":String(pct)+"%";textRight(x,14,p,dim,small);x-=measure(p,small)+6;}

@@ -171,6 +171,9 @@ constexpr int sdCs=48, sda=7, scl=6, keyboardSda=20, keyboardScl=21;
 // gpsEnable: V1.0 active LOW, V1.1 active HIGH; gpsWake: V1.1 only, a 5 ms HIGH pulse after power-on (stock firmware).
 constexpr int gpsRx=2, gpsTx=3, gpsReset=5, gpsEnable=11, gpsWake=10;
 constexpr int battery=13, buzzer=9;
+// M9: LOW while USB powers the board (charging), HIGH on battery; measured on a V1.1 by unplugging (the battery
+// voltage alone stays above 4.25 V for long after a full charge).
+constexpr int usbSense=1;
 constexpr unsigned keyboardAddress=0x6c; // V1.0; a later board answers at 0x6d (Hardware::probeKeyboard tries both)
 #endif
 }

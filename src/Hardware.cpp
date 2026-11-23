@@ -52,7 +52,7 @@ void Hardware::begin() {
   gpio_deep_sleep_hold_dis();
   for(int pin:{pins::backlight,pins::peripheralPower}) {rtc_gpio_hold_dis(gpio_num_t(pin));pinMode(pin,OUTPUT);digitalWrite(pin,LOW);}
   for(int pin:{pins::radioCs,pins::lcdCs,pins::sdCs}) {gpio_hold_dis(gpio_num_t(pin));pinMode(pin,OUTPUT);digitalWrite(pin,HIGH);}
-  pinMode(pins::gpsEnable,OUTPUT);pinMode(pins::gpsReset,OUTPUT);pinMode(pins::gpsWake,OUTPUT);pinMode(pins::buzzer,OUTPUT);
+  pinMode(pins::gpsEnable,OUTPUT);pinMode(pins::gpsReset,OUTPUT);pinMode(pins::gpsWake,OUTPUT);pinMode(pins::buzzer,OUTPUT);pinMode(pins::usbSense,INPUT_PULLUP);
   digitalWrite(pins::buzzer,LOW);digitalWrite(pins::gpsWake,LOW);
   SPI.begin(pins::spiClock,pins::spiMiso,pins::spiMosi);
   display.init(240,320,SPI_MODE0);display.setSPISpeed(80000000); // APB/1; the next step down is 40 MHz
@@ -102,6 +102,7 @@ void Hardware::tick() {
   analogReadResolution(12);analogSetPinAttenuation(pins::battery,ADC_11db);
   for(int i=0;i<6;i++) {unsigned mv=analogReadMilliVolts(pins::battery);if(mv>=1200 && mv<=2500) {sum+=mv;count++;}}
   if(count) batteryMv=2*sum/count;
+  usbPower=digitalRead(pins::usbSense)==LOW;
   uint8_t status=0,data[6];
   if(compassOk && read(Wire,0x7c,9,&status,1) && (status&1) && !(status&2) && read(Wire,0x7c,1,data,6)) {
     for(int i=0;i<3;i++) mag[i]=int16_t(uint16_t(data[2*i])|(uint16_t(data[2*i+1])<<8))/1000.0f;compassSample=true;

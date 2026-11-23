@@ -45,6 +45,7 @@ class Hardware {
   bool compassOk=false, imuOk=false, compassSample=false, imuSample=false;
   float mag[3]={}, accel[3]={};
   uint16_t batteryMv=0;
+  int8_t usbPower=-1; // USB power (charging) from a sense pin: 1 yes, 0 battery, -1 no pin (the screens guess from the voltage)
 #if defined(MM_NRF52)
   uint16_t batteryNow(); // a reading now (batteryMv: once a second in tick); also before begin()
 #endif
