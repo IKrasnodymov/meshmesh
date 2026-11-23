@@ -38,7 +38,7 @@
 String statusJson() {
   StaticJsonDocument<3072> d;
   d["version"]=MESHMM_VERSION;d["revision"]=MESHMM_REVISION;
-  d["board"]=MM_BOARD_ID;d["board_name"]=MM_BOARD_NAME;d["max_power"]=MM_MAX_POWER;
+  d["board"]=MM_BOARD_ID;d["board_name"]=hardware.boardName;d["max_power"]=MM_MAX_POWER;
 #if defined(MM_COMPACT)
   d["family"]="compact";d["button"]=MM_BUTTON;
 #else

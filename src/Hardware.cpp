@@ -11,7 +11,7 @@
 #include <sys/time.h>
 Hardware hardware;
 // The keyboard controller: 0x6c on the M9 V1.0, 0x6d on a later board (the stock firmware names V1.0 and V1.1).
-// The first address that answers is kept.
+// The first address that answers is kept and names the revision (boardName).
 static uint8_t keyboardAt=pins::keyboardAddress;
 bool Hardware::read(TwoWire& bus,uint8_t addr,uint8_t reg,uint8_t* bytes,uint8_t size,bool stop) {
   bus.beginTransmission(addr);bus.write(reg);if(bus.endTransmission(stop)) return false;
@@ -19,7 +19,7 @@ bool Hardware::read(TwoWire& bus,uint8_t addr,uint8_t reg,uint8_t* bytes,uint8_t
   for(unsigned i=0;i<size;i++) bytes[i]=bus.read();return true;
 }
 bool Hardware::probeKeyboard() {
-  for(uint8_t at:{uint8_t(pins::keyboardAddress),uint8_t(pins::keyboardAddress+1)})if(read(Wire1,at,0,&keyboardHw,1,true)){keyboardAt=at;return true;}
+  for(uint8_t at:{uint8_t(pins::keyboardAddress),uint8_t(pins::keyboardAddress+1)})if(read(Wire1,at,0,&keyboardHw,1,true)){keyboardAt=at;boardName=at==0x6d?"ThinkNode M9 v1.1":"ThinkNode M9 v1.0";return true;}
   return false;
 }
 bool Hardware::write(uint8_t addr,uint8_t reg,uint8_t value) {
@@ -83,7 +83,7 @@ void Hardware::begin() {
   if(read(Wire,0x6b,0,&id,1) && id==5) {
     imuOk=write(0x6b,0x02,0x40)&&write(0x6b,0x03,0x07)&&write(0x6b,0x04,0)&&write(0x6b,0x06,1)&&write(0x6b,0x08,1);
   }
-  Serial.printf("HW keyboard=%d at=%02x hw=%02x fw=%02x rtc=%d valid=%d sd=%d fs=%d compass=%d imu=%d psram=%u\n",keyboardOk,keyboardAt,keyboardHw,keyboardFw,rtcOk,rtcValid,sdOk,fsOk,compassOk,imuOk,ESP.getPsramSize());
+  Serial.printf("HW %s keyboard=%d at=%02x hw=%02x fw=%02x rtc=%d valid=%d sd=%d fs=%d compass=%d imu=%d psram=%u\n",boardName,keyboardOk,keyboardAt,keyboardHw,keyboardFw,rtcOk,rtcValid,sdOk,fsOk,compassOk,imuOk,ESP.getPsramSize());
 }
 void Hardware::tick() {
   if(gpsEnabled) {

@@ -205,7 +205,7 @@ struct CompanionCore {
   u32(uint32_t(lroundf(config.frequency*1000)));u32(uint32_t(lroundf(config.bandwidth*1000)));u8(config.sf);u8(config.cr);put(config.name,strlen(config.name));send();
  }
  void deviceInfo(){
-  start(RespDeviceInfo);u8(ProtocolVersion);u8(MAX_CONTACTS/2);u8(channels::Max);u32(blePin());field(__DATE__,12);field(MM_BOARD_NAME,40);
+  start(RespDeviceInfo);u8(ProtocolVersion);u8(MAX_CONTACTS/2);u8(channels::Max);u32(blePin());field(__DATE__,12);field(hardware.boardName,40);
   field("MeshMesh " MESHMM_VERSION,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
  }
  void handle(const uint8_t* frame,size_t len){

@@ -75,7 +75,7 @@ class DeviceBoard:public mesh::MainBoard {
  public:
   uint16_t getBattMilliVolts() override{return hardware.batteryMv;}
   float getMCUTemperature() override{return temperatureRead();}
-  const char* getManufacturerName() const override{return MM_BOARD_NAME;}
+  const char* getManufacturerName() const override{return hardware.boardName;}
   void reboot() override{ESP.restart();}
   uint8_t getStartupReason() const override{return 0;}
 };
