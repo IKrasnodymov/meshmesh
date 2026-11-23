@@ -1866,6 +1866,8 @@ async function rptRun(line,ok){try{const r=await command('server cli '+line),bad
 async function rptPassword(kind){const v=$(kind==='admin'?'rptPass':'rptGuest').value;if(/[^\x20-\x7e]/.test(v)){notify(L('Только латиница, цифры и символы'),'bad');return}if(kind==='admin'&&!v){notify(L('Пароль администратора не может быть пустым'),'bad');return}await rptRun(kind==='admin'?'password '+v:'set guest.password '+v,L('Пароль сохранён'))}
 async function roomPost(){const t=$('roomText').value.trim();if(!t)return;if(bytes(t)>151){notify(L('Пост: до 151 байта UTF-8'),'bad');return}try{await command('server post '+t);$('roomText').value='';notify(L('Пост сохранён; участники получат его по очереди'),'ok');await loadServer(false)}catch(e){notify(e.message,'bad')}}
 
+// One refused poll is not a logout: a busy board can lose a request's headers (Authorization among them).
+let authFails=0;
 async function refresh(){if(refreshing||uploading||!auth||companion)return;refreshing=true;refreshAgain=false;const started=Date.now();try{
  const got=[];for(const path of ['/api/status','/api/messages','/api/nodes','/api/config','/api/navigation','/api/maps'])got.push(await request(path));
  const obj=v=>v&&typeof v==='object'&&!Array.isArray(v);if(!obj(got[0])||!Array.isArray(got[1])||!Array.isArray(got[2])||!obj(got[3]))throw Error(L('неожиданный ответ, повторю')); // a mixed-up answer must not replace the data
@@ -1885,7 +1887,7 @@ async function refresh(){if(refreshing||uploading||!auth||companion)return;refre
  if(mapState.follow&&status.gps_fix)mapState={...mapState,lat:status.latitude,lon:status.longitude,center:true};
  if(!mapState.center)mapHome();
  for(const v of document.querySelectorAll('.version'))v.textContent=String(status.firmware||'').replace(/^MeshMesh\s*/,'');
- render();if(joinLink&&!joinLink.offered){joinLink.offered=true;go('join')}}catch(e){if(/Authentication/.test(e.message)){auth='';clearInterval(timer);$('app').hidden=true;$('login').hidden=false;hud();notify(L('Нужен пароль Wi-Fi'),'warn')}else notify(L`Нет связи с устройством: ${e.message}`,'bad')}finally{refreshing=false;if(refreshAgain)setTimeout(refresh,0)}}
+ render();authFails=0;if(joinLink&&!joinLink.offered){joinLink.offered=true;go('join')}}catch(e){if(/Authentication/.test(e.message)){if(++authFails<2)return;auth='';try{sessionStorage.removeItem('mm-auth')}catch{}clearInterval(timer);$('app').hidden=true;$('login').hidden=false;hud();notify(L('Нужен пароль Wi-Fi'),'warn')}else notify(L`Нет связи с устройством: ${e.message}`,'bad')}finally{refreshing=false;if(refreshAgain)setTimeout(refresh,0)}}
 
 // Map package upload and preparation (formats shared with tools/maps.py and src/Maps.cpp).
 function download(data,name,type='application/octet-stream'){const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -2412,12 +2414,12 @@ if(typeof window!=='undefined'&&window.addEventListener){
  $('gameDraw').onclick=()=>{drawNext=drawNext===1?3:1;store('draw',drawNext);if(game&&!game.counted){game=deal(drawNext);notify(L`Сдача по ${drawNext}: карты пересданы`);saveGame();renderGame()}else{notify(L`Следующая партия: сдача по ${drawNext}`);gameStats()}};
  window.addEventListener('pagehide',()=>{if(radarTimer&&auth)fetch('/api/radar',{method:'POST',keepalive:true,headers:{Authorization:auth,'Content-Type':'application/json'},body:'{"action":"close"}'}).catch(()=>{})});
  setInterval(()=>{const c=$('clock');if(c)c.textContent=clockText()},1000);
- // The page's language: the same 15 as the screens; a change reloads the page and keeps the device login.
+ // The page's language: the same 15 as the screens; a change reloads the page. The device login is kept for the tab.
  for(const s of document.querySelectorAll('select[data-pagelang]'))s.innerHTML=SCREEN_LANGS.map(([c,n])=>`<option value="${c}"${c===LANG?' selected':''}>${n}</option>`).join('');
- document.addEventListener('change',e=>{if(!e.target.matches('select[data-pagelang]'))return;try{localStorage.setItem('mm-lang',e.target.value);if(auth&&!window.MeshNative)sessionStorage.setItem('mm-auth',auth)}catch{}location.reload()});
- const login=async()=>{try{config=await request('/api/config');$('login').hidden=true;$('app').hidden=false;await refresh();clearInterval(timer);timer=setInterval(refresh,3000);route='';show()}catch(err){auth='';notify(L`Не удалось подключиться: ${err.message}`,'bad')}};
+ document.addEventListener('change',e=>{if(!e.target.matches('select[data-pagelang]'))return;try{localStorage.setItem('mm-lang',e.target.value)}catch{}location.reload()});
+ const login=async()=>{try{config=await request('/api/config');try{if(!window.MeshNative)sessionStorage.setItem('mm-auth',auth)}catch{}$('login').hidden=true;$('app').hidden=false;await refresh();clearInterval(timer);timer=setInterval(refresh,3000);route='';show()}catch(err){auth='';try{sessionStorage.removeItem('mm-auth')}catch{}notify(L`Не удалось подключиться: ${err.message}`,'bad')}};
  $('loginForm').onsubmit=e=>{e.preventDefault();auth='Basic '+btoa('meshmesh:'+$('password').value);login()};
- let kept=null;try{kept=sessionStorage.getItem('mm-auth');sessionStorage.removeItem('mm-auth')}catch{}
+ let kept=null;try{kept=sessionStorage.getItem('mm-auth')}catch{}
  if(kept&&!$('login').hidden&&!window.MeshNative){auth=kept;login()} // the app connects by itself (host.js)
 }
 </script></body></html>

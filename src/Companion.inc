@@ -1,8 +1,8 @@
 // MeshCore companion protocol (include/Companion.h), included at the end of MeshRadio.cpp: the frames of
 // examples/companion_radio/MyMesh.cpp, MeshCore companion-v1.17.1 (MIT), over this node's contacts, channels
 // and history, with logins to repeaters and rooms, their CLI, status, telemetry, room posts, path trace and path
-// discovery, region scopes (the session's, the default) and zero-hop control data (node discovery). Not here: raw
-// data, signing and the private key; those commands answer "unsupported".
+// discovery, region scopes (the session's, the default), zero-hop control data (node discovery) and the import of
+// a private key. Not here: raw data, signing and the export of the key; those commands answer "unsupported".
 #include "App.h"
 #include "Version.h"
 namespace {
@@ -246,7 +246,9 @@ struct CompanionCore {
 #endif
     start(RespBattery);u16(hardware.batteryMv);u32(used);u32(total);send();return;}
    case CmdGetTuning:start(RespTuning);u32(0);u32(uint32_t(d->getAirtimeBudgetFactor()*1000));send();return;
-   case CmdExportKey:case CmdImportKey:start(RespDisabled);send();return;
+   case CmdExportKey:start(RespDisabled);send();return; // the key is given out on the device access point only
+   case CmdImportKey:{if(len<65)break;char hex[129];mesh::Utils::toHex(hex,frame+1,64);String reply=executeCommand(String("identity set ")+hex);memset(hex,0,sizeof hex);
+    if(reply.startsWith("OK"))ok();else err(reply.indexOf("storage")>=0?ErrFileIo:ErrIllegalArg);return;} // a new key restarts the board
    case CmdLogin:case CmdStatusReq:case CmdAnonReq:case CmdBinaryReq:if(len<33||((cmd==CmdAnonReq||cmd==CmdBinaryReq)&&len<34))break;request(cmd,frame,len);return;
    case CmdTelemetryReq:if(len==4){selfTelemetry();return;}if(len<36)break;request(cmd,frame,len);return;
    case CmdTrace:if(len<=10||len-10>=MAX_PACKET_PAYLOAD-5)break;trace(frame,len);return;
