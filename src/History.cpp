@@ -10,6 +10,7 @@ unsigned historyPriority(const MeshRadio& radio,const ChatMessage& m){auto* c=ra
 }
 bool MeshRadio::historyProtected(const ChatMessage& m) const {for(const auto& p:pending)if(p.active&&!p.message.game&&p.message.source==m.source&&p.message.session==m.session&&p.message.id==m.id)return true;return false;}
 void MeshRadio::historyErase(unsigned index){if(index>=historyCount)return;memmove(history+index,history+index+1,(historyCount-index-1)*sizeof(ChatMessage));historyCount--;historyGeneration++;compactRequested=true;}
+unsigned MeshRadio::eraseHistory(bool (*match)(const ChatMessage&,uint64_t),uint64_t id){unsigned n=0;for(unsigned i=0;i<historyCount;)if(match(history[i],id)&&!historyProtected(history[i])){historyErase(i);n++;}else i++;if(n)dirty=true;return n;}
 void MeshRadio::trimHistory(){for(unsigned i=0;i<historyCount;){unsigned n=0;for(unsigned j=i;j<historyCount;j++)if(history[j].destination==history[i].destination)n++;if(n>retainedLimit(*this,history[i])&&!historyProtected(history[i]))historyErase(i);else i++;}compactRequested=true;dirty=true;}
 void MeshRadio::addMessage(const ChatMessage& m,bool save) {
   if(save&&!m.outgoing&&!m.game)received++;

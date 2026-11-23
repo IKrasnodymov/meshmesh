@@ -99,7 +99,7 @@ String channelsJson(bool secrets){
   DynamicJsonDocument d(6144);d["max"]=channels::Max;JsonArray a=d.createNestedArray("channels");
   for(unsigned i=0;i<meshRadio.channelCount;i++){const auto& c=meshRadio.channelList[i];JsonObject j=a.createNestedObject();bool open=!i||channels::isHashtag(c);
    j["id"]=meshRadio.idText(c.id);j["name"]=c.name;j["kind"]=!i?"public":open?"hashtag":"private";char hash[3];snprintf(hash,3,"%02X",channels::hashOf(c.secret));j["hash"]=hash;
-   if(secrets||open)j["link"]=channels::link(c);j["region"]=c.region;JsonObject policy=j.createNestedObject("policy");policy["led"]=c.policy.led;policy["wake"]=c.policy.wake;policy["popup"]=c.policy.popup;policy["priority"]=c.policy.priority;policy["device_limit"]=c.policy.deviceLimit;policy["app_limit"]=c.policy.appLimit;}
+   if(secrets||open)j["link"]=channels::link(c);j["region"]=c.region;JsonObject policy=j.createNestedObject("policy");policy["led"]=c.policy.led;policy["wake"]=c.policy.wake;policy["popup"]=c.policy.popup;policy["priority"]=c.policy.priority;policy["device_limit"]=c.policy.deviceLimit;policy["app_limit"]=c.policy.appLimit;policy["sound"]=c.policy.sound;}
   a=d.createNestedArray("heard");
   for(unsigned i=0;i<meshRadio.heardCount;i++){const auto& h=meshRadio.heard[i];JsonObject j=a.createNestedObject();char hash[3];snprintf(hash,3,"%02X",h.hash);j["hash"]=hash;j["packets"]=h.packets;j["age"]=(millis()-h.at)/1000;if(h.name[0])j["name"]=h.name;}
   d["samples"]=meshRadio.heardSamples;d["region"]=config.region;

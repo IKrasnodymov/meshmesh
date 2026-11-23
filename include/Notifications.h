@@ -9,5 +9,6 @@ void repeatPacket(uint32_t packet);
 void tick();bool take(Event& event);uint32_t dropped();
 bool mentioned(const char* text,const char* name,const char* words);
 bool enabled(uint8_t mode,bool mention);
+bool sound(const ChatMessage& message); // the beep of a new message: off in a channel whose sound is off
 uint8_t mode(const ChatMessage& message,uint8_t global,unsigned effect); // 0 LED, 1 screen, 2 popup
 }

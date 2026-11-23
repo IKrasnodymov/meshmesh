@@ -23,6 +23,7 @@ void incoming(const ChatMessage& message){emit(Incoming,message);}
 void tick(){uint32_t now=millis();for(auto& e:echoWait)if(e.due&&int32_t(now-e.due)>=0){e.due=0;emit(Unconfirmed,e.message);}}
 bool take(Event& event){if(!size)return false;event=queue[head];head=(head+1)%8;size--;return true;}
 uint32_t dropped(){return lost;}
+bool sound(const ChatMessage& message){const auto* c=meshRadio.channel(message.destination);return !c||c->policy.sound;}
 bool enabled(uint8_t mode,bool mention){return mode==All||(mode==Mentions&&mention);}
 uint8_t mode(const ChatMessage& message,uint8_t global,unsigned effect){const auto* c=meshRadio.channel(message.destination);if(!c)return global;uint8_t own=effect==0?c->policy.led:effect==1?c->policy.wake:c->policy.popup;return own==Inherit?global:own;}
 }

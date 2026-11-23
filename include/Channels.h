@@ -6,7 +6,7 @@ namespace channels {
 constexpr unsigned Max=8;      // Public and seven more (MAX_GROUP_CHANNELS)
 constexpr unsigned NameBytes=31;
 // region: its flood scope (Regions.h) - "" the default region of the settings, "*" none, else a region name.
-struct Policy {uint8_t led=3,wake=3,popup=3,priority=1,deviceLimit=0,appLimit=0;}; // 3 inherit; limits 0 default
+struct Policy {uint8_t led=3,wake=3,popup=3,priority=1,deviceLimit=0,appLimit=0,sound=1;}; // 3 inherit; limits 0 default; sound: 0 silent, 1 a beep on a new message
 struct Channel {uint64_t id=0;char name[NameBytes+1]={};uint8_t secret[16]={};char region[31]={};Policy policy{};};
 // Public: the stock MeshCore channel every node knows; its messages keep the destination "ALL".
 extern const uint8_t publicSecret[16];

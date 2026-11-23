@@ -29,15 +29,13 @@ bool chatInvite(String& name,uint8_t key[16]){
  for(int i=int(meshRadio.historyCount)-1;i>=0;i--)if(belongs(meshRadio.history[i],recipient)&&channels::parseLink(meshRadio.history[i].text,name,key))return true;
  return false;
 }
-// Left in a chat: join the channel of an invitation in it; otherwise the card of this channel, or the
-// channel an invitation of this direct chat leads to.
+// Left in a chat: join the channel of an invitation in it, or open the channel it leads to (its settings: @).
 String chatLeftAction(){
  String name;uint8_t key[16];bool invite=chatInvite(name,key),in=invite&&meshRadio.channel(channels::idOf(key));
- if(invite&&!in)return t("Join","Вступить");if(channels::isChannel(recipient))return t("Channel","Канал");return invite?t("Open channel","В канал"):"";
+ if(invite&&!in)return t("Join","Вступить");return invite?t("Open channel","В канал"):"";
 }
 void chatLeft(){
  String name;uint8_t key[16];bool invite=chatInvite(name,key),in=invite&&meshRadio.channel(channels::idOf(key));
- if(channels::isChannel(recipient)&&(!invite||in)){openChannelInfo(recipient,Chat);return;}
  if(!invite)return;uint64_t id;joined(meshRadio.addChannel(channels::isPublic(key)?String("Public"):name,key,&id),id);
 }
 // A link in a bubble reads as an invitation.
@@ -111,21 +109,26 @@ String channelRegionText(const String& r){
  if(r.length())return r;
  return config.region[0]?t("Default: ","По умолчанию: ")+String(config.region):String(t("Default: none","По умолчанию: нет"));
 }
-void drawChannelInfo(){
- const channels::Channel* c=meshRadio.channel(focusChannel);
- if(!c){textCenter(160,110,t("Channel removed","Канал удалён"),dim);footer({{"BACK",t("Back","Назад")}});return;}
- if(regionFor!=focusChannel){regionFor=focusChannel;regionChoice=c->region;}
+// A channel's link as a QR code on white, beside it the name, kind, hash, a private channel's key and up to `lines`
+// rows of a note; x, w: the column right of the code (the card puts its actions there).
+void drawChannelQr(const channels::Channel& ch,unsigned lines,int& x,int& w){const channels::Channel* c=&ch;
  auto& d=g();static uint8_t modules[channels::QrBytes];static String coded;static int size=0;String link=channels::link(*c);
  if(coded!=link){size=channels::qr(link,modules);coded=link;}
  int s=size?constrain(186/(size+6),2,4):0,side=(size+6)*s,x0=8,y0=27;
  if(size){d.fillRoundRect(x0,y0,side,side,4,0xffff);for(int y=0;y<size;y++)for(int x=0;x<size;x++)if(channels::qrDark(modules,size,x,y))d.fillRect(x0+(x+3)*s,y0+(y+3)*s,s,s,0);}
- int x=x0+side+10,w=312-x,y=40;bool priv=privateChannel(*c);int actions=infoActions();
+ int y=40;bool priv=privateChannel(*c);x=x0+side+10;w=312-x;
  text(x,y,fit(c->name,w,bold),ink,bold);y+=14;
  text(x,y,fit(channelKind(*c),w,small),priv?violet:accent,small);y+=12;
  char hash[3];snprintf(hash,3,"%02X",channels::hashOf(c->secret));text(x,y,t("Hash ","Хеш ")+hash,faint,small);y+=16;
  if(priv){String key=channels::keyHex(c->secret);text(x,y,t("Key:","Ключ:"),dim,small);y+=10;for(int k=0;k<32;k+=16){text(x,y,key.substring(k,k+16),ink,small);y+=10;}y+=4;}
- String rows[3];unsigned n=wrap(channels::isPublic(c->secret)?t("Every MeshCore node has it","Он есть у каждого узла MeshCore"):t("Scan with MeshMesh or the MeshCore app","Сканируйте в MeshMesh или приложении MeshCore"),rows,priv&&actions>1?0:actions>1?2:3,w,small);
+ String rows[3];unsigned n=wrap(channels::isPublic(c->secret)?t("Every MeshCore node has it","Он есть у каждого узла MeshCore"):t("Scan with MeshMesh or the MeshCore app","Сканируйте в MeshMesh или приложении MeshCore"),rows,lines,w,small);
  for(unsigned i=0;i<n;i++){text(x,y,rows[i],dim,small);y+=10;}
+}
+void drawChannelInfo(){
+ const channels::Channel* c=meshRadio.channel(focusChannel);
+ if(!c){textCenter(160,110,t("Channel removed","Канал удалён"),dim);footer({{"BACK",t("Back","Назад")}});return;}
+ if(regionFor!=focusChannel){regionFor=focusChannel;regionChoice=c->region;}
+ bool priv=privateChannel(*c);int actions=infoActions(),x,w;drawChannelQr(*c,priv&&actions>1?0:actions>1?2:3,x,w);
  Peer* list[24];int people=chatContacts(list);inviteTo=people?(inviteTo%people+people)%people:0;selected=constrain(selected,0,actions-1);
  for(int i=0;i<actions;i++){int ry=218-(actions-i)*26,cx=x-2+(w+2)/2;bool focus=selected==i,danger=i==InfoLeave;target(x-2,ry,w+2,24,i);
   panel(x-2,ry,w+2,24,focus?(danger&&deleteArmed?bad:cardHi):card,7);if(focus)ring(x-2,ry,w+2,24,7,danger?bad:accent);
@@ -160,4 +163,82 @@ void channelInfoKey(int key){
 void channelRegionSave(){
  String r=regions::normalize(edit);if(edit.length()&&!r.length()){notice(t("Region: letters, digits, '-'","Регион: буквы, цифры, '-'"),bad);return;}
  editing=false;saveChannelRegion(r);
+}
+// Chat settings (@ in a chat). A channel: its scope (region), the beep of its new messages, its QR code, inviting a
+// chat contact and leaving it (not Public); every chat: the input language and erasing its messages. The scope shares
+// the card's region row (regionChoice, its editor), so <> picks a region and OK saves or types one.
+void toggleLanguage();
+enum ChatMenuRow {MenuScope,MenuSound,MenuQr,MenuInvite,MenuKeyboard,MenuErase,MenuLeave};
+bool menuQr=false; // the channel's QR code fills the menu; BACK or OK closes it
+bool regionEditPage(){return page==ChannelInfo||page==ChatMenu;}
+const channels::Channel* menuChannel(){return channels::isChannel(recipient)?meshRadio.channel(recipient):nullptr;}
+int chatMenuList(ChatMenuRow* out){int n=0;const channels::Channel* c=menuChannel();bool own=c&&!channels::isPublic(c->secret);
+ if(c){out[n++]=MenuScope;out[n++]=MenuSound;out[n++]=MenuQr;}out[n++]=MenuKeyboard;
+ if(own){out[n++]=MenuInvite;out[n++]=MenuLeave;}out[n++]=MenuErase;return n;} // erase: the button below, as Save in the settings
+int chatMenuRows(){ChatMenuRow r[7];return chatMenuList(r);}
+ChatMenuRow chatMenuRow(int i){ChatMenuRow r[7];int n=chatMenuList(r);return r[constrain(i,0,n-1)];}
+unsigned chatMessages(){unsigned n=0;for(unsigned i=0;i<meshRadio.historyCount;i++)if(belongs(meshRadio.history[i],recipient))n++;return n;}
+void openChatMenu(){focusChannel=recipient;regionFor=0;inviteTo=0;menuQr=false;change(ChatMenu);}
+bool chatMenuBack(){if(!menuQr)return false;menuQr=false;dirty=true;return true;} // BACK first closes the QR code
+void chatMenuStatus(JsonDocument& d){const char* rows[]={"scope","sound","qr","invite","keyboard","erase","leave"};d["menu_row"]=rows[chatMenuRow(selected)];d["menu_qr"]=menuQr;
+ if(auto* c=menuChannel()){d["channel"]=meshRadio.idText(c->id);d["scope"]=c->region;d["sound"]=bool(c->policy.sound);}d["messages"]=chatMessages();}
+void drawChatMenu(){
+ const channels::Channel* c=menuChannel();if(!c)menuQr=false;if(c&&regionFor!=focusChannel){regionFor=focusChannel;regionChoice=c->region;}
+ if(menuQr){int x,w;drawChannelQr(*c,6,x,w);footer({{"BACK",t("Back","Назад")}});return;}
+ Peer* list[24];int people=chatContacts(list);inviteTo=people?(inviteTo%people+people)%people:0;
+ int rows=chatMenuRows(),first=max(0,selected-6);selected=constrain(selected,0,rows-1);
+ for(int i=first;i<rows&&i<first+7;i++){int y=25+(i-first)*25;bool focus=selected==i;ChatMenuRow row=chatMenuRow(i);target(8,y,304,23,i);listRow(y,23,focus);
+  if(row==MenuErase){unsigned n=chatMessages();panel(8,y,304,23,n?(focus?bad:rgb(0x521a1a)):card,6);if(focus&&!n)ring(8,y,304,23,6,line);
+   textCenter(160,y+16,!n?t("No messages","Нет сообщений"):deleteArmed?t("Sure? OK again","Точно? Ещё OK"):t("Erase messages","Стереть сообщения")+" ("+String(n)+")",n?(focus?bg:ink):dim,bold);continue;}
+  String name,value;bool pick=false;uint16_t color=focus?ink:dim;
+  switch(row){
+   case MenuScope:name=t("Scope","Область");value=channelRegionText(regionChoice);pick=true;if(regionChoice!=c->region)g().fillCircle(17,y+11,2,accent);break;
+   case MenuSound:name=t("Sound on new messages","Звук новых сообщений");value=flag(c->policy.sound);pick=true;break;
+   case MenuQr:name=t("Show channel QR","Показать QR канала");break;
+   case MenuInvite:name=t("Invite","Пригласить");value=people?String(list[inviteTo]->name):String(t("No chat contacts","Нет чат-контактов"));pick=people>1;break;
+   case MenuKeyboard:name=t("Input language","Язык ввода");value=keyboardRussian?t("Russian","Русский"):t("English","Английский");pick=true;break;
+   default:break;
+   case MenuLeave:name=deleteArmed?t("Sure? OK again","Точно? Ещё OK"):t("Leave channel","Покинуть канал");color=focus?(deleteArmed?bad:ink):bad;break;
+  }
+  text(24,y+16,name,color);
+  if(focus&&pick){int w=min(measure(value,bold),140);tri(300,y+11,1,4,accent);text(292-w,y+16,fit(value,140,bold),accent,bold);tri(284-w,y+11,3,4,accent);}
+  else if(value.length())textRight(300,y+16,fit(value,140),focus?ink:dim,focus?bold:body);
+ }
+ scrollbar(first,7,rows,25,175);
+ ChatMenuRow row=chatMenuRow(selected);
+ String hint=row==MenuScope?t("Repeaters relay this channel within this region","Репитеры пересылают канал в этом регионе"):row==MenuSound?t("Beep when a message arrives in this channel","Сигнал при новом сообщении в этом канале"):
+  row==MenuQr?t("Others join by scanning it","Другие вступают, отсканировав его"):row==MenuInvite?t("Sends the channel link in a direct message","Отправит ссылку на канал личным сообщением"):
+  row==MenuKeyboard?t("Also: two spaces in the message","Также: два пробела в сообщении"):row==MenuLeave?t("History stays; joining again shows it","История сохранится и вернётся при вступлении"):t("This chat only, on this device","Только этот чат, только на устройстве");
+ text(10,207,fit(hint,300,small),faint,small);
+ if(row==MenuScope)footer({{"<>",t("Region","Регион")},{"OK",regionChoice==c->region?t("Type","Ввести"):t("Save","Сохранить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ else if(row==MenuErase||row==MenuLeave)footer({{"OK",deleteArmed?(row==MenuErase?t("Erase","Стереть"):t("Leave","Покинуть")):t("Confirm...","Подтвердить...")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ else if(row==MenuQr)footer({{"OK",t("Show","Показать")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ else if(row==MenuInvite)footer({{"<>",t("Contact","Контакт")},{"OK",t("Send","Отправить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ else footer({{"<>",t("Change","Изменить")},{"OK",t("Change","Изменить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+}
+void chatSoundToggle(const channels::Channel* c){StaticJsonDocument<32> d;d["sound"]=c->policy.sound?0:1;String r=channelPolicy::set(c->id,d.as<JsonObjectConst>());
+ bool saved=r.startsWith("OK");notice(saved?(c->policy.sound?t("Sound on","Звук включён"):t("Sound off","Звук выключен")):r,saved?ok:bad);}
+void chatMenuKey(int key){
+ if(menuQr){if(key==Enter||key==KeyHold){menuQr=false;}return;}
+ int rows=chatMenuRows();const channels::Channel* c=menuChannel();ChatMenuRow row=chatMenuRow(selected);
+ if(key==KeyUp||key==KeyDown){selected=(selected+(key==KeyUp?rows-1:1))%rows;deleteArmed=false;return;}
+ bool left=key==KeyLeft,side=left||key==KeyRight;if(!side&&key!=Enter&&key!=KeyHold)return;
+ if(row!=MenuErase&&row!=MenuLeave)deleteArmed=false;
+ switch(row){
+  case MenuScope:if(side){regionChoice=regions::cycle(regionChoice,left?-1:1,true);return;}
+   if(regionChoice!=c->region)saveChannelRegion(regionChoice);else{edit=regionChoice==regions::Unscoped?String():regionChoice;editing=true;}return;
+  case MenuSound:chatSoundToggle(c);return;
+  case MenuKeyboard:toggleLanguage();return;
+  case MenuQr:if(!side)menuQr=true;return;
+  case MenuInvite:{if(side){inviteTo+=left?-1:1;return;}Peer* list[24];int people=chatContacts(list);if(!people){notice(t("Discover a chat contact first: ADV","Сначала найдите чат-контакт: ADV"),warn);return;}
+   Peer* p=list[(inviteTo%people+people)%people];bool sent=meshRadio.sendInvite(p->id,c->id);notice(sent?t("Invitation queued to ","Приглашение в очереди: ")+p->name:t("Invitation not sent","Приглашение не отправлено"),sent?ok:bad);return;}
+  default:break;
+ }
+ if(side)return;
+ if(row==MenuErase&&!chatMessages()){notice(t("No messages","Нет сообщений"),dim);return;}
+ if(!deleteArmed){deleteArmed=true;notice(row==MenuErase?t("OK again: erase this chat's messages","Ещё OK: стереть сообщения чата"):t("OK again: leave the channel","Ещё OK: покинуть канал"),warn);return;}
+ deleteArmed=false;
+ if(row==MenuLeave){String name=c->name;if(meshRadio.removeChannel(c->id)){notice(t("Left ","Покинут: ")+name,ok);change(Threads);}else notice(t("Cannot leave while sending","Нельзя во время отправки"),bad);return;}
+ unsigned n=meshRadio.eraseHistory(belongs,recipient);chatOffset=0;
+ notice(n?t("Messages erased: ","Стёрто сообщений: ")+String(n):t("Messages being sent stay","Отправляемые сообщения остаются"),n?ok:warn);
 }

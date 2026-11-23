@@ -101,6 +101,8 @@ class MeshRadio {
   bool sendHello();bool sendPosition();bool selfTest();
   String diagnosticFrame() const;bool diagnosticIngest(const uint8_t* data,size_t size);
   uint32_t diagnosticRx=0;bool busy() const;void cancelPending();void restoreHistory();void trimHistory();
+  // Erases the messages of one chat (match: whether a message belongs to id) but those still being sent; the count erased.
+  unsigned eraseHistory(bool (*match)(const ChatMessage&,uint64_t),uint64_t id);
   static bool clockSet();
   bool resetPath(uint64_t id);bool removeContact(uint64_t id);
   String idText(uint64_t id) const;String publicKeyText() const;

@@ -14,6 +14,13 @@ def ok(d,text):
  return r
 
 def key(d,n):ok(d,f'uikey {n}')
+# In a chat @ opens its settings; their "Input language" row switches EN/RU, BACK returns to the chat.
+def toggle_keyboard(d):
+ key(d,0x83)
+ for _ in range(4):
+  if read(d,'ui').get('menu_row')=='keyboard':break
+  key(d,0xb6)
+ key(d,13);key(d,0x86);assert read(d,'ui')['page']=='chat'
 def wake(d):
  if read(d,'ui')['locked']:key(d,0xa3)
  key(d,0x82);key(d,0x82)
@@ -90,7 +97,7 @@ def main():
    checks+=['invalid settings rejected without partial changes']
    # Keyboard language is independent of the interface. Keep drafts intact.
    key(m9,0x81);key(m9,13);ui=read(m9,'ui');initial=ui['composer'];kb=ui['keyboard_language']
-   if kb=='RU':key(m9,0x83)
+   if kb=='RU':toggle_keyboard(m9)
    draft=' draft 123'
    for c in draft:key(m9,ord(c))
    assert read(m9,'ui')['composer']==initial+draft
@@ -101,10 +108,10 @@ def main():
    assert read(m9,'ui')['locked'];key(m9,0xa3);assert not read(m9,'ui')['locked']
    assert read(m9,'ui')['composer']==initial+draft
    for _ in draft:key(m9,8)
-   if kb=='RU':key(m9,0x83)
+   if kb=='RU':toggle_keyboard(m9)
    assert read(m9,'ui')['composer']==initial and read(m9,'config')['russian']==config['russian']
    if len(initial.encode())+40<=151:
-    if kb=='EN':key(m9,0x83)
+    if kb=='EN':toggle_keyboard(m9)
     # Phonetic RU: 1-7 carry the letters without a Latin sound-alike; Sym symbols stay symbols;
     # Right after a letter toggles its case.
     for c in 'privet1234567':key(m9,ord(c))
@@ -116,7 +123,7 @@ def main():
     # Two quick spaces switch the input language and leave no space behind.
     language=read(m9,'ui')['keyboard_language'];key(m9,32);key(m9,32);ui=read(m9,'ui')
     assert ui['keyboard_language']!=language and ui['composer']==initial,'double space did not switch language'
-    if ui['keyboard_language']!=kb:key(m9,0x83)
+    if ui['keyboard_language']!=kb:toggle_keyboard(m9)
     assert read(m9,'ui')['keyboard_language']==kb
     key(m9,0xa3);assert read(m9,'ui')['layout_help'];key(m9,0x86);assert not read(m9,'ui')['layout_help'] and read(m9,'ui')['page']=='chat'
     checks+=['RU phonetic letters, digit letters, Right-arrow capital, Sym symbols kept; UTF-8 backspace','double space switches RU/EN','hold OK shows the RU layout']
