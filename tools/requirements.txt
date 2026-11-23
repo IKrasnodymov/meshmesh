@@ -1,0 +1,17 @@
+# Python packages used by tools/ (python3 -m venv .venv && .venv/bin/pip install -r tools/requirements.txt)
+# Build, package and flash (tools/package.py, tools/flash.py, CI)
+platformio
+esptool
+# USB serial to the boards (tools/device.py and the *_check.py tools)
+pyserial
+# MM/1 packet crypto check (tools/protocol_check.py)
+cryptography
+# Screenshots and map tiles (tools/site_shots.py, tools/web_shots.py, tools/maps.py, tools/ui_preview/sheet.py)
+pillow
+# Anti-aliased fonts (tools/aa_fonts.py, via tools/i18n.py generate; also needs pillow)
+fonttools
+# Bluetooth link to a board (tools/ble_device.py)
+bleak
+# Checks against stock MeshCore companions (tools/channel_check.py, tools/repeater_check.py, tools/meshcore_stock_check.py)
+meshcore
+pyserial-asyncio-fast

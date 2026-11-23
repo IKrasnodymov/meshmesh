@@ -1,0 +1,24 @@
+# Close to the existing style of src/ and include/: 2-space indent, " public:", "Type* name", "if(".
+# Not applied to the tree yet. Use it for new or touched code (clang-format -i FILE, or format-on-save),
+# and reformat existing files one at a time in formatting-only commits, so git blame and upstream merges stay usable.
+# ColumnLimit 0 keeps the line breaks that are already there; clang-format still adds spaces around operators.
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+IndentWidth: 2
+ContinuationIndentWidth: 2
+AccessModifierOffset: -1
+ColumnLimit: 0
+PointerAlignment: Left
+DerivePointerAlignment: false
+SpaceBeforeParens: Never
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: true
+IndentPPDirectives: None
+SortIncludes: Never
+ReflowComments: false
+FixNamespaceComments: false

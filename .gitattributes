@@ -1,0 +1,20 @@
+# Line endings: LF everywhere except Windows scripts
+* text=auto eol=lf
+*.bat text eol=crlf
+
+# Generated sources: committed for the firmware build, but kept out of diffs and GitHub language stats.
+# Regenerate them with the tools named in their headers instead of editing them.
+include/I18nTable.h linguist-generated=true -diff
+include/I18nFonts.h linguist-generated=true -diff
+include/AaFonts.h linguist-generated=true -diff
+include/EmojiData.h linguist-generated=true -diff
+include/PetSprites.h linguist-generated=true
+include/NetCatalog.h linguist-generated=true
+include/Version.h linguist-generated=true
+
+# Binary assets
+*.png binary
+*.bin binary
+*.uf2 binary
+*.ttf binary
+*.otf binary
