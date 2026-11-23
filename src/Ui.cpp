@@ -679,6 +679,7 @@ String powerOnHint(){return powerOnWay()>=0?t("To turn on, hold the trackball pr
 bool farewell=false; // the board is about to turn off: the last frame
 void drawOff(){panel(30,62,260,116,card,10);icon(IcPower,160,96,14,farewell?dim:warn,card);textCenter(160,138,farewell?t("Device is off","Устройство выключено"):t("Turning off...","Выключение..."),ink,bold);textCenter(160,160,powerOnHint(),dim,small);}
 uint32_t powerArmed=0; // the first OK on "Turn off" arms it for 5 s
+uint32_t discardArmed=0; // the first BACK on an unsaved Radio or Display draft arms discarding it for 5 s
 void drawSettings(){
  Icon icons[]={IcRadio,IcScreen,IcCompass,IcWifi,IcPulse,IcHelp,IcPin,IcTower,IcPower};uint16_t hues[]={accent,info,warn,info,ok,dim,ok,violet,bad};
  String names[]={t("Radio","Радио"),t("Screen & device","Экран и устройство"),t("GPS & compass","GPS и компас"),t("Connections","Подключения"),t("Module health","Состояние модулей"),t("Keys & help","Клавиши и подсказки"),t("Saved maps","Сохранённые карты"),t("Device mode","Режим работы"),t("Turn off","Выключить")};
@@ -1056,6 +1057,9 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(page==ServerHome&&(key=='p'||key=='P')){change(PetView);return;} // the pet of a repeater or room
  if(page==ServerHome&&serverKey(key))return;
  if(page==Remote&&remoteKey(key))return;
+ if(key==KeyBack&&(page==Radio||page==Display)&&draftChanged()&&(!discardArmed||millis()-discardArmed>5000)){ // unsaved: go to Save, a second BACK discards
+  discardArmed=millis();selected=settingRows()-1;notice(t("Unsaved: OK saves, BACK discards","Не сохранено: OK - сохранить, BACK - отменить"),warn);return;}
+ if(key==KeyBack)discardArmed=0;
  if(key==KeyBack){change(page==ChannelAdd?Threads:page==ChannelInfo?infoReturn:page==NetList?Network:page==Homing?Scope:page==Chat?chatReturn:page==Node?Nodes:sharedPage(page)?subReturn:homePage(),true);return;}
  if(key==KeyAt){change(Diagnostics);return;}
  if(page==ChannelInfo){channelInfoKey(key);return;}
