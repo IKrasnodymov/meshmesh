@@ -80,9 +80,9 @@ bool parseLink(const String& text,String& name,uint8_t secret[16],String* region
  return keyed;
 }
 
-// QR code, ISO/IEC 18004: byte mode, error correction level M, versions 1-10.
+// QR code, ISO/IEC 18004: byte mode, error correction level M or L, versions 1-10.
 namespace {
-const int8_t eccPerBlock[11]={0,10,16,26,18,24,16,18,22,22,26},blockCount[11]={0,1,1,1,2,2,4,4,4,5,5};
+const int8_t eccPerBlock[2][11]={{0,10,16,26,18,24,16,18,22,22,26},{0,7,10,15,20,26,18,20,24,30,18}},blockCount[2][11]={{0,1,1,1,2,2,4,4,4,5,5},{0,1,1,1,1,1,2,2,2,2,4}};
 int rawModules(int v){int n=(16*v+128)*v+64;if(v>=2){int a=v/7+2;n-=(25*a-10)*a-55;if(v>=7)n-=36;}return n;}
 struct Grid {
  int size;uint8_t* m;uint8_t fn[QrBytes]={};
@@ -93,8 +93,8 @@ struct Grid {
 };
 uint8_t gfMul(uint8_t x,uint8_t y){int z=0;for(int i=7;i>=0;i--){z=(z<<1)^((z>>7)*0x11D);z^=((y>>i)&1)*x;}return z;}
 void finder(Grid& g,int cx,int cy){for(int dy=-4;dy<=4;dy++)for(int dx=-4;dx<=4;dx++){int d=max(abs(dx),abs(dy)),x=cx+dx,y=cy+dy;if(x>=0&&x<g.size&&y>=0&&y<g.size)g.setFn(x,y,d!=2&&d!=4);}}
-void format(Grid& g,int mask){
- int data=0<<3|mask,rem=data;for(int i=0;i<10;i++)rem=(rem<<1)^((rem>>9)*0x537);int bits=(data<<10|rem)^0x5412;auto bit=[&](int i){return (bits>>i&1)!=0;};
+void format(Grid& g,int mask,bool low){
+ int data=(low?1:0)<<3|mask,rem=data;for(int i=0;i<10;i++)rem=(rem<<1)^((rem>>9)*0x537);int bits=(data<<10|rem)^0x5412;auto bit=[&](int i){return (bits>>i&1)!=0;};
  for(int i=0;i<=5;i++)g.setFn(8,i,bit(i));g.setFn(8,7,bit(6));g.setFn(8,8,bit(7));g.setFn(7,8,bit(8));for(int i=9;i<15;i++)g.setFn(14-i,8,bit(i));
  for(int i=0;i<8;i++)g.setFn(g.size-1-i,8,bit(i));for(int i=8;i<15;i++)g.setFn(8,g.size-15+i,bit(i));g.setFn(8,g.size-8,true);
 }
@@ -120,11 +120,11 @@ long penalty(const Grid& g){
  int total=n*n,k=(abs(dark*20-total*10)+total-1)/total-1;p+=max(0,k)*10;return p;
 }
 }
-int qr(const String& text,uint8_t* out){
- int len=text.length(),v=1;
- for(;v<=10;v++){int cap=rawModules(v)/8-eccPerBlock[v]*blockCount[v];if(4+(v<10?8:16)+len*8<=cap*8)break;}
+int qr(const String& text,uint8_t* out,bool low){
+ int len=text.length(),v=1;const int8_t* eccPer=eccPerBlock[low],*blockOf=blockCount[low];
+ for(;v<=10;v++){int cap=rawModules(v)/8-eccPer[v]*blockOf[v];if(4+(v<10?8:16)+len*8<=cap*8)break;}
  if(v>10)return 0;
- const int size=v*4+17,raw=rawModules(v)/8,ecc=eccPerBlock[v],blocks=blockCount[v],dataLen=raw-ecc*blocks;
+ const int size=v*4+17,raw=rawModules(v)/8,ecc=eccPer[v],blocks=blockOf[v],dataLen=raw-ecc*blocks;
  // Data: mode, length, bytes, terminator and padding.
  uint8_t data[400]={};int bit=0;auto push=[&](uint32_t value,int n){for(int i=n-1;i>=0;i--){if(value>>i&1)data[bit>>3]|=0x80>>(bit&7);bit++;}};
  push(4,4);push(len,v<10?8:16);for(int i=0;i<len;i++)push(uint8_t(text[i]),8);
@@ -144,7 +144,7 @@ int qr(const String& text,uint8_t* out){
  if(v>=2){int count=v/7+2,step=(v*4+count*2+1)/(count*2-2)*2,pos[7];pos[0]=6;for(int i=count-1,p=size-7;i>=1;i--,p-=step)pos[i]=p;
   for(int i=0;i<count;i++)for(int j=0;j<count;j++){if((!i&&!j)||(!i&&j==count-1)||(i==count-1&&!j))continue;
    for(int dy=-2;dy<=2;dy++)for(int dx=-2;dx<=2;dx++)g.setFn(pos[i]+dx,pos[j]+dy,max(abs(dx),abs(dy))!=1);}}
- format(g,0);
+ format(g,0,low);
  if(v>=7){int rem=v;for(int i=0;i<12;i++)rem=(rem<<1)^((rem>>11)*0x1F25);long bits=long(v)<<12|rem;
   for(int i=0;i<18;i++){bool d=bits>>i&1;int a=size-11+i%3,b=i/3;g.setFn(a,b,d);g.setFn(b,a,d);}}
  // Codewords in the zigzag order.
@@ -153,7 +153,7 @@ int qr(const String& text,uint8_t* out){
    if(!g.isFn(x,y)&&i<raw*8){g.put(x,y,all[i>>3]>>(7-(i&7))&1);i++;}}}
  // The mask with the lowest penalty.
  int best=0;long bestScore=LONG_MAX;
- for(int m=0;m<8;m++){applyMask(g,m);format(g,m);long s=penalty(g);if(s<bestScore){bestScore=s;best=m;}applyMask(g,m);}
- applyMask(g,best);format(g,best);return size;
+ for(int m=0;m<8;m++){applyMask(g,m);format(g,m,low);long s=penalty(g);if(s<bestScore){bestScore=s;best=m;}applyMask(g,m);}
+ applyMask(g,best);format(g,best,low);return size;
 }
 }

@@ -35,9 +35,10 @@ bool hasLink(const String& text);
 // Hashtags tried against heard packets of channels this node has not joined.
 extern const char* const commonTags[];
 extern const unsigned commonTagCount;
-// QR code of a short text (byte mode, error correction M, versions 1-10): side 21..57, 0 when too long.
-// Modules row by row, a bit each (1 = dark); out holds at least 57*57/8+1 bytes.
-int qr(const String& text,uint8_t* out);
+// QR code of a short text (byte mode, error correction M, or L when low, versions 1-10): side 21..57, 0 when too
+// long. Modules row by row, a bit each (1 = dark); out holds at least 57*57/8+1 bytes. L suits a screen, which
+// does not get scratched: a smaller code, larger modules.
+int qr(const String& text,uint8_t* out,bool low=false);
 inline bool qrDark(const uint8_t* m,int size,int x,int y){int i=y*size+x;return m[i>>3]>>(i&7)&1;}
 constexpr size_t QrBytes=57*57/8+1;
 }

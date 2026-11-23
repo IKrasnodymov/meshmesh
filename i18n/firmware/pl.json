@@ -1159,6 +1159,56 @@
   "ru": "Батарея садится",
   "text": "Słaba bateria"
  },
+ "99d92ee5": {
+  "en": "Input: Russian (phonetic)",
+  "ru": "Ввод: русский (фонетический)",
+  "text": "Pisanie: rosyjski (fonetyczny)"
+ },
+ "f298c8d3": {
+  "en": "Input: English",
+  "ru": "Ввод: английский",
+  "text": "Pisanie: angielski"
+ },
+ "c79e0520": {
+  "en": "Russian input: phonetic",
+  "ru": "Русский ввод: фонетический",
+  "text": "Rosyjski układ: fonetyczny"
+ },
+ "e8ecae43": {
+  "en": "2x space: RU/EN   Shift or Right after a letter: capital",
+  "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
+  "text": "2× spacja: RU/EN   Shift lub -> po literze: wielka litera"
+ },
+ "cf39d358": {
+  "en": "Not in this mode",
+  "ru": "Недоступно в этом режиме",
+  "text": "Niedostępne w tym trybie"
+ },
+ "56bf77d2": {
+  "en": "Radio test: a restart returns the saved one",
+  "ru": "Тест радио: перезапуск вернёт сохранённое",
+  "text": "Test radia: restart przywróci zapisane"
+ },
+ "a06fdf5a": {
+  "en": "Radio busy, retry",
+  "ru": "Радио занято, повторите",
+  "text": "Radio zajęte, ponów"
+ },
+ "19b6c4b1": {
+  "en": "Radio offline",
+  "ru": "Радио недоступно",
+  "text": "Radio niedostępne"
+ },
+ "277c1960": {
+  "en": "No preset for this radio",
+  "ru": "Нет пресетов для этого радио",
+  "text": ""
+ },
+ "2ae7cabc": {
+  "en": "Settings saved",
+  "ru": "Настройки сохранены",
+  "text": "Ustawienia zapisane"
+ },
  "bfb7fda0": {
   "en": "Not sent: radio or route",
   "ru": "Не отправлено: радио или маршрут",
@@ -1233,6 +1283,11 @@
   "en": "Announcement failed",
   "ru": "Не удалось объявить узел",
   "text": "Nie udało się ogłosić węzła"
+ },
+ "a949dcb0": {
+  "en": "Unsaved: OK saves, BACK discards",
+  "ru": "Не сохранено: OK - сохранить, BACK - отменить",
+  "text": ""
  },
  "aa9ad8ae": {
   "en": "Message queued",
@@ -2134,11 +2189,6 @@
   "en": "Back",
   "ru": "Назад",
   "text": "Wstecz"
- },
- "d345a7e1": {
-  "en": "2x space",
-  "ru": "2×пробел",
-  "text": "2× spacja"
  },
  "191fb7b9": {
   "en": "Finding location by IP...",
@@ -3047,6 +3097,11 @@
   "ru": "Профили справочника городов; <>: все",
   "text": "Profile katalogu miast; <>: wszystkie"
  },
+ "1564fefe": {
+  "en": "Preset",
+  "ru": "Пресет",
+  "text": ""
+ },
  "0210412b": {
   "en": "Frequency",
   "ru": "Частота",
@@ -3172,6 +3227,11 @@
   "ru": "Окно сообщения",
   "text": "Okno wiadomości"
  },
+ "e4f63c27": {
+  "en": "Custom",
+  "ru": "Свой",
+  "text": ""
+ },
  "f53b39c9": {
   "en": " MHz",
   "ru": " МГц",
@@ -3237,6 +3297,11 @@
   "en": "Mentions",
   "ru": "Упоминания",
   "text": "Wzmianki"
+ },
+ "29e13631": {
+  "en": "MeshCore regional settings: frequency, BW, SF, CR",
+  "ru": "Региональные настройки MeshCore: частота, BW, SF, CR",
+  "text": ""
  },
  "e1f39c44": {
   "en": "1 kHz steps; must match every node",
@@ -3569,6 +3634,41 @@
   "ru": "Дальше",
   "text": "Dalej"
  },
+ "59949a9b": {
+  "en": "1. Join the Wi-Fi",
+  "ru": "1. Подключитесь к Wi-Fi",
+  "text": "1. Połącz z Wi-Fi"
+ },
+ "b044c509": {
+  "en": "2. Open the page",
+  "ru": "2. Откройте страницу",
+  "text": "2. Otwórz stronę"
+ },
+ "439f4d92": {
+  "en": "Scan with the phone camera",
+  "ru": "Сканируйте камерой телефона",
+  "text": "Zeskanuj aparatem telefonu"
+ },
+ "25deb7c5": {
+  "en": "Logged in, after step 1",
+  "ru": "Со входом, после шага 1",
+  "text": "Z logowaniem, po kroku 1"
+ },
+ "dadf0704": {
+  "en": "Network",
+  "ru": "Сеть",
+  "text": "Sieć"
+ },
+ "1f6f4a2f": {
+  "en": "Password",
+  "ru": "Пароль",
+  "text": "Hasło"
+ },
+ "9581d7f2": {
+  "en": "Other code",
+  "ru": "Другой код",
+  "text": "Inny kod"
+ },
  "eccc8fe2": {
   "en": "Wi-Fi access point",
   "ru": "Точка доступа Wi-Fi",
@@ -3589,15 +3689,20 @@
   "ru": "Ключ MeshCore",
   "text": "Klucz MeshCore"
  },
- "01f31114": {
-  "en": "Networks",
-  "ru": "Сети",
-  "text": "Sieci"
- },
  "e6b593c8": {
   "en": "Toggle",
   "ru": "Переключить",
   "text": "Przełącz"
+ },
+ "4b1cee4e": {
+  "en": "QR code",
+  "ru": "QR-код",
+  "text": "Kod QR"
+ },
+ "01f31114": {
+  "en": "Networks",
+  "ru": "Сети",
+  "text": "Sieci"
  },
  "80266824": {
   "en": "Wrong password or refused: ",
@@ -3739,10 +3844,10 @@
   "ru": "Обновить",
   "text": "Odśwież"
  },
- "f1102a51": {
-  "en": "@ (input language)",
-  "ru": "@ (язык ввода)",
-  "text": "@ (język pisania)"
+ "39d87ed1": {
+  "en": "@ (chat settings, input language)",
+  "ru": "@ (настройки чата, язык ввода)",
+  "text": ""
  },
  "64ca9615": {
   "en": "hold ADV (GPS)",
@@ -3863,6 +3968,11 @@
   "en": "Delete; with no text: back",
   "ru": "Удалить; без текста: назад",
   "text": "Usuń; bez tekstu: wstecz"
+ },
+ "d345a7e1": {
+  "en": "2x space",
+  "ru": "2×пробел",
+  "text": "2× spacja"
  },
  "609be88e": {
   "en": "in text: switch RU/EN",
@@ -4085,51 +4195,6 @@
   "ru": "Шахматы · ",
   "text": "Szachy · "
  },
- "99d92ee5": {
-  "en": "Input: Russian (phonetic)",
-  "ru": "Ввод: русский (фонетический)",
-  "text": "Pisanie: rosyjski (fonetyczny)"
- },
- "f298c8d3": {
-  "en": "Input: English",
-  "ru": "Ввод: английский",
-  "text": "Pisanie: angielski"
- },
- "c79e0520": {
-  "en": "Russian input: phonetic",
-  "ru": "Русский ввод: фонетический",
-  "text": "Rosyjski układ: fonetyczny"
- },
- "e8ecae43": {
-  "en": "2x space: RU/EN   Shift or Right after a letter: capital",
-  "ru": "2×пробел: RU/EN   Shift или -> после буквы: заглавная",
-  "text": "2× spacja: RU/EN   Shift lub -> po literze: wielka litera"
- },
- "cf39d358": {
-  "en": "Not in this mode",
-  "ru": "Недоступно в этом режиме",
-  "text": "Niedostępne w tym trybie"
- },
- "56bf77d2": {
-  "en": "Radio test: a restart returns the saved one",
-  "ru": "Тест радио: перезапуск вернёт сохранённое",
-  "text": "Test radia: restart przywróci zapisane"
- },
- "a06fdf5a": {
-  "en": "Radio busy, retry",
-  "ru": "Радио занято, повторите",
-  "text": "Radio zajęte, ponów"
- },
- "19b6c4b1": {
-  "en": "Radio offline",
-  "ru": "Радио недоступно",
-  "text": "Radio niedostępne"
- },
- "2ae7cabc": {
-  "en": "Settings saved",
-  "ru": "Настройки сохранены",
-  "text": "Ustawienia zapisane"
- },
  "13c4173d": {
   "en": "None",
   "ru": "Без региона",
@@ -4144,11 +4209,6 @@
   "en": "Default: none",
   "ru": "По умолчанию: нет",
   "text": "Domyślny: brak"
- },
- "8baa6473": {
-  "en": "Channel removed",
-  "ru": "Канал удалён",
-  "text": "Kanał usunięty"
  },
  "acc0f007": {
   "en": "Channel added",
@@ -4174,6 +4234,11 @@
   "en": "Scan with MeshMesh or the MeshCore app",
   "ru": "Сканируйте в MeshMesh или приложении MeshCore",
   "text": "Zeskanuj w MeshMesh lub aplikacji MeshCore"
+ },
+ "8baa6473": {
+  "en": "Channel removed",
+  "ru": "Канал удалён",
+  "text": "Kanał usunięty"
  },
  "bb68873f": {
   "en": "Already in this channel",
@@ -4205,15 +4270,15 @@
   "ru": "Покинуть канал",
   "text": "Opuść kanał"
  },
- "6a8df395": {
-  "en": "Contact",
-  "ru": "Контакт",
-  "text": "Kontakt"
- },
  "b4ff4ddb": {
   "en": "8 channels at most",
   "ru": "Не больше 8 каналов",
   "text": "Najwyżej 8 kanałów"
+ },
+ "6a8df395": {
+  "en": "Contact",
+  "ru": "Контакт",
+  "text": "Kontakt"
  },
  "34bbbe05": {
   "en": "Region saved",
@@ -4245,6 +4310,11 @@
   "ru": "История сохранится и вернётся при вступлении",
   "text": "Historia zostaje; wróci po ponownym dołączeniu"
  },
+ "efa35629": {
+  "en": "Key: 32 hex or base64",
+  "ru": "Ключ: 32 hex или base64",
+  "text": "Klucz: 32 hex lub base64"
+ },
  "0f1754aa": {
   "en": "Left ",
   "ru": "Покинут: ",
@@ -4255,11 +4325,6 @@
   "ru": "Нельзя во время отправки",
   "text": "Nie teraz: trwa wysyłanie"
  },
- "efa35629": {
-  "en": "Key: 32 hex or base64",
-  "ru": "Ключ: 32 hex или base64",
-  "text": "Klucz: 32 hex lub base64"
- },
  "a6f0f217": {
   "en": "Not a channel link",
   "ru": "Это не ссылка на канал",
@@ -4269,6 +4334,131 @@
   "en": "Channel not saved",
   "ru": "Канал не сохранён",
   "text": "Kanał niezapisany"
+ },
+ "e822a218": {
+  "en": "No messages",
+  "ru": "Нет сообщений",
+  "text": ""
+ },
+ "10a8a676": {
+  "en": "Erase messages",
+  "ru": "Стереть сообщения",
+  "text": ""
+ },
+ "489fd528": {
+  "en": "Scope",
+  "ru": "Область",
+  "text": ""
+ },
+ "9eaab780": {
+  "en": "Sound on new messages",
+  "ru": "Звук новых сообщений",
+  "text": ""
+ },
+ "0b02bb88": {
+  "en": "Show channel QR",
+  "ru": "Показать QR канала",
+  "text": ""
+ },
+ "cee98a7c": {
+  "en": "Input language",
+  "ru": "Язык ввода",
+  "text": ""
+ },
+ "a7e84116": {
+  "en": "Russian",
+  "ru": "Русский",
+  "text": ""
+ },
+ "64013463": {
+  "en": "English",
+  "ru": "Английский",
+  "text": ""
+ },
+ "3d2f7f0e": {
+  "en": "Repeaters relay this channel within this region",
+  "ru": "Репитеры пересылают канал в этом регионе",
+  "text": ""
+ },
+ "81654612": {
+  "en": "Beep when a message arrives in this channel",
+  "ru": "Сигнал при новом сообщении в этом канале",
+  "text": ""
+ },
+ "28171d6a": {
+  "en": "Others join by scanning it",
+  "ru": "Другие вступают, отсканировав его",
+  "text": ""
+ },
+ "cc9ac85d": {
+  "en": "Sends the channel link in a direct message",
+  "ru": "Отправит ссылку на канал личным сообщением",
+  "text": ""
+ },
+ "2091a176": {
+  "en": "Also: two spaces in the message",
+  "ru": "Также: два пробела в сообщении",
+  "text": ""
+ },
+ "a807acf1": {
+  "en": "This chat only, on this device",
+  "ru": "Только этот чат, только на устройстве",
+  "text": ""
+ },
+ "64a83999": {
+  "en": "Erase",
+  "ru": "Стереть",
+  "text": ""
+ },
+ "dfce4dcd": {
+  "en": "Leave",
+  "ru": "Покинуть",
+  "text": ""
+ },
+ "ffc50800": {
+  "en": "Confirm...",
+  "ru": "Подтвердить...",
+  "text": ""
+ },
+ "0db3ae3f": {
+  "en": "Show",
+  "ru": "Показать",
+  "text": ""
+ },
+ "9461ecf5": {
+  "en": "Send",
+  "ru": "Отправить",
+  "text": "Wyślij"
+ },
+ "c9a493d6": {
+  "en": "Sound on",
+  "ru": "Звук включён",
+  "text": ""
+ },
+ "8e2bb943": {
+  "en": "Sound off",
+  "ru": "Звук выключен",
+  "text": ""
+ },
+ "c89cdb79": {
+  "en": "OK again: erase this chat's messages",
+  "ru": "Ещё OK: стереть сообщения чата",
+  "text": ""
+ },
+ "3c295cf6": {
+  "en": "OK again: leave the channel",
+  "ru": "Ещё OK: покинуть канал",
+  "text": ""
+ },
+ "0c587e50": {
+  "en": "Messages erased: ",
+  "ru": "Стёрто сообщений: ",
+  "text": ""
+ },
+ "04173588": {
+  "en": "Messages being sent stay",
+  "ru": "Отправляемые сообщения остаются",
+  "text": ""
  },
  "c5cf108a": {
   "en": "Join",
@@ -4390,6 +4580,16 @@
   "ru": "То же #имя — тот же канал, что в приложениях MeshCore",
   "text": "Ta sama #nazwa to ten sam kanał co w aplikacjach MeshCore"
  },
+ "a632f05f": {
+  "en": "The key is made on this device",
+  "ru": "Ключ создаст это устройство",
+  "text": "Klucz utworzy to urządzenie"
+ },
+ "d2eba9c2": {
+  "en": "Then the key",
+  "ru": "Затем ключ",
+  "text": "Potem klucz"
+ },
  "7a0b46f9": {
   "en": "Public channel of MeshCore",
   "ru": "Общий канал MeshCore",
@@ -4404,16 +4604,6 @@
   "en": "Hashtag channel",
   "ru": "Канал-хештег",
   "text": "Kanał hashtagowy"
- },
- "a632f05f": {
-  "en": "The key is made on this device",
-  "ru": "Ключ создаст это устройство",
-  "text": "Klucz utworzy to urządzenie"
- },
- "d2eba9c2": {
-  "en": "Then the key",
-  "ru": "Затем ключ",
-  "text": "Potem klucz"
  },
  "588ee995": {
   "en": "OK: next   BACK: cancel",
@@ -5738,11 +5928,6 @@
   "en": "Add",
   "ru": "Добавить",
   "text": "Dodaj"
- },
- "9461ecf5": {
-  "en": "Send",
-  "ru": "Отправить",
-  "text": "Wyślij"
  },
  "ffe9b815": {
   "en": "Field",

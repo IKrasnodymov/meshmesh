@@ -253,7 +253,7 @@ body[data-route=chat] .wrap{padding-bottom:0}#p-chat{display:flex;flex-direction
 <header class="hud"><button class="back" id="back" hidden aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button><b id="title" class="home">MeshMesh</b><button id="quickReply" class="back" aria-label="Быстрый ответ" title="Быстрый ответ" hidden>↗</button><button class="back" id="chanInfo" hidden aria-label="О канале" style="font-size:18px"><svg class="ic"><use href="#i-next"/></svg></button><div class="icons" id="icons"></div></header>
 
 <main class="login" id="login"><div class="brand"><svg class="ic"><use href="#i-radio"/></svg><b>MESHMESH</b><small>Ваши люди. Ваша сеть.</small></div>
-<form class="card pad" id="loginForm"><label class="field">Пароль Wi-Fi<input id="password" type="password" autocomplete="current-password" required></label><p class="small muted">Пароль показан на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</p><button class="btn primary save">Подключиться</button></form>
+<form class="card pad" id="loginForm"><label class="field">Пароль Wi-Fi<input id="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required></label><p class="small muted">Пароль показан на устройстве: M9 — «Связь», Heltec — страница Wi-Fi.</p><button class="btn primary save">Подключиться</button></form>
 <label class="field" style="margin-top:12px">Язык страницы<select data-pagelang aria-label="Language"></select></label>
 <details class="more"><summary>Подготовить карту без устройства</summary><p class="muted small">Для подготовки нужен интернет. Скачайте файл карты, затем подключитесь к Wi-Fi M9 и загрузите его в разделе «Карта».</p><button class="btn soft save" id="standalone" type="button">Открыть подготовку карты</button></details>
 <p class="foot">MeshMesh · <span class="version">0.3.6</span></p></main>
@@ -2418,8 +2418,10 @@ if(typeof window!=='undefined'&&window.addEventListener){
  for(const s of document.querySelectorAll('select[data-pagelang]'))s.innerHTML=SCREEN_LANGS.map(([c,n])=>`<option value="${c}"${c===LANG?' selected':''}>${n}</option>`).join('');
  document.addEventListener('change',e=>{if(!e.target.matches('select[data-pagelang]'))return;try{localStorage.setItem('mm-lang',e.target.value)}catch{}location.reload()});
  const login=async()=>{try{config=await request('/api/config');try{if(!window.MeshNative)sessionStorage.setItem('mm-auth',auth)}catch{}$('login').hidden=true;$('app').hidden=false;await refresh();clearInterval(timer);timer=setInterval(refresh,3000);route='';show()}catch(err){auth='';try{sessionStorage.removeItem('mm-auth')}catch{}notify(L`Не удалось подключиться: ${err.message}`,'bad')}};
- $('loginForm').onsubmit=e=>{e.preventDefault();auth='Basic '+btoa('meshmesh:'+$('password').value);login()};
+ $('loginForm').onsubmit=e=>{e.preventDefault();auth='Basic '+btoa('meshmesh:'+$('password').value.trim().toLowerCase());login()}; // the device's password is lowercase
  let kept=null;try{kept=sessionStorage.getItem('mm-auth')}catch{}
+ // The device's QR code opens the page as http://192.168.4.1/#pw=PASSWORD: the part after # never leaves the browser.
+ const qrPw=/^#pw=([A-Za-z0-9]{8,63})$/.exec(location.hash);if(qrPw){kept='Basic '+btoa('meshmesh:'+qrPw[1].toLowerCase());history.replaceState(null,'',location.pathname+location.search)}
  if(kept&&!$('login').hidden&&!window.MeshNative){auth=kept;login()} // the app connects by itself (host.js)
 }
 </script></body></html>

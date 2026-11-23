@@ -801,19 +801,52 @@ void drawEditor(){
  else footer({{"<>",t("Change","Изменить")},{"OK",selected==rows-1?t("Save","Сохранить"):t("Next value","Дальше")},{"BACK",t("Cancel","Отмена")}});
 }
 void toggle(int x,int y,bool on){panel(x,y,30,16,on?accent:line,8);g().fillCircle(on?x+22:x+8,y+8,6,on?bg:dim);}
+// The access point as QR codes, so a phone needs no typing: 0 - joining it (the WIFI: text of camera apps), 1 - the
+// device page with the password after "#" (it stays in the browser). Beside the code the network and the password,
+// in groups of four, for typing it. -1: closed.
+int wifiQr=-1;
+String wifiSsid(){return "MM-"+meshRadio.idText(meshRadio.nodeId).substring(6);}
+String groupedPassword(){String p=portalPassword(),r;for(unsigned i=0;i<p.length();i+=4){if(i)r+=' ';r+=p.substring(i,i+4);}return r;}
+void drawWifiQr(){
+ auto& d=g();static uint8_t modules[channels::QrBytes];static String coded;static int size=0;String pw=portalPassword();
+ String code=wifiQr==0?"WIFI:T:WPA;S:"+wifiSsid()+";P:"+pw+";;":"http://192.168.4.1/#pw="+pw;
+ if(coded!=code){size=channels::qr(code,modules,true);coded=code;}
+ // Level L keeps both codes at version 3 (29 modules): 5 px each with the full 4-module quiet zone of the standard,
+ // which phone cameras want.
+ int s=size?constrain(188/(size+8),2,6):0,side=(size+8)*s,x0=8,y0=27;
+ if(size){d.fillRect(x0,y0,side,side,0xffff);for(int y=0;y<size;y++)for(int x=0;x<size;x++)if(channels::qrDark(modules,size,x,y))d.fillRect(x0+(x+4)*s,y0+(y+4)*s,s,s,0);}
+ int x=x0+side+10,w=312-x,y=40;
+ String rows[2];unsigned n=wrap(wifiQr==0?t("1. Join the Wi-Fi","1. Подключитесь к Wi-Fi"):t("2. Open the page","2. Откройте страницу"),rows,2,w,bold);
+ for(unsigned i=0;i<n;i++){text(x,y,rows[i],ink,bold);y+=14;}
+ n=wrap(wifiQr==0?t("Scan with the phone camera","Сканируйте камерой телефона"):t("Logged in, after step 1","Со входом, после шага 1"),rows,2,w,small);
+ for(unsigned i=0;i<n;i++){text(x,y,rows[i],dim,small);y+=10;}
+ y=max(y+6,wifiQr==0?80:76);text(x,y,t("Network","Сеть"),dim,small);text(x,y+14,fit(wifiSsid(),w,bold),accent,bold);
+ text(x,y+30,t("Password","Пароль"),dim,small);for(unsigned i=0;i<pw.length();i+=4)text(x,y+50+int(i/4)*22,pw.substring(i,i+4),ink,big);
+ if(wifiQr==1)text(x,y+126,"192.168.4.1",accent,bold);
+ footer({{"<>",t("Other code","Другой код")},{"BACK",t("Back","Назад")}});
+}
+// The QR codes take every key while open; they close by themselves when the access point goes off.
+bool networkKey(int key){
+ if(wifiQr<0){if((key==KeyLeft||key==KeyRight)&&selected==0&&portalActive()){wifiQr=0;return true;}return false;}
+ if(key==KeyLeft||key==KeyRight){wifiQr=1-wifiQr;return true;}
+ if(key==KeyBack||key==Enter||key==KeyHold||key==KeyUp||key==KeyDown){wifiQr=-1;return true;}
+ wifiQr=-1;return false; // HOME, MSG...: leave as usual
+}
 void drawNetwork(){
+ if(wifiQr>=0&&!portalActive())wifiQr=-1;if(wifiQr>=0){drawWifiQr();return;}
  auto& d=g();bool wifi=portalActive(),ble=bleActive(),web=internet.enabled;int y=25;
  auto cardAt=[&](int i,int h,Icon ic,const String& name,const String& state,bool on){bool focus=selected==i;target(8,y,304,h,i);panel(8,y,304,h,focus?cardHi:card,8);if(focus)ring(8,y,304,h,8);d.fillRoundRect(16,y+7,24,24,6,bg);icon(ic,28,y+19,7,on?info:faint,bg);text(48,y+17,name,ink,bold);text(48,y+30,fit(state,220,small),dim,small);};
  int wh=wifi?56:38;cardAt(0,wh,IcWifi,t("Wi-Fi access point","Точка доступа Wi-Fi"),wifi?"192.168.4.1 · "+String(t("Web chat and map upload","Веб-чат и загрузка карт")):t("Off","Выключена"),wifi);toggle(274,y+11,wifi);
  // The network and its password, whole, as on the home network card below (the address is in the line above).
- if(wifi){text(48,y+48,"MM-"+meshRadio.idText(meshRadio.nodeId).substring(6),accent,bold);int pw=measure(portalPassword(),bold);textRight(302,y+48,portalPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==0?cardHi:card);}
+ if(wifi){text(48,y+48,wifiSsid(),accent,bold);int pw=measure(groupedPassword(),bold);textRight(302,y+48,groupedPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==0?cardHi:card);}
  // On the home network the device page answers at the client's address, with the same password.
  y+=wh+6;int ih=internet.online()?56:38;cardAt(1,ih,IcWifi,t("Internet over Wi-Fi","Интернет по Wi-Fi"),internet.stateText(),internet.online());toggle(274,y+11,web);
- if(internet.online()){text(48,y+48,"http://"+internet.address(),accent,bold);int pw=measure(portalPassword(),bold);textRight(302,y+48,portalPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==1?cardHi:card);} // the password, whole
+ if(internet.online()){text(48,y+48,"http://"+internet.address(),accent,bold);int pw=measure(groupedPassword(),bold);textRight(302,y+48,groupedPassword(),ink,bold);icon(IcKey,291-pw,y+44,6,dim,selected==1?cardHi:card);} // the password, whole
  y+=ih+6;cardAt(2,38,IcBle,"Bluetooth LE",ble?bleName():t("Off","Выключен"),ble);toggle(274,y+11,ble);
  if(ble)textRight(266,y+17,"PIN "+String(blePin()),accent,bold);
  y+=44;if(y+38<=216)cardAt(3,38,IcKey,t("MeshCore identity","Ключ MeshCore"),meshRadio.publicKeyText().substring(0,24)+"...",true);
- footer({{"OK",selected==1?t("Networks","Сети"):t("Toggle","Переключить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
+ if(selected==0&&wifi)footer({{"OK",t("Toggle","Переключить")},{"<>",t("QR code","QR-код")},{"BACK",t("Back","Назад")}}); // no room for ^v in every language
+ else footer({{"OK",selected==1?t("Networks","Сети"):t("Toggle","Переключить")},{"^v",t("Select","Выбор")},{"BACK",t("Back","Назад")}});
 }
 // Internet over Wi-Fi: the client switch, networks in range, then saved networks out of range.
 String pendingSsid;
@@ -1025,7 +1058,7 @@ bool uiScreenOff(){return wakeOnly;}
 String uiPerf(){return perfReport();}
 void uiFarewell(){farewell=true;wakeOnly=locked=false;hardware.brightness(config.brightness);draw();}
 void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
-String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;if(page==Radio)d["radio_preset"]=settingValue(draft,RowPreset);d["locked"]=locked;d["selected"]=selected;if(page==PeopleView){d["tally_current"]=people::tally.current;d["tally_new"]=tallyAdding();d["tally_value"]=people::value();}if(page==QuickView){d["quick_targets"]=quickTargets;d["quick_to"]=meshRadio.idText(quickReplyTo?quickReplyTo:quickSend::state.to);if(!quickTargets&&selected>0)d["quick_index"]=selected-1;}d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);duelStatus(d);tourStatus(d);if(page==Folder){d["folder"]=folderOpen;d["folder_name"]=appsFolderName(folderOpen);}if(appFolder>=0)d["from_folder"]=appFolder;if(page==Node)d["play_menu"]=playMenu;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node){d["action"]=action;if(playMenu)d["play_selected"]=playSel;}if(page==ChannelInfo)d["channel"]=meshRadio.idText(focusChannel);if(page==ChatMenu)chatMenuStatus(d);if(page==ChannelAdd)d["add_step"]=int(addStep);d["channels"]=meshRadio.channelCount;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}if(page==DiceView){const char* sheets[]={"main","saved","characters","templates","send","offer","block"};d["dice_sheet"]=sheets[diceSheet];d["dice_selected"]=diceSel;d["sheet_block"]=sheetSel;d["sheet_note"]=sheetNote;d["block_field"]=blockField;}String s;serializeJson(d,s);return s;}
+String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;if(page==Radio)d["radio_preset"]=settingValue(draft,RowPreset);d["locked"]=locked;d["selected"]=selected;if(page==PeopleView){d["tally_current"]=people::tally.current;d["tally_new"]=tallyAdding();d["tally_value"]=people::value();}if(page==QuickView){d["quick_targets"]=quickTargets;d["quick_to"]=meshRadio.idText(quickReplyTo?quickReplyTo:quickSend::state.to);if(!quickTargets&&selected>0)d["quick_index"]=selected-1;}d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);duelStatus(d);tourStatus(d);if(page==Folder){d["folder"]=folderOpen;d["folder_name"]=appsFolderName(folderOpen);}if(appFolder>=0)d["from_folder"]=appFolder;if(page==Node)d["play_menu"]=playMenu;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node){d["action"]=action;if(playMenu)d["play_selected"]=playSel;}if(page==ChannelInfo)d["channel"]=meshRadio.idText(focusChannel);if(page==Network)d["wifi_qr"]=wifiQr;if(page==ChatMenu)chatMenuStatus(d);if(page==ChannelAdd)d["add_step"]=int(addStep);d["channels"]=meshRadio.channelCount;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}if(page==DiceView){const char* sheets[]={"main","saved","characters","templates","send","offer","block"};d["dice_sheet"]=sheets[diceSheet];d["dice_selected"]=diceSel;d["sheet_block"]=sheetSel;d["sheet_note"]=sheetNote;d["block_field"]=blockField;}String s;serializeJson(d,s);return s;}
 void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;keyed=true;if(locked){ // a hold (timed by the M9 keyboard controller, not by us) or two OK presses within a second unlock
   static uint32_t firstOk=0;bool twice=key==Enter&&firstOk&&millis()-firstOk<1000;firstOk=key==Enter&&!twice?millis():0;
   if(key==KeyHold||twice){locked=false;int game=lockGame();if(game==1)chessEnter(const_cast<ChessMatch*>(lockChess()));else if(game==2)duelEnter(const_cast<Duel*>(lockDuel()));}return;}if(asleep)return;
@@ -1052,6 +1085,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
  if(duelPage()&&duelKey(key))return;
  if(page==Folder&&key==KeyBack){change(Home,true);return;}
  if(page==ChatMenu&&key==KeyBack&&chatMenuBack())return; // the folder's tile stays selected
+ if(page==Network&&networkKey(key))return;
  if(page==PetView&&petKey(key))return;
  if(page==DiceView&&diceKey(key))return;
  if(page==QuickView&&quickKey(key))return;

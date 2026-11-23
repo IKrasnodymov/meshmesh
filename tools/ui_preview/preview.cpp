@@ -30,7 +30,7 @@ Config config;Hardware hardware;MeshRadio meshRadio;Maps maps;Navigation navigat
 void Config::load(){}bool Config::save(){return true;}bool Config::valid() const{return true;}
 String Config::keyHex() const{return String("00");}bool Config::setKey(const String&){return false;}
 static bool wifiOn=false,bleOn=false;
-bool portalActive(){return wifiOn;}String portalPassword(){return "preview-pass";}void portalToggle(){wifiOn=!wifiOn;}
+bool portalActive(){return wifiOn;}String portalPassword(){return "k7pm3xq9rt4w";}void portalToggle(){wifiOn=!wifiOn;}
 bool bleActive(){return bleOn;}void bleToggle(){bleOn=!bleOn;}uint32_t blePin(){return 123456;}
 // Repeater and room sessions (src/Remote.inc): fake answers, set up with the nodes below.
 namespace remote{Session sessions[MaxSessions];Trace trace;

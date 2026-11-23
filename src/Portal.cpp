@@ -118,9 +118,11 @@ String connectionCredentials() {
   String result;serializeJson(d,result);return result;
 }
 void portalBegin() {
-  uint8_t entropy[12];bootloader_random_enable();esp_fill_random(entropy,sizeof(entropy));bootloader_random_disable();
-  const char alphabet[]="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  for(int i=0;i<12;i++) password+=alphabet[entropy[i]%32];pinCode=config.blePin;
+  // 12 characters, lowercase as phone keyboards start, without the look-alikes i l o 0 1 (about 59 bits). Bytes from
+  // 248 up are drawn again, so each of the 31 characters is equally likely.
+  const char alphabet[]="abcdefghjkmnpqrstuvwxyz23456789";bootloader_random_enable();
+  while(password.length()<12){uint8_t b;esp_fill_random(&b,1);if(b<248)password+=alphabet[b%31];}
+  bootloader_random_disable();pinCode=config.blePin;
   // The page and its dictionaries (i18n/<lang>.js), kept compressed in flash and sent as they are.
   server.on("/",HTTP_GET,[]{server.sendHeader("Content-Encoding","gzip");server.send_P(200,"text/html; charset=utf-8",(PGM_P)portalPage,portalPageSize);});
   server.on("/networks.json",HTTP_GET,[]{server.sendHeader("Content-Encoding","gzip");server.sendHeader("Cache-Control","no-cache");server.send_P(200,"application/json",(PGM_P)portalNetworks,sizeof(portalNetworks));}); // the catalogue of web/index.html renderNet
