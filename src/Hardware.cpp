@@ -34,10 +34,15 @@ void Hardware::brightness(uint8_t level) {
   if(asleep){uint32_t slept=millis()-sleptAt;if(slept<120)delay(120-slept);display.enableSleep(false);delay(5);display.enableDisplay(true);asleep=false;shownValid=false;}
   ledcWrite(7,255-level);
 }
+// V1.1 (keyboard at 0x6d, Airoha AG3335): the enable is active HIGH, GPIO10 is pulsed after power-on and
+// $PAIR650 (backup mode) is sent before power-off, as the stock firmware does. V1.0: the enable is active LOW.
 void Hardware::setGps(bool enabled) {
+  bool v11=keyboardAt==0x6d;
+  if(!enabled&&gpsEnabled&&v11){Serial1.print("$PAIR650,0*25\r\n");Serial1.flush();delay(40);}
   gpsEnabled=enabled;
-  digitalWrite(pins::gpsEnable,enabled?LOW:HIGH);
+  digitalWrite(pins::gpsEnable,enabled==v11?HIGH:LOW);
   digitalWrite(pins::gpsReset,LOW);
+  if(enabled&&v11){delay(50);digitalWrite(pins::gpsWake,HIGH);delay(5);digitalWrite(pins::gpsWake,LOW);}
   // 115200 baud: the default 256-byte buffer holds 22 ms, less than a map frame; lost sentences fail their checksums.
   if(enabled) {Serial1.setRxBufferSize(2048);Serial1.begin(115200,SERIAL_8N1,pins::gpsRx,pins::gpsTx);lastGpsBaud=millis();}
   else Serial1.end();
@@ -47,8 +52,8 @@ void Hardware::begin() {
   gpio_deep_sleep_hold_dis();
   for(int pin:{pins::backlight,pins::peripheralPower}) {rtc_gpio_hold_dis(gpio_num_t(pin));pinMode(pin,OUTPUT);digitalWrite(pin,LOW);}
   for(int pin:{pins::radioCs,pins::lcdCs,pins::sdCs}) {gpio_hold_dis(gpio_num_t(pin));pinMode(pin,OUTPUT);digitalWrite(pin,HIGH);}
-  pinMode(pins::gpsEnable,OUTPUT);pinMode(pins::gpsReset,OUTPUT);pinMode(pins::buzzer,OUTPUT);
-  digitalWrite(pins::buzzer,LOW);setGps(config.gps);
+  pinMode(pins::gpsEnable,OUTPUT);pinMode(pins::gpsReset,OUTPUT);pinMode(pins::gpsWake,OUTPUT);pinMode(pins::buzzer,OUTPUT);
+  digitalWrite(pins::buzzer,LOW);digitalWrite(pins::gpsWake,LOW);
   SPI.begin(pins::spiClock,pins::spiMiso,pins::spiMosi);
   display.init(240,320,SPI_MODE0);display.setSPISpeed(80000000); // APB/1; the next step down is 40 MHz
   display.setRotation(1);display.fillScreen(0x0862);
@@ -61,6 +66,7 @@ void Hardware::begin() {
   Wire1.begin(pins::keyboardSda,pins::keyboardScl,100000);Wire1.setTimeOut(20);
   keyboardOk=probeKeyboard();
   if(keyboardOk) read(Wire1,keyboardAt,0xfe,&keyboardFw,1,true);
+  setGps(config.gps); // after the keyboard: its address tells the board revision
   rtcOk=rtc.begin(&Wire);
   if(rtcOk && !rtc.lostPower()) {
     rtc.start();DateTime date=rtc.now();rtcValid=date.year()>=2025 && date.year()<2100;
@@ -103,7 +109,7 @@ void Hardware::tick() {
   if(imuOk && read(Wire,0x6b,0x2e,&status,1) && (status&1) && read(Wire,0x6b,0x35,data,6)) {
     for(int i=0;i<3;i++) accel[i]=int16_t(uint16_t(data[2*i])|(uint16_t(data[2*i+1])<<8))/16384.0f;imuSample=true;
   }
-  if(!keyboardOk && millis()-lastProbe>2000) {lastProbe=millis();keyboardOk=probeKeyboard();}
+  if(!keyboardOk && millis()-lastProbe>2000) {lastProbe=millis();keyboardOk=probeKeyboard();if(keyboardOk&&gpsEnabled)setGps(true);}
 }
 int Hardware::readKey() {
   static uint32_t poll=0;if(millis()-poll<15 || !keyboardOk) return 0;poll=millis();

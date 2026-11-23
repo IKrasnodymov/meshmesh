@@ -168,7 +168,8 @@ constexpr int spiClock=40, spiMiso=38, spiMosi=47;
 constexpr int radioCs=39, radioIrq=42, radioReset=45, radioBusy=41;
 constexpr int lcdCs=16, lcdDc=15, lcdReset=14, backlight=17, peripheralPower=18;
 constexpr int sdCs=48, sda=7, scl=6, keyboardSda=20, keyboardScl=21;
-constexpr int gpsRx=2, gpsTx=3, gpsReset=5, gpsEnable=11;
+// gpsEnable: V1.0 active LOW, V1.1 active HIGH; gpsWake: V1.1 only, a 5 ms HIGH pulse after power-on (stock firmware).
+constexpr int gpsRx=2, gpsTx=3, gpsReset=5, gpsEnable=11, gpsWake=10;
 constexpr int battery=13, buzzer=9;
 constexpr unsigned keyboardAddress=0x6c; // V1.0; a later board answers at 0x6d (Hardware::probeKeyboard tries both)
 #endif
