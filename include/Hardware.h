@@ -8,6 +8,9 @@
 #include <Adafruit_GFX.h>
 #else
 #include <Adafruit_ST7789.h>
+#if !defined(MM_UI_PREVIEW)
+#include <esp_heap_caps.h>
+#endif
 #endif
 #if defined(MM_HIRES)
 #include "HiresCanvas.h"
@@ -29,6 +32,11 @@ class Hardware {
   HiresCanvas* canvas=nullptr; // 128x64 layout coordinates on the 240x135 TFT
 #else
   GFXcanvas16* canvas=nullptr;
+#endif
+#if !defined(MM_HELTEC_V4) && !defined(MM_COMPACT)
+  uint16_t* shown=nullptr; // the frame last sent to the panel (PSRAM): flush() sends only the rows that differ
+  bool shownValid=false;   // false: the next flush sends the whole frame
+  uint32_t flushRows=0;    // rows sent by the last flush
 #endif
   U8G2_FOR_ADAFRUIT_GFX font;
   TinyGPSPlus gps;
@@ -83,6 +91,25 @@ class Hardware {
   bool write(uint8_t addr,uint8_t reg,uint8_t value);
 };
 extern Hardware hardware;
+#if !defined(MM_HELTEC_V4) && !defined(MM_COMPACT) && !defined(MM_UI_PREVIEW)
+// The 320x240 ST7789 boards (M9, T-Deck): the canvas goes out in bands of changed rows. A moved cursor,
+// the status bar clock or a toast sends a few rows instead of all 240 (150 KB, over 15 ms at 80 MHz).
+// Without the copy (no PSRAM left) every flush sends the whole frame, as before.
+inline void flushChangedRows(Hardware& h) {
+  const int W=h.canvas->width(),H=h.canvas->height();uint16_t* buf=h.canvas->getBuffer();const size_t row=W*sizeof(uint16_t);
+  if(!h.shown)h.shown=(uint16_t*)heap_caps_malloc(row*H,MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
+  if(!h.shown){h.display.drawRGBBitmap(0,0,buf,W,H);h.flushRows=H;return;}
+  bool all=!h.shownValid;h.flushRows=0;
+  h.display.startWrite();
+  for(int y=0;y<H;){
+    if(!all&&!memcmp(buf+y*W,h.shown+y*W,row)){y++;continue;}
+    int end=y+1;while(end<H&&(all||memcmp(buf+end*W,h.shown+end*W,row)))end++;
+    h.display.setAddrWindow(0,y,W,end-y);h.display.writePixels(buf+y*W,uint32_t(end-y)*W);
+    memcpy(h.shown+y*W,buf+y*W,row*(end-y));h.flushRows+=end-y;y=end;
+  }
+  h.display.endWrite();h.shownValid=true;
+}
+#endif
 // Charge of a Li-ion cell from its voltage, rounded: the same curve as batteryPercent() of web/index.html,
 // so the screen, the page and the app agree.
 inline unsigned batteryPercent(uint16_t v){

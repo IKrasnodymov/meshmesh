@@ -44,7 +44,7 @@ void Hardware::brightness(uint8_t level) {
   // Dark: the panel sleeps too, as on the M9 (Hardware.cpp), so a static frame does not stay as a ghost.
   static bool asleep=false;static uint32_t sleptAt=0;
   if(!steps){digitalWrite(pins::backlight,LOW);delay(3);backlightLevel=0;if(!asleep&&canvas){display.enableDisplay(false);display.enableSleep(true);asleep=true;sleptAt=millis();}return;}
-  if(asleep){uint32_t slept=millis()-sleptAt;if(slept<120)delay(120-slept);display.enableSleep(false);delay(5);display.enableDisplay(true);asleep=false;}
+  if(asleep){uint32_t slept=millis()-sleptAt;if(slept<120)delay(120-slept);display.enableSleep(false);delay(5);display.enableDisplay(true);asleep=false;shownValid=false;}
   if(!backlightLevel||steps>backlightLevel){digitalWrite(pins::backlight,LOW);delay(3);digitalWrite(pins::backlight,HIGH);delayMicroseconds(30);backlightLevel=16;}
   for(;backlightLevel>steps;backlightLevel--){digitalWrite(pins::backlight,LOW);delayMicroseconds(2);digitalWrite(pins::backlight,HIGH);delayMicroseconds(2);}
 }
@@ -154,6 +154,6 @@ void Hardware::powerDown(bool started) {
 int Hardware::wakePin() const {return pins::ballClick;}
 void Hardware::beep() {}  // the T-Deck speaker is an I2S amplifier, not driven here
 void Hardware::ping(uint16_t,uint16_t) {}
-void Hardware::flush() {display.drawRGBBitmap(0,0,canvas->getBuffer(),320,240);}
+void Hardware::flush() {flushChangedRows(*this);}
 void Hardware::text(int x,int y,const String& value,uint16_t color) {font.setForegroundColor(color);font.setCursor(x,y);font.print(value);}
 void Hardware::line(int y,const String& value,uint16_t color) {text(12,y,value,color);}

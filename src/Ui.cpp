@@ -53,7 +53,7 @@ bool scopeManual=false,csiBeaconRole=false; // radar: selection moved by the use
 uint32_t lastDraw=0,lastInput=0,toastAt=0;String toast,eventSeen;uint16_t toastColor=0;
 int selected=0,chatOffset=0,action=0;
 uint64_t recipient=meshmesh::Broadcast,focusNode=0,focusChannel=0;
-String composer,edit;bool editing=false,dirty=true,locked=false,wakeOnly=false,keyboardRussian=true,deleteArmed=false,layoutHelp=false;uint32_t lastSpace=0;
+String composer,edit;bool editing=false,dirty=true,keyed=false,locked=false,wakeOnly=false,keyboardRussian=true,deleteArmed=false,layoutHelp=false;uint32_t lastSpace=0;
 Config draft;
 struct ComposerDraft{uint64_t recipient=0;String text;uint32_t touched=0;} drafts[16];
 struct ReadMark{uint64_t id;uint32_t at;} marks[65];unsigned markCount=0;
@@ -924,7 +924,18 @@ void drawEditing(){
 #include "UiTally.inc"
 String tourTitle(){return tourOpen&&tourOpen->state!=tour::Free?String(tourOpen->name):t("Tournament","Турнир");}
 String chessTitle(){return chessOpen&&chessOpen->state!=ChessMatch::Free?t("Chess · ","Шахматы · ")+chessOpen->name:t("Chess","Шахматы");}
+// "uiperf" over USB: frames drawn per page since the last report, with the time spent drawing into the
+// canvas and sending it to the panel (average/longest, ms) and the rows sent per frame.
+constexpr int PerfSlots=SeaBoard+2; // every page, then the lock screen
+struct FrameStats{uint32_t frames,drawUs,drawMax,flushUs,flushMax,rows;};FrameStats frameStats[PerfSlots];uint32_t perfSince=0;
+String perfReport(){
+ String r="UIPERF "+String((millis()-perfSince)/1000)+" s";
+ for(int i=0;i<PerfSlots;i++){auto& p=frameStats[i];if(!p.frames)continue;const char* name=i<PerfSlots-1?pageNames[i]:"locked";
+  char line[128];snprintf(line,sizeof line,"\n%s frames=%lu draw=%.1f/%.1f flush=%.1f/%.1f ms rows=%lu",name,(unsigned long)p.frames,p.drawUs/1000.f/p.frames,p.drawMax/1000.f,p.flushUs/1000.f/p.frames,p.flushMax/1000.f,(unsigned long)(p.rows/p.frames));r+=line;}
+ memset(frameStats,0,sizeof frameStats);perfSince=millis();return r;
+}
 void draw(){
+ uint32_t started=micros();
  auto& c=g();c.fillScreen(bg);targetCount=hintCount=0;
  if(powerOffPending()){drawOff();hardware.flush();return;}
  if(locked)drawLocked();
@@ -938,7 +949,9 @@ void draw(){
  case ChannelAdd:drawChannelAdd();break;case ChannelInfo:drawChannelInfo();break;case Remote:drawRemote();break;
  case Folder:drawFolder();break;case CheckersList:case SeaList:drawDuelList();break;case DuelPick:drawDuelPick();break;case CheckersBoard:case SeaBoard:drawDuelGame();break;
  }
- statusBar();if(editing&&!locked)drawEditing();if(layoutHelp&&!locked)drawLayoutHelp();drawToast();hardware.flush();
+ statusBar();if(editing&&!locked)drawEditing();if(layoutHelp&&!locked)drawLayoutHelp();drawToast();
+ uint32_t drawn=micros();hardware.flush();uint32_t sent=micros();
+ auto& p=frameStats[locked?PerfSlots-1:page];p.frames++;p.drawUs+=drawn-started;p.drawMax=max(p.drawMax,drawn-started);p.flushUs+=sent-drawn;p.flushMax=max(p.flushMax,sent-drawn);p.rows+=hardware.flushRows;
 }
 // Russian input for Latin keycaps: phonetic, as in WadaMesh (privet -> привет). The seven letters
 // without a Latin sound-alike are on 1-7 (ч щ ъ ь э ю ё). M9 Sym symbols such as @ # $ are separate
@@ -1005,10 +1018,11 @@ void runNodeAction(){
 static bool realErase=false; // DEL tapped in the footer: a real delete, also on the T-Deck
 bool uiRadarPage(){return page==Scope||page==Homing||page==Motion;}
 bool uiScreenOff(){return wakeOnly;}
+String uiPerf(){return perfReport();}
 void uiFarewell(){farewell=true;wakeOnly=locked=false;hardware.brightness(config.brightness);draw();}
 void uiBegin(){Preferences p;keyboardRussian=config.lang==LangRu||config.lang==LangUk;if(p.begin("meshmesh-ui",true)){keyboardRussian=p.getBool("kb_ru",keyboardRussian);p.end();}lastInput=millis();page=homePage();openRolePick(true);draw();} // the role choice after every boot
 String uiStatus(){StaticJsonDocument<1024>d;d["page"]=pageNames[page];d["role"]=roleName(config.role);if(page==RolePick)d["boot_pick"]=bootPick;d["locked"]=locked;d["selected"]=selected;if(page==PeopleView){d["tally_current"]=people::tally.current;d["tally_new"]=tallyAdding();d["tally_value"]=people::value();}if(page==QuickView){d["quick_targets"]=quickTargets;d["quick_to"]=meshRadio.idText(quickReplyTo?quickReplyTo:quickSend::state.to);if(!quickTargets&&selected>0)d["quick_index"]=selected-1;}d["recipient"]=recipient==meshmesh::Broadcast?"ALL":meshRadio.idText(recipient);d["composer"]=composer;d["composer_bytes"]=composer.length();d["keyboard_language"]=keyboardRussian?"RU":"EN";d["editing"]=editing;d["chat_offset"]=chatOffset;d["idle_seconds"]=(millis()-lastInput)/1000;d["layout_help"]=layoutHelp;if(page==Game)gameStatus(d);chessStatus(d);duelStatus(d);tourStatus(d);if(page==Folder){d["folder"]=folderOpen;d["folder_name"]=appsFolderName(folderOpen);}if(appFolder>=0)d["from_folder"]=appFolder;if(page==Node)d["play_menu"]=playMenu;if((page==Nodes||page==Node)&&focusNode)d["selected_node"]=meshRadio.idText(focusNode);if(page==Node){d["action"]=action;if(playMenu)d["play_selected"]=playSel;}if(page==ChannelInfo)d["channel"]=meshRadio.idText(focusChannel);if(page==ChannelAdd)d["add_step"]=int(addStep);d["channels"]=meshRadio.channelCount;if(page==Scope||page==Homing||page==Motion){d["csi_role"]=radar.csi;d["radar_targets"]=radar.count;d["radar_selected"]=scopeSelected();d["radar_sound"]=radarSound;}if(page==DiceView){const char* sheets[]={"main","saved","characters","templates","send","offer","block"};d["dice_sheet"]=sheets[diceSheet];d["dice_selected"]=diceSel;d["sheet_block"]=sheetSel;d["sheet_note"]=sheetNote;d["block_field"]=blockField;}String s;serializeJson(d,s);return s;}
-void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;if(locked){ // a hold (timed by the M9 keyboard controller, not by us) or two OK presses within a second unlock
+void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=millis();hardware.brightness(config.brightness);wakeOnly=false;dirty=true;keyed=true;if(locked){ // a hold (timed by the M9 keyboard controller, not by us) or two OK presses within a second unlock
   static uint32_t firstOk=0;bool twice=key==Enter&&firstOk&&millis()-firstOk<1000;firstOk=key==Enter&&!twice?millis():0;
   if(key==KeyHold||twice){locked=false;int game=lockGame();if(game==1)chessEnter(const_cast<ChessMatch*>(lockChess()));else if(game==2)duelEnter(const_cast<Duel*>(lockDuel()));}return;}if(asleep)return;
 #if defined(MM_BOARD_TDECK)
@@ -1090,7 +1104,7 @@ void uiKey(int key){if(powerOffPending())return;bool asleep=wakeOnly;lastInput=m
 // Touch: the title bar goes back, footer hints are their keys, a tap on a list item or tile opens it
 // (settings rows, the mode choice and challenge contacts: the first tap selects), the chess board
 // takes a tap as the cursor and OK; swipes are the arrows and a hold is "hold OK", as on the ball.
-void uiTouch(char gesture,int x,int y){
+void uiTouch(char gesture,int x,int y){keyed=true;
  if(locked||wakeOnly){uiKey(gesture=='h'?KeyHold:0);return;} // a tap only wakes; a hold unlocks
  if(gesture=='h'){uiKey(KeyHold);return;}
  if(page==PeopleView&&!editing&&(gesture=='l'||gesture=='r')){uiKey(gesture=='l'?KeyRight:KeyLeft);return;} // cards follow the finger
@@ -1147,4 +1161,6 @@ void uiTick(){uint32_t now=millis();
  // The network list refreshes itself while open; a scan briefly pauses traffic.
  if(page==NetList&&!locked&&internet.enabled&&(!internet.scannedAt||now-internet.scannedAt>20000)&&now-netScanAt>20000){netScanAt=now;internet.rescan();}
  // A dark screen is not drawn: a key lights it and redraws (and light sleep stays short).
- bool update=dirty||meshRadio.dirty||maps.dirty||internet.dirty||animate||now-lastDraw>=1000;if(update&&!wakeOnly&&now-lastDraw>=150){draw();lastDraw=now;dirty=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;internet.dirty=false;}}
+ bool update=dirty||meshRadio.dirty||maps.dirty||internet.dirty||animate||now-lastDraw>=1000;// A key or touch draws on the next pass; animations run at up to 20 fps; radio, map and network updates at most every 150 ms.
+ uint32_t gap=keyed&&dirty?0:animate?50:150;
+ if(update&&!wakeOnly&&now-lastDraw>=gap){draw();lastDraw=now;dirty=false;keyed=false;meshRadio.dirty=false;maps.dirty=false;radar.dirty=false;internet.dirty=false;}}

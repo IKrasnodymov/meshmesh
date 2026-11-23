@@ -24,7 +24,7 @@ bool Hardware::write(uint8_t addr,uint8_t reg,uint8_t value) {
 void Hardware::brightness(uint8_t level) {
   static bool asleep=false;static uint32_t sleptAt=0;
   if(!level){ledcWrite(7,255);if(!asleep&&canvas){display.enableDisplay(false);display.enableSleep(true);asleep=true;sleptAt=millis();}return;}
-  if(asleep){uint32_t slept=millis()-sleptAt;if(slept<120)delay(120-slept);display.enableSleep(false);delay(5);display.enableDisplay(true);asleep=false;}
+  if(asleep){uint32_t slept=millis()-sleptAt;if(slept<120)delay(120-slept);display.enableSleep(false);delay(5);display.enableDisplay(true);asleep=false;shownValid=false;}
   ledcWrite(7,255-level);
 }
 void Hardware::setGps(bool enabled) {
@@ -43,7 +43,8 @@ void Hardware::begin() {
   pinMode(pins::gpsEnable,OUTPUT);pinMode(pins::gpsReset,OUTPUT);pinMode(pins::buzzer,OUTPUT);
   digitalWrite(pins::buzzer,LOW);setGps(config.gps);
   SPI.begin(pins::spiClock,pins::spiMiso,pins::spiMosi);
-  display.init(240,320,SPI_MODE0);display.setSPISpeed(40000000);display.setRotation(1);display.fillScreen(0x0862);
+  display.init(240,320,SPI_MODE0);display.setSPISpeed(80000000); // APB/1; the next step down is 40 MHz
+  display.setRotation(1);display.fillScreen(0x0862);
   ledcSetup(7,5000,8);ledcAttachPin(pins::backlight,7);brightness(config.brightness);
   canvas=new GFXcanvas16(320,240); // Arduino ESP32 allocates this large buffer from PSRAM when available.
   if(!canvas || !canvas->getBuffer()) {Serial.println("FATAL framebuffer allocation");while(true) delay(1000);}
@@ -112,6 +113,6 @@ void Hardware::powerDown(bool started) {
 int Hardware::wakePin() const {return -1;}
 void Hardware::beep() {if(config.sound) {tone(pins::buzzer,2200,60);}}
 void Hardware::ping(uint16_t hz,uint16_t ms) {if(config.sound) {tone(pins::buzzer,hz,ms);}}
-void Hardware::flush() {display.drawRGBBitmap(0,0,canvas->getBuffer(),320,240);}
+void Hardware::flush() {flushChangedRows(*this);}
 void Hardware::text(int x,int y,const String& value,uint16_t color) {font.setForegroundColor(color);font.setCursor(x,y);font.print(value);}
 void Hardware::line(int y,const String& value,uint16_t color) {text(12,y,value,color);}

@@ -25,6 +25,7 @@ inline float degrees(float r){return r*180/float(M_PI);}
 using std::min;using std::max;
 template<class T,class L,class H> auto constrain(T v,L lo,H hi)->decltype(v+lo+hi){return v<lo?lo:v>hi?hi:v;}
 uint32_t millis();
+inline uint32_t micros(){return millis()*1000;}
 inline void delay(uint32_t){}
 #define OUTPUT 1
 #define LOW 0

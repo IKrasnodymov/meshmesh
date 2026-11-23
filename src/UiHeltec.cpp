@@ -1135,6 +1135,7 @@ if(page==Signals){d["radar_selected"]=shownSignal();d["csi_role"]=radar.csi;}
  String s;serializeJson(d,s);return s;}
 bool uiScreenOff(){return screenOff;}
 void uiFarewell(){farewell=true;screenOff=false;hardware.brightness(config.brightness);draw();}
+String uiPerf(){return "ERR uiperf: the 320x240 interface only";}
 void uiTick(){
  uint32_t now=millis();
  if(powerOffPending()){static bool shown=false;if(!shown){shown=true;screenOff=false;hardware.brightness(config.brightness);draw();}return;} // drawn once: the board turns off

@@ -218,6 +218,7 @@ void appLoop() {
 #endif
       }
       else if(command=="screenshot")usbScreenshot();
+      else if(command=="uiperf")usbLine(uiPerf());
       // Research: raw CSI lines ("CSI us rssi iqhex") while on; beacon frames per second.
       else if(command=="csistream on"||command=="csistream off"){radar.csiStream=command.endsWith("on");usbLine(radar.csiStream?"OK CSI stream on":"OK CSI stream off");}
       else if(command.startsWith("csirate ")){radar.setBeaconHz(command.substring(8).toInt());usbLine("OK beacon "+String(radar.beaconHz)+" Hz");}
