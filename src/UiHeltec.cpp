@@ -362,9 +362,23 @@ void radioStep(int dir){
  auto& d=radioDraft;
  switch(radioRow){
  case RowFreq:{long k=lroundf(d.frequency*1000);
-  if(radioDigit==0){k+=dir*1000L;if(k>=871000)k-=8000;if(k<863000)k+=8000;}
-  else{long unit=radioDigit==1?100:radioDigit==2?10:1;int digit=k/unit%10;k+=((digit+dir+10)%10-digit)*unit;}
-  d.frequency=constrain(k,863000L,870000L)/1000.f;break;}
+  if(radioDigit==0){
+   k+=dir*1000L;
+   if(dir>0){
+    if(k>=871000L&&k<902000L)k=902000L+(k%1000L);
+    else if(k>=929000L)k=863000L+(k%1000L);
+   }else if(dir<0){
+    if(k<863000L)k=928000L+(k%1000L);
+    else if(k<902000L&&k>=871000L)k=870000L+(k%1000L);
+   }
+  }else{
+   long unit=radioDigit==1?100:radioDigit==2?10:1;
+   int digit=k/unit%10;
+   k+=((digit+dir+10)%10-digit)*unit;
+  }
+  if(k<886000L)k=constrain(k,863000L,870000L);
+  else k=constrain(k,902000L,928000L);
+  d.frequency=k/1000.f;break;}
  case RowBw:{const float bw[]={62.5f,125,250,500};int i=0;while(i<3&&d.bandwidth!=bw[i])i++;d.bandwidth=bw[(i+dir+4)%4];break;}
  case RowSf:d.sf=7+(d.sf-7+dir+6)%6;break;
  case RowCr:d.cr=5+(d.cr-5+dir+4)%4;break;

@@ -74,7 +74,7 @@ class Link{
 }
 
 // Why this profile cannot go to the connected board, or ''.
-function blocked(r){if(link&&link.meshmesh&&!(r.frequency>=863&&r.frequency<=870))return T('net.outOfRange');
+function blocked(r){if(link&&link.meshmesh&&!((r.frequency>=863&&r.frequency<=870)||(r.frequency>=902&&r.frequency<=928)))return T('net.outOfRange');
  if(link&&link.meshmesh&&![62.5,125,250,500].includes(r.bandwidth))return T('net.badBandwidth');return ''}
 async function connect(kind){if(busy)return;busy=true;result=null;ack=false;render();
  try{await disconnect();link=new Link();say(T('net.connecting'));if(kind==='ble')await link.ble();else await link.usb();await link.hello();say('')}

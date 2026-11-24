@@ -228,7 +228,7 @@ struct CompanionCore {
    case CmdAddContact:if(len<136)break;updateContact(frame,len);return;
    case CmdSyncNext:if(inCount){auto& m=inbox[inHead];inHead=(inHead+1)%12;inCount--;n=m.length;memcpy(f,m.data,n);send();}else{start(RespNoMore);send();}return;
    case CmdSetRadio:{if(len<11)break;uint32_t freq,bw;memcpy(&freq,frame+1,4);memcpy(&bw,frame+5,4);StaticJsonDocument<192> j;
-    j["frequency"]=freq/1000.0f;j["bandwidth"]=bw/1000.0f;j["sf"]=frame[9];j["cr"]=frame[10];if(len>11)j["relay"]=frame[11]!=0;settingsReply(apply(j));return;}
+    j["frequency"]=freq>2000000?freq/1000000.0f:freq/1000.0f;j["bandwidth"]=bw>1000?bw/1000.0f:float(bw);j["sf"]=frame[9];j["cr"]=frame[10];if(len>11)j["relay"]=frame[11]!=0;settingsReply(apply(j));return;}
    case CmdSetPower:{if(len<2)break;StaticJsonDocument<64> j;j["power"]=int8_t(frame[1]);settingsReply(apply(j));return;}
    case CmdResetPath:if(len<33)break;if(r.resetPath(aliasOf(frame+1)))ok();else err(ErrNotFound);return;
    case CmdRemoveContact:if(len<33)break;if(r.removeContact(aliasOf(frame+1)))ok();else err(ErrNotFound);return;

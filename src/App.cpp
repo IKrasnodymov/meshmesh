@@ -207,7 +207,7 @@ String applySettings(JsonObjectConst v) {
       if(name=="russian"&&!v.containsKey("lang")&&(n||next.lang==LangRu))next.lang=n?LangRu:LangEn; // pages from before "lang": false leaves other languages alone
     } else return "ERR unknown setting: "+name;
   }
-  if(!next.valid())return "ERR invalid settings; 868 MHz range is 863..870";
+  if(!next.valid())return "ERR invalid settings; frequency ranges are 863..870, 902..928 MHz";
   if(!next.sameRadio(config.radio())){
     if(radioWrite==WriteTry){if(!config.trial.set())next.trial=config.radio();if(next.sameRadio(next.trial))next.trial=RadioProfile();}
     else if(radioWrite==WriteRevert)next.trial=RadioProfile();

@@ -1515,7 +1515,7 @@ async function backupRestore(todo){
  if(!restart){try{config=await request('/api/config')}catch{}refresh()}}
 function utcOptions(){const o=[];for(let m=-720;m<=840;m+=15){const a=Math.abs(m);o.push([m,(m<0?'−':'+')+two(a/60|0)+':'+two(a%60)])}return o}
 function fields(page){const h=heltec();return page==='radio'?[
- {k:'frequency',n:L('Частота, МГц'),h:L('Шаг 1 кГц; должна совпадать у всех узлов'),t:'num',min:863,max:870,step:.001},
+ {k:'frequency',n:L('Частота, МГц'),h:L('Шаг 1 кГц; должна совпадать у всех узлов'),t:'num',min:863,max:928,step:.001},
  {k:'bandwidth',n:L('Полоса'),h:L('62.5 / 125 / 250 / 500 кГц'),t:'sel',o:[[62.5,L('62.5 кГц')],[125,L('125 кГц')],[250,L('250 кГц')],[500,L('500 кГц')]]},
  {k:'sf',n:L('Фактор SF'),h:L('Больше SF — дальше, но медленнее'),t:'sel',o:[7,8,9,10,11,12].map(v=>[v,'SF'+v])},
  {k:'cr',n:L('Кодирование CR'),h:L('Избыточность кода 4/5 … 4/8'),t:'sel',o:[5,6,7,8].map(v=>[v,'4/'+v])},
@@ -1586,7 +1586,7 @@ const netText=r=>L`${Number(r.frequency).toFixed(3)} МГц · BW ${r.bandwidth}
 const sameRadio=(a,b)=>Math.abs(a.frequency-b.frequency)<.0005&&a.bandwidth===b.bandwidth&&a.sf===b.sf&&a.cr===b.cr;
 function fwSince(v){const a=String(status.firmware||'').split('.').map(Number),b=v.split('.').map(Number);for(let i=0;i<3;i++)if((a[i]||0)!==b[i])return (a[i]||0)>b[i];return true}
 // Why a profile does not fit this board, or '' (the board's range, Config::valid).
-function netFits(r){if(!(r.frequency>=863&&r.frequency<=870))return L`${Number(r.frequency).toFixed(3)} МГц вне диапазона платы MeshMesh (863–870 МГц)`;
+function netFits(r){if(!((r.frequency>=863&&r.frequency<=870)||(r.frequency>=902&&r.frequency<=928)))return L`${Number(r.frequency).toFixed(3)} МГц вне диапазона платы MeshMesh (863–870 МГц)`;
  if(![62.5,125,250,500].includes(r.bandwidth))return L`Полоса ${r.bandwidth} кГц не поддерживается`;if(!(r.sf>=7&&r.sf<=12)||!(r.cr>=5&&r.cr<=8))return L('SF или CR вне допустимых значений');return ''}
 async function netLoad(){if(netCat!==undefined)return;let bundled=null;
  try{const r=await fetch('networks.json',{cache:'no-cache'});if(r.ok)bundled=netValid(await r.json())}catch{}
