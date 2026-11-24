@@ -59,7 +59,7 @@ and the app has already sent a message with its own time, the board's next reque
 the clock is set. The room's "read up to" mark is kept on the board only until a restart: after it the
 room may send past posts again.
 
-Input limits are those of the screen: radio parameters within MeshMesh settings (863–870 MHz,
+Input limits are those of the screen: radio parameters within MeshMesh settings (863–870 or 902–928 MHz,
 BW 62.5/125/250/500 kHz), the name up to 24 bytes of UTF-8, a channel name by the rules of `docs/channels.md`.
 
 ## What is missing

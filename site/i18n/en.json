@@ -55,7 +55,7 @@
  "good.title": "Good to know",
  "good.update": "<b>Updating MeshMesh</b> keeps your key, contacts, settings and history — leave “Erase” unticked.",
  "good.first": "<b>First install</b> over Meshtastic, MeshCore or other firmware — tick “Erase device”.",
- "good.radio": "<b>Default radio:</b> 868.731 MHz, 62.5 kHz, SF8, CR4/6 — change it in Settings → Radio. All nodes of a network must match.",
+ "good.radio": "<b>Default radio:</b> 910.525 MHz, 62.5 kHz, SF7, CR4/5 on US builds (T114); 868.731 MHz, SF8, CR4/6 elsewhere — change it in Settings → Radio. All nodes of a network must match.",
  "good.law": "<b>Follow</b> your country's radio regulations.",
  "app.note": "<b>Android app</b> — the same interface over Wi-Fi, Bluetooth or USB, with message notifications.",
  "app.download": "Download APK",

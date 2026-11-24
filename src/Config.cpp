@@ -32,8 +32,8 @@ void Config::load() {
   Preferences p; if(!p.begin("meshmesh",false)) {bootCounter=0;Serial.println("ERR NVS unavailable; TX disabled");return;}
   p.getString("name",name,sizeof(name));
   if(!name[0]) strcpy(name,MM_NODE_NAME);
-  frequency=p.getFloat("freq",868.731f); bandwidth=p.getFloat("bw",62.5f);
-  sf=p.getUChar("sf",8); cr=p.getUChar("cr",6); power=p.getChar("power",10);
+  frequency=p.getFloat("freq",MM_RADIO_DEFAULT_FREQ); bandwidth=p.getFloat("bw",MM_RADIO_DEFAULT_BW);
+  sf=p.getUChar("sf",MM_RADIO_DEFAULT_SF); cr=p.getUChar("cr",MM_RADIO_DEFAULT_CR); power=p.getChar("power",10);
   hops=p.getUChar("hops",3); pathHash=p.getUChar("path_hash",2); relay=p.getBool("relay",true); gps=p.getBool("gps",MM_GPS_DEFAULT);
   sound=p.getBool("sound",true); batteryVolts=p.getBool("bat_v",false); brightness=p.getUChar("light",180);
   autoLock=p.getUShort("lock",90);dimAfter=p.getUShort("dim",30);lockDetails=p.getBool("lock_txt",true);
@@ -68,7 +68,7 @@ void Config::load() {
   netAuto=p.getBool("net_auto",true);doubleBack=p.getBool("dbl_back",false);
   p.end();
   {Config c=*this;c.setRadio(previous);if(!previous.set()||!c.valid()||sameRadio(previous))previous=RadioProfile();}
-  if(!valid()) {frequency=868.731f;bandwidth=62.5f;sf=8;cr=6;power=10;hops=3;pathHash=2;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
+  if(!valid()) {frequency=MM_RADIO_DEFAULT_FREQ;bandwidth=MM_RADIO_DEFAULT_BW;sf=MM_RADIO_DEFAULT_SF;cr=MM_RADIO_DEFAULT_CR;power=10;hops=3;pathHash=2;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
 }
 bool Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return false;
