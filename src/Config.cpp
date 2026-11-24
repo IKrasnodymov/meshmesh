@@ -12,7 +12,7 @@
 #include "App.h"
 Config config;
 bool Config::valid() const {
-  return isfinite(frequency) && frequency>=863.0f && frequency<=870.0f &&
+  return validFrequency(frequency) &&
     (bandwidth==62.5f || bandwidth==125.0f || bandwidth==250.0f || bandwidth==500.0f) &&
     sf>=7 && sf<=12 && cr>=5 && cr<=8 && power>=0 && power<=MM_MAX_POWER && hops<=7 && pathHash>=1 && pathHash<=3 && brightness>=10 &&
     (autoLock==0 || (autoLock>=30&&autoLock<=600)) && (dimAfter==0||(dimAfter>=10&&dimAfter<=600)) && utcOffset>=-720&&utcOffset<=840&&utcOffset%15==0 &&

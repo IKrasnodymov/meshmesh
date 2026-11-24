@@ -216,7 +216,7 @@ class ServerMesh:public mesh::Mesh,public CommonCLICallbacks {
     Config next=config;memcpy(next.name,prefs.node_name,sizeof(next.name));next.name[sizeof(next.name)-1]=0;
     next.frequency=prefs.freq;next.bandwidth=prefs.bw;next.sf=prefs.sf;next.cr=prefs.cr;next.power=prefs.tx_power_dbm;next.pathHash=constrain(prefs.path_hash_mode,0,2)+1;
     if(!validName(prefs.node_name))rejected="Error: name must be 1-24 bytes of UTF-8";
-    else if(!next.valid())rejected="Error: " MM_BOARD_NAME " takes 863-870 MHz, BW 62.5/125/250/500, SF7-12, CR5-8, 0-"+String(MM_MAX_POWER)+" dBm";
+    else if(!next.valid())rejected="Error: " MM_BOARD_NAME " takes 863-870 / 902-928 MHz, BW 62.5/125/250/500, SF7-12, CR5-8, 0-"+String(MM_MAX_POWER)+" dBm";
     if(rejected.length()){loadFromConfig();return;}
     if(strcmp(next.name,config.name)||next.frequency!=config.frequency||next.bandwidth!=config.bandwidth||next.sf!=config.sf||next.cr!=config.cr||next.power!=config.power||next.pathHash!=config.pathHash){config=next;config.save();meshRadio.dirty=true;}
   }

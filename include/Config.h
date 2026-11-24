@@ -54,4 +54,8 @@ struct Config {
   bool saveRole(uint8_t next); // stored for the next boot; role stays the running one
   void saveBle(bool on);
 };
+
+inline bool validFrequency(float f) {
+  return isfinite(f) && ((f>=863.0f && f<=870.0f) || (f>=902.0f && f<=928.0f));
+}
 extern Config config;
