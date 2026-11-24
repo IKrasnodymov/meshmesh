@@ -206,7 +206,7 @@ struct CompanionCore {
  }
  void deviceInfo(){
   start(RespDeviceInfo);u8(ProtocolVersion);u8(MAX_CONTACTS/2);u8(channels::Max);u32(blePin());field(__DATE__,12);field(MM_BOARD_NAME,40);
-  field("MeshMesh " MESHMM_VERSION,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
+  field(MESHMM_FIRMWARE,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
  }
  void handle(const uint8_t* frame,size_t len){
   uint8_t cmd=frame[0];auto& r=meshRadio;

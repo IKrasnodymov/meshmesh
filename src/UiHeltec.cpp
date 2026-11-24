@@ -2,6 +2,7 @@
 #pragma GCC optimize("Os") // 1 MB flash: the screens and menus are not speed-critical (the rest of the nRF52 image is -O2)
 #endif
 #include "App.h"
+#include "Version.h"
 #include <new>
 #include "Hardware.h"
 #include "MeshRadio.h"

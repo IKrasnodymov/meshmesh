@@ -21,7 +21,11 @@ struct Config {
   bool relay=true, gps=true, sound=true, batteryVolts=false;
   uint8_t lang=LangEn; // interface language, I18n.h
   uint16_t autoLock=90,dimAfter=30;
+#if defined(MM_RADIO_DEFAULT_US)
+  int16_t utcOffset=-300; // US Eastern default; change in Settings
+#else
   int16_t utcOffset=180;
+#endif
   uint8_t key[32]={};
   uint32_t bootCounter=0;
   uint8_t role=RoleNormal;

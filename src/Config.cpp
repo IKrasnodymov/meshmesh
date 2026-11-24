@@ -10,6 +10,7 @@
 #include <Mm1Packet.h>
 #include "Regions.h"
 #include "App.h"
+#include "Version.h"
 Config config;
 bool Config::valid() const {
   return validFrequency(frequency) &&
@@ -68,7 +69,7 @@ void Config::load() {
   netAuto=p.getBool("net_auto",true);doubleBack=p.getBool("dbl_back",false);
   p.end();
   {Config c=*this;c.setRadio(previous);if(!previous.set()||!c.valid()||sameRadio(previous))previous=RadioProfile();}
-  if(!valid()) {frequency=MM_RADIO_DEFAULT_FREQ;bandwidth=MM_RADIO_DEFAULT_BW;sf=MM_RADIO_DEFAULT_SF;cr=MM_RADIO_DEFAULT_CR;power=10;hops=3;pathHash=2;strcpy(name,"MeshMesh");region[0]=0;memset(regionKey,0,16);}
+  if(!valid()) {frequency=MM_RADIO_DEFAULT_FREQ;bandwidth=MM_RADIO_DEFAULT_BW;sf=MM_RADIO_DEFAULT_SF;cr=MM_RADIO_DEFAULT_CR;power=10;hops=3;pathHash=2;strcpy(name,MESHMM_DEFAULT_NODE);region[0]=0;memset(regionKey,0,16);}
 }
 bool Config::save() {
   Preferences p; if(!p.begin("meshmesh",false)) return false;
