@@ -5,6 +5,7 @@
 #include "Hardware.h"
 #include "Config.h"
 #include "Palette.h"
+#include "Version.h"
 #include <LittleFS.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -50,7 +51,7 @@ void Hardware::begin() {
   tft.init(135,240);tft.setRotation(3);tft.setSPISpeed(32000000);tft.fillScreen(0);panel=&tft;tftOn=true;
   canvas=new HiresCanvas();if(!canvas||!canvas->getBuffer()){Serial.println("FATAL framebuffer");while(true)delay(1000);}
   memset(rowHash,0xff,sizeof rowHash);
-  font.begin(*canvas);font.setFont(u8g2_font_6x13_t_cyrillic);font.setFontMode(1);canvas->fillScreen(0);text(0,13,"MeshMesh");flush();
+  font.begin(*canvas);font.setFont(u8g2_font_6x13_t_cyrillic);font.setFontMode(1);canvas->fillScreen(0);text(0,13,MESHMM_SPLASH);flush();
   brightness(config.brightness);
   pinMode(pins::button,INPUT_PULLUP);
   output(pins::led,!pins::ledOn);output(pins::adcEnable,LOW);pinMode(pins::battery,INPUT);

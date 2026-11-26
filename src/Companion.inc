@@ -9,12 +9,12 @@ namespace {
 enum:uint8_t {CmdAppStart=1,CmdSendText,CmdSendChannelText,CmdGetContacts,CmdGetTime,CmdSetTime,CmdSendAdvert,CmdSetName,CmdAddContact,
  CmdSyncNext,CmdSetRadio,CmdSetPower,CmdResetPath,CmdSetPosition,CmdRemoveContact,CmdShareContact,CmdExportContact,CmdImportContact,CmdReboot,
  CmdBattery,CmdSetTuning,CmdDeviceQuery,CmdExportKey,CmdImportKey,CmdSendRaw,CmdLogin,CmdStatusReq,CmdHasConnection,CmdLogout,CmdContactByKey,
- CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdSetScope=54,CmdControlData,CmdStats,CmdAnonReq,CmdGetAutoAdd=59,CmdSetPathHashMode=61,
+ CmdGetChannel,CmdSetChannel,CmdSignStart,CmdSignData,CmdSignFinish,CmdTrace,CmdTelemetryReq=39,CmdCustomVars,CmdGetAdvertPath=42,CmdGetTuning=43,CmdBinaryReq=50,CmdPathDiscovery=52,CmdSetScope=54,CmdControlData,CmdStats,CmdAnonReq,CmdGetAutoAdd=59,CmdSetPathHashMode=61,
  CmdSetDefaultScope=63,CmdGetDefaultScope};
 enum:uint8_t {RespOk,RespErr,RespContactsStart,RespContact,RespContactsEnd,RespSelfInfo,RespSent,RespContactMsgOld,RespChannelMsgOld,RespTime,
- RespNoMore,RespExport,RespBattery,RespDeviceInfo,RespDisabled=15,RespContactMsg,RespChannelMsg,RespChannelInfo,RespCustomVars=21,
+ RespNoMore,RespExport,RespBattery,RespDeviceInfo,RespDisabled=15,RespContactMsg,RespChannelMsg,RespChannelInfo,RespAdvertPath=22,RespCustomVars=21,
  RespTuning=23,RespStats,RespAutoAdd,RespDefaultScope=28};
-enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushLoginOk=0x85,PushLoginFail,PushStatus,PushTrace=0x89,PushNewAdvert,PushTelemetry,PushBinary,PushDiscovery,PushControl};
+enum:uint8_t {PushAdvert=0x80,PushSendConfirmed=0x82,PushMsgWaiting=0x83,PushLoginOk=0x85,PushLoginFail,PushStatus,PushLogRx=0x88,PushTrace=0x89,PushNewAdvert,PushTelemetry,PushBinary,PushDiscovery,PushControl};
 enum:uint8_t {TextPlain=0,TextCli=1,TextSigned=2};
 constexpr uint8_t RequestTelemetry=0x03; // REQ_TYPE_GET_TELEMETRY_DATA of the companion
 enum:uint8_t {ErrUnsupported=1,ErrNotFound,ErrTableFull,ErrBadState,ErrFileIo,ErrIllegalArg};
@@ -32,7 +32,23 @@ struct CompanionCore {
  uint32_t pendingLogin=0,pendingStatus=0,pendingTelemetry=0,pendingReq=0,pendingDiscovery=0;
  // The app's region for our floods while it is linked (CMD_SET_FLOOD_SCOPE_KEY): 0 - not set, 1 - none, 2 - scopeKey.
  uint8_t scope=0,scopeKey[16]={};
+ // Inbound advert paths (stock companion advert_paths[]); the app resolves path info via CmdGetAdvertPath.
+ struct AdvertPathEntry {uint8_t pubkey_prefix[7];uint8_t path_len;char name[32];uint32_t recv_timestamp;uint8_t path[MAX_PATH_SIZE];};
+ static constexpr unsigned AdvertPathCount=16;
+ AdvertPathEntry advertPaths[AdvertPathCount]={};
  void clearPending(){pendingLogin=pendingStatus=pendingTelemetry=pendingReq=pendingDiscovery=0;}
+ void storeAdvertPath(const ContactInfo& c,uint8_t pathLen,const uint8_t* path){
+  if(!path||!mesh::Packet::isValidPathLen(pathLen))return;
+  AdvertPathEntry* slot=advertPaths;uint32_t oldest=0xFFFFFFFF;
+  for(unsigned i=0;i<AdvertPathCount;i++){if(!memcmp(advertPaths[i].pubkey_prefix,c.id.pub_key,7)){slot=&advertPaths[i];break;}
+   if(advertPaths[i].recv_timestamp<oldest){oldest=advertPaths[i].recv_timestamp;slot=&advertPaths[i];}}
+  memcpy(slot->pubkey_prefix,c.id.pub_key,7);strncpy(slot->name,c.name,sizeof(slot->name)-1);slot->name[31]=0;
+  slot->recv_timestamp=coreRtc.getCurrentTime();slot->path_len=mesh::Packet::copyPath(slot->path,path,pathLen);
+ }
+ void pushLogRx(float snr,float rssi,const uint8_t* raw,int len){
+  if(!link||len<=0)return;size_t max=companion::MaxFrame-3;if(size_t(len)>max)len=int(max);
+  start(PushLogRx);u8(uint8_t(int8_t(snr*4)));u8(uint8_t(int8_t(rssi)));put(raw,len);send();
+ }
  uint8_t f[companion::MaxFrame];size_t n=0;
  MeshCoreBackend* core() const{return meshRadio.core;}
  void start(uint8_t code){f[0]=code;n=1;}
@@ -206,7 +222,7 @@ struct CompanionCore {
  }
  void deviceInfo(){
   start(RespDeviceInfo);u8(ProtocolVersion);u8(MAX_CONTACTS/2);u8(channels::Max);u32(blePin());field(__DATE__,12);field(MM_BOARD_NAME,40);
-  field("MeshMesh " MESHMM_VERSION,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
+  field(MESHMM_FIRMWARE,20);u8(config.relay?1:0);u8(config.pathHash-1);send();
  }
  void handle(const uint8_t* frame,size_t len){
   uint8_t cmd=frame[0];auto& r=meshRadio;
@@ -228,7 +244,7 @@ struct CompanionCore {
    case CmdAddContact:if(len<136)break;updateContact(frame,len);return;
    case CmdSyncNext:if(inCount){auto& m=inbox[inHead];inHead=(inHead+1)%12;inCount--;n=m.length;memcpy(f,m.data,n);send();}else{start(RespNoMore);send();}return;
    case CmdSetRadio:{if(len<11)break;uint32_t freq,bw;memcpy(&freq,frame+1,4);memcpy(&bw,frame+5,4);StaticJsonDocument<192> j;
-    j["frequency"]=freq/1000.0f;j["bandwidth"]=bw/1000.0f;j["sf"]=frame[9];j["cr"]=frame[10];if(len>11)j["relay"]=frame[11]!=0;settingsReply(apply(j));return;}
+    j["frequency"]=freq>2000000?freq/1000000.0f:freq/1000.0f;j["bandwidth"]=bw>1000?bw/1000.0f:float(bw);j["sf"]=frame[9];j["cr"]=frame[10];if(len>11)j["relay"]=frame[11]!=0;settingsReply(apply(j));return;}
    case CmdSetPower:{if(len<2)break;StaticJsonDocument<64> j;j["power"]=int8_t(frame[1]);settingsReply(apply(j));return;}
    case CmdResetPath:if(len<33)break;if(r.resetPath(aliasOf(frame+1)))ok();else err(ErrNotFound);return;
    case CmdRemoveContact:if(len<33)break;if(r.removeContact(aliasOf(frame+1)))ok();else err(ErrNotFound);return;
@@ -256,6 +272,11 @@ struct CompanionCore {
    case CmdGetChannel:{if(len<2)break;uint8_t i=frame[1];if(i>=channels::Max){err(ErrNotFound);return;}
     start(RespChannelInfo);u8(i);if(i<r.channelCount){field(r.channelList[i].name,32);put(r.channelList[i].secret,16);}else{field("",32);uint8_t zero[16]={};put(zero,16);}send();return;}
    case CmdSetChannel:if(len<50)break;if(len>=66){err(ErrUnsupported);return;}setChannel(frame);return; // 256-bit keys: not in MeshCore either
+   case CmdGetAdvertPath:{if(len<PUB_KEY_SIZE+2)break;const uint8_t* key=frame+2;AdvertPathEntry* found=nullptr;
+    for(unsigned i=0;i<AdvertPathCount;i++){auto& e=advertPaths[i];if(e.recv_timestamp&&!memcmp(e.pubkey_prefix,key,7)){found=&e;break;}}
+    if(!found){err(ErrNotFound);return;}
+    start(RespAdvertPath);u32(found->recv_timestamp);u8(found->path_len);
+    if(size_t n2=mesh::Packet::writePath(f+n,found->path,found->path_len)){n+=n2;send();}else err(ErrIllegalArg);return;}
    case CmdCustomVars:start(RespCustomVars);send();return;
    case CmdStats:if(len<2)break;stats(frame[1]);return;
    case CmdSetPathHashMode:{if(len<3||frame[1])break;if(frame[2]>=3){err(ErrIllegalArg);return;}StaticJsonDocument<32> j;j["path_hash"]=frame[2]+1;settingsReply(apply(j));return;}
@@ -302,6 +323,8 @@ void control(const mesh::Packet* p){
  if(!appCore||!appCore->link||p->payload_len+4>companion::MaxFrame)return;auto& a=*appCore;
  a.start(PushControl);a.u8(uint8_t(int8_t(p->getSNR()*4)));a.u8(uint8_t(int8_t(meshRadio.lastRssi)));a.u8(p->path_len);a.put(p->payload,p->payload_len);a.send();
 }
+void storeAdvertPath(const ContactInfo& c,uint8_t pathLen,const uint8_t* path){app().storeAdvertPath(c,pathLen,path);}
+void logRxRaw(float snr,float rssi,const uint8_t* raw,int len){app().pushLogRx(snr,rssi,raw,len);}
 }
 namespace companion {
 void command(const uint8_t* frame,size_t length,Link from){

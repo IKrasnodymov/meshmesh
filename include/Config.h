@@ -3,6 +3,7 @@
 #include <Preferences.h>
 #include "Board.h"
 #include "I18n.h"
+#include "RadioDefaults.h"
 
 // Device role, chosen at boot: the usual chat device, a MeshCore repeater or room server. A change takes a restart.
 enum DeviceRole:uint8_t {RoleNormal=0,RoleRepeater=1,RoleRoom=2,RoleCount};
@@ -13,14 +14,18 @@ struct RadioProfile {
 };
 struct Config {
   char name[25]=MM_NODE_NAME;
-  float frequency=868.731f, bandwidth=62.5f;
-  uint8_t sf=8, cr=6, hops=3, brightness=180;
+  float frequency=MM_RADIO_DEFAULT_FREQ, bandwidth=MM_RADIO_DEFAULT_BW;
+  uint8_t sf=MM_RADIO_DEFAULT_SF, cr=MM_RADIO_DEFAULT_CR, hops=3, brightness=180;
   uint8_t pathHash=2; // bytes per hop in the path of our flood packets, 1..3 (MeshCore path hash mode + 1)
   int8_t power=10;
   bool relay=true, gps=true, sound=true, batteryVolts=false;
   uint8_t lang=LangEn; // interface language, I18n.h
   uint16_t autoLock=90,dimAfter=30;
+#if defined(MM_RADIO_DEFAULT_US)
+  int16_t utcOffset=-300; // US Eastern default; change in Settings
+#else
   int16_t utcOffset=180;
+#endif
   uint8_t key[32]={};
   uint32_t bootCounter=0;
   uint8_t role=RoleNormal;
@@ -54,4 +59,8 @@ struct Config {
   bool saveRole(uint8_t next); // stored for the next boot; role stays the running one
   void saveBle(bool on);
 };
+
+inline bool validFrequency(float f) {
+  return isfinite(f) && ((f>=863.0f && f<=870.0f) || (f>=902.0f && f<=928.0f));
+}
 extern Config config;

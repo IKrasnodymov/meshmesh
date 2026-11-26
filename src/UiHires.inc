@@ -97,7 +97,7 @@ template<class F> void menuBox(unsigned n,int index,F name){
 void empty(Icon ic,const String& a,const String& b){icon(ic,120,46,12,ColFaint);center(120,84,fit(a,228),ColInk);center(120,103,fit(b,228,small),ColDim,small);}
 // A page's title; code: a page, or FolderPage|folder<<8.
 String pageTitle(int code){
- switch(code&0xff){case Home:return "MeshMesh";
+ switch(code&0xff){case Home:return MESHMM_SPLASH;
 #if MM_PET
  case PetPage:return petTitle();
 #endif

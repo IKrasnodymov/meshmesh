@@ -54,8 +54,9 @@ def problems(c):
 
 
 def fits(r):
-    """A profile the boards can use (Config::valid): 863-870 MHz, BW 62.5/125/250/500 kHz, SF 7-12, CR 5-8."""
-    return (863_000_000 <= r['frequency_hz'] <= 870_000_000 and r['bandwidth_hz'] in (62_500, 125_000, 250_000, 500_000)
+    """A profile the boards can use (Config::valid): 863-870 MHz or 902-928 MHz, BW 62.5/125/250/500 kHz, SF 7-12, CR 5-8."""
+    return ((863_000_000 <= r['frequency_hz'] <= 870_000_000 or 902_000_000 <= r['frequency_hz'] <= 928_000_000)
+            and r['bandwidth_hz'] in (62_500, 125_000, 250_000, 500_000)
             and 7 <= r['sf'] <= 12 and 5 <= r['cr'] <= 8)
 
 

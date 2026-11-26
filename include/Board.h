@@ -98,7 +98,7 @@
 #define MM_BOARD_ID "heltec_t114"
 #define MM_BOARD_NAME "Heltec Mesh Node T114"
 #define MM_BUTTON "USER"
-#define MM_NODE_NAME "T114"
+#define MM_NODE_NAME "Zaugger"
 #define MM_GPS_DEFAULT true
 #define MM_ABSENT 1,2,4,6,7,
 #elif defined(MM_BOARD_T096)

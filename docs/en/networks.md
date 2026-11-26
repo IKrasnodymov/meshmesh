@@ -11,7 +11,7 @@ Only the four parameters a network shares: frequency, bandwidth, SF and CR. Powe
 region, keys and contacts stay. Installing firmware never changes radio settings. A profile is written to a board
 only when the user has chosen a network and confirmed the write.
 
-MeshMesh works in 863–870 MHz with a bandwidth of 62.5, 125, 250 or 500 kHz. Networks outside that range (433 MHz,
+MeshMesh works in 863–870 MHz or 902–928 MHz with a bandwidth of 62.5, 125, 250 or 500 kHz. Networks outside those ranges (433 MHz,
 for example) are listed but cannot be written to a MeshMesh board.
 
 ## Catalogue
@@ -42,7 +42,7 @@ opening it shows two steps.
    talks the MeshCore companion protocol, so it works with MeshMesh 0.9.0+ and the stock MeshCore companion alike.
 3. The site shows the board's name, model and firmware, its current and the new settings. When the network is in another
    band than the board's current frequency (433 / 868 / 915 MHz), writing needs the box "The board and antenna are
-   made for … MHz". A MeshMesh board cannot get a frequency outside 863–870 MHz.
+   made for … MHz". A MeshMesh board cannot get a frequency outside 863–870 or 902–928 MHz.
 4. "Write to this board" confirms each board. The site checks what was written, keeps the board's previous settings
    (by its key) and disconnects, so the next board can be connected. Connecting the same board again offers "Return
    the previous ones".
