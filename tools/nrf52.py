@@ -212,7 +212,7 @@ def package(env, only=None):
 не помещается в 1 МБ flash. Язык включается в настройках платы после установки.
 
 SHA-256 firmware.bin: {digest}
-""")
+""", encoding='utf-8')
     uf2_digest = hashlib.sha256((target / 'firmware.uf2').read_bytes()).hexdigest()
     manifest = {'target': env, 'board': env, 'version': version(), 'chip': 'nrf52840', 'firmware_sha256': digest, 'size': len(data),
                 'uf2_sha256': uf2_digest, 'firmware.bin': {'bytes': len(data), 'sha256': digest},
@@ -222,7 +222,7 @@ SHA-256 firmware.bin: {digest}
     if release['version'] != version():
         raise SystemExit('Build version is stale')
     manifest.update(release)
-    (target / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (target / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print(target, len(data), digest)
 
 

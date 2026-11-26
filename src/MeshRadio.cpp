@@ -42,6 +42,8 @@ void cliMessage(const ContactInfo& from,const mesh::Packet* packet,uint32_t stam
 void roomPost(const ContactInfo& room,const mesh::Packet* packet,uint32_t stamp,const uint8_t* author,const char* text);
 void response(const ContactInfo& c,const uint8_t* data,uint8_t len); // a server's answer to a login or request
 void traced(const mesh::Packet* packet,uint32_t tag,uint32_t auth,uint8_t flags,const uint8_t* snrs,const uint8_t* hashes,uint8_t pathLen);
+void storeAdvertPath(const ContactInfo& c,uint8_t pathLen,const uint8_t* path);
+void logRxRaw(float snr,float rssi,const uint8_t* raw,int len);
 }
 // The screen's and web page's sessions with repeaters and rooms (src/Remote.inc): true when the answer was theirs.
 namespace remote {
@@ -193,7 +195,11 @@ class MeshCoreBackend:public BaseChatMesh {
   uint64_t id=aliasOf(key);if(owner.contact(id)||!memcmp(key,self_id.pub_key,32))return true;ContactInfo c={};c.id=mesh::Identity(key);copyUtf8(c.name,name,sizeof(c.name));c.type=type;c.out_path_len=OUT_PATH_UNKNOWN;c.lastmod=uint32_t(time(nullptr));c.gps_lat=lat;c.gps_lon=lon;
   if(!addContact(c))return false;updateContact(c,false);contactsDue=millis()+2000;return true;}
  protected:
- void onDiscoveredContact(ContactInfo& c,bool added,uint8_t pathLen,const uint8_t*) override{updateContact(c,true,pathLen&63);contactsDue=millis()+2000;appLink::advert(c,added);}
+ void onDiscoveredContact(ContactInfo& c,bool added,uint8_t pathLen,const uint8_t* path) override{
+  updateContact(c,true,pathLen&63);contactsDue=millis()+2000;appLink::advert(c,added);
+  if(path&&mesh::Packet::isValidPathLen(pathLen))appLink::storeAdvertPath(c,pathLen,path);
+ }
+ void logRxRaw(float snr,float rssi,const uint8_t raw[],int len) override{appLink::logRxRaw(snr,rssi,raw,len);}
  ContactInfo* processAck(const uint8_t* data) override{
   uint32_t ack;memcpy(&ack,data,4);uint64_t appTo=0;uint32_t appId=appLink::confirm(ack,appTo);
   for(auto& wait:owner.pending)if(wait.active&&wait.started)for(unsigned i=0;i<wait.attempts;i++)if(wait.ack[i]==ack){
